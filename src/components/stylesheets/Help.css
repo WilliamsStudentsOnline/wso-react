@@ -1,0 +1,8 @@
+.help {
+  background-color: #fff;
+  padding: 50px;
+  height: 100%;
+  margin: 50px;
+  box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
+  width: 100%;
+}

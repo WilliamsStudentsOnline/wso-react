@@ -1,0 +1,96 @@
+.added-courses {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 40px;
+  margin-bottom: 50px;
+}
+
+.help-header {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.timetable-header {
+  font-size: 30px;
+  margin-top: 20px;
+  text-align: center;
+  color: #4b2771;
+  vertical-align: middle;
+}
+
+.timetable-header button {
+  background-color: #fff;
+  color: #4b2771;
+  display: inline-block;
+}
+
+.timetable-header span {
+  margin: auto;
+}
+
+.unselectable {
+  cursor: not-allowed;
+  background-color: #cfcfd9;
+  color: #9c9ca6;
+}
+
+.unselectable:hover {
+  cursor: not-allowed;
+}
+
+.export-options {
+  padding: 0 30px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.export-options button {
+  width: 20%;
+  min-width: 200px;
+  background-color: lavender;
+  color: indigo;
+  border-radius: 10px;
+  width: 20%;
+  min-width: 200px;
+  padding: 5px 10px;
+  border: none;
+  display: inline-flex;
+  line-height: 24px;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 10px;
+}
+
+.export-options button span {
+  padding-left: 15px;
+}
+
+.timetable {
+  background-color: #fff;
+  padding: 50px;
+  height: 100%;
+  margin: 50px;
+  box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
+  width: 100%;
+  overflow: hidden;
+}
+
+.course-warnings {
+  background-color: rgb(240, 202, 158);
+  border-top: 5px solid rgb(243, 144, 31);
+  padding: 20px;
+}
+
+.course-warnings ol {
+  list-style-type: decimal;
+  padding-left: 30px;
+}
+
+.course-warnings-header {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}

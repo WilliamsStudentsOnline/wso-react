@@ -1,0 +1,60 @@
+.additional-options {
+  top: 15px;
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+.additional-options-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 0.4;
+  padding: 15px;
+  background-color: white;
+  box-shadow: -1px -1px 3px hsla(0, 0%, 0%, 0.2);
+  min-height: 1200px;
+  position: sticky;
+  top: 0px;
+}
+
+.num-found {
+  font-size: 14px;
+}
+
+.additional-options ul {
+  margin-top: 0;
+  margin-bottom: 10px;
+  padding-left: 0;
+  list-style: none;
+  padding-left: 0;
+}
+
+.additional-options li {
+  font-size: 14px;
+}
+
+.ul-header {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.refine {
+  font-size: 24px;
+  padding-bottom: 10px;
+  display: block;
+}
+
+.reset-filters button {
+  margin-top: 20px;
+  background-color: lavender;
+  color: indigo;
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+.last-update {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 16px;
+}

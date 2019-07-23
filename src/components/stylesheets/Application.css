@@ -1,0 +1,14 @@
+.inline-button {
+  background: none;
+  padding: 0.5rem 2rem;
+  color: #6f4399;
+  border: 1px solid #6f4399;
+  margin: 0.5rem;
+}
+
+.autocomplete-option {
+  background: none;
+  color: #6f4399;
+  padding: 0;
+  min-width: 0;
+}

@@ -1,0 +1,55 @@
+.submenu ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.submenu ul li:hover {
+  cursor: pointer;
+  background-color: #f4edfc;
+  color: #68379e;
+}
+
+.list-item img {
+  display: block;
+  margin: auto;
+}
+
+.list-item {
+  text-align: center;
+  margin-bottom: 10px;
+  border-right: 5px solid #68379e;
+  background-color: #f3f3f9;
+  color: #68379e;
+}
+
+.list-item div {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.list-item div div {
+  padding: 0;
+}
+
+.submenu {
+  top: 0;
+  position: -webkit-sticky;
+  position: sticky;
+  height: 1200px;
+  color: #131315;
+  box-shadow: 1px -1px 3px hsla(0, 0%, 0%, 0.2);
+  background-color: #ffffff;
+  width: 120px;
+}
+
+.submenu-container {
+  top: 0;
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+.unselected {
+  color: #cfcfd9;
+  border-right: 5px solid #ffffff;
+  background-color: #ffffff;
+}

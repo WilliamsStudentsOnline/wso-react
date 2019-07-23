@@ -1,0 +1,35 @@
+.search {
+  box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
+  padding: 5px 5%;
+  flex: 0;
+  top: 0;
+  position: -webkit-sticky;
+  position: sticky;
+  background-color: white;
+  z-index: 10;
+  border-left: 2px solid #ccc;
+  border-right: 2px solid #ccc;
+  text-align: center;
+  border-top: 2px solid #ccc;
+}
+
+#course-search {
+  border: none;
+  background-color: white;
+  font-size: 24px;
+  color: #222;
+  padding: 10px 0 10px 5px;
+  margin-left: 20px;
+  display: inline-block;
+  width: 80%;
+  border-bottom: 2px solid #ccc;
+  border-radius: 0;
+}
+
+.md-36 {
+  font-size: 36px;
+}
+
+.search i {
+  vertical-align: middle;
+}
