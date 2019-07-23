@@ -1,17 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './components/App';
-import store from './store';
-import * as serviceWorker from './serviceWorker';
-import {Provider} from 'react-redux';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./components/App";
+import configureStore from "./store";
+import * as serviceWorker from "./serviceWorker";
+import { Provider } from "react-redux";
+import { RouterProvider } from "react-router5";
+import configureRouter from "./create-router";
 
-ReactDOM.render(
+const router = configureRouter();
+
+const store = configureStore(router);
+
+const wrappedApp = (
   <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
+    <RouterProvider router={router}>
+      <App />
+    </RouterProvider>
+  </Provider>
 );
+
+router.start((err, state) => {
+  ReactDOM.render(wrappedApp, document.getElementById("root"));
+});
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

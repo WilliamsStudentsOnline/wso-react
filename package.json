@@ -3,9 +3,41 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.19.0",
+    "google-client-api": "^1.0.4",
+    "html2canvas": "^1.0.0-rc.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-google-charts": "^3.0.14",
+    "react-redux": "^7.1.0",
+    "react-router5": "^7.1.0",
+    "react-scripts": "3.0.1",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-router5": "^7.0.2",
+    "router5": "^7.0.2",
+    "router5-plugin-browser": "^7.0.2",
+    "typeface-source-sans-pro": "^0.0.75",
+    "universal-cookie": "^4.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^4.0.0",
+    "@testing-library/react": "^8.0.4",
+    "deep-freeze": "^0.0.1",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-jest": "^22.7.1",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.13.0",
+    "husky": "^3.0.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest-junit": "^6.4.0",
+    "lint-staged": "^9.0.1",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1",
+    "react-test-renderer": "^16.8.6"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -26,6 +58,43 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "coverageReporters": [
+      "text",
+      "cobertura"
+    ],
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+    }
+  },
+  "jest-junit": {
+    "output": "coverage/junit/junit.xml",
+    "usePathForSuiteName": "true"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "app/javascript/**/*.{js,jsx}": [
+      "./node_modules/.bin/eslint --ext .jsx,js --ignore-path .gitignore --fix",
+      "git add"
+    ],
+    "*.{js,jsx}": [
+      "pretty-quick --staged",
+      "git add"
+    ],
+    "*.rb": [
+      "bundle exec rubocop --safe-auto-correct --fail-level F",
+      "git add"
     ]
   }
 }

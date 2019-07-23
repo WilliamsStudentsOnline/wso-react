@@ -1,9 +1,17 @@
-import {createLogger} from 'redux-logger';
-import {createStore, applyMiddleware} from 'redux';
-import rootReducer from '../reducers';
+import { createLogger } from "redux-logger";
+import { createStore, applyMiddleware } from "redux";
+import rootReducer from "../reducers";
 
-const logger = createLogger();
+import { router5Middleware } from "redux-router5";
 
-const store = createStore(rootReducer, undefined, applyMiddleware(logger));
+export default function configureStore(router, initialState = {}) {
+  const createStoreWithMiddleware = applyMiddleware(
+    router5Middleware(router),
+    createLogger()
+  )(createStore);
 
-export default store;
+  const store = createStoreWithMiddleware(rootReducer, initialState);
+
+  window.store = store;
+  return store;
+}
