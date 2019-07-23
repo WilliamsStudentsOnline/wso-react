@@ -1,12 +1,23 @@
+// React imports
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+
+// Component/Stylesheet imports
 import App from "./components/App";
+import "./index.css";
+import "./components/stylesheets/i.css";
+import "typeface-source-sans-pro";
+
+// Redux/store imports
 import configureStore from "./store";
-import * as serviceWorker from "./serviceWorker";
 import { Provider } from "react-redux";
+
+// Router imports
 import { RouterProvider } from "react-router5";
 import configureRouter from "./create-router";
+
+// Serviceworker import
+import * as serviceWorker from "./serviceWorker";
 
 const router = configureRouter();
 
@@ -20,7 +31,7 @@ const wrappedApp = (
   </Provider>
 );
 
-router.start((err, state) => {
+router.start(() => {
   ReactDOM.render(wrappedApp, document.getElementById("root"));
 });
 

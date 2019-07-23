@@ -1,6 +1,6 @@
 // React Imports
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 const Header = ({ ephCatch, currentUser }) => {
   let unseen = 0;
@@ -45,16 +45,16 @@ const Header = ({ ephCatch, currentUser }) => {
             )}
 
             <li>
-              <a href="/about/listserv">Listserv</a>
+              <a href="/listserv">Listserv</a>
             </li>
             <li>
-              <a href="/building_hours">Hours</a>
+              <a href="/hours">Hours</a>
             </li>
             <li>
               <a href="/wiki">Wiki</a>
             </li>
             <li>
-              {' '}
+              {" "}
               <a href="/about">About</a>
             </li>
             <li>
@@ -90,12 +90,12 @@ const Header = ({ ephCatch, currentUser }) => {
 
 Header.propTypes = {
   ephCatch: PropTypes.bool,
-  currentUser: PropTypes.object,
+  currentUser: PropTypes.object
 };
 
 Header.defaultProps = {
   ephCatch: false,
-  currentUser: false,
+  currentUser: false
 };
 
 export default Header;

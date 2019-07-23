@@ -84,16 +84,9 @@
     }
   },
   "lint-staged": {
-    "app/javascript/**/*.{js,jsx}": [
-      "./node_modules/.bin/eslint --ext .jsx,js --ignore-path .gitignore --fix",
-      "git add"
-    ],
     "*.{js,jsx}": [
+      "./node_modules/.bin/eslint --ext .jsx,js --ignore-path .gitignore --fix",
       "pretty-quick --staged",
-      "git add"
-    ],
-    "*.rb": [
-      "bundle exec rubocop --safe-auto-correct --fail-level F",
       "git add"
     ]
   }
