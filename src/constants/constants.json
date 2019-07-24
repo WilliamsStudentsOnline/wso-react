@@ -11,7 +11,7 @@
   "SEMESTERS": ["Fall", "Winter", "Spring"],
   "DISTRIBUTIONS": ["dpe", "qfr", "wac"],
   "DIVISIONS": ["div1", "div2", "div3"],
-  "OTHERS": ["OPP", "OPX"],
+  "OTHERS": ["passFail", "fifthCourse"],
   "LEVELS": [0, 1, 2, 3, 4],
   "DATES": {
     "Fall": {

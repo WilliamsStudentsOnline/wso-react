@@ -317,11 +317,7 @@ const applyFilters = (state, queried, filters) => {
     if (hasFilter(others)) {
       check = false;
       for (let i = 0; i < others.length; i += 1) {
-        if (
-          others[i] &&
-          (course.gradingBasis === others[i] || course.gradingBasis === "OPT")
-        )
-          check = true;
+        if (others[i] && course.courseAttributes[others[i]]) check = true;
       }
       if (!check) continue;
     }
