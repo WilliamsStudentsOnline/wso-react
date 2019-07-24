@@ -65,6 +65,13 @@ Styling is currently done via vanilla CSS, although we will likely be moving to 
 * If you're interested in learning more about React and Redux, we recommend [this tutorial](https://www.robinwieruch.de/react-redux-tutorial/#react-redux-and-x-tutorial).
 * Look out for issues labelled as 'good first issue' [here](https://github.com/WilliamsStudentsOnline/wso-react/labels/good%20first%20issue). These issues are usually what we have deemed to be great places to get your feet wet. 
 
+**Communicating with the Backend**
+1. Set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/).
+2. Run the `wso-go` server.
+3. Run the React development sever via `yarn start`.
+
+The development server is set to communicate to the backend via a proxy, allowing all HTTP requests can thus be made to `/path/to/endpoint` without further settings.
+
 ## Available Scripts
 
 In the project directory, you can run:
