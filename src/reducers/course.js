@@ -1,4 +1,3 @@
-import Cookies from "universal-cookie";
 import {
   SEARCH_COURSE,
   RESET_LOAD,
@@ -34,12 +33,12 @@ import { DEPARTMENT } from "../constants/departments.json";
 
 const INITIAL_STATE = {};
 let INITIAL_CATALOG = [];
-const cookies = new Cookies();
 
+// Gets the added courses attributes from WebStorage and add the relevant courses.
 const parseAddedCourses = () => {
-  const cookie = cookies.get("added", { doNotParse: true });
-  if (cookie) {
-    const brownies = cookie.split(",");
+  const addedCourses = localStorage.getItem("added");
+  if (addedCourses) {
+    const brownies = addedCourses.split(",");
     // To refactor and take away parseInt
     return INITIAL_CATALOG.filter((course) => {
       let check = false;
@@ -138,7 +137,7 @@ const hasFilter = (filter) => {
   return false;
 };
 
-const scoreCourses = (state, param, course) => {
+const scoreCourses = (param, course) => {
   let score = 1;
 
   // Allows the user to search by department, number, title, description, and instructors
@@ -468,19 +467,13 @@ const applyLoadCourses = (state, action) => {
 };
 
 const applyAddCourse = (state, action) => {
-  const cookie = cookies.get("added", { doNotParse: true });
-  // cookies store the department and peoplesoft number for unique identification of the course
-  // section and department it belongs too.
-  cookies.set(
-    "added",
-    cookie
-      ? `${action.course.department};${action.course.peoplesoftNumber},${cookie}`
-      : `${action.course.department};${action.course.peoplesoftNumber}`,
-    {
-      path: "/",
-      expires: new Date("December 31, 9999 11:00:00"),
-    }
-  );
+  let addedCourses = localStorage.getItem("added");
+  if (!addedCourses)
+    addedCourses = `${action.course.department};${action.course.peoplesoftNumber}`;
+  else
+    addedCourses += `,${action.course.department};${action.course.peoplesoftNumber}`;
+
+  localStorage.setItem("added", addedCourses);
 
   // Update state
   return Object.assign({}, state, {
@@ -489,17 +482,17 @@ const applyAddCourse = (state, action) => {
 };
 
 const applyRemoveCourse = (state, action) => {
-  // Update cookie
-  const cookie = cookies.get("added", { doNotParse: true });
-  const brownie = cookie.split(",");
+  // Update WebStorage
+  let addedCourses = localStorage.getItem("added");
+  if (!addedCourses) addedCourses = "";
+
+  const brownie = addedCourses.split(",");
   const index = brownie.indexOf(
-    `${action.course.department};${action.course.course_id}`
+    `${action.course.department};${action.course.peoplesoftNumber}`
   );
   if (index !== -1) brownie.splice(index, 1);
-  cookies.set("added", brownie.join(","), {
-    path: "/",
-    expires: new Date("December 31, 9999 11:00:00"),
-  });
+
+  localStorage.setItem("added", brownie.join(","));
 
   // Update State
   return Object.assign({}, state, {
@@ -627,15 +620,12 @@ const removeSemesterCourses = (state, action) => {
   const filteredAdded = state.added.filter(
     (course) => course.semester !== action.semester
   );
-  cookies.set(
+
+  localStorage.setItem(
     "added",
     filteredAdded
       .map((course) => `${course.department};${course.peoplesoftNumber}`)
-      .join(","),
-    {
-      path: "/",
-      expires: new Date("December 31, 9999 11:00:00"),
-    }
+      .join(",")
   );
 
   return Object.assign({}, state, {

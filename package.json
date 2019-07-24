@@ -18,8 +18,7 @@
     "redux-router5": "^7.0.2",
     "router5": "^7.0.2",
     "router5-plugin-browser": "^7.0.2",
-    "typeface-source-sans-pro": "^0.0.75",
-    "universal-cookie": "^4.0.0"
+    "typeface-source-sans-pro": "^0.0.75"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.0.0",
