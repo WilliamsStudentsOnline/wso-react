@@ -1,15 +1,15 @@
 // React imports
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 // Component imports
-import Course from './Course';
-import './stylesheets/Catalog.css';
+import Course from "./Course";
+import "./stylesheets/Catalog.css";
 
 // Redux (Selector, Reducer, Actions) imports
-import { doLoadCourses } from '../actions/course';
-import { getLoadedCourses } from '../selectors/course';
+import { doLoadCourses } from "../actions/course";
+import { getLoadedCourses } from "../selectors/course";
 
 class Catalog extends React.Component {
   constructor(props) {
@@ -20,11 +20,11 @@ class Catalog extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener('scroll', this.onScroll, false);
+    window.addEventListener("scroll", this.onScroll, false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.onScroll, false);
+    window.removeEventListener("scroll", this.onScroll, false);
   }
 
   onScroll() {
@@ -38,9 +38,10 @@ class Catalog extends React.Component {
   }
 
   render() {
+    console.log(this.props.loaded);
     return (
       <div className="catalog">
-        {(this.props.loaded || []).map(course => (
+        {(this.props.loaded || []).map((course) => (
           <Course
             key={`${course.department}${course.peoplesoft_number}`}
             course={course}
@@ -51,12 +52,12 @@ class Catalog extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   loaded: getLoadedCourses(state),
 });
 
-const mapDispatchToProps = dispatch => ({
-  onLoad: newLoadGroup => dispatch(doLoadCourses(newLoadGroup)),
+const mapDispatchToProps = (dispatch) => ({
+  onLoad: (newLoadGroup) => dispatch(doLoadCourses(newLoadGroup)),
 });
 
 Catalog.propTypes = {

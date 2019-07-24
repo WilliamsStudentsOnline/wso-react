@@ -1,24 +1,24 @@
 // React imports
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 // Component imports
-import './stylesheets/Schedule.css';
+import "./stylesheets/Schedule.css";
 
 // Redux (Selector, Reducer, Actions) imports
-import { getUnhiddenCourses, getAddedCourses } from '../selectors/course';
-import { getSemester, getTimeFormat, getOrientation } from '../selectors/utils';
+import { getUnhiddenCourses, getAddedCourses } from "../selectors/course";
+import { getSemester, getTimeFormat, getOrientation } from "../selectors/utils";
 import {
   PALETTE,
   BORDER_PALETTE,
   SEMESTERS,
-} from '../constants/constants.json';
+} from "../constants/constants.json";
 
 const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
-  const days = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
+  const days = ["MON", "TUE", "WED", "THU", "FRI"];
   const filtered = unhidden.filter(
-    course => course.semester === SEMESTERS[currSem]
+    (course) => course.semester === SEMESTERS[currSem]
   );
   const startHour = 8;
   let endHour = 16;
@@ -27,7 +27,7 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
   for (let i = 0; i < filtered.length; i += 1) {
     if (endHour === 22) break;
     for (let j = 0; j < filtered[i].meetings.length; j += 1) {
-      if (filtered[i].meetings[j].end > '16:00') {
+      if (filtered[i].meetings[j].end > "16:00") {
         endHour = 22;
         break;
       }
@@ -53,13 +53,13 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
     const width = numWidth - number.toString().length;
 
     if (width > 0) {
-      return new Array(width + 1).join('0') + number;
+      return new Array(width + 1).join("0") + number;
     }
 
     return number.toString();
   };
 
-  const stringTime = meeting => {
+  const stringTime = (meeting) => {
     if (twelveHour) {
       return `${meeting.start12}\n-\n${meeting.end12}`;
     }
@@ -71,9 +71,7 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
       if (twelveHour) {
         return (
           <div className="hour-title-horizontal" key={index}>
-            {hour % 12 === 0 ? 12 : hour % 12} 
-            {' '}
-            {hour >= 12 ? 'PM' : 'AM'}
+            {hour % 12 === 0 ? 12 : hour % 12} {hour >= 12 ? "PM" : "AM"}
           </div>
         );
       }
@@ -87,9 +85,7 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
     if (twelveHour) {
       return (
         <div className="hour-title-vertical" key={index}>
-          {hour % 12 === 0 ? 12 : hour % 12} 
-          {' '}
-          {hour >= 12 ? 'PM' : 'AM'}
+          {hour % 12 === 0 ? 12 : hour % 12} {hour >= 12 ? "PM" : "AM"}
         </div>
       );
     }
@@ -122,8 +118,8 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
           key={i}
         >
           <div className="course-slot-title">{`${course.department} ${course.number}`}</div>
-          <div>{course.class_type}</div>
-          <div>{`${stringTime(meeting)} ${meeting.facil || ''}`}</div>
+          <div>{course.classType}</div>
+          <div>{`${stringTime(meeting)} ${meeting.facility || ""}`}</div>
         </div>
       );
     }
@@ -137,15 +133,15 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
         style={{
           top: offset,
           height: dimension,
-          width: '97%',
+          width: "97%",
           backgroundColor: PALETTE[index % PALETTE.length],
           borderColor: BORDER_PALETTE[index % BORDER_PALETTE.length],
         }}
         key={i}
       >
         <div className="course-slot-title">{`${course.department} ${course.number}`}</div>
-        <div>{course.class_type}</div>
-        <div>{`${stringTime(meeting)} ${meeting.facil || ''}`}</div>
+        <div>{course.classType}</div>
+        <div>{`${stringTime(meeting)} ${meeting.facil || ""}`}</div>
       </div>
     );
   };
@@ -159,8 +155,8 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
               <div
                 className={
                   ind % 2 === 0
-                    ? 'hour-in-days-horizontal'
-                    : 'hour-in-days-horizontal-odd'
+                    ? "hour-in-days-horizontal"
+                    : "hour-in-days-horizontal-odd"
                 }
                 key={ind} // eslint-disable-line react/no-array-index-key
               />
@@ -179,8 +175,8 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
             <div
               className={
                 ind % 2 === 0
-                  ? 'hour-in-days-vertical'
-                  : 'hour-in-days-vertical-odd'
+                  ? "hour-in-days-vertical"
+                  : "hour-in-days-vertical-odd"
               }
               key={ind} // eslint-disable-line react/no-array-index-key
             />
@@ -228,33 +224,33 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
   };
 
   // Minute-of-day representation of time.
-  const parseTime = time => {
-    const splitTime = time.split(':');
+  const parseTime = (time) => {
+    const splitTime = time.split(":");
     return parseInt(splitTime[0], 10) * 60 + parseInt(splitTime[1], 10);
   };
 
-  const getCourseDays = daysOfCourse => {
-    if (daysOfCourse === 'M-F') return ['MON', 'TUE', 'WED', 'THU', 'FRI'];
+  const getCourseDays = (daysOfCourse) => {
+    if (daysOfCourse === "M-F") return ["MON", "TUE", "WED", "THU", "FRI"];
 
-    const splitDays = daysOfCourse.split('');
+    const splitDays = daysOfCourse.split("");
     const result = [];
 
     for (const day of splitDays) {
       switch (day) {
-        case 'M':
-          result.push('MON');
+        case "M":
+          result.push("MON");
           break;
-        case 'T':
-          result.push('TUE');
+        case "T":
+          result.push("TUE");
           break;
-        case 'W':
-          result.push('WED');
+        case "W":
+          result.push("WED");
           break;
-        case 'R':
-          result.push('THU');
+        case "R":
+          result.push("THU");
           break;
-        case 'F':
-          result.push('FRI');
+        case "F":
+          result.push("FRI");
           break;
         default:
           break;
@@ -264,7 +260,7 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
     return result;
   };
 
-  const courseTimeParsed = course => {
+  const courseTimeParsed = (course) => {
     const result = [];
 
     for (const meeting of course.meetings) {
@@ -363,7 +359,7 @@ Schedule.defaultProps = {
   unhidden: [],
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   added: getAddedCourses(state),
   unhidden: getUnhiddenCourses(state),
   currSem: getSemester(state),
