@@ -20,8 +20,13 @@ import BuildingHours from "./BuildingHours";
 
 // Additional Imports
 import wordFile from "../constants/words.json";
+import { initializeToken } from "../api/utils";
+import { getAllUsers } from "../api/users";
 
 const App = ({ notice, warning, currentUser, route }) => {
+  initializeToken();
+  getAllUsers();
+
   const randomWSO = () => {
     if (wordFile) {
       let w = wordFile.w[Math.floor(Math.random() * wordFile.w.length)];

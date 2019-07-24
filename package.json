@@ -89,5 +89,6 @@
       "pretty-quick --staged",
       "git add"
     ]
-  }
+  },
+  "proxy": "http://localhost:8080"
 }
