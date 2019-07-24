@@ -1,13 +1,13 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import Footer from './Footer';
-import Header from './Header';
-import './stylesheets/Application.css';
+import React from "react";
+import PropTypes from "prop-types";
+import Footer from "./Footer";
+import Header from "./Header";
+import "./stylesheets/Application.css";
 
 const Layout = ({ children, bodyClass, notice, warning, currentUser }) => {
   return (
-    <body className={bodyClass}>
+    <div className={bodyClass}>
       <Header ephCatch={false} currentUser={currentUser} />
 
       <aside>
@@ -19,7 +19,7 @@ const Layout = ({ children, bodyClass, notice, warning, currentUser }) => {
 
       {children}
       <Footer />
-    </body>
+    </div>
   );
 };
 
@@ -32,8 +32,8 @@ Layout.propTypes = {
 };
 
 Layout.defaultProps = {
-  notice: '',
-  warning: '',
+  notice: "",
+  warning: "",
 };
 
 export default Layout;

@@ -1,24 +1,10 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import Layout from './Layout';
-
-const DormtrakLayout = ({
-  children,
-  neighborhoods,
-  authToken,
-  notice,
-  warning,
-  currentUser,
-}) => {
+const DormtrakLayout = ({ children, neighborhoods, authToken }) => {
   return (
-    <Layout
-      bodyClass="dormtrak"
-      notice={notice}
-      warning={warning}
-      currentUser={currentUser}
-    >
+    <>
       <header>
         <div className="page-head">
           <h1>
@@ -39,9 +25,9 @@ const DormtrakLayout = ({
                 OSL
               </a>
             </li>
-            {neighborhoods.map(neighborhood =>
-              neighborhood.name !== 'First-year' &&
-              neighborhood.name !== 'Co-op' ? (
+            {neighborhoods.map((neighborhood) =>
+              neighborhood.name !== "First-year" &&
+              neighborhood.name !== "Co-op" ? (
                 <li key={neighborhood.name}>
                   <a
                     href={`/dormtrak/hoods/${neighborhood.name}`}
@@ -78,7 +64,7 @@ const DormtrakLayout = ({
         </form>
       </header>
       {children}
-    </Layout>
+    </>
   );
 };
 
@@ -86,15 +72,8 @@ DormtrakLayout.propTypes = {
   children: PropTypes.object.isRequired,
   authToken: PropTypes.string.isRequired,
   neighborhoods: PropTypes.arrayOf(PropTypes.object).isRequired,
-  currentUser: PropTypes.object,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
 };
 
-DormtrakLayout.defaultProps = {
-  currentUser: {},
-  notice: '',
-  warning: '',
-};
+DormtrakLayout.defaultProps = {};
 
 export default DormtrakLayout;

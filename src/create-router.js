@@ -4,10 +4,9 @@ import routes from "./routes";
 
 export default function configureRouter() {
   const router = createRouter(routes, {
-    defaultRoute: "home",
     allowNotFound: true,
     trailingSlashMode: "never",
-    caseSensitive: false
+    caseSensitive: false,
   });
 
   router.usePlugin(browserPlugin());

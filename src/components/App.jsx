@@ -8,6 +8,10 @@ import Layout from "./Layout";
 import Homepage from "./Homepage";
 import About from "./About";
 import Listserv from "./Listserv";
+import Scheduler from "./Scheduler";
+import Facebook from "./Facebook";
+import DormtrakIndex from "./DormtrakIndex";
+import Factrak from "./Factrak";
 
 // Redux/routing
 import { connect } from "react-redux";
@@ -26,15 +30,6 @@ const App = ({ notice, warning, currentUser, route }) => {
 
       return "WSO: " + w + " " + s + "  " + o;
     } else return "WSO: Williams Students Online";
-
-    /*
-    words_file = Rails.application.config.words_file
-    if File.exist?(words_file)
-      words = YAML.load_file(words_file)
-      "#{words[:w][rand(words[:w].size)]} #{words[:s][rand(words[:s].size)]} #{words[:o][rand(words[:o].size)]}"
-    else
-      'Williams Students Online'
-    end */
   };
 
   const mainBody = () => {
@@ -49,6 +44,14 @@ const App = ({ notice, warning, currentUser, route }) => {
         return <Listserv />;
       case "hours":
         return <BuildingHours />;
+      case "scheduler":
+        return <Scheduler />;
+      case "facebook":
+        return <Facebook />;
+      case "dormtrak":
+        return <DormtrakIndex />;
+      case "factrak":
+        return <Factrak />;
       default:
         return <div>whoops</div>;
     }
@@ -58,7 +61,7 @@ const App = ({ notice, warning, currentUser, route }) => {
 
   return (
     <Layout
-      bodyClass="front"
+      bodyClass="front dormtrak facebook"
       notice={notice}
       warning={warning}
       currentUser={currentUser}
@@ -72,13 +75,13 @@ App.propTypes = {
   notice: PropTypes.string,
   warning: PropTypes.string,
   currentUser: PropTypes.object,
-  route: PropTypes.object.isRequired
+  route: PropTypes.object.isRequired,
 };
 
 App.defaultProps = {
   notice: "",
   warning: "",
-  currentUser: {}
+  currentUser: {},
 };
 
 export default connect(createRouteNodeSelector(""))(App);

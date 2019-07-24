@@ -1,9 +1,9 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import DormtrakRanking from './DormtrakRanking';
-import DormtrakRecentComments from './DormtrakRecentComments';
-import DormtrakLayout from './DormtrakLayout';
+import React from "react";
+import PropTypes from "prop-types";
+import DormtrakRanking from "./DormtrakRanking";
+import DormtrakRecentComments from "./DormtrakRecentComments";
+import DormtrakLayout from "./DormtrakLayout";
 
 const DormtrakIndex = ({
   dormInfo,
@@ -43,8 +43,7 @@ const DormtrakIndex = ({
 
             <p>
               <strong>
-                To fill out the survey, click
-                {' '}
+                To fill out the survey, click{" "}
                 <a href="/dormtrak/reviews/new">here</a>
               </strong>
               .
@@ -75,9 +74,10 @@ DormtrakIndex.propTypes = {
 };
 
 DormtrakIndex.defaultProps = {
-  notice: '',
-  warning: '',
+  notice: "",
+  warning: "",
   currentUser: {},
+  neighborhoods: [{ name: "Dodd" }],
 };
 
 export default DormtrakIndex;
