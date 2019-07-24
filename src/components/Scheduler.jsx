@@ -1,27 +1,28 @@
 // React imports
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 // External imports
-import axios from 'axios';
+import axios from "axios";
+import COURSE_INFO from "../constants/courses.json";
 
 // Component imports
-import './stylesheets/Scheduler.css';
-import googleAPI from 'google-client-api';
-import Catalog from './Catalog';
-import NotificationList from './NotificationList';
-import SubMenu from './SubMenu';
-import Search from './Search';
-import Timetable from './Timetable';
-import Help from './Help';
-import AdditionalOptions from './AdditionalOptions';
+import "./stylesheets/Scheduler.css";
+import googleAPI from "google-client-api";
+import Catalog from "./Catalog";
+import NotificationList from "./NotificationList";
+import SubMenu from "./SubMenu";
+import Search from "./Search";
+import Timetable from "./Timetable";
+import Help from "./Help";
+import AdditionalOptions from "./AdditionalOptions";
 
 // Redux (Selector, Reducer, Actions) imports
-import { getCurrSubMenu, getGAPI, getSignInStatus } from '../selectors/utils';
-import { updateGAPI, updateSignIn, addNotif } from '../actions/utils';
-import { FAILURE } from '../constants/actionTypes';
-import { doLoadCatalog } from '../actions/course';
+import { getCurrSubMenu, getGAPI, getSignInStatus } from "../selectors/utils";
+import { updateGAPI, updateSignIn, addNotif } from "../actions/utils";
+import { FAILURE } from "../constants/actionTypes";
+import { doLoadCatalog } from "../actions/course";
 
 class Scheduler extends Component {
   constructor(props) {
@@ -31,14 +32,14 @@ class Scheduler extends Component {
   }
 
   componentDidMount() {
-    googleAPI().then(gapi => {
+    googleAPI().then((gapi) => {
       const CLIENT_ID =
-        '99903103727-mcppob91tlqitcd7g11ud46vg0gr90im.apps.googleusercontent.com';
-      const SCOPES = 'https://www.googleapis.com/auth/calendar';
+        "99903103727-mcppob91tlqitcd7g11ud46vg0gr90im.apps.googleusercontent.com";
+      const SCOPES = "https://www.googleapis.com/auth/calendar";
       const DISCOVERY_DOCS = [
-        'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+        "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
       ];
-      const API_KEY = 'AIzaSyAxGwi55Zk2mg-Hs-O3qLBcoEMx__cceD0';
+      const API_KEY = "AIzaSyAxGwi55Zk2mg-Hs-O3qLBcoEMx__cceD0";
 
       gapi.client
         .init({
@@ -54,29 +55,31 @@ class Scheduler extends Component {
           doUpdateGAPI(gapi);
           doUpdateSignIn(gapi.auth2.getAuthInstance().isSignedIn.get());
         })
-        .catch(error =>
+        .catch((error) =>
           addNotif({
             type: FAILURE,
-            title: 'Failed to execute Google Authentication.',
+            title: "Failed to execute Google Authentication.",
             body: error,
           })
         );
     });
 
-    axios({
-      url: '/courses/courses.json',
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-    }).then(response => {
-      this.props.loadCatalog(response.data);
-    });
+    this.props.loadCatalog(COURSE_INFO.courses);
+
+    // axios({
+    //   url: "/courses/courses.json",
+    //   headers: {
+    //     "X-Requested-With": "XMLHttpRequest",
+    //   },
+    // }).then((response) => {
+    //   this.props.loadCatalog(response.data);
+    // });
   }
 
   getActive() {
     const { active } = this.props;
 
-    if (active === 'Catalog') {
+    if (active === "Catalog") {
       return (
         <div className="row">
           <div className="column">
@@ -88,7 +91,7 @@ class Scheduler extends Component {
       );
     }
 
-    if (active === 'Timetable') {
+    if (active === "Timetable") {
       return (
         <div className="row">
           <Timetable />
@@ -96,7 +99,7 @@ class Scheduler extends Component {
       );
     }
 
-    if (active === 'Help') {
+    if (active === "Help") {
       return (
         <div className="row">
           <Help />
@@ -121,9 +124,9 @@ class Scheduler extends Component {
           </div>
           <div
             className={
-              active === 'Catalog'
-                ? 'main-container'
-                : 'main-container overflow-hidden'
+              active === "Catalog"
+                ? "main-container"
+                : "main-container overflow-hidden"
             }
           >
             {this.getActive()}
@@ -141,17 +144,17 @@ Scheduler.propTypes = {
   active: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   active: getCurrSubMenu(state),
   gapi: getGAPI(state),
   signedIn: getSignInStatus(state),
 });
 
-const mapDispatchToProps = dispatch => ({
-  doUpdateGAPI: gapi => dispatch(updateGAPI(gapi)),
-  doUpdateSignIn: signedIn => dispatch(updateSignIn(signedIn)),
-  ddNotif: notification => dispatch(addNotif(notification)),
-  loadCatalog: catalog => dispatch(doLoadCatalog(catalog)),
+const mapDispatchToProps = (dispatch) => ({
+  doUpdateGAPI: (gapi) => dispatch(updateGAPI(gapi)),
+  doUpdateSignIn: (signedIn) => dispatch(updateSignIn(signedIn)),
+  ddNotif: (notification) => dispatch(addNotif(notification)),
+  loadCatalog: (catalog) => dispatch(doLoadCatalog(catalog)),
 });
 
 export default connect(
