@@ -1,4 +1,3 @@
-import Cookies from 'universal-cookie';
 import {
   SEARCH_COURSE,
   RESET_LOAD,
@@ -19,7 +18,7 @@ import {
   UPDATE_START,
   RESET_FILTERS,
   REMOVE_SEMESTER_COURSES,
-} from '../constants/actionTypes';
+} from "../constants/actionTypes";
 
 import {
   SEMESTERS,
@@ -29,24 +28,25 @@ import {
   LEVELS,
   CLASS_TYPES,
   DATES,
-} from '../constants/constants.json';
-import { DEPARTMENT } from '../constants/departments.json';
+} from "../constants/constants.json";
+import { DEPARTMENT } from "../constants/departments.json";
 
 const INITIAL_STATE = {};
 let INITIAL_CATALOG = [];
-const cookies = new Cookies();
 
+// Gets the added courses attributes from WebStorage and add the relevant courses.
 const parseAddedCourses = () => {
-  const cookie = cookies.get('added', { doNotParse: true });
-  if (cookie) {
-    const brownies = cookie.split(',');
-    return INITIAL_CATALOG.filter(course => {
+  const addedCourses = localStorage.getItem("added");
+  if (addedCourses) {
+    const brownies = addedCourses.split(",");
+    // To refactor and take away parseInt
+    return INITIAL_CATALOG.filter((course) => {
       let check = false;
-      brownies.forEach(brownie => {
-        const bites = brownie.split(';');
+      brownies.forEach((brownie) => {
+        const bites = brownie.split(";");
         if (
           bites[0] === course.department &&
-          bites[1] === course.peoplesoft_number
+          parseInt(bites[1]) === course.peoplesoftNumber
         ) {
           check = true;
         }
@@ -59,8 +59,8 @@ const parseAddedCourses = () => {
 };
 
 // Minute-of-day representation of the time for comparison
-const parseTime = time => {
-  const splitTime = time.split(':');
+const parseTime = (time) => {
+  const splitTime = time.split(":");
   return parseInt(splitTime[0], 10) * 60 + parseInt(splitTime[1], 10);
 };
 
@@ -71,8 +71,8 @@ const INITIAL_FILTER_STATE = {
   others: [false, false],
   levels: [false, false, false, false, false],
   conflict: [false],
-  start: '',
-  end: '',
+  start: "",
+  end: "",
   classTypes: [false, false, false, false, false, false],
 };
 
@@ -105,7 +105,7 @@ Object.assign(INITIAL_STATE, {
   searched: [],
   queried: [],
   loadGroup: 1,
-  query: '',
+  query: "",
   added: parseAddedCourses(),
   hidden: [],
   filters: INITIAL_FILTER_STATE,
@@ -113,7 +113,7 @@ Object.assign(INITIAL_STATE, {
 });
 
 // Writing this rather than using regex for speed reasons
-const occurrences = (string = '', subString = '') => {
+const occurrences = (string = "", subString = "") => {
   if (!string) return 0;
   if (!subString) return 0;
 
@@ -129,7 +129,7 @@ const occurrences = (string = '', subString = '') => {
   return n;
 };
 
-const hasFilter = filter => {
+const hasFilter = (filter) => {
   for (let i = 0; i < filter.length; i += 1) {
     if (filter[i] !== false) return true;
   }
@@ -137,19 +137,21 @@ const hasFilter = filter => {
   return false;
 };
 
-const scoreCourses = (state, param, course) => {
+const scoreCourses = (param, course) => {
   let score = 1;
 
   // Allows the user to search by department, number, title, description, and instructors
-  let searchArea = (course.title_long + course.title_short).toLowerCase();
+  let searchArea = (course.titleLong + course.titleShort).toLowerCase();
 
-  course.instructors.forEach(instructor => {
-    searchArea += instructor.name.toLowerCase();
-  });
+  if (course.instructors) {
+    course.instructors.forEach((instructor) => {
+      searchArea += instructor.name.toLowerCase();
+    });
+  }
 
-  const lowercaseDescription = course.description_search
-    ? course.description_search.toLowerCase()
-    : '';
+  const lowercaseDescription = course.descriptionSearch
+    ? course.descriptionSearch.toLowerCase()
+    : "";
 
   const lowercaseCode = (
     course.department +
@@ -157,9 +159,9 @@ const scoreCourses = (state, param, course) => {
     DEPARTMENT[course.department]
   ).toLowerCase();
 
-  const queries = param.toLowerCase().split(' ');
+  const queries = param.toLowerCase().split(" ");
   for (const query of queries) {
-    if (query !== '') {
+    if (query !== "") {
       const initialScore = score;
       // Matches in the code are awarded a higher priority than title/instructors, followed by code.
       score += occurrences(lowercaseDescription, query);
@@ -193,28 +195,28 @@ const compareRelevance = (courseA, courseB) => {
   return 0;
 };
 
-const getCourseDays = days => {
-  if (days === 'M-F') return ['MON', 'TUE', 'WED', 'THU', 'FRI'];
+const getCourseDays = (days) => {
+  if (days === "M-F") return ["MON", "TUE", "WED", "THU", "FRI"];
 
-  const splitDays = days.split('');
+  const splitDays = days.split("");
   const result = [];
 
   for (const day of splitDays) {
     switch (day) {
-      case 'M':
-        result.push('MON');
+      case "M":
+        result.push("MON");
         break;
-      case 'T':
-        result.push('TUE');
+      case "T":
+        result.push("TUE");
         break;
-      case 'W':
-        result.push('WED');
+      case "W":
+        result.push("WED");
         break;
-      case 'R':
-        result.push('THU');
+      case "R":
+        result.push("THU");
         break;
-      case 'F':
-        result.push('FRI');
+      case "F":
+        result.push("FRI");
         break;
       default:
         break;
@@ -224,21 +226,24 @@ const getCourseDays = days => {
   return result;
 };
 
-const courseTimeParsed = course => {
+const courseTimeParsed = (course) => {
   const result = [];
 
-  for (const meeting of course.meetings) {
-    const courseDays = getCourseDays(meeting.days);
-    for (const day of courseDays) {
-      const slot = [
-        day,
-        parseTime(meeting.start),
-        parseTime(meeting.end) - parseTime(meeting.start),
-        meeting,
-      ];
-      result.push(slot);
+  if (course.meetings) {
+    for (const meeting of course.meetings) {
+      const courseDays = getCourseDays(meeting.days);
+      for (const day of courseDays) {
+        const slot = [
+          day,
+          parseTime(meeting.start),
+          parseTime(meeting.end) - parseTime(meeting.start),
+          meeting,
+        ];
+        result.push(slot);
+      }
     }
   }
+
   return result;
 };
 
@@ -294,7 +299,7 @@ const applyFilters = (state, queried, filters) => {
     // Distribution filtering
     if (hasFilter(distributions)) {
       for (let i = 0; i < distributions.length; i += 1) {
-        if (distributions[i] && course.attributes[distributions[i]])
+        if (distributions[i] && course.courseAttributes[distributions[i]])
           check = true;
       }
       if (!check) continue;
@@ -304,7 +309,7 @@ const applyFilters = (state, queried, filters) => {
     if (hasFilter(divisions)) {
       check = false;
       for (let i = 0; i < divisions.length; i += 1) {
-        if (divisions[i] && course.attributes[divisions[i]]) check = true;
+        if (divisions[i] && course.courseAttributes[divisions[i]]) check = true;
       }
       if (!check) continue;
     }
@@ -312,34 +317,41 @@ const applyFilters = (state, queried, filters) => {
     if (hasFilter(others)) {
       check = false;
       for (let i = 0; i < others.length; i += 1) {
-        if (
-          others[i] &&
-          !(
-            course.grading_basis === others[i] || course.grading_basis === 'OPT'
-          )
-        )
-          check = true;
+        if (others[i] && course.courseAttributes[others[i]]) check = true;
       }
       if (!check) continue;
     }
 
     // Type filtering
-    if (hasFilter(classTypes) && classTypes.indexOf(course.class_type) === -1)
+    if (hasFilter(classTypes) && classTypes.indexOf(course.classType) === -1)
       continue;
 
     // Time filtering
-    if (state.filters.start) {
-      const start = parseTime(state.filters.start);
-      for (const meeting of course.meetings) {
-        if (parseTime(meeting.start) < start) continue;
+    if (course.meetings) {
+      check = false;
+      if (state.filters.start) {
+        const start = state.filters.start;
+        for (const meeting of course.meetings) {
+          if (meeting.start < start) {
+            check = true;
+            break;
+          }
+        }
       }
-    }
+      if (check) continue;
 
-    if (state.filters.end) {
-      const end = parseTime(state.filters.end);
-      for (const meeting of course.meetings) {
-        if (parseTime(meeting.end) > end) continue;
+      check = false;
+      if (state.filters.end) {
+        const end = state.filters.end;
+        for (const meeting of course.meetings) {
+          if (meeting.end > end) {
+            check = true;
+            break;
+          }
+        }
       }
+
+      if (check) continue;
     }
 
     if (conflict[0]) {
@@ -385,21 +397,21 @@ const findCount = (
   });
 };
 
-const updateCounts = state => {
+const updateCounts = (state) => {
   const newCounts = Object.assign({}, state.counts);
 
-  newCounts.semesters = findCount(state, newCounts, 'semesters', SEMESTERS);
+  newCounts.semesters = findCount(state, newCounts, "semesters", SEMESTERS);
   newCounts.distributions = findCount(
     state,
     newCounts,
-    'distributions',
+    "distributions",
     DISTRIBUTIONS
   );
-  newCounts.divisions = findCount(state, newCounts, 'divisions', DIVISIONS);
-  newCounts.others = findCount(state, newCounts, 'others', OTHERS);
-  newCounts.levels = findCount(state, newCounts, 'levels', LEVELS);
-  newCounts.conflict = findCount(state, newCounts, 'conflict', [true]);
-  newCounts.classTypes = findCount(state, newCounts, 'classTypes', CLASS_TYPES);
+  newCounts.divisions = findCount(state, newCounts, "divisions", DIVISIONS);
+  newCounts.others = findCount(state, newCounts, "others", OTHERS);
+  newCounts.levels = findCount(state, newCounts, "levels", LEVELS);
+  newCounts.conflict = findCount(state, newCounts, "conflict", [true]);
+  newCounts.classTypes = findCount(state, newCounts, "classTypes", CLASS_TYPES);
 
   return newCounts;
 };
@@ -421,7 +433,7 @@ const applySearchCourse = (state, param = state.query) => {
   if (param !== state.query) {
     queried = updateScores(state, param);
     queried = queried
-      .filter(course => {
+      .filter((course) => {
         return course.score && course.score > 0;
       })
       .sort(compareRelevance);
@@ -438,7 +450,7 @@ const applySearchCourse = (state, param = state.query) => {
   });
 };
 
-const applyResetLoad = state => {
+const applyResetLoad = (state) => {
   return Object.assign({}, state, {
     loadGroup: 1,
   });
@@ -451,19 +463,13 @@ const applyLoadCourses = (state, action) => {
 };
 
 const applyAddCourse = (state, action) => {
-  const cookie = cookies.get('added', { doNotParse: true });
-  // cookies store the department and peoplesoft number for unique identification of the course
-  // section and department it belongs too.
-  cookies.set(
-    'added',
-    cookie
-      ? `${action.course.department};${action.course.peoplesoft_number},${cookie}`
-      : `${action.course.department};${action.course.peoplesoft_number}`,
-    {
-      path: '/',
-      expires: new Date('December 31, 9999 11:00:00'),
-    }
-  );
+  let addedCourses = localStorage.getItem("added");
+  if (!addedCourses)
+    addedCourses = `${action.course.department};${action.course.peoplesoftNumber}`;
+  else
+    addedCourses += `,${action.course.department};${action.course.peoplesoftNumber}`;
+
+  localStorage.setItem("added", addedCourses);
 
   // Update state
   return Object.assign({}, state, {
@@ -472,21 +478,21 @@ const applyAddCourse = (state, action) => {
 };
 
 const applyRemoveCourse = (state, action) => {
-  // Update cookie
-  const cookie = cookies.get('added', { doNotParse: true });
-  const brownie = cookie.split(',');
+  // Update WebStorage
+  let addedCourses = localStorage.getItem("added");
+  if (!addedCourses) addedCourses = "";
+
+  const brownie = addedCourses.split(",");
   const index = brownie.indexOf(
-    `${action.course.department};${action.course.course_id}`
+    `${action.course.department};${action.course.peoplesoftNumber}`
   );
   if (index !== -1) brownie.splice(index, 1);
-  cookies.set('added', brownie.join(','), {
-    path: '/',
-    expires: new Date('December 31, 9999 11:00:00'),
-  });
+
+  localStorage.setItem("added", brownie.join(","));
 
   // Update State
   return Object.assign({}, state, {
-    added: state.added.filter(course => course !== action.course),
+    added: state.added.filter((course) => course !== action.course),
   });
 };
 
@@ -498,11 +504,11 @@ const applyHideCourse = (state, action) => {
 
 const applyUnhideCourse = (state, action) => {
   return Object.assign({}, state, {
-    hidden: state.hidden.filter(course => course !== action.course),
+    hidden: state.hidden.filter((course) => course !== action.course),
   });
 };
 
-const toggleConf = state => {
+const toggleConf = (state) => {
   return Object.assign({}, state, {
     filters: Object.assign({}, state.filters, {
       conflict: [!state.filters.conflict[0]],
@@ -598,7 +604,7 @@ const updateEnd = (state, action) => {
   });
 };
 
-const resetFilters = state => {
+const resetFilters = (state) => {
   return Object.assign({}, state, {
     filters: INITIAL_FILTER_STATE,
   });
@@ -608,17 +614,14 @@ const resetFilters = state => {
 const removeSemesterCourses = (state, action) => {
   // Get all added semesters, remove all belonging to current semester, and update cookies
   const filteredAdded = state.added.filter(
-    course => course.semester !== action.semester
+    (course) => course.semester !== action.semester
   );
-  cookies.set(
-    'added',
+
+  localStorage.setItem(
+    "added",
     filteredAdded
-      .map(course => `${course.department};${course.peoplesoft_number}`)
-      .join(','),
-    {
-      path: '/',
-      expires: new Date('December 31, 9999 11:00:00'),
-    }
+      .map((course) => `${course.department};${course.peoplesoftNumber}`)
+      .join(",")
   );
 
   return Object.assign({}, state, {

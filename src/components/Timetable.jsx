@@ -1,33 +1,33 @@
 // React imports
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 // External imports
-import html2canvas from 'html2canvas';
+import html2canvas from "html2canvas";
 
 // Component imports
-import Schedule from './Schedule';
-import Course from './Course';
-import './stylesheets/Timetable.css';
+import Schedule from "./Schedule";
+import Course from "./Course";
+import "./stylesheets/Timetable.css";
 
 // Redux (Selector, Reducer, Actions) imports
-import { getAddedCourses, getHiddenCourses } from '../selectors/course';
+import { getAddedCourses, getHiddenCourses } from "../selectors/course";
 import {
   getGAPI,
   getSemester,
   getTimeFormat,
   getOrientation,
-} from '../selectors/utils';
-import { doRemoveSemesterCourses } from '../actions/course';
+} from "../selectors/utils";
+import { doRemoveSemesterCourses } from "../actions/course";
 import {
   addNotif,
   changeSem,
   changeTimeFormat,
   toggleOrientation,
-} from '../actions/utils';
-import { SUCCESS } from '../constants/actionTypes';
-import { DATES, SEMESTERS } from '../constants/constants.json';
+} from "../actions/utils";
+import { SUCCESS } from "../constants/actionTypes";
+import { DATES, SEMESTERS } from "../constants/constants.json";
 
 const Timetable = ({
   added,
@@ -43,113 +43,114 @@ const Timetable = ({
   hidden,
 }) => {
   const semAdded = added.filter(
-    course => course.semester === SEMESTERS[currSem]
+    (course) => course.semester === SEMESTERS[currSem]
   );
+
   // Only export the courses that are visible and of the current semester. Gives more convenince since
   // the user does not need to remove extra courses before exporting.
   const semAddedVisible = semAdded.filter(
-    course => hidden.indexOf(course) === -1
+    (course) => hidden.indexOf(course) === -1
   );
 
-  const courseString = course => {
-    return `${course.department} ${course.number} ${course.title_long}`;
+  const courseString = (course) => {
+    return `${course.department} ${course.number} ${course.titleLong}`;
   };
 
   const exportImage = () => {
     // Select the correct component based on the current mode.
     const schedule = horizontal
-      ? document.querySelector('.schedule-horizontal')
-      : document.querySelector('.schedule-vertical');
+      ? document.querySelector(".schedule-horizontal")
+      : document.querySelector(".schedule-vertical");
 
     // Good to get the correct width because the library defaults can be wonky
     const scheduleWidth = horizontal
-      ? document.querySelector('.day-horizontal').offsetWidth
-      : document.querySelector('.schedule-vertical').offsetWidth;
+      ? document.querySelector(".day-horizontal").offsetWidth
+      : document.querySelector(".schedule-vertical").offsetWidth;
 
     const leftOffset = horizontal
-      ? document.querySelector('.day-horizontal').offsetLeft
-      : document.querySelector('.schedule-vertical').offsetLeft;
+      ? document.querySelector(".day-horizontal").offsetLeft
+      : document.querySelector(".schedule-vertical").offsetLeft;
 
     // Set overflows to visible because html2canvas does not render components hidden from screen.
-    schedule.style.overflowX = 'visible';
-    schedule.style.overflowY = 'visible';
+    schedule.style.overflowX = "visible";
+    schedule.style.overflowY = "visible";
 
     html2canvas(schedule, {
       width: scheduleWidth,
       x: leftOffset,
       y: schedule.offsetTop,
-    }).then(canvas => {
+    }).then((canvas) => {
       // Export the canvas to its data URI representation
       window
         .open()
-        .document.write(`<img src="${canvas.toDataURL('image/png')}" />`);
+        .document.write(`<img src="${canvas.toDataURL("image/png")}" />`);
     });
-    schedule.style.overflowX = horizontal ? 'auto' : 'hidden';
-    schedule.style.overflowY = 'hidden';
+    schedule.style.overflowX = horizontal ? "auto" : "hidden";
+    schedule.style.overflowY = "hidden";
   };
 
-  const dayConversionGCal = days => {
-    if (days === 'M-F') return 'MO,TU,WE,TH,FR';
+  const dayConversionGCal = (days) => {
+    if (days === "M-F") return "MO,TU,WE,TH,FR";
 
     const result = [];
 
-    days.split('').forEach(day => {
+    days.split("").forEach((day) => {
       switch (day) {
-        case 'M':
-          result.push('MO');
+        case "M":
+          result.push("MO");
           break;
-        case 'T':
-          result.push('TU');
+        case "T":
+          result.push("TU");
           break;
-        case 'W':
-          result.push('WE');
+        case "W":
+          result.push("WE");
           break;
-        case 'R':
-          result.push('TH');
+        case "R":
+          result.push("TH");
           break;
-        case 'F':
-          result.push('FR');
+        case "F":
+          result.push("FR");
           break;
         default:
           break;
       }
     });
 
-    return result.join(',');
+    return result.join(",");
   };
 
   const exportICS = () => {
     let calendar =
-      'BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\n';
-    const timeZone = 'TZID=America/New_York:';
+      "BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\n";
+    const timeZone = "TZID=America/New_York:";
 
     for (const course of semAddedVisible) {
       for (const meeting of course.meetings) {
-        let result = 'BEGIN:VEVENT\n';
+        let result = "BEGIN:VEVENT\n";
         result += `SUMMARY:${courseString(course)}\n`;
         result += `RRULE:FREQ=WEEKLY;UNTIL=${
           DATES[course.semester].END
         }T000000Z;BYDAY=${dayConversionGCal(meeting.days)}`;
         result += `DTSTART;${timeZone}${
           DATES[course.semester].START
-        }T${meeting.start.replace(':', '')}00\n`;
+        }T${meeting.start.replace(":", "")}00\n`;
         result += `DTEND;${timeZone}${
           DATES[course.semester].START
-        }T${meeting.end.replace(':', '')}00\n`;
+        }T${meeting.end.replace(":", "")}00\n`;
         result += `LOCATION:${meeting.facil}\n`;
-        result += `DESCRIPTION:${course.description_search}\n`;
-        result += 'END:VEVENT\n';
+        result += `DESCRIPTION:${course.descriptionSearch}\n`;
+        result += "END:VEVENT\n";
         calendar += result;
       }
     }
-    calendar += 'END:VCALENDAR';
+    calendar += "END:VCALENDAR";
 
     const uriContent = `data:text/calendar;charset=utf-8,${encodeURIComponent(
       calendar
     )}`;
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = uriContent;
-    link.download = 'WSO_export.ics';
+    link.download = "WSO_export.ics";
 
     document.body.appendChild(link);
     link.click();
@@ -160,14 +161,14 @@ const Timetable = ({
     const event = {
       summary: courseString(course),
       location: meeting.facil,
-      description: course.description_search,
+      description: course.descriptionSearch,
       start: {
         dateTime: `${DATES[course.semester].START_GCAL}${meeting.start}:00`,
-        timeZone: 'America/New_York',
+        timeZone: "America/New_York",
       },
       end: {
         dateTime: `${DATES[course.semester].START_GCAL}${meeting.end}:00`,
-        timeZone: 'America/New_York',
+        timeZone: "America/New_York",
       },
       recurrence: [
         `RRULE:FREQ=WEEKLY;UNTIL=${
@@ -177,13 +178,13 @@ const Timetable = ({
     };
     gapi.client.calendar.events
       .insert({
-        calendarId: 'primary',
+        calendarId: "primary",
         resource: event,
       })
       .execute(
         notifAdd({
           notifType: SUCCESS,
-          title: 'Success!',
+          title: "Success!",
           body: `Sucessfully exported ${courseString(
             course
           )} to Google Calendar!`,
@@ -217,10 +218,10 @@ const Timetable = ({
             if (titleA > titleB) return 1;
             return 0;
           })
-          .map(course => (
+          .map((course) => (
             <Course
               course={course}
-              key={course.department + course.course_id}
+              key={course.department + course.courseID}
               location="timetable"
             />
           ))}
@@ -237,8 +238,8 @@ const Timetable = ({
       const components = course.components.slice();
 
       for (const otherCourse of semAdded) {
-        if (otherCourse.course_id === course.course_id) {
-          const componentIndex = components.indexOf(otherCourse.class_type);
+        if (otherCourse.courseID === course.courseID) {
+          const componentIndex = components.indexOf(otherCourse.classType);
 
           if (componentIndex !== -1) components.splice(componentIndex, 1);
         }
@@ -261,7 +262,7 @@ const Timetable = ({
         <div className="course-warnings-header">JUST A NOTE!</div>
         Remember to include the following:
         <ol>
-          {errorCourses.map(error => (
+          {errorCourses.map((error) => (
             <li key={error}>{error}</li>
           ))}
         </ol>
@@ -282,9 +283,9 @@ const Timetable = ({
   };
 
   const semester = () => {
-    const semesterStudy = ['Fall Semester', 'Winter Study', 'Spring Semester'];
+    const semesterStudy = ["Fall Semester", "Winter Study", "Spring Semester"];
     if (currSem < 3 && currSem >= 0) return semesterStudy[currSem];
-    return 'Unknown';
+    return "Unknown";
   };
 
   return (
@@ -295,6 +296,7 @@ const Timetable = ({
             <button
               onClick={() => semChange(currSem - 1)}
               disabled={currSem <= 0}
+              className="change-semester-button"
               type="button"
             >
               <i className="material-icons">keyboard_arrow_left</i>
@@ -303,6 +305,7 @@ const Timetable = ({
             <button
               onClick={() => semChange(currSem + 1)}
               disabled={currSem >= 2}
+              className="change-semester-button"
               type="button"
             >
               <i className="material-icons">keyboard_arrow_right</i>
@@ -317,7 +320,7 @@ const Timetable = ({
           <span>Export to .png</span>
         </button>
         <button
-          className={gapi ? '' : 'unselectable'}
+          className={gapi ? "" : "unselectable"}
           onClick={exportCalendar}
           disabled={!gapi}
           type="button"
@@ -331,13 +334,13 @@ const Timetable = ({
         </button>
         <button onClick={() => timeFormatChange(!twelveHour)} type="button">
           <i className="material-icons">access_time</i>
-          <span>{twelveHour ? '12-Hour Time' : '24-Hour Time'}</span>
+          <span>{twelveHour ? "12-Hour Time" : "24-Hour Time"}</span>
         </button>
         <button onClick={() => orientationToggle()} type="button">
           <i className="material-icons">
-            {horizontal ? 'crop_landscape' : 'crop_portrait'}
+            {horizontal ? "crop_landscape" : "crop_portrait"}
           </i>
-          <span>{horizontal ? 'Horizontal' : 'Vertical'}</span>
+          <span>{horizontal ? "Horizontal" : "Vertical"}</span>
         </button>
         <button
           onClick={() => removeSemesterCourses(SEMESTERS[currSem])}
@@ -374,7 +377,7 @@ Timetable.defaultProps = {
   hidden: [],
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   added: getAddedCourses(state),
   gapi: getGAPI(state),
   currSem: getSemester(state),
@@ -383,12 +386,12 @@ const mapStateToProps = state => ({
   hidden: getHiddenCourses(state),
 });
 
-const mapDispatchToProps = dispatch => ({
-  notifAdd: notification => dispatch(addNotif(notification)),
-  semChange: newSem => dispatch(changeSem(newSem)),
-  timeFormatChange: twelveHour => dispatch(changeTimeFormat(twelveHour)),
+const mapDispatchToProps = (dispatch) => ({
+  notifAdd: (notification) => dispatch(addNotif(notification)),
+  semChange: (newSem) => dispatch(changeSem(newSem)),
+  timeFormatChange: (twelveHour) => dispatch(changeTimeFormat(twelveHour)),
   orientationToggle: () => dispatch(toggleOrientation()),
-  removeSemesterCourses: semester =>
+  removeSemesterCourses: (semester) =>
     dispatch(doRemoveSemesterCourses(semester)),
 });
 
