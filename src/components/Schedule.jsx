@@ -15,6 +15,11 @@ import {
   SEMESTERS,
 } from "../constants/constants.json";
 
+// External imports
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
+
 const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
   const days = ["MON", "TUE", "WED", "THU", "FRI"];
   const filtered = unhidden.filter(
@@ -61,7 +66,10 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
 
   const stringTime = (meeting) => {
     if (twelveHour) {
-      return `${meeting.start12}\n-\n${meeting.end12}`;
+      return `${dayjs(meeting.start, "HH:mm").format("h:mmA")}\n-\n${dayjs(
+        meeting.end,
+        "HH:mm"
+      ).format("h:mmA")}`;
     }
     return `${meeting.start}-${meeting.end}`;
   };
@@ -119,7 +127,7 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
         >
           <div className="course-slot-title">{`${course.department} ${course.number}`}</div>
           <div>{course.classType}</div>
-          <div>{`${stringTime(meeting)} ${meeting.facility || ""}`}</div>
+          <div>{`${stringTime(meeting)} ${meeting.facility}`}</div>
         </div>
       );
     }

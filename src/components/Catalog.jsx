@@ -38,12 +38,11 @@ class Catalog extends React.Component {
   }
 
   render() {
-    console.log(this.props.loaded);
     return (
       <div className="catalog">
         {(this.props.loaded || []).map((course) => (
           <Course
-            key={`${course.department}${course.peoplesoft_number}`}
+            key={`${course.department}${course.peoplesoftNumber}`}
             course={course}
           />
         ))}

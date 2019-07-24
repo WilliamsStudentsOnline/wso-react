@@ -40,16 +40,11 @@ const parseAddedCourses = () => {
   const cookie = cookies.get("added", { doNotParse: true });
   if (cookie) {
     const brownies = cookie.split(",");
-    console.log(brownies);
-    console.log(INITIAL_CATALOG);
     // To refactor and take away parseInt
     return INITIAL_CATALOG.filter((course) => {
       let check = false;
       brownies.forEach((brownie) => {
         const bites = brownie.split(";");
-        console.log(bites[0] === course.department);
-        console.log(bites[1] === course.peoplesoftNumber);
-        console.log(parseInt(bites[1]) === course.peoplesoftNumber);
         if (
           bites[0] === course.department &&
           parseInt(bites[1]) === course.peoplesoftNumber
@@ -325,7 +320,7 @@ const applyFilters = (state, queried, filters) => {
       for (let i = 0; i < others.length; i += 1) {
         if (
           others[i] &&
-          !(course.gradingBasis === others[i] || course.gradingBasis === "OPT")
+          (course.gradingBasis === others[i] || course.gradingBasis === "OPT")
         )
           check = true;
       }
@@ -337,18 +332,31 @@ const applyFilters = (state, queried, filters) => {
       continue;
 
     // Time filtering
-    if (state.filters.start) {
-      const start = parseTime(state.filters.start);
-      for (const meeting of course.meetings) {
-        if (parseTime(meeting.start) < start) continue;
+    if (course.meetings) {
+      check = false;
+      if (state.filters.start) {
+        const start = state.filters.start;
+        for (const meeting of course.meetings) {
+          if (meeting.start < start) {
+            check = true;
+            break;
+          }
+        }
       }
-    }
+      if (check) continue;
 
-    if (state.filters.end) {
-      const end = parseTime(state.filters.end);
-      for (const meeting of course.meetings) {
-        if (parseTime(meeting.end) > end) continue;
+      check = false;
+      if (state.filters.end) {
+        const end = state.filters.end;
+        for (const meeting of course.meetings) {
+          if (meeting.end > end) {
+            check = true;
+            break;
+          }
+        }
       }
+
+      if (check) continue;
     }
 
     if (conflict[0]) {

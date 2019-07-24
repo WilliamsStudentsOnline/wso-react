@@ -17,6 +17,11 @@ import { getAddedCourses, getHiddenCourses } from "../selectors/course";
 import { getTimeFormat } from "../selectors/utils";
 import { BORDER_PALETTE } from "../constants/constants.json";
 
+// External imports
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
+
 const Course = ({
   added,
   hidden,
@@ -38,15 +43,17 @@ const Course = ({
   const instructors = () => {
     return (
       <span>
-        {course.instructors.map((instructor, index) => (
-          <a
-            key={instructor.name}
-            href={instructor.url ? instructor.url : undefined}
-            className={instructor.url ? undefined : "no-url"}
-          >
-            {index === 0 ? instructor.name : `, ${instructor.name}`}
-          </a>
-        ))}
+        {course.instructors
+          ? course.instructors.map((instructor, index) => (
+              <a
+                key={instructor.name}
+                href={instructor.url ? instructor.url : undefined}
+                className={instructor.url ? undefined : "no-url"}
+              >
+                {index === 0 ? instructor.name : `, ${instructor.name}`}
+              </a>
+            ))
+          : null}
       </span>
     );
   };
@@ -58,10 +65,14 @@ const Course = ({
 
     course.meetings.forEach((meeting) => {
       result += `${meeting.days}`;
-      result += `${twelveHour ? meeting.start12 : meeting.start} - ${
-        twelveHour ? meeting.end12 : meeting.end
+      result += `${
+        twelveHour
+          ? dayjs(meeting.start, "HH:mm").format("h:mmA")
+          : meeting.start
+      } - ${
+        twelveHour ? dayjs(meeting.end, "HH:mm").format("h:mmA") : meeting.end
       } `;
-      result += `${meeting.facil}`;
+      result += `${meeting.facility}`;
     });
 
     return result;
@@ -162,8 +173,12 @@ const Course = ({
             Q
           </i>
         );
+      case "fifthCourse":
+        return null;
+      case "passFail":
+        return null;
       default:
-        return <i />;
+        return <i key="nodist" />;
     }
   };
 
