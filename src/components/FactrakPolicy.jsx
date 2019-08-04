@@ -1,14 +1,23 @@
 // React imports
 import React from "react";
 
-const FactrakPolicy = () => {
+// Redux imports
+import { connect } from "react-redux";
+import { getScopes } from "../selectors/auth";
+
+const FactrakPolicy = ({ scopes }) => {
+  let factrakAccepted = false;
+  // @TODO: find a better way
+  if (scopes && scopes.indexOf("service:factrak:admin") !== -1) {
+    factrakAccepted = true;
+  }
+
   return (
     <div className="article">
       <section>
         <article>
           <h3>Policy</h3>
           <br />
-
           <h4>IMPORTANT &mdash; new in 2016:</h4>
           <p>
             <strong>
@@ -35,10 +44,8 @@ const FactrakPolicy = () => {
             the traditional text comment. The statistics gathered will not be
             visible until enough data is collected.
           </p>
-
           <br />
           <br />
-
           <p>
             To create a forum where students can openly and honestly share their
             opinions of their professors in a manner that is anonymous and only
@@ -46,7 +53,6 @@ const FactrakPolicy = () => {
             help other students find courses and professors which are the best
             matches for them.
           </p>
-
           <p>
             While Factrak is designed to be as open as possible, inappropriate
             comments will not be tolerated, and comments can be removed or
@@ -58,7 +64,6 @@ const FactrakPolicy = () => {
             comment. Use this if you feel the comment has violated the
             acceptable use policy.
           </p>
-
           <p>
             By using Factrak users agree to abide by this policy. The use of
             Factrak is also governed by the
@@ -71,21 +76,10 @@ const FactrakPolicy = () => {
             </a>
             .
           </p>
-
-          {/* {currentUser.factrak_policy ? (
+          {factrakAccepted ? (
             <p>You have already accepted the Factrak policy.</p>
           ) : (
-            <form
-              action="/factrak/accept_policy"
-              acceptCharset="UTF-8"
-              method="post"
-            >
-              <input name="utf8" type="hidden" value="✓" />
-              <input
-                type="hidden"
-                name="authenticity_token"
-                value={authToken}
-              />
+            <form acceptCharset="UTF-8" method="post">
               <p>
                 <input type="checkbox" name="accept" id="accept" value="1" />I
                 agree to the Factrak policy.
@@ -97,7 +91,7 @@ const FactrakPolicy = () => {
                 data-disable-with="continue"
               />
             </form>
-          )} */}
+          )}
           <br />
           <br />
         </article>
@@ -106,4 +100,8 @@ const FactrakPolicy = () => {
   );
 };
 
-export default FactrakPolicy;
+const mapStateToProps = (state) => ({
+  scopes: getScopes(state),
+});
+
+export default connect(mapStateToProps)(FactrakPolicy);

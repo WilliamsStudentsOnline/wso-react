@@ -11,6 +11,7 @@ export default [
     children: [
       { name: "policy", path: "/policy" },
       { name: "surveys", path: "/surveys" },
+      { name: "moderate", path: "/moderate" },
     ],
   },
   { name: "dormtrak", path: "/dormtrak" },

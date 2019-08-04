@@ -2,11 +2,15 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
+// Redux imports
+import { connect } from "react-redux";
+import { getCurrUser } from "../selectors/auth";
+
 // External imports
 import axios from "axios";
 import { Link } from "react-router5";
 
-const FactrakLayout = ({ children }) => {
+const FactrakLayout = ({ children, currUser }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
@@ -53,62 +57,68 @@ const FactrakLayout = ({ children }) => {
     );
   };
 
-  //if (currentUser.factrak_policy)
-  return (
-    <>
-      <header>
-        <div className="page-head">
-          <h1>
-            <Link routeName="factrak">Factrak</Link>
-          </h1>
+  if (currUser.hasAcceptedFactrakPolicy) {
+    return (
+      <>
+        <header>
+          <div className="page-head">
+            <h1>
+              <Link routeName="factrak">Factrak</Link>
+            </h1>
 
-          <ul>
-            <li>
-              <Link routeName="factrak">Home</Link>
-            </li>
-            <li>
-              <Link routeName="factrak.policy">Policy</Link>
-            </li>
-            <li>
-              <Link routeName="factrak.surveys">Your Reviews</Link>
-            </li>
-            {/*currentUser.factrak_admin ? (
+            <ul>
               <li>
-                <a href="/factrak/moderate">Moderate</a>
+                <Link routeName="factrak">Home</Link>
               </li>
-            ) : null*/}
-          </ul>
-        </div>
-        <form acceptCharset="UTF-8" method="post">
-          <input
-            type="search"
-            name="search"
-            id="search"
-            placeholder="Search for a professor or course"
-            onChange={factrakAutocomplete}
-            style={{ marginBottom: "0px" }}
-            autoComplete="off"
-            value={query}
-          />
-          <input
-            type="submit"
-            name="commit"
-            value="Search"
-            className="submit"
-            data-disable-with="Search"
-          />
-          {factrakSuggestions()}
-        </form>
-      </header>
+              <li>
+                <Link routeName="factrak.policy">Policy</Link>
+              </li>
+              <li>
+                <Link routeName="factrak.surveys">Your Reviews</Link>
+              </li>
+              {currUser.factrakAdmin ? (
+                <li>
+                  <Link routeName="factrak.moderate">Moderate</Link>
+                </li>
+              ) : null}
+            </ul>
+          </div>
+          <form acceptCharset="UTF-8" method="post">
+            <input
+              type="search"
+              name="search"
+              id="search"
+              placeholder="Search for a professor or course"
+              onChange={factrakAutocomplete}
+              style={{ marginBottom: "0px" }}
+              autoComplete="off"
+              value={query}
+            />
+            <input
+              type="submit"
+              name="commit"
+              value="Search"
+              className="submit"
+              data-disable-with="Search"
+            />
+            {factrakSuggestions()}
+          </form>
+        </header>
 
-      {children}
-    </>
-  );
-  //return null;
+        {children}
+      </>
+    );
+  }
+
+  return null;
 };
 
 FactrakLayout.propTypes = {
   children: PropTypes.object.isRequired,
 };
 
-export default FactrakLayout;
+const mapStateToProps = (state) => ({
+  currUser: getCurrUser(state),
+});
+
+export default connect(mapStateToProps)(FactrakLayout);
