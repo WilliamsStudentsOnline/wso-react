@@ -19,8 +19,12 @@ import Help from "./Help";
 import AdditionalOptions from "./AdditionalOptions";
 
 // Redux (Selector, Reducer, Actions) imports
-import { getCurrSubMenu, getGAPI, getSignInStatus } from "../selectors/utils";
-import { updateGAPI, updateSignIn, addNotif } from "../actions/utils";
+import {
+  getCurrSubMenu,
+  getGAPI,
+  getSignInStatus,
+} from "../selectors/schedulerUtils";
+import { updateGAPI, updateSignIn, addNotif } from "../actions/schedulerUtils";
 import { FAILURE } from "../constants/actionTypes";
 import { doLoadCatalog } from "../actions/course";
 

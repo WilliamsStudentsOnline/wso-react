@@ -1,19 +1,19 @@
 // React imports
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 // Component imports
-import Notification from './Notification';
-import './stylesheets/NotificationList.css';
+import Notification from "./Notification";
+import "./stylesheets/NotificationList.css";
 
 // Redux (Selector, Reducer, Actions) imports
-import { getNotifications } from '../selectors/utils';
+import { getNotifications } from "../selectors/schedulerUtils";
 
 const NotificationList = ({ notifications }) => {
   return (
     <div className="notification-list">
-      {(notifications || []).map(notification => (
+      {(notifications || []).map((notification) => (
         <Notification {...notification} key={notification.body} />
       ))}
     </div>
@@ -30,7 +30,7 @@ NotificationList.propTypes = {
   ).isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   notifications: getNotifications(state),
 });
 

@@ -7,10 +7,10 @@ import {
   CHANGE_SEMESTER,
   CHANGE_TIME_FORMAT,
   TOGGLE_ORIENTATION,
-} from '../constants/actionTypes';
+} from "../constants/actionTypes";
 
 const INITIAL_STATE = {
-  active: 'Timetable',
+  active: "Timetable",
   gapi: null,
   signedIn: false,
   notifications: [],
@@ -45,7 +45,7 @@ const addNotification = (state, action) => {
 
 const removeNotification = (state, action) => {
   return Object.assign({}, state, {
-    notifications: state.notifications.filter(notification => {
+    notifications: state.notifications.filter((notification) => {
       return (
         notification.title !== action.notification.title &&
         notification.body !== action.notification.body
@@ -66,7 +66,7 @@ const changeTimeFormat = (state, action) => {
   });
 };
 
-const toggleOrientation = state => {
+const toggleOrientation = (state) => {
   return Object.assign({}, state, {
     horizontal: !state.horizontal,
   });

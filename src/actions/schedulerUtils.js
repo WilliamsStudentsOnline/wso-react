@@ -6,46 +6,46 @@ import {
   REMOVE_NOTIF,
   CHANGE_SEMESTER,
   CHANGE_TIME_FORMAT,
-  TOGGLE_ORIENTATION
-} from '../constants/actionTypes';
+  TOGGLE_ORIENTATION,
+} from "../constants/actionTypes";
 
 const doSubmenuChange = (newState) => ({
   type: SUBMENU_CHANGE,
-  newState
+  newState,
 });
 
 const updateGAPI = (gapi) => ({
   type: UPDATE_GAPI,
-  gapi
+  gapi,
 });
 
 const updateSignIn = (signedIn) => ({
   type: UPDATE_SIGNIN,
-  signedIn
+  signedIn,
 });
 
 const addNotif = (notification) => ({
   type: ADD_NOTIF,
-  notification
+  notification,
 });
 
 const removeNotif = (notification) => ({
   type: REMOVE_NOTIF,
-  notification
+  notification,
 });
 
 const changeSem = (semester) => ({
   type: CHANGE_SEMESTER,
-  semester
+  semester,
 });
 
 const changeTimeFormat = (twelveHour) => ({
   type: CHANGE_TIME_FORMAT,
-  twelveHour
+  twelveHour,
 });
 
 const toggleOrientation = () => ({
-  type: TOGGLE_ORIENTATION
+  type: TOGGLE_ORIENTATION,
 });
 
 export {
@@ -56,5 +56,5 @@ export {
   removeNotif,
   changeSem,
   changeTimeFormat,
-  toggleOrientation
+  toggleOrientation,
 };

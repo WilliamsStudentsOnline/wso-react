@@ -18,14 +18,14 @@ import {
   getSemester,
   getTimeFormat,
   getOrientation,
-} from "../selectors/utils";
+} from "../selectors/schedulerUtils";
 import { doRemoveSemesterCourses } from "../actions/course";
 import {
   addNotif,
   changeSem,
   changeTimeFormat,
   toggleOrientation,
-} from "../actions/utils";
+} from "../actions/schedulerUtils";
 import { SUCCESS } from "../constants/actionTypes";
 import { DATES, SEMESTERS } from "../constants/constants.json";
 

@@ -8,7 +8,11 @@ import "./stylesheets/Schedule.css";
 
 // Redux (Selector, Reducer, Actions) imports
 import { getUnhiddenCourses, getAddedCourses } from "../selectors/course";
-import { getSemester, getTimeFormat, getOrientation } from "../selectors/utils";
+import {
+  getSemester,
+  getTimeFormat,
+  getOrientation,
+} from "../selectors/schedulerUtils";
 import {
   PALETTE,
   BORDER_PALETTE,

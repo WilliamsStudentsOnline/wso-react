@@ -14,7 +14,7 @@ import {
   doUnhideCourse,
 } from "../actions/course";
 import { getAddedCourses, getHiddenCourses } from "../selectors/course";
-import { getTimeFormat } from "../selectors/utils";
+import { getTimeFormat } from "../selectors/schedulerUtils";
 import { BORDER_PALETTE } from "../constants/constants.json";
 
 // External imports

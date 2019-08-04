@@ -1,18 +1,18 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 // Component imports
-import './stylesheets/SubMenu.css';
+import "./stylesheets/SubMenu.css";
 
 // Redux (Selector, Reducer, Actions) imports
-import { doSubmenuChange } from '../actions/utils';
-import { getCurrSubMenu } from '../selectors/utils';
+import { doSubmenuChange } from "../actions/schedulerUtils";
+import { getCurrSubMenu } from "../selectors/schedulerUtils";
 
 const SubMenu = ({ handler, active }) => {
-  const checkSelected = string => {
-    return active === string ? '' : 'unselected';
+  const checkSelected = (string) => {
+    return active === string ? "" : "unselected";
   };
 
   const ListItem = ({ image, text, className }) => {
@@ -40,12 +40,12 @@ const SubMenu = ({ handler, active }) => {
           <ListItem
             image="calendar_today"
             text="Timetable"
-            className={checkSelected('Timetable')}
+            className={checkSelected("Timetable")}
           />
           <ListItem
             image="filter_none"
             text="Catalog"
-            className={checkSelected('Catalog')}
+            className={checkSelected("Catalog")}
           />
           {/* <ListItem image="help_outline" text="Help" className={checkSelected('Help')} /> */}
         </ul>
@@ -59,12 +59,12 @@ SubMenu.propTypes = {
   active: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   active: getCurrSubMenu(state),
 });
 
-const mapDispatchToProps = dispatch => ({
-  handler: newState => dispatch(doSubmenuChange(newState)),
+const mapDispatchToProps = (dispatch) => ({
+  handler: (newState) => dispatch(doSubmenuChange(newState)),
 });
 
 export default connect(

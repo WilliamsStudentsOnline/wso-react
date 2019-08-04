@@ -1,13 +1,13 @@
 // React imports
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 // Component imports
-import './stylesheets/AdditionalOptions.css';
-import Checkbox from './Checkbox';
-import Select from './Select';
-import Accordion from './Accordion';
+import "./stylesheets/AdditionalOptions.css";
+import Checkbox from "./Checkbox";
+import Select from "./Select";
+import Accordion from "./Accordion";
 
 // Redux (Selector, Reducer, Actions) imports
 import {
@@ -16,8 +16,8 @@ import {
   getStartTimes,
   getEndTimes,
   getCounts,
-} from '../selectors/course';
-import { getTimeFormat } from '../selectors/utils';
+} from "../selectors/course";
+import { getTimeFormat } from "../selectors/schedulerUtils";
 import {
   UPDATE_DATE,
   START_TIMES,
@@ -25,7 +25,7 @@ import {
   END_TIMES,
   END_TIMES12,
   CLASS_TYPES,
-} from '../constants/constants.json';
+} from "../constants/constants.json";
 import {
   doToggleConflict,
   doToggleOthers,
@@ -38,7 +38,7 @@ import {
   doUpdateEnd,
   doSearchCourse,
   doResetFilters,
-} from '../actions/course';
+} from "../actions/course";
 
 const AdditionalOptions = ({
   catalog,
@@ -57,7 +57,7 @@ const AdditionalOptions = ({
   twelveHour,
   counts,
 }) => {
-  const numFound = length => {
+  const numFound = (length) => {
     if (length === 1) return <span className="num-found">1 course found</span>;
     return <span className="num-found">{`${length} courses found`}</span>;
   };
@@ -290,7 +290,7 @@ const AdditionalOptions = ({
                   {/* We pass in the 24 hour values for comparison so we don't have to write
                     methods to parse them in the reducer. */}
                   <Select
-                    onChange={event => clickLoader(startChange, event)}
+                    onChange={(event) => clickLoader(startChange, event)}
                     options={startTimes.filter((time, index) => {
                       if (filters.end) return START_TIMES[index] < filters.end;
                       return true;
@@ -304,7 +304,7 @@ const AdditionalOptions = ({
                 </div>
                 <div className="column">
                   <Select
-                    onChange={event => clickLoader(endChange, event)}
+                    onChange={(event) => clickLoader(endChange, event)}
                     options={endTimes.filter((time, index) => {
                       if (filters.start)
                         return END_TIMES[index] > filters.start;
@@ -354,7 +354,7 @@ AdditionalOptions.propTypes = {
   counts: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   catalog: getSearchedCourses(state),
   filters: getFilters(state),
   startTimes: getStartTimes(state),
@@ -363,19 +363,19 @@ const mapStateToProps = state => ({
   counts: getCounts(state),
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   onSearch: (query = undefined, filters) =>
     dispatch(doSearchCourse(query, filters)),
   conflictClick: () => dispatch(doToggleConflict()),
-  othersClick: index => dispatch(doToggleOthers(index)),
-  divClick: index => dispatch(doToggleDiv(index)),
-  distClick: index => dispatch(doToggleDist(index)),
-  levelClick: index => dispatch(doToggleLevel(index)),
-  semClick: index => dispatch(doToggleSem(index)),
-  startChange: time => dispatch(doUpdateStart(time)),
-  endChange: time => dispatch(doUpdateEnd(time)),
+  othersClick: (index) => dispatch(doToggleOthers(index)),
+  divClick: (index) => dispatch(doToggleDiv(index)),
+  distClick: (index) => dispatch(doToggleDist(index)),
+  levelClick: (index) => dispatch(doToggleLevel(index)),
+  semClick: (index) => dispatch(doToggleSem(index)),
+  startChange: (time) => dispatch(doUpdateStart(time)),
+  endChange: (time) => dispatch(doUpdateEnd(time)),
   resetFilters: () => dispatch(doResetFilters()),
-  typeClick: index => dispatch(doToggleType(index)),
+  typeClick: (index) => dispatch(doToggleType(index)),
 });
 
 export default connect(
