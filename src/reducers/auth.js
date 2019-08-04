@@ -1,4 +1,8 @@
-import { UPDATE_TOKEN, UPDATE_USER } from "../constants/actionTypes";
+import {
+  UPDATE_TOKEN,
+  UPDATE_USER,
+  REMOVE_CREDS,
+} from "../constants/actionTypes";
 
 import jwtDecode from "jwt-decode";
 
@@ -21,9 +25,7 @@ const parseToken = (token) => {
 // @TODO test this method with more sample responses
 const updateToken = (state, action) => {
   const response = action.response;
-  console.log(response);
   const decoded = parseToken(response.data.data.token);
-  console.log(decoded);
 
   return Object.assign({}, state, {
     scope: decoded.scope,
@@ -39,12 +41,19 @@ const updateUser = (state, action) => {
   });
 };
 
+// Remove authentication credentials from storage
+const removeCreds = () => {
+  return INITIAL_STATE;
+};
+
 function authReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case UPDATE_TOKEN:
       return updateToken(state, action);
     case UPDATE_USER:
       return updateUser(state, action);
+    case REMOVE_CREDS:
+      return removeCreds();
     default:
       return state;
   }

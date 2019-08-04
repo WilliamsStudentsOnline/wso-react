@@ -1,4 +1,8 @@
-import { UPDATE_TOKEN, UPDATE_USER } from "../constants/actionTypes";
+import {
+  UPDATE_TOKEN,
+  UPDATE_USER,
+  REMOVE_CREDS,
+} from "../constants/actionTypes";
 
 const doUpdateToken = (response) => ({
   type: UPDATE_TOKEN,
@@ -10,4 +14,8 @@ const doUpdateUser = (newUser) => ({
   newUser,
 });
 
-export { doUpdateToken, doUpdateUser };
+const doRemoveCreds = () => ({
+  type: REMOVE_CREDS,
+});
+
+export { doUpdateToken, doUpdateUser, doRemoveCreds };

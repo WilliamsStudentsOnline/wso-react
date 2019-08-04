@@ -33,7 +33,9 @@ export const TOGGLE_TYPE = 'TOGGLE_TYPE';
 // Authentication Reducer
 export const UPDATE_TOKEN = 'UPDATE_TOKEN';
 export const UPDATE_USER = 'UPDATE_USER';
+export const REMOVE_CREDS = 'REMOVE_CREDS';
 
 // Util Reducer
 export const UPDATE_WARNING = 'UPDATE_WARNING';
 export const UPDATE_NOTICE = 'UPDATE_NOTICE';
+

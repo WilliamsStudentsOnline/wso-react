@@ -18,13 +18,14 @@ import Login from "./Login";
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
 import BuildingHours from "./BuildingHours";
-import { getToken } from "../selectors/auth";
+import { getToken, getExpiry } from "../selectors/auth";
+import { doRemoveCreds } from "../actions/auth";
 
 // Additional Imports
 import wordFile from "../constants/words.json";
-import { initializeSession, removeTokens } from "../api/utils";
+import { tokenExpiryHandler } from "../api/utils";
 
-const App = ({ route, navigateTo, token }) => {
+const App = ({ route, navigateTo, token, removeCreds }) => {
   const randomWSO = () => {
     if (wordFile) {
       let w = wordFile.w[Math.floor(Math.random() * wordFile.w.length)];
@@ -58,7 +59,7 @@ const App = ({ route, navigateTo, token }) => {
       case "login":
         return <Login />;
       case "logout":
-        removeTokens();
+        removeCreds();
         navigateTo("home");
         return;
       default:
@@ -70,8 +71,9 @@ const App = ({ route, navigateTo, token }) => {
     }
   };
 
-  const initialize = async () => {
-    const response = await initializeSession();
+  const initialize = async (token, expiry) => {
+    if (!token || !expiry) return;
+    const response = await tokenExpiryHandler(token, expiry);
     console.log(response);
   };
 
@@ -90,12 +92,14 @@ const mapStateToProps = (state) => {
 
   return (state) => ({
     token: getToken(state),
+    expiry: getExpiry(state),
     ...routeNodeSelector(state),
   });
 };
 
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  removeCreds: () => dispatch(doRemoveCreds()),
 });
 
 export default connect(

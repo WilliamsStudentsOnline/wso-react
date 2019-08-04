@@ -11,6 +11,7 @@ import "typeface-source-sans-pro";
 // Redux/store imports
 import configureStore from "./store";
 import { Provider } from "react-redux";
+import { loadState, saveState } from "./loadState";
 
 // Router imports
 import { RouterProvider } from "react-router5";
@@ -19,9 +20,21 @@ import configureRouter from "./create-router";
 // Serviceworker import
 import * as serviceWorker from "./serviceWorker";
 
+// External imports
+import throttle from "lodash/throttle";
+
 const router = configureRouter();
 
-const store = configureStore(router);
+const persistedState = loadState();
+const store = configureStore(router, persistedState);
+
+store.subscribe(
+  throttle(() => {
+    saveState({
+      authState: store.getState().authState,
+    });
+  }, 1000)
+);
 
 const wrappedApp = (
   <Provider store={store}>
