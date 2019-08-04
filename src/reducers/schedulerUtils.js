@@ -72,7 +72,7 @@ const toggleOrientation = (state) => {
   });
 };
 
-function utilReducer(state = INITIAL_STATE, action) {
+function schedulerUtilReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case UPDATE_GAPI:
       return updateGapi(state, action);
@@ -95,4 +95,4 @@ function utilReducer(state = INITIAL_STATE, action) {
   }
 }
 
-export default utilReducer;
+export default schedulerUtilReducer;

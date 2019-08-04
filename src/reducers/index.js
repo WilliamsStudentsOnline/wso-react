@@ -1,14 +1,16 @@
 import { combineReducers } from "redux";
 import courseReducer from "./course";
-import utilReducer from "./schedulerUtils";
+import schedulerUtilReducer from "./schedulerUtils";
 import authReducer from "./auth";
+import utilReducer from "./utils";
 import { router5Reducer } from "redux-router5";
 
 const rootReducer = combineReducers({
   courseState: courseReducer,
-  utilState: utilReducer,
+  schedulerUtilState: schedulerUtilReducer,
   router: router5Reducer,
   authState: authReducer,
+  utilState: utilReducer,
 });
 
 export default rootReducer;
