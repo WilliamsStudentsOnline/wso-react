@@ -5,7 +5,14 @@ export default [
   { name: "hours", path: "/hours" },
   { name: "scheduler", path: "/scheduleCourses" },
   { name: "facebook", path: "/facebook" },
-  { name: "factrak", path: "/factrak" },
+  {
+    name: "factrak",
+    path: "/factrak",
+    children: [
+      { name: "policy", path: "/policy" },
+      { name: "surveys", path: "/surveys" },
+    ],
+  },
   { name: "dormtrak", path: "/dormtrak" },
   { name: "login", path: "/account/login" },
   { name: "logout", path: "/account/logout" },

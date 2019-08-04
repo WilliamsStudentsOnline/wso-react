@@ -11,22 +11,20 @@ import Listserv from "./Listserv";
 import Scheduler from "./Scheduler";
 import Facebook from "./Facebook";
 import DormtrakIndex from "./DormtrakIndex";
-import Factrak from "./Factrak";
+import FactrakMain from "./FactrakMain";
 import Login from "./Login";
 
 // Redux/routing
 import { connect } from "react-redux";
-import { createRouteNodeSelector } from "redux-router5";
+import { createRouteNodeSelector, actions } from "redux-router5";
 import BuildingHours from "./BuildingHours";
 import { getToken } from "../selectors/auth";
 
 // Additional Imports
 import wordFile from "../constants/words.json";
 import { initializeSession, removeTokens } from "../api/utils";
-import { actions } from "redux-router5";
-import { getAreasOfStudy } from "../api/factrak";
 
-const App = ({ notice, warning, route, navigateTo, token }) => {
+const App = ({ route, navigateTo, token }) => {
   const randomWSO = () => {
     if (wordFile) {
       let w = wordFile.w[Math.floor(Math.random() * wordFile.w.length)];
@@ -56,8 +54,7 @@ const App = ({ notice, warning, route, navigateTo, token }) => {
       case "dormtrak":
         return <DormtrakIndex />;
       case "factrak":
-        getAreasOfStudy(token);
-        return <Factrak />;
+        return <FactrakMain />;
       case "login":
         return <Login />;
       case "logout":
@@ -81,26 +78,11 @@ const App = ({ notice, warning, route, navigateTo, token }) => {
   initialize();
   document.title = randomWSO();
 
-  return (
-    <Layout
-      bodyClass="front dormtrak facebook"
-      notice={notice}
-      warning={warning}
-    >
-      {mainBody()}
-    </Layout>
-  );
+  return <Layout bodyClass="front dormtrak facebook">{mainBody()}</Layout>;
 };
 
 App.propTypes = {
-  notice: PropTypes.string,
-  warning: PropTypes.string,
   route: PropTypes.object.isRequired,
-};
-
-App.defaultProps = {
-  notice: "",
-  warning: "",
 };
 
 const mapStateToProps = (state) => {

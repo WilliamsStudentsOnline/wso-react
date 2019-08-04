@@ -25,8 +25,6 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
-    console.log(unixID);
-    console.log(password);
     const response = await getToken(unixID, password);
 
     if (!response) {

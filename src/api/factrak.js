@@ -8,6 +8,7 @@ const getAreasOfStudy = async (token) => {
     },
   }).catch((error) => {
     console.log(error);
+    return null;
   });
 
   console.log(response);
@@ -22,10 +23,29 @@ const getDepartments = async (token) => {
     },
   }).catch((error) => {
     console.log(error);
+    return null;
   });
 
   console.log(response);
   return response;
 };
 
-export { getAreasOfStudy, getDepartments };
+const getSurveys = async (token, max = -1) => {
+  const response = await axios({
+    url: "/api/v1/factrak/surveys",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  }).catch((error) => {
+    console.log(error);
+    return null;
+  });
+
+  if (max === -1 || response.length < max) {
+    return response;
+  } else {
+    return response.slice(0, max);
+  }
+};
+
+export { getAreasOfStudy, getDepartments, getSurveys };

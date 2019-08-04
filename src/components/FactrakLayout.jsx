@@ -1,32 +1,28 @@
 // React imports
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import axios from 'axios';
-import Layout from './Layout';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 
-const FactrakLayout = ({
-  currentUser,
-  authToken,
-  children,
-  notice,
-  warning,
-}) => {
-  const [query, setQuery] = useState('');
+// External imports
+import axios from "axios";
+import { Link } from "react-router5";
+
+const FactrakLayout = ({ children }) => {
+  const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   /**
    * Initiates new autocomplete
    */
-  const factrakAutocomplete = event => {
+  const factrakAutocomplete = (event) => {
     // Call factrak#autocomplete using what is in the search field
     setQuery(event.target.value);
     axios({
-      url: '/factrak/autocomplete.json',
+      url: "/factrak/autocomplete.json",
       params: { q: escape(event.target.value) },
       headers: {
-        'X-Requested-With': 'XMLHttpRequest',
+        "X-Requested-With": "XMLHttpRequest",
       },
-    }).then(response => {
+    }).then((response) => {
       return setSuggestions(response.data);
     });
   };
@@ -36,7 +32,7 @@ const FactrakLayout = ({
       <div className="autocomplete">
         <table id="suggestions">
           <tbody>
-            {suggestions.map(suggestion => (
+            {suggestions.map((suggestion) => (
               <tr key={suggestion.id}>
                 <td>
                   <a
@@ -57,79 +53,62 @@ const FactrakLayout = ({
     );
   };
 
-  if (currentUser.factrak_policy)
-    return (
-      <Layout
-        bodyClass="factrak"
-        notice={notice}
-        warning={warning}
-        currentUser={currentUser}
-      >
-        <header>
-          <div className="page-head">
-            <h1>
-              <a href="/factrak">Factrak</a>
-            </h1>
+  //if (currentUser.factrak_policy)
+  return (
+    <>
+      <header>
+        <div className="page-head">
+          <h1>
+            <Link routeName="factrak">Factrak</Link>
+          </h1>
 
-            <ul>
+          <ul>
+            <li>
+              <Link routeName="factrak">Home</Link>
+            </li>
+            <li>
+              <Link routeName="factrak.policy">Policy</Link>
+            </li>
+            <li>
+              <Link routeName="factrak.surveys">Your Reviews</Link>
+            </li>
+            {/*currentUser.factrak_admin ? (
               <li>
-                <a href="/factrak">Home</a>
+                <a href="/factrak/moderate">Moderate</a>
               </li>
-              <li>
-                <a href="/factrak/policy">Policy</a>
-              </li>
-              <li>
-                <a href="/factrak/surveys">Your Reviews</a>
-              </li>
-              {currentUser.factrak_admin ? (
-                <li>
-                  <a href="/factrak/moderate">Moderate</a>
-                </li>
-              ) : null}
-            </ul>
-          </div>
-          <form action="/factrak/search" acceptCharset="UTF-8" method="post">
-            <input name="utf8" type="hidden" value="✓" />
-            <input type="hidden" name="authenticity_token" value={authToken} />
-            <input
-              type="search"
-              name="search"
-              id="search"
-              placeholder="Search for a professor or course"
-              onChange={factrakAutocomplete}
-              style={{ marginBottom: '0px' }}
-              autoComplete="off"
-              value={query}
-            />
-            <input
-              type="submit"
-              name="commit"
-              value="Search"
-              className="submit"
-              data-disable-with="Search"
-            />
-            {factrakSuggestions()}
-          </form>
-        </header>
+            ) : null*/}
+          </ul>
+        </div>
+        <form acceptCharset="UTF-8" method="post">
+          <input
+            type="search"
+            name="search"
+            id="search"
+            placeholder="Search for a professor or course"
+            onChange={factrakAutocomplete}
+            style={{ marginBottom: "0px" }}
+            autoComplete="off"
+            value={query}
+          />
+          <input
+            type="submit"
+            name="commit"
+            value="Search"
+            className="submit"
+            data-disable-with="Search"
+          />
+          {factrakSuggestions()}
+        </form>
+      </header>
 
-        {children}
-      </Layout>
-    );
-  return null;
+      {children}
+    </>
+  );
+  //return null;
 };
 
 FactrakLayout.propTypes = {
-  currentUser: PropTypes.object,
-  authToken: PropTypes.string.isRequired,
   children: PropTypes.object.isRequired,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
-};
-
-FactrakLayout.defaultProps = {
-  notice: '',
-  warning: '',
-  currentUser: {},
 };
 
 export default FactrakLayout;
