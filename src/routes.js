@@ -7,4 +7,6 @@ export default [
   { name: "facebook", path: "/facebook" },
   { name: "factrak", path: "/factrak" },
   { name: "dormtrak", path: "/dormtrak" },
+  { name: "login", path: "/account/login" },
+  { name: "logout", path: "/account/logout" },
 ];

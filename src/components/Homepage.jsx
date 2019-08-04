@@ -24,8 +24,8 @@ const Homepage = ({ bulletins, authToken }) => {
         <article>
           <section>
             <div className="bulletin-list">
-              {bulletins.map(bulletin => {
-                return <BulletinBox bulletin={bulletin} />;
+              {bulletins.map((bulletin) => {
+                return <BulletinBox bulletin={bulletin} key={bulletin[1]} />;
               })}
             </div>
           </section>
@@ -40,7 +40,7 @@ Homepage.propTypes = {
   authToken: PropTypes.string,
   notice: PropTypes.string,
   warning: PropTypes.string,
-  currentUser: PropTypes.object
+  currentUser: PropTypes.object,
 };
 
 Homepage.defaultProps = {
@@ -53,9 +53,9 @@ Homepage.defaultProps = {
     [[], "Exchanges", "/exchanges"],
     [[], "Lost + Found", "/lostAndFound"],
     [[], "Jobs", "/jobs"],
-    [[], "Rides", "/rides"]
+    [[], "Rides", "/rides"],
   ],
-  authToken: ""
+  authToken: "",
 };
 
 export default Homepage;

@@ -12,21 +12,21 @@ import Scheduler from "./Scheduler";
 import Facebook from "./Facebook";
 import DormtrakIndex from "./DormtrakIndex";
 import Factrak from "./Factrak";
+import Login from "./Login";
 
 // Redux/routing
 import { connect } from "react-redux";
 import { createRouteNodeSelector } from "redux-router5";
 import BuildingHours from "./BuildingHours";
+import { getToken } from "../selectors/auth";
 
 // Additional Imports
 import wordFile from "../constants/words.json";
-import { initializeToken } from "../api/utils";
-import { getAllUsers } from "../api/users";
+import { initializeSession, removeTokens } from "../api/utils";
+import { actions } from "redux-router5";
+import { getAreasOfStudy } from "../api/factrak";
 
-const App = ({ notice, warning, currentUser, route }) => {
-  initializeToken();
-  getAllUsers();
-
+const App = ({ notice, warning, route, navigateTo, token }) => {
   const randomWSO = () => {
     if (wordFile) {
       let w = wordFile.w[Math.floor(Math.random() * wordFile.w.length)];
@@ -56,12 +56,29 @@ const App = ({ notice, warning, currentUser, route }) => {
       case "dormtrak":
         return <DormtrakIndex />;
       case "factrak":
+        getAreasOfStudy(token);
         return <Factrak />;
+      case "login":
+        return <Login />;
+      case "logout":
+        removeTokens();
+        navigateTo("home");
+        return;
       default:
-        return <div>whoops</div>;
+        return (
+          <header>
+            <h1>Whoops! Page not found!</h1> 404. Run. Hide. Cease and Desist.
+          </header>
+        );
     }
   };
 
+  const initialize = async () => {
+    const response = await initializeSession();
+    console.log(response);
+  };
+
+  initialize();
   document.title = randomWSO();
 
   return (
@@ -69,7 +86,6 @@ const App = ({ notice, warning, currentUser, route }) => {
       bodyClass="front dormtrak facebook"
       notice={notice}
       warning={warning}
-      currentUser={currentUser}
     >
       {mainBody()}
     </Layout>
@@ -79,14 +95,28 @@ const App = ({ notice, warning, currentUser, route }) => {
 App.propTypes = {
   notice: PropTypes.string,
   warning: PropTypes.string,
-  currentUser: PropTypes.object,
   route: PropTypes.object.isRequired,
 };
 
 App.defaultProps = {
   notice: "",
   warning: "",
-  currentUser: {},
 };
 
-export default connect(createRouteNodeSelector(""))(App);
+const mapStateToProps = (state) => {
+  const routeNodeSelector = createRouteNodeSelector("");
+
+  return (state) => ({
+    token: getToken(state),
+    ...routeNodeSelector(state),
+  });
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

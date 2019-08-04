@@ -1,7 +1,7 @@
 // React Imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import FacebookLayout from './FacebookLayout';
+import React from "react";
+import PropTypes from "prop-types";
+import FacebookLayout from "./FacebookLayout";
 
 const Facebook = ({
   results,
@@ -22,7 +22,7 @@ const Facebook = ({
           </tr>
         </thead>
         <tbody>
-          {results.map(user => {
+          {results.map((user) => {
             return (
               <tr key={user.id}>
                 <td>
@@ -30,9 +30,9 @@ const Facebook = ({
                 </td>
                 <td>{user.unix_id}</td>
                 <td>
-                  {user.room && (user.type !== 'Student' || user.dorm_visible)
+                  {user.room && (user.type !== "Student" || user.dorm_visible)
                     ? user.room
-                    : ''}
+                    : ""}
                 </td>
               </tr>
             );
@@ -45,7 +45,7 @@ const Facebook = ({
   const GridView = () => {
     return (
       <div className="grid-wrap">
-        {results.map(user => {
+        {results.map((user) => {
           return (
             <aside key={user.id}>
               <div className="third">
@@ -67,10 +67,10 @@ const Facebook = ({
                     </>
                   ) : null}
                   {user.room &&
-                  (user.type !== 'Student' || user.dorm_visible) ? (
+                  (user.type !== "Student" || user.dorm_visible) ? (
                     <>
                       <li className="list-headers">
-                        {user.type === 'Student' ? 'Room' : 'Office'}
+                        {user.type === "Student" ? "Room" : "Office"}
                       </li>
                       <li className="list-contents">{user.room}</li>
                     </>
@@ -127,8 +127,8 @@ Facebook.propTypes = {
 };
 Facebook.defaultProps = {
   searched: [],
-  notice: '',
-  warning: '',
+  notice: "",
+  warning: "",
   results: [],
 };
 export default Facebook;

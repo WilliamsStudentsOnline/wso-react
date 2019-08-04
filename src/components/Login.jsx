@@ -1,86 +1,110 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import Layout from './Layout';
+import React, { useState } from "react";
 
-const Login = ({ authToken, currentUser, notice, warning }) => {
+// Redux imports
+import { connect } from "react-redux";
+import { doUpdateToken, doUpdateUser } from "../actions/auth";
+
+// External imports
+import { getToken } from "../api/utils";
+import { actions } from "redux-router5";
+import { getUser } from "../api/users";
+
+const Login = ({ navigateTo, updateToken, updateUser }) => {
+  const [unixID, setUnix] = useState("");
+  const [password, setPassword] = useState("");
+
+  /* @TODO: convert email addresses to unix */
+  const unixHandler = (event) => {
+    setUnix(event.target.value);
+  };
+
+  const passwordHandler = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    console.log(unixID);
+    console.log(password);
+    const response = await getToken(unixID, password);
+
+    if (!response) {
+      //handle error
+    } else {
+      // redirects to home
+      console.log(response);
+      updateToken(response);
+      const user = await getUser("me");
+      if (!user) {
+        // handle error
+      } else {
+        updateUser(user);
+        navigateTo("home");
+      }
+    }
+  };
+
   return (
-    <Layout
-      bodyClass="account"
-      notice={notice}
-      warning={warning}
-      currentUser={currentUser}
-    >
-      <header>
-        <div className="page-head">
-          <h1>Login</h1>
-          <ul>
-            <li>
-              <a href="https://pchanger.williams.edu/pchecker/">
-                Forgot My Password
-              </a>
-            </li>
-          </ul>
-        </div>
+    <header>
+      <div className="page-head">
+        <h1>Login</h1>
+        <ul>
+          <li>
+            <a href="https://pchanger.williams.edu/pchecker/">
+              Forgot My Password
+            </a>
+          </li>
+        </ul>
+      </div>
 
-        <form
-          action="/account/login?class=login"
-          acceptCharset="UTF-8"
-          method="post"
-        >
-          <input name="utf8" type="hidden" value="✓" />
-          <input type="hidden" name="authenticity_token" value={authToken} />
-          <input type="hidden" name="dest" id="dest" />
+      <form onSubmit={submitHandler}>
+        <br />
+        <input
+          type="text"
+          name="unixID"
+          id="unixID"
+          placeholder="Enter your unix"
+          onChange={unixHandler}
+        />
+        <input
+          type="password"
+          name="password"
+          id="password"
+          placeholder="Password"
+          onChange={passwordHandler}
+        />
 
-          <br />
-
+        {/* @TODO: check how best to handle this */}
+        <label htmlFor="remember_me">
           <input
-            type="text"
-            name="username"
-            id="username"
-            placeholder="Enter your unix"
+            type="checkbox"
+            name="remember_me"
+            id="remember_me"
+            value="1"
+            defaultChecked
           />
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Password"
-          />
-
-          <label htmlFor="remember_me">
-            <input
-              type="checkbox"
-              name="remember_me"
-              id="remember_me"
-              value="1"
-              checked="checked"
-            />
-            Remember me
-          </label>
-          <input
-            type="submit"
-            name="commit"
-            value="Login"
-            className="submit"
-            data-disable-with="Login"
-          />
-        </form>
-      </header>
-    </Layout>
+          Remember me
+        </label>
+        <input
+          type="submit"
+          name="commit"
+          value="Login"
+          className="submit"
+          data-disable-with="Login"
+        />
+      </form>
+    </header>
   );
 };
 
-Login.propTypes = {
-  authToken: PropTypes.string.isRequired,
-  currentUser: PropTypes.object,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
-};
+const mapDispatchToProps = (dispatch) => ({
+  updateToken: (response) => dispatch(doUpdateToken(response)),
+  updateUser: (unixID) => dispatch(doUpdateUser(unixID)),
+  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+});
 
-Login.defaultProps = {
-  currentUser: {},
-  notice: '',
-  warning: '',
-};
-
-export default Login;
+export default connect(
+  null,
+  mapDispatchToProps
+)(Login);

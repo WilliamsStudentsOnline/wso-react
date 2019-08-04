@@ -1,31 +1,19 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import FactrakComment from './FactrakComment';
-import FactrakLayout from './FactrakLayout';
+import React from "react";
+import PropTypes from "prop-types";
+import FactrakComment from "./FactrakComment";
+import FactrakLayout from "./FactrakLayout";
 
-const Factrak = ({
-  areas,
-  currentUser,
-  comments,
-  authToken,
-  notice,
-  warning,
-}) => {
+const Factrak = ({ areas, comments, notice, warning }) => {
   return (
-    <FactrakLayout
-      currentUser={currentUser}
-      authToken={authToken}
-      notice={notice}
-      warning={warning}
-    >
+    <FactrakLayout notice={notice} warning={warning}>
       <article className="dormtrak">
         <div className="container">
           <aside className="sidebar">
             <article className="home">
               <h3>Departments</h3>
               <ul id="dept_list">
-                {areas.map(area => (
+                {areas.map((area) => (
                   <li key={area.name}>
                     <a href={`/factrak/areas_of_study/${area.id}`}>
                       {area.name}
@@ -40,7 +28,9 @@ const Factrak = ({
             <section className="lead">
               <h3>Recent Comments</h3>
               <br />
-              {// Pluralize
+              {
+                // Pluralize
+                /*
               currentUser.factrak_survey_deficit > 0 ? (
                 <>
                   <strong>
@@ -55,14 +45,15 @@ const Factrak = ({
                   <br />
                   <br />
                 </>
-              ) : null}
+              ) : null*/
+              }
 
-              {comments.map(comment => (
+              {comments.map((comment) => (
                 <FactrakComment
                   comment={comment}
                   showProf
                   abridged
-                  currentUser={currentUser}
+                  // currentUser={currentUser}
                   key={comment.id}
                 />
               ))}
@@ -76,17 +67,14 @@ const Factrak = ({
 
 Factrak.propTypes = {
   areas: PropTypes.arrayOf(PropTypes.object).isRequired,
-  currentUser: PropTypes.object,
   comments: PropTypes.arrayOf(PropTypes.object).isRequired,
-  authToken: PropTypes.string.isRequired,
   notice: PropTypes.string,
   warning: PropTypes.string,
 };
 
 Factrak.defaultProps = {
-  notice: '',
-  warning: '',
-  currentUser: {},
+  notice: "",
+  warning: "",
 };
 
 export default Factrak;

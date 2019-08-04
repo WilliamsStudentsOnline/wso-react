@@ -5,10 +5,10 @@ import Footer from "./Footer";
 import Header from "./Header";
 import "./stylesheets/Application.css";
 
-const Layout = ({ children, bodyClass, notice, warning, currentUser }) => {
+const Layout = ({ children, bodyClass, notice, warning }) => {
   return (
     <div className={bodyClass}>
-      <Header ephCatch={false} currentUser={currentUser} />
+      <Header />
 
       <aside>
         {notice ? <section className="notice">{notice}</section> : null}
@@ -26,7 +26,6 @@ const Layout = ({ children, bodyClass, notice, warning, currentUser }) => {
 Layout.propTypes = {
   notice: PropTypes.string,
   warning: PropTypes.string,
-  currentUser: PropTypes.object.isRequired,
   bodyClass: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
 };

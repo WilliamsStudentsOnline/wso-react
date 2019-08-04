@@ -1,12 +1,21 @@
 // React Imports
 import React from "react";
-import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-const Header = ({ ephCatch, currentUser }) => {
+// Utility imports
+import { getCurrUser } from "../selectors/auth";
+
+// External imports
+// Connected Link is the same as link, except it re-renders on route changes
+import { Link, ConnectedLink } from "react-router5";
+
+// @TODO: Rename to Nav?
+const Header = ({ currUser }) => {
   let unseen = 0;
 
-  if (currentUser && currentUser.ephcatch_unseen_matches)
-    unseen = currentUser.ephcatch_unseen_matches.size;
+  // @TODO: Find number of ephcatch unseen matches, update unseen.
+
+  const ephCatch = false; // @TODO: checkScope("service:ephcatch");
 
   return (
     <nav>
@@ -17,14 +26,14 @@ const Header = ({ ephCatch, currentUser }) => {
           </button>
           <ul className="nav-left" id="nav-menu-content">
             <li>
-              <a href="/">Home</a>
+              <ConnectedLink routeName="home">Home</ConnectedLink>
             </li>
             <li>
-              <a href="/facebook">Facebook</a>
+              <Link routeName="facebook">Facebook</Link>
             </li>
             {ephCatch ? (
               <li>
-                <a href="/ephcatch">Ephcatch</a>
+                <Link routeName="ephcatch">Ephcatch</Link>
                 {unseen > 0 ? (
                   <span className="ephcatch-badge">
                     <a href="<%=matches_path%>" title="New matches!">
@@ -36,40 +45,39 @@ const Header = ({ ephCatch, currentUser }) => {
             ) : (
               <>
                 <li>
-                  <a href="/factrak">Factrak</a>
+                  <Link routeName="factrak">Factrak</Link>
                 </li>
                 <li>
-                  <a href="/dormtrak">Dormtrak</a>
+                  <Link routeName="dormtrak">Dormtrak</Link>
                 </li>
               </>
             )}
 
             <li>
-              <a href="/listserv">Listserv</a>
+              <Link routeName="listserv">Listserv</Link>
             </li>
             <li>
-              <a href="/hours">Hours</a>
+              <Link routeName="hours">Hours</Link>
             </li>
             <li>
               <a href="/wiki">Wiki</a>
             </li>
             <li>
-              {" "}
-              <a href="/about">About</a>
+              <Link routeName="about">About</Link>
             </li>
             <li>
-              <a href="/schedulecourses">Course Scheduler</a>
+              <Link routeName="scheduler">Course Scheduler</Link>
             </li>
           </ul>
         </span>
 
         <span className="nav-right-container">
           <ul className="nav-right">
-            {currentUser ? (
+            {currUser ? (
               <>
                 <li className="avatar">
-                  <a href={`/facebook/users/${currentUser.id}`}>
-                    <img src={`/pic/${currentUser.unix_id}`} alt="avatar" />
+                  <a href={`/facebook/users/${currUser.id}`}>
+                    <img src={`/pic/${currUser.unixID}`} alt="avatar" />
                   </a>
                 </li>
                 <li>
@@ -88,14 +96,8 @@ const Header = ({ ephCatch, currentUser }) => {
   );
 };
 
-Header.propTypes = {
-  ephCatch: PropTypes.bool,
-  currentUser: PropTypes.object
-};
+const mapStateToProps = (state) => ({
+  currUser: getCurrUser(state),
+});
 
-Header.defaultProps = {
-  ephCatch: false,
-  currentUser: false
-};
-
-export default Header;
+export default connect(mapStateToProps)(Header);
