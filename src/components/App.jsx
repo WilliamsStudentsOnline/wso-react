@@ -80,7 +80,9 @@ const App = ({ route, navigateTo, token, removeCreds }) => {
   initialize();
   document.title = randomWSO();
 
-  return <Layout bodyClass="front dormtrak facebook">{mainBody()}</Layout>;
+  return (
+    <Layout bodyClass="front dormtrak facebook factrak">{mainBody()}</Layout>
+  );
 };
 
 App.propTypes = {

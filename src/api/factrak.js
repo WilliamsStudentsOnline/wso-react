@@ -1,7 +1,6 @@
 import axios from "axios";
-// @TODO: think about the response.
 
-// Lists all areas of study
+// Lists all areas of study (note plural)
 const getAreasOfStudy = async (token) => {
   const response = await axios({
     url: "/api/v1/factrak/areas-of-study",
@@ -9,15 +8,16 @@ const getAreasOfStudy = async (token) => {
       Authorization: "Bearer " + token,
     },
   }).catch((error) => {
-    console.log(error);
+    console.log(error.response);
     return null;
   });
 
-  return response;
+  const areasOfStudy = response.data.data;
+
+  return areasOfStudy;
 };
 
-// List one area of study
-// @TODO Think about naming? Will this be confusing?
+// List one area of study (note singular)
 const getAreaOfStudy = async (token, area) => {
   const response = await axios({
     url: `/api/v1/factrak/areas-of-study/${area}`,
@@ -25,13 +25,16 @@ const getAreaOfStudy = async (token, area) => {
       Authorization: "Bearer " + token,
     },
   }).catch((error) => {
-    console.log(error);
+    console.log(error.response);
     return null;
   });
 
-  return response;
+  const areaOfStudy = response.data.data;
+
+  return areaOfStudy;
 };
 
+// List all the departments
 const getDepartments = async (token) => {
   const response = await axios({
     url: "/api/v1/factrak/departments",
@@ -39,12 +42,13 @@ const getDepartments = async (token) => {
       Authorization: "Bearer " + token,
     },
   }).catch((error) => {
-    console.log(error);
+    console.log(error.response);
     return null;
   });
 
-  console.log(response);
-  return response;
+  const departments = response.data.data;
+
+  return departments;
 };
 
 // Lists all surveys
@@ -55,14 +59,16 @@ const getSurveys = async (token, max = -1) => {
       Authorization: "Bearer " + token,
     },
   }).catch((error) => {
-    console.log(error);
+    console.log(error.response);
     return null;
   });
 
-  if (max === -1 || response.data.data.length < max) {
-    return response.data.data;
+  const surveys = response.data.data;
+
+  if (max === -1 || surveys.length < max) {
+    return surveys;
   } else {
-    return response.data.data.slice(0, max);
+    return surveys.slice(0, max);
   }
 };
 
@@ -74,13 +80,13 @@ const getProfsOfAOS = async (token, area) => {
       Authorization: "Bearer " + token,
     },
   }).catch((error) => {
-    console.log(error);
+    console.log(error.response);
     return null;
   });
 
-  console.log(response);
+  const profsOfAOS = response.data.data;
 
-  return response.data.data;
+  return profsOfAOS;
 };
 
 // Gets all the courses of an area of study
@@ -91,13 +97,13 @@ const getCoursesOfAOS = async (token, area) => {
       Authorization: "Bearer " + token,
     },
   }).catch((error) => {
-    console.log(error);
+    console.log(error.response);
     return null;
   });
 
-  console.log(response);
+  const coursesOfAOS = response.data.data;
 
-  return response.data.data;
+  return coursesOfAOS;
 };
 
 export {

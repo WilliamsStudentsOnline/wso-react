@@ -44,9 +44,9 @@ const FactrakAOS = ({ route, token }) => {
     // @TODO: think deeper about whether you want this to be passed as props?
     const loadAOS = async (areaID) => {
       // @TODO: Error handling for invalid areaID?
-      const response = await getAreaOfStudy(token, areaID);
-      if (response) {
-        updateArea(response.data.data);
+      const areaOfStudy = await getAreaOfStudy(token, areaID);
+      if (areaOfStudy) {
+        updateArea(areaOfStudy);
       } else {
         // @TODO: Error handling?
       }

@@ -9,7 +9,7 @@ const refreshToken = async (token) => {
       Authorization: "Bearer " + token,
     },
   }).catch((error) => {
-    console.log(error);
+    console.log(error.response);
     return null;
   });
   return response;
@@ -24,7 +24,7 @@ const updateToken = async (token) => {
       Authorization: "Bearer " + token,
     },
   }).catch((error) => {
-    console.log(error);
+    console.log(error.response);
     return null;
   });
 
@@ -37,8 +37,6 @@ const getToken = async (unixID, password) => {
     return null;
   }
   console.log("Obtaining Token");
-  console.log(unixID);
-  console.log(password);
   const response = await axios({
     url: "/api/v1/auth/login",
     method: "post",
@@ -47,7 +45,7 @@ const getToken = async (unixID, password) => {
       password,
     },
   }).catch((error) => {
-    console.log(error);
+    console.log(error.response);
     return null;
   });
   return response;

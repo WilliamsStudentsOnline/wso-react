@@ -26,9 +26,9 @@ const FactrakHome = ({ token, currUser }) => {
     };
 
     const loadAreas = async () => {
-      const response = await getAreasOfStudy(token);
-      if (response) {
-        updateAreas(response.data.data.sort((a, b) => a.name > b.name));
+      const areasOfStudy = await getAreasOfStudy(token);
+      if (areasOfStudy) {
+        updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
       } else {
         // @TODO: Error handling?
       }

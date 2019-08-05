@@ -105,7 +105,6 @@ const FactrakLayout = ({ children, currUser, navigateTo }) => {
             {factrakSuggestions()}
           </form>
         </header>
-
         {children}
       </>
     );
