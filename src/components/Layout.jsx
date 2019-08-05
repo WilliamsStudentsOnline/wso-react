@@ -2,13 +2,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Footer from "./Footer";
-import Header from "./Header";
+import Nav from "./Nav";
 import "./stylesheets/Application.css";
 
 const Layout = ({ children, bodyClass, notice, warning }) => {
   return (
     <div className={bodyClass}>
-      <Header />
+      <Nav />
 
       <aside>
         {notice ? <section className="notice">{notice}</section> : null}

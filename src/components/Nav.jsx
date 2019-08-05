@@ -1,5 +1,6 @@
 // React Imports
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 // Utility imports
@@ -9,9 +10,8 @@ import { getCurrUser } from "../selectors/auth";
 // Connected Link is the same as link, except it re-renders on route changes
 import { Link, ConnectedLink } from "react-router5";
 
-// @TODO: Rename to Nav?
-const Header = ({ currUser }) => {
-  let unseen = 0;
+const Nav = ({ currUser }) => {
+  const unseen = 0;
 
   // @TODO: Find number of ephcatch unseen matches, update unseen.
 
@@ -96,8 +96,12 @@ const Header = ({ currUser }) => {
   );
 };
 
+Nav.propTypes = {
+  currUser: PropTypes.object.isRequired,
+};
+
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
 });
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps)(Nav);
