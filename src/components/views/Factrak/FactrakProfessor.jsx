@@ -1,8 +1,8 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import FactrakComment from './FactrakComment';
-import FactrakLayout from './FactrakLayout';
+import React from "react";
+import PropTypes from "prop-types";
+import FactrakComment from "./FactrakComment";
+import FactrakLayout from "./FactrakLayout";
 
 const FactrakProfessor = ({
   prof,
@@ -17,21 +17,20 @@ const FactrakProfessor = ({
     if (!ratings.course_workload) return null;
 
     const WORKLOAD_DESCRIPTIONS = [
-      '',
-      'very easy',
-      'easy',
-      'somewhat easy',
-      'normal',
-      'somewhat hard',
-      'hard',
-      'very hard',
+      "",
+      "very easy",
+      "easy",
+      "somewhat easy",
+      "normal",
+      "somewhat hard",
+      "hard",
+      "very hard",
     ];
     return (
       <li>
         The course workloads are&nbsp;
         <u>{WORKLOAD_DESCRIPTIONS[Math.round(ratings.course_workload)]}</u>
-        &nbsp;when compared to other courses (
-        {ratings.num_course_workload}
+        &nbsp;when compared to other courses ({ratings.num_course_workload}
         &nbsp;surveys).
       </li>
     );
@@ -40,22 +39,21 @@ const FactrakProfessor = ({
   const courseStimulating = () => {
     if (!ratings.course_stimulating) return null;
     const STIMULATING_DESCR = [
-      '',
-      'very boring',
-      'boring',
-      'somewhat boring',
-      'normal',
-      'somewhat stimulating',
-      'stimulating',
-      'very stimulating',
+      "",
+      "very boring",
+      "boring",
+      "somewhat boring",
+      "normal",
+      "somewhat stimulating",
+      "stimulating",
+      "very stimulating",
     ];
 
     return (
       <li>
         The courses taught are&nbsp;
         <u>{STIMULATING_DESCR[Math.round(ratings.course_stimulating)]}</u>
-        &nbsp;when compared to other courses (
-        {ratings.num_course_stimulating}
+        &nbsp;when compared to other courses ({ratings.num_course_stimulating}
         &nbsp;surveys).
       </li>
     );
@@ -64,14 +62,14 @@ const FactrakProfessor = ({
   const profApproachability = () => {
     if (!ratings.approachability) return null;
     const APPROACH_DESCR = [
-      '',
-      'very unapproachable',
-      'unapproachable',
-      'somewhat unapproachable',
-      'somewhat approachable',
-      'moderately approachable',
-      'approchable',
-      'very approchable',
+      "",
+      "very unapproachable",
+      "unapproachable",
+      "somewhat unapproachable",
+      "somewhat approachable",
+      "moderately approachable",
+      "approchable",
+      "very approchable",
     ];
 
     return (
@@ -87,21 +85,20 @@ const FactrakProfessor = ({
   const profLecture = () => {
     if (!ratings.lead_lecture) return null;
     const LECTURE_DESCR = [
-      '',
-      'very ineffective',
-      'ineffective',
-      'somewhat ineffective',
-      'somewhat effective',
-      'moderately effective',
-      'effective',
-      'very effective',
+      "",
+      "very ineffective",
+      "ineffective",
+      "somewhat ineffective",
+      "somewhat effective",
+      "moderately effective",
+      "effective",
+      "very effective",
     ];
     return (
       <li>
         The professor is&nbsp;
         <u>{LECTURE_DESCR[Math.round(ratings.lead_lecture)]}</u>
-        &nbsp;at lecturing (
-        {ratings.num_lead_lecture}
+        &nbsp;at lecturing ({ratings.num_lead_lecture}
         &nbsp;surveys).
       </li>
     );
@@ -110,21 +107,20 @@ const FactrakProfessor = ({
   const profHelpful = () => {
     if (!ratings.outside_helpfulness) return null;
     const HELP_DESCR = [
-      '',
-      'very unhelpful',
-      'unhelpful',
-      'somewhat unhelpful',
-      'somewhat helpful',
-      'moderately helpful',
-      'helpful',
-      'very helpful',
+      "",
+      "very unhelpful",
+      "unhelpful",
+      "somewhat unhelpful",
+      "somewhat helpful",
+      "moderately helpful",
+      "helpful",
+      "very helpful",
     ];
     return (
       <li>
         The professor is&nbsp;
         <u>{HELP_DESCR[Math.round(ratings.outside_helpfulness)]}</u>
-        &nbsp;outside of class (
-        {ratings.num_outside_helpfulness}
+        &nbsp;outside of class ({ratings.num_outside_helpfulness}
         &nbsp;surveys).
       </li>
     );
@@ -197,16 +193,16 @@ const FactrakProfessor = ({
 
           <div id="factrak-comments-section">
             {prof.factrak_surveys && prof.factrak_surveys.length > 0
-              ? comments.map(comment => (
-                <FactrakComment
-                  comment={comment}
-                  showProf={false}
-                  abridged={false}
-                  currentUser={currentUser}
-                  key={comment.comment}
-                />
+              ? comments.map((comment) => (
+                  <FactrakComment
+                    comment={comment}
+                    showProf={false}
+                    abridged={false}
+                    currentUser={currentUser}
+                    key={comment.comment}
+                  />
                 ))
-              : 'No comments yet.'}
+              : "No comments yet."}
           </div>
         </section>
       </article>
@@ -225,8 +221,8 @@ FactrakProfessor.propTypes = {
 };
 
 FactrakProfessor.defaultProps = {
-  notice: '',
-  warning: '',
+  notice: "",
+  warning: "",
   currentUser: {},
 };
 

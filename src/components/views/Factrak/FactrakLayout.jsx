@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getCurrUser } from "../selectors/auth";
+import { getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
 // External imports

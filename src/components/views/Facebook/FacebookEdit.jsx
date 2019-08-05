@@ -1,20 +1,20 @@
 // React Imports
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 // External Imports
-import axios from 'axios';
-import FacebookLayout from './FacebookLayout';
+import axios from "axios";
+import FacebookLayout from "./FacebookLayout";
 
 const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
   const [newTags, setNewTags] = useState([]);
   const [count, setCount] = useState(0);
   const [suggestions, setSuggestions] = useState([]);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
-  const removeTagHandler = event => {
+  const removeTagHandler = (event) => {
     const clickedId = parseInt(event.target.attributes.data.value, 10);
-    setNewTags(newTags.filter(i => i !== clickedId));
+    setNewTags(newTags.filter((i) => i !== clickedId));
   };
 
   const addTagHandler = () => {
@@ -27,7 +27,7 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
       return (
         <table className="tag-suggestions">
           <tbody>
-            {suggestions.map(suggestion => (
+            {suggestions.map((suggestion) => (
               <tr key={suggestion.name}>
                 <td>
                   <button
@@ -35,12 +35,12 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
                     className="autocomplete-option"
                     onClick={() => {
                       axios({
-                        url: '/facebook/edit/autocomplete',
+                        url: "/facebook/edit/autocomplete",
                         params: { q: suggestion.name },
                         headers: {
-                          'X-Requested-With': 'XMLHttpRequest',
+                          "X-Requested-With": "XMLHttpRequest",
                         },
-                      }).then(response => {
+                      }).then((response) => {
                         return setSuggestions(response.data);
                       });
 
@@ -59,21 +59,21 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
     return null;
   };
 
-  const tagAutocomplete = event => {
+  const tagAutocomplete = (event) => {
     setQuery(event.target.value);
     axios({
-      url: '/facebook/edit/autocomplete',
+      url: "/facebook/edit/autocomplete",
       params: { q: event.target.value },
       headers: {
-        'X-Requested-With': 'XMLHttpRequest',
+        "X-Requested-With": "XMLHttpRequest",
       },
-    }).then(response => {
+    }).then((response) => {
       return setSuggestions(response.data);
     });
   };
 
   const newTagGenerator = () => {
-    return newTags.map(newTag => {
+    return newTags.map((newTag) => {
       return (
         <li className="fb-tag" key={newTag}>
           <input
@@ -92,11 +92,11 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
             onClick={removeTagHandler}
             data={newTag}
             style={{
-              display: 'inline',
+              display: "inline",
               padding: 0,
               margin: 0,
-              background: '#fff',
-              color: '#6F4933',
+              background: "#fff",
+              color: "#6F4933",
               minWidth: 0,
             }}
           >
@@ -108,9 +108,9 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
     });
   };
 
-  const hideOnClick = event => {
+  const hideOnClick = (event) => {
     const target = event.target.parentElement;
-    target.style.display = 'none';
+    target.style.display = "none";
   };
 
   return (
@@ -124,7 +124,7 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
         <section>
           <div id="errors">
             {currentUser.errors && currentUser.errors.full_messages
-              ? currentUser.errors.full_messages.map(msg => {
+              ? currentUser.errors.full_messages.map((msg) => {
                   return <p>{`* ${msg}`}</p>;
                 })
               : null}
@@ -154,8 +154,8 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
             <br />
 
             <div className="field">
-              {currentUser.type === 'Student' ||
-              currentUser.type === 'Alumni' ? (
+              {currentUser.type === "Student" ||
+              currentUser.type === "Alumni" ? (
                 <>
                   <h3>Tags</h3>
                   <p>
@@ -165,7 +165,7 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
                     see your group? Contact us at wso-dev@wso.williams.edu
                   </p>
                   <ul id="tag-list">
-                    {currentUser.tags.map(tag => (
+                    {currentUser.tags.map((tag) => (
                       <li className="fb-tag" key={tag.name}>
                         {tag.name}
                         <a
@@ -199,8 +199,7 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
               <br />
               <strong>Facebook profile:</strong>
               <br />
-              Show
-              {' '}
+              Show{" "}
               <input
                 id={`${currentUser.type.toLowerCase()}_visible_1`}
                 type="radio"
@@ -208,8 +207,7 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
                 defaultChecked={currentUser.visible}
                 name={`${currentUser.type.toLowerCase()}[visible]`}
               />
-              Hide
-              {' '}
+              Hide{" "}
               <input
                 id={`${currentUser.type.toLowerCase()}_visible_0`}
                 type="radio"
@@ -221,8 +219,7 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
               <br />
               <strong>Home Address:</strong>
               <br />
-              Show
-              {' '}
+              Show{" "}
               <input
                 id={`${currentUser.type.toLowerCase()}_home_visible_1`}
                 type="radio"
@@ -230,8 +227,7 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
                 defaultChecked={currentUser.home_visible}
                 name={`${currentUser.type.toLowerCase()}[home_visible]`}
               />
-              Hide
-              {' '}
+              Hide{" "}
               <input
                 id={`${currentUser.type.toLowerCase()}_home_visible_0`}
                 type="radio"
@@ -241,12 +237,11 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
               />
               <br />
               <br />
-              {currentUser.type === 'Student' ? (
+              {currentUser.type === "Student" ? (
                 <>
                   <strong>Dorm Address:</strong>
                   <br />
-                  Show
-                  {' '}
+                  Show{" "}
                   <input
                     id={`${currentUser.type.toLowerCase()}_dorm_visible_1`}
                     type="radio"
@@ -254,8 +249,7 @@ const FacebookEdit = ({ currentUser, authToken, notice, warning }) => {
                     defaultChecked={currentUser.dorm_visible}
                     name={`${currentUser.type.toLowerCase()}[dorm_visible]`}
                   />
-                  Hide
-                  {' '}
+                  Hide{" "}
                   <input
                     id={`${currentUser.type.toLowerCase()}_dorm_visible_0`}
                     type="radio"
@@ -306,8 +300,8 @@ FacebookEdit.propTypes = {
 };
 
 FacebookEdit.defaultProps = {
-  notice: '',
-  warning: '',
+  notice: "",
+  warning: "",
 };
 
 export default FacebookEdit;

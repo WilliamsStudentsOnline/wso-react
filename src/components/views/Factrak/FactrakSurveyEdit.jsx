@@ -1,8 +1,8 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import FactrakSurvey from './FactrakSurvey';
-import FactrakLayout from './FactrakLayout';
+import React from "react";
+import PropTypes from "prop-types";
+import FactrakSurvey from "./FactrakSurvey";
+import FactrakLayout from "./FactrakLayout";
 
 const FactrakSurveyEdit = ({
   survey,
@@ -24,7 +24,7 @@ const FactrakSurveyEdit = ({
           <article>
             <h3>
               Editing review on
-              {survey.course ? ` ${survey.course.name} with ` : ' '}
+              {survey.course ? ` ${survey.course.name} with ` : " "}
               {prof.name}
             </h3>
             <a
@@ -58,8 +58,8 @@ FactrakSurveyEdit.propTypes = {
 };
 
 FactrakSurveyEdit.defaultProps = {
-  notice: '',
-  warning: '',
+  notice: "",
+  warning: "",
   currentUser: {},
 };
 

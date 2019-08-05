@@ -1,11 +1,11 @@
 // React imports
 import React from "react";
 import PropTypes from "prop-types";
-import SearchBox from "./SearchBox";
+import SearchBox from "../../SearchBox";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getCurrUser } from "../selectors/auth";
+import { getCurrUser } from "../../../selectors/auth";
 
 const FacebookLayout = ({ children, currUser }) => {
   return (

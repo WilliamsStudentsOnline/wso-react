@@ -1,9 +1,9 @@
 // React imports
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 // External Imports
-import axios from 'axios';
+import axios from "axios";
 
 // @TODO: investigate survey deficit
 const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
@@ -32,7 +32,7 @@ const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
     );
   };
   // @TODO: write this algorithm properly
-  const timeAgoInWords = time => {
+  const timeAgoInWords = (time) => {
     return new Date(time).toDateString();
   };
 
@@ -59,14 +59,14 @@ const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
     );
   };
 
-  const clickHandler = direction => {
+  const clickHandler = (direction) => {
     axios({
-      method: 'post',
+      method: "post",
       url: `/factrak/agreements?agrees=${direction}&amp;factrak_survey_id=${comment.id}`,
       headers: {
-        'X-Requested-With': 'XMLHttpRequest',
+        "X-Requested-With": "XMLHttpRequest",
       },
-    }).then(response => {
+    }).then((response) => {
       setAgrees(response.data.agrees);
       setDisagrees(response.data.disagrees);
     });
@@ -76,9 +76,9 @@ const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
     axios({
       url: `/factrak/flag/?id=${comment.id}`,
       headers: {
-        'X-Requested-With': 'XMLHttpRequest',
+        "X-Requested-With": "XMLHttpRequest",
       },
-    }).then(response => {
+    }).then((response) => {
       setFlagged(response.data.flagged);
     });
   };
@@ -88,14 +88,12 @@ const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
     if (comment.would_take_another)
       return (
         <>
-          <br />
-I would take another course with this professor
+          <br />I would take another course with this professor
         </>
       );
     return (
       <>
-        <br />
-I would
+        <br />I would
         <b>&nbsp;not&nbsp;</b>
         take another course with this professor
       </>
@@ -107,14 +105,12 @@ I would
     if (comment.would_recommend_course)
       return (
         <>
-          <br />
-I would recommend this course to a friend
+          <br />I would recommend this course to a friend
         </>
       );
     return (
       <>
-        <br />
-I would
+        <br />I would
         <b>&nbsp;not&nbsp;</b>
         recommend this course to a friend
       </>
@@ -147,7 +143,7 @@ I would
               className="inline-button"
               onClick={flagHandler}
             >
-              {' Flag for moderator attention'}
+              {" Flag for moderator attention"}
             </button>
           </span>
         ) : null}

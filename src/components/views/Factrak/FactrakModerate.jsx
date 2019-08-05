@@ -1,8 +1,8 @@
 // React imports
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import axios from 'axios';
-import FactrakLayout from './FactrakLayout';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import axios from "axios";
+import FactrakLayout from "./FactrakLayout";
 
 const FactrakModerate = ({
   flaggedComments,
@@ -13,30 +13,30 @@ const FactrakModerate = ({
 }) => {
   const [flagged, setFlagged] = useState(flaggedComments);
 
-  const unflag = id => {
+  const unflag = (id) => {
     axios({
       url: `/factrak/unflag/?id=${id}`,
       headers: {
-        'X-Requested-With': 'XMLHttpRequest',
+        "X-Requested-With": "XMLHttpRequest",
       },
-    }).then(response => {
-      setFlagged(flagged.filter(course => course.id !== response.data.id));
+    }).then((response) => {
+      setFlagged(flagged.filter((course) => course.id !== response.data.id));
     });
   };
 
-  const deleteHandler = id => {
+  const deleteHandler = (id) => {
     // @TODO: write something to overcome this confirm
     // eslint-disable-next-line no-restricted-globals
-    const confirmDelete = confirm('Are you sure?'); // eslint-disable-line no-alert
+    const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
     if (!confirmDelete) return;
     axios({
       url: `/factrak/surveys/${id}`,
-      method: 'delete',
+      method: "delete",
       headers: {
-        'X-Requested-With': 'XMLHttpRequest',
+        "X-Requested-With": "XMLHttpRequest",
       },
     }).then(() => {
-      setFlagged(flagged.filter(course => course.id !== id));
+      setFlagged(flagged.filter((course) => course.id !== id));
     });
   };
 
@@ -51,7 +51,7 @@ const FactrakModerate = ({
         <section className="margin-vertical-small">
           <h3>Moderation</h3>
 
-          {flagged.map(f => (
+          {flagged.map((f) => (
             <div
               className="comment"
               key={`comment${f.id}`}
@@ -103,8 +103,8 @@ FactrakModerate.propTypes = {
 };
 
 FactrakModerate.defaultProps = {
-  notice: '',
-  warning: '',
+  notice: "",
+  warning: "",
   currentUser: {},
 };
 

@@ -1,7 +1,7 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import FactrakLayout from './FactrakLayout';
+import React from "react";
+import PropTypes from "prop-types";
+import FactrakLayout from "./FactrakLayout";
 
 const FactrakSearch = ({
   profs,
@@ -33,15 +33,15 @@ const FactrakSearch = ({
             </tr>
           </thead>
           <tbody>
-            {profList.map(prof => {
+            {profList.map((prof) => {
               // Doesn't check for existence of professor in LDAP.
               return (
                 <tr key={prof.name}>
                   <td>
                     <a href={`/factrak/professors/${prof.id}`}>{prof.name}</a>
                   </td>
-                  <td>{prof.unix_id || ''}</td>
-                  <td>{prof.room || ''}</td>
+                  <td>{prof.unix_id || ""}</td>
+                  <td>{prof.room || ""}</td>
                 </tr>
               );
             })}
@@ -63,15 +63,14 @@ const FactrakSearch = ({
             </tr>
           </thead>
           <tbody>
-            {courseList.map(course => {
+            {courseList.map((course) => {
               return (
                 <tr key={course.id}>
                   <td className="col-20">
-                    <a href={`/factrak/courses/${course.id}`}>{course.name}</a>
-                    {' '}
+                    <a href={`/factrak/courses/${course.id}`}>{course.name}</a>{" "}
                   </td>
                   <td className="col-80">
-                    {course.professors.map(prof => (
+                    {course.professors.map((prof) => (
                       <a
                         key={`${course.id}?prof=${prof.id}`}
                         href={`/factrak/courses/${course.id}?prof=${prof.id}`}
@@ -113,8 +112,8 @@ FactrakSearch.propTypes = {
 };
 
 FactrakSearch.defaultProps = {
-  notice: '',
-  warning: '',
+  notice: "",
+  warning: "",
   currentUser: {},
 };
 

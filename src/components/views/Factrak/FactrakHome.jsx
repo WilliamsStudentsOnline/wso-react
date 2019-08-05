@@ -1,22 +1,42 @@
 // React imports
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import FactrakComment from "./FactrakComment";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../selectors/auth";
+import { getToken, getCurrUser } from "../../../selectors/auth";
 
 // External imports
-import { getSurveys } from "../api/factrak";
+import { getSurveys, getAreasOfStudy } from "../../../api/factrak";
 
-const FactrakHome = ({ areas, token, currUser }) => {
-  let surveys = [];
-  const loadSurveys = async () => {
-    surveys = await getSurveys(token);
-  };
+const FactrakHome = ({ token, currUser }) => {
+  const [areas, updateAreas] = useState([]);
+  const [surveys, updateSurveys] = useState([]);
 
-  loadSurveys();
+  // Equivalent to ComponentDidMount?
+  useEffect(() => {
+    const loadSurveys = async () => {
+      const response = await getSurveys(token);
+      if (response) {
+        updateSurveys(response.data.data);
+      } else {
+        // @TODO: Error handling?
+      }
+    };
+
+    const loadAreas = async () => {
+      const response = await getAreasOfStudy(token);
+      if (response) {
+        updateAreas(response.data.data.sort((a, b) => a.name > b.name));
+      } else {
+        // @TODO: Error handling?
+      }
+    };
+    loadSurveys();
+    loadAreas();
+  }, [token]);
+
   return (
     <article className="dormtrak">
       <div className="container">
@@ -69,11 +89,12 @@ const FactrakHome = ({ areas, token, currUser }) => {
 };
 
 FactrakHome.propTypes = {
-  areas: PropTypes.arrayOf(PropTypes.object),
+  token: PropTypes.string.isRequired,
+  currUser: PropTypes.object,
 };
 
 FactrakHome.defaultProps = {
-  areas: [{ name: "hi", id: "1" }],
+  currUser: {},
 };
 
 const mapStateToProps = (state) => ({

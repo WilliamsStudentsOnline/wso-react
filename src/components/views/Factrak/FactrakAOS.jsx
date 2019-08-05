@@ -1,7 +1,7 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import FactrakLayout from './FactrakLayout';
+import React from "react";
+import PropTypes from "prop-types";
+import FactrakLayout from "./FactrakLayout";
 
 const FactrakAOS = ({
   areaOfStudy,
@@ -43,7 +43,7 @@ const FactrakAOS = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {profs.map(prof => (
+                  {profs.map((prof) => (
                     <tr key={prof.unix_id}>
                       <td>
                         <a href={`/factrak/professors/${prof.id}`}>
@@ -71,13 +71,13 @@ const FactrakAOS = ({
               </tr>
             </thead>
             <tbody>
-              {sortedCourses.map(course => (
+              {sortedCourses.map((course) => (
                 <tr key={course.name}>
                   <td className="col-20">
                     <a href={`/factrak/courses/${course.id}`}>{course.name}</a>
                   </td>
                   <td className="col-80">
-                    {course.professors.map(prof => {
+                    {course.professors.map((prof) => {
                       return (
                         <a
                           href={`/factrak/courses/${course.id}?prof=${prof.id}`}
@@ -107,8 +107,8 @@ FactrakAOS.propTypes = {
 };
 
 FactrakAOS.defaultProps = {
-  notice: '',
-  warning: '',
+  notice: "",
+  warning: "",
   currentUser: {},
 };
 

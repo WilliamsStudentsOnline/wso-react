@@ -9,9 +9,9 @@ import Homepage from "./Homepage";
 import About from "./About";
 import Listserv from "./Listserv";
 import Scheduler from "./Scheduler";
-import FacebookMain from "./FacebookMain";
+import FacebookMain from "./views/Facebook/FacebookMain";
 import DormtrakIndex from "./DormtrakIndex";
-import FactrakMain from "./FactrakMain";
+import FactrakMain from "./views/Factrak/FactrakMain";
 import Login from "./Login";
 
 // Redux/routing
@@ -23,7 +23,7 @@ import { doRemoveCreds } from "../actions/auth";
 
 // Additional Imports
 import wordFile from "../constants/words.json";
-import { tokenExpiryHandler } from "../api/utils";
+import { tokenExpiryHandler } from "../api/auth";
 
 const App = ({ route, navigateTo, token, removeCreds }) => {
   const randomWSO = () => {

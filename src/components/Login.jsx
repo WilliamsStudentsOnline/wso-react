@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { doUpdateToken, doUpdateUser } from "../actions/auth";
 
 // External imports
-import { getToken } from "../api/utils";
+import { getToken } from "../api/auth";
 import { actions } from "redux-router5";
 import { getUser } from "../api/users";
 

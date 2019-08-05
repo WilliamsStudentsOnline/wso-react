@@ -3,15 +3,10 @@ import React from "react";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getScopes } from "../selectors/auth";
+import { getCurrUser } from "../../../selectors/auth";
 
-const FactrakPolicy = ({ scopes }) => {
-  let factrakAccepted = false;
-  // @TODO: find a better way
-  if (scopes && scopes.indexOf("service:factrak:admin") !== -1) {
-    factrakAccepted = true;
-  }
-
+// @TODO: Form submit handler
+const FactrakPolicy = ({ currUser }) => {
   return (
     <div className="article">
       <section>
@@ -76,7 +71,7 @@ const FactrakPolicy = ({ scopes }) => {
             </a>
             .
           </p>
-          {factrakAccepted ? (
+          {currUser.hasAcceptedFactrakPolicy ? (
             <p>You have already accepted the Factrak policy.</p>
           ) : (
             <form acceptCharset="UTF-8" method="post">
@@ -101,7 +96,7 @@ const FactrakPolicy = ({ scopes }) => {
 };
 
 const mapStateToProps = (state) => ({
-  scopes: getScopes(state),
+  currUser: getCurrUser(state),
 });
 
 export default connect(mapStateToProps)(FactrakPolicy);

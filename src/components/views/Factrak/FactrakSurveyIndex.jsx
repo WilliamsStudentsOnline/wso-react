@@ -1,8 +1,8 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import FactrakComment from './FactrakComment';
-import FactrakLayout from './FactrakLayout';
+import React from "react";
+import PropTypes from "prop-types";
+import FactrakComment from "./FactrakComment";
+import FactrakLayout from "./FactrakLayout";
 
 const FactrakSurveyIndex = ({
   surveys,
@@ -26,7 +26,7 @@ const FactrakSurveyIndex = ({
                 <h3>Your Reviews</h3>
                 <br />
                 <br />
-                {surveys.map(survey => (
+                {surveys.map((survey) => (
                   <FactrakComment
                     comment={survey}
                     showProf
@@ -54,8 +54,8 @@ FactrakSurveyIndex.propTypes = {
 };
 
 FactrakSurveyIndex.defaultProps = {
-  notice: '',
-  warning: '',
+  notice: "",
+  warning: "",
 };
 
 export default FactrakSurveyIndex;

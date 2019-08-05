@@ -37,6 +37,8 @@ const getToken = async (unixID, password) => {
     return null;
   }
   console.log("Obtaining Token");
+  console.log(unixID);
+  console.log(password);
   const response = await axios({
     url: "/api/v1/auth/login",
     method: "post",

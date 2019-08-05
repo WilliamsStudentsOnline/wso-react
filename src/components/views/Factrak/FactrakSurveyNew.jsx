@@ -1,8 +1,8 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import FactrakSurvey from './FactrakSurvey';
-import FactrakLayout from './FactrakLayout';
+import React from "react";
+import PropTypes from "prop-types";
+import FactrakSurvey from "./FactrakSurvey";
+import FactrakLayout from "./FactrakLayout";
 
 const FactrakSurveyNew = ({
   survey,
@@ -45,8 +45,8 @@ FactrakSurveyNew.propTypes = {
 };
 
 FactrakSurveyNew.defaultProps = {
-  notice: '',
-  warning: '',
+  notice: "",
+  warning: "",
 };
 
 export default FactrakSurveyNew;

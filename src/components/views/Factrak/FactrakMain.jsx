@@ -10,7 +10,7 @@ import FactrakLayout from "./FactrakLayout";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken } from "../selectors/auth";
+import { getToken } from "../../../selectors/auth";
 
 // External Imports
 import { createRouteNodeSelector } from "redux-router5";

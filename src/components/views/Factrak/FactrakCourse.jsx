@@ -1,8 +1,8 @@
 // React imports
-import React from 'react';
-import PropTypes from 'prop-types';
-import FactrakComment from './FactrakComment';
-import FactrakLayout from './FactrakLayout';
+import React from "react";
+import PropTypes from "prop-types";
+import FactrakComment from "./FactrakComment";
+import FactrakLayout from "./FactrakLayout";
 
 const FactrakCourse = ({
   course,
@@ -16,10 +16,8 @@ const FactrakCourse = ({
     if (course.professors.length === 0) return null;
     return (
       <div>
-        View comments only for 
-        {' '}
-        <br />
-        {course.professors.map(prof => (
+        View comments only for <br />
+        {course.professors.map((prof) => (
           <a
             key={prof.name}
             href={`/factrak/courses/${course.id}?prof=${prof.id}`}
@@ -36,15 +34,15 @@ const FactrakCourse = ({
     return (
       <div className="factrak-prof-comments">
         {comments.length === 0
-          ? 'None yet.'
-          : comments.map(comment => (
-            <FactrakComment
-              comment={comment}
-              abridged={false}
-              showProf
-              currentUser={currentUser}
-              key={comment.id}
-            />
+          ? "None yet."
+          : comments.map((comment) => (
+              <FactrakComment
+                comment={comment}
+                abridged={false}
+                showProf
+                currentUser={currentUser}
+                key={comment.id}
+              />
             ))}
       </div>
     );
@@ -81,8 +79,8 @@ FactrakCourse.propTypes = {
 };
 
 FactrakCourse.defaultProps = {
-  notice: '',
-  warning: '',
+  notice: "",
+  warning: "",
   currentUser: {},
 };
 

@@ -1,12 +1,12 @@
 // React imports
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import axios from 'axios';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import axios from "axios";
 
 // External Imports
 
 const FactrakSurvey = ({ survey, prof, authToken, edit }) => {
-  let defaultQuery = '';
+  let defaultQuery = "";
   if (survey.course) defaultQuery = survey.course.department;
   const [query, setQuery] = useState(defaultQuery);
   const [suggestions, setSuggestions] = useState([]);
@@ -14,15 +14,15 @@ const FactrakSurvey = ({ survey, prof, authToken, edit }) => {
   /**
    * For autocompleting departments in the survey form
    */
-  const factrakDeptAutocomplete = event => {
+  const factrakDeptAutocomplete = (event) => {
     setQuery(event.target.value);
     axios({
-      url: '/factrak/find_depts_autocomplete',
+      url: "/factrak/find_depts_autocomplete",
       params: { q: event.target.value },
       headers: {
-        'X-Requested-With': 'XMLHttpRequest',
+        "X-Requested-With": "XMLHttpRequest",
       },
-    }).then(response => {
+    }).then((response) => {
       return setSuggestions(response.data);
     });
   };
@@ -32,7 +32,7 @@ const FactrakSurvey = ({ survey, prof, authToken, edit }) => {
       return (
         <table id="factrak_dept_suggestions">
           <tbody>
-            {suggestions.map(suggestion => (
+            {suggestions.map((suggestion) => (
               <tr key={suggestion}>
                 <td>
                   <button
@@ -40,12 +40,12 @@ const FactrakSurvey = ({ survey, prof, authToken, edit }) => {
                     className="autocomplete-option"
                     onClick={() => {
                       axios({
-                        url: '/factrak/find_depts_autocomplete',
+                        url: "/factrak/find_depts_autocomplete",
                         params: { q: suggestion.value },
                         headers: {
-                          'X-Requested-With': 'XMLHttpRequest',
+                          "X-Requested-With": "XMLHttpRequest",
                         },
-                      }).then(response => {
+                      }).then((response) => {
                         return setSuggestions(response.data);
                       });
 
@@ -64,8 +64,8 @@ const FactrakSurvey = ({ survey, prof, authToken, edit }) => {
     return null;
   };
 
-  const optionBuilder = type => {
-    return [1, 2, 3, 4, 5, 6, 7].map(ans => {
+  const optionBuilder = (type) => {
+    return [1, 2, 3, 4, 5, 6, 7].map((ans) => {
       return (
         <React.Fragment key={ans}>
           {ans}
@@ -85,14 +85,14 @@ const FactrakSurvey = ({ survey, prof, authToken, edit }) => {
     <>
       <div id="errors">
         {survey.errors
-          ? survey.errors.full_messages.map(msg => <p key={msg}>{msg}</p>)
+          ? survey.errors.full_messages.map((msg) => <p key={msg}>{msg}</p>)
           : null}
       </div>
 
       <form
-        id={edit ? `edit_factrak_survey_${survey.id}` : 'new_factrak_survey'}
-        className={edit ? 'edit_factrak_survey' : 'new_factrak_survey'}
-        action={edit ? `/factrak/surveys/${survey.id}` : '/factrak/surveys'}
+        id={edit ? `edit_factrak_survey_${survey.id}` : "new_factrak_survey"}
+        className={edit ? "edit_factrak_survey" : "new_factrak_survey"}
+        action={edit ? `/factrak/surveys/${survey.id}` : "/factrak/surveys"}
         acceptCharset="UTF-8"
         method="post"
       >
@@ -138,7 +138,7 @@ const FactrakSurvey = ({ survey, prof, authToken, edit }) => {
                     type="text"
                     name="factrak_survey[course_num]"
                     id="factrak_survey_course_num"
-                    defaultValue={survey.course ? survey.course.number : ''}
+                    defaultValue={survey.course ? survey.course.number : ""}
                   />
                 </div>
               </td>
@@ -209,14 +209,14 @@ const FactrakSurvey = ({ survey, prof, authToken, edit }) => {
                   taken?
                 </strong>
               </td>
-              <td align="left">{optionBuilder('course_workload')}</td>
+              <td align="left">{optionBuilder("course_workload")}</td>
             </tr>
 
             <tr>
               <td align="left">
                 <strong>How approachable was this professor?</strong>
               </td>
-              <td align="left">{optionBuilder('approachability')}</td>
+              <td align="left">{optionBuilder("approachability")}</td>
             </tr>
 
             <tr>
@@ -225,7 +225,7 @@ const FactrakSurvey = ({ survey, prof, authToken, edit }) => {
                   If applicable, how effective was this professor at lecturing?
                 </strong>
               </td>
-              <td align="left">{optionBuilder('lead_lecture')}</td>
+              <td align="left">{optionBuilder("lead_lecture")}</td>
             </tr>
 
             <tr>
@@ -235,7 +235,7 @@ const FactrakSurvey = ({ survey, prof, authToken, edit }) => {
                   discussion?
                 </strong>
               </td>
-              <td align="left">{optionBuilder('promote_discussion')}</td>
+              <td align="left">{optionBuilder("promote_discussion")}</td>
             </tr>
 
             <tr>
@@ -244,7 +244,7 @@ const FactrakSurvey = ({ survey, prof, authToken, edit }) => {
                   How helpful was this professor outside of class?
                 </strong>
               </td>
-              <td align="left">{optionBuilder('outside_helpfulness')}</td>
+              <td align="left">{optionBuilder("outside_helpfulness")}</td>
             </tr>
 
             <tr>
@@ -252,11 +252,11 @@ const FactrakSurvey = ({ survey, prof, authToken, edit }) => {
                 <br />
                 <strong>Comments*</strong>
                 <textarea
-                  style={{ minHeight: '100px' }}
+                  style={{ minHeight: "100px" }}
                   placeholder="Minimum 100 characters"
                   name="factrak_survey[comment]"
                   id="factrak_survey_comment"
-                  defaultValue={edit ? survey.comment : ''}
+                  defaultValue={edit ? survey.comment : ""}
                 />
                 <input
                   type="submit"
