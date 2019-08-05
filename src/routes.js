@@ -4,7 +4,11 @@ export default [
   { name: "listserv", path: "/listserv" },
   { name: "hours", path: "/hours" },
   { name: "scheduler", path: "/scheduleCourses" },
-  { name: "facebook", path: "/facebook" },
+  {
+    name: "facebook",
+    path: "/facebook",
+    children: [{ name: "help", path: "/help" }],
+  },
   {
     name: "factrak",
     path: "/factrak",

@@ -9,7 +9,7 @@ import Homepage from "./Homepage";
 import About from "./About";
 import Listserv from "./Listserv";
 import Scheduler from "./Scheduler";
-import Facebook from "./Facebook";
+import FacebookMain from "./FacebookMain";
 import DormtrakIndex from "./DormtrakIndex";
 import FactrakMain from "./FactrakMain";
 import Login from "./Login";
@@ -51,7 +51,7 @@ const App = ({ route, navigateTo, token, removeCreds }) => {
       case "scheduler":
         return <Scheduler />;
       case "facebook":
-        return <Facebook />;
+        return <FacebookMain />;
       case "dormtrak":
         return <DormtrakIndex />;
       case "factrak":

@@ -31,7 +31,7 @@ const updateToken = async (token) => {
   return response;
 };
 
-// Authenticates the user and stores the token in WebStorage
+// Authenticates the user and returnx the token.
 const getToken = async (unixID, password) => {
   if (!unixID || !password) {
     return null;

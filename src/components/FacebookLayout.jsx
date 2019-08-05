@@ -3,7 +3,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import SearchBox from "./SearchBox";
 
-const FacebookLayout = ({ currentUser, authToken, children }) => {
+// Redux imports
+import { connect } from "react-redux";
+import { getCurrUser } from "../selectors/auth";
+
+const FacebookLayout = ({ children, currUser }) => {
   return (
     <div className="facebook">
       <header>
@@ -19,10 +23,10 @@ const FacebookLayout = ({ currentUser, authToken, children }) => {
               <a href="/facebook/help"> Help </a>
             </li>
 
-            {currentUser ? (
+            {currUser && currUser.id ? (
               <>
                 <li>
-                  <a href={`/facebook/users/${currentUser.id}`}>View</a>
+                  <a href={`/facebook/users/${currUser.id}`}>View</a>
                 </li>{" "}
                 <li>
                   <a href="/facebook/edit"> Edit </a>
@@ -31,7 +35,7 @@ const FacebookLayout = ({ currentUser, authToken, children }) => {
             ) : null}
           </ul>
         </div>
-        <SearchBox authToken={authToken} />
+        <SearchBox />
       </header>
       {children}
     </div>
@@ -39,8 +43,6 @@ const FacebookLayout = ({ currentUser, authToken, children }) => {
 };
 
 FacebookLayout.propTypes = {
-  currentUser: PropTypes.object.isRequired,
-  authToken: PropTypes.string.isRequired,
   children: PropTypes.object,
 };
 
@@ -48,4 +50,8 @@ FacebookLayout.defaultProps = {
   children: {},
 };
 
-export default FacebookLayout;
+const mapStateToProps = (state) => ({
+  currUser: getCurrUser(state),
+});
+
+export default connect(mapStateToProps)(FacebookLayout);

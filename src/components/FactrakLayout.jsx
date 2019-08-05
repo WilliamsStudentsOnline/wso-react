@@ -5,12 +5,13 @@ import PropTypes from "prop-types";
 // Redux imports
 import { connect } from "react-redux";
 import { getCurrUser } from "../selectors/auth";
+import { actions } from "redux-router5";
 
 // External imports
 import axios from "axios";
 import { Link } from "react-router5";
 
-const FactrakLayout = ({ children, currUser }) => {
+const FactrakLayout = ({ children, currUser, navigateTo }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
@@ -57,7 +58,7 @@ const FactrakLayout = ({ children, currUser }) => {
     );
   };
 
-  if (currUser.hasAcceptedFactrakPolicy) {
+  if (currUser && currUser.hasAcceptedFactrakPolicy) {
     return (
       <>
         <header>
@@ -110,6 +111,7 @@ const FactrakLayout = ({ children, currUser }) => {
     );
   }
 
+  navigateTo("home");
   return null;
 };
 
@@ -121,4 +123,11 @@ const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
 });
 
-export default connect(mapStateToProps)(FactrakLayout);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FactrakLayout);

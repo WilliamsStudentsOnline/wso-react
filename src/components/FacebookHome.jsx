@@ -1,16 +1,8 @@
 // React Imports
 import React from "react";
 import PropTypes from "prop-types";
-import FacebookLayout from "./FacebookLayout";
 
-const Facebook = ({
-  results,
-  currentUser,
-  authToken,
-  searched,
-  notice,
-  warning,
-}) => {
+const FacebookHome = ({ results, searched }) => {
   const ListView = () => {
     return (
       <table>
@@ -89,46 +81,35 @@ const Facebook = ({
     return GridView();
   };
 
-  return (
-    <FacebookLayout
-      currentUser={currentUser}
-      authToken={authToken}
-      notice={notice}
-      warning={warning}
-    >
-      {searched && searched.length !== 0 ? (
-        <article className="facebook-results">
-          <section>
-            {results ? (
-              FacebookResults()
-            ) : (
-              <>
-                <br />
-                <h1 className="no-matches-found">No matches were found.</h1>
-              </>
-            )}
-          </section>
-        </article>
-      ) : null}
-    </FacebookLayout>
-  );
+  if (searched && searched.length !== 0) {
+    return (
+      <article className="facebook-results">
+        <section>
+          {results ? (
+            FacebookResults()
+          ) : (
+            <>
+              <br />
+              <h1 className="no-matches-found">No matches were found.</h1>
+            </>
+          )}
+        </section>
+      </article>
+    );
+  }
+
+  return null;
 };
 
-Facebook.propTypes = {
+FacebookHome.propTypes = {
   results: PropTypes.arrayOf(PropTypes.object),
-  currentUser: PropTypes.object.isRequired,
-  authToken: PropTypes.string.isRequired,
   searched: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.object),
     PropTypes.bool,
   ]),
-  notice: PropTypes.string,
-  warning: PropTypes.string,
 };
-Facebook.defaultProps = {
+FacebookHome.defaultProps = {
   searched: [],
-  notice: "",
-  warning: "",
   results: [],
 };
-export default Facebook;
+export default FacebookHome;

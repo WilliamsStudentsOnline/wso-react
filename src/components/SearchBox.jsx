@@ -1,10 +1,17 @@
-// React Imports
-import React from 'react';
-import PropTypes from 'prop-types';
+//@TODO: See if I can use this for factrak too.
+//@TODO: Get this to work with the API.
 
-const SearchBox = ({ authToken }) => {
+// React Imports
+import React from "react";
+import PropTypes from "prop-types";
+
+// Redux imports
+import { connect } from "react-redux";
+import { getToken } from "../selectors/auth";
+
+const SearchBox = ({ token }) => {
   return (
-    <form action="/facebook" method="post">
+    <form method="post">
       <input
         id="search"
         name="search"
@@ -18,13 +25,16 @@ const SearchBox = ({ authToken }) => {
         value="Search"
         className="submit"
       />
-      <input type="hidden" name="authenticity_token" value={authToken} />
     </form>
   );
 };
 
 SearchBox.propTypes = {
-  authToken: PropTypes.string.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
-export default SearchBox;
+const mapStateToProps = (state) => ({
+  token: getToken(state),
+});
+
+export default connect(mapStateToProps)(SearchBox);
