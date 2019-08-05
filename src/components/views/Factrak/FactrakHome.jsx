@@ -14,12 +14,12 @@ const FactrakHome = ({ token, currUser }) => {
   const [areas, updateAreas] = useState([]);
   const [surveys, updateSurveys] = useState([]);
 
-  // Equivalent to ComponentDidMount?
+  // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadSurveys = async () => {
-      const response = await getSurveys(token);
-      if (response) {
-        updateSurveys(response.data.data);
+      const surveys = await getSurveys(token, 10);
+      if (surveys) {
+        updateSurveys(surveys);
       } else {
         // @TODO: Error handling?
       }
@@ -46,7 +46,7 @@ const FactrakHome = ({ token, currUser }) => {
             <ul id="dept_list">
               {areas.map((area) => (
                 <li key={area.name}>
-                  <a href={`/factrak/areas_of_study/${area.id}`}>{area.name}</a>
+                  <a href={`/factrak/areasOfStudy/${area.id}`}>{area.name}</a>
                 </li>
               ))}
             </ul>

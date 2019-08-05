@@ -7,6 +7,7 @@ import FactrakHome from "./FactrakHome";
 import FactrakPolicy from "./FactrakPolicy";
 import FactrakModerate from "./FactrakModerate";
 import FactrakLayout from "./FactrakLayout";
+import FactrakAOS from "./FactrakAOS";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -25,9 +26,13 @@ const FactrakMain = ({ route }) => {
       case "policy":
         return <FactrakPolicy />;
       case "surveys":
+        // @TODO: update factrak sureys
         return <FactrakPolicy />;
       case "moderate":
+        // @TODO: Update FactrakModerate
         return <FactrakModerate />;
+      case "areasOfStudy":
+        return <FactrakAOS />;
       default:
         return <FactrakHome />;
     }

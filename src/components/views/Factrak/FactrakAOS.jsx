@@ -1,115 +1,138 @@
 // React imports
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import FactrakLayout from "./FactrakLayout";
 
-const FactrakAOS = ({
-  areaOfStudy,
-  professors,
-  currentUser,
-  authToken,
-  notice,
-  warning,
-}) => {
-  const aos = areaOfStudy;
-  const profs = professors;
+// Redux imports
+import { connect } from "react-redux";
+import { getToken } from "../../../selectors/auth";
 
-  const sortedCourses = aos.courses.sort((a, b) => {
-    if (a.number < b.number) return -1;
-    if (a.number > b.number) return 1;
-    return 0;
-  });
+// External Imports
+import { createRouteNodeSelector } from "redux-router5";
+import {
+  getProfsOfAOS,
+  getCoursesOfAOS,
+  getAreaOfStudy,
+} from "../../../api/factrak";
+
+const FactrakAOS = ({ route, token }) => {
+  const [courses, updateCourses] = useState([]);
+  const [profs, updateProfs] = useState([]);
+  const [area, updateArea] = useState({});
+
+  // Equivalent to ComponentDidMount
+  useEffect(() => {
+    const areaID = route.params.area;
+
+    const loadProfs = async (areaID) => {
+      const profs = await getProfsOfAOS(token, areaID);
+      if (profs) {
+        updateProfs(profs);
+      } else {
+        // @TODO: Error handling?
+      }
+    };
+
+    const loadCourses = async (areaID) => {
+      const courses = await getCoursesOfAOS(token, areaID);
+      if (courses) {
+        updateCourses(courses);
+      } else {
+        // @TODO: Error handling?
+      }
+    };
+
+    // @TODO: think deeper about whether you want this to be passed as props?
+    const loadAOS = async (areaID) => {
+      // @TODO: Error handling for invalid areaID?
+      const response = await getAreaOfStudy(token, areaID);
+      if (response) {
+        updateArea(response.data.data);
+      } else {
+        // @TODO: Error handling?
+      }
+    };
+
+    loadProfs(areaID);
+    loadCourses(areaID);
+    loadAOS(areaID);
+  }, [route.params.area, token]);
 
   return (
-    <FactrakLayout
-      currentUser={currentUser}
-      authToken={authToken}
-      notice={notice}
-      warning={warning}
-    >
-      <article className="factrak-home">
-        <section className="margin-vertical-small">
-          <h3>{aos.name}</h3>
-          {profs.length > 0 ? (
-            <>
-              <br />
-              <h4>{`Professors in ${aos.name}`}</h4>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Title</th>
-                    <th className="unix-column">Unix</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {profs.map((prof) => (
-                    <tr key={prof.unix_id}>
-                      <td>
-                        <a href={`/factrak/professors/${prof.id}`}>
-                          {prof.name}
-                        </a>
-                      </td>
-
-                      <td>{prof.title}</td>
-                      <td>{prof.unix_id}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </>
-          ) : null}
-        </section>
-
-        <section className="margin-vertical-small">
-          <h4>Courses</h4>
-          <table>
-            <thead>
-              <tr>
-                <th className="col-20">Course</th>
-                <th className="col-80">Professors</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedCourses.map((course) => (
-                <tr key={course.name}>
-                  <td className="col-20">
-                    <a href={`/factrak/courses/${course.id}`}>{course.name}</a>
-                  </td>
-                  <td className="col-80">
-                    {course.professors.map((prof) => {
-                      return (
-                        <a
-                          href={`/factrak/courses/${course.id}?prof=${prof.id}`}
-                        >
-                          {prof.name}
-                        </a>
-                      );
-                    })}
-                  </td>
+    <article className="factrak-home">
+      <section className="margin-vertical-small">
+        <h3>{area && area.name ? area.name : ""}</h3>
+        {profs.length > 0 ? (
+          <>
+            <br />
+            <h4>{`Professors in ${area && area.name ? area.name : ""}`}</h4>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Title</th>
+                  <th className="unix-column">Unix</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      </article>
-    </FactrakLayout>
+              </thead>
+              <tbody>
+                {profs.map((prof) => (
+                  <tr key={prof.id}>
+                    <td>
+                      <a href={`/factrak/professors/${prof.id}`}>{prof.name}</a>
+                    </td>
+
+                    <td>{prof.title}</td>
+                    <td>{prof.unixID}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        ) : null}
+      </section>
+
+      <section className="margin-vertical-small">
+        <h4>Courses</h4>
+        <table>
+          <thead>
+            <tr>
+              <th className="col-20">Course</th>
+              <th className="col-80">Professors</th>
+            </tr>
+          </thead>
+          <tbody>
+            {courses.map((course) => (
+              <tr key={course.id}>
+                <td className="col-20">
+                  <a href={`/factrak/courses/${course.id}`}>
+                    {course.id}
+                    {/* course.name */}
+                  </a>
+                </td>
+                <td className="col-80">
+                  {/* @TODO course.professors.map((prof) => {
+                    return (
+                      <a href={`/factrak/courses/${course.id}?prof=${prof.id}`}>
+                        {prof.name}
+                      </a>
+                    );
+                  }) */}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    </article>
   );
 };
 
-FactrakAOS.propTypes = {
-  areaOfStudy: PropTypes.string.isRequired,
-  professors: PropTypes.string.isRequired,
-  currentUser: PropTypes.object,
-  authToken: PropTypes.string.isRequired,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
+const mapStateToProps = (state) => {
+  const routeNodeSelector = createRouteNodeSelector("factrak");
+
+  return (state) => ({
+    token: getToken(state),
+    ...routeNodeSelector(state),
+  });
 };
 
-FactrakAOS.defaultProps = {
-  notice: "",
-  warning: "",
-  currentUser: {},
-};
-
-export default FactrakAOS;
+export default connect(mapStateToProps)(FactrakAOS);

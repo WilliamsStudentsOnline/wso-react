@@ -2,11 +2,15 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
+// Redux imports
+import { connect } from "react-redux";
+import { getCurrUser } from "../../../selectors/auth";
+
 // External Imports
 import axios from "axios";
 
 // @TODO: investigate survey deficit
-const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
+const FactrakComment = ({ comment, showProf, abridged, currUser }) => {
   const [agrees, setAgrees] = useState(comment.agrees);
   const [disagrees, setDisagrees] = useState(comment.disagrees);
   const [flagged, setFlagged] = useState(comment.flagged);
@@ -39,7 +43,7 @@ const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
   const commentDetail = () => {
     return (
       <p className="comment-detail">
-        {currentUser.id === comment.user_id ? (
+        {currUser.id === comment.userID ? (
           <>
             <a href={`/factrak/surveys/${comment.id}/edit`}>Edit</a>
             &nbsp;|&nbsp;
@@ -53,7 +57,7 @@ const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
             </a>
           </>
         ) : (
-          `posted ${timeAgoInWords(comment.created_at)}.`
+          `posted ${/*@TODO timeAgoInWords(comment.created_at)*/ 1}.`
         )}
       </p>
     );
@@ -84,8 +88,8 @@ const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
   };
 
   const wouldTakeAnother = () => {
-    if (comment.would_take_another === null) return null;
-    if (comment.would_take_another)
+    if (comment.wouldTakeAnother === null) return null;
+    if (comment.wouldTakeAnother)
       return (
         <>
           <br />I would take another course with this professor
@@ -101,8 +105,8 @@ const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
   };
 
   const wouldRecommend = () => {
-    if (comment.would_recommend_course === null) return null;
-    if (comment.would_recommend_course)
+    if (comment.wouldRecommendCourse === null) return null;
+    if (comment.wouldRecommendCourse)
       return (
         <>
           <br />I would recommend this course to a friend
@@ -118,7 +122,7 @@ const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
   };
 
   const agree = () => {
-    if (comment.user_id === currentUser.id) return null;
+    if (comment.userID === currUser.id) return null;
     return (
       <>
         <button
@@ -161,7 +165,7 @@ const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
           {truncatedComment}
           {comment.comment.length > 145 ? (
             <div>
-              <a href={`/factrak/professors/${comment.professor.id}`}>
+              <a href={`/factrak/professors/${comment.professorID}`}>
                 ...See More
               </a>
             </div>
@@ -186,20 +190,19 @@ const FactrakComment = ({ comment, showProf, abridged, currentUser }) => {
       <div className="comment-content">
         <h1>
           {showProf ? (
-            <a href={`/factrak/professors/${comment.professor.id}`}>
-              {`${comment.professor.name} | `}
+            <a href={`/factrak/professors/${comment.professorID}`}>
+              {`${comment.professorID} | `}
             </a>
           ) : null}
-          {comment.course ? (
-            <a href={`/factrak/courses/${comment.course.id}`}>
-              {comment.course.name}
-            </a>
-          ) : null}
+          <a href={`/factrak/courses/${comment.courseID}`}>
+            {/* @TODO comment.course.name */}
+            {comment.courseID}
+          </a>
         </h1>
 
         {agreeCount()}
-        {currentUser.factrak_survey_deficit === 0 ||
-        comment.user_id === currentUser.id ? (
+        {currUser.factrakSurveyDeficit === 0 ||
+        comment.userID === currUser.id ? (
           commentText()
         ) : (
           <div className="blurred">Please do your Factrak surveys.</div>
@@ -215,7 +218,15 @@ FactrakComment.propTypes = {
   showProf: PropTypes.bool.isRequired,
   abridged: PropTypes.bool.isRequired,
   comment: PropTypes.object.isRequired,
-  currentUser: PropTypes.object.isRequired,
+  currUser: PropTypes.object,
 };
 
-export default FactrakComment;
+FactrakComment.defaultProps = {
+  currUser: {},
+};
+
+const mapStateToProps = (state) => ({
+  currUser: getCurrUser(state),
+});
+
+export default connect(mapStateToProps)(FactrakComment);

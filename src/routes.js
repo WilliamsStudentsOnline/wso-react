@@ -16,6 +16,8 @@ export default [
       { name: "policy", path: "/policy" },
       { name: "surveys", path: "/surveys" },
       { name: "moderate", path: "/moderate" },
+      // @TODO: error handling for non numerical params
+      { name: "areasOfStudy", path: "/areasOfStudy/:area<\\d+>" },
     ],
   },
   { name: "dormtrak", path: "/dormtrak" },
