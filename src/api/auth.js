@@ -6,7 +6,7 @@ const refreshToken = async (token) => {
   const response = await axios({
     url: "/api/v1/auth/refresh-token",
     headers: {
-      Authorization: "Bearer " + token,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     console.log(error.response);
@@ -21,7 +21,7 @@ const updateToken = async (token) => {
   const response = await axios({
     url: "/api/v1/auth/update-token",
     headers: {
-      Authorization: "Bearer " + token,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     console.log(error.response);
@@ -65,6 +65,7 @@ const tokenExpiryHandler = (token, expiry) => {
   } catch (err) {
     return null;
   }
+  return null;
 };
 
 export { tokenExpiryHandler, updateToken, getToken };

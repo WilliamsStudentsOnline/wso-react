@@ -25,15 +25,18 @@ import { doRemoveCreds } from "../actions/auth";
 import wordFile from "../constants/words.json";
 import { tokenExpiryHandler } from "../api/auth";
 
-const App = ({ route, navigateTo, token, removeCreds }) => {
+const App = ({ route, navigateTo, removeCreds }) => {
   const randomWSO = () => {
     if (wordFile) {
-      let w = wordFile.w[Math.floor(Math.random() * wordFile.w.length)];
-      let s = wordFile.s[Math.floor(Math.random() * wordFile.s.length)];
-      let o = wordFile.o[Math.floor(Math.random() * wordFile.o.length)];
+      const w = wordFile.w[Math.floor(Math.random() * wordFile.w.length)];
+      const s = wordFile.s[Math.floor(Math.random() * wordFile.s.length)];
+      const o = wordFile.o[Math.floor(Math.random() * wordFile.o.length)];
 
-      return "WSO: " + w + " " + s + "  " + o;
-    } else return "WSO: Williams Students Online";
+      return `WSO: ${w} ${s} ${o}`;
+    }
+
+    // Return default if wordFile not found
+    return "WSO: Williams Students Online";
   };
 
   const mainBody = () => {
@@ -61,11 +64,12 @@ const App = ({ route, navigateTo, token, removeCreds }) => {
       case "logout":
         removeCreds();
         navigateTo("home");
-        return;
+        return null;
       default:
         return (
           <header>
-            <h1>Whoops! Page not found!</h1> 404. Run. Hide. Cease and Desist.
+            <h1>Whoops! Page not found!</h1>
+            404. Run. Hide. Cease and Desist.
           </header>
         );
     }
@@ -87,9 +91,11 @@ const App = ({ route, navigateTo, token, removeCreds }) => {
 
 App.propTypes = {
   route: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  removeCreds: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({

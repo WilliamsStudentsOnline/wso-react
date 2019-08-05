@@ -41,15 +41,10 @@ const FactrakMain = ({ route }) => {
 };
 
 FactrakMain.propTypes = {
-  areas: PropTypes.arrayOf(PropTypes.object),
-};
-
-FactrakMain.defaultProps = {
-  areas: [{ name: "hi", id: "1" }],
   route: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak");
 
   return (state) => ({

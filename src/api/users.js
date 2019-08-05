@@ -1,11 +1,11 @@
 import axios from "axios";
 
 // Returns all the users
-const getAllUsers = async () => {
+const getAllUsers = async (token) => {
   const response = await axios({
     url: "/api/v1/users",
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("WSOAuthToken"),
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     console.log(error.response);
@@ -16,11 +16,11 @@ const getAllUsers = async () => {
 };
 
 // Returns current user
-const getUser = async (unixID = "me") => {
+const getUser = async (unixID = "me", token) => {
   const response = await axios({
     url: `/api/v1/users/${unixID}`,
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("WSOAuthToken"),
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     // @TODO figure out what the best way of dealing with the error is

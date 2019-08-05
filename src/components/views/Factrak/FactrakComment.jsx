@@ -36,9 +36,9 @@ const FactrakComment = ({ comment, showProf, abridged, currUser }) => {
     );
   };
   // @TODO: write this algorithm properly
-  const timeAgoInWords = (time) => {
-    return new Date(time).toDateString();
-  };
+  // const timeAgoInWords = (time) => {
+  //   return new Date(time).toDateString();
+  // };
 
   const commentDetail = () => {
     return (
@@ -57,7 +57,7 @@ const FactrakComment = ({ comment, showProf, abridged, currUser }) => {
             </a>
           </>
         ) : (
-          `posted ${/*@TODO timeAgoInWords(comment.created_at)*/ 1}.`
+          `posted ${/* @TODO timeAgoInWords(comment.created_at) */ 1}.`
         )}
       </p>
     );

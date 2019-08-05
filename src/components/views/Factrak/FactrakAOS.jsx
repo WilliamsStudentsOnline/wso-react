@@ -21,21 +21,21 @@ const FactrakAOS = ({ route, token }) => {
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
-    const areaID = route.params.area;
+    const areaParam = route.params.area;
 
     const loadProfs = async (areaID) => {
-      const profs = await getProfsOfAOS(token, areaID);
-      if (profs) {
-        updateProfs(profs);
+      const profsData = await getProfsOfAOS(token, areaID);
+      if (profsData) {
+        updateProfs(profsData);
       } else {
         // @TODO: Error handling?
       }
     };
 
     const loadCourses = async (areaID) => {
-      const courses = await getCoursesOfAOS(token, areaID);
-      if (courses) {
-        updateCourses(courses);
+      const coursesData = await getCoursesOfAOS(token, areaID);
+      if (coursesData) {
+        updateCourses(coursesData);
       } else {
         // @TODO: Error handling?
       }
@@ -52,9 +52,9 @@ const FactrakAOS = ({ route, token }) => {
       }
     };
 
-    loadProfs(areaID);
-    loadCourses(areaID);
-    loadAOS(areaID);
+    loadProfs(areaParam);
+    loadCourses(areaParam);
+    loadAOS(areaParam);
   }, [route.params.area, token]);
 
   return (
@@ -104,7 +104,7 @@ const FactrakAOS = ({ route, token }) => {
               <tr key={course.id}>
                 <td className="col-20">
                   <a href={`/factrak/courses/${course.id}`}>
-                    {course.id}
+                    {course.number}
                     {/* course.name */}
                   </a>
                 </td>
@@ -126,7 +126,12 @@ const FactrakAOS = ({ route, token }) => {
   );
 };
 
-const mapStateToProps = (state) => {
+FactrakAOS.propTypes = {
+  route: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
+};
+
+const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak");
 
   return (state) => ({

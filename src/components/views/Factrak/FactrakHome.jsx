@@ -17,9 +17,10 @@ const FactrakHome = ({ token, currUser }) => {
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadSurveys = async () => {
-      const surveys = await getSurveys(token, 10);
-      if (surveys) {
-        updateSurveys(surveys);
+      const surveysData = await getSurveys(token, 10);
+      if (surveysData) {
+        console.log(surveysData);
+        updateSurveys(surveysData);
       } else {
         // @TODO: Error handling?
       }

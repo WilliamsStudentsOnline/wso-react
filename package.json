@@ -8,6 +8,8 @@
     "google-client-api": "^1.0.4",
     "html2canvas": "^1.0.0-rc.3",
     "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.15",
+    "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-google-charts": "^3.0.14",

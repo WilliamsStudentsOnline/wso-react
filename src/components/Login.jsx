@@ -1,5 +1,6 @@
 // React imports
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -28,7 +29,7 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
     const response = await getToken(unixID, password);
 
     if (!response) {
-      //handle error
+      // handle error
     } else {
       // redirects to home
       console.log(response);
@@ -94,6 +95,12 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
       </form>
     </header>
   );
+};
+
+Login.propTypes = {
+  updateToken: PropTypes.func.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  updateUser: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
