@@ -1,5 +1,6 @@
 // React imports
-import React from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -7,6 +8,20 @@ import { getCurrUser } from "../../../selectors/auth";
 
 // @TODO: Form submit handler
 const FactrakPolicy = ({ currUser }) => {
+  const [acceptPolicy, updateAcceptPolicy] = useState(false);
+
+  const clickHandler = (event) => {
+    updateAcceptPolicy(event.target.checked);
+  };
+
+  const submitHandler = () => {
+    return acceptPolicy;
+    // if (!acceptPolicy)
+    // return;
+
+    // @TODO
+  };
+
   return (
     <div className="article">
       <section>
@@ -74,10 +89,16 @@ const FactrakPolicy = ({ currUser }) => {
           {currUser.hasAcceptedFactrakPolicy ? (
             <p>You have already accepted the Factrak policy.</p>
           ) : (
-            <form acceptCharset="UTF-8" method="post">
+            <form acceptCharset="UTF-8" onSubmit={() => submitHandler()}>
               <p>
-                <input type="checkbox" name="accept" id="accept" value="1" />I
-                agree to the Factrak policy.
+                <input
+                  type="checkbox"
+                  name="accept"
+                  id="accept"
+                  value="1"
+                  onChange={(event) => clickHandler(event)}
+                />
+                I agree to the Factrak policy.
               </p>
               <input
                 type="submit"
@@ -93,6 +114,12 @@ const FactrakPolicy = ({ currUser }) => {
       </section>
     </div>
   );
+};
+
+FactrakPolicy.propTypes = {
+  // Setting currUser to  isRequired since thoeretically people should not be able to view this without
+  // being a user
+  currUser: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({

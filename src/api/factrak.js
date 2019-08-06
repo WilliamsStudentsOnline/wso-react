@@ -172,6 +172,11 @@ const getUserSurveys = async (token, userID) => {
   return userSurveys;
 };
 
+// Update Factrak Policy acceptance
+// const updateFactrakPolicyAcceptance = async (token, userID) => {
+//   // @TODO
+// };
+
 export {
   getAreasOfStudy,
   getDepartments,
