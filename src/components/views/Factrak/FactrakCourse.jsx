@@ -57,7 +57,7 @@ const FactrakCourse = ({ route, token }) => {
     loadCourse();
     loadSurveys();
     loadProfs();
-  }, [token]);
+  }, [token, route.params.course]);
 
   const professorList = () => {
     if (courseProfs.length === 0) return null;

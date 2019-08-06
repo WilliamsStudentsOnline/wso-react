@@ -241,6 +241,7 @@ const getSurveyAgreements = async (token, surveyID) => {
     return null;
   });
 
+  if (response === null) return null;
   const surveyAgreements = response.data.data;
 
   return surveyAgreements;

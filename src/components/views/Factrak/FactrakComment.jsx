@@ -6,26 +6,24 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getCurrUser, getToken } from "../../../selectors/auth";
 
-// External Imports
-import axios from "axios";
+// API Imports
 import {
   getSurveyAgreements,
   postSurveyAgreement,
   patchSurveyAgreement,
   getProfessor,
   getSurvey,
+  flagSurvey,
 } from "../../../api/factrak";
 
 // @TODO: investigate survey deficit
 const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
-  const [flagged, setFlagged] = useState(comment.flagged);
-  const [agreement, updateAgreements] = useState({});
+  const [agreement, updateAgreements] = useState(null);
   const [survey, updateSurvey] = useState(comment);
   const [professor, updateProfessor] = useState({});
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
-    console.log(survey);
     const loadAgreements = async () => {
       const agreementData = await getSurveyAgreements(token, survey.id);
       if (agreementData) {
@@ -46,7 +44,7 @@ const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
 
     if (!abridged) loadAgreements();
     loadProfs();
-  }, [token]);
+  }, [token, abridged, survey]);
 
   const getAndUpdateSurvey = async () => {
     const surveyData = await getSurvey(token, survey.id);
@@ -98,7 +96,7 @@ const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
           className="factrak-flag"
           title="Flagged for moderator attention"
         >
-          {flagged ? <>&#10071;</> : null}
+          {survey.flagged ? <>&#10071;</> : null}
         </span>
       </h1>
     );
@@ -134,14 +132,12 @@ const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
   };
 
   const flagHandler = () => {
-    axios({
-      url: `/factrak/flag/?id=${survey.id}`,
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    }).then((response) => {
-      setFlagged(response.data.flagged);
-    });
+    const response = flagSurvey(token, survey.id);
+    if (response) {
+      getAndUpdateSurvey();
+    } else {
+      // @TODO: Error handling?
+    }
   };
 
   const wouldTakeAnother = () => {
@@ -197,7 +193,7 @@ const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
         >
           Disagree
         </button>
-        {!abridged && !flagged ? (
+        {!abridged && !survey.flagged ? (
           <span id="flag<%= survey.id %>">
             <button
               type="button"
@@ -232,7 +228,7 @@ const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
     }
     return (
       <div className="survey-text">
-        {survey.survey}
+        {survey.comment}
         <br />
         {wouldTakeAnother()}
         {wouldRecommend()}
@@ -248,12 +244,14 @@ const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
         <h1>
           {showProf ? (
             <a href={`/factrak/professors/${survey.professorID}`}>
-              {`${professor.name} | `}
+              {`${professor.name} `}
             </a>
           ) : null}
+          {showProf && survey.course ? ` | ` : ""}
           <a href={`/factrak/courses/${survey.courseID}`}>
-            {/* @TODO survey.course.name */}
-            {`${survey.course.areaOfStudy.abbreviation} ${survey.course.number}`}
+            {survey.course
+              ? `${survey.course.areaOfStudy.abbreviation} ${survey.course.number}`
+              : ""}
           </a>
         </h1>
 

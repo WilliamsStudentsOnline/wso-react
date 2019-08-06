@@ -26,7 +26,7 @@ const FactrakSurveyIndex = ({ token, currUser }) => {
     };
 
     loadUserSurveys();
-  }, [token]);
+  }, [token, currUser.id]);
 
   return (
     <div className="article">
