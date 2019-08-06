@@ -17,6 +17,7 @@ const getAllUsers = async (token) => {
 
 // Returns current user
 const getUser = async (unixID = "me", token) => {
+  console.log(token);
   const response = await axios({
     url: `/api/v1/users/${unixID}`,
     headers: {

@@ -97,7 +97,11 @@ const Nav = ({ currUser }) => {
 };
 
 Nav.propTypes = {
-  currUser: PropTypes.object.isRequired,
+  currUser: PropTypes.object,
+};
+
+Nav.defaultProps = {
+  currUser: {},
 };
 
 const mapStateToProps = (state) => ({

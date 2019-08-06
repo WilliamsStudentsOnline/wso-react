@@ -106,6 +106,24 @@ const getCoursesOfAOS = async (token, area) => {
   return coursesOfAOS;
 };
 
+// Lists all flagged surveys
+const getFlagged = async (token) => {
+  const response = await axios({
+    url: `/api/v1/factrak/admin/surveys`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  console.log(response);
+  const flaggedSurveys = response.data.data;
+
+  return flaggedSurveys;
+};
+
 export {
   getAreasOfStudy,
   getDepartments,
@@ -113,4 +131,5 @@ export {
   getProfsOfAOS,
   getCoursesOfAOS,
   getAreaOfStudy,
+  getFlagged,
 };

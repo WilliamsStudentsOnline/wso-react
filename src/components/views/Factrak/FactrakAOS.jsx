@@ -35,7 +35,8 @@ const FactrakAOS = ({ route, token }) => {
     const loadCourses = async (areaID) => {
       const coursesData = await getCoursesOfAOS(token, areaID);
       if (coursesData) {
-        updateCourses(coursesData);
+        console.log(coursesData);
+        updateCourses(coursesData.sort((a, b) => a.number > b.number));
       } else {
         // @TODO: Error handling?
       }
@@ -104,18 +105,17 @@ const FactrakAOS = ({ route, token }) => {
               <tr key={course.id}>
                 <td className="col-20">
                   <a href={`/factrak/courses/${course.id}`}>
-                    {course.number}
-                    {/* course.name */}
+                    {`${area.abbreviation} ${course.number}`}
                   </a>
                 </td>
                 <td className="col-80">
-                  {/* @TODO course.professors.map((prof) => {
+                  {course.professors.map((prof) => {
                     return (
                       <a href={`/factrak/courses/${course.id}?prof=${prof.id}`}>
                         {prof.name}
                       </a>
                     );
-                  }) */}
+                  })}
                 </td>
               </tr>
             ))}
