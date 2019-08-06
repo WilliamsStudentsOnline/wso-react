@@ -154,6 +154,24 @@ const deleteSurvey = async (token, surveyID) => {
   return response;
 };
 
+// Get User's surveys
+const getUserSurveys = async (token, userID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/users/${userID}/surveys`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  console.log(response);
+  const userSurveys = response.data.data;
+
+  return userSurveys;
+};
+
 export {
   getAreasOfStudy,
   getDepartments,
@@ -162,6 +180,7 @@ export {
   getCoursesOfAOS,
   getAreaOfStudy,
   getFlagged,
+  getUserSurveys,
   unflagSurvey,
   deleteSurvey,
 };

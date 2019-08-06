@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import FactrakHome from "./FactrakHome";
 import FactrakPolicy from "./FactrakPolicy";
 import FactrakModerate from "./FactrakModerate";
+import FactrakSurveyIndex from "./FactrakSurveyIndex";
 import FactrakLayout from "./FactrakLayout";
 import FactrakAOS from "./FactrakAOS";
 
@@ -25,10 +26,8 @@ const FactrakMain = ({ route }) => {
       case "policy":
         return <FactrakPolicy />;
       case "surveys":
-        // @TODO: update factrak sureys
-        return <FactrakPolicy />;
+        return <FactrakSurveyIndex />;
       case "moderate":
-        // @TODO: Update FactrakModerate
         return <FactrakModerate />;
       case "areasOfStudy":
         return <FactrakAOS />;

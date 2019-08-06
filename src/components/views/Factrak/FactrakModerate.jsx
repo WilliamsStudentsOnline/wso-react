@@ -17,6 +17,7 @@ const FactrakModerate = ({ token }) => {
     const loadFlagged = async () => {
       const flaggedData = await getFlagged(token);
       if (flaggedData) {
+        console.log(flaggedData);
         updateFlagged(flaggedData);
       } else {
         // @TODO: Error handling?
