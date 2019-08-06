@@ -331,6 +331,57 @@ const getSurvey = async (token, surveyID) => {
   return survey;
 };
 
+// Get Department
+const getDepartment = async (token, departmentID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/departments/${departmentID}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  const department = response.data.data;
+
+  return department;
+};
+
+// Get Professor Ratings. @TODO Takes in an optional course Id
+const getProfessorRatings = async (token, professorID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/professors/${professorID}/ratings`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  const ratings = response.data.data;
+
+  return ratings;
+};
+
+// Get Professor Surveys. @TODO Takes in an optional course Id
+const getProfessorSurveys = async (token, professorID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/professors/${professorID}/surveys`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  const surveys = response.data.data;
+
+  return surveys;
+};
+
 export {
   getAreasOfStudy,
   getDepartments,
@@ -351,4 +402,7 @@ export {
   flagSurvey,
   deleteSurvey,
   getProfessor,
+  getDepartment,
+  getProfessorRatings,
+  getProfessorSurveys,
 };
