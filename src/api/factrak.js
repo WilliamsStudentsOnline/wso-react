@@ -177,15 +177,177 @@ const getUserSurveys = async (token, userID) => {
 //   // @TODO
 // };
 
+// Get Factrak course
+const getCourse = async (token, courseID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/courses/${courseID}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  console.log(response);
+  const factrakCourse = response.data.data;
+
+  return factrakCourse;
+};
+
+// Get surveys belonging to a factrak course.
+const getCourseSurveys = async (token, courseID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/courses/${courseID}/surveys`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  const courseSurveys = response.data.data;
+
+  return courseSurveys;
+};
+
+// Gets the list of professors who teach a particular course
+const getCourseProfs = async (token, courseID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/courses/${courseID}/professors`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  const courseProfs = response.data.data;
+
+  return courseProfs;
+};
+
+// Gets the survey agreement statistics
+const getSurveyAgreements = async (token, surveyID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/surveys/${surveyID}/agreement`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  const surveyAgreements = response.data.data;
+
+  return surveyAgreements;
+};
+
+// Creates survey agreement
+const postSurveyAgreement = async (token, surveyID, createParams) => {
+  const response = await axios({
+    url: `/api/v1/factrak/surveys/${surveyID}/agreement`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: createParams,
+    method: "post",
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  return response;
+};
+
+// Update survey agreement
+const patchSurveyAgreement = async (token, surveyID, updateParams) => {
+  const response = await axios({
+    url: `/api/v1/factrak/surveys/${surveyID}/agreement`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: updateParams,
+    method: "patch",
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  return response;
+};
+
+// Flag Survey
+const flagSurvey = async (token, surveyID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/surveys/${surveyID}/flag`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "post",
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  return response;
+};
+
+// Get Professor by Professor ID
+const getProfessor = async (token, professorID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/professors/${professorID}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  const professor = response.data.data;
+
+  return professor;
+};
+
+// Get Survey
+const getSurvey = async (token, surveyID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/surveys/${surveyID}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  const survey = response.data.data;
+
+  return survey;
+};
+
 export {
   getAreasOfStudy,
   getDepartments,
   getSurveys,
+  getSurvey,
   getProfsOfAOS,
   getCoursesOfAOS,
   getAreaOfStudy,
   getFlagged,
   getUserSurveys,
+  getCourse,
+  getCourseSurveys,
+  getCourseProfs,
+  getSurveyAgreements,
+  postSurveyAgreement,
+  patchSurveyAgreement,
   unflagSurvey,
+  flagSurvey,
   deleteSurvey,
+  getProfessor,
 };

@@ -1,32 +1,100 @@
 // React imports
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getCurrUser } from "../../../selectors/auth";
+import { getCurrUser, getToken } from "../../../selectors/auth";
 
 // External Imports
 import axios from "axios";
+import {
+  getSurveyAgreements,
+  postSurveyAgreement,
+  patchSurveyAgreement,
+  getProfessor,
+  getSurvey,
+} from "../../../api/factrak";
 
 // @TODO: investigate survey deficit
-const FactrakComment = ({ comment, showProf, abridged, currUser }) => {
-  const [agrees, setAgrees] = useState(comment.agrees);
-  const [disagrees, setDisagrees] = useState(comment.disagrees);
+const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
   const [flagged, setFlagged] = useState(comment.flagged);
+  const [agreement, updateAgreements] = useState({});
+  const [survey, updateSurvey] = useState(comment);
+  const [professor, updateProfessor] = useState({});
+
+  // Equivalent to ComponentDidMount
+  useEffect(() => {
+    console.log(survey);
+    const loadAgreements = async () => {
+      const agreementData = await getSurveyAgreements(token, survey.id);
+      if (agreementData) {
+        updateAgreements(agreementData);
+      } else {
+        // @TODO: Error handling?
+      }
+    };
+
+    const loadProfs = async () => {
+      const profData = await getProfessor(token, survey.professorID);
+      if (profData) {
+        updateProfessor(profData);
+      } else {
+        // @TODO: Error handling?
+      }
+    };
+
+    if (!abridged) loadAgreements();
+    loadProfs();
+  }, [token]);
+
+  const getAndUpdateSurvey = async () => {
+    const surveyData = await getSurvey(token, survey.id);
+    if (surveyData) {
+      updateSurvey(surveyData);
+    } else {
+      // @TODO: Error handling?
+    }
+  };
+
+  const agreeHandler = async (agree) => {
+    // @TODO: check if agreements
+    const agreeParams = { agree };
+    let response;
+    if (agreement) {
+      response = await patchSurveyAgreement(token, survey.id, agreeParams);
+    } else {
+      response = await postSurveyAgreement(token, survey.id, agreeParams);
+    }
+
+    if (response) {
+      // @TODO: update counter
+      const agreementData = await getSurveyAgreements(token, survey.id);
+      if (agreementData) {
+        updateAgreements(agreementData);
+        getAndUpdateSurvey();
+      } else {
+        // @TODO: Error handling?
+      }
+    }
+  };
 
   const agreeCount = () => {
     if (abridged) return null;
     return (
       <h1>
-        <span id={`${comment.id}agree-count`}>{agrees}</span>
+        <span id={`${survey.id}agree-count`}>
+          {survey.totalAgree ? survey.totalAgree : 0}
+        </span>
         {` agree, `}
-        <span id={`${comment.id}disagree-count`}>{disagrees}</span>
+        <span id={`${survey.id}disagree-count`}>
+          {survey.totalDisagree ? survey.totalDisagree : 0}
+        </span>
         {` disagree`}
-        {/* Mark this comment as flagged if it is. The span is always here,
+        {/* Mark this survey as flagged if it is. The span is always here,
             but it is only filled when it is actually flagged */}
         <span
-          id={`${comment.id}flagged`}
+          id={`${survey.id}flagged`}
           className="factrak-flag"
           title="Flagged for moderator attention"
         >
@@ -40,45 +108,34 @@ const FactrakComment = ({ comment, showProf, abridged, currUser }) => {
   //   return new Date(time).toDateString();
   // };
 
-  const commentDetail = () => {
+  const surveyDetail = () => {
     return (
-      <p className="comment-detail">
-        {currUser.id === comment.userID ? (
+      <p className="survey-detail">
+        {currUser.id === survey.userID ? (
           <>
-            <a href={`/factrak/surveys/${comment.id}/edit`}>Edit</a>
+            <a href={`/factrak/surveys/${survey.id}/edit`}>Edit</a>
             &nbsp;|&nbsp;
             <a
               data-confirm="Are you sure you want to destroy your review?"
               rel="nofollow"
               data-method="delete"
-              href={`/factrak/surveys/${comment.id}`}
+              href={`/factrak/surveys/${survey.id}`}
             >
               Delete
             </a>
           </>
         ) : (
-          `posted ${/* @TODO timeAgoInWords(comment.created_at) */ 1}.`
+          `posted ${
+            survey.createdTime /* @TODO timeAgoInWords(survey.created_at) */
+          }.`
         )}
       </p>
     );
   };
 
-  const clickHandler = (direction) => {
-    axios({
-      method: "post",
-      url: `/factrak/agreements?agrees=${direction}&amp;factrak_survey_id=${comment.id}`,
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    }).then((response) => {
-      setAgrees(response.data.agrees);
-      setDisagrees(response.data.disagrees);
-    });
-  };
-
   const flagHandler = () => {
     axios({
-      url: `/factrak/flag/?id=${comment.id}`,
+      url: `/factrak/flag/?id=${survey.id}`,
       headers: {
         "X-Requested-With": "XMLHttpRequest",
       },
@@ -88,8 +145,8 @@ const FactrakComment = ({ comment, showProf, abridged, currUser }) => {
   };
 
   const wouldTakeAnother = () => {
-    if (comment.wouldTakeAnother === null) return null;
-    if (comment.wouldTakeAnother)
+    if (survey.wouldTakeAnother === null) return null;
+    if (survey.wouldTakeAnother)
       return (
         <>
           <br />I would take another course with this professor
@@ -105,8 +162,8 @@ const FactrakComment = ({ comment, showProf, abridged, currUser }) => {
   };
 
   const wouldRecommend = () => {
-    if (comment.wouldRecommendCourse === null) return null;
-    if (comment.wouldRecommendCourse)
+    if (survey.wouldRecommendCourse === null) return null;
+    if (survey.wouldRecommendCourse)
       return (
         <>
           <br />I would recommend this course to a friend
@@ -122,13 +179,13 @@ const FactrakComment = ({ comment, showProf, abridged, currUser }) => {
   };
 
   const agree = () => {
-    if (comment.userID === currUser.id) return null;
+    if (survey.userID === currUser.id) return null;
     return (
       <>
         <button
           type="button"
           className="inline-button"
-          onClick={() => clickHandler(1)}
+          onClick={() => agreeHandler(true)}
         >
           Agree
         </button>
@@ -136,12 +193,12 @@ const FactrakComment = ({ comment, showProf, abridged, currUser }) => {
         <button
           type="button"
           className="inline-button"
-          onClick={() => clickHandler(0)}
+          onClick={() => agreeHandler(false)}
         >
           Disagree
         </button>
         {!abridged && !flagged ? (
-          <span id="flag<%= comment.id %>">
+          <span id="flag<%= survey.id %>">
             <button
               type="button"
               className="inline-button"
@@ -155,17 +212,17 @@ const FactrakComment = ({ comment, showProf, abridged, currUser }) => {
     );
   };
 
-  const commentText = () => {
-    let truncatedComment = comment.comment;
-    if (comment.comment.length > 145)
-      truncatedComment = comment.comment.substring(0, 145);
+  const surveyText = () => {
+    let truncatedsurvey = survey.comment;
+    if (survey.comment.length > 145)
+      truncatedsurvey = survey.comment.substring(0, 145);
     if (abridged) {
       return (
-        <div className="comment-text">
-          {truncatedComment}
-          {comment.comment.length > 145 ? (
+        <div className="survey-text">
+          {truncatedsurvey}
+          {survey.comment.length > 145 ? (
             <div>
-              <a href={`/factrak/professors/${comment.professorID}`}>
+              <a href={`/factrak/professors/${survey.professorID}`}>
                 ...See More
               </a>
             </div>
@@ -174,8 +231,8 @@ const FactrakComment = ({ comment, showProf, abridged, currUser }) => {
       );
     }
     return (
-      <div className="comment-text">
-        {comment.comment}
+      <div className="survey-text">
+        {survey.survey}
         <br />
         {wouldTakeAnother()}
         {wouldRecommend()}
@@ -186,29 +243,29 @@ const FactrakComment = ({ comment, showProf, abridged, currUser }) => {
   };
 
   return (
-    <div id={`comment${comment.id}`} className="comment">
+    <div id={`comment${survey.id}`} className="comment">
       <div className="comment-content">
         <h1>
           {showProf ? (
-            <a href={`/factrak/professors/${comment.professorID}`}>
-              {`${comment.professorID} | `}
+            <a href={`/factrak/professors/${survey.professorID}`}>
+              {`${professor.name} | `}
             </a>
           ) : null}
-          <a href={`/factrak/courses/${comment.courseID}`}>
-            {/* @TODO comment.course.name */}
-            {comment.courseID}
+          <a href={`/factrak/courses/${survey.courseID}`}>
+            {/* @TODO survey.course.name */}
+            {`${survey.course.areaOfStudy.abbreviation} ${survey.course.number}`}
           </a>
         </h1>
 
         {agreeCount()}
         {currUser.factrakSurveyDeficit === 0 ||
-        comment.userID === currUser.id ? (
-          commentText()
+        survey.userID === currUser.id ? (
+          surveyText()
         ) : (
           <div className="blurred">Please do your Factrak surveys.</div>
         )}
 
-        {commentDetail()}
+        {surveyDetail()}
       </div>
     </div>
   );
@@ -218,15 +275,15 @@ FactrakComment.propTypes = {
   showProf: PropTypes.bool.isRequired,
   abridged: PropTypes.bool.isRequired,
   comment: PropTypes.object.isRequired,
-  currUser: PropTypes.object,
+  currUser: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
-FactrakComment.defaultProps = {
-  currUser: {},
-};
+FactrakComment.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
+  token: getToken(state),
 });
 
 export default connect(mapStateToProps)(FactrakComment);

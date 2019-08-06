@@ -132,7 +132,7 @@ FactrakAOS.propTypes = {
 };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("factrak");
+  const routeNodeSelector = createRouteNodeSelector("factrak.areasOfStudy");
 
   return (state) => ({
     token: getToken(state),

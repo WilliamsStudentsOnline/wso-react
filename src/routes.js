@@ -18,6 +18,7 @@ export default [
       { name: "moderate", path: "/moderate" },
       // @TODO: error handling for non numerical params
       { name: "areasOfStudy", path: "/areasOfStudy/:area<\\d+>" },
+      { name: "courses", path: "/courses/:course<\\d+>" },
     ],
   },
   { name: "dormtrak", path: "/dormtrak" },
