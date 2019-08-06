@@ -124,6 +124,36 @@ const getFlagged = async (token) => {
   return flaggedSurveys;
 };
 
+// Unflag survey
+const unflagSurvey = async (token, surveyID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/admin/surveys/${surveyID}/flag`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "delete",
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+  return response;
+};
+
+// Delete survey
+const deleteSurvey = async (token, surveyID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/surveys/${surveyID}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "delete",
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+  return response;
+};
+
 export {
   getAreasOfStudy,
   getDepartments,
@@ -132,4 +162,6 @@ export {
   getCoursesOfAOS,
   getAreaOfStudy,
   getFlagged,
+  unflagSurvey,
+  deleteSurvey,
 };

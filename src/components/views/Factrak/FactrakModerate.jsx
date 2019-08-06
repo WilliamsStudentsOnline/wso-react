@@ -7,8 +7,7 @@ import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
 
 // External imports
-import axios from "axios";
-import { getFlagged } from "../../../api/factrak";
+import { getFlagged, unflagSurvey, deleteSurvey } from "../../../api/factrak";
 
 const FactrakModerate = ({ token }) => {
   const [flagged, updateFlagged] = useState([]);
@@ -27,31 +26,31 @@ const FactrakModerate = ({ token }) => {
     loadFlagged();
   }, [token]);
 
-  const unflag = (id) => {
-    axios({
-      url: `/factrak/unflag/?id=${id}`,
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    }).then((response) => {
-      updateFlagged(flagged.filter((course) => course.id !== response.data.id));
-    });
+  const unflag = async (surveyID) => {
+    const response = unflagSurvey(token, surveyID);
+
+    if (response) {
+      updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
+    } else {
+      // Request did not go through
+      // @TODO: Add error toast
+    }
   };
 
-  const deleteHandler = (id) => {
+  const deleteHandler = (surveyID) => {
     // @TODO: write something to overcome this confirm
     // eslint-disable-next-line no-restricted-globals
     const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
     if (!confirmDelete) return;
-    axios({
-      url: `/factrak/surveys/${id}`,
-      method: "delete",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    }).then(() => {
-      updateFlagged(flagged.filter((course) => course.id !== id));
-    });
+
+    const response = deleteSurvey(token, surveyID);
+
+    if (response) {
+      updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
+    } else {
+      // Request did not go through
+      // @TODO: Add error toast
+    }
   };
 
   return (
@@ -63,13 +62,11 @@ const FactrakModerate = ({ token }) => {
           <div className="comment" key={`comment${f.id}`} id={`comment${f.id}`}>
             <div>
               <span>
-                <a href={`/facebook/users/${f.professor_id}`}>
-                  {f.professor.name}
-                </a>
+                <a href={`/facebook/users/${f.professorID}`}>{f.professorID}</a>
                 &nbsp;
-                <a href={`/factrak/courses/${f.course.id}`}>{f.course.name}</a>
-                {/* (+<%= f.agreements.find_all { |a| a.agrees? }.length %>,
-                    -<%= f.agreements.find_all { |a| !a.agrees? }.length %>) */}
+                <a href={`/factrak/courses/${f.course.id}`}>
+                  {`${f.course.areaOfStudy.abbreviation} ${f.course.number}`}
+                </a>
               </span>
               <p>{f.comment}</p>
               <button
