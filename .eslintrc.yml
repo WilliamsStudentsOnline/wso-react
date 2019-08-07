@@ -8,6 +8,7 @@ extends:
   - eslint:recommended
   - airbnb
   - prettier
+  - prettier/react
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
@@ -43,4 +44,6 @@ rules:
   react/jsx-filename-extension:
     - off
   jsx-a11y/anchor-is-valid:
+    - off
+  react/jsx-one-expression-per-line:
     - off
