@@ -4,22 +4,46 @@ import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getCurrUser } from "../../../selectors/auth";
+import { getCurrUser, getToken } from "../../../selectors/auth";
+import { actions } from "redux-router5";
+import { doUpdateToken, doUpdateUser } from "../../../actions/auth";
 
-// @TODO: Form submit handler
-const FactrakPolicy = ({ currUser }) => {
+// API imports
+import { patchCurrUser } from "../../../api/users";
+import { updateTokenAPI } from "../../../api/auth";
+
+const FactrakPolicy = ({
+  currUser,
+  navigateTo,
+  token,
+  updateUser,
+  updateToken,
+}) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
 
   const clickHandler = (event) => {
     updateAcceptPolicy(event.target.checked);
   };
 
-  const submitHandler = () => {
-    return acceptPolicy;
-    // if (!acceptPolicy)
-    // return;
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    if (!acceptPolicy) return null;
 
-    // @TODO
+    const updateParams = {
+      hasAcceptedFactrakPolicy: true,
+    };
+    const response = await patchCurrUser(token, updateParams);
+    console.log(response);
+    // PATCH succeeded, update user
+    if (response) {
+      updateUser(response);
+      const updatedAuth = await updateTokenAPI(token);
+      console.log(updatedAuth);
+      updateToken(updatedAuth);
+      navigateTo("factrak");
+    }
+
+    return acceptPolicy;
   };
 
   return (
@@ -78,8 +102,8 @@ const FactrakPolicy = ({ currUser }) => {
             By using Factrak users agree to abide by this policy. The use of
             Factrak is also governed by the
             <a href="http://wso.williams.edu/about#policy">
-              wider WSO policy
-            </a>{" "}
+              {` wider WSO policy `}
+            </a>
             and the{" "}
             <a href="http://oit.williams.edu/w/?u=docs/Computing+Ethics+and+Responsibilities">
               OIT Computing Ethics and Responsibilities Statement
@@ -89,7 +113,10 @@ const FactrakPolicy = ({ currUser }) => {
           {currUser.hasAcceptedFactrakPolicy ? (
             <p>You have already accepted the Factrak policy.</p>
           ) : (
-            <form acceptCharset="UTF-8" onSubmit={() => submitHandler()}>
+            <form
+              acceptCharset="UTF-8"
+              onSubmit={(event) => submitHandler(event)}
+            >
               <p>
                 <input
                   type="checkbox"
@@ -117,13 +144,25 @@ const FactrakPolicy = ({ currUser }) => {
 };
 
 FactrakPolicy.propTypes = {
-  // Setting currUser to  isRequired since thoeretically people should not be able to view this without
-  // being a user
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  token: PropTypes.string.isRequired,
+  updateToken: PropTypes.func.isRequired,
+  updateUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
+  token: getToken(state),
 });
 
-export default connect(mapStateToProps)(FactrakPolicy);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  updateToken: (response) => dispatch(doUpdateToken(response)),
+  updateUser: (unixID) => dispatch(doUpdateUser(unixID)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FactrakPolicy);

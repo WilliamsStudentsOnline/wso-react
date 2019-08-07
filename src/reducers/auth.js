@@ -25,12 +25,12 @@ const parseToken = (token) => {
 // @TODO test this method with more sample responses
 const updateToken = (state, action) => {
   const response = action.response;
-  const decoded = parseToken(response.data.data.token);
+  const decoded = parseToken(response.token);
 
   return Object.assign({}, state, {
     scope: decoded.scope,
-    token: response.data.data.token,
-    expiry: response.data.data.expire,
+    token: response.token,
+    expiry: response.expire,
   });
 };
 

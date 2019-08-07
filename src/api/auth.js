@@ -16,19 +16,19 @@ const refreshToken = async (token) => {
 };
 
 // Updates the auth token with new scopes.
-const updateToken = async (token) => {
-  console.log("Updating Token");
+const updateTokenAPI = async (token) => {
   const response = await axios({
     url: "/api/v1/auth/update-token",
     headers: {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
+    console.log(error);
     console.log(error.response);
     return null;
   });
 
-  return response;
+  return response.data.data;
 };
 
 // Authenticates the user and returnx the token.
@@ -68,4 +68,4 @@ const tokenExpiryHandler = (token, expiry) => {
   return null;
 };
 
-export { tokenExpiryHandler, updateToken, getToken };
+export { tokenExpiryHandler, updateTokenAPI, getToken };

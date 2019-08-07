@@ -79,6 +79,7 @@ const App = ({ route, navigateTo, removeCreds }) => {
     if (!token || !expiry) return;
     const response = await tokenExpiryHandler(token, expiry);
     console.log(response);
+    // @TODO uhh.
   };
 
   initialize();

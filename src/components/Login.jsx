@@ -32,7 +32,7 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
       // handle error
     } else {
       // redirects to home
-      updateToken(response);
+      updateToken(response.data.data);
       // @TODO: use the returned token.
       const newToken = response.data.data.token;
       const user = await getUser("me", newToken);

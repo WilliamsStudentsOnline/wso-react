@@ -33,4 +33,24 @@ const getUser = async (unixID = "me", token) => {
   return currUser;
 };
 
-export { getAllUsers, getUser };
+// Update current user
+const patchCurrUser = async (token, updateParams) => {
+  const response = await axios({
+    url: `/api/v1/users/me`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: updateParams,
+    method: "patch",
+  }).catch((error) => {
+    // @TODO figure out what the best way of dealing with the error is
+    console.log(error.response);
+    return null;
+  });
+
+  console.log(response);
+  const currUser = response.data.data;
+  return currUser;
+};
+
+export { getAllUsers, getUser, patchCurrUser };
