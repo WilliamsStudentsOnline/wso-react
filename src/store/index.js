@@ -5,10 +5,17 @@ import rootReducer from "../reducers";
 import { router5Middleware } from "redux-router5";
 
 export default function configureStore(router, initialState = {}) {
-  const createStoreWithMiddleware = applyMiddleware(
-    router5Middleware(router),
-    createLogger()
-  )(createStore);
+  let createStoreWithMiddleware;
+  if (process.env.NODE_ENV === "development") {
+    createStoreWithMiddleware = applyMiddleware(
+      router5Middleware(router),
+      createLogger()
+    )(createStore);
+  } else {
+    createStoreWithMiddleware = applyMiddleware(router5Middleware(router))(
+      createStore
+    );
+  }
 
   const store = createStoreWithMiddleware(rootReducer, initialState);
 
