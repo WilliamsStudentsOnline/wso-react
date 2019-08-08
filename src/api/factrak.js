@@ -406,13 +406,9 @@ const patchSurvey = async (token, updateParams, surveyID) => {
     method: "patch",
     data: updateParams,
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
-
-  const survey = response.data.data;
-
-  return survey;
+  return response;
 };
 
 export {

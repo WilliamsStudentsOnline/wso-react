@@ -19,7 +19,6 @@ import {
 // @TODO: look into react form handlers
 // @TODO: Client side form validation?
 // @TODO: Error display
-// @TODO: Remove unneeded fields e.g. ids
 
 const FactrakSurvey = ({ token, route, navigateTo }) => {
   // const defaultQuery = "";
@@ -33,11 +32,11 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
 
   const [comment, updateComment] = useState("");
   const [courseAOS, updateCourseAOS] = useState("");
+  const [errors, updateErrors] = useState([]);
   // Use string to accomodate tutorial course numbers
-  // @TODO make these consistent with backend
   const [courseNumber, updateCourseNumber] = useState("");
-  const [recommend, updateRecommend] = useState(null);
-  const [takeAnother, updateTakeAnother] = useState(null);
+  const [wouldRecommendCourse, updateRecommend] = useState(null);
+  const [wouldTakeAnother, updateTakeAnother] = useState(null);
   const [workload, updateWorkload] = useState(null);
   const [approachability, updateApprochability] = useState(null);
   const [lecture, updateLecture] = useState(null);
@@ -50,14 +49,15 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
   const submitHandler = async (event) => {
     event.preventDefault();
     // Parse integers here rather than below to minimize the expensive operation
-    // @TODO error handling?
     const surveyParams = {
       areaOfStudyAbbreviation: courseAOS,
       professorID: prof.id,
       courseNumber,
       comment,
-      wouldRecommendCourse: recommend,
-      wouldTakeAnother: takeAnother,
+      wouldRecommendCourse,
+      wouldTakeAnother,
+      // Parse ints should work without errors here since users do not have access to these
+      // variables
       courseWorkload: parseInt(workload, 10),
       approachability: parseInt(approachability, 10),
       leadLecture: parseInt(lecture, 10),
@@ -70,8 +70,13 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
       : await postSurvey(token, surveyParams);
     console.log(response);
     if (response) {
-      // @TODO navigate to previous page?x
-      navigateTo("factrak.surveys");
+      if (response.request.status === 200) {
+        // @TODO navigate to previous page?
+        navigateTo("factrak.surveys");
+      } else if (response.data.error) {
+        console.log("hey");
+        updateErrors([response.data.error.message]);
+      }
     } else {
       // `@TODO handle error
     }
@@ -90,8 +95,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
     const loadSurvey = async (surveyID) => {
       const surveyData = await getSurvey(token, surveyID);
       if (surveyData) {
-        // @TODO: there has to be a better way to do this... also look into line lengths
-        console.log(surveyData);
+        // Could use a defaultSurvey and update that object, but will hardly save any lines.
         updateSurvey(surveyData);
         updateProf(surveyData.professor);
         updateCourseAOS(surveyData.course.areaOfStudy.abbreviation);
@@ -190,11 +194,9 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
     <div className="article">
       <section>
         <article>
-          {/* <div id="errors">
-        {survey.errors
-          ? survey.errors.full_messages.map((msg) => <p key={msg}>{msg}</p>)
-          : null}
-      </div> */}
+          <div id="errors">
+            {errors ? errors.map((msg) => <p key={msg}>{msg}</p>) : null}
+          </div>
 
           <form
             id={
@@ -239,6 +241,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                         placeholder="DEPT"
                         onChange={factrakDeptAutocomplete}
                         type="text"
+                        id="factrak_survey_aos_abbrev"
                         value={/* query */ courseAOS}
                       />
                       {deptSuggestions()}
@@ -248,6 +251,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                         onChange={(event) =>
                           updateCourseNumber(event.target.value)
                         }
+                        id="factrak_survey_course_num"
                         defaultValue={
                           survey && survey.course ? survey.course.number : ""
                         }
@@ -259,21 +263,24 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                 <tr>
                   <td align="left">
                     <strong>
-                      Would you recommend this course to a friend?
+                      Would you would recommend this course to a friend?
                     </strong>
                   </td>
                   <td align="left">
                     Yes&nbsp;
                     <input
                       type="radio"
-                      defaultChecked={recommend}
+                      checked={wouldRecommendCourse}
                       onChange={() => updateRecommend(true)}
                     />
                     No&nbsp;
                     <input
                       type="radio"
                       onChange={() => updateRecommend(false)}
-                      defaultChecked={recommend !== null && recommend === false}
+                      checked={
+                        wouldRecommendCourse !== null &&
+                        wouldRecommendCourse === false
+                      }
                     />
                   </td>
                 </tr>
@@ -288,14 +295,14 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                     Yes&nbsp;
                     <input
                       type="radio"
-                      defaultChecked={takeAnother}
+                      defaultChecked={wouldTakeAnother}
                       onChange={() => updateTakeAnother(true)}
                     />
                     No&nbsp;
                     <input
                       type="radio"
                       defaultChecked={
-                        takeAnother !== null && takeAnother === false
+                        wouldTakeAnother !== null && wouldTakeAnother === false
                       }
                       onChange={() => updateTakeAnother(false)}
                     />
@@ -364,7 +371,11 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                       value={comment}
                       onChange={(event) => updateComment(event.target.value)}
                     />
-                    <input type="submit" data-disable-with="Save" />
+                    <input
+                      type="submit"
+                      value="Save"
+                      data-disable-with="Save"
+                    />
                   </td>
                 </tr>
               </tbody>

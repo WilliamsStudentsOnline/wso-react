@@ -16,9 +16,17 @@ import {
   flagSurvey,
   deleteSurvey,
 } from "../../../api/factrak";
+import { actions } from "redux-router5";
 
 // @TODO: investigate survey deficit
-const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
+const FactrakComment = ({
+  comment,
+  showProf,
+  abridged,
+  currUser,
+  token,
+  navigateTo,
+}) => {
   const [agreement, updateAgreements] = useState(null);
   const [survey, updateSurvey] = useState(comment);
   const [professor, updateProfessor] = useState({});
@@ -127,8 +135,18 @@ const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
       <p className="survey-detail">
         {currUser.id === survey.userID ? (
           <>
-            <a href={`/factrak/surveys/edit?surveyID=${survey.id}`}>Edit</a>
-            &nbsp;|&nbsp;
+            <button
+              type="button"
+              onClick={() =>
+                navigateTo("factrak.editSurvey", {
+                  surveyID: survey.id,
+                })
+              }
+              className="inline-button"
+            >
+              Edit
+            </button>
+
             <button
               type="button"
               onClick={deleteHandler}
@@ -292,6 +310,7 @@ FactrakComment.propTypes = {
   comment: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
+  navigateTo: PropTypes.func.isRequired,
 };
 
 FactrakComment.defaultProps = {};
@@ -301,4 +320,12 @@ const mapStateToProps = (state) => ({
   token: getToken(state),
 });
 
-export default connect(mapStateToProps)(FactrakComment);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FactrakComment);
