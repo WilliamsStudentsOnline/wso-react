@@ -63,8 +63,9 @@ const FactrakModerate = ({ token }) => {
           <div className="comment" key={`comment${f.id}`} id={`comment${f.id}`}>
             <div>
               <span>
-                {/* @TODO: update */}
-                <a href={`/facebook/users/${f.professorID}`}>{f.professorID}</a>
+                <a href={`/facebook/users/${f.professorID}`}>
+                  {f.professor.name}
+                </a>
                 &nbsp;
                 <a href={`/factrak/courses/${f.course.id}`}>
                   {`${f.course.areaOfStudy.abbreviation} ${f.course.number}`}
