@@ -8,6 +8,7 @@ const refreshToken = async (token) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    method: "post",
   }).catch((error) => {
     console.log(error.response);
     return null;
@@ -22,8 +23,8 @@ const updateTokenAPI = async (token) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    method: "post",
   }).catch((error) => {
-    console.log(error);
     console.log(error.response);
     return null;
   });
