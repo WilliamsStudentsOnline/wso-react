@@ -15,10 +15,9 @@ const FactrakModerate = ({ token }) => {
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadFlagged = async () => {
-      const flaggedData = await getFlagged(token);
-      if (flaggedData) {
-        console.log(flaggedData);
-        updateFlagged(flaggedData);
+      const flaggedResponse = await getFlagged(token);
+      if (flaggedResponse.status === 200) {
+        updateFlagged(flaggedResponse.data.data);
       } else {
         // @TODO: Error handling?
       }
@@ -28,9 +27,9 @@ const FactrakModerate = ({ token }) => {
   }, [token]);
 
   const unflag = async (surveyID) => {
-    const response = unflagSurvey(token, surveyID);
+    const response = await unflagSurvey(token, surveyID);
 
-    if (response) {
+    if (response.status === 200) {
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
     } else {
       // Request did not go through
@@ -38,15 +37,15 @@ const FactrakModerate = ({ token }) => {
     }
   };
 
-  const deleteHandler = (surveyID) => {
+  const deleteHandler = async (surveyID) => {
     // @TODO: write something to overcome this confirm
     // eslint-disable-next-line no-restricted-globals
     const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
     if (!confirmDelete) return;
 
-    const response = deleteSurvey(token, surveyID);
+    const response = await deleteSurvey(token, surveyID);
 
-    if (response) {
+    if (response.status === 200) {
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
     } else {
       // Request did not go through

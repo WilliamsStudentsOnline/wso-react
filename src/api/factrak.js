@@ -8,13 +8,10 @@ const getAreasOfStudy = async (token) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const areasOfStudy = response.data.data;
-
-  return areasOfStudy;
+  return response;
 };
 
 // List one area of study (note singular)
@@ -25,13 +22,10 @@ const getAreaOfStudy = async (token, area) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const areaOfStudy = response.data.data;
-
-  return areaOfStudy;
+  return response;
 };
 
 // List all the departments
@@ -42,34 +36,24 @@ const getDepartments = async (token) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const departments = response.data.data;
-
-  return departments;
+  return response;
 };
 
 // Lists all surveys
-const getSurveys = async (token, max = -1) => {
+const getSurveys = async (token) => {
   const response = await axios({
     url: "/api/v1/factrak/surveys",
     headers: {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const surveys = response.data.data;
-
-  if (max === -1 || surveys.length < max) {
-    return surveys;
-  }
-
-  return surveys.slice(0, max);
+  return response;
 };
 
 // Gets all the professors of an area of study
@@ -80,13 +64,10 @@ const getProfsOfAOS = async (token, area) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const profsOfAOS = response.data.data;
-
-  return profsOfAOS;
+  return response;
 };
 
 // Gets all the courses of an area of study
@@ -97,13 +78,10 @@ const getCoursesOfAOS = async (token, area) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const coursesOfAOS = response.data.data;
-
-  return coursesOfAOS;
+  return response;
 };
 
 // Lists all flagged surveys
@@ -114,14 +92,10 @@ const getFlagged = async (token) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  console.log(response);
-  const flaggedSurveys = response.data.data;
-
-  return flaggedSurveys;
+  return response;
 };
 
 // Unflag survey
@@ -133,9 +107,9 @@ const unflagSurvey = async (token, surveyID) => {
     },
     method: "delete",
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
+
   return response;
 };
 
@@ -148,9 +122,9 @@ const deleteSurvey = async (token, surveyID) => {
     },
     method: "delete",
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
+
   return response;
 };
 
@@ -162,14 +136,10 @@ const getUserSurveys = async (token, userID) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  console.log(response);
-  const userSurveys = response.data.data;
-
-  return userSurveys;
+  return response;
 };
 
 // Get Factrak course
@@ -180,14 +150,10 @@ const getCourse = async (token, courseID) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  console.log(response);
-  const factrakCourse = response.data.data;
-
-  return factrakCourse;
+  return response;
 };
 
 // Get surveys belonging to a factrak course.
@@ -198,13 +164,10 @@ const getCourseSurveys = async (token, courseID) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const courseSurveys = response.data.data;
-
-  return courseSurveys;
+  return response;
 };
 
 // Gets the list of professors who teach a particular course
@@ -215,13 +178,10 @@ const getCourseProfs = async (token, courseID) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const courseProfs = response.data.data;
-
-  return courseProfs;
+  return response;
 };
 
 // Gets the survey agreement statistics
@@ -232,14 +192,10 @@ const getSurveyAgreements = async (token, surveyID) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  if (response === null) return null;
-  const surveyAgreements = response.data.data;
-
-  return surveyAgreements;
+  return response;
 };
 
 // Creates survey agreement
@@ -252,8 +208,7 @@ const postSurveyAgreement = async (token, surveyID, createParams) => {
     data: createParams,
     method: "post",
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
   return response;
@@ -269,8 +224,7 @@ const patchSurveyAgreement = async (token, surveyID, updateParams) => {
     data: updateParams,
     method: "patch",
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
   return response;
@@ -285,8 +239,7 @@ const flagSurvey = async (token, surveyID) => {
     },
     method: "post",
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
   return response;
@@ -300,13 +253,10 @@ const getProfessor = async (token, professorID) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const professor = response.data.data;
-
-  return professor;
+  return response;
 };
 
 // Get Survey
@@ -317,13 +267,10 @@ const getSurvey = async (token, surveyID) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const survey = response.data.data;
-
-  return survey;
+  return response;
 };
 
 // Get Department
@@ -334,13 +281,10 @@ const getDepartment = async (token, departmentID) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const department = response.data.data;
-
-  return department;
+  return response;
 };
 
 // Get Professor Ratings. @TODO Takes in an optional course Id
@@ -351,13 +295,10 @@ const getProfessorRatings = async (token, professorID) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const ratings = response.data.data;
-
-  return ratings;
+  return response;
 };
 
 // Get Professor Surveys. @TODO Takes in an optional course Id
@@ -368,13 +309,10 @@ const getProfessorSurveys = async (token, professorID) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const surveys = response.data.data;
-
-  return surveys;
+  return response;
 };
 
 // Create New Survey
@@ -387,13 +325,10 @@ const postSurvey = async (token, createParams) => {
     method: "post",
     data: createParams,
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const survey = response.data.data;
-
-  return survey;
+  return response;
 };
 
 // Updates Survey
@@ -408,6 +343,7 @@ const patchSurvey = async (token, updateParams, surveyID) => {
   }).catch((error) => {
     return error.response;
   });
+
   return response;
 };
 

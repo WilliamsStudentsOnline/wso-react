@@ -17,23 +17,24 @@ const FactrakHome = ({ token, currUser }) => {
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadSurveys = async () => {
-      const surveysData = await getSurveys(token, 10);
-      if (surveysData) {
-        console.log(surveysData);
-        updateSurveys(surveysData);
+      const surveysResponse = await getSurveys(token, 10);
+      if (surveysResponse.status === 200) {
+        updateSurveys(surveysResponse.data.data.slice(0, 10));
       } else {
         // @TODO: Error handling?
       }
     };
 
     const loadAreas = async () => {
-      const areasOfStudy = await getAreasOfStudy(token);
-      if (areasOfStudy) {
+      const areasOfStudyResponse = await getAreasOfStudy(token);
+      if (areasOfStudyResponse.data.data) {
+        const areasOfStudy = areasOfStudyResponse.data.data;
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
       } else {
         // @TODO: Error handling?
       }
     };
+
     loadSurveys();
     loadAreas();
   }, [token]);

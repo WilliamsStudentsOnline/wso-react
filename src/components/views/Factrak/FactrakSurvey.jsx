@@ -68,33 +68,29 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
     const response = edit
       ? await patchSurvey(token, surveyParams, survey.id)
       : await postSurvey(token, surveyParams);
-    console.log(response);
-    if (response) {
-      if (response.request.status === 200) {
-        // @TODO navigate to previous page?
-        navigateTo("factrak.surveys");
-      } else if (response.data.error) {
-        console.log("hey");
-        updateErrors([response.data.error.message]);
-      }
+
+    if (response.request.status === 200) {
+      // @TODO navigate to previous page?
+      navigateTo("factrak.surveys");
     } else {
-      // `@TODO handle error
+      updateErrors([response.data.error.message]);
     }
   };
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadProf = async (professorID) => {
-      const profData = await getProfessor(token, professorID);
-      if (profData) {
-        updateProf(profData);
+      const profResponse = await getProfessor(token, professorID);
+      if (profResponse.status === 200) {
+        updateProf(profResponse.status === 200);
       } else {
         // @TODO: Error handling?
       }
     };
 
     const loadSurvey = async (surveyID) => {
-      const surveyData = await getSurvey(token, surveyID);
-      if (surveyData) {
+      const surveyResponse = await getSurvey(token, surveyID);
+      if (surveyResponse.status === 200) {
+        const surveyData = surveyResponse.data.data;
         // Could use a defaultSurvey and update that object, but will hardly save any lines.
         updateSurvey(surveyData);
         updateProf(surveyData.professor);

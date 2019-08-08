@@ -10,7 +10,7 @@ const INITIAL_STATE = {
   scope: [],
   token: "",
   expiry: "",
-  currUser: null, // Stores the user object. @TODO examine if storing the unix ID will be better.
+  currUser: null, // Stores the user object.
 };
 
 // Method to get scopes.

@@ -2,7 +2,6 @@ import axios from "axios";
 
 // Refreshes the auth token
 const refreshToken = async (token) => {
-  console.log("Refreshing Token");
   const response = await axios({
     url: "/api/v1/auth/refresh-token",
     headers: {
@@ -10,9 +9,9 @@ const refreshToken = async (token) => {
     },
     method: "post",
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
+
   return response;
 };
 
@@ -25,11 +24,10 @@ const updateTokenAPI = async (token) => {
     },
     method: "post",
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  return response.data.data;
+  return response;
 };
 
 // Authenticates the user and returnx the token.
@@ -37,7 +35,6 @@ const getToken = async (unixID, password) => {
   if (!unixID || !password) {
     return null;
   }
-  console.log("Obtaining Token");
   const response = await axios({
     url: "/api/v1/auth/login",
     method: "post",
@@ -46,9 +43,9 @@ const getToken = async (unixID, password) => {
       password,
     },
   }).catch((error) => {
-    console.log(error.response);
-    return null;
+    return error.response;
   });
+
   return response;
 };
 

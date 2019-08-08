@@ -28,19 +28,19 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
     event.preventDefault();
     const response = await getToken(unixID, password);
 
-    if (!response) {
-      // handle error
-    } else {
-      // redirects to home
-      updateToken(response.data.data);
+    if (response.status === 200) {
       const newToken = response.data.data.token;
-      const user = await getUser("me", newToken);
-      if (user) {
-        updateUser(user);
+      const userResponse = await getUser("me", newToken);
+      if (userResponse.status === 200) {
+        // Only update if both requests pass.
+        updateUser(userResponse.data.data);
+        updateToken(response.data.data);
         navigateTo("home");
       } else {
         // handle error
       }
+    } else {
+      // handle error
     }
   };
 

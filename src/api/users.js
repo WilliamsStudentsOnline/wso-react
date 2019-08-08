@@ -8,29 +8,24 @@ const getAllUsers = async (token) => {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    console.log(error.response);
+    return error.response;
   });
 
-  const users = response.data.data;
-  return users;
+  return response;
 };
 
 // Returns current user
 const getUser = async (unixID = "me", token) => {
-  console.log(token);
   const response = await axios({
     url: `/api/v1/users/${unixID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
-    // @TODO figure out what the best way of dealing with the error is
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  const currUser = response.data.data;
-  return currUser;
+  return response;
 };
 
 // Update current user
@@ -43,14 +38,10 @@ const patchCurrUser = async (token, updateParams) => {
     data: updateParams,
     method: "patch",
   }).catch((error) => {
-    // @TODO figure out what the best way of dealing with the error is
-    console.log(error.response);
-    return null;
+    return error.response;
   });
 
-  console.log(response);
-  const currUser = response.data.data;
-  return currUser;
+  return response;
 };
 
 export { getAllUsers, getUser, patchCurrUser };

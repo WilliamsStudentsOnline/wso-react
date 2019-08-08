@@ -27,17 +27,16 @@ const FactrakProfessor = ({ token, route }) => {
     const professorParam = route.params.professor;
 
     const loadProfs = async (professorID) => {
-      const professorData = await getProfessor(token, professorID);
-      if (professorData) {
-        console.log(professorData);
+      const professorResponse = await getProfessor(token, professorID);
+      if (professorResponse.status === 200) {
+        const professorData = professorResponse.data.data;
         updateProfessor(professorData);
-        const departmentData = await getDepartment(
+        const departmentResponse = await getDepartment(
           token,
           professorData.departmentID
         );
-        if (departmentData) {
-          console.log(departmentData);
-          updateDepartment(departmentData);
+        if (departmentResponse) {
+          updateDepartment(departmentResponse.data.data);
         }
       } else {
         // @TODO: Error handling?
@@ -45,20 +44,18 @@ const FactrakProfessor = ({ token, route }) => {
     };
 
     const loadRatings = async (professorID) => {
-      const ratingsData = await getProfessorRatings(token, professorID);
-      if (ratingsData) {
-        console.log(ratingsData);
-        updateRatings(ratingsData);
+      const ratingsResponse = await getProfessorRatings(token, professorID);
+      if (ratingsResponse.status === 200) {
+        updateRatings(ratingsResponse.data.data);
       } else {
         // @TODO: Error handling?
       }
     };
 
     const loadSurveys = async (professorID) => {
-      const surveyData = await getProfessorSurveys(token, professorID);
-      if (surveyData) {
-        console.log(surveyData);
-        updateSurveys(surveyData);
+      const surveysResponse = await getProfessorSurveys(token, professorID);
+      if (surveysResponse.status === 200) {
+        updateSurveys(surveysResponse.data.data);
       } else {
         // @TODO: Error handling?
       }

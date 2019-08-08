@@ -24,7 +24,7 @@ const FactrakMain = ({ route }) => {
   const factrakBody = () => {
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <FactrakHome />;
-    console.log(splitRoute);
+
     switch (splitRoute[1]) {
       case "policy":
         return <FactrakPolicy />;

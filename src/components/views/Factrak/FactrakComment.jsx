@@ -35,18 +35,18 @@ const FactrakComment = ({
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadAgreements = async () => {
-      const agreementData = await getSurveyAgreements(token, survey.id);
-      if (agreementData) {
-        updateAgreements(agreementData);
+      const agreementResponse = await getSurveyAgreements(token, survey.id);
+      if (agreementResponse.status === 200) {
+        updateAgreements(agreementResponse.data.data);
       } else {
         // @TODO: Error handling?
       }
     };
 
     const loadProfs = async () => {
-      const profData = await getProfessor(token, survey.professorID);
-      if (profData) {
-        updateProfessor(profData);
+      const profResponse = await getProfessor(token, survey.professorID);
+      if (profResponse.status === 200) {
+        updateProfessor(profResponse.data.data);
       } else {
         // @TODO: Error handling?
       }
@@ -57,9 +57,9 @@ const FactrakComment = ({
   }, [token, abridged, survey]);
 
   const getAndUpdateSurvey = async () => {
-    const surveyData = await getSurvey(token, survey.id);
-    if (surveyData) {
-      updateSurvey(surveyData);
+    const surveyResponse = await getSurvey(token, survey.id);
+    if (surveyResponse.status === 200) {
+      updateSurvey(surveyResponse.data.data);
     } else {
       // @TODO: Error handling?
     }
@@ -72,7 +72,7 @@ const FactrakComment = ({
 
     const response = await deleteSurvey(token, survey.id);
 
-    if (response) {
+    if (response.status === 200) {
       updatedDeleted(true);
     } else {
       // @TODO: Error Handling
@@ -80,7 +80,6 @@ const FactrakComment = ({
   };
 
   const agreeHandler = async (agree) => {
-    // @TODO: check if agreements
     const agreeParams = { agree };
     let response;
     if (agreement) {
@@ -89,15 +88,9 @@ const FactrakComment = ({
       response = await postSurveyAgreement(token, survey.id, agreeParams);
     }
 
-    if (response) {
-      // @TODO: update counter
-      const agreementData = await getSurveyAgreements(token, survey.id);
-      if (agreementData) {
-        updateAgreements(agreementData);
-        getAndUpdateSurvey();
-      } else {
-        // @TODO: Error handling?
-      }
+    if (response.status === 200 || response.status === 201) {
+      updateAgreements(response.data.data);
+      getAndUpdateSurvey();
     }
   };
 

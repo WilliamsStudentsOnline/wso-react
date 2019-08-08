@@ -25,30 +25,27 @@ const FactrakCourse = ({ route, token }) => {
     const courseID = route.params.course;
 
     const loadCourse = async () => {
-      const courseData = await getCourse(token, courseID);
-      if (courseData) {
-        console.log(courseData);
-        updateCourse(courseData);
+      const courseResponse = await getCourse(token, courseID);
+      if (courseResponse.status === 200) {
+        updateCourse(courseResponse.data.data);
       } else {
         // @TODO: Error handling?
       }
     };
 
     const loadSurveys = async () => {
-      const surveyData = await getCourseSurveys(token, courseID);
-      if (surveyData) {
-        console.log(surveyData);
-        updateSurveys(surveyData);
+      const surveyResponse = await getCourseSurveys(token, courseID);
+      if (surveyResponse.status === 200) {
+        updateSurveys(surveyResponse.data.data);
       } else {
         // @TODO: Error handling?
       }
     };
 
     const loadProfs = async () => {
-      const profData = await getCourseProfs(token, courseID);
-      if (profData) {
-        console.log(profData);
-        updateProfs(profData);
+      const profResponse = await getCourseProfs(token, courseID);
+      if (profResponse.status === 200) {
+        updateProfs(profResponse.data.data);
       } else {
         // @TODO: Error handling?
       }

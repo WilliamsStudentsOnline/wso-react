@@ -24,18 +24,18 @@ const FactrakAOS = ({ route, token }) => {
     const areaParam = route.params.area;
 
     const loadProfs = async (areaID) => {
-      const profsData = await getProfsOfAOS(token, areaID);
-      if (profsData) {
-        updateProfs(profsData);
+      const profsResponse = await getProfsOfAOS(token, areaID);
+      if (profsResponse.status === 200) {
+        updateProfs(profsResponse.data.data);
       } else {
         // @TODO: Error handling?
       }
     };
 
     const loadCourses = async (areaID) => {
-      const coursesData = await getCoursesOfAOS(token, areaID);
-      if (coursesData) {
-        console.log(coursesData);
+      const coursesResponse = await getCoursesOfAOS(token, areaID);
+      if (coursesResponse.status === 200) {
+        const coursesData = coursesResponse.data.data;
         updateCourses(coursesData.sort((a, b) => a.number > b.number));
       } else {
         // @TODO: Error handling?
@@ -45,9 +45,9 @@ const FactrakAOS = ({ route, token }) => {
     // @TODO: think deeper about whether you want this to be passed as props?
     const loadAOS = async (areaID) => {
       // @TODO: Error handling for invalid areaID?
-      const areaOfStudy = await getAreaOfStudy(token, areaID);
-      if (areaOfStudy) {
-        updateArea(areaOfStudy);
+      const areaOfStudyResponse = await getAreaOfStudy(token, areaID);
+      if (areaOfStudyResponse.status === 200) {
+        updateArea(areaOfStudyResponse.data.data);
       } else {
         // @TODO: Error handling?
       }

@@ -33,14 +33,16 @@ const FactrakPolicy = ({
       hasAcceptedFactrakPolicy: true,
     };
     const response = await patchCurrUser(token, updateParams);
-    console.log(response);
+
     // PATCH succeeded, update user
-    if (response) {
+    if (response.status === 200) {
       updateUser(response);
       const updatedAuth = await updateTokenAPI(token);
-      console.log(updatedAuth);
-      updateToken(updatedAuth);
-      navigateTo("factrak");
+
+      if (updatedAuth.status === 200) {
+        updateToken(updatedAuth.data.data);
+        navigateTo("factrak");
+      }
     }
 
     return acceptPolicy;

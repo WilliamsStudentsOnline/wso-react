@@ -16,12 +16,11 @@ const FactrakSurveyIndex = ({ token, currUser }) => {
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadUserSurveys = async () => {
-      const userSurveyData = await getUserSurveys(token, currUser.id);
-      if (userSurveyData) {
-        console.log(userSurveyData);
-        updateSurveys(userSurveyData);
+      const userSurveyResponse = await getUserSurveys(token, currUser.id);
+      if (userSurveyResponse.status === 200) {
+        updateSurveys(userSurveyResponse.data.data);
       } else {
-        // @TODO: Error handling?
+        // If there is an error in survey fetching, resolve to default state.
       }
     };
 
@@ -38,7 +37,12 @@ const FactrakSurveyIndex = ({ token, currUser }) => {
               <br />
               <br />
               {surveys.map((survey) => (
-                <FactrakComment comment={survey} showProf abridged={false} />
+                <FactrakComment
+                  comment={survey}
+                  showProf
+                  abridged={false}
+                  key={survey.id}
+                />
               ))}
             </>
           ) : (
