@@ -106,8 +106,6 @@ const FactrakComment = ({
           {survey.totalDisagree ? survey.totalDisagree : 0}
         </span>
         {` disagree`}
-        {/* Mark this survey as flagged if it is. The span is always here,
-            but it is only filled when it is actually flagged */}
         <span
           id={`${survey.id}flagged`}
           className="factrak-flag"
@@ -118,10 +116,16 @@ const FactrakComment = ({
       </h1>
     );
   };
-  // @TODO: write this algorithm properly
-  // const timeAgoInWords = (time) => {
-  //   return new Date(time).toDateString();
-  // };
+
+  const timeAgoInWords = (time) => {
+    const postedTime = new Date(time);
+
+    // If < 30 days, return time in days.
+    if (Date.now() - postedTime < 2592000000)
+      return `${Math.floor((Date.now() - postedTime) / 86400)} days ago.`;
+
+    return new Date(time).toDateString();
+  };
 
   const surveyDetail = () => {
     return (
@@ -149,9 +153,7 @@ const FactrakComment = ({
             </button>
           </>
         ) : (
-          `posted ${
-            survey.createdTime /* @TODO timeAgoInWords(survey.created_at) */
-          }.`
+          `posted ${timeAgoInWords(survey.createdTime)}`
         )}
       </p>
     );
