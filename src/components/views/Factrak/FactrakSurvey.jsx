@@ -224,18 +224,10 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                   </h3>
                 ) : null}
                 <h3>{`Review of ${prof.name}`}</h3>
-                <input
-                  value={prof.id}
-                  type="hidden"
-                  name="factrak_survey[professor_id]"
-                  id="factrak_survey_professor_id"
-                />
               </>
             ) : null}
 
             <table id="factrak-survey-table">
-              {!prof ? <></> : null}
-
               <tbody>
                 <tr>
                   <td align="left">
@@ -246,18 +238,13 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                       <input
                         placeholder="DEPT"
                         onChange={factrakDeptAutocomplete}
-                        autoComplete="off"
                         type="text"
-                        name="factrak_survey[aos_abbrev]"
-                        id="factrak_survey_aos_abbrev"
                         value={/* query */ courseAOS}
                       />
                       {deptSuggestions()}
                       <input
                         placeholder="NUMBER"
                         type="text"
-                        name="factrak_survey[course_num]"
-                        id="factrak_survey_course_num"
                         onChange={(event) =>
                           updateCourseNumber(event.target.value)
                         }
@@ -279,26 +266,14 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                     Yes&nbsp;
                     <input
                       type="radio"
-                      value="true"
-                      name="factrak_survey[would_recommend_course]"
-                      id="factrak_survey_would_recommend_course_true"
                       defaultChecked={recommend}
-                      onChange={(event) =>
-                        updateRecommend(event.target.value === "true")
-                      }
+                      onChange={() => updateRecommend(true)}
                     />
                     No&nbsp;
                     <input
                       type="radio"
-                      value="false"
-                      name="factrak_survey[would_recommend_course]"
-                      id="factrak_survey_would_recommend_course_false"
-                      onChange={(event) =>
-                        updateRecommend(event.target.checked === "true")
-                      }
-                      defaultChecked={
-                        recommend !== null ? recommend === false : false
-                      }
+                      onChange={() => updateRecommend(false)}
+                      defaultChecked={recommend !== null && recommend === false}
                     />
                   </td>
                 </tr>
@@ -313,18 +288,12 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                     Yes&nbsp;
                     <input
                       type="radio"
-                      value="true"
-                      name="factrak_survey[would_take_another]"
-                      id="factrak_survey_would_take_another_true"
                       defaultChecked={takeAnother}
                       onChange={() => updateTakeAnother(true)}
                     />
                     No&nbsp;
                     <input
                       type="radio"
-                      value="false"
-                      name="factrak_survey[would_take_another]"
-                      id="factrak_survey_would_take_another_false"
                       defaultChecked={
                         takeAnother !== null && takeAnother === false
                       }
@@ -392,18 +361,10 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                     <textarea
                       style={{ minHeight: "100px" }}
                       placeholder="Minimum 100 characters"
-                      name="factrak_survey[comment]"
-                      id="factrak_survey_comment"
                       value={comment}
                       onChange={(event) => updateComment(event.target.value)}
                     />
-                    <input
-                      type="submit"
-                      name="commit"
-                      value="Save"
-                      id="submit-survey"
-                      data-disable-with="Save"
-                    />
+                    <input type="submit" data-disable-with="Save" />
                   </td>
                 </tr>
               </tbody>
