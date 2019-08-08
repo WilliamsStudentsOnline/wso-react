@@ -75,7 +75,7 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
         />
 
         {/* @TODO: check how best to handle this */}
-        <label htmlFor="remember_me">
+        {/* <label htmlFor="remember_me">
           <input
             type="checkbox"
             name="remember_me"
@@ -84,7 +84,7 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
             defaultChecked
           />
           Remember me
-        </label>
+        </label> */}
         <input
           type="submit"
           name="commit"
