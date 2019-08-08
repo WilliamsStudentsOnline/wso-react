@@ -15,9 +15,9 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
   const [unixID, setUnix] = useState("");
   const [password, setPassword] = useState("");
 
-  /* @TODO: convert email addresses to unix */
   const unixHandler = (event) => {
-    setUnix(event.target.value);
+    const splitValue = event.target.value.split("@");
+    setUnix(splitValue[0]);
   };
 
   const passwordHandler = (event) => {
@@ -33,14 +33,13 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
     } else {
       // redirects to home
       updateToken(response.data.data);
-      // @TODO: use the returned token.
       const newToken = response.data.data.token;
       const user = await getUser("me", newToken);
-      if (!user) {
-        // handle error
-      } else {
+      if (user) {
         updateUser(user);
         navigateTo("home");
+      } else {
+        // handle error
       }
     }
   };
