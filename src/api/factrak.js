@@ -172,11 +172,6 @@ const getUserSurveys = async (token, userID) => {
   return userSurveys;
 };
 
-// Update Factrak Policy acceptance
-// const updateFactrakPolicyAcceptance = async (token, userID) => {
-//   // @TODO
-// };
-
 // Get Factrak course
 const getCourse = async (token, courseID) => {
   const response = await axios({
@@ -401,6 +396,25 @@ const postSurvey = async (token, createParams) => {
   return survey;
 };
 
+// Updates Survey
+const patchSurvey = async (token, updateParams, surveyID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/surveys/${surveyID}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "patch",
+    data: updateParams,
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  const survey = response.data.data;
+
+  return survey;
+};
+
 export {
   getAreasOfStudy,
   getDepartments,
@@ -425,4 +439,5 @@ export {
   getProfessorRatings,
   getProfessorSurveys,
   postSurvey,
+  patchSurvey,
 };

@@ -7,19 +7,25 @@ import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
 
 // External Imports
-import axios from "axios";
+// import axios from "axios";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getProfessor, postSurvey, getSurvey } from "../../../api/factrak";
+import {
+  getProfessor,
+  postSurvey,
+  patchSurvey,
+  getSurvey,
+} from "../../../api/factrak";
 
 // @TODO: look into react form handlers
 // @TODO: Client side form validation?
 // @TODO: Error display
+// @TODO: Remove unneeded fields e.g. ids
 
 const FactrakSurvey = ({ token, route, navigateTo }) => {
   // const defaultQuery = "";
   // @TODO: if (survey.course) defaultQuery = survey.course.department;
   // const [query, setQuery] = useState(defaultQuery);
-  const [suggestions, setSuggestions] = useState([]);
+  // const [suggestions, setSuggestions] = useState([]);
   const [survey, updateSurvey] = useState(null);
   const [prof, updateProf] = useState(null);
 
@@ -41,11 +47,13 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
   const professorParam = route.params.professorID;
   const surveyParam = route.params.surveyID;
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
+    // Parse integers here rather than below to minimize the expensive operation
+    // @TODO error handling?
     const surveyParams = {
       areaOfStudyAbbreviation: courseAOS,
-      professorID: parseInt(professorParam, 10),
+      professorID: prof.id,
       courseNumber,
       comment,
       wouldRecommendCourse: recommend,
@@ -57,8 +65,12 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
       outsideHelpfulness: parseInt(helpful, 10),
     };
 
-    const response = postSurvey(token, surveyParams);
+    const response = edit
+      ? await patchSurvey(token, surveyParams, survey.id)
+      : await postSurvey(token, surveyParams);
+    console.log(response);
     if (response) {
+      // @TODO navigate to previous page?x
       navigateTo("factrak.surveys");
     } else {
       // `@TODO handle error
@@ -78,7 +90,21 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
     const loadSurvey = async (surveyID) => {
       const surveyData = await getSurvey(token, surveyID);
       if (surveyData) {
+        // @TODO: there has to be a better way to do this... also look into line lengths
+        console.log(surveyData);
         updateSurvey(surveyData);
+        updateProf(surveyData.professor);
+        updateCourseAOS(surveyData.course.areaOfStudy.abbreviation);
+
+        updateRecommend(surveyData.wouldRecommendCourse);
+        updateWorkload(surveyData.courseWorkload);
+        updateApprochability(surveyData.approachability);
+        updateLecture(surveyData.leadLecture);
+        updateHelpful(surveyData.outsideHelpfulness);
+        updateDiscussion(surveyData.promoteDiscussion);
+        updateRecommend(surveyData.wouldRecommendCourse);
+        updateTakeAnother(surveyData.wouldTakeAnother);
+        updateComment(surveyData.comment);
       } else {
         // @TODO: Error handling?
       }
@@ -107,39 +133,40 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
   };
 
   const deptSuggestions = () => {
-    if (suggestions) {
-      return (
-        <table id="factrak_dept_suggestions">
-          <tbody>
-            {suggestions.map((suggestion) => (
-              <tr key={suggestion}>
-                <td>
-                  <button
-                    type="button"
-                    className="autocomplete-option"
-                    onClick={() => {
-                      axios({
-                        url: "/factrak/find_depts_autocomplete",
-                        params: { q: suggestion.value },
-                        headers: {
-                          "X-Requested-With": "XMLHttpRequest",
-                        },
-                      }).then((response) => {
-                        return setSuggestions(response.data);
-                      });
+    // if (suggestions) {
+    //   return (
+    //     <table id="factrak_dept_suggestions">
+    //       <tbody>
+    //         {suggestions.map((suggestion) => (
+    //           <tr key={suggestion}>
+    //             <td>
+    //               <button
+    //                 type="button"
+    //                 className="autocomplete-option"
+    //                 // @TODO implement dept autocomplete.
+    //                 // onClick={() => {
+    //                 //   axios({
+    //                 //     url: "/factrak/find_depts_autocomplete",
+    //                 //     params: { q: suggestion.value },
+    //                 //     headers: {
+    //                 //       "X-Requested-With": "XMLHttpRequest",
+    //                 //     },
+    //                 //   }).then((response) => {
+    //                 //     return setSuggestions(response.data);
+    //                 //   });
 
-                      // @TODO setQuery(suggestion);
-                    }}
-                  >
-                    {suggestion}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      );
-    }
+    //                 // @TODO setQuery(suggestion);
+    //                 // }}
+    //               >
+    //                 {suggestion}
+    //               </button>
+    //             </td>
+    //           </tr>
+    //         ))}
+    //       </tbody>
+    //     </table>
+    //   );
+    // }
     return null;
   };
 
@@ -151,16 +178,14 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
           &nbsp;
           <input
             type="radio"
-            value={ans}
-            name={`factrak_survey[${type}]`}
-            id={`factrak_survey_${type}_${ans}`}
-            defaultChecked={edit ? survey[type] === ans : false}
-            onChange={(event) => changeHandler(event.target.value)}
+            checked={edit && type ? type === ans : false}
+            onChange={() => changeHandler(ans)}
           />
         </React.Fragment>
       );
     });
   };
+
   return (
     <div className="article">
       <section>
@@ -173,14 +198,31 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
 
           <form
             id={
-              edit ? `edit_factrak_survey_${survey.id}` : "new_factrak_survey"
+              edit && survey
+                ? `edit_factrak_survey_${survey.id}`
+                : "new_factrak_survey"
             }
-            className={edit ? "edit_factrak_survey" : "new_factrak_survey"}
-            action={edit ? `/factrak/surveys/${survey.id}` : "/factrak/surveys"}
+            className={
+              edit && survey ? "edit_factrak_survey" : "new_factrak_survey"
+            }
+            action={
+              edit && survey
+                ? `/factrak/surveys/${survey.id}`
+                : "/factrak/surveys"
+            }
             onSubmit={(event) => submitHandler(event)}
           >
             {prof ? (
               <>
+                {edit && (prof && survey) ? (
+                  <h3>
+                    Editing review on
+                    {survey.course
+                      ? ` ${survey.course.areaOfStudy.abbreviation} ${survey.course.number} with `
+                      : " "}
+                    {prof.name}
+                  </h3>
+                ) : null}
                 <h3>{`Review of ${prof.name}`}</h3>
                 <input
                   value={prof.id}
@@ -240,7 +282,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                       value="true"
                       name="factrak_survey[would_recommend_course]"
                       id="factrak_survey_would_recommend_course_true"
-                      defaultChecked={survey && survey.would_recommend_course}
+                      defaultChecked={recommend}
                       onChange={(event) =>
                         updateRecommend(event.target.value === "true")
                       }
@@ -255,9 +297,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                         updateRecommend(event.target.checked === "true")
                       }
                       defaultChecked={
-                        survey && survey.would_recommend_course !== null
-                          ? survey.would_recommend_course === false
-                          : false
+                        recommend !== null ? recommend === false : false
                       }
                     />
                   </td>
@@ -276,10 +316,8 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                       value="true"
                       name="factrak_survey[would_take_another]"
                       id="factrak_survey_would_take_another_true"
-                      defaultChecked={survey && survey.would_take_another}
-                      onChange={(event) =>
-                        updateTakeAnother(event.target.value === "true")
-                      }
+                      defaultChecked={takeAnother}
+                      onChange={() => updateTakeAnother(true)}
                     />
                     No&nbsp;
                     <input
@@ -288,13 +326,9 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                       name="factrak_survey[would_take_another]"
                       id="factrak_survey_would_take_another_false"
                       defaultChecked={
-                        survey && survey.would_take_another !== null
-                          ? survey.would_take_another === false
-                          : false
+                        takeAnother !== null && takeAnother === false
                       }
-                      onChange={(event) =>
-                        updateTakeAnother(event.target.value === "true")
-                      }
+                      onChange={() => updateTakeAnother(false)}
                     />
                   </td>
                 </tr>
@@ -307,7 +341,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                     </strong>
                   </td>
                   <td align="left">
-                    {optionBuilder("course_workload", updateWorkload)}
+                    {optionBuilder(workload, updateWorkload)}
                   </td>
                 </tr>
 
@@ -316,7 +350,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                     <strong>How approachable was this professor?</strong>
                   </td>
                   <td align="left">
-                    {optionBuilder("approachability", updateApprochability)}
+                    {optionBuilder(approachability, updateApprochability)}
                   </td>
                 </tr>
 
@@ -327,9 +361,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                       lecturing?
                     </strong>
                   </td>
-                  <td align="left">
-                    {optionBuilder("lead_lecture", updateLecture)}
-                  </td>
+                  <td align="left">{optionBuilder(lecture, updateLecture)}</td>
                 </tr>
 
                 <tr>
@@ -340,7 +372,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                     </strong>
                   </td>
                   <td align="left">
-                    {optionBuilder("promote_discussion", updateDiscussion)}
+                    {optionBuilder(discussion, updateDiscussion)}
                   </td>
                 </tr>
 
@@ -350,9 +382,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                       How helpful was this professor outside of class?
                     </strong>
                   </td>
-                  <td align="left">
-                    {optionBuilder("outside_helpfulness", updateHelpful)}
-                  </td>
+                  <td align="left">{optionBuilder(helpful, updateHelpful)}</td>
                 </tr>
 
                 <tr>
@@ -364,7 +394,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                       placeholder="Minimum 100 characters"
                       name="factrak_survey[comment]"
                       id="factrak_survey_comment"
-                      defaultValue={edit ? survey.comment : ""}
+                      value={comment}
                       onChange={(event) => updateComment(event.target.value)}
                     />
                     <input
