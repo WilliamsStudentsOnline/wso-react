@@ -14,6 +14,7 @@ import {
   getProfessor,
   getSurvey,
   flagSurvey,
+  deleteSurvey,
 } from "../../../api/factrak";
 
 // @TODO: investigate survey deficit
@@ -21,6 +22,7 @@ const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
   const [agreement, updateAgreements] = useState(null);
   const [survey, updateSurvey] = useState(comment);
   const [professor, updateProfessor] = useState({});
+  const [isDeleted, updatedDeleted] = useState(false);
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
@@ -52,6 +54,20 @@ const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
       updateSurvey(surveyData);
     } else {
       // @TODO: Error handling?
+    }
+  };
+
+  const deleteHandler = async () => {
+    // eslint-disable-next-line no-restricted-globals
+    const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
+    if (!confirmDelete) return;
+
+    const response = await deleteSurvey(token, survey.id);
+
+    if (response) {
+      updatedDeleted(true);
+    } else {
+      // @TODO: Error Handling
     }
   };
 
@@ -111,16 +127,15 @@ const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
       <p className="survey-detail">
         {currUser.id === survey.userID ? (
           <>
-            <a href={`/factrak/surveys/${survey.id}/edit`}>Edit</a>
+            <a href={`/factrak/surveys/edit?surveyID=${survey.id}`}>Edit</a>
             &nbsp;|&nbsp;
-            <a
-              data-confirm="Are you sure you want to destroy your review?"
-              rel="nofollow"
-              data-method="delete"
-              href={`/factrak/surveys/${survey.id}`}
+            <button
+              type="button"
+              onClick={deleteHandler}
+              className="inline-button"
             >
               Delete
-            </a>
+            </button>
           </>
         ) : (
           `posted ${
@@ -237,6 +252,8 @@ const FactrakComment = ({ comment, showProf, abridged, currUser, token }) => {
       </div>
     );
   };
+
+  if (isDeleted) return null;
 
   return (
     <div id={`comment${survey.id}`} className="comment">

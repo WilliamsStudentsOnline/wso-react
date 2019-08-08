@@ -7,6 +7,7 @@ import FactrakHome from "./FactrakHome";
 import FactrakPolicy from "./FactrakPolicy";
 import FactrakModerate from "./FactrakModerate";
 import FactrakSurveyIndex from "./FactrakSurveyIndex";
+import FactrakSurvey from "./FactrakSurvey";
 import FactrakLayout from "./FactrakLayout";
 import FactrakAOS from "./FactrakAOS";
 import FactrakCourse from "./FactrakCourse";
@@ -23,12 +24,16 @@ const FactrakMain = ({ route }) => {
   const factrakBody = () => {
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <FactrakHome />;
-
+    console.log(splitRoute);
     switch (splitRoute[1]) {
       case "policy":
         return <FactrakPolicy />;
       case "surveys":
         return <FactrakSurveyIndex />;
+      case "newSurvey":
+        return <FactrakSurvey edit={false} />;
+      case "editSurvey":
+        return <FactrakSurvey edit />;
       case "moderate":
         return <FactrakModerate />;
       case "areasOfStudy":

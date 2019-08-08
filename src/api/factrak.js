@@ -382,6 +382,25 @@ const getProfessorSurveys = async (token, professorID) => {
   return surveys;
 };
 
+// Create New Survey
+const postSurvey = async (token, createParams) => {
+  const response = await axios({
+    url: `/api/v1/factrak/surveys`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "post",
+    data: createParams,
+  }).catch((error) => {
+    console.log(error.response);
+    return null;
+  });
+
+  const survey = response.data.data;
+
+  return survey;
+};
+
 export {
   getAreasOfStudy,
   getDepartments,
@@ -405,4 +424,5 @@ export {
   getDepartment,
   getProfessorRatings,
   getProfessorSurveys,
+  postSurvey,
 };

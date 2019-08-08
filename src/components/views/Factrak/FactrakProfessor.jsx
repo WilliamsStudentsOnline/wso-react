@@ -67,7 +67,7 @@ const FactrakProfessor = ({ token, route }) => {
     loadProfs(professorParam);
     loadRatings(professorParam);
     loadSurveys(professorParam);
-  }, []);
+  }, [route.params.professor, token]);
 
   const courseWorkload = () => {
     if (!ratings.numCourseWorkload) return null;
@@ -226,7 +226,7 @@ const FactrakProfessor = ({ token, route }) => {
         <br />
 
         <br />
-        <a href={`/factrak/surveys/new?professor_id=${professor.id}`}>
+        <a href={`/factrak/surveys/new?professorID=${professor.id}`}>
           Click here to review this professor
         </a>
         <br />

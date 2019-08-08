@@ -20,6 +20,8 @@ export default [
       { name: "areasOfStudy", path: "/areasOfStudy/:area<\\d+>" },
       { name: "courses", path: "/courses/:course<\\d+>" },
       { name: "professors", path: "/professors/:professor<\\d+>" },
+      { name: "newSurvey", path: "/surveys/new?:professorID" },
+      { name: "editSurvey", path: "/surveys/edit?:surveyID" },
     ],
   },
   { name: "dormtrak", path: "/dormtrak" },
