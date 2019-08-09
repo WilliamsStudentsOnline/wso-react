@@ -15,6 +15,7 @@ import {
 } from "../../../api/factrak";
 import { createRouteNodeSelector, actions } from "redux-router5";
 import { checkAndHandleError } from "../../../lib/general";
+import { Link } from "react-router5";
 
 const FactrakCourse = ({ route, token }) => {
   const [course, updateCourse] = useState({});
@@ -24,6 +25,9 @@ const FactrakCourse = ({ route, token }) => {
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const courseID = route.params.course;
+    const profID = route.params.profID ? route.params.profID : -1;
+
+    console.log(profID);
 
     const loadCourse = async () => {
       const courseResponse = await getCourse(token, courseID);
@@ -33,7 +37,8 @@ const FactrakCourse = ({ route, token }) => {
     };
 
     const loadSurveys = async () => {
-      const surveyResponse = await getCourseSurveys(token, courseID);
+      const surveyResponse = await getCourseSurveys(token, courseID, profID);
+
       if (checkAndHandleError(surveyResponse)) {
         updateSurveys(surveyResponse.data.data);
       }
@@ -49,7 +54,7 @@ const FactrakCourse = ({ route, token }) => {
     loadCourse();
     loadSurveys();
     loadProfs();
-  }, [token, route.params.course]);
+  }, [token, route.params.course, route.params.profID]);
 
   const professorList = () => {
     if (courseProfs.length === 0) return null;
@@ -57,14 +62,22 @@ const FactrakCourse = ({ route, token }) => {
       <div>
         {`View comments only for `}
         <br />
-        {courseProfs.map((prof) => (
-          <a
-            key={prof.name}
-            href={`/factrak/courses/${course.id}?prof=${prof.id}`}
-          >
-            {prof.name}
-          </a>
-        ))}
+        {course && course.id
+          ? courseProfs.map((prof) => (
+              <React.Fragment key={prof.name}>
+                <Link
+                  routeName="factrak.courses.singleProf"
+                  routeParams={{
+                    course: course.id,
+                    profID: prof.id,
+                  }}
+                >
+                  {prof.name}
+                </Link>
+                &emsp;
+              </React.Fragment>
+            ))
+          : null}
       </div>
     );
   };

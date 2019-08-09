@@ -16,10 +16,13 @@ export default [
       { name: "policy", path: "/policy" },
       { name: "surveys", path: "/surveys" },
       { name: "moderate", path: "/moderate" },
-      // @TODO: error handling for non numerical params
-      { name: "areasOfStudy", path: "/areasOfStudy/:area<\\d+>" },
-      { name: "courses", path: "/courses/:course<\\d+>" },
-      { name: "professors", path: "/professors/:professor<\\d+>" },
+      { name: "areasOfStudy", path: "/areasOfStudy/:area" },
+      {
+        name: "courses",
+        path: "/courses/:course",
+        children: [{ name: "singleProf", path: "?:profID" }],
+      },
+      { name: "professors", path: "/professors/:professor" },
       { name: "newSurvey", path: "/surveys/new?:professorID" },
       { name: "editSurvey", path: "/surveys/edit?:surveyID" },
     ],

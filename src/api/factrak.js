@@ -157,17 +157,36 @@ const getCourse = async (token, courseID) => {
 };
 
 // Get surveys belonging to a factrak course.
-const getCourseSurveys = async (token, courseID) => {
-  const response = await axios({
-    url: `/api/v1/factrak/courses/${courseID}/surveys`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).catch((error) => {
-    return error.response;
-  });
+const getCourseSurveys = async (token, courseID, professorID = -1) => {
+  let request;
 
-  return response;
+  try {
+    const parsedID = parseInt(professorID, 10);
+    if (parsedID === -1 || typeof parsedID !== "number") {
+      request = {
+        url: `/api/v1/factrak/courses/${courseID}/surveys`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+    } else {
+      request = {
+        url: `/api/v1/factrak/courses/${courseID}/surveys`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: { professorID: parsedID },
+      };
+    }
+
+    const response = await axios(request).catch((error) => {
+      return error.response;
+    });
+
+    return response;
+  } catch (err) {
+    return err;
+  }
 };
 
 // Gets the list of professors who teach a particular course
@@ -246,13 +265,26 @@ const flagSurvey = async (token, surveyID) => {
 };
 
 // Get Professor by Professor ID
-const getProfessor = async (token, professorID) => {
-  const response = await axios({
-    url: `/api/v1/factrak/professors/${professorID}`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).catch((error) => {
+const getProfessor = async (token, professorID, courseID = -1) => {
+  let request;
+  if (courseID === -1 || typeof courseID !== "number") {
+    request = {
+      url: `/api/v1/factrak/professors/${professorID}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  } else {
+    request = {
+      url: `/api/v1/factrak/professors/${professorID}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: { courseID },
+    };
+  }
+
+  const response = await axios(request).catch((error) => {
     return error.response;
   });
 
@@ -287,28 +319,54 @@ const getDepartment = async (token, departmentID) => {
   return response;
 };
 
-// Get Professor Ratings. @TODO Takes in an optional course Id
-const getProfessorRatings = async (token, professorID) => {
-  const response = await axios({
-    url: `/api/v1/factrak/professors/${professorID}/ratings`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).catch((error) => {
+// Get Professor Ratings.
+const getProfessorRatings = async (token, professorID, courseID = -1) => {
+  let request;
+  if (courseID === -1 || typeof courseID !== "number") {
+    request = {
+      url: `/api/v1/factrak/professors/${professorID}/ratings`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  } else {
+    request = {
+      url: `/api/v1/factrak/professors/${professorID}/ratings`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: { courseID },
+    };
+  }
+
+  const response = await axios(request).catch((error) => {
     return error.response;
   });
 
   return response;
 };
 
-// Get Professor Surveys. @TODO Takes in an optional course Id
-const getProfessorSurveys = async (token, professorID) => {
-  const response = await axios({
-    url: `/api/v1/factrak/professors/${professorID}/surveys`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).catch((error) => {
+// Get Professor Surveys.
+const getProfessorSurveys = async (token, professorID, courseID = -1) => {
+  let request;
+  if (courseID === -1 || typeof courseID !== "number") {
+    request = {
+      url: `/api/v1/factrak/professors/${professorID}/surveys`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  } else {
+    request = {
+      url: `/api/v1/factrak/professors/${professorID}/surveys`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: { courseID },
+    };
+  }
+
+  const response = await axios(request).catch((error) => {
     return error.response;
   });
 

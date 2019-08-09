@@ -70,7 +70,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
       ? await patchSurvey(token, surveyParams, survey.id)
       : await postSurvey(token, surveyParams);
 
-    if (response.request.status === 200) {
+    if (response.data.status === 200 || response.data.status === 201) {
       // @TODO navigate to previous page?
       navigateTo("factrak.surveys");
     } else {
