@@ -15,6 +15,7 @@ import {
   patchSurvey,
   getSurvey,
 } from "../../../api/factrak";
+import { checkAndHandleError } from "../../../lib/general";
 
 // @TODO: look into react form handlers
 // @TODO: Client side form validation?
@@ -80,16 +81,14 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
   useEffect(() => {
     const loadProf = async (professorID) => {
       const profResponse = await getProfessor(token, professorID);
-      if (profResponse.status === 200) {
-        updateProf(profResponse.status === 200);
-      } else {
-        // @TODO: Error handling?
+      if (checkAndHandleError(profResponse)) {
+        updateProf(profResponse.data.data);
       }
     };
 
     const loadSurvey = async (surveyID) => {
       const surveyResponse = await getSurvey(token, surveyID);
-      if (surveyResponse.status === 200) {
+      if (checkAndHandleError(surveyResponse)) {
         const surveyData = surveyResponse.data.data;
         // Could use a defaultSurvey and update that object, but will hardly save any lines.
         updateSurvey(surveyData);
@@ -105,8 +104,6 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
         updateRecommend(surveyData.wouldRecommendCourse);
         updateTakeAnother(surveyData.wouldTakeAnother);
         updateComment(surveyData.comment);
-      } else {
-        // @TODO: Error handling?
       }
     };
 

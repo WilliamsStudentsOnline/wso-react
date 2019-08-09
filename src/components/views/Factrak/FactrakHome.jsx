@@ -9,6 +9,7 @@ import { getToken, getCurrUser } from "../../../selectors/auth";
 
 // External imports
 import { getSurveys, getAreasOfStudy } from "../../../api/factrak";
+import { checkAndHandleError } from "../../../lib/general";
 
 const FactrakHome = ({ token, currUser }) => {
   const [areas, updateAreas] = useState([]);
@@ -17,21 +18,18 @@ const FactrakHome = ({ token, currUser }) => {
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadSurveys = async () => {
-      const surveysResponse = await getSurveys(token, 10);
-      if (surveysResponse.status === 200) {
+      const surveysResponse = await getSurveys(token);
+
+      if (checkAndHandleError(surveysResponse)) {
         updateSurveys(surveysResponse.data.data.slice(0, 10));
-      } else {
-        // @TODO: Error handling?
       }
     };
 
     const loadAreas = async () => {
       const areasOfStudyResponse = await getAreasOfStudy(token);
-      if (areasOfStudyResponse.data.data) {
+      if (checkAndHandleError(areasOfStudyResponse)) {
         const areasOfStudy = areasOfStudyResponse.data.data;
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
-      } else {
-        // @TODO: Error handling?
       }
     };
 

@@ -13,7 +13,8 @@ import {
   getCourseSurveys,
   getCourseProfs,
 } from "../../../api/factrak";
-import { createRouteNodeSelector } from "redux-router5";
+import { createRouteNodeSelector, actions } from "redux-router5";
+import { checkAndHandleError } from "../../../lib/general";
 
 const FactrakCourse = ({ route, token }) => {
   const [course, updateCourse] = useState({});
@@ -26,28 +27,22 @@ const FactrakCourse = ({ route, token }) => {
 
     const loadCourse = async () => {
       const courseResponse = await getCourse(token, courseID);
-      if (courseResponse.status === 200) {
+      if (checkAndHandleError(courseResponse)) {
         updateCourse(courseResponse.data.data);
-      } else {
-        // @TODO: Error handling?
       }
     };
 
     const loadSurveys = async () => {
       const surveyResponse = await getCourseSurveys(token, courseID);
-      if (surveyResponse.status === 200) {
+      if (checkAndHandleError(surveyResponse)) {
         updateSurveys(surveyResponse.data.data);
-      } else {
-        // @TODO: Error handling?
       }
     };
 
     const loadProfs = async () => {
       const profResponse = await getCourseProfs(token, courseID);
-      if (profResponse.status === 200) {
+      if (checkAndHandleError(profResponse)) {
         updateProfs(profResponse.data.data);
-      } else {
-        // @TODO: Error handling?
       }
     };
 
@@ -126,4 +121,12 @@ const mapStateToProps = () => {
   });
 };
 
-export default connect(mapStateToProps)(FactrakCourse);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FactrakCourse);

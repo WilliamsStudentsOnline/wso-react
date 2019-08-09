@@ -19,6 +19,7 @@ import {
 } from "../../../api/factrak";
 import { getUser } from "../../../api/users";
 import { actions } from "redux-router5";
+import { checkAndHandleError } from "../../../lib/general";
 
 // @TODO: investigate survey deficit
 const FactrakComment = ({
@@ -39,19 +40,15 @@ const FactrakComment = ({
   useEffect(() => {
     const loadAgreements = async () => {
       const agreementResponse = await getSurveyAgreements(token, survey.id);
-      if (agreementResponse.status === 200) {
+      if (checkAndHandleError(agreementResponse)) {
         updateAgreements(agreementResponse.data.data);
-      } else {
-        // @TODO: Error handling?
       }
     };
 
     const loadProfs = async () => {
       const profResponse = await getProfessor(token, survey.professorID);
-      if (profResponse.status === 200) {
+      if (checkAndHandleError(profResponse)) {
         updateProfessor(profResponse.data.data);
-      } else {
-        // @TODO: Error handling?
       }
     };
 
@@ -61,10 +58,8 @@ const FactrakComment = ({
 
   const getAndUpdateSurvey = async () => {
     const surveyResponse = await getSurvey(token, survey.id);
-    if (surveyResponse.status === 200) {
+    if (checkAndHandleError(surveyResponse)) {
       updateSurvey(surveyResponse.data.data);
-    } else {
-      // @TODO: Error handling?
     }
   };
 
@@ -75,14 +70,12 @@ const FactrakComment = ({
 
     const response = await deleteSurvey(token, survey.id);
 
-    if (response.status === 200) {
+    if (checkAndHandleError(response)) {
       updatedDeleted(true);
       const userResponse = await getUser("me", token);
-      if (userResponse.stats === 200) {
+      if (checkAndHandleError(userResponse)) {
         updateUser(userResponse);
       }
-    } else {
-      // @TODO: Error Handling
     }
   };
 
@@ -95,7 +88,7 @@ const FactrakComment = ({
       response = await postSurveyAgreement(token, survey.id, agreeParams);
     }
 
-    if (response.status === 200 || response.status === 201) {
+    if (checkAndHandleError(response)) {
       updateAgreements(response.data.data);
       getAndUpdateSurvey();
     }
@@ -168,10 +161,9 @@ const FactrakComment = ({
 
   const flagHandler = () => {
     const response = flagSurvey(token, survey.id);
-    if (response) {
+
+    if (checkAndHandleError(response)) {
       getAndUpdateSurvey();
-    } else {
-      // @TODO: Error handling?
     }
   };
 

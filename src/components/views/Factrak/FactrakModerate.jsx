@@ -8,6 +8,7 @@ import { getToken } from "../../../selectors/auth";
 
 // External imports
 import { getFlagged, unflagSurvey, deleteSurvey } from "../../../api/factrak";
+import { checkAndHandleError } from "../../../lib/general";
 
 const FactrakModerate = ({ token }) => {
   const [flagged, updateFlagged] = useState([]);
@@ -16,10 +17,8 @@ const FactrakModerate = ({ token }) => {
   useEffect(() => {
     const loadFlagged = async () => {
       const flaggedResponse = await getFlagged(token);
-      if (flaggedResponse.status === 200) {
+      if (checkAndHandleError(flaggedResponse)) {
         updateFlagged(flaggedResponse.data.data);
-      } else {
-        // @TODO: Error handling?
       }
     };
 
@@ -28,12 +27,8 @@ const FactrakModerate = ({ token }) => {
 
   const unflag = async (surveyID) => {
     const response = await unflagSurvey(token, surveyID);
-
-    if (response.status === 200) {
+    if (checkAndHandleError(response)) {
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
-    } else {
-      // Request did not go through
-      // @TODO: Add error toast
     }
   };
 
@@ -44,12 +39,8 @@ const FactrakModerate = ({ token }) => {
     if (!confirmDelete) return;
 
     const response = await deleteSurvey(token, surveyID);
-
-    if (response.status === 200) {
+    if (checkAndHandleError(response)) {
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
-    } else {
-      // Request did not go through
-      // @TODO: Add error toast
     }
   };
 

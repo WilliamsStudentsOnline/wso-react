@@ -15,6 +15,7 @@ import {
   getProfessorRatings,
   getProfessorSurveys,
 } from "../../../api/factrak";
+import { checkAndHandleError } from "../../../lib/general";
 
 const FactrakProfessor = ({ token, route }) => {
   const [professor, updateProfessor] = useState(null);
@@ -28,36 +29,30 @@ const FactrakProfessor = ({ token, route }) => {
 
     const loadProfs = async (professorID) => {
       const professorResponse = await getProfessor(token, professorID);
-      if (professorResponse.status === 200) {
+      if (checkAndHandleError(professorResponse)) {
         const professorData = professorResponse.data.data;
         updateProfessor(professorData);
         const departmentResponse = await getDepartment(
           token,
           professorData.departmentID
         );
-        if (departmentResponse) {
+        if (checkAndHandleError(departmentResponse)) {
           updateDepartment(departmentResponse.data.data);
         }
-      } else {
-        // @TODO: Error handling?
       }
     };
 
     const loadRatings = async (professorID) => {
       const ratingsResponse = await getProfessorRatings(token, professorID);
-      if (ratingsResponse.status === 200) {
+      if (checkAndHandleError(ratingsResponse)) {
         updateRatings(ratingsResponse.data.data);
-      } else {
-        // @TODO: Error handling?
       }
     };
 
     const loadSurveys = async (professorID) => {
       const surveysResponse = await getProfessorSurveys(token, professorID);
-      if (surveysResponse.status === 200) {
+      if (checkAndHandleError(surveysResponse)) {
         updateSurveys(surveysResponse.data.data);
-      } else {
-        // @TODO: Error handling?
       }
     };
 

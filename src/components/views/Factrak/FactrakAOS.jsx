@@ -7,12 +7,13 @@ import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
 
 // External Imports
-import { createRouteNodeSelector } from "redux-router5";
+import { createRouteNodeSelector, actions } from "redux-router5";
 import {
   getProfsOfAOS,
   getCoursesOfAOS,
   getAreaOfStudy,
 } from "../../../api/factrak";
+import { checkAndHandleError } from "../../../lib/general";
 
 const FactrakAOS = ({ route, token }) => {
   const [courses, updateCourses] = useState([]);
@@ -25,31 +26,23 @@ const FactrakAOS = ({ route, token }) => {
 
     const loadProfs = async (areaID) => {
       const profsResponse = await getProfsOfAOS(token, areaID);
-      if (profsResponse.status === 200) {
+      if (checkAndHandleError(profsResponse)) {
         updateProfs(profsResponse.data.data);
-      } else {
-        // @TODO: Error handling?
       }
     };
 
     const loadCourses = async (areaID) => {
       const coursesResponse = await getCoursesOfAOS(token, areaID);
-      if (coursesResponse.status === 200) {
+      if (checkAndHandleError(coursesResponse)) {
         const coursesData = coursesResponse.data.data;
         updateCourses(coursesData.sort((a, b) => a.number > b.number));
-      } else {
-        // @TODO: Error handling?
       }
     };
 
-    // @TODO: think deeper about whether you want this to be passed as props?
     const loadAOS = async (areaID) => {
-      // @TODO: Error handling for invalid areaID?
       const areaOfStudyResponse = await getAreaOfStudy(token, areaID);
-      if (areaOfStudyResponse.status === 200) {
+      if (checkAndHandleError(areaOfStudyResponse)) {
         updateArea(areaOfStudyResponse.data.data);
-      } else {
-        // @TODO: Error handling?
       }
     };
 
@@ -140,4 +133,12 @@ const mapStateToProps = () => {
   });
 };
 
-export default connect(mapStateToProps)(FactrakAOS);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FactrakAOS);
