@@ -2,6 +2,7 @@ import {
   UPDATE_TOKEN,
   UPDATE_USER,
   REMOVE_CREDS,
+  UPDATE_REMEMBER,
 } from "../constants/actionTypes";
 
 import jwtDecode from "jwt-decode";
@@ -11,13 +12,17 @@ const INITIAL_STATE = {
   token: "",
   expiry: "",
   currUser: null, // Stores the user object.
+  remember: false,
 };
 
 // Method to get scopes.
 const parseToken = (token) => {
-  const decoded = jwtDecode(token);
-  return decoded;
-  // @TODO: Error handling
+  try {
+    const decoded = jwtDecode(token);
+    return decoded;
+  } catch (error) {
+    return null;
+  }
 };
 
 // Updates the token in the store. Checking of a error-free response should be done before this
@@ -41,6 +46,13 @@ const updateUser = (state, action) => {
   });
 };
 
+// Updates the boolean indicating if user info should be stored
+const updateRemember = (state, action) => {
+  return Object.assign({}, state, {
+    remember: action.remember,
+  });
+};
+
 // Remove authentication credentials from storage
 const removeCreds = () => {
   return INITIAL_STATE;
@@ -54,6 +66,8 @@ function authReducer(state = INITIAL_STATE, action) {
       return updateUser(state, action);
     case REMOVE_CREDS:
       return removeCreds();
+    case UPDATE_REMEMBER:
+      return updateRemember(state, action);
     default:
       return state;
   }

@@ -30,9 +30,11 @@ const store = configureStore(router, persistedState);
 
 store.subscribe(
   throttle(() => {
-    saveState({
-      authState: store.getState().authState,
-    });
+    if (store.getState().authState.remember) {
+      saveState({
+        authState: store.getState().authState,
+      });
+    }
   }, 1000)
 );
 

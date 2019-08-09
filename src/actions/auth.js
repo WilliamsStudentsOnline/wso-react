@@ -2,6 +2,7 @@ import {
   UPDATE_TOKEN,
   UPDATE_USER,
   REMOVE_CREDS,
+  UPDATE_REMEMBER,
 } from "../constants/actionTypes";
 
 const doUpdateToken = (response) => ({
@@ -18,4 +19,9 @@ const doRemoveCreds = () => ({
   type: REMOVE_CREDS,
 });
 
-export { doUpdateToken, doUpdateUser, doRemoveCreds };
+const doUpdateRemember = (remember) => ({
+  type: UPDATE_REMEMBER,
+  remember,
+});
+
+export { doUpdateToken, doUpdateUser, doRemoveCreds, doUpdateRemember };
