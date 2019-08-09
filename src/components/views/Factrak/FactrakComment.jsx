@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 // Redux imports
 import { connect } from "react-redux";
 import { getCurrUser, getToken } from "../../../selectors/auth";
+import { doUpdateUser } from "../../../actions/auth";
 
 // API Imports
 import {
@@ -16,6 +17,7 @@ import {
   flagSurvey,
   deleteSurvey,
 } from "../../../api/factrak";
+import { getUser } from "../../../api/users";
 import { actions } from "redux-router5";
 
 // @TODO: investigate survey deficit
@@ -26,6 +28,7 @@ const FactrakComment = ({
   currUser,
   token,
   navigateTo,
+  updateUser,
 }) => {
   const [agreement, updateAgreements] = useState(null);
   const [survey, updateSurvey] = useState(comment);
@@ -74,6 +77,10 @@ const FactrakComment = ({
 
     if (response.status === 200) {
       updatedDeleted(true);
+      const userResponse = await getUser("me", token);
+      if (userResponse.stats === 200) {
+        updateUser(userResponse);
+      }
     } else {
       // @TODO: Error Handling
     }
@@ -306,6 +313,7 @@ FactrakComment.propTypes = {
   currUser: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  updateUser: PropTypes.func.isRequired,
 };
 
 FactrakComment.defaultProps = {};
@@ -318,6 +326,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location, params, opts) =>
     dispatch(actions.navigateTo(location, params, opts)),
+  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
 export default connect(

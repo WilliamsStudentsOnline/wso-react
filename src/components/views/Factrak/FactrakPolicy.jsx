@@ -161,7 +161,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
   updateToken: (response) => dispatch(doUpdateToken(response)),
-  updateUser: (unixID) => dispatch(doUpdateUser(unixID)),
+  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
 export default connect(
