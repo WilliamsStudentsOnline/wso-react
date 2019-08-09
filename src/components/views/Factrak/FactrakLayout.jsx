@@ -120,13 +120,11 @@ const FactrakLayout = ({ children, currUser, navigateTo }) => {
 
 FactrakLayout.propTypes = {
   children: PropTypes.object.isRequired,
-  currUser: PropTypes.object,
+  currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
-FactrakLayout.defaultProps = {
-  currUser: {},
-};
+FactrakLayout.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),

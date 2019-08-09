@@ -55,10 +55,10 @@ const FactrakSurveyIndex = ({ token, currUser }) => {
 
 FactrakSurveyIndex.propTypes = {
   token: PropTypes.string.isRequired,
-  currUser: PropTypes.object,
+  currUser: PropTypes.object.isRequired,
 };
 
-FactrakSurveyIndex.defaultProps = { currUser: {} };
+FactrakSurveyIndex.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   token: getToken(state),

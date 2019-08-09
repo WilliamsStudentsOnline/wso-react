@@ -18,10 +18,10 @@ const FactrakHome = ({ token, currUser }) => {
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadSurveys = async () => {
-      const surveysResponse = await getSurveys(token);
+      const surveysResponse = await getSurveys(token, 10);
 
       if (checkAndHandleError(surveysResponse)) {
-        updateSurveys(surveysResponse.data.data.slice(0, 10));
+        updateSurveys(surveysResponse.data.data);
       }
     };
 
@@ -90,12 +90,10 @@ const FactrakHome = ({ token, currUser }) => {
 
 FactrakHome.propTypes = {
   token: PropTypes.string.isRequired,
-  currUser: PropTypes.object,
+  currUser: PropTypes.object.isRequired,
 };
 
-FactrakHome.defaultProps = {
-  currUser: {},
-};
+FactrakHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   token: getToken(state),

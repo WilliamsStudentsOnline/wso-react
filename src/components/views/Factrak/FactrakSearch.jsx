@@ -1,16 +1,8 @@
 // React imports
 import React from "react";
 import PropTypes from "prop-types";
-import FactrakLayout from "./FactrakLayout";
 
-const FactrakSearch = ({
-  profs,
-  courses,
-  currentUser,
-  authToken,
-  notice,
-  warning,
-}) => {
+const FactrakSearch = ({ profs, courses }) => {
   const profList = profs;
   const courseList = courses.sort((a, b) => {
     if (a.number < b.number) return -1;
@@ -88,33 +80,18 @@ const FactrakSearch = ({
     );
   };
   return (
-    <FactrakLayout
-      currentUser={currentUser}
-      authToken={authToken}
-      notice={notice}
-      warning={warning}
-    >
-      <article className="factrak-home">
-        {professorDisplay()}
-        {courseDisplay()}
-      </article>
-    </FactrakLayout>
+    <article className="factrak-home">
+      {professorDisplay()}
+      {courseDisplay()}
+    </article>
   );
 };
 
 FactrakSearch.propTypes = {
   profs: PropTypes.arrayOf(PropTypes.object).isRequired,
   courses: PropTypes.arrayOf(PropTypes.object).isRequired,
-  authToken: PropTypes.string.isRequired,
-  currentUser: PropTypes.object,
-  notice: PropTypes.string,
-  warning: PropTypes.object,
 };
 
-FactrakSearch.defaultProps = {
-  notice: "",
-  warning: "",
-  currentUser: {},
-};
+FactrakSearch.defaultProps = {};
 
 export default FactrakSearch;
