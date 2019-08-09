@@ -6,19 +6,12 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getCurrUser, getToken } from "../../../selectors/auth";
 import { actions } from "redux-router5";
-import { doUpdateToken, doUpdateUser } from "../../../actions/auth";
 
 // API imports
 import { patchCurrUser } from "../../../api/users";
-import { updateTokenAPI } from "../../../api/auth";
+import { checkAndHandleError } from "../../../lib/general";
 
-const FactrakPolicy = ({
-  currUser,
-  navigateTo,
-  token,
-  updateUser,
-  updateToken,
-}) => {
+const FactrakPolicy = ({ currUser, navigateTo, token }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
 
   const clickHandler = (event) => {
@@ -35,14 +28,8 @@ const FactrakPolicy = ({
     const response = await patchCurrUser(token, updateParams);
 
     // PATCH succeeded, update user
-    if (response.status === 200) {
-      updateUser(response);
-      const updatedAuth = await updateTokenAPI(token);
-
-      if (updatedAuth.status === 200) {
-        updateToken(updatedAuth.data.data);
-        navigateTo("factrak");
-      }
+    if (checkAndHandleError(response)) {
+      navigateTo("factrak");
     }
 
     return acceptPolicy;
@@ -149,8 +136,6 @@ FactrakPolicy.propTypes = {
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
-  updateToken: PropTypes.func.isRequired,
-  updateUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -160,8 +145,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
-  updateToken: (response) => dispatch(doUpdateToken(response)),
-  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
 export default connect(

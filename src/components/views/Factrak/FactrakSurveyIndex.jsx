@@ -9,6 +9,7 @@ import { getToken, getCurrUser } from "../../../selectors/auth";
 
 // API imports
 import { getUserSurveys } from "../../../api/factrak";
+import { checkAndHandleError } from "../../../lib/general";
 
 const FactrakSurveyIndex = ({ token, currUser }) => {
   const [surveys, updateSurveys] = useState([]);
@@ -17,10 +18,8 @@ const FactrakSurveyIndex = ({ token, currUser }) => {
   useEffect(() => {
     const loadUserSurveys = async () => {
       const userSurveyResponse = await getUserSurveys(token, currUser.id);
-      if (userSurveyResponse.status === 200) {
+      if (checkAndHandleError(userSurveyResponse)) {
         updateSurveys(userSurveyResponse.data.data);
-      } else {
-        // If there is an error in survey fetching, resolve to default state.
       }
     };
 

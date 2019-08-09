@@ -43,11 +43,15 @@ const getDepartments = async (token) => {
 };
 
 // Lists all surveys
-const getSurveys = async (token) => {
+const getSurveys = async (token, limit = 10) => {
   const response = await axios({
     url: "/api/v1/factrak/surveys",
     headers: {
       Authorization: `Bearer ${token}`,
+    },
+    params: {
+      limit,
+      offset: new Date(),
     },
   }).catch((error) => {
     return error.response;

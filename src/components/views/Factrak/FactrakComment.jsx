@@ -74,7 +74,7 @@ const FactrakComment = ({
       updatedDeleted(true);
       const userResponse = await getUser("me", token);
       if (checkAndHandleError(userResponse)) {
-        updateUser(userResponse);
+        updateUser(userResponse.data.data);
       }
     }
   };

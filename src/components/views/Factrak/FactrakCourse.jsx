@@ -27,8 +27,6 @@ const FactrakCourse = ({ route, token }) => {
     const courseID = route.params.course;
     const profID = route.params.profID ? route.params.profID : -1;
 
-    console.log(profID);
-
     const loadCourse = async () => {
       const courseResponse = await getCourse(token, courseID);
       if (checkAndHandleError(courseResponse)) {
