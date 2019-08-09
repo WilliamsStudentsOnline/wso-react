@@ -71,11 +71,12 @@ const App = ({ route, navigateTo, removeCreds }) => {
     }
   };
 
+  // Refreshes the token
   const initialize = async (token, expiry) => {
     if (!token || !expiry) return;
-    const response = await tokenExpiryHandler(token, expiry);
-    console.log(response);
-    // @TODO uhh.
+
+    // Checks if the token can be refreshed, refreshes if necessary
+    tokenExpiryHandler(token, expiry);
   };
 
   initialize();
