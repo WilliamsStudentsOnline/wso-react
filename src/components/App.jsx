@@ -12,6 +12,7 @@ import Scheduler from "./views/CourseScheduler/Scheduler";
 import FacebookMain from "./views/Facebook/FacebookMain";
 import DormtrakIndex from "./views/Dormtrak/DormtrakIndex";
 import FactrakMain from "./views/Factrak/FactrakMain";
+import FourOhFour from "./views/Errors/FourOhFour";
 import Login from "./Login";
 
 // Redux/routing
@@ -66,12 +67,7 @@ const App = ({ route, navigateTo, removeCreds }) => {
         navigateTo("home");
         return null;
       default:
-        return (
-          <header>
-            <h1>Whoops! Page not found!</h1>
-            404. Run. Hide. Cease and Desist.
-          </header>
-        );
+        return <FourOhFour />;
     }
   };
 
@@ -85,9 +81,7 @@ const App = ({ route, navigateTo, removeCreds }) => {
   initialize();
   document.title = randomWSO();
 
-  return (
-    <Layout bodyClass="front dormtrak facebook factrak">{mainBody()}</Layout>
-  );
+  return <Layout>{mainBody()}</Layout>;
 };
 
 App.propTypes = {

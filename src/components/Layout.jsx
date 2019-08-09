@@ -5,9 +5,9 @@ import Footer from "./Footer";
 import Nav from "./Nav";
 import "./stylesheets/Application.css";
 
-const Layout = ({ children, bodyClass, notice, warning }) => {
+const Layout = ({ children, notice, warning }) => {
   return (
-    <div className={bodyClass}>
+    <div className="front dormtrak facebook factrak">
       <Nav />
 
       <aside>
@@ -26,7 +26,6 @@ const Layout = ({ children, bodyClass, notice, warning }) => {
 Layout.propTypes = {
   notice: PropTypes.string,
   warning: PropTypes.string,
-  bodyClass: PropTypes.string.isRequired,
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
 };
 
