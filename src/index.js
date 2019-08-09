@@ -30,11 +30,23 @@ const store = configureStore(router, persistedState);
 
 store.subscribe(
   throttle(() => {
-    if (store.getState().authState.remember) {
-      saveState({
-        authState: store.getState().authState,
-      });
-    }
+    const authState = store.getState().authState;
+    saveState({ authState });
+
+    // @TODO: Saving state in between tabs but not across sessions -> absolutely no idea how.
+    // if (authState.remember) {
+    //   saveState({ authState });
+    // } else {
+    //   saveState({
+    //     authState: {
+    //       scope: [],
+    //       token: "",
+    //       expiry: "",
+    //       currUser: null, // Stores the user object.
+    //       remember: false,
+    //     },
+    //   });
+    // }
   }, 1000)
 );
 

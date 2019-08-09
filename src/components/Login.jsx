@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
-import { doUpdateToken, doUpdateUser, doUpdateRemember } from "../actions/auth";
+import { doUpdateToken, doUpdateUser } from "../actions/auth";
 
 // External imports
 import { getToken } from "../api/auth";
@@ -12,10 +12,10 @@ import { actions } from "redux-router5";
 import { getUser } from "../api/users";
 import { checkAndHandleError } from "../lib/general";
 
-const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
+const Login = ({ navigateTo, updateToken, updateUser }) => {
   const [unixID, setUnix] = useState("");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(true);
+  // const [remember, setRemember] = useState(false);
 
   const unixHandler = (event) => {
     const splitValue = event.target.value.split("@");
@@ -37,7 +37,7 @@ const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
         // Only update if both requests pass.
         updateUser(userResponse.data.data);
         updateToken(response.data.data);
-        updateRemember(remember);
+        // updateRemember(remember);
         navigateTo("home");
       }
     }
@@ -70,7 +70,7 @@ const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
           placeholder="Password"
           onChange={passwordHandler}
         />
-
+        {/* @TODO: Saving state between tabs but not between sessions. 
         <label htmlFor="remember_me">
           <input
             type="checkbox"
@@ -79,7 +79,7 @@ const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
             onChange={() => setRemember(!remember)}
           />
           Remember me
-        </label>
+        </label> */}
         <input
           type="submit"
           name="commit"
@@ -96,14 +96,14 @@ Login.propTypes = {
   updateToken: PropTypes.func.isRequired,
   navigateTo: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
-  updateRemember: PropTypes.func.isRequired,
+  // updateRemember: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
   updateToken: (response) => dispatch(doUpdateToken(response)),
   updateUser: (unixID) => dispatch(doUpdateUser(unixID)),
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
-  updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
+  // updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
 });
 
 export default connect(
