@@ -6,18 +6,18 @@ import PropTypes from "prop-types";
 import "./stylesheets/Application.css";
 import Layout from "./Layout";
 import Homepage from "./Homepage";
-import About from "./About";
-import Listserv from "./Listserv";
-import Scheduler from "./Scheduler";
+import About from "./views/Misc/About";
+import Listserv from "./views/Misc/Listserv";
+import Scheduler from "./views/CourseScheduler/Scheduler";
 import FacebookMain from "./views/Facebook/FacebookMain";
-import DormtrakIndex from "./DormtrakIndex";
+import DormtrakIndex from "./views/Dormtrak/DormtrakIndex";
 import FactrakMain from "./views/Factrak/FactrakMain";
 import Login from "./Login";
 
 // Redux/routing
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import BuildingHours from "./BuildingHours";
+import BuildingHours from "./views/Misc/BuildingHours";
 import { getToken, getExpiry } from "../selectors/auth";
 import { doRemoveCreds } from "../actions/auth";
 

@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // Component imports
-import BulletinBox from "./BulletinBox";
+import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 import SearchBox from "./SearchBox";
 import "./stylesheets/Homepage.css";
 
@@ -38,15 +38,9 @@ const Homepage = ({ bulletins, authToken }) => {
 Homepage.propTypes = {
   bulletins: PropTypes.arrayOf(PropTypes.array),
   authToken: PropTypes.string,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
-  currentUser: PropTypes.object,
 };
 
 Homepage.defaultProps = {
-  currentUser: {},
-  notice: "",
-  warning: "",
   bulletins: [
     [[], "Discussions", "/discussions"],
     [[], "Announcements", "/announcements"],
