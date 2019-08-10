@@ -1,73 +1,96 @@
 // React imports
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import DormtrakLayout from "./DormtrakLayout";
 
-const DormtrakNeighborhood = ({
-  neighborhood,
-  neighborhoods,
-  authToken,
-  notice,
-  warning,
-  currentUser,
-}) => {
+// Redux imports
+import { connect } from "react-redux";
+import { getToken } from "../../../selectors/auth";
+
+// API imports
+import { getDormtrakNeighborhood } from "../../../api/dormtrak";
+import { checkAndHandleError } from "../../../lib/general";
+
+import { createRouteNodeSelector } from "redux-router5";
+
+const DormtrakNeighborhood = ({ route, token }) => {
+  const [neighborhood, updateHoodInfo] = useState(null);
+
+  useEffect(() => {
+    const loadNeighborhood = async () => {
+      const neighborhoodID = route.params.neighborhoodID;
+      const hoodResponse = await getDormtrakNeighborhood(token, neighborhoodID);
+
+      if (checkAndHandleError(hoodResponse)) {
+        updateHoodInfo(hoodResponse.data.data);
+      }
+    };
+
+    loadNeighborhood();
+  }, [token, route.params.neighborhoodID]);
+
   return (
-    <DormtrakLayout
-      neighborhoods={neighborhoods}
-      authToken={authToken}
-      notice={notice}
-      warning={warning}
-      currentUser={currentUser}
-    >
-      <article className="facebook-results">
-        <section>
-          <table>
-            <thead>
-              <tr>
-                <th>Building</th>
-                <th>Singles</th>
-                <th>Doubles</th>
-                <th>Flexes</th>
-                <th>Seniors</th>
-                <th>Juniors</th>
-                <th>Sophomores</th>
-              </tr>
-            </thead>
-            <tbody>
-              {neighborhood.dorms.map((dorm) => (
-                <tr key={dorm.id}>
-                  <td>
-                    <a href={`/dormtrak/dorms/${dorm.name}`}>{dorm.name}</a>
-                  </td>
-                  <td>{dorm.number_singles}</td>
-                  <td>{dorm.number_doubles}</td>
-                  <td>{dorm.number_flex}</td>
-                  <td>{dorm.students.seniors}</td>
-                  <td>{dorm.students.juniors}</td>
-                  <td>{dorm.students.sophomores}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      </article>
-    </DormtrakLayout>
+    <article className="facebook-results">
+      <section>
+        <table>
+          <thead>
+            <tr>
+              <th>Building</th>
+              <th>Singles</th>
+              <th>Doubles</th>
+              <th>Flexes</th>
+
+              <th>Seniors</th>
+              <th>Juniors</th>
+              <th>Sophomores</th>
+            </tr>
+          </thead>
+          <tbody>
+            {neighborhood
+              ? neighborhood.dorms.map((dorm) => (
+                  <tr key={dorm.id}>
+                    <td>
+                      <a href={`/dormtrak/dorms/${dorm.name}`}>{dorm.name}</a>
+                    </td>
+                    <td>{dorm.numberSingles}</td>
+                    <td>{dorm.numberDoubles}</td>
+                    <td>{dorm.numberFlex}</td>
+                    {dorm.students ? (
+                      <>
+                        <td>{dorm.students.seniors}</td>
+                        <td>{dorm.students.juniors}</td>
+                        <td>{dorm.students.sophomores}</td>
+                      </>
+                    ) : (
+                      <>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                      </>
+                    )}
+                  </tr>
+                ))
+              : null}
+          </tbody>
+        </table>
+      </section>
+    </article>
   );
 };
 
 DormtrakNeighborhood.propTypes = {
-  neighborhood: PropTypes.object.isRequired,
-  authToken: PropTypes.string.isRequired,
-  neighborhoods: PropTypes.arrayOf(PropTypes.object).isRequired,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
-  currentUser: PropTypes.object,
+  token: PropTypes.string.isRequired,
+  route: PropTypes.object.isRequired,
 };
 
-DormtrakNeighborhood.defaultProps = {
-  currentUser: {},
-  notice: "",
-  warning: "",
+DormtrakNeighborhood.defaultProps = {};
+
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("dormtrak.neighborhoods");
+
+  return (state) => ({
+    token: getToken(state),
+    ...routeNodeSelector(state),
+  });
 };
 
-export default DormtrakNeighborhood;
+export default connect(mapStateToProps)(DormtrakNeighborhood);

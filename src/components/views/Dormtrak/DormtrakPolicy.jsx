@@ -102,6 +102,8 @@ const DormtrakPolicy = ({ currUser, token, navigateTo, updateUser }) => {
               />
             </form>
           )}
+          <br />
+          <br />
         </article>
       </section>
     </div>

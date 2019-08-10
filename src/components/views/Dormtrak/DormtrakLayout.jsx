@@ -1,5 +1,5 @@
 // React imports
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
@@ -7,9 +7,25 @@ import { connect } from "react-redux";
 import { getToken, getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
+import { getDormtrakNeighborhoods } from "../../../api/dormtrak";
+import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const DormtrakLayout = ({ children, neighborhoods, currUser, navigateTo }) => {
+const DormtrakLayout = ({ children, token, currUser, navigateTo }) => {
+  const [neighborhoods, updateNeighborhoods] = useState([]);
+
+  useEffect(() => {
+    const loadRankings = async () => {
+      const neighborhoodsResponse = await getDormtrakNeighborhoods(token);
+
+      if (checkAndHandleError(neighborhoodsResponse)) {
+        updateNeighborhoods(neighborhoodsResponse.data.data);
+      }
+    };
+
+    loadRankings();
+  }, [token]);
+
   if (currUser) {
     if (!currUser.hasAcceptedDormtrakPolicy) {
       navigateTo("dormtrak.policy");
@@ -40,12 +56,13 @@ const DormtrakLayout = ({ children, neighborhoods, currUser, navigateTo }) => {
                 neighborhood.name !== "First-year" &&
                 neighborhood.name !== "Co-op" ? (
                   <li key={neighborhood.name}>
-                    <a
-                      href={`/dormtrak/hoods/${neighborhood.name}`}
+                    <Link
+                      routeName="dormtrak.neighborhoods"
+                      routeParams={{ neighborhoodID: neighborhood.id }}
                       title={`${neighborhood.name} Neighborhood Dorms`}
                     >
                       {neighborhood.name}
-                    </a>
+                    </Link>
                   </li>
                 ) : null
               )}
@@ -78,12 +95,11 @@ const DormtrakLayout = ({ children, neighborhoods, currUser, navigateTo }) => {
 DormtrakLayout.propTypes = {
   children: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
-  // token: PropTypes.object.isRequired,
-  neighborhoods: PropTypes.arrayOf(PropTypes.object),
+  token: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
-DormtrakLayout.defaultProps = { neighborhoods: [{ name: "Dodd" }] };
+DormtrakLayout.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   token: getToken(state),

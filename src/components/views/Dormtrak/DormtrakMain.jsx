@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import DormtrakHome from "./DormtrakHome";
 import DormtrakLayout from "./DormtrakLayout";
 import DormtrakPolicy from "./DormtrakPolicy";
+import DormtrakNeighborhood from "./DormtrakNeighborhood";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -19,6 +20,8 @@ const DormtrakMain = ({ route }) => {
     switch (splitRoute[1]) {
       case "policy":
         return <DormtrakPolicy />;
+      case "neighborhoods":
+        return <DormtrakNeighborhood />;
       default:
         return <DormtrakHome />;
     }

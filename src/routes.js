@@ -30,7 +30,10 @@ export default [
   {
     name: "dormtrak",
     path: "/dormtrak",
-    children: [{ name: "policy", path: "/policy" }],
+    children: [
+      { name: "policy", path: "/policy" },
+      { name: "neighborhoods", path: "/neighborhoods/:neighborhoodID" },
+    ],
   },
   { name: "login", path: "/account/login" },
   { name: "logout", path: "/account/logout" },
