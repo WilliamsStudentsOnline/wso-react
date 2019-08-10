@@ -10,7 +10,7 @@ import About from "./views/Misc/About";
 import Listserv from "./views/Misc/Listserv";
 import Scheduler from "./views/CourseScheduler/Scheduler";
 import FacebookMain from "./views/Facebook/FacebookMain";
-import DormtrakIndex from "./views/Dormtrak/DormtrakIndex";
+import DormtrakMain from "./views/Dormtrak/DormtrakMain";
 import FactrakMain from "./views/Factrak/FactrakMain";
 import FourOhFour from "./views/Errors/FourOhFour";
 import Login from "./Login";
@@ -57,7 +57,7 @@ const App = ({ route, navigateTo, removeCreds }) => {
       case "facebook":
         return <FacebookMain />;
       case "dormtrak":
-        return <DormtrakIndex />;
+        return <DormtrakMain />;
       case "factrak":
         return <FactrakMain />;
       case "login":

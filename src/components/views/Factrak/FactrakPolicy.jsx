@@ -6,12 +6,13 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getCurrUser, getToken } from "../../../selectors/auth";
 import { actions } from "redux-router5";
+import { doUpdateUser } from "../../../actions/auth";
 
 // API imports
 import { patchCurrUser } from "../../../api/users";
 import { checkAndHandleError } from "../../../lib/general";
 
-const FactrakPolicy = ({ currUser, navigateTo, token }) => {
+const FactrakPolicy = ({ currUser, navigateTo, token, updateUser }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
 
   const clickHandler = (event) => {
@@ -23,12 +24,13 @@ const FactrakPolicy = ({ currUser, navigateTo, token }) => {
     if (!acceptPolicy) return null;
 
     const updateParams = {
-      hasAcceptedFactrakPolicy: true,
+      hasAcceptedFactrakPolicy: acceptPolicy,
     };
     const response = await patchCurrUser(token, updateParams);
 
     // PATCH succeeded, update user
     if (checkAndHandleError(response)) {
+      updateUser(response.data.data);
       navigateTo("factrak");
     }
 
@@ -102,23 +104,17 @@ const FactrakPolicy = ({ currUser, navigateTo, token }) => {
           {currUser.hasAcceptedFactrakPolicy ? (
             <p>You have already accepted the Factrak policy.</p>
           ) : (
-            <form
-              acceptCharset="UTF-8"
-              onSubmit={(event) => submitHandler(event)}
-            >
+            <form onSubmit={(event) => submitHandler(event)}>
               <p>
                 <input
                   type="checkbox"
-                  name="accept"
                   id="accept"
-                  value="1"
                   onChange={(event) => clickHandler(event)}
                 />
                 I agree to the Factrak policy.
               </p>
               <input
                 type="submit"
-                name="commit"
                 value="continue"
                 data-disable-with="continue"
               />
@@ -136,6 +132,7 @@ FactrakPolicy.propTypes = {
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
+  updateUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -145,6 +142,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
 export default connect(

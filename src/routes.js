@@ -27,7 +27,11 @@ export default [
       { name: "editSurvey", path: "/surveys/edit?:surveyID" },
     ],
   },
-  { name: "dormtrak", path: "/dormtrak" },
+  {
+    name: "dormtrak",
+    path: "/dormtrak",
+    children: [{ name: "policy", path: "/policy" }],
+  },
   { name: "login", path: "/account/login" },
   { name: "logout", path: "/account/logout" },
 ];

@@ -15,7 +15,6 @@ import FactrakProfessor from "./FactrakProfessor";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
 
 // External Imports
 import { createRouteNodeSelector } from "redux-router5";
@@ -58,7 +57,6 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak");
 
   return (state) => ({
-    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };
