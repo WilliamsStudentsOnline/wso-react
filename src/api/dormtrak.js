@@ -99,12 +99,13 @@ const getDormtrakDormRooms = async (token, dormID) => {
 };
 
 // Get all dormtrak reviews
-const getDormtrakDormReviews = async (token) => {
+const getDormtrakDormReviews = async (token, queryParams = {}) => {
   const response = await axios({
     url: `/api/v1/dormtrak/reviews`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    params: queryParams,
   }).catch((error) => {
     return error.response;
   });
@@ -113,7 +114,7 @@ const getDormtrakDormReviews = async (token) => {
 };
 
 // Creates a dormtrak review
-const postDormtrakDormReviews = async (token, createParams) => {
+const postDormtrakDormReview = async (token, createParams) => {
   const response = await axios({
     url: `/api/v1/dormtrak/reviews`,
     headers: {
@@ -180,7 +181,7 @@ export {
   getDormtrakDormFacts,
   getDormtrakDormRooms,
   getDormtrakDormReviews,
-  postDormtrakDormReviews,
+  postDormtrakDormReview,
   getDormtrakDormReview,
   deleteDormtrakDormReview,
   patchDormtrakDormReview,

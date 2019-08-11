@@ -9,6 +9,7 @@ import { getToken } from "../../../selectors/auth";
 // API imports
 import { getDormtrakRankings } from "../../../api/dormtrak";
 import { checkAndHandleError } from "../../../lib/general";
+import { Link } from "react-router5";
 
 const DormtrakRanking = ({ token }) => {
   const [dormInfo, updateDormsInfo] = useState(null);
@@ -48,12 +49,22 @@ const DormtrakRanking = ({ token }) => {
                   return (
                     <tr key={b.averageSingleArea + a.averageSingleArea}>
                       <td>
-                        <a href={`/dormtrak/dorms/${a.name}`}>{a.name}</a>
+                        <Link
+                          routeName="dormtrak.dorms"
+                          routeParams={{ dormID: a.id }}
+                        >
+                          {a.name}
+                        </Link>
                         <br />
                         {`(${a.averageSingleArea} sq. ft.)`}
                       </td>
                       <td>
-                        <a href={`/dormtrak/dorms/${b.name}`}>{b.name}</a>
+                        <Link
+                          routeName="dormtrak.dorms"
+                          routeParams={{ dormID: b.id }}
+                        >
+                          {b.name}
+                        </Link>
                         <br />
                         {`(${b.averageSingleArea} sq. ft.)`}
                       </td>
@@ -77,16 +88,22 @@ const DormtrakRanking = ({ token }) => {
                   return (
                     <tr key={a.area}>
                       <td>
-                        <a href={`/dormtrak/dorms/${a.dormID}`}>
+                        <Link
+                          routeName="dormtrak.dorms"
+                          routeParams={{ dormID: a.dormID }}
+                        >
                           {`${a.dorm.name} ${a.number}`}
-                        </a>
+                        </Link>
                         <br />
                         {`(${a.area} sq. ft.)`}
                       </td>
                       <td>
-                        <a href={`/dormtrak/dorms/${b.dormID}`}>
+                        <Link
+                          routeName="dormtrak.dorms"
+                          routeParams={{ dormID: b.dormID }}
+                        >
                           {`${b.dorm.name} ${b.number}`}
-                        </a>
+                        </Link>
                         <br />
                         {`(${b.area} sq. ft.)`}
                       </td>
@@ -110,12 +127,22 @@ const DormtrakRanking = ({ token }) => {
                   return (
                     <tr key={a.averageDoubleArea}>
                       <td>
-                        <a href={`/dormtrak/dorms/${a.name}`}>{a.name}</a>
+                        <Link
+                          routeName="dormtrak.dorms"
+                          routeParams={{ dormID: a.id }}
+                        >
+                          {a.name}
+                        </Link>
                         <br />
                         {`(${a.averageDoubleArea} sq. ft.)`}
                       </td>
                       <td>
-                        <a href={`/dormtrak/dorms/${b.name}`}>{b.name}</a>
+                        <Link
+                          routeName="dormtrak.dorms"
+                          routeParams={{ dormID: a.id }}
+                        >
+                          {a.name}
+                        </Link>
                         <br />
                         {`(${b.averageDoubleArea} sq. ft.)`}
                       </td>
@@ -140,16 +167,22 @@ const DormtrakRanking = ({ token }) => {
                   return (
                     <tr key={a.area}>
                       <td>
-                        <a href={`/dormtrak/dorms/${a.dormID}`}>
+                        <Link
+                          routeName="dormtrak.dorms"
+                          routeParams={{ dormID: a.dormID }}
+                        >
                           {`${a.dorm.name} ${a.number}`}
-                        </a>
+                        </Link>
                         <br />
                         {`(${a.area} sq. ft.)`}
                       </td>
                       <td>
-                        <a href={`/dormtrak/dorms/${b.dormID}`}>
+                        <Link
+                          routeName="dormtrak.dorms"
+                          routeParams={{ dormID: b.dormID }}
+                        >
                           {`${b.dorm.name} ${b.number}`}
-                        </a>
+                        </Link>
                         <br />
                         {`(${b.area} sq. ft.)`}
                       </td>
@@ -174,12 +207,22 @@ const DormtrakRanking = ({ token }) => {
                   return (
                     <tr key={a.numberSingles}>
                       <td>
-                        <a href={`/dormtrak/dorms/${a.name}`}>{a.name}</a>
+                        <Link
+                          routeName="dormtrak.dorms"
+                          routeParams={{ dormID: a.id }}
+                        >
+                          {a.name}
+                        </Link>
                         <br />
                         {`(${a.numberSingles})`}
                       </td>
                       <td>
-                        <a href={`/dormtrak/dorms/${b.name}`}>{b.name}</a>
+                        <Link
+                          routeName="dormtrak.dorms"
+                          routeParams={{ dormID: a.id }}
+                        >
+                          {a.name}
+                        </Link>
                         <br />
                         {`(${b.numberDoubles})`}
                       </td>
@@ -204,12 +247,22 @@ const DormtrakRanking = ({ token }) => {
                   return (
                     <tr key={a.bathroomRatio}>
                       <td>
-                        <a href={`/dormtrak/dorms/${a.name}`}>{a.name}</a>
+                        <Link
+                          routeName="dormtrak.dorms"
+                          routeParams={{ dormID: a.id }}
+                        >
+                          {a.name}
+                        </Link>
                         <br />
                         {`(${a.bathroomRatio.toPrecision(3)}:1)`}
                       </td>
                       <td>
-                        <a href={`/dormtrak/dorms/${b.name}`}>{b.name}</a>
+                        <Link
+                          routeName="dormtrak.dorms"
+                          routeParams={{ dormID: a.id }}
+                        >
+                          {a.name}
+                        </Link>
                         <br />
                         {`(${b.bathroomRatio.toPrecision(3)}:1)`}
                       </td>

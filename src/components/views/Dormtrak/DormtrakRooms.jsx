@@ -2,21 +2,21 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-const DormtrakRooms = ({ rooms, perPage }) => {
+import { capitalize } from "../../../lib/general";
+
+const DormtrakRooms = ({ rooms }) => {
+  const perPage = 15; // Number of results per page
+
   const [page, updatePage] = useState(0);
   const displayRooms =
     rooms.length - 1 > (page + 1) * perPage
       ? rooms.slice(page * perPage, (page + 1) * perPage)
       : rooms.slice(page * perPage, rooms.length - 1);
 
-  const capitalize = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
   const privateBathrooms = (room) => {
-    if (!room.private_bathroom) return null;
+    if (!room.privateBathroom) return null;
     let bathroomDesc = "Yes. ";
-    if (room.bathroom_desc) bathroomDesc += room.bathroom_desc;
+    if (room.bathroomDesc) bathroomDesc += room.bathroomDesc;
     return (
       <>
         <small>
@@ -37,10 +37,10 @@ const DormtrakRooms = ({ rooms, perPage }) => {
 
   const commonRooms = (room) => {
     let crDesc = "";
-    if (room.common_room_access) {
+    if (room.commonRoomAccess) {
       crDesc = "Yes. ";
-      if (room.common_room_desc) {
-        crDesc += room.common_room_desc;
+      if (room.commonRoomDesc) {
+        crDesc += room.commonRoomDesc;
       }
     } else {
       crDesc = "No. ";
@@ -80,6 +80,7 @@ const DormtrakRooms = ({ rooms, perPage }) => {
   return displayRooms ? (
     <>
       <div>
+        {/* @TODO: nicer buttons */}
         <button
           type="button"
           onClick={() => clickHandler(-1)}
@@ -98,13 +99,13 @@ const DormtrakRooms = ({ rooms, perPage }) => {
       {displayRooms.map((room) => {
         return (
           <React.Fragment key={room.number}>
-            <strong>{`${room.number} ${room.room_type}`}</strong>
+            <strong>{`${room.number} (${room.roomType})`}</strong>
             <br />
             <div id={room.number}>
               <small>
                 <strong>Floor:&nbsp;</strong>
               </small>
-              {room.floor_number === 0 ? "Basement" : room.floor_number}
+              {room.floorNumber === 0 ? "Basement" : room.floorNumber}
               <br />
               <small>
                 <strong>Area:&nbsp;</strong>
@@ -152,13 +153,12 @@ const DormtrakRooms = ({ rooms, perPage }) => {
       </button>
     </>
   ) : (
-    <>No room-level information yet!</>
+    "No room-level information yet!"
   );
 };
 
 DormtrakRooms.propTypes = {
   rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
-  perPage: PropTypes.number.isRequired,
 };
 
 export default DormtrakRooms;

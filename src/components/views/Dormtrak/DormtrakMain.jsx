@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import DormtrakHome from "./DormtrakHome";
 import DormtrakLayout from "./DormtrakLayout";
 import DormtrakPolicy from "./DormtrakPolicy";
+import DormtrakShow from "./DormtrakShow";
 import DormtrakNeighborhood from "./DormtrakNeighborhood";
 
 // Redux imports
@@ -22,6 +23,8 @@ const DormtrakMain = ({ route }) => {
         return <DormtrakPolicy />;
       case "neighborhoods":
         return <DormtrakNeighborhood />;
+      case "dorms":
+        return <DormtrakShow />;
       default:
         return <DormtrakHome />;
     }

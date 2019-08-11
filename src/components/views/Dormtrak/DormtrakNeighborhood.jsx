@@ -11,6 +11,7 @@ import { getDormtrakNeighborhood } from "../../../api/dormtrak";
 import { checkAndHandleError } from "../../../lib/general";
 
 import { createRouteNodeSelector } from "redux-router5";
+import { Link } from "react-router5";
 
 const DormtrakNeighborhood = ({ route, token }) => {
   const [neighborhood, updateHoodInfo] = useState(null);
@@ -49,7 +50,12 @@ const DormtrakNeighborhood = ({ route, token }) => {
               ? neighborhood.dorms.map((dorm) => (
                   <tr key={dorm.id}>
                     <td>
-                      <a href={`/dormtrak/dorms/${dorm.name}`}>{dorm.name}</a>
+                      <Link
+                        routeName="dormtrak.dorms"
+                        routeParams={{ dormID: dorm.id }}
+                      >
+                        {dorm.name}
+                      </Link>
                     </td>
                     <td>{dorm.numberSingles}</td>
                     <td>{dorm.numberDoubles}</td>

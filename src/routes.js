@@ -33,6 +33,7 @@ export default [
     children: [
       { name: "policy", path: "/policy" },
       { name: "neighborhoods", path: "/neighborhoods/:neighborhoodID" },
+      { name: "dorms", path: "/dorms/:dormID" },
     ],
   },
   { name: "login", path: "/account/login" },

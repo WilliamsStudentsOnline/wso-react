@@ -1,14 +1,36 @@
 // React imports
-import React from "react";
-// import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import DormtrakRanking from "./DormtrakRanking";
-// import DormtrakRecentComments from "./DormtrakRecentComments";
+import DormtrakRecentComments from "./DormtrakRecentComments";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getToken, getCurrUser } from "../../../selectors/auth";
 
-const DormtrakHome = () => {
+import { checkAndHandleError } from "../../../lib/general";
+
+import { getDormtrakDormReviews } from "../../../api/dormtrak";
+
+const DormtrakHome = ({ currUser, token }) => {
+  const [reviews, updateReviews] = useState([]);
+
+  useEffect(() => {
+    const loadReviews = async () => {
+      const queryParams = { limit: 10, offset: new Date() };
+      const dormReviewResponse = await getDormtrakDormReviews(
+        token,
+        queryParams
+      );
+
+      if (checkAndHandleError(dormReviewResponse)) {
+        updateReviews(dormReviewResponse.data.data);
+      }
+    };
+
+    loadReviews();
+  }, [token]);
+
   return (
     <div className="container">
       <aside className="sidebar">
@@ -37,23 +59,29 @@ const DormtrakHome = () => {
           </p>
         </section>
         <section>
-          {/* <DormtrakRecentComments
-            abridged
-            currentUser={currentUser}
-            reviews={reviews}
-          /> */}
+          {
+            <DormtrakRecentComments
+              abridged
+              currUser={currUser}
+              reviews={reviews}
+            />
+          }
         </section>
       </article>
     </div>
   );
 };
 
-DormtrakHome.propTypes = {};
+DormtrakHome.propTypes = {
+  currUser: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
+};
 
 DormtrakHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   token: getToken(state),
+  currUser: getCurrUser(state),
 });
 
 export default connect(mapStateToProps)(DormtrakHome);

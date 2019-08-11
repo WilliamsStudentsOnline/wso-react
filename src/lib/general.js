@@ -38,3 +38,8 @@ export const checkAndHandleError = (response) => {
   // handle error
   return false;
 };
+
+// Capitalize the first letter of the string.
+export const capitalize = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};

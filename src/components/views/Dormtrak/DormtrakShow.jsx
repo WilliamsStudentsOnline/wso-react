@@ -1,102 +1,137 @@
 // React imports
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import DormtrakFacts from "./DormtrakFacts";
 import DormtrakRooms from "./DormtrakRooms";
 import DormtrakRecentComments from "./DormtrakRecentComments";
-import DormtrakLayout from "./DormtrakLayout";
+import { getDormtrakDorm, getDormtrakDormReviews } from "../../../api/dormtrak";
 
-const DormtrakShow = ({
-  dorm,
-  currentUser,
-  reviews,
-  neighborhoods,
-  authToken,
-  notice,
-  warning,
-}) => {
+import { checkAndHandleError } from "../../../lib/general";
+import { getCurrUser, getToken } from "../../../selectors/auth";
+import { connect } from "react-redux";
+
+// External Imports
+import { createRouteNodeSelector } from "redux-router5";
+import { Link } from "react-router5";
+
+const DormtrakShow = ({ route, currUser, token }) => {
+  const [reviews, updateReviews] = useState([]);
+  const [dorm, updateDorm] = useState(null);
+
+  useEffect(() => {
+    const dormID = route.params.dormID;
+
+    const loadDorm = async () => {
+      const dormResponse = await getDormtrakDorm(token, dormID);
+      if (checkAndHandleError(dormResponse)) {
+        updateDorm(dormResponse.data.data);
+      }
+    };
+
+    const loadDormReviews = async () => {
+      const queryParams = { dormID };
+      const dormReviewResponse = await getDormtrakDormReviews(
+        token,
+        queryParams
+      );
+      if (checkAndHandleError(dormReviewResponse)) {
+        updateReviews(dormReviewResponse.data.data);
+      }
+    };
+
+    loadDorm();
+    loadDormReviews();
+  }, [token, route.params.dormID]);
+
   const checkUserCommentRights = () => {
-    if (!currentUser || !currentUser.dorm) return false;
-    return currentUser.type === "Student" && currentUser.dorm.id === dorm.id;
+    if (!currUser || !currUser.dorm) return false;
+    return currUser.type === "Student" && currUser.dorm.id === dorm.id;
   };
+
   return (
-    <DormtrakLayout
-      neighborhoods={neighborhoods}
-      authToken={authToken}
-      notice={notice}
-      warning={warning}
-      currentUser={currentUser}
-    >
-      <div className="container">
-        <aside className="sidebar">
-          <DormtrakFacts dorm={dorm} />
+    <div className="container">
+      <aside className="sidebar">
+        {dorm ? <DormtrakFacts dorm={dorm} token={token} /> : null}
 
-          <hr />
+        <hr />
 
-          <section className="building-rooms">
-            <h3 id="roomstop">Rooms</h3>
-            <small>
-              <strong>
+        <section className="building-rooms">
+          <h3 id="roomstop">Rooms</h3>
+          <small>
+            <strong>
+              {dorm ? (
                 <a href={`/floorplans/${dorm.name}`}>Floorplan&nbsp;</a>
-              </strong>
-              (Courtesy of OSL)
-            </small>
-            <br />
-            <DormtrakRooms rooms={dorm.dorm_rooms} perPage={15} />
-          </section>
-        </aside>
+              ) : null}
+            </strong>
+            (Courtesy of OSL)
+          </small>
+          <br />
+          {dorm ? <DormtrakRooms rooms={dorm.dormRooms} perPage={15} /> : null}
+        </section>
+      </aside>
 
-        <article className="main">
-          <section className="lead">
-            <h2>
-              <a id="dorm.name" href={`/dormtra/dorms/${dorm.name}`}>
+      <article className="main">
+        <section className="lead">
+          <h2>
+            {dorm ? (
+              <Link
+                routeName="dormtrak.dorms"
+                routeParams={{ dormID: dorm.id }}
+              >
                 {dorm.name}
-              </a>
-            </h2>
-            <div>
-              <img alt="dorm" src={`/assets/avatars/${dorm.name}.png`} />
-            </div>
-
-            <strong>Summary</strong>
-            <p>{dorm.description}</p>
-          </section>
-
-          <section>
-            {checkUserCommentRights() ? (
-              <strong>
-                <a href="/dormtrak/reviews/new">Fill out survey</a>
-              </strong>
+              </Link>
             ) : null}
-            {reviews.length > 0 ? (
-              <DormtrakRecentComments
-                reviews={reviews}
-                abridged={false}
-                currentUser={currentUser}
+          </h2>
+          <div>
+            {dorm ? (
+              <img
+                alt={`${dorm.name} avatar`}
+                src={`${process.env.PUBLIC_URL}/banners/${dorm.name}.png`}
               />
-            ) : (
-              <>None yet</>
-            )}
-          </section>
-        </article>
-      </div>
-    </DormtrakLayout>
+            ) : null}
+          </div>
+
+          <strong>Summary</strong>
+          <p>{dorm ? dorm.description : ""}</p>
+        </section>
+
+        <section>
+          {checkUserCommentRights() ? (
+            <strong>
+              <a href="/dormtrak/reviews/new">Fill out survey</a>
+            </strong>
+          ) : null}
+          {reviews.length > 0 ? (
+            <DormtrakRecentComments
+              reviews={reviews}
+              abridged={false}
+              currUser={currUser}
+            />
+          ) : (
+            <>None yet</>
+          )}
+        </section>
+      </article>
+    </div>
   );
 };
 
 DormtrakShow.propTypes = {
-  currentUser: PropTypes.object,
-  dorm: PropTypes.object.isRequired,
-  reviews: PropTypes.arrayOf(PropTypes.object).isRequired,
-  authToken: PropTypes.string.isRequired,
-  neighborhoods: PropTypes.arrayOf(PropTypes.object).isRequired,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
+  currUser: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
+  route: PropTypes.object.isRequired,
 };
 
-DormtrakShow.defaultProps = {
-  notice: "",
-  warning: "",
-  currentUser: {},
+DormtrakShow.defaultProps = {};
+
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("dormtrak.dorms");
+
+  return (state) => ({
+    currUser: getCurrUser(state),
+    token: getToken(state),
+    ...routeNodeSelector(state),
+  });
 };
 
-export default DormtrakShow;
+export default connect(mapStateToProps)(DormtrakShow);

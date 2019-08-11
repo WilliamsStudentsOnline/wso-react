@@ -1,59 +1,75 @@
 // React imports
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // External Imports
 import { Chart } from "react-google-charts";
 
-const DormtrakFacts = ({ dorm }) => {
-  const capitalize = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
+import { getDormtrakDormFacts } from "../../../api/dormtrak";
+import { checkAndHandleError, capitalize } from "../../../lib/general";
+
+const DormtrakFacts = ({ dorm, token }) => {
+  const [facts, updateFacts] = useState(null);
+
+  useEffect(() => {
+    const loadFacts = async () => {
+      const factResponse = await getDormtrakDormFacts(token, dorm.id);
+      if (checkAndHandleError(factResponse)) {
+        updateFacts(factResponse.data.data);
+      }
+    };
+
+    loadFacts();
+  }, [token, dorm.id]);
 
   return (
     <article className="home">
       <h3>Facts</h3>
 
-      {dorm.neighborhood_name !== "First-year" ? (
+      {dorm.neighborhood && dorm.neighborhood.name !== "First-year" ? (
         <div>
           <strong>Class breakdown</strong>:
-          <div id="piechart">
-            <Chart
-              id="piechart"
-              chartType="PieChart"
-              data={[
-                ["Class", "% of residents"],
-                ["Seniors", dorm.students.seniors],
-                ["Juniors", dorm.students.juniors],
-                ["Sophomores", dorm.students.sophomores],
-              ]}
-              options={{
-                legend: "none",
-                chartArea: { width: "75%", height: "80%" },
-                backgroundColor: "transparent",
-                pieSliceText: "label",
-                pieSliceTextStyle: { color: "black", fontSize: 8 },
-              }}
-            />
-          </div>
+          {facts ? (
+            <div id="piechart">
+              <Chart
+                id="piechart"
+                chartType="PieChart"
+                data={[
+                  ["Class", "% of residents"],
+                  ["Seniors", facts.seniorCount],
+                  ["Juniors", facts.juniorCount],
+                  ["Sophomores", facts.sophomoreCount],
+                ]}
+                options={{
+                  legend: "none",
+                  chartArea: { width: "75%", height: "80%" },
+                  backgroundColor: "transparent",
+                  pieSliceText: "label",
+                  pieSliceTextStyle: { color: "black", fontSize: 8 },
+                }}
+              />
+            </div>
+          ) : (
+            "Not Available"
+          )}
         </div>
       ) : null}
 
       <div>
         <strong>Seniors</strong>
-        {`: ${dorm.students.seniors}`}
+        {facts && facts.seniorCount ? `: ${facts.seniorCount}` : ": N/A"}
         <br />
       </div>
 
       <div>
         <strong>Juniors</strong>
-        {`: ${dorm.students.juniors}`}
+        {facts && facts.juniorCount ? `: ${facts.juniorCount}` : ": N/A"}
         <br />
       </div>
 
       <div>
         <strong>Sophomores</strong>
-        {`: ${dorm.students.sophomores}`}
+        {facts && facts.sophomoreCount ? `: ${facts.sophomoreCount}` : ": N/A"}
         <br />
       </div>
       <div>
@@ -64,60 +80,68 @@ const DormtrakFacts = ({ dorm }) => {
 
       <div>
         <strong>Singles</strong>
-        {`: ${dorm.number_singles}`}
+        {`: ${dorm.numberSingles}`}
         <br />
       </div>
 
       <div>
         <strong>Mean Single Size</strong>
-        {`: ${dorm.average_single_area} sq. ft.`}
+        {`: ${dorm.averageSingleArea} sq. ft.`}
         <br />
       </div>
 
       <div>
         <strong>Most Common Single Size</strong>
-        {`: ${dorm.mode_single_area} sq. ft.`}
+        {`: ${dorm.modeSingleArea} sq. ft.`}
         <br />
       </div>
 
       <div>
         <strong>Biggest Single</strong>
-        {`: ${dorm.biggest_single.number}`}
+        {facts && facts.biggestSingle
+          ? `: ${facts.biggestSingle.number}`
+          : "N/A"}
         <br />
       </div>
 
       <div>
         <strong>Smallest Single</strong>
-        {`: ${dorm.smallest_single.number}`}
+        {facts && facts.smallestSingle
+          ? `: ${facts.smallestSingle.number}`
+          : "N/A"}
         <br />
       </div>
 
       <div>
         <strong>Doubles</strong>
-        {`: ${dorm.number_doubles}`}
+        {`: ${dorm.numberDoubles}`}
         <br />
       </div>
 
-      {dorm.number_doubles > 0 ? (
+      {dorm.numberDoubles > 0 ? (
         <>
           <div>
             <strong>Mean Double Size</strong>
-            {`: ${dorm.average_double_area} sq. ft.`}
+            {`: ${dorm.averageDoubleArea} sq. ft.`}
             <br />
           </div>
           <div>
             <strong>Most Common Double Size</strong>
-            {`: ${dorm.mode_double_area} sq. ft.`}
+            {`: ${dorm.modeDoubleArea} sq. ft.`}
             <br />
           </div>
           <div>
             <strong>Biggest Double</strong>
-            {`: ${dorm.biggest_double.number}`}
+            {facts && facts.biggestDouble
+              ? `: ${facts.biggestDouble.number}`
+              : null}
             <br />
           </div>
           <div>
             <strong>Smallest Double</strong>
-            {`: ${dorm.smallest_double.number}`}
+            {facts && facts.smallestDouble
+              ? `: ${facts.smallestDouble.number}`
+              : null}
             <br />
           </div>
         </>
@@ -125,31 +149,33 @@ const DormtrakFacts = ({ dorm }) => {
 
       <div>
         <strong>Flexs</strong>
-        {`: ${dorm.number_flex}`}
+        {`: ${dorm.numberFlex}`}
         <br />
       </div>
 
       <div>
         <strong>Student-bathroom ratio</strong>
-        {`: ${dorm.bathroom_ratio.toPrecision(3)}:1`}
+        {`: ${dorm.bathroomRatio.toPrecision(3)}:1`}
         <br />
       </div>
       <div>
         <strong>Common rooms</strong>
-        {`: ${dorm.common_room_access}`}
+        {facts ? `: ${facts.commonRoomAccessRatio}` : ": N/A"}
         <br />
       </div>
       <div>
         <strong>Washers</strong>
-        {`: ${dorm.number_washers}`}
+        {`: ${dorm.numberWashers}`}
         <br />
       </div>
       <div>
         <strong>Average Ratings for&nbsp;:</strong>
-        {["wifi", "location", "loudness", "satisfaction"].map((attr) => {
-          if (!dorm[attr]) return null;
-          return `${capitalize(attr)}: ${dorm[attr]}`;
-        })}
+        {facts
+          ? ["Wifi", "Location", "Loudness", "Satisfaction"].map((attr) => {
+              if (!facts[`average ${attr}`]) return null;
+              return `${capitalize(attr)}: ${facts[`average ${attr}`]}`;
+            })
+          : ": N/A"}
       </div>
     </article>
   );
@@ -157,6 +183,7 @@ const DormtrakFacts = ({ dorm }) => {
 
 DormtrakFacts.propTypes = {
   dorm: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
 export default DormtrakFacts;
