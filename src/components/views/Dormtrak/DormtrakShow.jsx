@@ -60,9 +60,11 @@ const DormtrakShow = ({ route, currUser, token }) => {
           <h3 id="roomstop">Rooms</h3>
           <small>
             <strong>
-              {dorm ? (
+              {/* @TODO: Floorplans
+              dorm ? (
+                
                 <a href={`/floorplans/${dorm.name}`}>Floorplan&nbsp;</a>
-              ) : null}
+              ) : null */}
             </strong>
             (Courtesy of OSL)
           </small>
@@ -96,7 +98,7 @@ const DormtrakShow = ({ route, currUser, token }) => {
         <section>
           {checkUserCommentRights() ? (
             <strong>
-              <a href="/dormtrak/reviews/new">Fill out survey</a>
+              <Link routeName="dormtrak.newReview">Fill out survey</Link>
             </strong>
           ) : null}
           {reviews.length > 0 ? (

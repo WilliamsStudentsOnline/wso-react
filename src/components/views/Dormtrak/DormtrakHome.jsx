@@ -12,6 +12,8 @@ import { checkAndHandleError } from "../../../lib/general";
 
 import { getDormtrakDormReviews } from "../../../api/dormtrak";
 
+import { Link } from "react-router5";
+
 const DormtrakHome = ({ currUser, token }) => {
   const [reviews, updateReviews] = useState([]);
 
@@ -46,7 +48,7 @@ const DormtrakHome = ({ currUser, token }) => {
           <h3>Welcome to Dormtrak</h3>
           <p>
             Dormtrak is a system where students can
-            <a href="/dormtrak/policy">&nbsp;anonymously&nbsp;</a>
+            <Link routeName="dormtrak.policy">&nbsp;anonymously&nbsp;</Link>
             share their thoughts about dorm buildings and rooms, as well as find
             out everything there is to know about housing at Williams. Much of
             our information is pulled from surveys that students fill out, so by
@@ -57,7 +59,8 @@ const DormtrakHome = ({ currUser, token }) => {
           <p>
             <strong>
               To fill out the survey, click{" "}
-              <a href="/dormtrak/reviews/new">here</a>
+              {/* @TODO: does new review automatically know what dorm to fill in? */}
+              <Link routeName="dormtrak.newReview">here</Link>
             </strong>
             .
           </p>
