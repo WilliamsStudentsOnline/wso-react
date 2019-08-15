@@ -109,7 +109,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
 
     if (surveyParam) loadSurvey(surveyParam);
     if (professorParam) loadProf(professorParam);
-  }, [route.params.professor, token, professorParam, surveyParam]);
+  }, [token, professorParam, surveyParam]);
 
   /**
    * For autocompleting departments in the survey form
@@ -191,22 +191,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
             {errors ? errors.map((msg) => <p key={msg}>{msg}</p>) : null}
           </div>
 
-          <form
-            id={
-              edit && survey
-                ? `edit_factrak_survey_${survey.id}`
-                : "new_factrak_survey"
-            }
-            className={
-              edit && survey ? "edit_factrak_survey" : "new_factrak_survey"
-            }
-            action={
-              edit && survey
-                ? `/factrak/surveys/${survey.id}`
-                : "/factrak/surveys"
-            }
-            onSubmit={(event) => submitHandler(event)}
-          >
+          <form onSubmit={(event) => submitHandler(event)}>
             {prof ? (
               <>
                 {edit && (prof && survey) ? (

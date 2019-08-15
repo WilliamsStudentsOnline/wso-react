@@ -42,6 +42,20 @@ const getDormtrakNeighborhood = async (token, neighborhoodID) => {
   return response;
 };
 
+// Get facts for a specific dormtrak neighborhood
+const getDormtrakNeighborhoodFacts = async (token, neighborhoodID) => {
+  const response = await axios({
+    url: `/api/v1/dormtrak/neighborhoods/${neighborhoodID}/facts`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
 // Get the list of all dormtrak dorms
 const getDormtrakDorms = async (token) => {
   const response = await axios({
@@ -120,7 +134,7 @@ const postDormtrakDormReview = async (token, createParams) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    data: createParams,
+    params: createParams,
     method: "post",
   }).catch((error) => {
     return error.response;
@@ -159,12 +173,14 @@ const deleteDormtrakDormReview = async (token, reviewID) => {
 };
 
 // Patches a specific dormtrak survey
-const patchDormtrakDormReview = async (token, reviewID) => {
+const patchDormtrakDormReview = async (token, reviewParams, reviewID) => {
   const response = await axios({
     url: `/api/v1/dormtrak/reviews/${reviewID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    params: reviewParams,
+    method: "patch",
   }).catch((error) => {
     return error.response;
   });
@@ -176,6 +192,7 @@ export {
   getDormtrakRankings,
   getDormtrakNeighborhoods,
   getDormtrakNeighborhood,
+  getDormtrakNeighborhoodFacts,
   getDormtrakDorms,
   getDormtrakDorm,
   getDormtrakDormFacts,

@@ -34,6 +34,8 @@ export default [
       { name: "policy", path: "/policy" },
       { name: "neighborhoods", path: "/neighborhoods/:neighborhoodID" },
       { name: "dorms", path: "/dorms/:dormID" },
+      { name: "newReview", path: "/reviews/new?:dormID" },
+      { name: "editReview", path: "/reviews/edit?:reviewID" },
     ],
   },
   { name: "login", path: "/account/login" },

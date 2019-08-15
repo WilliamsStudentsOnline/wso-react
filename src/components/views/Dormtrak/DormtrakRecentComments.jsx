@@ -2,15 +2,19 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import { Link } from "react-router5";
+
+import { avatarHelper } from "../../../lib/imageHelper";
+
 const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
   const renderComment = (review) => {
     return (
       <div className="comment" key={review.id}>
-        {abridged && review.dorm ? (
+        {abridged && review.dormRoom ? (
           <div className="comment-image">
             <img
               alt="dorm avatar"
-              src={`${process.env.PUBLIC_URL}/avatars/${review.dorm.name}.png`}
+              src={avatarHelper(review.dormRoom.dorm.name)}
             />
           </div>
         ) : null}
@@ -18,9 +22,12 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
         <div className="comment-content">
           {abridged && review.dorm ? (
             <h1>
-              <a href={`/dormtrak/dorms/${review.dorm.id}`}>
+              <Link
+                routeName="dormtrak.dorms"
+                routeParams={{ dormID: review.dorm.id }}
+              >
                 {review.dorm.name}
-              </a>
+              </Link>
             </h1>
           ) : null}
 
@@ -32,7 +39,12 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
             {currUser.type === "Student" ||
             (currUser.id === review.userID || currUser.admin) ? (
               <>
-                <a href={`/dormtrak/reviews/${review.id}/edit`}>edit</a>
+                <Link
+                  routeName="dormtrak.editReview"
+                  routeParams={{ reviewID: review.id }}
+                >
+                  edit
+                </Link>
                 &nbsp;|&nbsp;
                 <a
                   data-confirm="Are you sure you want to delete your review?"

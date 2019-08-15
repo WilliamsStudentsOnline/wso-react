@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import HoodTableRow from "./HoodTableRow";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -11,7 +12,6 @@ import { getDormtrakNeighborhood } from "../../../api/dormtrak";
 import { checkAndHandleError } from "../../../lib/general";
 
 import { createRouteNodeSelector } from "redux-router5";
-import { Link } from "react-router5";
 
 const DormtrakNeighborhood = ({ route, token }) => {
   const [neighborhood, updateHoodInfo] = useState(null);
@@ -20,7 +20,6 @@ const DormtrakNeighborhood = ({ route, token }) => {
     const loadNeighborhood = async () => {
       const neighborhoodID = route.params.neighborhoodID;
       const hoodResponse = await getDormtrakNeighborhood(token, neighborhoodID);
-
       if (checkAndHandleError(hoodResponse)) {
         updateHoodInfo(hoodResponse.data.data);
       }
@@ -47,34 +46,7 @@ const DormtrakNeighborhood = ({ route, token }) => {
           </thead>
           <tbody>
             {neighborhood
-              ? neighborhood.dorms.map((dorm) => (
-                  <tr key={dorm.id}>
-                    <td>
-                      <Link
-                        routeName="dormtrak.dorms"
-                        routeParams={{ dormID: dorm.id }}
-                      >
-                        {dorm.name}
-                      </Link>
-                    </td>
-                    <td>{dorm.numberSingles}</td>
-                    <td>{dorm.numberDoubles}</td>
-                    <td>{dorm.numberFlex}</td>
-                    {dorm.students ? (
-                      <>
-                        <td>{dorm.students.seniors}</td>
-                        <td>{dorm.students.juniors}</td>
-                        <td>{dorm.students.sophomores}</td>
-                      </>
-                    ) : (
-                      <>
-                        <td>N/A</td>
-                        <td>N/A</td>
-                        <td>N/A</td>
-                      </>
-                    )}
-                  </tr>
-                ))
+              ? neighborhood.dorms.map((dorm) => <HoodTableRow dorm={dorm} />)
               : null}
           </tbody>
         </table>

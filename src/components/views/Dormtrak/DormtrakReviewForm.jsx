@@ -1,9 +1,127 @@
 // React imports
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-const DormtrakReviewForm = ({ authToken, dorm, review, room, edit }) => {
-  const optionBuilder = (options, labels, type) => {
+// Redux imports
+import { connect } from "react-redux";
+import { getToken } from "../../../selectors/auth";
+
+import { createRouteNodeSelector, actions } from "redux-router5";
+
+import { checkAndHandleError } from "../../../lib/general";
+
+import {
+  getDormtrakDormReview,
+  postDormtrakDormReview,
+  patchDormtrakDormReview,
+} from "../../../api/dormtrak";
+
+// @TODO: Come up with a whole new form mechanism.
+const DormtrakReviewForm = ({ token, route, navigateTo }) => {
+  const [review, updateReview] = useState(null);
+
+  const edit = route.name.split(".")[1] === "editReview";
+
+  const [comment, updateComment] = useState("");
+  const [bathroomDesc, updateBathroomDesc] = useState("");
+  const [closetDesc, updateClosetDesc] = useState("");
+  const [commonRoomDesc, updateCRoomDesc] = useState("");
+  // const [outletsDesc, updateOutletsDesc] = useState("");
+  // const [thermostatDesc, updateThermostatDesc] = useState("");
+  const [bedAdjustable, updateBed] = useState(null);
+  // const [closet, updateCloset] = useState(null);
+  // const [comfort, updateComfort] = useState(null);
+  const [commonRoomAccess, updateCRoomAccess] = useState(null);
+  // const [convenience, updateConvenience] = useState(null);
+  const [room, updateRoom] = useState(null);
+  const [flooring, updateFlooring] = useState(null);
+  const [keyOrCard, updateKoC] = useState(null);
+  // const [livedHere, updateLivedHere] = useState(null);
+  const [location, updateLocation] = useState(null);
+  const [loudness, updateLoudness] = useState(null);
+  const [noise, updateNoise] = useState("");
+  const [privateBathroom, updatePBathroom] = useState(null);
+  const [satisfaction, updateSatisfaction] = useState(null);
+  const [thermostatAccess, updateThermostat] = useState(null);
+  const [wifi, updateWifi] = useState(null);
+
+  const [errors, updateErrors] = useState([]);
+
+  const submitHandler = async (event) => {
+    event.preventDefault();
+    // Parse integers here rather than below to minimize the expensive operation
+    const reviewParams = {
+      bathroomDesc,
+      bedAdjustable,
+      // closet,
+      closetDesc,
+      // comfort,
+      comment,
+      commonRoomAccess,
+      commonRoomDesc,
+      // convenience,
+      dormRoomID: room.id,
+      flooring,
+      keyOrCard,
+      // livedHere,
+      location,
+      loudness,
+      noise,
+      // outletsDesc,
+      privateBathroom,
+      satisfaction,
+      thermostatAccess,
+      // thermostatDesc,
+      wifi,
+    };
+
+    const response = edit
+      ? await patchDormtrakDormReview(token, reviewParams, review.id)
+      : await postDormtrakDormReview(token, reviewParams);
+
+    if (response.data.status === 200 || response.data.status === 201) {
+      // @TODO navigate to previous page?
+      navigateTo("dormtrak");
+    } else {
+      updateErrors([response.data.error.message]);
+    }
+  };
+
+  const roomParam = route.params.roomID;
+  const reviewParam = route.params.reviewID;
+
+  // Equivalent to ComponentDidMount
+  useEffect(() => {
+    const loadReview = async (reviewID) => {
+      const reviewResponse = await getDormtrakDormReview(token, reviewID);
+
+      if (checkAndHandleError(reviewResponse)) {
+        const reviewData = reviewResponse.data.data;
+        // Could use a defaultReview and update that object, but will hardly save any lines.
+        updateComment(reviewData.comment);
+        updateRoom(reviewData.dormRoom);
+        updateReview(reviewData);
+        updateBathroomDesc(reviewData.bathroomDesc);
+        updateClosetDesc(reviewData.closetDesc);
+        updateCRoomAccess(reviewData.commonRoomAccess);
+        updateCRoomDesc(reviewData.commonRoomDesc);
+        updateBed(reviewData.bedAdjustable);
+        updateFlooring(reviewData.flooring);
+        updateKoC(reviewData.keyOrCard);
+        updateLocation(reviewData.location);
+        updateLoudness(reviewData.loudness);
+        updateNoise(reviewData.noise);
+        updatePBathroom(reviewData.privateBathroom);
+        updateSatisfaction(reviewData.satisfaction);
+        updateThermostat(reviewData.thermostatAccess);
+        updateWifi(reviewData.wifi);
+      }
+    };
+
+    if (reviewParam) loadReview(reviewParam);
+  }, [token, roomParam, reviewParam]);
+
+  const optionBuilder = (options, labels, type, changeHandler) => {
     return options.map((ans, index) => {
       return (
         <React.Fragment key={ans}>
@@ -11,10 +129,8 @@ const DormtrakReviewForm = ({ authToken, dorm, review, room, edit }) => {
           &nbsp;
           <input
             type="radio"
-            value={ans}
-            name={`dormtrak_review[${type}]`}
-            id={`dormtrak_review_${type}_${ans}`}
-            defaultChecked={edit ? review[type] === ans : false}
+            checked={edit && type ? type === ans : false}
+            onChange={() => changeHandler(ans)}
           />
         </React.Fragment>
       );
@@ -22,241 +138,275 @@ const DormtrakReviewForm = ({ authToken, dorm, review, room, edit }) => {
   };
 
   return (
-    <>
-      <strong>* Indicates a required field</strong>
-      <br />
-      <br />
+    <div className="article">
+      <section>
+        <article>
+          {room ? (
+            <>
+              {edit ? (
+                <h3>
+                  Editing review on
+                  {` ${room.dorm.name} ${room.number}`}
+                </h3>
+              ) : null}
+              <h3>{`Review of ${room.dorm.name} ${room.number}`}</h3>
+            </>
+          ) : null}
+          <strong>* Indicates a required field</strong>
+          <br />
+          <br />
 
-      <form
-        className={edit ? `edit_dormtrak_review` : "new_dormtrak_review"}
-        id={edit ? `edit_dormtrak_review_${review.id}` : "new_dormtrak_review"}
-        action={edit ? `/dormtrak/reviews/${review.id}` : "/dormtrak/reviews"}
-        acceptCharset="UTF-8"
-        method="post"
-      >
-        <input name="utf8" type="hidden" value="✓" />
-        {edit ? <input type="hidden" name="_method" value="patch" /> : null}
-        <input type="hidden" name="authenticity_token" value={authToken} />
-        {review.errors.full_messages.length !== 0 ? (
-          <div>
-            {`${review.errors.full_messages.length} errors: `}
-            <ul>
-              {review.errors.map((error) => (
-                <li key={error}>error</li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
-        {!room.room_type ? (
-          <>
-            <strong>*Single, double, or flex?</strong>
+          <form onSubmit={(event) => submitHandler(event)}>
+            {errors.length !== 0 ? (
+              <div>
+                {`${errors.length} errors: `}
+                <ul>
+                  {errors.map((error) => (
+                    <li key={error}>{error}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {!(room && room.dorm && room.dorm.keyOrCard) ? (
+              <>
+                <strong>
+                  *Do you get in the room by keypad/card, or physical key?
+                </strong>
+                <br />
+                {optionBuilder(
+                  ["Keypad/card", "Physical Key"],
+                  ["Keypad/Card", "Physical Key"],
+                  keyOrCard,
+                  updateKoC
+                )}
+                <br />
+                <br />
+              </>
+            ) : null}
+            {!(room && room.closet) ? (
+              <>
+                <strong>*What was the closet like?</strong>
+                <br />
+                (size, shelving, wardrobe vs. built-in)
+                <br />
+                <textarea
+                  style={{ minHeight: "100px" }}
+                  placeholder="Closet Description.."
+                  value={closetDesc}
+                  onChange={(event) => updateClosetDesc(event.target.value)}
+                />
+                <br />
+                <br />
+              </>
+            ) : null}
+            {!(room && room.flooring) ? (
+              <>
+                <strong>*What material was the flooring?</strong>
+                <br />
+                {optionBuilder(
+                  ["Tile", "Wood", "Carpet", "Other"],
+                  ["Tile", "Wood", "Carpet", "Other"],
+                  flooring,
+                  updateFlooring
+                )}
+                <br />
+                <br />
+              </>
+            ) : null}
+            <strong>*Private bathroom?</strong>
             <br />
             {optionBuilder(
-              ["s", "d", "f"],
-              ["Single", "Double", "Flex"],
-              "room_type"
-            )}
-
-            <br />
-            <br />
-          </>
-        ) : null}
-        {!dorm.key_or_card ? (
-          <>
-            <strong>
-              *Do you get in the room by keypad/card, or physical key?
-            </strong>
-            <br />
-            {optionBuilder(
-              ["Keypad/card", "Physical Key"],
-              ["Keypad/Card", "Physical Key"],
-              "key_or_card"
+              [1, 0],
+              ["Yes", "No"],
+              privateBathroom,
+              updatePBathroom
             )}
             <br />
-            <br />
-          </>
-        ) : null}
-        {!room.closet ? (
-          <>
-            <strong>*What was the closet like?</strong>
-            <br />
-            (size, shelving, wardrobe vs. built-in)
-            <br />
-            <textarea
-              style={{ minHeight: "100px" }}
-              placeholder="Closet Description.."
-              name="dormtrak_review[closet]"
-              id="dormtrak_review_closet"
-              defaultValue={edit ? review.comment : ""}
-            />
-            <br />
-            <br />
-          </>
-        ) : null}
-        {!room.flooring ? (
-          <>
-            <strong>*What material was the flooring?</strong>
-            <br />
-            {optionBuilder(
-              ["Tile", "Wood", "Carpet", "Other"],
-              ["Tile", "Wood", "Carpet", "Other"],
-              "flooring"
-            )}
-            <br />
-            <br />
-          </>
-        ) : null}
-        <strong>*Private bathroom?</strong>
-        <br />
-        {optionBuilder([1, 0], ["Yes", "No"], "private_bathroom")}
-        <br />
-        <strong>
-          If you answered yes to the above, could you give a quick description
-          of the bathroom?
-        </strong>
-        <br />
-        (what things it has, quirks, etc)
-        <br />
-        <textarea
-          style={{ minHeight: "100px" }}
-          placeholder="Bathroom Description.."
-          name="dormtrak_review[bathroom_desc]"
-          id="dormtrak_review_bathroom_desc"
-        />
-        <br />
-        <br />
-        <strong>*Do you have a common room?</strong>
-        <br />
-        (Readily accessible and on the same floor as you)
-        <br />
-        {optionBuilder([1, 0], ["Yes", "No"], "common_room_access")}
-        <br />
-        {!room.common_room_desc ? (
-          <>
             <strong>
               If you answered yes to the above, could you give a quick
-              description of the common room?
+              description of the bathroom?
             </strong>
             <br />
-            (e.g. furniture, whether it was shared with another suite, etc.)
+            (what things it has, quirks, etc)
             <br />
             <textarea
               style={{ minHeight: "100px" }}
-              placeholder="Common Room Description.."
-              name="dormtrak_review[common_room_desc]"
-              id="dormtrak_review_common_room_desc"
+              placeholder="Bathroom Description.."
+              value={bathroomDesc}
+              onChange={(event) => updateBathroomDesc(event.target.value)}
             />
             <br />
-          </>
-        ) : null}
-        {!room.thermostat_access ? (
-          <>
-            {" "}
-            <strong>*Is there a functional AND accessible thermostat?</strong>
             <br />
-            {optionBuilder([1, 0], ["Yes", "No"], "thermostat_access")}
+            <strong>*Do you have a common room?</strong>
+            <br />
+            (Readily accessible and on the same floor as you)
+            <br />
+            {optionBuilder(
+              [1, 0],
+              ["Yes", "No"],
+              commonRoomAccess,
+              updateCRoomAccess
+            )}
+            <br />
+            {!(room && room.commonRoomDesc) ? (
+              <>
+                <strong>
+                  If you answered yes to the above, could you give a quick
+                  description of the common room?
+                </strong>
+                <br />
+                (e.g. furniture, whether it was shared with another suite, etc.)
+                <br />
+                <textarea
+                  style={{ minHeight: "100px" }}
+                  placeholder="Common Room Description.."
+                  value={commonRoomDesc}
+                  onChange={(event) => updateCRoomDesc(event.target.value)}
+                />
+                <br />
+              </>
+            ) : null}
+            {!(room && room.thermostatAccess) ? (
+              <>
+                <strong>
+                  *Is there a functional AND accessible thermostat?
+                </strong>
+                <br />
+                {optionBuilder(
+                  [1, 0],
+                  ["Yes", "No"],
+                  thermostatAccess,
+                  updateThermostat
+                )}
+                <br />
+                <br />
+              </>
+            ) : null}
+            <strong>*Was the bed adjustable?</strong>
+            <br />
+            (without risers you brought)
+            <br />
+            {optionBuilder([1, 0], ["Yes", "No"], bedAdjustable, updateBed)}
             <br />
             <br />
-          </>
-        ) : null}
-        <strong>*Was the bed adjustable?</strong>
-        <br />
-        (without risers you brought)
-        <br />
-        {optionBuilder([1, 0], ["Yes", "No"], "bed_adjustable")}
-        <br />
-        <br />
-        <strong>How good was wifi?</strong>
-        <br />
-        (1 is the worst, 5 is the best)
-        <br />
-        {optionBuilder([1, 2, 3, 4, 5], [1, 2, 3, 4, 5], "wifi")}
-        <br />
-        <br />
-        <strong>Rate the loudness of this dorm:</strong>
-        <br />
-        (1 is the quietest, 5 is the loudest)
-        <br />
-        {optionBuilder([1, 2, 3, 4, 5], [1, 2, 3, 4, 5], "loudness")}
-        <br />
-        <strong>What are the main causes of the noise?</strong>
-        <br />
-        <textarea
-          style={{ minHeight: "100px" }}
-          placeholder="Share your thoughts, likes, dislikes, things to be aware of, etc..."
-          name="dormtrak_review[noise]"
-          id="dormtrak_review_noise"
-          defaultValue={edit ? review.comment : ""}
-        />
-        <strong>How convenient was the location?</strong>
-        <br />
-        (1 is the worst, 5 is the best)
-        <br />
-        {optionBuilder([1, 2, 3, 4, 5], [1, 2, 3, 4, 5], "location")}
-        <br />
-        <br />
-        <strong>
-          Rate your overall satisfaction with your living situation this year:
-        </strong>
-        <br />
-        (1 is the worst, 5 is the best)
-        <br />
-        {optionBuilder([1, 2, 3, 4, 5], [1, 2, 3, 4, 5], "satisfaction")}
-        <br />
-        <br />
-        <strong>{`General commentary on ${dorm.name} itself:`}</strong>
-        <br />
-        (not your room!)
-        <br />
-        <textarea
-          style={{ minHeight: "100px" }}
-          placeholder="Share your thoughts, likes, dislikes, things to be aware of, etc..."
-          name="dormtrak_review[comment]"
-          id="dormtrak_review_comment"
-          defaultValue={edit ? review.comment : ""}
-        />
-        <br />
-        <br />
-        <strong>*Anonymous?</strong>
-        <br />
-        (this will hide your common room and noise comments, if any, until next
-        school year)
-        <br />
-        Yes&nbsp;
-        <input
-          type="radio"
-          value={1}
-          name="dormtrak_review[anonymous]"
-          id="dormtrak_review_anonymous_1"
-        />
-        No &nbsp;
-        <input
-          type="radio"
-          value={0}
-          name="dormtrak_review[anonymous]"
-          id="dormtrak_review_anonymous_0"
-          defaultChecked
-        />
-        <br />
-        <br />
-        <input
-          type="submit"
-          name="commit"
-          value={edit ? "Update" : "Save"}
-          id="submit-survey"
-          data-disable-with="Save"
-        />
-      </form>
-    </>
+            <strong>How good was wifi?</strong>
+            <br />
+            (1 is the worst, 5 is the best)
+            <br />
+            {optionBuilder([1, 2, 3, 4, 5], [1, 2, 3, 4, 5], wifi, updateWifi)}
+            <br />
+            <br />
+            <strong>Rate the loudness of this dorm:</strong>
+            <br />
+            (1 is the quietest, 5 is the loudest)
+            <br />
+            {optionBuilder(
+              [1, 2, 3, 4, 5],
+              [1, 2, 3, 4, 5],
+              loudness,
+              updateLoudness
+            )}
+            <br />
+            <strong>What are the main causes of the noise?</strong>
+            <br />
+            <textarea
+              style={{ minHeight: "100px" }}
+              placeholder="Share your thoughts, likes, dislikes, things to be aware of, etc..."
+              value={noise}
+              onChange={(event) => updateNoise(event.target.noise)}
+            />
+            <strong>How convenient was the location?</strong>
+            <br />
+            (1 is the worst, 5 is the best)
+            <br />
+            {optionBuilder(
+              [1, 2, 3, 4, 5],
+              [1, 2, 3, 4, 5],
+              location,
+              updateLocation
+            )}
+            <br />
+            <br />
+            <strong>
+              Rate your overall satisfaction with your living situation this
+              year:
+            </strong>
+            <br />
+            (1 is the worst, 5 is the best)
+            <br />
+            {optionBuilder(
+              [1, 2, 3, 4, 5],
+              [1, 2, 3, 4, 5],
+              satisfaction,
+              updateSatisfaction
+            )}
+            <br />
+            <br />
+            <strong>{`General commentary on ${
+              room ? room.dorm.name : ""
+            } itself:`}</strong>
+            <br />
+            (not just your room!)
+            <br />
+            <textarea
+              style={{ minHeight: "100px" }}
+              placeholder="Share your thoughts, likes, dislikes, things to be aware of, etc..."
+              value={comment}
+              onChange={(event) => updateComment(event.target.value)}
+            />
+            <br />
+            <br />
+            <strong>*Anonymous?</strong>
+            <br />
+            (this will hide your common room and noise comments, if any, until
+            next school year)
+            <br />
+            Yes&nbsp;
+            <input type="radio" value={1} id="dormtrak_review_anonymous_1" />
+            No &nbsp;
+            <input
+              type="radio"
+              value={0}
+              id="dormtrak_review_anonymous_0"
+              defaultChecked
+            />
+            <br />
+            <br />
+            <input
+              type="submit"
+              value={edit ? "Update" : "Save"}
+              id="submit-survey"
+              data-disable-with="Save"
+            />
+          </form>
+          <br />
+          <br />
+        </article>
+      </section>
+    </div>
   );
 };
 
 DormtrakReviewForm.propTypes = {
-  authToken: PropTypes.string.isRequired,
-  review: PropTypes.object.isRequired,
-  dorm: PropTypes.object.isRequired,
-  room: PropTypes.object.isRequired,
-  edit: PropTypes.bool.isRequired,
+  token: PropTypes.string.isRequired,
+  route: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
 };
 
-export default DormtrakReviewForm;
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("dormtrak.reviews");
+
+  return (state) => ({
+    token: getToken(state),
+    ...routeNodeSelector(state),
+  });
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DormtrakReviewForm);

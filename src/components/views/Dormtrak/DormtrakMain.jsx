@@ -12,6 +12,7 @@ import { connect } from "react-redux";
 
 // External Imports
 import { createRouteNodeSelector } from "redux-router5";
+import DormtrakReviewForm from "./DormtrakReviewForm";
 
 const DormtrakMain = ({ route }) => {
   const dormtrakBody = () => {
@@ -25,6 +26,10 @@ const DormtrakMain = ({ route }) => {
         return <DormtrakNeighborhood />;
       case "dorms":
         return <DormtrakShow />;
+      case "newReview":
+        return <DormtrakReviewForm edit={false} />;
+      case "editReview":
+        return <DormtrakReviewForm edit />;
       default:
         return <DormtrakHome />;
     }

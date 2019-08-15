@@ -17,7 +17,11 @@ const DormtrakHome = ({ currUser, token }) => {
 
   useEffect(() => {
     const loadReviews = async () => {
-      const queryParams = { limit: 10, offset: new Date() };
+      const queryParams = {
+        limit: 10,
+        offset: new Date(),
+        preload: ["dormRoom", "dorm"],
+      };
       const dormReviewResponse = await getDormtrakDormReviews(
         token,
         queryParams
