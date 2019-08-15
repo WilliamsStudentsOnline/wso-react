@@ -7,6 +7,7 @@ import DormtrakRecentComments from "./DormtrakRecentComments";
 import { getDormtrakDorm, getDormtrakDormReviews } from "../../../api/dormtrak";
 
 import { checkAndHandleError } from "../../../lib/general";
+import { bannerHelper } from "../../../lib/imageHelper";
 import { getCurrUser, getToken } from "../../../selectors/auth";
 import { connect } from "react-redux";
 
@@ -84,10 +85,7 @@ const DormtrakShow = ({ route, currUser, token }) => {
           </h2>
           <div>
             {dorm ? (
-              <img
-                alt={`${dorm.name} avatar`}
-                src={`${process.env.PUBLIC_URL}/banners/${dorm.name}.png`}
-              />
+              <img alt={`${dorm.name} avatar`} src={bannerHelper(dorm.name)} />
             ) : null}
           </div>
 
