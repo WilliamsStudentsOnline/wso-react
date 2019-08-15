@@ -88,20 +88,17 @@ const FactrakLayout = ({ children, currUser, navigateTo }) => {
               ) : null}
             </ul>
           </div>
-          <form acceptCharset="UTF-8" method="post">
+          <form>
             <input
               type="search"
-              name="search"
               id="search"
               placeholder="Search for a professor or course"
               onChange={factrakAutocomplete}
               style={{ marginBottom: "0px" }}
-              autoComplete="off"
               value={query}
             />
             <input
               type="submit"
-              name="commit"
               value="Search"
               className="submit"
               data-disable-with="Search"

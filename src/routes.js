@@ -25,6 +25,7 @@ export default [
       { name: "professors", path: "/professors/:professor" },
       { name: "newSurvey", path: "/surveys/new?:professorID" },
       { name: "editSurvey", path: "/surveys/edit?:surveyID" },
+      { name: "search", path: "/search?:q" },
     ],
   },
   {
@@ -36,7 +37,7 @@ export default [
       { name: "dorms", path: "/dorms/:dormID" },
       { name: "newReview", path: "/reviews/new?:dormID" },
       { name: "editReview", path: "/reviews/edit?:reviewID" },
-      { name: "search", path: "/reviews/search?:q" },
+      { name: "search", path: "/search?:q" },
     ],
   },
   { name: "login", path: "/account/login" },

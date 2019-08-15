@@ -12,6 +12,7 @@ import FactrakLayout from "./FactrakLayout";
 import FactrakAOS from "./FactrakAOS";
 import FactrakCourse from "./FactrakCourse";
 import FactrakProfessor from "./FactrakProfessor";
+import FactrakSearch from "./FactrakSearch";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -41,6 +42,8 @@ const FactrakMain = ({ route }) => {
         return <FactrakCourse />;
       case "professors":
         return <FactrakProfessor />;
+      case "search":
+        return <FactrakSearch />;
       default:
         return <FactrakHome />;
     }
