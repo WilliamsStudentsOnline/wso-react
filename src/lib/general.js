@@ -1,6 +1,6 @@
 import store from "../store";
 
-import { actions } from "redux-router5";
+// import { actions } from "redux-router5";
 import { doUpdateToken, doUpdateUser } from "../actions/auth";
 import { updateTokenAPI } from "../api/auth";
 import { getUser } from "../api/users";
@@ -30,7 +30,7 @@ export const checkAndHandleError = (response) => {
         checkAndUpdateUser(response);
         return true;
       case 500:
-        return store.dispatch(actions.navigateTo("500"));
+        return false; // return store.dispatch(actions.navigateTo("500"));
       default:
         return false;
     }

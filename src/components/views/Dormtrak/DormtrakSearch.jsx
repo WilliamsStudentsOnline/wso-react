@@ -1,12 +1,39 @@
 // React imports
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-const DormtrakSearch = ({ dorms }) => {
+import { connect } from "react-redux";
+import { getToken } from "../../../selectors/auth";
+
+import { getDormtrakDorms } from "../../../api/dormtrak";
+import { checkAndHandleError } from "../../../lib/general";
+import { createRouteNodeSelector } from "redux-router5";
+
+import { Link } from "react-router5";
+
+const DormtrakSearch = ({ token, route }) => {
+  const [dorms, updateDorms] = useState(null);
+
+  useEffect(() => {
+    const loadDorms = async () => {
+      const queryParams = {
+        q: route.params.q ? route.params.q : undefined,
+        preload: ["neighborhood"],
+      };
+      const dormsResponse = await getDormtrakDorms(token, queryParams);
+
+      if (checkAndHandleError(dormsResponse)) {
+        updateDorms(dormsResponse.data.data.sort((a, b) => a.name > b.name));
+      } else updateDorms([]);
+    };
+
+    loadDorms();
+  }, [token, route.params.q]);
+
   return (
     <article className="facebook-results">
       <section>
-        {dorms.length === 0 ? (
+        {!dorms || dorms.length === 0 ? (
           <>
             <br />
             <h1 className="no-matches-found">No matches were found.</h1>
@@ -23,13 +50,21 @@ const DormtrakSearch = ({ dorms }) => {
               {dorms.map((dorm) => (
                 <tr key={dorm.id}>
                   <td>
-                    <a href={`/dormtrak/dorms/${dorm.name}`}>{dorm.name}</a>
+                    <Link
+                      routeName="dormtrak.dorms"
+                      routeParams={{ dormID: dorm.id }}
+                    >
+                      {dorm.name}
+                    </Link>
                   </td>
 
                   <td>
-                    <a href={`/dormtrak/hoods/${dorm.neighborhood_name}`}>
-                      {dorm.neighborhood_name}
-                    </a>
+                    <Link
+                      routeName="dormtrak.neighborhoods"
+                      routeParams={{ neighborhoodID: dorm.neighborhood.id }}
+                    >
+                      {dorm.neighborhood.name}
+                    </Link>
                   </td>
                 </tr>
               ))}
@@ -42,9 +77,19 @@ const DormtrakSearch = ({ dorms }) => {
 };
 
 DormtrakSearch.propTypes = {
-  dorms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  token: PropTypes.string.isRequired,
+  route: PropTypes.object.isRequired,
 };
 
 DormtrakSearch.defaultProps = {};
 
-export default DormtrakSearch;
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("dormtrak.search");
+
+  return (state) => ({
+    token: getToken(state),
+    ...routeNodeSelector(state),
+  });
+};
+
+export default connect(mapStateToProps)(DormtrakSearch);

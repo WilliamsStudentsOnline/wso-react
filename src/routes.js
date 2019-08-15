@@ -36,6 +36,7 @@ export default [
       { name: "dorms", path: "/dorms/:dormID" },
       { name: "newReview", path: "/reviews/new?:dormID" },
       { name: "editReview", path: "/reviews/edit?:reviewID" },
+      { name: "search", path: "/reviews/search?:q" },
     ],
   },
   { name: "login", path: "/account/login" },

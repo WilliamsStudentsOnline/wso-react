@@ -13,6 +13,7 @@ import { Link } from "react-router5";
 
 const DormtrakLayout = ({ children, token, currUser, navigateTo }) => {
   const [neighborhoods, updateNeighborhoods] = useState([]);
+  const [query, updateQuery] = useState("");
 
   useEffect(() => {
     const loadRankings = async () => {
@@ -25,6 +26,12 @@ const DormtrakLayout = ({ children, token, currUser, navigateTo }) => {
 
     loadRankings();
   }, [token]);
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    navigateTo("dormtrak.search", { q: query }, { reload: true });
+  };
 
   if (currUser) {
     if (!currUser.hasAcceptedDormtrakPolicy) {
@@ -69,11 +76,13 @@ const DormtrakLayout = ({ children, token, currUser, navigateTo }) => {
             </ul>
           </div>
 
-          <form>
+          <form onSubmit={(event) => submitHandler(event)}>
             <input
               type="search"
               id="search"
               placeholder="Enter all or part of a building's name"
+              value={query}
+              onChange={(event) => updateQuery(event.target.value)}
             />
             <input
               type="submit"
@@ -107,7 +116,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
 });
 
 export default connect(

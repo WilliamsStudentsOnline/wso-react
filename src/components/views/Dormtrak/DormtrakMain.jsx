@@ -5,6 +5,7 @@ import DormtrakHome from "./DormtrakHome";
 import DormtrakLayout from "./DormtrakLayout";
 import DormtrakPolicy from "./DormtrakPolicy";
 import DormtrakShow from "./DormtrakShow";
+import DormtrakSearch from "./DormtrakSearch";
 import DormtrakNeighborhood from "./DormtrakNeighborhood";
 
 // Redux imports
@@ -30,6 +31,8 @@ const DormtrakMain = ({ route }) => {
         return <DormtrakReviewForm edit={false} />;
       case "editReview":
         return <DormtrakReviewForm edit />;
+      case "search":
+        return <DormtrakSearch />;
       default:
         return <DormtrakHome />;
     }

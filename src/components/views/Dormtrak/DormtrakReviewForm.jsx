@@ -24,19 +24,13 @@ const DormtrakReviewForm = ({ token, route, navigateTo }) => {
 
   const [comment, updateComment] = useState("");
   const [bathroomDesc, updateBathroomDesc] = useState("");
-  const [closetDesc, updateClosetDesc] = useState("");
+  const [closet, updateCloset] = useState("");
   const [commonRoomDesc, updateCRoomDesc] = useState("");
-  // const [outletsDesc, updateOutletsDesc] = useState("");
-  // const [thermostatDesc, updateThermostatDesc] = useState("");
   const [bedAdjustable, updateBed] = useState(null);
-  // const [closet, updateCloset] = useState(null);
-  // const [comfort, updateComfort] = useState(null);
   const [commonRoomAccess, updateCRoomAccess] = useState(null);
-  // const [convenience, updateConvenience] = useState(null);
   const [room, updateRoom] = useState(null);
   const [flooring, updateFlooring] = useState(null);
   const [keyOrCard, updateKoC] = useState(null);
-  // const [livedHere, updateLivedHere] = useState(null);
   const [location, updateLocation] = useState(null);
   const [loudness, updateLoudness] = useState(null);
   const [noise, updateNoise] = useState("");
@@ -53,25 +47,18 @@ const DormtrakReviewForm = ({ token, route, navigateTo }) => {
     const reviewParams = {
       bathroomDesc,
       bedAdjustable,
-      // closet,
-      closetDesc,
-      // comfort,
       comment,
       commonRoomAccess,
       commonRoomDesc,
-      // convenience,
       dormRoomID: room.id,
       flooring,
       keyOrCard,
-      // livedHere,
       location,
       loudness,
       noise,
-      // outletsDesc,
       privateBathroom,
       satisfaction,
       thermostatAccess,
-      // thermostatDesc,
       wifi,
     };
 
@@ -102,7 +89,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo }) => {
         updateRoom(reviewData.dormRoom);
         updateReview(reviewData);
         updateBathroomDesc(reviewData.bathroomDesc);
-        updateClosetDesc(reviewData.closetDesc);
+        updateCloset(reviewData.closetDesc);
         updateCRoomAccess(reviewData.commonRoomAccess);
         updateCRoomDesc(reviewData.commonRoomDesc);
         updateBed(reviewData.bedAdjustable);
@@ -192,8 +179,8 @@ const DormtrakReviewForm = ({ token, route, navigateTo }) => {
                 <textarea
                   style={{ minHeight: "100px" }}
                   placeholder="Closet Description.."
-                  value={closetDesc}
-                  onChange={(event) => updateClosetDesc(event.target.value)}
+                  value={closet}
+                  onChange={(event) => updateCloset(event.target.value)}
                 />
                 <br />
                 <br />

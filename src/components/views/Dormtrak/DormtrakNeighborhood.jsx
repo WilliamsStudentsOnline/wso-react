@@ -46,7 +46,9 @@ const DormtrakNeighborhood = ({ route, token }) => {
           </thead>
           <tbody>
             {neighborhood
-              ? neighborhood.dorms.map((dorm) => <HoodTableRow dorm={dorm} />)
+              ? neighborhood.dorms.map((dorm) => (
+                  <HoodTableRow dorm={dorm} key={dorm.id} />
+                ))
               : null}
           </tbody>
         </table>

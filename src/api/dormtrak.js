@@ -57,12 +57,13 @@ const getDormtrakNeighborhoodFacts = async (token, neighborhoodID) => {
 };
 
 // Get the list of all dormtrak dorms
-const getDormtrakDorms = async (token) => {
+const getDormtrakDorms = async (token, params) => {
   const response = await axios({
     url: "/api/v1/dormtrak/dorms",
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    params,
   }).catch((error) => {
     return error.response;
   });
