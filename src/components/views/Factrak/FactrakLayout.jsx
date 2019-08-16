@@ -4,14 +4,18 @@ import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getCurrUser } from "../../../selectors/auth";
+import { getCurrUser, getToken } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
 // External imports
-import axios from "axios";
 import { Link } from "react-router5";
+import {
+  autocompleteProfs,
+  autocompleteCourses,
+} from "../../../api/autocomplete";
+import { checkAndHandleError } from "../../../lib/general";
 
-const FactrakLayout = ({ children, currUser, navigateTo }) => {
+const FactrakLayout = ({ children, currUser, navigateTo, token }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
@@ -19,17 +23,25 @@ const FactrakLayout = ({ children, currUser, navigateTo }) => {
    * Initiates new autocomplete
    */
   const factrakAutocomplete = (event) => {
-    // Call factrak#autocomplete using what is in the search field
     setQuery(event.target.value);
-    axios({
-      url: "/factrak/autocomplete.json",
-      params: { q: escape(event.target.value) },
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    }).then((response) => {
-      return setSuggestions(response.data);
-    });
+    const profsResponse = autocompleteProfs(token, query);
+    const coursesResponse = autocompleteCourses(token, query);
+    const suggestData = [];
+    if (checkAndHandleError(profsResponse)) {
+      suggestData.push(profsResponse.data.data);
+    }
+
+    if (checkAndHandleError(coursesResponse)) {
+      suggestData.push(coursesResponse.data.data);
+    }
+
+    setSuggestions(suggestData.slice(0, 5));
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    navigateTo("factrak.search", { q: query }, { reload: true });
   };
 
   const factrakSuggestions = () => {
@@ -40,15 +52,18 @@ const FactrakLayout = ({ children, currUser, navigateTo }) => {
             {suggestions.map((suggestion) => (
               <tr key={suggestion.id}>
                 <td>
-                  <a
-                    href={
+                  <Link
+                    routeName={
+                      suggestion.name ? "factrak.professors" : "factrak.courses"
+                    }
+                    routeParams={
                       suggestion.name
-                        ? `/factrak/professors/${suggestion.id}`
-                        : `/factrak/courses/${suggestion.id}`
+                        ? { profID: suggestion.id }
+                        : { courseID: suggestion.id }
                     }
                   >
                     {suggestion.name ? suggestion.name : suggestion.title}
-                  </a>
+                  </Link>
                 </td>
               </tr>
             ))}
@@ -88,7 +103,7 @@ const FactrakLayout = ({ children, currUser, navigateTo }) => {
               ) : null}
             </ul>
           </div>
-          <form>
+          <form onSubmit={submitHandler}>
             <input
               type="search"
               id="search"
@@ -119,16 +134,19 @@ FactrakLayout.propTypes = {
   children: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
 FactrakLayout.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
+  token: getToken(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
 });
 
 export default connect(
