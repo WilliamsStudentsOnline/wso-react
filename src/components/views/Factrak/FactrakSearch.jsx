@@ -1,17 +1,51 @@
 // React imports
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-const FactrakSearch = ({ profs, courses }) => {
-  const profList = profs;
-  const courseList = courses.sort((a, b) => {
-    if (a.number < b.number) return -1;
-    if (a.number > b.number) return 1;
-    return 0;
-  });
+import { connect } from "react-redux";
+import { getToken } from "../../../selectors/auth";
+
+import { checkAndHandleError } from "../../../lib/general";
+import { createRouteNodeSelector } from "redux-router5";
+
+import { getProfessors, getCourses } from "../../../api/factrak";
+
+import { Link } from "react-router5";
+
+const FactrakSearch = ({ token, route }) => {
+  const [profs, updateProfs] = useState(null);
+  const [courses, updateCourses] = useState(null);
+
+  useEffect(() => {
+    const loadProfs = async () => {
+      const queryParams = {
+        q: route.params.q ? route.params.q : undefined,
+      };
+      const profsResponse = await getProfessors(token, queryParams);
+
+      if (checkAndHandleError(profsResponse)) {
+        updateProfs(profsResponse.data.data.sort((a, b) => a.name > b.name));
+      } else updateProfs([]);
+    };
+
+    const loadCourses = async () => {
+      const queryParams = {
+        q: route.params.q ? route.params.q : undefined,
+      };
+      const coursesResponse = await getCourses(token, queryParams);
+      if (checkAndHandleError(coursesResponse)) {
+        updateCourses(
+          coursesResponse.data.data.sort((a, b) => a.name > b.name)
+        );
+      } else updateCourses([]);
+    };
+
+    loadProfs();
+    loadCourses();
+  }, [token, route.params.q]);
 
   const professorDisplay = () => {
-    if (!profList || profList.length === 0) return null;
+    if (!profs || profs.length === 0) return null;
     return (
       <section className="margin-vertical-small">
         <br />
@@ -25,14 +59,19 @@ const FactrakSearch = ({ profs, courses }) => {
             </tr>
           </thead>
           <tbody>
-            {profList.map((prof) => {
+            {profs.map((prof) => {
               // Doesn't check for existence of professor in LDAP.
               return (
                 <tr key={prof.name}>
                   <td>
-                    <a href={`/factrak/professors/${prof.id}`}>{prof.name}</a>
+                    <Link
+                      routeName="factrak.professors"
+                      routeParams={{ profID: prof.id }}
+                    >
+                      {prof.name}
+                    </Link>
                   </td>
-                  <td>{prof.unix_id || ""}</td>
+                  <td>{prof.unixID || ""}</td>
                   <td>{prof.room || ""}</td>
                 </tr>
               );
@@ -43,7 +82,7 @@ const FactrakSearch = ({ profs, courses }) => {
     );
   };
   const courseDisplay = () => {
-    if (!courseList || courseList.length === 0) return null;
+    if (!courses || courses.length === 0) return null;
     return (
       <section className="margin-vertical-small">
         <h4>Courses</h4>
@@ -55,20 +94,26 @@ const FactrakSearch = ({ profs, courses }) => {
             </tr>
           </thead>
           <tbody>
-            {courseList.map((course) => {
+            {courses.map((course) => {
               return (
                 <tr key={course.id}>
                   <td className="col-20">
-                    <a href={`/factrak/courses/${course.id}`}>{course.name}</a>{" "}
+                    <Link
+                      routeName="factrak.courses"
+                      routeParams={{ courseID: course.id }}
+                    >
+                      {course.name}
+                    </Link>
                   </td>
                   <td className="col-80">
                     {course.professors.map((prof) => (
-                      <a
+                      <Link
                         key={`${course.id}?prof=${prof.id}`}
-                        href={`/factrak/courses/${course.id}?prof=${prof.id}`}
+                        routeName="factrak.courses.singleProf"
+                        routeParams={{ courseID: course.id, profID: prof.id }}
                       >
                         {prof.name}
-                      </a>
+                      </Link>
                     ))}
                   </td>
                 </tr>
@@ -88,10 +133,19 @@ const FactrakSearch = ({ profs, courses }) => {
 };
 
 FactrakSearch.propTypes = {
-  profs: PropTypes.arrayOf(PropTypes.object).isRequired,
-  courses: PropTypes.arrayOf(PropTypes.object).isRequired,
+  token: PropTypes.string.isRequired,
+  route: PropTypes.object.isRequired,
 };
 
 FactrakSearch.defaultProps = {};
 
-export default FactrakSearch;
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("dormtrak.search");
+
+  return (state) => ({
+    token: getToken(state),
+    ...routeNodeSelector(state),
+  });
+};
+
+export default connect(mapStateToProps)(FactrakSearch);

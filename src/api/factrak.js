@@ -268,6 +268,21 @@ const flagSurvey = async (token, surveyID) => {
   return response;
 };
 
+// Get Professors
+const getProfessors = async (token, params) => {
+  const response = await axios({
+    url: "/api/v1/factrak/professors",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params,
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
 // Get Professor by Professor ID
 const getProfessor = async (token, professorID, courseID = -1) => {
   let request;
@@ -409,6 +424,21 @@ const patchSurvey = async (token, updateParams, surveyID) => {
   return response;
 };
 
+// Get Courses
+const getCourses = async (token, params) => {
+  const response = await axios({
+    url: "/api/v1/factrak/courses",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params,
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
 export {
   getAreasOfStudy,
   getDepartments,
@@ -420,6 +450,7 @@ export {
   getFlagged,
   getUserSurveys,
   getCourse,
+  getCourses,
   getCourseSurveys,
   getCourseProfs,
   getSurveyAgreements,
@@ -429,6 +460,7 @@ export {
   flagSurvey,
   deleteSurvey,
   getProfessor,
+  getProfessors,
   getDepartment,
   getProfessorRatings,
   getProfessorSurveys,
