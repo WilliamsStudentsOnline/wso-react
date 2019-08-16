@@ -1,12 +1,13 @@
 import axios from "axios";
 
 // Returns all the users
-const getAllUsers = async (token) => {
+const getAllUsers = async (token, params) => {
   const response = await axios({
     url: "/api/v1/users",
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    params,
   }).catch((error) => {
     return error.response;
   });

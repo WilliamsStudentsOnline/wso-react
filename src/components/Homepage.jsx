@@ -1,17 +1,16 @@
 // React imports
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 // Component imports
 import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
-import SearchBox from "./SearchBox";
 import "./stylesheets/Homepage.css";
+import { actions } from "redux-router5";
 
 // API imports
 import { connect } from "react-redux";
-import { getToken } from "../selectors/auth";
 
-const Homepage = ({ token }) => {
+const Homepage = ({ navigateTo }) => {
   const bulletinTypes = [
     "Discussions",
     "Announcements",
@@ -20,6 +19,13 @@ const Homepage = ({ token }) => {
     "Jobs",
     "Rides",
   ];
+  const [query, updateQuery] = useState("");
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    navigateTo("facebook", { q: query }, { reload: true });
+  };
 
   return (
     <div className="home">
@@ -32,7 +38,20 @@ const Homepage = ({ token }) => {
           <h2 align="center">WSO</h2>
           <h4 align="center">By Students, For Students!</h4>
           <br />
-          <SearchBox authToken={token} />
+          <form onSubmit={submitHandler}>
+            <input
+              id="search"
+              type="search"
+              placeholder="Search Facebook"
+              onChange={(event) => updateQuery(event.target.value)}
+            />
+            <input
+              data-disable-with="Search"
+              type="submit"
+              value="Search"
+              className="submit"
+            />
+          </form>
         </header>
         <article>
           <section>
@@ -48,17 +67,16 @@ const Homepage = ({ token }) => {
   );
 };
 
-Homepage.propTypes = {
-  // No isRequired because authentication not necessary for going to the homepage.
-  token: PropTypes.string,
-};
+Homepage.propTypes = { navigateTo: PropTypes.func.isRequired };
 
-Homepage.defaultProps = {
-  token: "",
-};
+Homepage.defaultProps = {};
 
-const mapStateToProps = (state) => ({
-  token: getToken(state),
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(mapStateToProps)(Homepage);
+export default connect(
+  null,
+  mapDispatchToProps
+)(Homepage);

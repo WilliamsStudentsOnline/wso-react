@@ -19,7 +19,6 @@ const FacebookMain = ({ route, currUser, navigateTo }) => {
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <FacebookHome />;
 
-    console.log(splitRoute[1]);
     switch (splitRoute[1]) {
       case "help":
         return <FacebookHelp />;
@@ -37,16 +36,14 @@ const FacebookMain = ({ route, currUser, navigateTo }) => {
 };
 
 FacebookMain.propTypes = {
-  route: PropTypes.string.isRequired,
-  currUser: PropTypes.object,
+  route: PropTypes.object.isRequired,
+  currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
-FacebookMain.defaultProps = {
-  currUser: {},
-};
+FacebookMain.defaultProps = {};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("facebook");
 
   return (state) => ({

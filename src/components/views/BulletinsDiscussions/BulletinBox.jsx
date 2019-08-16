@@ -15,21 +15,21 @@ import { checkAndHandleError } from "../../../lib/general";
 
 const BulletinBox = ({ token, type }) => {
   const [threads, updateThreads] = useState([]);
-  const typeMap = new Map([
-    ["Announcements", "Announcement"],
-    ["Exchanges", "Exchange"],
-    ["Lost And Found", "LostFound"],
-    ["Jobs", "Job"],
-  ]);
 
   useEffect(() => {
+    const typeMap = new Map([
+      ["Announcements", "Announcement"],
+      ["Exchanges", "Exchange"],
+      ["Lost And Found", "LostFound"],
+      ["Jobs", "Job"],
+    ]);
+
     const loadDiscussions = async () => {
       const loadParams = {
         offset: new Date(),
         limit: 5,
       };
       const discussionsResponse = await getDiscussions(token, loadParams);
-      console.log(discussionsResponse);
       if (checkAndHandleError(discussionsResponse)) {
         updateThreads(discussionsResponse.data.data);
       } else updateThreads([]);
@@ -41,7 +41,6 @@ const BulletinBox = ({ token, type }) => {
         limit: 5,
       };
       const ridesResponse = await getRides(token, loadParams);
-      console.log(ridesResponse);
       if (checkAndHandleError(ridesResponse)) {
         updateThreads(ridesResponse.data.data);
       } else updateThreads([]);
@@ -54,7 +53,6 @@ const BulletinBox = ({ token, type }) => {
         type: typeMap.get(type),
       };
       const bulletinsResponse = await getBulletins(token, loadParams);
-      console.log(bulletinsResponse);
       if (checkAndHandleError(bulletinsResponse)) {
         updateThreads(bulletinsResponse.data.data);
       } else updateThreads([]);
@@ -63,7 +61,7 @@ const BulletinBox = ({ token, type }) => {
     if (type === "Discussions") loadDiscussions();
     else if (type === "Rides") loadRides();
     else loadBulletins();
-  }, [token]);
+  }, [token, type]);
 
   const date = (showDate) => {
     const options = {

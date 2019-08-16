@@ -1,13 +1,21 @@
 // React imports
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import SearchBox from "../../SearchBox";
 
 // Redux imports
 import { connect } from "react-redux";
 import { getCurrUser } from "../../../selectors/auth";
+import { actions } from "redux-router5";
 
-const FacebookLayout = ({ children, currUser }) => {
+const FacebookLayout = ({ children, currUser, navigateTo }) => {
+  const [query, updateQuery] = useState("");
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    navigateTo("facebook", { q: query }, { reload: true });
+  };
+
   return (
     <div className="facebook">
       <header>
@@ -35,7 +43,20 @@ const FacebookLayout = ({ children, currUser }) => {
             ) : null}
           </ul>
         </div>
-        <SearchBox />
+        <form onSubmit={submitHandler}>
+          <input
+            id="search"
+            type="search"
+            placeholder="Search Facebook"
+            onChange={(event) => updateQuery(event.target.value)}
+          />
+          <input
+            data-disable-with="Search"
+            type="submit"
+            value="Search"
+            className="submit"
+          />
+        </form>
       </header>
       {children}
     </div>
@@ -44,6 +65,8 @@ const FacebookLayout = ({ children, currUser }) => {
 
 FacebookLayout.propTypes = {
   children: PropTypes.object,
+  currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
 };
 
 FacebookLayout.defaultProps = {
@@ -54,4 +77,12 @@ const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
 });
 
-export default connect(mapStateToProps)(FacebookLayout);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FacebookLayout);
