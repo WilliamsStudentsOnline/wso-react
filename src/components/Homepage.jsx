@@ -7,7 +7,20 @@ import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 import SearchBox from "./SearchBox";
 import "./stylesheets/Homepage.css";
 
-const Homepage = ({ bulletins, authToken }) => {
+// API imports
+import { connect } from "react-redux";
+import { getToken } from "../selectors/auth";
+
+const Homepage = ({ token }) => {
+  const bulletinTypes = [
+    "Discussions",
+    "Announcements",
+    "Exchanges",
+    "Lost And Found",
+    "Jobs",
+    "Rides",
+  ];
+
   return (
     <div className="home">
       <div className="full-width">
@@ -19,13 +32,13 @@ const Homepage = ({ bulletins, authToken }) => {
           <h2 align="center">WSO</h2>
           <h4 align="center">By Students, For Students!</h4>
           <br />
-          <SearchBox authToken={authToken} />
+          <SearchBox authToken={token} />
         </header>
         <article>
           <section>
             <div className="bulletin-list">
-              {bulletins.map((bulletin) => {
-                return <BulletinBox bulletin={bulletin} key={bulletin[1]} />;
+              {bulletinTypes.map((bulletin) => {
+                return <BulletinBox type={bulletin} key={bulletin} />;
               })}
             </div>
           </section>
@@ -36,20 +49,16 @@ const Homepage = ({ bulletins, authToken }) => {
 };
 
 Homepage.propTypes = {
-  bulletins: PropTypes.arrayOf(PropTypes.array),
-  authToken: PropTypes.string,
+  // No isRequired because authentication not necessary for going to the homepage.
+  token: PropTypes.string,
 };
 
 Homepage.defaultProps = {
-  bulletins: [
-    [[], "Discussions", "/discussions"],
-    [[], "Announcements", "/announcements"],
-    [[], "Exchanges", "/exchanges"],
-    [[], "Lost + Found", "/lostAndFound"],
-    [[], "Jobs", "/jobs"],
-    [[], "Rides", "/rides"],
-  ],
-  authToken: "",
+  token: "",
 };
 
-export default Homepage;
+const mapStateToProps = (state) => ({
+  token: getToken(state),
+});
+
+export default connect(mapStateToProps)(Homepage);
