@@ -15,10 +15,10 @@ const getAllUsers = async (token, params) => {
   return response;
 };
 
-// Returns current user
-const getUser = async (unixID = "me", token) => {
+// Returns a user
+const getUser = async (token, userID = "me") => {
   const response = await axios({
-    url: `/api/v1/users/${unixID}`,
+    url: `/api/v1/users/${userID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import FacebookLayout from "./FacebookLayout";
 import FacebookHome from "./FacebookHome";
 import FacebookHelp from "./FacebookHelp";
+import ShowUser from "./FacebookUser";
 
 // Redux Imports
 import { connect } from "react-redux";
@@ -22,6 +23,8 @@ const FacebookMain = ({ route, currUser, navigateTo }) => {
     switch (splitRoute[1]) {
       case "help":
         return <FacebookHelp />;
+      case "users":
+        return <ShowUser />;
       default:
         return <FacebookHome />;
     }

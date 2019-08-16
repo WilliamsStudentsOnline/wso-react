@@ -7,6 +7,8 @@ import { connect } from "react-redux";
 import { getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
+import { Link } from "react-router5";
+
 const FacebookLayout = ({ children, currUser, navigateTo }) => {
   const [query, updateQuery] = useState("");
 
@@ -21,21 +23,26 @@ const FacebookLayout = ({ children, currUser, navigateTo }) => {
       <header>
         <div className="page-head">
           <h1>
-            <a href="/facebook"> Facebook </a>
+            <Link routeName="facebook">Facebook</Link>
           </h1>
           <ul>
             <li>
-              <a href="/facebook"> Search </a>
+              <Link routeName="facebook">Search</Link>
             </li>
             <li>
-              <a href="/facebook/help"> Help </a>
+              <Link routeName="facebook.help">Help</Link>
             </li>
 
             {currUser && currUser.id ? (
               <>
                 <li>
-                  <a href={`/facebook/users/${currUser.id}`}>View</a>
-                </li>{" "}
+                  <Link
+                    routeName="facebook.users"
+                    routeParams={{ userID: currUser.id }}
+                  >
+                    View
+                  </Link>
+                </li>
                 <li>
                   <a href="/facebook/edit"> Edit </a>
                 </li>

@@ -7,7 +7,10 @@ export default [
   {
     name: "facebook",
     path: "/facebook",
-    children: [{ name: "help", path: "/help" }],
+    children: [
+      { name: "help", path: "/help" },
+      { name: "users", path: "/users/:userID" },
+    ],
   },
   {
     name: "factrak",
