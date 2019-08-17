@@ -7,7 +7,7 @@ import FacebookLayout from "./FacebookLayout";
 import FacebookHome from "./FacebookHome";
 import FacebookHelp from "./FacebookHelp";
 import FacebookEdit from "./FacebookEdit";
-import ShowUser from "./FacebookUser";
+import FacebookUser from "./FacebookUser";
 
 // Redux Imports
 import { connect } from "react-redux";
@@ -25,7 +25,7 @@ const FacebookMain = ({ route, currUser, navigateTo }) => {
       case "help":
         return <FacebookHelp />;
       case "users":
-        return <ShowUser />;
+        return <FacebookUser />;
       case "edit":
         return <FacebookEdit />;
       default:

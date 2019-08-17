@@ -1,5 +1,5 @@
 // React Imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import PropTypes from "prop-types";
 
 import { connect } from "react-redux";
@@ -7,13 +7,19 @@ import { connect } from "react-redux";
 // External Imports
 import { getCurrUser, getToken } from "../../../selectors/auth";
 import { autocompleteTags } from "../../../api/autocomplete";
-import { putCurrUserTags, getUser, patchCurrUser } from "../../../api/users";
+import {
+  putCurrUserTags,
+  getUser,
+  patchCurrUser,
+  putCurrUserPhoto,
+} from "../../../api/users";
 
 import { actions } from "redux-router5";
 
 import { checkAndHandleError } from "../../../lib/general";
+import { doUpdateUser } from "../../../actions/auth";
 
-const FacebookEdit = ({ token, currUser, navigateTo }) => {
+const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
   const [tags, updateTags] = useState([]);
   const [newTag, updateNewTag] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -25,6 +31,8 @@ const FacebookEdit = ({ token, currUser, navigateTo }) => {
   const [offCycle, setOffCycle] = useState(currUser.offCycle);
 
   const [errors, updateErrors] = useState([]);
+
+  const fileRef = createRef();
 
   // @TODO: Think of a better logic for this
   useEffect(() => {
@@ -61,9 +69,8 @@ const FacebookEdit = ({ token, currUser, navigateTo }) => {
       updateTags(updatedTags);
       updateNewTag("");
       updateErrors([]);
-    } else {
-      updateErrors([tagResponse.data.error.message]);
     }
+    updateErrors([tagResponse.data.error.message]);
   };
 
   const addTagHandler = () => {
@@ -120,8 +127,37 @@ const FacebookEdit = ({ token, currUser, navigateTo }) => {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    addTagHandler();
+    const newErrors = [];
 
+    // Update Tags
+    const updatedTags = Object.assign([], tags);
+    if (newTag) {
+      updatedTags.push(newTag);
+    }
+
+    const params = {
+      tags: updatedTags,
+    };
+
+    const tagResponse = await putCurrUserTags(token, params);
+
+    if (!checkAndHandleError(tagResponse)) {
+      newErrors.push(tagResponse.data.error.message);
+    }
+
+    // Update Photos
+    if (fileRef.current && fileRef.current.files[0]) {
+      const fileResponse = await putCurrUserPhoto(
+        token,
+        fileRef.current.files[0]
+      );
+
+      if (!checkAndHandleError(fileResponse)) {
+        newErrors.push(fileResponse.data.error.message);
+      }
+    }
+
+    // Update User
     const updatedUser = {
       dormVisible,
       homeVisible,
@@ -133,11 +169,15 @@ const FacebookEdit = ({ token, currUser, navigateTo }) => {
     const updateResponse = await patchCurrUser(token, updatedUser);
 
     if (!checkAndHandleError(updateResponse)) {
-      updateErrors([updateResponse.data.error.message, ...errors]);
+      newErrors.push(updateResponse.data.error.message);
     }
 
-    if (errors.length === 0) {
-      navigateTo("facebook.users", { userID: "me" });
+    if (newErrors.length > 0) {
+      updateErrors(newErrors);
+    } else {
+      // If there are no errors, it means that patchCurrUser must have gone smoothly
+      updateUser(updateResponse.data.data);
+      navigateTo("facebook.users", { userID: currUser.id });
     }
   };
 
@@ -147,7 +187,7 @@ const FacebookEdit = ({ token, currUser, navigateTo }) => {
         <div id="errors">
           {errors.length > 0
             ? errors.map((msg) => {
-                return <p>{`* ${msg}`}</p>;
+                return <p key={msg}>{`* ${msg}`}</p>;
               })
             : null}
         </div>
@@ -156,8 +196,7 @@ const FacebookEdit = ({ token, currUser, navigateTo }) => {
           <div className="field">
             <h3>Profile Picture</h3>
             <br />
-            {/* TODO: picture uploading */}
-            <input type="file" />
+            <input type="file" ref={fileRef} />
           </div>
 
           <br />
@@ -322,6 +361,7 @@ FacebookEdit.propTypes = {
   token: PropTypes.string.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  updateUser: PropTypes.func.isRequired,
 };
 
 FacebookEdit.defaultProps = {};
@@ -332,7 +372,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
 export default connect(

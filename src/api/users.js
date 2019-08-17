@@ -61,4 +61,26 @@ const putCurrUserTags = async (token, updateParams) => {
   return response;
 };
 
-export { getAllUsers, getUser, patchCurrUser, putCurrUserTags };
+// Replaces current user's photo
+const putCurrUserPhoto = async (token, file) => {
+  const response = await axios({
+    url: `/api/v1/users/me/photo`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: file,
+    method: "put",
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
+export {
+  getAllUsers,
+  getUser,
+  patchCurrUser,
+  putCurrUserTags,
+  putCurrUserPhoto,
+};

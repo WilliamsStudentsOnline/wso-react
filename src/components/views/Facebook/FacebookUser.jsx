@@ -19,6 +19,7 @@ const FacebookUser = ({ currUser, token, route }) => {
       }
 
       const targetResponse = await getUser(token, route.params.userID);
+
       if (checkAndHandleError(targetResponse)) {
         updateTarget(targetResponse.data.data);
       } else updateTarget(null);
@@ -72,7 +73,7 @@ const FacebookUser = ({ currUser, token, route }) => {
             <h5>
               {viewPerson.title ? viewPerson.title : null}
               <br />
-              {viewPerson.department}
+              {viewPerson.department.name}
             </h5>
           )}
 
@@ -90,7 +91,7 @@ const FacebookUser = ({ currUser, token, route }) => {
           ) : null}
 
           {(viewPerson.type === "student" || viewPerson.type === "alumni") &&
-          viewPerson.tags[0] ? (
+          viewPerson.tags ? (
             <>
               <h5>Tags:</h5>
               <ul>
