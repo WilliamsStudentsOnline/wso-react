@@ -10,6 +10,7 @@ export default [
     children: [
       { name: "help", path: "/help" },
       { name: "users", path: "/users/:userID" },
+      { name: "edit", path: "/edit" },
     ],
   },
   {

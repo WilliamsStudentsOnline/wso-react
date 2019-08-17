@@ -45,4 +45,20 @@ const patchCurrUser = async (token, updateParams) => {
   return response;
 };
 
-export { getAllUsers, getUser, patchCurrUser };
+// Replaces current user's tags
+const putCurrUserTags = async (token, updateParams) => {
+  const response = await axios({
+    url: `/api/v1/users/me/tags`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: updateParams,
+    method: "put",
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
+export { getAllUsers, getUser, patchCurrUser, putCurrUserTags };

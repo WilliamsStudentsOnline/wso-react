@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import FacebookLayout from "./FacebookLayout";
 import FacebookHome from "./FacebookHome";
 import FacebookHelp from "./FacebookHelp";
+import FacebookEdit from "./FacebookEdit";
 import ShowUser from "./FacebookUser";
 
 // Redux Imports
@@ -25,6 +26,8 @@ const FacebookMain = ({ route, currUser, navigateTo }) => {
         return <FacebookHelp />;
       case "users":
         return <ShowUser />;
+      case "edit":
+        return <FacebookEdit />;
       default:
         return <FacebookHome />;
     }
