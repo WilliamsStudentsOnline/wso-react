@@ -26,12 +26,13 @@ const Layout = ({ children, notice, warning }) => {
 Layout.propTypes = {
   notice: PropTypes.string,
   warning: PropTypes.string,
-  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 Layout.defaultProps = {
   notice: "",
   warning: "",
+  children: null,
 };
 
 export default Layout;

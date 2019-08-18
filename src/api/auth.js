@@ -49,21 +49,43 @@ const getToken = async (unixID, password) => {
   return response;
 };
 
+// Get on/off-campus tokens, do not log in
+const getCampusToken = async () => {
+  const response = await axios({
+    url: "/api/v1/auth/login",
+    method: "post",
+    data: {
+      unixID: "invalid",
+      password: "invalid",
+      useIP: true,
+    },
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
 // Helper method to check the expiry of the authToken, refreshing if necessary
-const tokenExpiryHandler = (token, expiry) => {
+const tokenExpiryHandler = async (token, expiry) => {
   try {
     const expiryDate = Date.parse(expiry);
     if (expiryDate) {
       const now = Date.now();
 
-      if (expiryDate - now < 1800000) return refreshToken(token);
-    } else {
-      return null;
+      if (expiryDate - now < 1800000) {
+        const refreshResponse = await refreshToken(token);
+        if (refreshResponse && !refreshResponse.data.error) return true;
+
+        return false;
+      }
+
+      return true;
     }
   } catch (err) {
-    return null;
+    return false;
   }
-  return null;
+  return false;
 };
 
-export { tokenExpiryHandler, updateTokenAPI, getToken };
+export { tokenExpiryHandler, updateTokenAPI, getToken, getCampusToken };

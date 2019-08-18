@@ -21,13 +21,21 @@ import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
 import BuildingHours from "./views/Misc/BuildingHours";
 import { getToken, getExpiry } from "../selectors/auth";
-import { doRemoveCreds } from "../actions/auth";
+import { doRemoveCreds, doUpdateToken } from "../actions/auth";
 
 // Additional Imports
 import wordFile from "../constants/words.json";
-import { tokenExpiryHandler } from "../api/auth";
+import { tokenExpiryHandler, getCampusToken } from "../api/auth";
+import { checkAndHandleError } from "../lib/general";
 
-const App = ({ route, navigateTo, removeCreds }) => {
+const App = ({
+  route,
+  navigateTo,
+  removeCreds,
+  updateToken,
+  token,
+  expiry,
+}) => {
   const randomWSO = () => {
     if (wordFile) {
       const w = wordFile.w[Math.floor(Math.random() * wordFile.w.length)];
@@ -75,11 +83,18 @@ const App = ({ route, navigateTo, removeCreds }) => {
   };
 
   // Refreshes the token
-  const initialize = async (token, expiry) => {
-    if (!token || !expiry) return;
+  const initialize = async () => {
+    if (token && expiry) {
+      // Checks if the token can be refreshed, refreshes if necessary
+      const refresh = await tokenExpiryHandler(token, expiry);
+      if (refresh) return;
+    }
 
-    // Checks if the token can be refreshed, refreshes if necessary
-    tokenExpiryHandler(token, expiry);
+    const campusResponse = await getCampusToken();
+
+    if (checkAndHandleError(campusResponse)) {
+      updateToken(campusResponse.data.data);
+    }
   };
 
   initialize();
@@ -92,6 +107,9 @@ App.propTypes = {
   route: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   removeCreds: PropTypes.func.isRequired,
+  updateToken: PropTypes.func.isRequired,
+  token: PropTypes.string.isRequired,
+  expiry: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = () => {
@@ -107,6 +125,7 @@ const mapStateToProps = () => {
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
   removeCreds: () => dispatch(doRemoveCreds()),
+  updateToken: (token) => dispatch(doUpdateToken(token)),
 });
 
 export default connect(
