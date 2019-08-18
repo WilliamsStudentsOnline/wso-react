@@ -43,16 +43,13 @@ const getDepartments = async (token) => {
 };
 
 // Lists all surveys
-const getSurveys = async (token, limit = 10) => {
+const getSurveys = async (token, params) => {
   const response = await axios({
     url: "/api/v1/factrak/surveys",
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    params: {
-      limit,
-      offset: new Date(),
-    },
+    params,
   }).catch((error) => {
     return error.response;
   });
@@ -161,36 +158,18 @@ const getCourse = async (token, courseID) => {
 };
 
 // Get surveys belonging to a factrak course.
-const getCourseSurveys = async (token, courseID, professorID = -1) => {
-  let request;
+const getCourseSurveys = async (token, courseID, params) => {
+  const response = await axios({
+    url: `/api/v1/factrak/courses/${courseID}/surveys`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params,
+  }).catch((error) => {
+    return error.response;
+  });
 
-  try {
-    const parsedID = parseInt(professorID, 10);
-    if (parsedID === -1 || typeof parsedID !== "number") {
-      request = {
-        url: `/api/v1/factrak/courses/${courseID}/surveys`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-    } else {
-      request = {
-        url: `/api/v1/factrak/courses/${courseID}/surveys`,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: { professorID: parsedID },
-      };
-    }
-
-    const response = await axios(request).catch((error) => {
-      return error.response;
-    });
-
-    return response;
-  } catch (err) {
-    return err;
-  }
+  return response;
 };
 
 // Gets the list of professors who teach a particular course

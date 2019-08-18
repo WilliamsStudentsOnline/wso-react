@@ -141,7 +141,7 @@ const DormtrakRanking = ({ token }) => {
                           routeName="dormtrak.dorms"
                           routeParams={{ dormID: a.id }}
                         >
-                          {a.name}
+                          {b.name}
                         </Link>
                         <br />
                         {`(${b.averageDoubleArea} sq. ft.)`}
@@ -219,9 +219,9 @@ const DormtrakRanking = ({ token }) => {
                       <td>
                         <Link
                           routeName="dormtrak.dorms"
-                          routeParams={{ dormID: a.id }}
+                          routeParams={{ dormID: b.id }}
                         >
-                          {a.name}
+                          {b.name}
                         </Link>
                         <br />
                         {`(${b.numberDoubles})`}
@@ -259,9 +259,9 @@ const DormtrakRanking = ({ token }) => {
                       <td>
                         <Link
                           routeName="dormtrak.dorms"
-                          routeParams={{ dormID: a.id }}
+                          routeParams={{ dormID: b.id }}
                         >
-                          {a.name}
+                          {b.name}
                         </Link>
                         <br />
                         {`(${b.bathroomRatio.toPrecision(3)}:1)`}

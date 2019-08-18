@@ -18,7 +18,12 @@ const FactrakHome = ({ token, currUser }) => {
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadSurveys = async () => {
-      const surveysResponse = await getSurveys(token, 10);
+      const queryParams = {
+        preload: ["professor", "course"],
+        limit: 10,
+        offset: new Date(),
+      };
+      const surveysResponse = await getSurveys(token, queryParams);
 
       if (checkAndHandleError(surveysResponse)) {
         updateSurveys(surveysResponse.data.data);

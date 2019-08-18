@@ -24,7 +24,7 @@ const FactrakCourse = ({ route, token }) => {
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
-    const courseID = route.params.course;
+    const courseID = route.params.courseID;
     const profID = route.params.profID ? route.params.profID : -1;
 
     const loadCourse = async () => {
@@ -35,7 +35,15 @@ const FactrakCourse = ({ route, token }) => {
     };
 
     const loadSurveys = async () => {
-      const surveyResponse = await getCourseSurveys(token, courseID, profID);
+      const queryParams = {
+        preload: ["professor", "course"],
+        profID,
+      };
+      const surveyResponse = await getCourseSurveys(
+        token,
+        courseID,
+        queryParams
+      );
 
       if (checkAndHandleError(surveyResponse)) {
         updateSurveys(surveyResponse.data.data);
@@ -66,7 +74,7 @@ const FactrakCourse = ({ route, token }) => {
                 <Link
                   routeName="factrak.courses.singleProf"
                   routeParams={{
-                    course: course.id,
+                    courseID: course.id,
                     profID: prof.id,
                   }}
                 >

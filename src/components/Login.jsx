@@ -29,10 +29,9 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
   const submitHandler = async (event) => {
     event.preventDefault();
     const response = await getToken(unixID, password);
-
     if (checkAndHandleError(response)) {
       const newToken = response.data.data.token;
-      const userResponse = await getUser("me", newToken);
+      const userResponse = await getUser(newToken, "me");
       if (checkAndHandleError(userResponse)) {
         // Only update if both requests pass.
         updateUser(userResponse.data.data);

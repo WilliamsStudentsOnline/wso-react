@@ -23,7 +23,7 @@ export default [
       { name: "areasOfStudy", path: "/areasOfStudy/:area" },
       {
         name: "courses",
-        path: "/courses/:course",
+        path: "/courses/:courseID",
         children: [{ name: "singleProf", path: "?:profID" }],
       },
       { name: "professors", path: "/professors/:profID" },

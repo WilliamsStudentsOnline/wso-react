@@ -25,7 +25,7 @@ const Nav = ({ currUser }) => {
             <li>
               <Link routeName="facebook">Facebook</Link>
             </li>
-            {currUser.ephCatchEligibility ? (
+            {currUser && currUser.ephCatchEligibility ? (
               <li>
                 <Link routeName="ephcatch">Ephcatch</Link>
                 {currUser.ephcatches.length > 0 ? (

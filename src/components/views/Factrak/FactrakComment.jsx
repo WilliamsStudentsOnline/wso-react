@@ -12,7 +12,6 @@ import {
   getSurveyAgreements,
   postSurveyAgreement,
   patchSurveyAgreement,
-  getProfessor,
   getSurvey,
   flagSurvey,
   deleteSurvey,
@@ -20,6 +19,7 @@ import {
 import { getUser } from "../../../api/users";
 import { actions } from "redux-router5";
 import { checkAndHandleError } from "../../../lib/general";
+import { Link } from "react-router5";
 
 // @TODO: investigate survey deficit
 const FactrakComment = ({
@@ -33,7 +33,6 @@ const FactrakComment = ({
 }) => {
   const [agreement, updateAgreements] = useState(null);
   const [survey, updateSurvey] = useState(comment);
-  const [professor, updateProfessor] = useState({});
   const [isDeleted, updatedDeleted] = useState(false);
 
   // Equivalent to ComponentDidMount
@@ -45,15 +44,7 @@ const FactrakComment = ({
       }
     };
 
-    const loadProfs = async () => {
-      const profResponse = await getProfessor(token, survey.professorID);
-      if (checkAndHandleError(profResponse)) {
-        updateProfessor(profResponse.data.data);
-      }
-    };
-
     if (!abridged) loadAgreements();
-    loadProfs();
   }, [token, abridged, survey]);
 
   const getAndUpdateSurvey = async () => {
@@ -122,7 +113,7 @@ const FactrakComment = ({
 
     // If < 30 days, return time in days.
     if (Date.now() - postedTime < 2592000000)
-      return `${Math.floor((Date.now() - postedTime) / 86400)} days ago.`;
+      return `${Math.floor((Date.now() - postedTime) / 86400000)} days ago.`;
 
     return new Date(time).toDateString();
   };
@@ -272,16 +263,22 @@ const FactrakComment = ({
       <div className="comment-content">
         <h1>
           {showProf ? (
-            <a href={`/factrak/professors/${survey.professorID}`}>
-              {`${professor.name} `}
-            </a>
+            <Link
+              routeName="factrak.professors"
+              routeParams={{ profID: survey.professorID }}
+            >
+              {`${survey.professor.name} `}
+            </Link>
           ) : null}
           {showProf && survey.course ? ` | ` : ""}
-          <a href={`/factrak/courses/${survey.courseID}`}>
+          <Link
+            routeName="factrak.courses"
+            routeParams={{ courseID: survey.courseID }}
+          >
             {survey.course
               ? `${survey.course.areaOfStudy.abbreviation} ${survey.course.number}`
               : ""}
-          </a>
+          </Link>
         </h1>
 
         {agreeCount()}

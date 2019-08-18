@@ -23,6 +23,7 @@ const DormtrakHome = ({ currUser, token }) => {
         limit: 10,
         offset: new Date(),
         preload: ["dormRoom", "dorm"],
+        commented: true,
       };
       const dormReviewResponse = await getDormtrakDormReviews(
         token,

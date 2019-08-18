@@ -25,7 +25,7 @@ const FactrakProfessor = ({ token, route }) => {
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
-    const professorParam = route.params.professor;
+    const professorParam = route.params.profID;
 
     const loadProfs = async (professorID) => {
       const professorResponse = await getProfessor(token, professorID);
