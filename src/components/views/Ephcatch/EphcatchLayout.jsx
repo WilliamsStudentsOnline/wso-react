@@ -1,16 +1,14 @@
 // React imports
 import React from "react";
 import PropTypes from "prop-types";
-import Layout from "../../Layout";
 
-const EphcatchLayout = ({ currentUser, children, notice, warning }) => {
+// Redux imports
+import { connect } from "react-redux";
+import { getCurrUser } from "../../../selectors/auth";
+
+const EphcatchLayout = ({ currUser, children }) => {
   return (
-    <Layout
-      bodyClass="facebook"
-      notice={notice}
-      warning={warning}
-      currentUser={currentUser}
-    >
+    <>
       <header>
         <div className="page-head">
           <h1>
@@ -22,9 +20,9 @@ const EphcatchLayout = ({ currentUser, children, notice, warning }) => {
             </li>
             <li>
               <a href="/ephcatch/matches">Matches</a>
-              {currentUser.ephcatch_unseen_matches.length > 0 ? (
-                <span className="ephcatch-badge" title="New matches!">
-                  {currentUser.ephcatch_unseen_matches.length}
+              {currUser.ephcatches && currUser.ephcatches.length > 0 ? (
+                <span className="ephcatch-badge" title="Matches!">
+                  {currUser.ephcatches.length}
                 </span>
               ) : null}
             </li>
@@ -35,20 +33,19 @@ const EphcatchLayout = ({ currentUser, children, notice, warning }) => {
         </div>
       </header>
       {children}
-    </Layout>
+    </>
   );
 };
 
 EphcatchLayout.propTypes = {
-  notice: PropTypes.string,
-  warning: PropTypes.string,
-  currentUser: PropTypes.object.isRequired,
+  currUser: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired,
 };
 
-EphcatchLayout.defaultProps = {
-  notice: "",
-  warning: "",
-};
+EphcatchLayout.defaultProps = {};
 
-export default EphcatchLayout;
+const mapStateToProps = (state) => ({
+  currUser: getCurrUser(state),
+});
+
+export default connect(mapStateToProps)(EphcatchLayout);

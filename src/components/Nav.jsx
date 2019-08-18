@@ -11,12 +11,6 @@ import { getCurrUser } from "../selectors/auth";
 import { Link, ConnectedLink } from "react-router5";
 
 const Nav = ({ currUser }) => {
-  const unseen = 0;
-
-  // @TODO: Find number of ephcatch unseen matches, update unseen.
-
-  const ephCatch = false; // @TODO: checkScope("service:ephcatch");
-
   return (
     <nav>
       <div className="nav-container">
@@ -31,13 +25,13 @@ const Nav = ({ currUser }) => {
             <li>
               <Link routeName="facebook">Facebook</Link>
             </li>
-            {ephCatch ? (
+            {currUser.ephCatchEligibility ? (
               <li>
                 <Link routeName="ephcatch">Ephcatch</Link>
-                {unseen > 0 ? (
+                {currUser.ephcatches.length > 0 ? (
                   <span className="ephcatch-badge">
                     <a href="<%=matches_path%>" title="New matches!">
-                      {unseen}
+                      {currUser.ephcatches.length}
                     </a>
                   </span>
                 ) : null}

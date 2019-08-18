@@ -12,6 +12,7 @@ import Scheduler from "./views/CourseScheduler/Scheduler";
 import FacebookMain from "./views/Facebook/FacebookMain";
 import DormtrakMain from "./views/Dormtrak/DormtrakMain";
 import FactrakMain from "./views/Factrak/FactrakMain";
+import EphcatchMain from "./views/Ephcatch/EphcatchMain";
 import FourOhFour from "./views/Errors/FourOhFour";
 import Login from "./Login";
 
@@ -62,6 +63,8 @@ const App = ({ route, navigateTo, removeCreds }) => {
         return <FactrakMain />;
       case "login":
         return <Login />;
+      case "ephcatch":
+        return <EphcatchMain />;
       case "logout":
         removeCreds();
         navigateTo("home");
