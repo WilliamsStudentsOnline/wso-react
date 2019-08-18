@@ -44,7 +44,7 @@ const FacebookLayout = ({ children, currUser, navigateTo }) => {
                   </Link>
                 </li>
                 <li>
-                  <a href="/facebook/edit"> Edit </a>
+                  <Link routeName="facebook.edit"> Edit </Link>
                 </li>
               </>
             ) : null}

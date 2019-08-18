@@ -8,6 +8,8 @@ import { getUser } from "../../../api/users";
 import { checkAndHandleError } from "../../../lib/general";
 import { createRouteNodeSelector } from "redux-router5";
 
+import { Link } from "react-router5";
+
 const FacebookUser = ({ currUser, token, route }) => {
   const [viewPerson, updateTarget] = useState(null);
 
@@ -98,13 +100,12 @@ const FacebookUser = ({ currUser, token, route }) => {
                 {viewPerson.tags.map((tag, index) => {
                   return (
                     <li className="view-tag" key={tag.name}>
-                      <a
-                        href={`/facebook?search=${tag.name
-                          .split(" ")
-                          .join("+")}`}
+                      <Link
+                        routeName="facebook"
+                        routeParams={{ q: tag.name.split(" ").join("+") }}
                       >
                         {tag.name}
-                      </a>
+                      </Link>
                       {index < viewPerson.tags.length - 1 ? (
                         <span>,&nbsp;</span>
                       ) : null}
