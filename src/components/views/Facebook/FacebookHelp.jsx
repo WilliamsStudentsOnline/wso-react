@@ -15,10 +15,10 @@ const FacebookHelp = () => {
             login and off campus by logging in with your{" "}
             <abbr title="Office for Information Technology">OIT</abbr> (Unix ID)
             username and password. Please report any strange behavior (after
-            looking over the info below) to
-            <code>wso-dev</code> <code>[at]</code> <code>wso.williams.edu</code>
-            . The more descriptive your bug reports are, the easier the bug is
-            to fix. Better yet, come to a meeting (join the{" "}
+            looking over the info below) to <code>wso-dev</code>{" "}
+            <code>[at]</code> <code>wso.williams.edu</code>. The more
+            descriptive your bug reports are, the easier the bug is to fix.
+            Better yet, come to a meeting (join the{" "}
             <a
               href="http://wso.williams.edu/mailman/listinfo/wso-staff"
               className="urlextern"
@@ -56,7 +56,7 @@ const FacebookHelp = () => {
                 </td>
               </tr>
               <tr>
-                <td className="code">Ephraim &amp; Williams</td>
+                <td className="code">Ephraim AND Williams</td>
                 <td>
                   {" "}
                   (intersection) all people who match <strong>both</strong>{" "}
@@ -65,7 +65,7 @@ const FacebookHelp = () => {
                 </td>
               </tr>
               <tr>
-                <td className="code">Ephraim, Hopkins</td>
+                <td className="code">Ephraim OR Hopkins</td>
                 <td>
                   {" "}
                   (union) all people who match &ldquo;ephraim&rdquo;{" "}
@@ -74,16 +74,7 @@ const FacebookHelp = () => {
                 </td>
               </tr>
               <tr>
-                <td className="code">Ephraim | Hopkins</td>
-                <td>
-                  {" "}
-                  (union) all people who match &ldquo;ephraim&rdquo;{" "}
-                  <strong>plus</strong> all people who match
-                  &ldquo;hopkins&rdquo;{" "}
-                </td>
-              </tr>
-              <tr>
-                <td className="code">Ephraim Williams, Mark Hopkins</td>
+                <td className="code">Ephraim Williams OR Mark Hopkins</td>
                 <td>
                   {" "}
                   all people who match &ldquo;ephraim&rdquo; <em>and</em>{" "}
@@ -93,7 +84,7 @@ const FacebookHelp = () => {
               </tr>
               <tr>
                 <td className="code">
-                  Ephraim, Hopkins &amp; Thompson, Griffin
+                  Ephraim OR Hopkins AND Thompson OR Griffin
                 </td>
                 <td>
                   {" "}
@@ -107,7 +98,7 @@ const FacebookHelp = () => {
               </tr>
               <tr>
                 <td className="code">
-                  (Ephraim, Hopkins) &amp; (Thompson, Griffin)
+                  (Ephraim OR Hopkins) AND (Thompson OR Griffin)
                 </td>
                 <td>
                   {" "}
@@ -121,7 +112,7 @@ const FacebookHelp = () => {
                 <td> all people whose names match &ldquo;ephraim&rdquo; </td>
               </tr>
               <tr>
-                <td className="code">name: (Ephraim, Hopkins)</td>
+                <td className="code">name: Ephraim OR name: Hopkins)</td>
                 <td>
                   {" "}
                   all people whose names match &ldquo;ephraim&rdquo;{" "}
@@ -140,9 +131,7 @@ const FacebookHelp = () => {
           </table>
 
           <p>
-            Parentheses can be nested to any depth. Labels cannot be nested. It
-            doesn&rsquo;t make sense to search only within the dorm field when
-            already searching only within the name field, for example.
+            Parentheses can be nested to any depth. Labels can also be nested.
           </p>
           <br />
 
@@ -168,16 +157,14 @@ const FacebookHelp = () => {
           </p>
           <pre className="code">Ephraim Williams Dodd</pre>
           <p>or</p>
-          <pre className="code">Ephraim &amp; Williams &amp; Dodd</pre>
+          <pre className="code">Ephraim AND Williams AND Dodd</pre>
           <p>
             Let&rsquo;s say we want a list of people living in the frosh quad.
             Alas, searching for <code>frosh quad</code> won&rsquo;t do it, but
             neither will <code>Williams Sage</code> or{" "}
-            <code>Williams &amp; Sage</code>. What we want is{" "}
+            <code>Williams AND Sage</code>. What we want is{" "}
           </p>
-          <pre className="code">Williams, Sage</pre>
-          <p>or</p>
-          <pre className="code">Williams | Sage</pre>
+          <pre className="code">Williams OR Sage</pre>
           <p>
             These will both yield all people who match &ldquo;Williams&rdquo; or
             &ldquo;Sage&rdquo;, or in other words, everyone who matches
@@ -185,11 +172,11 @@ const FacebookHelp = () => {
           </p>
           <p>
             You can surround any of these operators (&ldquo;&rdquo;, &ldquo;
-            <code>&amp;</code>
+            <code>AND</code>
             &rdquo;, &ldquo;
-            <code>,</code>
+            <code>OR</code>
             &rdquo;, &ldquo;
-            <code>|</code>
+            <code>LABEL:</code>
             &rdquo;) with any number of spaces. Extra spaces will not change
             their meaning.
           </p>
@@ -218,7 +205,7 @@ const FacebookHelp = () => {
             hypothetical William of Williams Hall, we would use the following
             query:
           </p>
-          <pre className="code">name:William &amp; dorm:Williams</pre>
+          <pre className="code">name:William AND dorm:Williams</pre>
           <p>
             It&rsquo;s quite likely that you could guess the right label name
             for the job, but here is a list of labels are currently supported.
@@ -278,10 +265,7 @@ const FacebookHelp = () => {
                   {" "}
                   <code>email:</code>{" "}
                 </td>
-                <td>
-                  {" "}
-                  <em>First.M.Last</em> style email{" "}
-                </td>
+                <td> unix style email </td>
                 <td> everyone </td>
               </tr>
               <tr>
@@ -343,12 +327,21 @@ const FacebookHelp = () => {
                 <td> students </td>
               </tr>
               <tr>
+                <td className="inline-display-text">
+                  <pre className="code">tag:</pre>
+                  <p>&nbsp;or&nbsp;</p>
+                  <pre className="code">tags:</pre>
+                </td>
+                <td> user tag </td>
+                <td> students </td>
+              </tr>
+              <tr>
                 <td className="code">
                   {" "}
                   <code>title:</code>{" "}
                 </td>
                 <td> title </td>
-                <td> faculty, staff </td>
+                <td> everyone </td>
               </tr>
               <tr>
                 <td className="code">
@@ -385,28 +378,8 @@ const FacebookHelp = () => {
             have to type:
           </p>
           <pre className="code">
-            name:Ephraim &amp; dorm:Lehman, name:Ephraim &amp; dorm:Morgan,
-            name:Ephraim &amp; dorm:Fayerweather, name:Ephraim &amp; dorm:East
-          </pre>
-          <p>
-            I can tell you from experience (having just typed this), that
-            it&rsquo;s a pain. Instead, let&rsquo;s use parentheses and do an
-            equivalent search:
-          </p>
-          <pre className="code">
-            name:Ephraim &amp; dorm:(Lehman, Morgan, Fayerweather, East)
-          </pre>
-          <p>
-            That was not quite as bad. You&rsquo;ll notice that, beyond the
-            inclusion of parentheses, we&rsquo;ve also made use of the fact that
-            a label applied to a parenthesized subquery is applied to each of
-            the terms inside that query. This is very handy, since it requires
-            writing the label just once... In addition, you can nest parentheses
-            as many times as you&rsquo;d like and put spaces between parentheses
-            and their contained search terms:{" "}
-          </p>
-          <pre className="code">
-            name:(( Ephraim, Mark ) &amp; ( Williams, Hopkins) )
+            name:Ephraim AND dorm:Lehman OR name:Ephraim AND dorm:Morgan OR
+            name:Ephraim OR dorm:Fayerweather OR name:Ephraim AND dorm:East
           </pre>
           <br />
 
@@ -437,13 +410,13 @@ const FacebookHelp = () => {
             <li className="level1">
               <div className="li">
                 {" "}
-                <code>&amp; </code> &mdash; ampersand and space (AND)
+                <code>AND </code> &mdash; AND and space (AND)
               </div>
             </li>
             <li className="level1">
               <div className="li">
                 {" "}
-                <code>|,</code> &mdash; pipe and comma (OR)
+                <code>OR</code> &mdash; OR (OR)
               </div>
             </li>
           </ol>
