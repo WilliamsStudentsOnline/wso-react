@@ -69,8 +69,9 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
       updateTags(updatedTags);
       updateNewTag("");
       updateErrors([]);
+    } else {
+      updateErrors([tagResponse.data.error.message]);
     }
-    updateErrors([tagResponse.data.error.message]);
   };
 
   const addTagHandler = () => {

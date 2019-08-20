@@ -37,8 +37,10 @@ const FactrakCourse = ({ route, token }) => {
     const loadSurveys = async () => {
       const queryParams = {
         preload: ["professor", "course"],
-        profID,
       };
+      if (profID > 0) {
+        queryParams.professorID = profID;
+      }
       const surveyResponse = await getCourseSurveys(
         token,
         courseID,

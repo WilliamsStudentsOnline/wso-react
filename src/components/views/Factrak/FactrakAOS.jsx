@@ -102,13 +102,16 @@ const FactrakAOS = ({ route, token }) => {
                   </a>
                 </td>
                 <td className="col-80">
-                  {course.professors.map((prof) => {
-                    return (
-                      <a href={`/factrak/courses/${course.id}?prof=${prof.id}`}>
-                        {prof.name}
-                      </a>
-                    );
-                  })}
+                  {course.professors &&
+                    course.professors.map((prof) => {
+                      return (
+                        <a
+                          href={`/factrak/courses/${course.id}?prof=${prof.id}`}
+                        >
+                          {prof.name}
+                        </a>
+                      );
+                    })}
                 </td>
               </tr>
             ))}

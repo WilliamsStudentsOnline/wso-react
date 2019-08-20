@@ -31,6 +31,7 @@ const FactrakSearch = ({ token, route }) => {
     const loadCourses = async () => {
       const queryParams = {
         q: route.params.q ? route.params.q : undefined,
+        preload: ["areaOfStudy", "professors"],
       };
       const coursesResponse = await getCourses(token, queryParams);
       if (checkAndHandleError(coursesResponse)) {
@@ -102,19 +103,20 @@ const FactrakSearch = ({ token, route }) => {
                       routeName="factrak.courses"
                       routeParams={{ courseID: course.id }}
                     >
-                      {course.name}
+                      {course.areaOfStudy.abbreviation} {course.number}
                     </Link>
                   </td>
                   <td className="col-80">
-                    {course.professors.map((prof) => (
-                      <Link
-                        key={`${course.id}?prof=${prof.id}`}
-                        routeName="factrak.courses.singleProf"
-                        routeParams={{ courseID: course.id, profID: prof.id }}
-                      >
-                        {prof.name}
-                      </Link>
-                    ))}
+                    {course.professors &&
+                      course.professors.map((prof) => (
+                        <Link
+                          key={`${course.id}?profID=${prof.id}`}
+                          routeName="factrak.courses.singleProf"
+                          routeParams={{ courseID: course.id, profID: prof.id }}
+                        >
+                          {prof.name}
+                        </Link>
+                      ))}
                   </td>
                 </tr>
               );
