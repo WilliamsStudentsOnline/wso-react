@@ -6,7 +6,7 @@ export default [
   { name: "scheduler", path: "/scheduleCourses" },
   {
     name: "facebook",
-    path: "/facebook",
+    path: "/facebook?:q",
     children: [
       { name: "help", path: "/help" },
       { name: "users", path: "/users/:userID" },

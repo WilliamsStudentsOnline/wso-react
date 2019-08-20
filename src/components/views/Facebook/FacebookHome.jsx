@@ -13,7 +13,7 @@ const FacebookHome = ({ token, route }) => {
   const [results, updateResults] = useState(null);
 
   useEffect(() => {
-    const loadDorms = async () => {
+    const loadUsers = async () => {
       if (!route.params.q) {
         updateResults(null);
         return;
@@ -30,7 +30,7 @@ const FacebookHome = ({ token, route }) => {
       } else updateResults([]);
     };
 
-    loadDorms();
+    loadUsers();
   }, [token, route.params.q]);
 
   const ListView = () => {
