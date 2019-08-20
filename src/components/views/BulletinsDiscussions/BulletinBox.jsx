@@ -18,15 +18,14 @@ const BulletinBox = ({ token, type }) => {
 
   useEffect(() => {
     const typeMap = new Map([
-      ["Announcements", "Announcement"],
-      ["Exchanges", "Exchange"],
-      ["Lost And Found", "LostFound"],
-      ["Jobs", "Job"],
+      ["Announcements", "announcement"],
+      ["Exchanges", "exchange"],
+      ["Lost And Found", "lostAndFound"],
+      ["Jobs", "job"],
     ]);
 
     const loadDiscussions = async () => {
       const loadParams = {
-        offset: new Date(),
         limit: 5,
       };
       const discussionsResponse = await getDiscussions(token, loadParams);
@@ -37,7 +36,6 @@ const BulletinBox = ({ token, type }) => {
 
     const loadRides = async () => {
       const loadParams = {
-        offset: new Date(),
         limit: 5,
       };
       const ridesResponse = await getRides(token, loadParams);
@@ -48,7 +46,6 @@ const BulletinBox = ({ token, type }) => {
 
     const loadBulletins = async () => {
       const loadParams = {
-        offset: new Date(),
         limit: 5,
         type: typeMap.get(type),
       };
@@ -73,6 +70,24 @@ const BulletinBox = ({ token, type }) => {
     return new Date(showDate).toLocaleString("en-US", options);
   };
 
+  const threadTitle = (thread) => {
+    if (type === "Rides") {
+      const threadOffer = thread.offer ? "Offer" : "Request";
+      return `${thread.source} to ${thread.destination} [${threadOffer}]`;
+    }
+    return thread.title;
+  };
+
+  const threadDate = (thread) => {
+    if (type === "Rides") {
+      return thread.date;
+    }
+    if (type === "Discussions") {
+      return thread.lastActive;
+    }
+    return thread.startDate;
+  };
+
   return (
     <div className="bulletin">
       <div className="bulletin-title">
@@ -86,12 +101,10 @@ const BulletinBox = ({ token, type }) => {
           return (
             <div className="bulletin-children" key={thread.id}>
               <a className="thread-link" href={`${type}/${thread.id}`}>
-                {thread.title}
+                {threadTitle(thread)}
               </a>
 
-              <span className="list-date">
-                {date(thread.startDate ? thread.startDate : thread.lastActive)}
-              </span>
+              <span className="list-date">{date(threadDate(thread))}</span>
             </div>
           );
         })}

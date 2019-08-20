@@ -148,7 +148,7 @@ const DormtrakFacts = ({ dorm, token }) => {
       ) : null}
 
       <div>
-        <strong>Flexs</strong>
+        <strong>Flexes</strong>
         {`: ${dorm.numberFlex}`}
         <br />
       </div>

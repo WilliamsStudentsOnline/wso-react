@@ -24,7 +24,7 @@ const FacebookHome = ({ token, route }) => {
         preload: ["dorm", "office"],
       };
       const resultsResponse = await getAllUsers(token, queryParams);
-      console.log(resultsResponse);
+      // console.log(resultsResponse);
       if (checkAndHandleError(resultsResponse)) {
         updateResults(resultsResponse.data.data);
       } else updateResults([]);
@@ -97,7 +97,7 @@ const FacebookHome = ({ token, route }) => {
                     <>
                       <li className="list-headers"> Room</li>
                       <li className="list-contents">
-                        {user.dormRoom.dorm.name} ${user.dormRoom.number}
+                        {user.dormRoom.dorm.name} {user.dormRoom.number}
                       </li>
                     </>
                   ) : null}

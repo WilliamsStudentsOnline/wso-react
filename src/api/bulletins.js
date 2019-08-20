@@ -180,12 +180,13 @@ const patchPost = async (token, postID, updateParams) => {
 };
 
 // List rides
-const getRides = async (token) => {
+const getRides = async (token, params) => {
   const response = await axios({
     url: `/api/v1/bulletin/rides`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    params,
   }).catch((error) => {
     return error.response;
   });
