@@ -108,15 +108,20 @@ const FactrakSearch = ({ token, route }) => {
                   </td>
                   <td className="col-80">
                     {course.professors &&
-                      course.professors.map((prof) => (
-                        <Link
-                          key={`${course.id}?profID=${prof.id}`}
-                          routeName="factrak.courses.singleProf"
-                          routeParams={{ courseID: course.id, profID: prof.id }}
-                        >
-                          {prof.name}
-                        </Link>
-                      ))}
+                      course.professors
+                        .map((prof) => (
+                          <Link
+                            key={`${course.id}?profID=${prof.id}`}
+                            routeName="factrak.courses.singleProf"
+                            routeParams={{
+                              courseID: course.id,
+                              profID: prof.id,
+                            }}
+                          >
+                            {prof.name}
+                          </Link>
+                        ))
+                        .reduce((prev, curr) => [prev, ", ", curr])}
                   </td>
                 </tr>
               );

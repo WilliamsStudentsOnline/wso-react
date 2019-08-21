@@ -42,6 +42,7 @@ const Homepage = ({ navigateTo }) => {
             <input
               id="search"
               type="search"
+              autoFocus
               placeholder="Search Facebook"
               onChange={(event) => updateQuery(event.target.value)}
             />

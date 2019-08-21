@@ -103,15 +103,17 @@ const FactrakAOS = ({ route, token }) => {
                 </td>
                 <td className="col-80">
                   {course.professors &&
-                    course.professors.map((prof) => {
-                      return (
-                        <a
-                          href={`/factrak/courses/${course.id}?prof=${prof.id}`}
-                        >
-                          {prof.name}
-                        </a>
-                      );
-                    })}
+                    course.professors
+                      .map((prof) => {
+                        return (
+                          <a
+                            href={`/factrak/courses/${course.id}?prof=${prof.id}`}
+                          >
+                            {prof.name}
+                          </a>
+                        );
+                      })
+                      .reduce((prev, curr) => [prev, ", ", curr])}
                 </td>
               </tr>
             ))}

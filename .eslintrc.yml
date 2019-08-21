@@ -45,5 +45,7 @@ rules:
     - off
   jsx-a11y/anchor-is-valid:
     - off
+  jsx-a11y/no-autofocus:
+    - off
   react/jsx-one-expression-per-line:
     - off

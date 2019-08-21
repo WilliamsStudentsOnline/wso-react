@@ -55,6 +55,7 @@ const FacebookLayout = ({ children, currUser, navigateTo }) => {
             id="search"
             type="search"
             placeholder="Search Facebook"
+            autoFocus
             onChange={(event) => updateQuery(event.target.value)}
           />
           <input
