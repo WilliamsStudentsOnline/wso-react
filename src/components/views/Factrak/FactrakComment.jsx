@@ -119,34 +119,37 @@ const FactrakComment = ({
   };
 
   const surveyDetail = () => {
-    return (
-      <p className="survey-detail">
-        {currUser.id === survey.userID ? (
-          <>
-            <button
-              type="button"
-              onClick={() =>
-                navigateTo("factrak.editSurvey", {
-                  surveyID: survey.id,
-                })
-              }
-              className="inline-button"
-            >
-              Edit
-            </button>
+    // If the current user was the one who made the survey
+    if (currUser.id === survey.userID) {
+      return (
+        <p className="survey-detail">
+          <button
+            type="button"
+            onClick={() =>
+              navigateTo("factrak.editSurvey", {
+                surveyID: survey.id,
+              })
+            }
+            className="inline-button"
+          >
+            Edit
+          </button>
 
-            <button
-              type="button"
-              onClick={deleteHandler}
-              className="inline-button"
-            >
-              Delete
-            </button>
-          </>
-        ) : (
-          `posted ${timeAgoInWords(survey.createdTime)}`
-        )}
-      </p>
+          <button
+            type="button"
+            onClick={deleteHandler}
+            className="inline-button"
+          >
+            Delete
+          </button>
+        </p>
+      );
+    }
+
+    return (
+      <p className="comment-detail">{`posted ${timeAgoInWords(
+        survey.createdTime
+      )}`}</p>
     );
   };
 
