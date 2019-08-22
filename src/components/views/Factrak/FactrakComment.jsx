@@ -115,7 +115,8 @@ const FactrakComment = ({
     if (Date.now() - postedTime < 2592000000)
       return `${Math.floor((Date.now() - postedTime) / 86400000)} days ago.`;
 
-    return new Date(time).toDateString();
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(time).toLocaleDateString("en-US", options);
   };
 
   const surveyDetail = () => {
