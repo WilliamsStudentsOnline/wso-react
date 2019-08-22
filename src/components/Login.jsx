@@ -11,6 +11,7 @@ import { getToken } from "../api/auth";
 import { actions } from "redux-router5";
 import { getUser } from "../api/users";
 import { checkAndHandleError } from "../lib/general";
+import jwtDecode from "jwt-decode";
 
 const Login = ({ navigateTo, updateToken, updateUser }) => {
   const [unixID, setUnix] = useState("");
@@ -31,7 +32,8 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
     const response = await getToken(unixID, password);
     if (checkAndHandleError(response)) {
       const newToken = response.data.data.token;
-      const userResponse = await getUser(newToken, "me");
+      const decoded = jwtDecode(newToken);
+      const userResponse = await getUser(newToken, decoded.id);
       if (checkAndHandleError(userResponse)) {
         // Only update if both requests pass.
         updateUser(userResponse.data.data);

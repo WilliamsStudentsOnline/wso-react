@@ -59,7 +59,7 @@ const FactrakProfessor = ({ token, route }) => {
     loadProfs(professorParam);
     loadRatings(professorParam);
     loadSurveys(professorParam);
-  }, [route.params.professor, token]);
+  }, [route.params.professor, token, route.params.profID]);
 
   const courseWorkload = () => {
     if (!ratings.numCourseWorkload) return null;
