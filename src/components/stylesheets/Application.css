@@ -11,4 +11,6 @@
   color: #6f4399;
   padding: 0;
   min-width: 0;
+  white-space: normal;
+  text-align: left;
 }
