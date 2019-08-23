@@ -11,6 +11,7 @@ import { doUpdateUser } from "../../../actions/auth";
 import {
   postSurveyAgreement,
   patchSurveyAgreement,
+  deleteSurveyAgreement,
   getSurvey,
   flagSurvey,
   deleteSurvey,
@@ -60,8 +61,12 @@ const FactrakComment = ({
   const agreeHandler = async (agree) => {
     const agreeParams = { agree };
     let response;
-    if (survey && survey.clientAgreement !== null) {
-      response = await patchSurveyAgreement(token, survey.id, agreeParams);
+    if (survey && survey.clientAgreement !== undefined) {
+      if (survey.clientAgreement === agree) {
+        response = await deleteSurveyAgreement(token, survey.id, agreeParams);
+      } else {
+        response = await patchSurveyAgreement(token, survey.id, agreeParams);
+      }
     } else {
       response = await postSurveyAgreement(token, survey.id, agreeParams);
     }
@@ -173,11 +178,16 @@ const FactrakComment = ({
 
   const agree = () => {
     if (survey.userID === currUser.id) return null;
+
     return (
       <>
         <button
           type="button"
-          className="inline-button"
+          className={
+            survey.clientAgreement !== undefined && survey.clientAgreement
+              ? "inline-button-inverted"
+              : "inline-button"
+          }
           onClick={() => agreeHandler(true)}
         >
           Agree
@@ -185,7 +195,11 @@ const FactrakComment = ({
         &ensp;
         <button
           type="button"
-          className="inline-button"
+          className={
+            survey.clientAgreement !== undefined && !survey.clientAgreement
+              ? "inline-button-inverted"
+              : "inline-button"
+          }
           onClick={() => agreeHandler(false)}
         >
           Disagree

@@ -147,6 +147,21 @@ const patchSurveyAgreement = async (token, surveyID, updateParams) => {
   return response;
 };
 
+// Deletes survey agreement
+const deleteSurveyAgreement = async (token, surveyID) => {
+  const response = await axios({
+    url: `/api/v1/factrak/surveys/${surveyID}/agreement`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "delete",
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
 // Flag Survey
 const flagSurvey = async (token, surveyID) => {
   const response = await axios({
@@ -317,6 +332,7 @@ export {
   getCourses,
   postSurveyAgreement,
   patchSurveyAgreement,
+  deleteSurveyAgreement,
   unflagSurvey,
   flagSurvey,
   deleteSurvey,
