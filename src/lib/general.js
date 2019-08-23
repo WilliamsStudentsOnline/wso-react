@@ -4,6 +4,40 @@ import store from "../store";
 import { doUpdateToken, doUpdateUser } from "../actions/auth";
 import { updateTokenAPI } from "../api/auth";
 import { getUser } from "../api/users";
+import jwtDecode from "jwt-decode";
+
+// The current scopes
+export const scopes = {
+  // Global scopes:
+  ScopeAdminAll: "admin:all",
+  // Allows client to do write-level requests as long as it is scoped to models involving self, not all models
+  ScopeWriteSelf: "write:self",
+
+  // Service scopes. Permits clients to access services read only. If it is included with the global write-self scope,
+  // allows write access to service, iff it is scoped to models owned and allowed to be edited by self.
+
+  // Service: Factrak
+  // Limited access to factrak for people with outstanding survey deficit
+  ScopeFactrakLimited: "service:factrak:limited",
+  // Full access to factrak for people with no survey deficit. Includes everything from ScopeFactrakLimited.
+  ScopeFactrakFull: "service:factrak:full",
+  // Allows admin access to factrak. This includes everything from ScopeFactrakFull, while also opening up
+  // admin endpoints and allowing certain admin-level write actions (need write-self for normal actions, though).
+  ScopeFactrakAdmin: "service:factrak:admin",
+
+  // Service: Dormtrak
+  // Access to dormtrak reviews, etc.
+  ScopeDormtrak: "service:dormtrak",
+  // Ability to create reviews, etc. (must be upperclass)
+  ScopeDormtrakWrite: "service:dormtrak:write",
+
+  ScopeEphcatch: "service:ephcatch",
+  ScopeBulletin: "service:bulletin",
+  // This is for facebook & users
+  ScopeUsers: "service:users",
+  // Allows you to access other services not mentioned above
+  ScopeAllOther: "service:other",
+};
 
 // Assumes a valid and error-free response
 export const checkAndUpdateUser = async (response) => {
@@ -19,6 +53,23 @@ export const checkAndUpdateUser = async (response) => {
       }
     }
   }
+};
+
+// Checks if a given token contains scopes
+export const containsScopes = (token, scopesToCheck) => {
+  try {
+    const decoded = jwtDecode(token);
+
+    if (decoded.scope) {
+      for (let i = 0; i < scopesToCheck.length; i += 1) {
+        if (decoded.scope.indexOf(scopesToCheck[i]) !== -1) return true;
+      }
+    }
+  } catch (err) {
+    return false;
+  }
+
+  return false;
 };
 
 // Returns true if there is no error and the status is OK

@@ -126,6 +126,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, token }) => {
     );
   }
 
+  // Just to handle weird cases
   navigateTo("403");
   return null;
 };

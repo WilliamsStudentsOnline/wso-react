@@ -12,10 +12,12 @@ import DormtrakNeighborhood from "./DormtrakNeighborhood";
 import { connect } from "react-redux";
 
 // External Imports
-import { createRouteNodeSelector } from "redux-router5";
+import { createRouteNodeSelector, actions } from "redux-router5";
 import DormtrakReviewForm from "./DormtrakReviewForm";
+import { getToken } from "../../../api/auth";
+import { containsScopes, scopes } from "../../../lib/general";
 
-const DormtrakMain = ({ route }) => {
+const DormtrakMain = ({ route, token, navigateTo }) => {
   const dormtrakBody = () => {
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <DormtrakHome />;
@@ -38,11 +40,20 @@ const DormtrakMain = ({ route }) => {
     }
   };
 
-  return <DormtrakLayout>{dormtrakBody()}</DormtrakLayout>;
+  if (
+    containsScopes(token, [scopes.ScopeDormtrak, scopes.ScopeDormtrakWrite])
+  ) {
+    return <DormtrakLayout>{dormtrakBody()}</DormtrakLayout>;
+  }
+
+  navigateTo("403");
+  return null;
 };
 
 DormtrakMain.propTypes = {
   route: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
+  navigateTo: PropTypes.func.isRequired,
 };
 
 DormtrakMain.defaultProps = {};
@@ -51,8 +62,16 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak");
 
   return (state) => ({
+    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };
 
-export default connect(mapStateToProps)(DormtrakMain);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DormtrakMain);

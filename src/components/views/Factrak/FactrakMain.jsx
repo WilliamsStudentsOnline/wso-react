@@ -18,9 +18,11 @@ import FactrakSearch from "./FactrakSearch";
 import { connect } from "react-redux";
 
 // External Imports
-import { createRouteNodeSelector } from "redux-router5";
+import { createRouteNodeSelector, actions } from "redux-router5";
+import { getToken } from "../../../api/auth";
+import { scopes, containsScopes } from "../../../lib/general";
 
-const FactrakMain = ({ route }) => {
+const FactrakMain = ({ route, token, navigateTo }) => {
   const factrakBody = () => {
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <FactrakHome />;
@@ -49,19 +51,40 @@ const FactrakMain = ({ route }) => {
     }
   };
 
-  return <FactrakLayout>{factrakBody()}</FactrakLayout>;
+  if (
+    containsScopes(token, [
+      scopes.ScopeFactrakFull,
+      scopes.ScopeFactrakAdmin,
+      scopes.ScopeFactrakLimited,
+    ])
+  ) {
+    return <FactrakLayout>{factrakBody()}</FactrakLayout>;
+  }
+
+  navigateTo("403");
+  return null;
 };
 
 FactrakMain.propTypes = {
   route: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
+  navigateTo: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak");
 
   return (state) => ({
+    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };
 
-export default connect(mapStateToProps)(FactrakMain);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FactrakMain);
