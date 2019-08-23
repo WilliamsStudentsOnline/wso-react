@@ -126,7 +126,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, token }) => {
     );
   }
 
-  navigateTo("home");
+  navigateTo("403");
   return null;
 };
 

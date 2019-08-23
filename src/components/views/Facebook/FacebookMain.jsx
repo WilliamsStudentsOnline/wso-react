@@ -34,7 +34,7 @@ const FacebookMain = ({ route, currUser, navigateTo }) => {
   };
 
   if (!currUser) {
-    navigateTo("home");
+    navigateTo("403");
     return null;
   }
 

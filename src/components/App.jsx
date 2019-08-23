@@ -27,6 +27,7 @@ import { doRemoveCreds, doUpdateToken } from "../actions/auth";
 import wordFile from "../constants/words.json";
 import { tokenExpiryHandler, getCampusToken } from "../api/auth";
 import { checkAndHandleError } from "../lib/general";
+import FourOhThree from "./views/Errors/FourOhThree";
 
 const App = ({
   route,
@@ -77,6 +78,8 @@ const App = ({
         removeCreds();
         navigateTo("home");
         return null;
+      case "403":
+        return <FourOhThree />;
       default:
         return <FourOhFour />;
     }

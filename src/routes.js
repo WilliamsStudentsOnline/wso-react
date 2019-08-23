@@ -47,4 +47,5 @@ export default [
   { name: "ephcatch", path: "/ephcatch" },
   { name: "login", path: "/account/login" },
   { name: "logout", path: "/account/logout" },
+  { name: "403", path: "/403" },
 ];

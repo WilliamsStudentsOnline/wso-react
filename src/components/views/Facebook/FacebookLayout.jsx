@@ -14,7 +14,6 @@ const FacebookLayout = ({ children, currUser, navigateTo }) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-
     navigateTo("facebook", { q: query }, { reload: true });
   };
 

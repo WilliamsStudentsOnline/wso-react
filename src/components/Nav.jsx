@@ -80,7 +80,7 @@ const Nav = ({ currUser }) => {
               </>
             ) : (
               <li>
-                <a href="/account/login">Login</a>
+                <Link routeName="login">Login</Link>
               </li>
             )}
           </ul>
