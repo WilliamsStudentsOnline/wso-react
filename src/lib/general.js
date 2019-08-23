@@ -59,7 +59,6 @@ export const checkAndUpdateUser = async (response) => {
 export const containsScopes = (token, scopesToCheck) => {
   try {
     const decoded = jwtDecode(token);
-
     if (decoded.scope) {
       for (let i = 0; i < scopesToCheck.length; i += 1) {
         if (decoded.scope.indexOf(scopesToCheck[i]) !== -1) return true;

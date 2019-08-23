@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 // External Imports
 import { createRouteNodeSelector, actions } from "redux-router5";
 import DormtrakReviewForm from "./DormtrakReviewForm";
-import { getToken } from "../../../api/auth";
+import { getToken } from "../../../selectors/auth";
 import { containsScopes, scopes } from "../../../lib/general";
 
 const DormtrakMain = ({ route, token, navigateTo }) => {

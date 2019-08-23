@@ -19,7 +19,7 @@ import { connect } from "react-redux";
 
 // External Imports
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getToken } from "../../../api/auth";
+import { getToken } from "../../../selectors/auth";
 import { scopes, containsScopes } from "../../../lib/general";
 
 const FactrakMain = ({ route, token, navigateTo }) => {

@@ -97,7 +97,6 @@ const DormtrakLayout = ({ children, token, currUser, navigateTo }) => {
     );
   }
 
-  navigateTo("403");
   return null;
 };
 
