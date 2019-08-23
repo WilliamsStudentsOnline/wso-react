@@ -57,34 +57,6 @@ const getSurveys = async (token, params) => {
   return response;
 };
 
-// Gets all the professors of an area of study
-const getProfsOfAOS = async (token, area) => {
-  const response = await axios({
-    url: `/api/v1/factrak/areas-of-study/${area}/professors`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).catch((error) => {
-    return error.response;
-  });
-
-  return response;
-};
-
-// Gets all the courses of an area of study
-const getCoursesOfAOS = async (token, area) => {
-  const response = await axios({
-    url: `/api/v1/factrak/areas-of-study/${area}/courses`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).catch((error) => {
-    return error.response;
-  });
-
-  return response;
-};
-
 // Lists all flagged surveys
 const getFlagged = async (token) => {
   const response = await axios({
@@ -133,34 +105,6 @@ const deleteSurvey = async (token, surveyID) => {
 const getCourse = async (token, courseID) => {
   const response = await axios({
     url: `/api/v1/factrak/courses/${courseID}`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).catch((error) => {
-    return error.response;
-  });
-
-  return response;
-};
-
-// Gets the list of professors who teach a particular course
-const getCourseProfs = async (token, courseID) => {
-  const response = await axios({
-    url: `/api/v1/factrak/courses/${courseID}/professors`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).catch((error) => {
-    return error.response;
-  });
-
-  return response;
-};
-
-// Gets the survey agreement
-const getSurveyAgreements = async (token, surveyID) => {
-  const response = await axios({
-    url: `/api/v1/factrak/surveys/${surveyID}/agreement`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -367,14 +311,10 @@ export {
   getDepartments,
   getSurveys,
   getSurvey,
-  getProfsOfAOS,
-  getCoursesOfAOS,
   getAreaOfStudy,
   getFlagged,
   getCourse,
   getCourses,
-  getCourseProfs,
-  getSurveyAgreements,
   postSurveyAgreement,
   patchSurveyAgreement,
   unflagSurvey,

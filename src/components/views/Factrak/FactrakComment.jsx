@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
@@ -9,7 +9,6 @@ import { doUpdateUser } from "../../../actions/auth";
 
 // API Imports
 import {
-  getSurveyAgreements,
   postSurveyAgreement,
   patchSurveyAgreement,
   getSurvey,
@@ -32,21 +31,8 @@ const FactrakComment = ({
   navigateTo,
   updateUser,
 }) => {
-  const [agreement, updateAgreements] = useState(null);
   const [survey, updateSurvey] = useState(comment);
   const [isDeleted, updatedDeleted] = useState(false);
-
-  // Equivalent to ComponentDidMount
-  useEffect(() => {
-    const loadAgreements = async () => {
-      const agreementResponse = await getSurveyAgreements(token, survey.id);
-      if (checkAndHandleError(agreementResponse)) {
-        updateAgreements(agreementResponse.data.data);
-      }
-    };
-
-    if (!abridged) loadAgreements();
-  }, [token, abridged, survey]);
 
   const getAndUpdateSurvey = async () => {
     const surveyResponse = await getSurvey(token, survey.id);
@@ -74,14 +60,13 @@ const FactrakComment = ({
   const agreeHandler = async (agree) => {
     const agreeParams = { agree };
     let response;
-    if (agreement) {
+    if (survey && survey.clientAgreement !== null) {
       response = await patchSurveyAgreement(token, survey.id, agreeParams);
     } else {
       response = await postSurveyAgreement(token, survey.id, agreeParams);
     }
 
     if (checkAndHandleError(response)) {
-      updateAgreements(response.data.data);
       getAndUpdateSurvey();
     }
   };

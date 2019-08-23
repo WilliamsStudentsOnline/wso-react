@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
 
 // API imports
-import { getCourse, getSurveys, getCourseProfs } from "../../../api/factrak";
+import { getCourse, getSurveys, getProfessors } from "../../../api/factrak";
 import { createRouteNodeSelector, actions } from "redux-router5";
 import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
@@ -34,6 +34,8 @@ const FactrakCourse = ({ route, token }) => {
       const queryParams = {
         preload: ["professor", "course"],
         courseID,
+        populateAgreements: true,
+        populateClientAgreement: true,
       };
       if (profID > 0) {
         queryParams.professorID = profID;
@@ -45,7 +47,8 @@ const FactrakCourse = ({ route, token }) => {
     };
 
     const loadProfs = async () => {
-      const profResponse = await getCourseProfs(token, courseID);
+      const params = { courseID };
+      const profResponse = await getProfessors(token, params);
       if (checkAndHandleError(profResponse)) {
         updateProfs(profResponse.data.data);
       }
@@ -83,7 +86,6 @@ const FactrakCourse = ({ route, token }) => {
   };
 
   const commentList = () => {
-    if (courseSurveys.length === 0) return null;
     return (
       <div className="factrak-prof-comments">
         {courseSurveys.length === 0
@@ -100,7 +102,6 @@ const FactrakCourse = ({ route, token }) => {
     );
   };
 
-  // Original rails has additional code that never seem to run.
   return (
     <article className="facebook-profile">
       <section className="info">

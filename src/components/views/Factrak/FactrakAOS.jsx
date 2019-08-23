@@ -9,8 +9,8 @@ import { getToken } from "../../../selectors/auth";
 // External Imports
 import { createRouteNodeSelector, actions } from "redux-router5";
 import {
-  getProfsOfAOS,
-  getCoursesOfAOS,
+  getProfessors,
+  getCourses,
   getAreaOfStudy,
 } from "../../../api/factrak";
 import { checkAndHandleError } from "../../../lib/general";
@@ -24,15 +24,17 @@ const FactrakAOS = ({ route, token }) => {
   useEffect(() => {
     const areaParam = route.params.area;
 
-    const loadProfs = async (areaID) => {
-      const profsResponse = await getProfsOfAOS(token, areaID);
+    const loadProfs = async (areaOfStudyID) => {
+      const params = { areaOfStudyID };
+      const profsResponse = await getProfessors(token, params);
       if (checkAndHandleError(profsResponse)) {
         updateProfs(profsResponse.data.data);
       }
     };
 
-    const loadCourses = async (areaID) => {
-      const coursesResponse = await getCoursesOfAOS(token, areaID);
+    const loadCourses = async (areaOfStudyID) => {
+      const params = { areaOfStudyID };
+      const coursesResponse = await getCourses(token, params);
       if (checkAndHandleError(coursesResponse)) {
         const coursesData = coursesResponse.data.data;
         updateCourses(coursesData.sort((a, b) => a.number > b.number));

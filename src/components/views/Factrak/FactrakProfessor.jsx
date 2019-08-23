@@ -50,7 +50,12 @@ const FactrakProfessor = ({ token, route }) => {
     };
 
     const loadSurveys = async (professorID) => {
-      const params = { profID: professorID, preload: ["course"] };
+      const params = {
+        professorID,
+        preload: ["course"],
+        populateAgreements: true,
+        populateClientAgreement: true,
+      };
       const surveysResponse = await getSurveys(token, params);
       if (checkAndHandleError(surveysResponse)) {
         updateSurveys(surveysResponse.data.data);
