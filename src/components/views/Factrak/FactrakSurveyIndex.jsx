@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { getToken, getCurrUser } from "../../../selectors/auth";
 
 // API imports
-import { getUserSurveys } from "../../../api/factrak";
+import { getSurveys } from "../../../api/factrak";
 import { checkAndHandleError } from "../../../lib/general";
 
 const FactrakSurveyIndex = ({ token, currUser }) => {
@@ -17,7 +17,8 @@ const FactrakSurveyIndex = ({ token, currUser }) => {
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadUserSurveys = async () => {
-      const userSurveyResponse = await getUserSurveys(token, currUser.id);
+      const params = { userID: currUser.id };
+      const userSurveyResponse = await getSurveys(token, params);
       if (checkAndHandleError(userSurveyResponse)) {
         updateSurveys(userSurveyResponse.data.data);
       }

@@ -12,8 +12,8 @@ import { createRouteNodeSelector } from "redux-router5";
 import {
   getProfessor,
   getDepartment,
+  getSurveys,
   getProfessorRatings,
-  getProfessorSurveys,
 } from "../../../api/factrak";
 import { checkAndHandleError } from "../../../lib/general";
 
@@ -50,7 +50,8 @@ const FactrakProfessor = ({ token, route }) => {
     };
 
     const loadSurveys = async (professorID) => {
-      const surveysResponse = await getProfessorSurveys(token, professorID);
+      const params = { profID: professorID, preload: ["course"] };
+      const surveysResponse = await getSurveys(token, params);
       if (checkAndHandleError(surveysResponse)) {
         updateSurveys(surveysResponse.data.data);
       }

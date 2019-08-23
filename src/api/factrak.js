@@ -129,20 +129,6 @@ const deleteSurvey = async (token, surveyID) => {
   return response;
 };
 
-// Get User's surveys
-const getUserSurveys = async (token, userID) => {
-  const response = await axios({
-    url: `/api/v1/factrak/users/${userID}/surveys`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).catch((error) => {
-    return error.response;
-  });
-
-  return response;
-};
-
 // Get Factrak course
 const getCourse = async (token, courseID) => {
   const response = await axios({
@@ -150,21 +136,6 @@ const getCourse = async (token, courseID) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  }).catch((error) => {
-    return error.response;
-  });
-
-  return response;
-};
-
-// Get surveys belonging to a factrak course.
-const getCourseSurveys = async (token, courseID, params) => {
-  const response = await axios({
-    url: `/api/v1/factrak/courses/${courseID}/surveys`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params,
   }).catch((error) => {
     return error.response;
   });
@@ -186,7 +157,7 @@ const getCourseProfs = async (token, courseID) => {
   return response;
 };
 
-// Gets the survey agreement statistics
+// Gets the survey agreement
 const getSurveyAgreements = async (token, surveyID) => {
   const response = await axios({
     url: `/api/v1/factrak/surveys/${surveyID}/agreement`,
@@ -344,33 +315,6 @@ const getProfessorRatings = async (token, professorID, courseID = -1) => {
   return response;
 };
 
-// Get Professor Surveys.
-const getProfessorSurveys = async (token, professorID, courseID = -1) => {
-  let request;
-  if (courseID === -1 || typeof courseID !== "number") {
-    request = {
-      url: `/api/v1/factrak/professors/${professorID}/surveys`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  } else {
-    request = {
-      url: `/api/v1/factrak/professors/${professorID}/surveys`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params: { courseID },
-    };
-  }
-
-  const response = await axios(request).catch((error) => {
-    return error.response;
-  });
-
-  return response;
-};
-
 // Create New Survey
 const postSurvey = async (token, createParams) => {
   const response = await axios({
@@ -427,10 +371,8 @@ export {
   getCoursesOfAOS,
   getAreaOfStudy,
   getFlagged,
-  getUserSurveys,
   getCourse,
   getCourses,
-  getCourseSurveys,
   getCourseProfs,
   getSurveyAgreements,
   postSurveyAgreement,
@@ -442,7 +384,6 @@ export {
   getProfessors,
   getDepartment,
   getProfessorRatings,
-  getProfessorSurveys,
   postSurvey,
   patchSurvey,
 };

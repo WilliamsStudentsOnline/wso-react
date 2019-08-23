@@ -22,6 +22,7 @@
     "redux-saga": "^1.0.5",
     "router5": "^7.0.2",
     "router5-plugin-browser": "^7.0.2",
+    "timeago.js": "^4.0.0-beta.2",
     "typeface-source-sans-pro": "^0.0.75"
   },
   "devDependencies": {

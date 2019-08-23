@@ -8,11 +8,7 @@ import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
 
 // API imports
-import {
-  getCourse,
-  getCourseSurveys,
-  getCourseProfs,
-} from "../../../api/factrak";
+import { getCourse, getSurveys, getCourseProfs } from "../../../api/factrak";
 import { createRouteNodeSelector, actions } from "redux-router5";
 import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
@@ -37,16 +33,12 @@ const FactrakCourse = ({ route, token }) => {
     const loadSurveys = async () => {
       const queryParams = {
         preload: ["professor", "course"],
+        courseID,
       };
       if (profID > 0) {
         queryParams.professorID = profID;
       }
-      const surveyResponse = await getCourseSurveys(
-        token,
-        courseID,
-        queryParams
-      );
-
+      const surveyResponse = await getSurveys(token, queryParams);
       if (checkAndHandleError(surveyResponse)) {
         updateSurveys(surveyResponse.data.data);
       }

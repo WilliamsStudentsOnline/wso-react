@@ -20,6 +20,7 @@ import { getUser } from "../../../api/users";
 import { actions } from "redux-router5";
 import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
+import { format } from "timeago.js";
 
 // @TODO: investigate survey deficit
 const FactrakComment = ({
@@ -108,17 +109,6 @@ const FactrakComment = ({
     );
   };
 
-  const timeAgoInWords = (time) => {
-    const postedTime = new Date(time);
-
-    // If < 30 days, return time in days.
-    if (Date.now() - postedTime < 2592000000)
-      return `${Math.floor((Date.now() - postedTime) / 86400000)} days ago.`;
-
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(time).toLocaleDateString("en-US", options);
-  };
-
   const surveyDetail = () => {
     // If the current user was the one who made the survey
     if (currUser.id === survey.userID) {
@@ -148,8 +138,8 @@ const FactrakComment = ({
     }
 
     return (
-      <p className="comment-detail">{`posted ${timeAgoInWords(
-        survey.createdTime
+      <p className="comment-detail">{`posted about ${format(
+        new Date(survey.createdTime)
       )}`}</p>
     );
   };
