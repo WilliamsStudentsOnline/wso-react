@@ -17,7 +17,11 @@ const FactrakSurveyIndex = ({ token, currUser }) => {
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadUserSurveys = async () => {
-      const params = { userID: currUser.id };
+      const params = {
+        userID: currUser.id,
+        preload: ["professor", "course"],
+        populateAgreements: true,
+      };
       const userSurveyResponse = await getSurveys(token, params);
       if (checkAndHandleError(userSurveyResponse)) {
         updateSurveys(userSurveyResponse.data.data);

@@ -16,7 +16,10 @@ const FactrakModerate = ({ token }) => {
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadFlagged = async () => {
-      const flaggedResponse = await getFlagged(token);
+      const flaggedResponse = await getFlagged(token, {
+        preload: ["professor", "course"],
+        populateAgreements: true,
+      });
       if (checkAndHandleError(flaggedResponse)) {
         updateFlagged(flaggedResponse.data.data);
       }
@@ -59,7 +62,8 @@ const FactrakModerate = ({ token }) => {
                 &nbsp;
                 <a href={`/factrak/courses/${f.course.id}`}>
                   {`${f.course.areaOfStudy.abbreviation} ${f.course.number}`}
-                </a>
+                </a>{" "}
+                (+{f.totalAgree}, -{f.totalDisagree})
               </span>
               <p>{f.comment}</p>
               <button

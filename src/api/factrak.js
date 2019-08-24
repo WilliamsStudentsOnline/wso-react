@@ -58,12 +58,13 @@ const getSurveys = async (token, params) => {
 };
 
 // Lists all flagged surveys
-const getFlagged = async (token) => {
+const getFlagged = async (token, params) => {
   const response = await axios({
     url: `/api/v1/factrak/admin/surveys`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    params,
   }).catch((error) => {
     return error.response;
   });
