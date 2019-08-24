@@ -20,6 +20,7 @@ const FactrakSearch = ({ token, route }) => {
     const loadProfs = async () => {
       const queryParams = {
         q: route.params.q ? route.params.q : undefined,
+        preload: ["office"],
       };
       const profsResponse = await getProfessors(token, queryParams);
 
@@ -73,7 +74,7 @@ const FactrakSearch = ({ token, route }) => {
                     </Link>
                   </td>
                   <td>{prof.unixID || ""}</td>
-                  <td>{prof.room || ""}</td>
+                  <td>{prof.office.number || ""}</td>
                 </tr>
               );
             })}

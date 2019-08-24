@@ -33,7 +33,7 @@ const FactrakAOS = ({ route, token }) => {
     };
 
     const loadCourses = async (areaOfStudyID) => {
-      const params = { areaOfStudyID };
+      const params = { areaOfStudyID, preload: ["professors"] };
       const coursesResponse = await getCourses(token, params);
       if (checkAndHandleError(coursesResponse)) {
         const coursesData = coursesResponse.data.data;
@@ -77,7 +77,11 @@ const FactrakAOS = ({ route, token }) => {
                     </td>
 
                     <td>{prof.title}</td>
-                    <td>{prof.unixID}</td>
+                    <td>
+                      <a href={`mailto:${prof.unixID}@williams.edu`}>
+                        {prof.unixID}
+                      </a>
+                    </td>
                   </tr>
                 ))}
               </tbody>
