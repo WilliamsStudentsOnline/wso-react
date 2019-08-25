@@ -5,11 +5,11 @@ import PropTypes from "prop-types";
 // Redux imports
 import { connect } from "react-redux";
 import { getCurrUser } from "../../../selectors/auth";
-import { actions } from "redux-router5";
+import { actions, createRouteNodeSelector } from "redux-router5";
 
 import { Link } from "react-router5";
 
-const FacebookLayout = ({ children, currUser, navigateTo }) => {
+const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
   const [query, updateQuery] = useState("");
 
   const submitHandler = (event) => {
@@ -56,6 +56,7 @@ const FacebookLayout = ({ children, currUser, navigateTo }) => {
             placeholder="Search Facebook"
             autoFocus
             onChange={(event) => updateQuery(event.target.value)}
+            defaultValue={route.params.q ? route.params.q : ""}
           />
           <input
             data-disable-with="Search"
@@ -74,15 +75,26 @@ FacebookLayout.propTypes = {
   children: PropTypes.object,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  route: PropTypes.object.isRequired,
 };
 
 FacebookLayout.defaultProps = {
   children: {},
 };
 
-const mapStateToProps = (state) => ({
+/* const mapStateToProps = (state) => ({
+  const routeNodeSelector = createRouteNodeSelector("facebook");
   currUser: getCurrUser(state),
-});
+}); */
+
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("facebook");
+
+  return (state) => ({
+    currUser: getCurrUser(state),
+    ...routeNodeSelector(state),
+  });
+};
 
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location, params, opts) =>

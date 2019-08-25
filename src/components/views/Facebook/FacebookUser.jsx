@@ -132,7 +132,12 @@ const FacebookUser = ({ currUser, token, route }) => {
           viewPerson.type === "student" ? (
             <>
               <h5>Hometown:</h5>
-              <h4>{viewPerson.homeTown}</h4>
+              <h4>
+                {viewPerson.homeTown},{" "}
+                {viewPerson.homeCountry === "United States"
+                  ? viewPerson.homeState
+                  : viewPerson.homeCountry}
+              </h4>
             </>
           ) : null}
         </aside>
