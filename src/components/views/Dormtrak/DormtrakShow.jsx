@@ -30,7 +30,7 @@ const DormtrakShow = ({ route, currUser, token }) => {
     };
 
     const loadDormReviews = async () => {
-      const queryParams = { dormID };
+      const queryParams = { dormID, commented: true };
       const dormReviewResponse = await getDormtrakDormReviews(
         token,
         queryParams

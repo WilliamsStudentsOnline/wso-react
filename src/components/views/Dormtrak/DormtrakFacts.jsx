@@ -172,8 +172,13 @@ const DormtrakFacts = ({ dorm, token }) => {
         <strong>Average Ratings for&nbsp;:</strong>
         {facts
           ? ["Wifi", "Location", "Loudness", "Satisfaction"].map((attr) => {
-              if (!facts[`average ${attr}`]) return null;
-              return `${capitalize(attr)}: ${facts[`average ${attr}`]}`;
+              if (!facts[`average${attr}`]) return null;
+              return (
+                <div key={attr}>
+                  {capitalize(attr)}: {facts[`average${attr}`]}
+                  <br />
+                </div>
+              );
             })
           : ": N/A"}
       </div>
