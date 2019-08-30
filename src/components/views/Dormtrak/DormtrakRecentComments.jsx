@@ -20,13 +20,13 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
         ) : null}
 
         <div className="comment-content">
-          {abridged && review.dorm ? (
+          {abridged && review.dormRoom ? (
             <h1>
               <Link
                 routeName="dormtrak.dorms"
-                routeParams={{ dormID: review.dorm.id }}
+                routeParams={{ dormID: review.dormRoom.dorm.id }}
               >
-                {review.dorm.name}
+                {review.dormRoom.dorm.name}
               </Link>
             </h1>
           ) : null}

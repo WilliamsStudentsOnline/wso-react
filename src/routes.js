@@ -3,7 +3,7 @@ export default [
   { name: "about", path: "/about" },
   { name: "listserv", path: "/listserv" },
   { name: "hours", path: "/hours" },
-  { name: "scheduler", path: "/scheduleCourses" },
+  { name: "scheduler", path: "/scheduler" },
   {
     name: "facebook",
     path: "/facebook?:q",
@@ -20,7 +20,7 @@ export default [
       { name: "policy", path: "/policy" },
       { name: "surveys", path: "/surveys" },
       { name: "moderate", path: "/moderate" },
-      { name: "areasOfStudy", path: "/areasOfStudy/:area" },
+      { name: "areasOfStudy", path: "/areas-of-study/:area" },
       {
         name: "courses",
         path: "/courses/:courseID",

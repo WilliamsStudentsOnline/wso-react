@@ -10,6 +10,7 @@ import { getToken, getCurrUser } from "../../../selectors/auth";
 // External imports
 import { getSurveys, getAreasOfStudy } from "../../../api/factrak";
 import { checkAndHandleError } from "../../../lib/general";
+import { Link } from "react-router5";
 
 const FactrakHome = ({ token, currUser }) => {
   const [areas, updateAreas] = useState([]);
@@ -51,7 +52,12 @@ const FactrakHome = ({ token, currUser }) => {
             <ul id="dept_list">
               {areas.map((area) => (
                 <li key={area.name}>
-                  <a href={`/factrak/areasOfStudy/${area.id}`}>{area.name}</a>
+                  <Link
+                    routeName="factrak.areasOfStudy"
+                    routeParams={{ area: area.id }}
+                  >
+                    {area.name}
+                  </Link>
                 </li>
               ))}
             </ul>
