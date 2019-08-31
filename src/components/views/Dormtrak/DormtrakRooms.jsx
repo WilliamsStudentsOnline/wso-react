@@ -113,7 +113,7 @@ const DormtrakRooms = ({ rooms }) => {
               {`${room.area} sq. ft.`}
               <br />
               {["faces", "noise", "closet", "flooring"].map((attr) => {
-                if (room[attr] !== undefined) {
+                if (room[attr] !== undefined && room[attr] !== null) {
                   return (
                     <React.Fragment key={attr}>
                       <small>

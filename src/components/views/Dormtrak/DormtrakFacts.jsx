@@ -155,12 +155,14 @@ const DormtrakFacts = ({ dorm, token }) => {
 
       <div>
         <strong>Student-bathroom ratio</strong>
-        {`: ${dorm.bathroomRatio.toPrecision(3)}:1`}
+        {`: ${dorm.bathroomRatio.toPrecision(3)} : 1`}
         <br />
       </div>
       <div>
         <strong>Common rooms</strong>
-        {facts ? `: ${facts.commonRoomAccessRatio}` : ": N/A"}
+        {facts
+          ? `: ${facts.commonRoomAccessRatio.toPrecision(3)} : 1`
+          : ": N/A"}
         <br />
       </div>
       <div>

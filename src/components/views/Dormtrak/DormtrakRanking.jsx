@@ -139,7 +139,7 @@ const DormtrakRanking = ({ token }) => {
                       <td>
                         <Link
                           routeName="dormtrak.dorms"
-                          routeParams={{ dormID: a.id }}
+                          routeParams={{ dormID: b.id }}
                         >
                           {b.name}
                         </Link>
