@@ -1,11 +1,11 @@
 // React imports
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
 import { getCurrUser, getToken } from "../../../selectors/auth";
-import { actions } from "redux-router5";
+import { actions, createRouteNodeSelector } from "redux-router5";
 
 // External imports
 import { Link } from "react-router5";
@@ -15,27 +15,40 @@ import {
 } from "../../../api/autocomplete";
 import { checkAndHandleError } from "../../../lib/general";
 
-const FactrakLayout = ({ children, currUser, navigateTo, token }) => {
+const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  useEffect(() => {
+    const loadQuery = () => {
+      if (route.params.q) setQuery(route.params.q);
+      else setQuery("");
+    };
+    loadQuery();
+  }, [route.params.q]);
 
   /**
    * Initiates new autocomplete
    */
-  const factrakAutocomplete = (event) => {
+  const factrakAutocomplete = async (event) => {
     setQuery(event.target.value);
-    const profsResponse = autocompleteProfs(token, query);
-    const coursesResponse = autocompleteCourses(token, query);
-    const suggestData = [];
+    const profsResponse = await autocompleteProfs(token, query);
+    const coursesResponse = await autocompleteCourses(token, query);
+    let suggestData = [];
     if (checkAndHandleError(profsResponse)) {
-      suggestData.push(profsResponse.data.data);
+      suggestData = suggestData.concat(profsResponse.data.data);
     }
 
     if (checkAndHandleError(coursesResponse)) {
-      suggestData.push(coursesResponse.data.data);
+      suggestData = suggestData.concat(coursesResponse.data.data);
     }
 
-    setSuggestions(suggestData.slice(0, 5));
+    if (suggestData.length > 5) {
+      setSuggestions(suggestData.slice(0, 5));
+    } else {
+      setSuggestions(suggestData);
+    }
   };
 
   const submitHandler = (event) => {
@@ -44,29 +57,35 @@ const FactrakLayout = ({ children, currUser, navigateTo, token }) => {
     navigateTo("factrak.search", { q: query }, { reload: true });
   };
 
+  const focusHandler = () => {
+    setShowSuggestions(true);
+  };
+
+  const blurHandler = () => {
+    setShowSuggestions(false);
+  };
+
   const factrakSuggestions = () => {
     return (
       <div className="autocomplete">
         <table id="suggestions">
           <tbody>
-            {suggestions.map((suggestion) => (
-              <tr key={suggestion.id}>
-                <td>
-                  <Link
-                    routeName={
-                      suggestion.name ? "factrak.professors" : "factrak.courses"
-                    }
-                    routeParams={
-                      suggestion.name
-                        ? { profID: suggestion.id }
-                        : { courseID: suggestion.id }
-                    }
-                  >
-                    {suggestion.name ? suggestion.name : suggestion.title}
-                  </Link>
-                </td>
-              </tr>
-            ))}
+            {suggestions !== [] && showSuggestions
+              ? suggestions.map((suggestion) => (
+                  <tr key={suggestion.id}>
+                    <td>
+                      <Link
+                        routeName="factrak.search"
+                        routeParams={{ q: suggestion }}
+                        routeOptions={{ reload: true }}
+                        onMouseDown={(e) => e.preventDefault()}
+                      >
+                        {suggestion}
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              : null}
           </tbody>
         </table>
       </div>
@@ -103,7 +122,11 @@ const FactrakLayout = ({ children, currUser, navigateTo, token }) => {
               ) : null}
             </ul>
           </div>
-          <form onSubmit={submitHandler}>
+          <form
+            onSubmit={submitHandler}
+            onFocus={focusHandler}
+            onBlur={blurHandler}
+          >
             <input
               type="search"
               id="search"
@@ -135,14 +158,20 @@ FactrakLayout.propTypes = {
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
+  route: PropTypes.object.isRequired,
 };
 
 FactrakLayout.defaultProps = {};
 
-const mapStateToProps = (state) => ({
-  currUser: getCurrUser(state),
-  token: getToken(state),
-});
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("factrak.search");
+
+  return (state) => ({
+    currUser: getCurrUser(state),
+    token: getToken(state),
+    ...routeNodeSelector(state),
+  });
+};
 
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location, params, opts) =>

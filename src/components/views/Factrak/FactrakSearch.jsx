@@ -37,7 +37,11 @@ const FactrakSearch = ({ token, route }) => {
       const coursesResponse = await getCourses(token, queryParams);
       if (checkAndHandleError(coursesResponse)) {
         updateCourses(
-          coursesResponse.data.data.sort((a, b) => a.name > b.name)
+          coursesResponse.data.data.sort(
+            (a, b) =>
+              a.areaOfStudy.abbreviation + a.number >
+              b.areaOfStudy.abbreviation + b.number
+          )
         );
       } else updateCourses([]);
     };
@@ -148,7 +152,7 @@ FactrakSearch.propTypes = {
 FactrakSearch.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("dormtrak.search");
+  const routeNodeSelector = createRouteNodeSelector("factrak.search");
 
   return (state) => ({
     token: getToken(state),

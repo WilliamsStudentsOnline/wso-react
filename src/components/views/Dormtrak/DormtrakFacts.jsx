@@ -29,7 +29,8 @@ const DormtrakFacts = ({ dorm, token }) => {
       {dorm.neighborhood && dorm.neighborhood.name !== "First-year" ? (
         <div>
           <strong>Class breakdown</strong>:
-          {facts ? (
+          {facts &&
+          facts.seniorCount + facts.juniorCount + facts.sophomoreCount > 0 ? (
             <div id="piechart">
               <Chart
                 id="piechart"
