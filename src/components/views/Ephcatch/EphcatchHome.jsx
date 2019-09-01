@@ -1,11 +1,15 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
 
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
-import { getEphcatchers } from "../../../api/ephcatch";
+import {
+  getEphcatchers,
+  likeEphcatcher,
+  unlikeEphcatcher,
+  getEphcatcher,
+} from "../../../api/ephcatch";
 
 import { checkAndHandleError } from "../../../lib/general";
 
@@ -33,32 +37,28 @@ const EphcatchHome = ({ token }) => {
     loadNextEphcatchers(0);
   }, []);
 
-  const selectephcatcher = (event) => {
-    const aside = event.currentTarget;
-    const otherID = aside.attributes.dataid.nodeValue;
+  const selectEphcatcher = async (event, index) => {
+    // Alternatively, use the classname to determine the method to be called.
+    // That way works but is more hacky, and very prone to user editing the code.
+    const ephcatcher = ephcatchers[index];
+    const target = event.currentTarget;
+    let ephcatchersResponse;
 
-    if (aside.attributes.datamethod.nodeValue === "delete") {
-      axios({
-        url: `/ephcatch/ephcatches/${otherID}`,
-        method: "delete",
-        params: { authenticity_token: token },
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      });
-      aside.attributes.datamethod.nodeValue = "post";
+    if (ephcatcher.liked) {
+      ephcatchersResponse = await unlikeEphcatcher(token, ephcatcher.id);
+      target.className = "ephcatch-select-link";
     } else {
-      axios({
-        url: `/ephcatch/ephcatches/`,
-        method: "post",
-        params: { id: otherID, authenticity_token: token },
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      });
-      aside.attributes.datamethod.nodeValue = "delete";
+      ephcatchersResponse = await likeEphcatcher(token, ephcatcher.id);
+      target.className = "ephcatch-select-link ephcatch-selected";
     }
-    aside.classList.toggle("ephcatch-selected");
+
+    if (checkAndHandleError(ephcatchersResponse)) {
+      const updatedEphcatcher = await getEphcatcher(token, ephcatcher.id);
+
+      if (checkAndHandleError(updatedEphcatcher)) {
+        ephcatchers.splice(index, 1, updatedEphcatcher.data.data);
+      }
+    }
   };
 
   const clickHandler = (number) => {
@@ -104,20 +104,15 @@ const EphcatchHome = ({ token }) => {
             </button>
           </div>
           <br />
-          {ephcatchers.map((ephcatcher) => (
+          {ephcatchers.map((ephcatcher, index) => (
             <aside
               key={ephcatcher.id}
-              id={`ephcatch-ephcatcher-${ephcatcher.id}`}
-              dataid={`${ephcatcher.id}`}
-              // className={
-              //   selected.indexOf(ephcatcher.id) !== -1
-              //     ? "ephcatch-select-link ephcatch-selected"
-              //     : "ephcatch-select-link"
-              // }
-              // datamethod={
-              //   selected.indexOf(ephcatcher.id) !== -1 ? "delete" : "post"
-              // }
-              onClick={(event) => selectephcatcher(event)}
+              className={
+                ephcatcher.liked
+                  ? "ephcatch-select-link ephcatch-selected"
+                  : "ephcatch-select-link"
+              }
+              onClick={(event) => selectEphcatcher(event, index)}
               role="presentation"
             >
               <div className="third">
