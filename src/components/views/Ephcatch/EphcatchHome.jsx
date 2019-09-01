@@ -10,19 +10,40 @@ import { getEphcatchers } from "../../../api/ephcatch";
 import { checkAndHandleError } from "../../../lib/general";
 
 const EphcatchHome = ({ token }) => {
+  const perPage = 20; // Number of results per page
+  const [page, updatePage] = useState(0);
+  const [total, updateTotal] = useState(0);
+
   const [ephcatchers, updateEphcatchers] = useState([]);
 
   useEffect(() => {
     const loadEphcatchers = async () => {
-      const ephcatchersResponse = await getEphcatchers(token);
-      console.log(ephcatchersResponse);
+      const params = {
+        limit: perPage,
+      };
+      const ephcatchersResponse = await getEphcatchers(token, params);
+
       if (checkAndHandleError(ephcatchersResponse)) {
         updateEphcatchers(ephcatchersResponse.data.data);
+        updateTotal(ephcatchersResponse.data.paginationTotal);
       }
     };
 
     loadEphcatchers();
   }, [token]);
+
+  const loadNextEphcatchers = async (newPage) => {
+    const params = {
+      limit: perPage,
+      offset: newPage * perPage,
+    };
+    const ephcatchersResponse = await getEphcatchers(token, params);
+
+    if (checkAndHandleError(ephcatchersResponse)) {
+      updateEphcatchers(ephcatchersResponse.data.data);
+      updateTotal(ephcatchersResponse.data.paginationTotal);
+    }
+  };
 
   const selectephcatcher = (event) => {
     const aside = event.currentTarget;
@@ -52,6 +73,16 @@ const EphcatchHome = ({ token }) => {
     aside.classList.toggle("ephcatch-selected");
   };
 
+  const clickHandler = (number) => {
+    if (number === -1 && page > 0) {
+      updatePage(page - 1);
+      loadNextEphcatchers(page - 1);
+    } else if (number === 1 && total - (page + 1) * perPage > 0) {
+      updatePage(page + 1);
+      loadNextEphcatchers(page + 1);
+    }
+  };
+
   return (
     <article className="facebook-results">
       <section>
@@ -66,6 +97,24 @@ const EphcatchHome = ({ token }) => {
             &nbsp;You can&apos;t see yourself in the list below, but everyone
             else can.
           </p>
+          <br />
+          <div>
+            {/* @TODO: nicer buttons */}
+            <button
+              type="button"
+              onClick={() => clickHandler(-1)}
+              disabled={page === 0}
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              onClick={() => clickHandler(1)}
+              disabled={total - (page + 1) * perPage <= 0}
+            >
+              Next
+            </button>
+          </div>
           <br />
           {ephcatchers.map((ephcatcher) => (
             <aside

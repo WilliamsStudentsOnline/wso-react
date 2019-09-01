@@ -18,6 +18,8 @@ const autocompleteAOS = async (token, query) => {
 };
 
 // Get autocomplete results for Courses
+// Autocomplete will do autocomplete area of study until the AOS is fully written.
+// E.g. csc will return ["csci"] but csci will return ["134", "136"].
 const autocompleteCourses = async (token, query) => {
   const response = await axios({
     url: "/api/v1/autocomplete/course",
