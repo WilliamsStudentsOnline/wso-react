@@ -16,22 +16,6 @@ const EphcatchHome = ({ token }) => {
 
   const [ephcatchers, updateEphcatchers] = useState([]);
 
-  useEffect(() => {
-    const loadEphcatchers = async () => {
-      const params = {
-        limit: perPage,
-      };
-      const ephcatchersResponse = await getEphcatchers(token, params);
-
-      if (checkAndHandleError(ephcatchersResponse)) {
-        updateEphcatchers(ephcatchersResponse.data.data);
-        updateTotal(ephcatchersResponse.data.paginationTotal);
-      }
-    };
-
-    loadEphcatchers();
-  }, [token]);
-
   const loadNextEphcatchers = async (newPage) => {
     const params = {
       limit: perPage,
@@ -44,6 +28,10 @@ const EphcatchHome = ({ token }) => {
       updateTotal(ephcatchersResponse.data.paginationTotal);
     }
   };
+
+  useEffect(() => {
+    loadNextEphcatchers(0);
+  }, []);
 
   const selectephcatcher = (event) => {
     const aside = event.currentTarget;
