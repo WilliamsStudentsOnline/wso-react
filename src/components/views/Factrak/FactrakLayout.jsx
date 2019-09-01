@@ -35,6 +35,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
     setQuery(event.target.value);
     const profsResponse = await autocompleteProfs(token, query);
     const coursesResponse = await autocompleteCourses(token, query);
+
     let suggestData = [];
     if (checkAndHandleError(profsResponse)) {
       suggestData = suggestData.concat(profsResponse.data.data);
@@ -65,6 +66,47 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
     setShowSuggestions(false);
   };
 
+  const suggestionRow = (suggestion) => {
+    if (suggestion.type && suggestion.type === "area") {
+      return (
+        <Link
+          routeName="factrak.search"
+          routeParams={{ q: suggestion.value }}
+          routeOptions={{ reload: true }}
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          {suggestion.value}
+        </Link>
+      );
+    }
+    if (suggestion.type && suggestion.type === "course") {
+      return (
+        <Link
+          routeName="factrak.courses"
+          routeParams={{ courseID: suggestion.id }}
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          {suggestion.value}
+        </Link>
+      );
+    }
+    if (!suggestion.type) {
+      // @TODO: As of current commit, professors have no type. change if this updates in the future.
+      return (
+        <Link
+          routeName="factrak.professors"
+          routeParams={{ profID: suggestion.value }}
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          {suggestion.value}
+        </Link>
+      );
+    }
+
+    // Just to handle weird cases
+    return null;
+  };
+
   const factrakSuggestions = () => {
     return (
       <div className="autocomplete">
@@ -72,17 +114,8 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
           <tbody>
             {suggestions !== [] && showSuggestions
               ? suggestions.map((suggestion) => (
-                  <tr key={suggestion.id}>
-                    <td>
-                      <Link
-                        routeName="factrak.search"
-                        routeParams={{ q: suggestion }}
-                        routeOptions={{ reload: true }}
-                        onMouseDown={(e) => e.preventDefault()}
-                      >
-                        {suggestion}
-                      </Link>
-                    </td>
+                  <tr key={suggestion.value}>
+                    <td>{suggestionRow(suggestion)}</td>
                   </tr>
                 ))
               : null}
