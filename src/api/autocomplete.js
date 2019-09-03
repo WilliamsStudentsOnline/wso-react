@@ -70,9 +70,27 @@ const autocompleteTags = async (token, query) => {
   return response;
 };
 
+// Get autocomplete results for Factrak (Professors, Courses)
+const autocompleteFactrak = async (token, query) => {
+  const response = await axios({
+    url: "/api/v1/autocomplete/factrak",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params: {
+      q: query,
+    },
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
 export {
   autocompleteAOS,
   autocompleteCourses,
   autocompleteProfs,
   autocompleteTags,
+  autocompleteFactrak,
 };
