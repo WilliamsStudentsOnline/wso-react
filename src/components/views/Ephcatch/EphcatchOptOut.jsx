@@ -1,68 +1,88 @@
 // React imports
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import EphcatchLayout from "./EphcatchLayout";
 
-const EphcatchOptOut = ({ authToken, currentUser, warning, notice }) => {
+import { connect } from "react-redux";
+import { getToken, getCurrUser } from "../../../selectors/auth";
+import { doUpdateUser } from "../../../actions/auth";
+
+// API imports
+import { patchCurrUser } from "../../../api/users";
+import { checkAndHandleError } from "../../../lib/general";
+
+const EphcatchOptOut = ({ token, currUser, updateUser }) => {
+  const [optOut, updateOptOut] = useState(
+    currUser.optOutEphcatch ? currUser.optOutEphcatch : false
+  );
+
+  const clickHandler = (event) => {
+    updateOptOut(event.target.checked);
+  };
+
+  const submitHandler = async (event) => {
+    event.preventDefault();
+
+    const updateParams = {
+      optOutEphcatch: optOut,
+    };
+    const response = await patchCurrUser(token, updateParams);
+
+    // PATCH succeeded, update user
+    if (checkAndHandleError(response)) {
+      updateUser(response.data.data);
+    }
+
+    return optOut;
+  };
+
   return (
-    <EphcatchLayout currentUser={currentUser} warning={warning} notice={notice}>
-      <div className="article">
-        <section>
-          <article>
-            <h3>Opt Out</h3>
-            <br />
-            <p>
-              Choosing to opt out means you cannot select fellow seniors or view
-              matches. Your picture and name will also not be shown to other
-              users. You may opt back in at anytime.
-            </p>
+    <div className="article">
+      <section>
+        <article>
+          <h3>Opt Out</h3>
+          <br />
+          <p>
+            Choosing to opt out means you cannot select fellow seniors or view
+            matches. Your picture and name will also not be shown to other
+            users. You may opt back in at anytime.
+          </p>
 
-            <form
-              action="/ephcatch/no_ephcatch"
-              acceptCharset="UTF-8"
-              method="post"
-            >
-              <input name="utf8" type="hidden" value="✓" />
+          <form onSubmit={(event) => submitHandler(event)}>
+            <p>
               <input
-                type="hidden"
-                name="authenticity_token"
-                value={authToken}
+                type="checkbox"
+                onChange={(event) => clickHandler(event)}
+                checked={optOut}
               />
-              <p>
-                <input
-                  type="checkbox"
-                  name="opt_out_ephcatch"
-                  id="opt_out_ephcatch"
-                  value="1"
-                  defaultChecked={currentUser.opt_out_ephcatch}
-                />
-                I do not want to participate in Ephcatch.
-              </p>
-              <br />
-              <input
-                type="submit"
-                name="commit"
-                value="Save"
-                data-disable-with="Save"
-              />
-            </form>
-          </article>
-        </section>
-      </div>
-    </EphcatchLayout>
+              I do not want to participate in Ephcatch.
+            </p>
+            <br />
+            <input type="submit" value="Save" data-disable-with="Save" />
+          </form>
+        </article>
+      </section>
+    </div>
   );
 };
 
 EphcatchOptOut.propTypes = {
-  authToken: PropTypes.string.isRequired,
-  currentUser: PropTypes.object.isRequired,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
+  token: PropTypes.string.isRequired,
+  currUser: PropTypes.object.isRequired,
+  updateUser: PropTypes.func.isRequired,
 };
 
-EphcatchOptOut.defaultProps = {
-  notice: "",
-  warning: "",
-};
+EphcatchOptOut.defaultProps = {};
 
-export default EphcatchOptOut;
+const mapStateToProps = (state) => ({
+  token: getToken(state),
+  currUser: getCurrUser(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EphcatchOptOut);

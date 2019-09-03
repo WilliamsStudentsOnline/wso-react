@@ -21,7 +21,6 @@ const FactrakPolicy = ({ currUser, navigateTo, token, updateUser }) => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
-    if (!acceptPolicy) return null;
 
     const updateParams = {
       hasAcceptedFactrakPolicy: acceptPolicy,

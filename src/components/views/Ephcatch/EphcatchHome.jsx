@@ -140,4 +140,5 @@ EphcatchHome.defaultProps = {};
 const mapStateToProps = (state) => ({
   token: getToken(state),
 });
+
 export default connect(mapStateToProps)(EphcatchHome);

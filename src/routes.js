@@ -44,7 +44,14 @@ export default [
       { name: "search", path: "/search?:q" },
     ],
   },
-  { name: "ephcatch", path: "/ephcatch" },
+  {
+    name: "ephcatch",
+    path: "/ephcatch",
+    children: [
+      { name: "optout", path: "/opt-out" },
+      { name: "matches", path: "/matches" },
+    ],
+  },
   { name: "login", path: "/account/login" },
   { name: "logout", path: "/account/logout" },
   { name: "403", path: "/403" },

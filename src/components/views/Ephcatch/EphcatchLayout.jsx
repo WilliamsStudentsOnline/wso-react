@@ -6,17 +6,19 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getCurrUser } from "../../../selectors/auth";
 
+import { Link } from "react-router5";
+
 const EphcatchLayout = ({ currUser, children }) => {
   return (
     <>
       <header>
         <div className="page-head">
           <h1>
-            <a href="/ephcatch">Ephcatch</a>
+            <Link routeName="ephcatch">Ephcatch</Link>
           </h1>
           <ul>
             <li>
-              <a href="/ephcatch">Home</a>
+              <Link routeName="ephcatch">Home</Link>
             </li>
             <li>
               <a href="/ephcatch/matches">Matches</a>
@@ -27,7 +29,7 @@ const EphcatchLayout = ({ currUser, children }) => {
               ) : null}
             </li>
             <li>
-              <a href="/ephcatch/opt_out">Opt Out</a>
+              <Link routeName="ephcatch.optout">Opt Out</Link>
             </li>
           </ul>
         </div>

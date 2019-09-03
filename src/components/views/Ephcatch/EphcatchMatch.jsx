@@ -1,15 +1,36 @@
 // React imports
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import EphcatchLayout from "./EphcatchLayout";
 
-const EphcatchMatch = ({ matches, currentUser, warning, notice }) => {
+import { getEphcatchMatches } from "../../../api/ephcatch";
+import { connect } from "react-redux";
+import { getToken } from "../../../selectors/auth";
+
+import { checkAndHandleError } from "../../../lib/general";
+
+const EphcatchMatch = ({ token }) => {
+  const [matches, updateMatches] = useState([]);
+
+  useEffect(() => {
+    const loadMatches = async () => {
+      const ephcatchersResponse = await getEphcatchMatches(token);
+
+      if (checkAndHandleError(ephcatchersResponse)) {
+        updateMatches(ephcatchersResponse.data.data);
+        // @TODO pagination
+        // updateTotal(ephcatchersResponse.data.paginationTotal);
+      }
+    };
+
+    loadMatches();
+  }, [token]);
+
   const renderMatches = () => {
     if (matches.length === 0)
       return <h1 className="no-matches-found">No matches.</h1>;
 
     return (
-      <>
+      <section>
         <h3>Matches</h3>
 
         <div className="grid-wrap">
@@ -17,45 +38,35 @@ const EphcatchMatch = ({ matches, currentUser, warning, notice }) => {
             <aside>
               <div className="third">
                 <div className="profile-photo">
-                  <img alt="match" src={`/pic/${match.unix_id}`} />
+                  <img alt="match" src={`/pic/${match.unixID}`} />
                 </div>
               </div>
               <div className="two-third">
                 <h4>{match.name}</h4>
 
-                {match.unix_id && match.email ? (
+                {match.unixID && match.email ? (
                   <ul>
                     <li className="list-headers">UNIX</li>
-                    <li className="list-contents">{match.unix_id}</li>
+                    <li className="list-contents">{match.unixID}</li>
                   </ul>
                 ) : null}
               </div>
             </aside>
           ))}
         </div>
-      </>
+      </section>
     );
   };
 
-  return (
-    <EphcatchLayout currentUser={currentUser} warning={warning} notice={notice}>
-      <article className="facebook-results">
-        <section>{renderMatches()}</section>
-      </article>
-    </EphcatchLayout>
-  );
+  return <article className="facebook-results">{renderMatches()}</article>;
 };
 
-EphcatchMatch.propTypes = {
-  matches: PropTypes.arrayOf(PropTypes.object).isRequired,
-  currentUser: PropTypes.object.isRequired,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
-};
+EphcatchMatch.propTypes = { token: PropTypes.string.isRequired };
 
-EphcatchMatch.defaultProps = {
-  notice: "",
-  warning: "",
-};
+EphcatchMatch.defaultProps = {};
 
-export default EphcatchMatch;
+const mapStateToProps = (state) => ({
+  token: getToken(state),
+});
+
+export default connect(mapStateToProps)(EphcatchMatch);

@@ -21,7 +21,6 @@ const DormtrakPolicy = ({ currUser, token, navigateTo, updateUser }) => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
-    if (!acceptPolicy) return null;
 
     const updateParams = {
       hasAcceptedDormtrakPolicy: acceptPolicy,
