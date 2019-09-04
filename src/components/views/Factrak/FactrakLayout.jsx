@@ -9,10 +9,7 @@ import { actions, createRouteNodeSelector } from "redux-router5";
 
 // External imports
 import { Link } from "react-router5";
-import {
-  autocompleteProfs,
-  autocompleteCourses,
-} from "../../../api/autocomplete";
+import { autocompleteFactrak } from "../../../api/autocomplete";
 import { checkAndHandleError } from "../../../lib/general";
 
 const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
@@ -33,16 +30,11 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
    */
   const factrakAutocomplete = async (event) => {
     setQuery(event.target.value);
-    const profsResponse = await autocompleteProfs(token, query);
-    const coursesResponse = await autocompleteCourses(token, query);
+    const factrakResponse = await autocompleteFactrak(token, query);
 
     let suggestData = [];
-    if (checkAndHandleError(profsResponse)) {
-      suggestData = suggestData.concat(profsResponse.data.data);
-    }
-
-    if (checkAndHandleError(coursesResponse)) {
-      suggestData = suggestData.concat(coursesResponse.data.data);
+    if (checkAndHandleError(factrakResponse)) {
+      suggestData = factrakResponse.data.data;
     }
 
     if (suggestData.length > 5) {
@@ -90,12 +82,11 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
         </Link>
       );
     }
-    if (!suggestion.type) {
-      // @TODO: As of current commit, professors have no type. change if this updates in the future.
+    if (suggestion.type && suggestion.type === "professor") {
       return (
         <Link
           routeName="factrak.professors"
-          routeParams={{ profID: suggestion.value }}
+          routeParams={{ profID: suggestion.id }}
           onMouseDown={(e) => e.preventDefault()}
         >
           {suggestion.value}
