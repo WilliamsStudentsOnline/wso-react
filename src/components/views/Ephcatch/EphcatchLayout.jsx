@@ -21,7 +21,7 @@ const EphcatchLayout = ({ currUser, children }) => {
               <Link routeName="ephcatch">Home</Link>
             </li>
             <li>
-              <a href="/ephcatch/matches">Matches</a>
+              <Link routeName="ephcatch.matches">Matches</Link>
               {currUser.ephcatches && currUser.ephcatches.length > 0 ? (
                 <span className="ephcatch-badge" title="Matches!">
                   {currUser.ephcatches.length}
