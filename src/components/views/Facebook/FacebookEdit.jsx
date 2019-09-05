@@ -95,17 +95,17 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
         <table className="tag-suggestions">
           <tbody>
             {suggestions.map((suggestion) => (
-              <tr key={suggestion}>
+              <tr key={suggestion.id}>
                 <td>
                   <button
                     type="button"
                     className="autocomplete-option"
                     onClick={() => {
                       setSuggestions(null);
-                      updateNewTag(suggestion);
+                      updateNewTag(suggestion.value);
                     }}
                   >
-                    {suggestion}
+                    {suggestion.value}
                   </button>
                 </td>
               </tr>
@@ -121,7 +121,11 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
     updateNewTag(event.target.value);
     const tagResponse = await autocompleteTags(token, event.target.value);
     if (checkAndHandleError(tagResponse)) {
-      setSuggestions(tagResponse.data.data);
+      let newSuggestions = tagResponse.data.data;
+      if (newSuggestions.length > 5) {
+        newSuggestions = newSuggestions.slice(0, 5);
+      }
+      setSuggestions(newSuggestions);
     }
   };
 

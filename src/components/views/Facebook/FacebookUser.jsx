@@ -102,7 +102,7 @@ const FacebookUser = ({ currUser, token, route }) => {
                     <li className="view-tag" key={tag.name}>
                       <Link
                         routeName="facebook"
-                        routeParams={{ q: tag.name.split(" ").join("+") }}
+                        routeParams={{ q: `tag:${tag.name}` }}
                       >
                         {tag.name}
                       </Link>
