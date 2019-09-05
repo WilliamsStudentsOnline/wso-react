@@ -24,10 +24,11 @@ import { getToken, getExpiry } from "../selectors/auth";
 import { doRemoveCreds, doUpdateToken } from "../actions/auth";
 
 // Additional Imports
-import wordFile from "../constants/words.json";
 import { tokenExpiryHandler, getCampusToken } from "../api/auth";
+import { getRandomWSO } from "../api/misc";
 import { checkAndHandleError } from "../lib/general";
 import FourOhThree from "./views/Errors/FourOhThree";
+import BulletinMain from "./views/BulletinsDiscussions/BulletinMain";
 
 const App = ({
   route,
@@ -37,17 +38,15 @@ const App = ({
   token,
   expiry,
 }) => {
-  const randomWSO = () => {
-    if (wordFile) {
-      const w = wordFile.w[Math.floor(Math.random() * wordFile.w.length)];
-      const s = wordFile.s[Math.floor(Math.random() * wordFile.s.length)];
-      const o = wordFile.o[Math.floor(Math.random() * wordFile.o.length)];
+  // @TODO: move it to reduce the number of api calls.
+  const randomWSO = async () => {
+    const wsoResponse = await getRandomWSO();
 
-      return `WSO: ${w} ${s} ${o}`;
+    if (checkAndHandleError(wsoResponse)) {
+      document.title = `WSO: ${wsoResponse.data.data}`;
     }
-
-    // Return default if wordFile not found
-    return "WSO: Williams Students Online";
+    // Return default if there is an error in the response.
+    else document.title = "WSO: Williams Students Online";
   };
 
   const mainBody = () => {
@@ -74,6 +73,8 @@ const App = ({
         return <Login />;
       case "ephcatch":
         return <EphcatchMain />;
+      case "bulletins":
+        return <BulletinMain />;
       case "logout":
         removeCreds();
         navigateTo("home");
@@ -101,7 +102,7 @@ const App = ({
   };
 
   initialize();
-  document.title = randomWSO();
+  randomWSO();
 
   return <Layout>{mainBody()}</Layout>;
 };

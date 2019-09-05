@@ -13,17 +13,20 @@ import { getToken } from "../../../selectors/auth";
 
 import { checkAndHandleError } from "../../../lib/general";
 
+import { Link } from "react-router5";
+
 const BulletinBox = ({ token, type }) => {
   const [threads, updateThreads] = useState([]);
+  const linkMap = new Map([
+    ["Announcements", "announcement"],
+    ["Exchanges", "exchange"],
+    ["Lost And Found", "lostAndFound"],
+    ["Jobs", "job"],
+    ["Rides", "ride"],
+    ["Discussions", "discussions"],
+  ]);
 
   useEffect(() => {
-    const typeMap = new Map([
-      ["Announcements", "announcement"],
-      ["Exchanges", "exchange"],
-      ["Lost And Found", "lostAndFound"],
-      ["Jobs", "job"],
-    ]);
-
     const loadDiscussions = async () => {
       const loadParams = {
         limit: 5,
@@ -47,7 +50,7 @@ const BulletinBox = ({ token, type }) => {
     const loadBulletins = async () => {
       const loadParams = {
         limit: 5,
-        type: typeMap.get(type),
+        type: linkMap.get(type),
       };
       const bulletinsResponse = await getBulletins(token, loadParams);
       if (checkAndHandleError(bulletinsResponse)) {
@@ -58,7 +61,7 @@ const BulletinBox = ({ token, type }) => {
     if (type === "Discussions") loadDiscussions();
     else if (type === "Rides") loadRides();
     else loadBulletins();
-  }, [token, type]);
+  }, [token, type, linkMap]);
 
   const date = (showDate) => {
     const options = {
@@ -91,9 +94,19 @@ const BulletinBox = ({ token, type }) => {
   return (
     <div className="bulletin">
       <div className="bulletin-title">
-        <a className="bulletin-link" href="/">
-          {type}
-        </a>
+        {type !== "Discussions" ? (
+          <Link
+            className="bulletin-link"
+            routeName="bulletins"
+            routeParams={{ type: linkMap.get(type) }}
+          >
+            {type}
+          </Link>
+        ) : (
+          <Link className="bulletin-link" routeName="discussions">
+            {type}
+          </Link>
+        )}
       </div>
 
       <div className="bulletin-children-container">

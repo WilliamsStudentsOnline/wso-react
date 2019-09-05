@@ -7,7 +7,7 @@ import "./stylesheets/Application.css";
 
 const Layout = ({ children, notice, warning }) => {
   return (
-    <div className="front dormtrak facebook factrak">
+    <div className="front dormtrak facebook factrak announcement">
       <Nav />
 
       <aside>

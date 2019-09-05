@@ -1,75 +1,84 @@
 // React imports
 import React from "react";
 import PropTypes from "prop-types";
-import Layout from "../../Layout";
 
-const BulletinLayout = ({ children, notice, warning, currentUser }) => {
-  const pageClass = window.location.href.split("/")[3];
-  const capitalize = (string) => {
-    if (string === "lost_and_found") return "Lost + Found";
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
+import { Link } from "react-router5";
 
-  const bulletinLink = (type) => {
-    if (type !== pageClass) {
-      if (type === "lost_and_found")
-        return (
-          <li>
-            <a href="/lost_and_found">Lost + Found</a>
-          </li>
-        );
-      return (
-        <li key={type}>
-          <a href={`/${type}`}>{`${type}`}</a>
-        </li>
-      );
-    }
-    return null;
-  };
+import { capitalize } from "../../../lib/general";
+
+const BulletinLayout = ({ children, type }) => {
+  if (!type) return null;
   return (
-    <Layout
-      bodyClass="announcement"
-      notice={notice}
-      warning={warning}
-      currentUser={currentUser}
-    >
+    <>
       <header>
         <div className="page-head">
           <h1>
-            <a href={`/${pageClass}`}>{capitalize(pageClass)}</a>
+            <Link routeName="bulletins" routeParams={{ type }}>
+              {capitalize(type)}
+            </Link>
           </h1>
           <ul>
             <li>
-              <a href={`/${pageClass}/new`}>
-                {`New ${capitalize(pageClass)} Post`}
-              </a>
+              <a href={`/${type}/new`}>{`New ${type} Post`}</a>
             </li>
-            {[
-              "announcements",
-              "exchanges",
-              "lost_and_found",
-              "jobs",
-              "rides",
-            ].map((type) => bulletinLink(type))}
+            <li>
+              <Link
+                routeName="bulletins"
+                routeParams={{ type: "announcement" }}
+                routeOptions={{ reload: true }}
+              >
+                Announcements
+              </Link>
+            </li>
+            <li>
+              <Link
+                routeName="bulletins"
+                routeParams={{ type: "exchange" }}
+                routeOptions={{ reload: true }}
+              >
+                Exchanges
+              </Link>
+            </li>
+            <li>
+              <Link
+                routeName="bulletins"
+                routeParams={{ type: "lostAndFound" }}
+                routeOptions={{ reload: true }}
+              >
+                Lost + Found
+              </Link>
+            </li>
+            <li>
+              <Link
+                routeName="bulletins"
+                routeParams={{ type: "job" }}
+                routeOptions={{ reload: true }}
+              >
+                Jobs
+              </Link>
+            </li>
+            <li>
+              <Link
+                routeName="bulletins"
+                routeParams={{ type: "ride" }}
+                routeOptions={{ reload: true }}
+              >
+                Rides
+              </Link>
+            </li>
           </ul>
         </div>
       </header>
       <article className="main-table">{children}</article>
-    </Layout>
+    </>
   );
 };
 
 BulletinLayout.propTypes = {
   children: PropTypes.object.isRequired,
-  notice: PropTypes.string,
-  warning: PropTypes.object,
-  currentUser: PropTypes.object,
+  type: PropTypes.string.isRequired,
 };
 
-BulletinLayout.defaultProps = {
-  currentUser: {},
-  notice: "",
-  warning: "",
-};
+BulletinLayout.defaultProps = {};
 
 export default BulletinLayout;

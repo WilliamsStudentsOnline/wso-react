@@ -1,5 +1,8 @@
 export default [
   { name: "home", path: "/" },
+  { name: "bulletins", path: "/bulletins/:type" },
+  { name: "discussions", path: "/discussions" },
+  { name: "rides", path: "/rides" },
   { name: "about", path: "/about" },
   { name: "listserv", path: "/listserv" },
   { name: "hours", path: "/hours" },
