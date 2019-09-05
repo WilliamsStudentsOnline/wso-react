@@ -134,9 +134,8 @@ const FactrakComment = ({
     );
   };
 
-  const flagHandler = () => {
-    const response = flagSurvey(token, survey.id);
-
+  const flagHandler = async () => {
+    const response = await flagSurvey(token, survey.id);
     if (checkAndHandleError(response)) {
       getAndUpdateSurvey();
     }
