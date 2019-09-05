@@ -61,7 +61,7 @@ const BulletinBox = ({ token, type }) => {
     if (type === "Discussions") loadDiscussions();
     else if (type === "Rides") loadRides();
     else loadBulletins();
-  }, [token, type, linkMap]);
+  }, [token, type]);
 
   const date = (showDate) => {
     const options = {
