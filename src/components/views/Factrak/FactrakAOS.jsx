@@ -14,6 +14,7 @@ import {
   getAreaOfStudy,
 } from "../../../api/factrak";
 import { checkAndHandleError } from "../../../lib/general";
+import { Link } from "react-router5";
 
 const FactrakAOS = ({ route, token }) => {
   const [courses, updateCourses] = useState([]);
@@ -73,7 +74,12 @@ const FactrakAOS = ({ route, token }) => {
                 {profs.map((prof) => (
                   <tr key={prof.id}>
                     <td>
-                      <a href={`/factrak/professors/${prof.id}`}>{prof.name}</a>
+                      <Link
+                        routeName="factrak.professors"
+                        routeParams={{ profID: prof.id }}
+                      >
+                        {prof.name}
+                      </Link>
                     </td>
 
                     <td>{prof.title}</td>
@@ -103,20 +109,28 @@ const FactrakAOS = ({ route, token }) => {
             {courses.map((course) => (
               <tr key={course.id}>
                 <td className="col-20">
-                  <a href={`/factrak/courses/${course.id}`}>
+                  <Link
+                    routeName="factrak.courses"
+                    routeParams={{ courseID: course.id }}
+                  >
                     {`${area.abbreviation} ${course.number}`}
-                  </a>
+                  </Link>
                 </td>
                 <td className="col-80">
                   {course.professors &&
                     course.professors
                       .map((prof) => {
                         return (
-                          <a
-                            href={`/factrak/courses/${course.id}?prof=${prof.id}`}
+                          <Link
+                            routeName="factrak.courses.singleProf"
+                            routeParams={{
+                              courseID: course.id,
+                              profID: prof.id,
+                            }}
+                            key={prof.id}
                           >
                             {prof.name}
-                          </a>
+                          </Link>
                         );
                       })
                       .reduce((prev, curr) => [prev, ", ", curr])}
