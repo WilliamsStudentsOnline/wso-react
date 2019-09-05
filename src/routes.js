@@ -1,6 +1,10 @@
 export default [
   { name: "home", path: "/" },
-  { name: "bulletins", path: "/bulletins/:type" },
+  {
+    name: "bulletins",
+    path: "/bulletins/:type",
+    children: [{ name: "show", path: "/:bulletinID" }],
+  },
   { name: "discussions", path: "/discussions" },
   { name: "rides", path: "/rides" },
   { name: "about", path: "/about" },

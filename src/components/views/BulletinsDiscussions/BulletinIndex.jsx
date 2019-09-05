@@ -9,6 +9,7 @@ import { getBulletins, getRides } from "../../../api/bulletins";
 import { connect } from "react-redux";
 
 import { checkAndHandleError } from "../../../lib/general";
+import { Link } from "react-router5";
 
 const BulletinIndex = ({ type, token, currUser }) => {
   const [bulletins, updateBulletins] = useState([]);
@@ -18,6 +19,7 @@ const BulletinIndex = ({ type, token, currUser }) => {
       const params = {
         type,
         preload: ["user"],
+        limit: 20,
       };
       const bulletinsResponse = await getBulletins(token, params);
       if (checkAndHandleError(bulletinsResponse)) {
@@ -28,6 +30,7 @@ const BulletinIndex = ({ type, token, currUser }) => {
     const loadRides = async () => {
       const params = {
         preload: ["user"],
+        limit: 20,
       };
       const ridesResponse = await getRides(token, params);
       if (checkAndHandleError(ridesResponse)) {
@@ -60,13 +63,18 @@ const BulletinIndex = ({ type, token, currUser }) => {
               {bulletins.map((bulletin) => (
                 <tr key={bulletin.id}>
                   <td className="col-60">
-                    <a href={`${window.location.href}/${bulletin.id}`}>
+                    <Link
+                      routeName="bulletins.show"
+                      routeParams={{ type, bulletinID: bulletin.id }}
+                      routeOptions={{ reload: true }}
+                    >
                       {bulletin.type
                         ? bulletin.title
                         : `${bulletin.source} to ${bulletin.destination} (${
                             bulletin.offer ? "Offer" : "Request"
                           })`}
-                    </a>
+                    </Link>
+
                     {currUser.id === bulletin.user.id || currUser.admin ? (
                       <>
                         &nbsp;[&nbsp;

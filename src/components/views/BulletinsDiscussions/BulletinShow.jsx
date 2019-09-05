@@ -1,72 +1,120 @@
 // React imports
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import BulletinLayout from "./BulletinLayout";
 
-const BulletinShow = ({ bulletin, currentUser, notice, warning }) => {
+import { getToken, getCurrUser } from "../../../selectors/auth";
+
+import { getBulletin, getRide } from "../../../api/bulletins";
+
+import { checkAndHandleError } from "../../../lib/general";
+import { createRouteNodeSelector } from "redux-router5";
+import { connect } from "react-redux";
+
+const BulletinShow = ({ currUser, token, route }) => {
+  const [bulletin, updateBulletin] = useState(null);
+
+  useEffect(() => {
+    const loadBulletin = async () => {
+      if (!route.params.bulletinID) {
+        // Just in case, to deal with special cases.
+        updateBulletin(null);
+        return;
+      }
+
+      let bulletinResponse;
+
+      if (route.params.type === "ride") {
+        bulletinResponse = await getRide(token, route.params.bulletinID);
+      } else {
+        bulletinResponse = await getBulletin(token, route.params.bulletinID);
+      }
+
+      if (checkAndHandleError(bulletinResponse)) {
+        updateBulletin(bulletinResponse.data.data);
+        console.log(bulletinResponse.data.data);
+      } else updateBulletin(null);
+    };
+
+    loadBulletin();
+  }, [token, route.params.userID]);
+
+  const dateOptions = { year: "numeric", month: "long", day: "numeric" };
+
+  if (!bulletin) return null;
+
   return (
-    <BulletinLayout notice={notice} currentUser={currentUser} warning={warning}>
-      <article className="list-creation">
-        <section>
-          <div className="field">
-            <h3>
-              <br />
-              {bulletin.title}
-              <br />
-              <br />
-            </h3>
-            {bulletin.type === "Ride" ? (
-              <div>
-                <b>{new Date(bulletin.start_date).toDateString()}</b>
-              </div>
-            ) : null}
-            {`Posted ${new Date(bulletin.created_at).toDateString()} by `}
-            {bulletin.user.unix_id ? (
-              <a href={`/facebook/users/${bulletin.user.id}`}>
-                {bulletin.user.name}
-              </a>
-            ) : (
-              bulletin.user.name
-            )}
-            {currentUser.id === bulletin.user.id || currentUser.admin ? (
-              <>
-                &nbsp;[&nbsp;
-                <a href={`${window.location.href}/edit`}>Edit</a>
-                &nbsp;|&nbsp;
-                <a
-                  data-confirm="Are you sure?"
-                  rel="nofollow"
-                  data-method="delete"
-                  href={`/bulletins/${bulletin.id}`}
-                >
-                  Delete
-                </a>
-                &nbsp;]
-              </>
-            ) : null}
+    <article className="list-creation">
+      <section>
+        <div className="field">
+          <h3>
+            <br />
+            {bulletin.type
+              ? bulletin.title
+              : `${bulletin.source} to ${bulletin.destination} (${
+                  bulletin.offer ? "Offer" : "Request"
+                })`}
+            <br />
+            <br />
+          </h3>
 
-            <br />
-            <br />
-            {bulletin.body}
-          </div>
+          {`${
+            bulletin.type
+              ? new Date(bulletin.startDate).toLocaleDateString(
+                  "en-US",
+                  dateOptions
+                )
+              : new Date(bulletin.date).toLocaleDateString("en-US", dateOptions)
+          } by `}
+          {bulletin.userID ? (
+            <a href={`/facebook/users/${bulletin.user.id}`}>
+              {bulletin.user.name}
+            </a>
+          ) : (
+            bulletin.user.name
+          )}
+          {currUser.id === bulletin.user.id || currUser.admin ? (
+            <>
+              &nbsp;[&nbsp;
+              <a href={`${window.location.href}/edit`}>Edit</a>
+              &nbsp;|&nbsp;
+              <a
+                data-confirm="Are you sure?"
+                rel="nofollow"
+                data-method="delete"
+                href={`/bulletins/${bulletin.id}`}
+              >
+                Delete
+              </a>
+              &nbsp;]
+            </>
+          ) : null}
+
           <br />
-        </section>
-      </article>
-    </BulletinLayout>
+          <br />
+          {bulletin.body}
+        </div>
+        <br />
+      </section>
+    </article>
   );
 };
 
 BulletinShow.propTypes = {
-  bulletin: PropTypes.object.isRequired,
-  currentUser: PropTypes.object,
-  notice: PropTypes.string,
-  warning: PropTypes.object,
+  token: PropTypes.string.isRequired,
+  currUser: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired,
 };
 
-BulletinShow.defaultProps = {
-  notice: "",
-  warning: "",
-  currentUser: {},
+BulletinShow.defaultProps = {};
+
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("bulletins.show");
+
+  return (state) => ({
+    token: getToken(state),
+    currUser: getCurrUser(state),
+    ...routeNodeSelector(state),
+  });
 };
 
-export default BulletinShow;
+export default connect(mapStateToProps)(BulletinShow);

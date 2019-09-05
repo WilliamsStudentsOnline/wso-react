@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import BulletinLayout from "./BulletinLayout";
 import BulletinIndex from "./BulletinIndex";
+import BulletinShow from "./BulletinShow";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -12,7 +13,20 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 
 const BulletinMain = ({ route, navigateTo }) => {
   const BulletinBody = (bulletinType) => {
-    return <BulletinIndex type={bulletinType} />;
+    console.log(route);
+
+    const splitRoute = route.name.split(".");
+    console.log(splitRoute);
+    if (splitRoute.length < 2) {
+      return <BulletinIndex type={bulletinType} />;
+    }
+
+    switch (splitRoute[1]) {
+      case "show":
+        return <BulletinShow />;
+      default:
+        return <BulletinIndex type={bulletinType} />;
+    }
   };
 
   // Check that this is a valid route with 'type' params
@@ -25,6 +39,8 @@ const BulletinMain = ({ route, navigateTo }) => {
       "exchange",
       "announcement",
     ];
+
+    console.log("lolol");
 
     if (validBulletinTypes.indexOf(route.params.type) !== -1) {
       return (

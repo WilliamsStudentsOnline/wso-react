@@ -14,12 +14,16 @@ const BulletinLayout = ({ children, type }) => {
         <div className="page-head">
           <h1>
             <Link routeName="bulletins" routeParams={{ type }}>
-              {capitalize(type)}
+              {type === "lostAndFound" ? "Lost + Found" : capitalize(type)}
             </Link>
           </h1>
           <ul>
             <li>
-              <a href={`/${type}/new`}>{`New ${type} Post`}</a>
+              <a href={`/${type}/new`}>
+                {type === "lostAndFound"
+                  ? "New Lost + Found Post"
+                  : `New ${type} Post`}
+              </a>
             </li>
             <li>
               <Link
