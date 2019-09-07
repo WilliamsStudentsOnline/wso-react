@@ -3,7 +3,11 @@ export default [
   {
     name: "bulletins",
     path: "/bulletins/:type",
-    children: [{ name: "show", path: "/:bulletinID" }],
+    children: [
+      { name: "show", path: "/:bulletinID" },
+      { name: "new", path: "/new" },
+      { name: "edit", path: "/edit?:bulletinID" },
+    ],
   },
   { name: "discussions", path: "/discussions" },
   { name: "rides", path: "/rides" },

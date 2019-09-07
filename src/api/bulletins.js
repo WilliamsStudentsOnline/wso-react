@@ -30,13 +30,13 @@ const getBulletin = async (token, bulletinID) => {
 };
 
 // Create bulletins
-const postBulletins = async (token, params) => {
+const postBulletin = async (token, createParams) => {
   const response = await axios({
     url: "/api/v1/bulletin/bulletins",
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    params,
+    data: createParams,
     method: "post",
   }).catch((error) => {
     return error.response;
@@ -61,13 +61,13 @@ const deleteBulletin = async (token, bulletinID) => {
 };
 
 // Update bulletin
-const patchBulletin = async (token, bulletinID, params) => {
+const patchBulletin = async (token, bulletinID, updateParams) => {
   const response = await axios({
     url: `/api/v1/bulletin/bulletins/${bulletinID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    params,
+    data: updateParams,
     method: "patch",
   }).catch((error) => {
     return error.response;
@@ -257,7 +257,7 @@ const patchRide = async (token, postID, updateParams) => {
 
 export {
   getBulletins,
-  postBulletins,
+  postBulletin,
   getBulletin,
   getDiscussion,
   deleteBulletin,

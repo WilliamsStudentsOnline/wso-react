@@ -4,14 +4,38 @@ import PropTypes from "prop-types";
 
 import { getToken, getCurrUser } from "../../../selectors/auth";
 
-import { getBulletin, getRide } from "../../../api/bulletins";
+import {
+  getBulletin,
+  getRide,
+  deleteBulletin,
+  deleteRide,
+} from "../../../api/bulletins";
 
 import { checkAndHandleError } from "../../../lib/general";
-import { createRouteNodeSelector } from "redux-router5";
+import { createRouteNodeSelector, actions } from "redux-router5";
 import { connect } from "react-redux";
+import { Link } from "react-router5";
 
-const BulletinShow = ({ currUser, token, route }) => {
+const BulletinShow = ({ currUser, token, route, navigateTo }) => {
   const [bulletin, updateBulletin] = useState(null);
+
+  const deleteHandler = async () => {
+    // eslint-disable-next-line no-restricted-globals
+    const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
+    if (!confirmDelete) return;
+
+    let response;
+
+    if (bulletin.type) {
+      response = await deleteBulletin(token, bulletin.id);
+    } else {
+      response = await deleteRide(token, bulletin.id);
+    }
+
+    if (checkAndHandleError(response)) {
+      navigateTo("bulletins", { type: bulletin.type ? bulletin.type : "ride" });
+    }
+  };
 
   useEffect(() => {
     const loadBulletin = async () => {
@@ -31,12 +55,11 @@ const BulletinShow = ({ currUser, token, route }) => {
 
       if (checkAndHandleError(bulletinResponse)) {
         updateBulletin(bulletinResponse.data.data);
-        console.log(bulletinResponse.data.data);
       } else updateBulletin(null);
     };
 
     loadBulletin();
-  }, [token, route.params.userID]);
+  }, [token, route.params.bulletinID, route.params.type]);
 
   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
 
@@ -75,16 +98,20 @@ const BulletinShow = ({ currUser, token, route }) => {
           {currUser.id === bulletin.user.id || currUser.admin ? (
             <>
               &nbsp;[&nbsp;
-              <a href={`${window.location.href}/edit`}>Edit</a>
+              <Link
+                routeName="bulletins.edit"
+                routeParams={{ bulletinID: bulletin.id, type: bulletin.type }}
+              >
+                Edit
+              </Link>
               &nbsp;|&nbsp;
-              <a
-                data-confirm="Are you sure?"
-                rel="nofollow"
-                data-method="delete"
-                href={`/bulletins/${bulletin.id}`}
+              <button
+                type="button"
+                onClick={deleteHandler}
+                className="inline-button"
               >
                 Delete
-              </a>
+              </button>
               &nbsp;]
             </>
           ) : null}
@@ -103,6 +130,7 @@ BulletinShow.propTypes = {
   token: PropTypes.string.isRequired,
   currUser: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
 };
 
 BulletinShow.defaultProps = {};
@@ -117,4 +145,12 @@ const mapStateToProps = () => {
   });
 };
 
-export default connect(mapStateToProps)(BulletinShow);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(BulletinShow);

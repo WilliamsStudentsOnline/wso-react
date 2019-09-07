@@ -78,9 +78,12 @@ const BulletinIndex = ({ type, token, currUser }) => {
                     {currUser.id === bulletin.user.id || currUser.admin ? (
                       <>
                         &nbsp;[&nbsp;
-                        <a href={`${window.location.href}/${bulletin.id}/edit`}>
+                        <Link
+                          routeName="bulletins.edit"
+                          routeParams={{ bulletinID: bulletin.id, type }}
+                        >
                           Edit
-                        </a>
+                        </Link>
                         &nbsp;|&nbsp;
                         <a
                           data-confirm="Are you sure?"

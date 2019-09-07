@@ -19,11 +19,11 @@ const BulletinLayout = ({ children, type }) => {
           </h1>
           <ul>
             <li>
-              <a href={`/${type}/new`}>
+              <Link routeName="bulletins.new" routeParams={{ type }}>
                 {type === "lostAndFound"
                   ? "New Lost + Found Post"
                   : `New ${type} Post`}
-              </a>
+              </Link>
             </li>
             <li>
               <Link

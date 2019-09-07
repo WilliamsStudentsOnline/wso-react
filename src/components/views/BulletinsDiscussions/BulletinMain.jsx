@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import BulletinLayout from "./BulletinLayout";
 import BulletinIndex from "./BulletinIndex";
 import BulletinShow from "./BulletinShow";
+import BulletinForm from "./BulletinForm";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -13,10 +14,8 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 
 const BulletinMain = ({ route, navigateTo }) => {
   const BulletinBody = (bulletinType) => {
-    console.log(route);
-
     const splitRoute = route.name.split(".");
-    console.log(splitRoute);
+
     if (splitRoute.length < 2) {
       return <BulletinIndex type={bulletinType} />;
     }
@@ -24,6 +23,9 @@ const BulletinMain = ({ route, navigateTo }) => {
     switch (splitRoute[1]) {
       case "show":
         return <BulletinShow />;
+      case "new":
+      case "edit":
+        return <BulletinForm />;
       default:
         return <BulletinIndex type={bulletinType} />;
     }
@@ -39,8 +41,6 @@ const BulletinMain = ({ route, navigateTo }) => {
       "exchange",
       "announcement",
     ];
-
-    console.log("lolol");
 
     if (validBulletinTypes.indexOf(route.params.type) !== -1) {
       return (
@@ -63,7 +63,7 @@ BulletinMain.propTypes = {
 BulletinMain.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("/");
+  const routeNodeSelector = createRouteNodeSelector("bulletins");
 
   return (state) => ({
     ...routeNodeSelector(state),
