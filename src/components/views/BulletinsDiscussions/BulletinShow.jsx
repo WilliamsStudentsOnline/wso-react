@@ -55,7 +55,6 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
 
       if (checkAndHandleError(bulletinResponse)) {
         updateBulletin(bulletinResponse.data.data);
-        console.log(bulletinResponse.data.data);
       } else updateBulletin(null);
     };
 
@@ -90,22 +89,30 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
               : new Date(bulletin.date).toLocaleDateString("en-US", dateOptions)
           } by `}
           {bulletin.userID ? (
-            <a href={`/facebook/users/${bulletin.user.id}`}>
+            <Link
+              routeName="facebook.users"
+              routeParams={{ userID: bulletin.userID }}
+            >
               {bulletin.user.name}
-            </a>
+            </Link>
           ) : (
             bulletin.user.name
           )}
           {currUser.id === bulletin.user.id || currUser.admin ? (
             <>
-              &nbsp;[&nbsp;
-              <Link
-                routeName="bulletins.edit"
-                routeParams={{ bulletinID: bulletin.id, type: bulletin.type }}
+              <br />
+              <button
+                type="button"
+                onClick={() =>
+                  navigateTo("bulletins.edit", {
+                    bulletinID: bulletin.id,
+                    type: route.params.type,
+                  })
+                }
+                className="inline-button"
               >
                 Edit
-              </Link>
-              &nbsp;|&nbsp;
+              </button>
               <button
                 type="button"
                 onClick={deleteHandler}
@@ -113,7 +120,6 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
               >
                 Delete
               </button>
-              &nbsp;]
             </>
           ) : null}
 

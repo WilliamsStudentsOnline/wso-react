@@ -67,7 +67,7 @@ const patchBulletin = async (token, bulletinID, updateParams) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    data: updateParams,
+    params: updateParams,
     method: "patch",
   }).catch((error) => {
     return error.response;
@@ -201,8 +201,8 @@ const postRide = async (token, createParams) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    method: "patch",
-    params: createParams,
+    method: "post",
+    data: createParams,
   }).catch((error) => {
     return error.response;
   });
@@ -225,9 +225,9 @@ const getRide = async (token, rideID) => {
 };
 
 // Delete single ride
-const deleteRide = async (token, postID) => {
+const deleteRide = async (token, rideID) => {
   const response = await axios({
-    url: `/api/v1/bulletin/posts/${postID}`,
+    url: `/api/v1/bulletin/rides/${rideID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -240,9 +240,9 @@ const deleteRide = async (token, postID) => {
 };
 
 // Update single ride
-const patchRide = async (token, postID, updateParams) => {
+const patchRide = async (token, rideID, updateParams) => {
   const response = await axios({
-    url: `/api/v1/bulletin/posts/${postID}`,
+    url: `/api/v1/bulletin/rides/${rideID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },

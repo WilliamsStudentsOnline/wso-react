@@ -4,7 +4,12 @@ import PropTypes from "prop-types";
 
 import { getToken, getCurrUser } from "../../../selectors/auth";
 
-import { getBulletins, getRides } from "../../../api/bulletins";
+import {
+  getBulletins,
+  getRides,
+  deleteBulletin,
+  deleteRide,
+} from "../../../api/bulletins";
 
 import { connect } from "react-redux";
 
@@ -14,38 +19,59 @@ import { Link } from "react-router5";
 const BulletinIndex = ({ type, token, currUser }) => {
   const [bulletins, updateBulletins] = useState([]);
 
+  const loadBulletins = async () => {
+    const params = {
+      type,
+      preload: ["user"],
+      limit: 20,
+      start: new Date(),
+    };
+    const bulletinsResponse = await getBulletins(token, params);
+    if (checkAndHandleError(bulletinsResponse)) {
+      updateBulletins(bulletinsResponse.data.data);
+    }
+  };
+
+  const loadRides = async () => {
+    const params = {
+      preload: ["user"],
+      limit: 20,
+      // We don't generally need to add start as a param because the backend automatically
+      // filters for only future rides.
+    };
+    const ridesResponse = await getRides(token, params);
+    if (checkAndHandleError(ridesResponse)) {
+      updateBulletins(ridesResponse.data.data);
+    }
+  };
+
   useEffect(() => {
-    const loadBulletins = async () => {
-      const params = {
-        type,
-        preload: ["user"],
-        limit: 20,
-        start: new Date(),
-      };
-      const bulletinsResponse = await getBulletins(token, params);
-      if (checkAndHandleError(bulletinsResponse)) {
-        updateBulletins(bulletinsResponse.data.data);
-      }
-    };
-
-    const loadRides = async () => {
-      const params = {
-        preload: ["user"],
-        limit: 20,
-        start: new Date(),
-      };
-      const ridesResponse = await getRides(token, params);
-      if (checkAndHandleError(ridesResponse)) {
-        updateBulletins(ridesResponse.data.data);
-      }
-    };
-
     // Different because the api endpoints are different
     if (type === "ride") loadRides();
     else loadBulletins();
-  }, [token, type]);
+  }, [token, type, loadBulletins, loadRides]);
 
   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
+
+  const deleteHandler = async (event, bulletinID) => {
+    event.preventDefault();
+    // eslint-disable-next-line no-restricted-globals
+    const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
+    if (!confirmDelete) return;
+
+    let response;
+
+    if (type === "ride") {
+      response = await deleteRide(token, bulletinID);
+    } else {
+      response = await deleteBulletin(token, bulletinID);
+    }
+
+    if (checkAndHandleError(response)) {
+      if (type === "ride") loadRides();
+      else loadBulletins();
+    }
+  };
 
   return (
     <article className="main-table">
@@ -87,14 +113,13 @@ const BulletinIndex = ({ type, token, currUser }) => {
                           Edit
                         </Link>
                         &nbsp;|&nbsp;
-                        <a
-                          data-confirm="Are you sure?"
-                          rel="nofollow"
-                          data-method="delete"
-                          href={`/bulletins/${bulletin.id}`}
+                        <Link
+                          routeName="bulletins"
+                          routeParams={{ type }}
+                          onClick={(event) => deleteHandler(event, bulletin.id)}
                         >
                           Delete
-                        </a>
+                        </Link>
                         &nbsp;]
                       </>
                     ) : null}

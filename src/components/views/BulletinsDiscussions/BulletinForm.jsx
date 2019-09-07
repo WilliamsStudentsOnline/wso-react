@@ -10,6 +10,9 @@ import {
   getBulletin,
   patchBulletin,
   postBulletin,
+  patchRide,
+  postRide,
+  getRide,
 } from "../../../api/bulletins";
 import { checkAndHandleError } from "../../../lib/general";
 
@@ -36,21 +39,28 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
-    // @TODO: redirect when a person wants to edit a post without authorization
     const loadBulletin = async () => {
-      const bulletinResponse = await getBulletin(
-        token,
-        route.params.bulletinID
-      );
+      let bulletinResponse;
+
+      if (route.params.type === "ride") {
+        bulletinResponse = await getRide(token, route.params.bulletinID);
+      } else {
+        bulletinResponse = await getBulletin(token, route.params.bulletinID);
+      }
+
       if (checkAndHandleError(bulletinResponse)) {
-        if (bulletinResponse.data.data.userID === currUser.id) {
-          updateBody(bulletinResponse.data.data.body);
-          if (route.params.type) {
-            updateTitle(bulletinResponse.data.data.title);
+        const bulletinData = bulletinResponse.data.data;
+
+        if (bulletinData.userID === currUser.id) {
+          updateBody(bulletinData.body);
+          if (route.params.type === "ride") {
+            updateSource(bulletinData.source);
+            updateDestination(bulletinData.destination);
+            updateOffer(bulletinData.offer);
+            updateStartDate(bulletinData.date);
           } else {
-            updateSource(bulletinResponse.data.data.source);
-            updateDestination(bulletinResponse.data.data.destination);
-            updateOffer(bulletinResponse.data.date.offer);
+            updateTitle(bulletinData.title);
+            updateStartDate(bulletinData.startDate);
           }
         } else {
           navigateTo("403");
@@ -100,25 +110,28 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
   const submitHandler = async (event) => {
     event.preventDefault();
     // Parse integers here rather than below to minimize the expensive operation
-    let bulletinParams;
+    let response;
 
     if (type === "ride") {
-      bulletinParams = {
+      const rideParams = {
         type,
         source,
         offer,
         destination,
         body,
-        startDate,
+        date: startDate,
       };
+      response =
+        route.name === "bulletins.edit"
+          ? await patchRide(token, route.params.bulletinID, rideParams)
+          : await postRide(token, rideParams);
     } else {
-      bulletinParams = { type, title, body, startDate };
+      const bulletinParams = { type, title, body, startDate };
+      response =
+        route.name === "bulletins.edit"
+          ? await patchBulletin(token, route.params.bulletinID, bulletinParams)
+          : await postBulletin(token, bulletinParams);
     }
-
-    const response =
-      route.name === "bulletins.edit"
-        ? await patchBulletin(token, route.params.bulletinID, bulletinParams)
-        : await postBulletin(token, bulletinParams);
 
     if (checkAndHandleError(response)) {
       navigateTo("bulletins.show", { type, bulletinID: response.data.data.id });
@@ -149,7 +162,7 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
                 <label htmlFor="ride_offer">
                   <input
                     type="checkbox"
-                    value={offer}
+                    checked={offer}
                     onChange={(event) => updateOffer(event.target.checked)}
                   />
                   I&apos;m offering this ride
