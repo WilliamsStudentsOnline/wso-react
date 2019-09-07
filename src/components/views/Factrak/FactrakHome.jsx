@@ -22,7 +22,7 @@ const FactrakHome = ({ token, currUser }) => {
       const queryParams = {
         preload: ["professor", "course"],
         limit: 10,
-        offset: new Date(),
+        start: new Date(),
       };
       const surveysResponse = await getSurveys(token, queryParams);
 
