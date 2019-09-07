@@ -20,6 +20,7 @@ const BulletinIndex = ({ type, token, currUser }) => {
         type,
         preload: ["user"],
         limit: 20,
+        start: new Date(),
       };
       const bulletinsResponse = await getBulletins(token, params);
       if (checkAndHandleError(bulletinsResponse)) {
@@ -31,6 +32,7 @@ const BulletinIndex = ({ type, token, currUser }) => {
       const params = {
         preload: ["user"],
         limit: 20,
+        start: new Date(),
       };
       const ridesResponse = await getRides(token, params);
       if (checkAndHandleError(ridesResponse)) {

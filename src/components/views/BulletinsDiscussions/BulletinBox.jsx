@@ -16,6 +16,7 @@ import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 
 const BulletinBox = ({ token, type }) => {
+  // @TODO: make "type" consistent throughout all bulletin-related pages
   const [threads, updateThreads] = useState([]);
   const linkMap = new Map([
     ["Announcements", "announcement"],
@@ -113,9 +114,16 @@ const BulletinBox = ({ token, type }) => {
         {threads.map((thread) => {
           return (
             <div className="bulletin-children" key={thread.id}>
-              <a className="thread-link" href={`${type}/${thread.id}`}>
+              <Link
+                className="thread-link"
+                routeName="bulletins.show"
+                routeParams={{
+                  type: linkMap.get(type),
+                  bulletinID: thread.id,
+                }}
+              >
                 {threadTitle(thread)}
-              </a>
+              </Link>
 
               <span className="list-date">{date(threadDate(thread))}</span>
             </div>

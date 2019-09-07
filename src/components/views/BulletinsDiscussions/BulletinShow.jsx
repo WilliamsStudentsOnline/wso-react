@@ -55,6 +55,7 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
 
       if (checkAndHandleError(bulletinResponse)) {
         updateBulletin(bulletinResponse.data.data);
+        console.log(bulletinResponse.data.data);
       } else updateBulletin(null);
     };
 

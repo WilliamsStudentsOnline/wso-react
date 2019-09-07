@@ -15,6 +15,9 @@ import { checkAndHandleError } from "../../../lib/general";
 
 // External Imports
 import { createRouteNodeSelector, actions } from "redux-router5";
+import DatePicker from "react-date-picker";
+
+import "../../stylesheets/DatePicker.css";
 
 const BulletinForm = ({ token, currUser, route, navigateTo }) => {
   const [type, updateType] = useState("");
@@ -27,6 +30,7 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
   const [destination, updateDestination] = useState("");
   const [offer, updateOffer] = useState(false);
 
+  const [startDate, updateStartDate] = useState(new Date());
   const [body, updateBody] = useState("");
   const [errors, updateErrors] = useState([]);
 
@@ -55,10 +59,12 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
     };
 
     // Load Bulletin if it is a proper path
-    if (route.name === "bulletins.edit" && route.params.bulletinID) {
-      loadBulletin();
-    } else {
-      navigateTo("403");
+    if (route.name === "bulletins.edit") {
+      if (route.params.bulletinID) {
+        loadBulletin();
+      } else {
+        navigateTo("403");
+      }
     }
 
     if (route.params.type) {
@@ -75,7 +81,7 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
     route.params.type,
   ]);
 
-  const startDate = () => {
+  const startDateField = () => {
     if (type !== "announcement" && type !== "ride") return null;
 
     return (
@@ -83,7 +89,10 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
         <h5>
           <b>Show my post starting on</b>
         </h5>
-        <input type="text" id="ride_start_date" />
+        <DatePicker
+          value={startDate}
+          onChange={(date) => updateStartDate(date)}
+        />
       </div>
     );
   };
@@ -100,9 +109,10 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
         offer,
         destination,
         body,
+        startDate,
       };
     } else {
-      bulletinParams = { type, title, body };
+      bulletinParams = { type, title, body, startDate };
     }
 
     const response =
@@ -181,7 +191,7 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
             </div>
           )}
 
-          {startDate()}
+          {startDateField()}
 
           <div className="field">
             <h5>
