@@ -50,14 +50,17 @@ const DiscussionPost = ({ post, currUser, token }) => {
     if (!post.userID) return null;
     if (post.userID === currUser.id || currUser.admin) {
       return (
-        <>
-          <button
-            className="inline-button"
-            type="button"
-            onClick={() => setEdit(true)}
-          >
-            Edit
-          </button>
+        <div>
+          {post.userID === currUser.id ? (
+            <button
+              className="inline-button"
+              type="button"
+              onClick={() => setEdit(true)}
+            >
+              Edit
+            </button>
+          ) : null}
+
           <button
             className="inline-button"
             type="button"
@@ -66,8 +69,7 @@ const DiscussionPost = ({ post, currUser, token }) => {
             Delete
           </button>
           <br />
-          <br />
-        </>
+        </div>
       );
     }
     return null;
@@ -92,7 +94,6 @@ const DiscussionPost = ({ post, currUser, token }) => {
           </b>
           &nbsp;
           <em>{new Date(currPost.createdTime).toDateString()}</em>
-          <br />
           <br />
           {editControls()}
           {currPost.content}

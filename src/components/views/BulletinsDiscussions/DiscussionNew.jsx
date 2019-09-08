@@ -38,11 +38,23 @@ const DiscussionsNew = ({ token, navigateTo }) => {
   const submitHandler = async (event) => {
     event.preventDefault();
 
+    if (!title.trim() && !content.trim()) {
+      updateErrors(["Title is empty.", "Body is empty."]);
+    }
+    if (!title.trim()) {
+      updateErrors(["Title is empty."]);
+      return;
+    }
+    if (!content.trim()) {
+      updateErrors(["Body is empty."]);
+      return;
+    }
+
     const params = { title, content };
     const response = await postDiscussion(token, params);
 
     if (checkAndHandleError(response)) {
-      navigateTo("discussions");
+      navigateTo("discussions.show", { discussionID: response.data.data.id });
     } else if (response.error.errors) {
       updateErrors(response.error.errors);
     } else {
@@ -53,9 +65,9 @@ const DiscussionsNew = ({ token, navigateTo }) => {
   return (
     <article className="list-creation">
       <section>
-        {renderErrors()}
         <form onSubmit={submitHandler}>
           <br />
+          {renderErrors()}
           <input
             placeholder="Title"
             type="text"
