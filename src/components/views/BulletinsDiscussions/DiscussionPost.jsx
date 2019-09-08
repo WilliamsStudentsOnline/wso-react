@@ -135,4 +135,5 @@ const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
   token: getToken(state),
 });
+
 export default connect(mapStateToProps)(DiscussionPost);

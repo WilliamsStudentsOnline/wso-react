@@ -11,6 +11,7 @@ import { connect } from "react-redux";
 
 // External Imports
 import { createRouteNodeSelector, actions } from "redux-router5";
+import DiscussionNew from "./DiscussionNew";
 
 const DiscussionMain = ({ route, navigateTo }) => {
   const DiscussionBody = () => {
@@ -25,6 +26,8 @@ const DiscussionMain = ({ route, navigateTo }) => {
         return <DiscussionShow />;
       case "posts":
         return <DiscussionPost />;
+      case "new":
+        return <DiscussionNew />;
       default:
         navigateTo("discussion");
         return null;

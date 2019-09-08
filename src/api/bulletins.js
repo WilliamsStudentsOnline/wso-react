@@ -105,6 +105,38 @@ const getDiscussion = async (token, discussionID) => {
   return response;
 };
 
+// Create discussion
+const postDiscussion = async (token, createParams) => {
+  const response = await axios({
+    url: `/api/v1/bulletin/discussions`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "post",
+    data: createParams,
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
+// Patch discussion
+const patchDiscussion = async (token, discussionID, updateParams) => {
+  const response = await axios({
+    url: `/api/v1/bulletin/discussions`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "patch",
+    params: updateParams,
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
 // Get discussion posts
 const getDiscussionPosts = async (token, discussionID) => {
   const response = await axios({
@@ -263,6 +295,8 @@ export {
   getDiscussion,
   deleteBulletin,
   patchBulletin,
+  postDiscussion,
+  patchDiscussion,
   getDiscussions,
   getDiscussionPosts,
   postPost,

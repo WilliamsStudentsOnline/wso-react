@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 // External Imports
 import { createRouteNodeSelector } from "redux-router5";
 import { checkAndHandleError } from "../../../lib/general";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getToken } from "../../../selectors/auth";
 
 const DiscussionShow = ({ token, route }) => {
   const [posts, updatePosts] = useState([]);
@@ -116,7 +116,6 @@ const mapStateToProps = () => {
 
   return (state) => ({
     token: getToken(state),
-    currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });
 };

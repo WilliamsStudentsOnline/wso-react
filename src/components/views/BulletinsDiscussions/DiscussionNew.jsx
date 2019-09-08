@@ -1,28 +1,31 @@
 // React imports
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import DiscussionLayout from "./DiscussionLayout";
 
-const DiscussionsNew = ({
-  thread,
-  post,
-  authToken,
-  notice,
-  warning,
-  currentUser,
-}) => {
+// Redux imports
+import { connect } from "react-redux";
+
+// External Imports
+import { actions } from "redux-router5";
+import { checkAndHandleError } from "../../../lib/general";
+import { getToken } from "../../../selectors/auth";
+
+import { postDiscussion } from "../../../api/bulletins";
+
+const DiscussionsNew = ({ token, navigateTo }) => {
+  const [errors] = useState([]);
+
+  const [title, updateTitle] = useState("");
+  const [content, updateContent] = useState("");
+
   const renderErrors = () => {
-    if (!thread.errors && !post.errors) return null;
-    if (thread.errors.length === 0 && post.errors.length === 0) return null;
+    if (!errors || errors.length === 0) return null;
 
     return (
       <div id="error_explanation">
-        <b>{`${thread.errors.length + post.errors.length} errors:`}</b>
+        <b>{`${errors.length} errors:`}</b>
         <ul>
-          {thread.errors.map((error) => (
-            <li key={error}>{error}</li>
-          ))}
-          {post.errors.map((error) => (
+          {errors.map((error) => (
             <li key={error}>{error}</li>
           ))}
         </ul>
@@ -30,63 +33,69 @@ const DiscussionsNew = ({
     );
   };
 
+  const submitHandler = async (event) => {
+    event.preventDefault();
+
+    const params = {
+      title,
+      content,
+    };
+
+    const response = await postDiscussion(token, params);
+
+    if (checkAndHandleError(response)) {
+      navigateTo("discussions");
+    }
+  };
+
   return (
-    <DiscussionLayout
-      notice={notice}
-      warning={warning}
-      currentUser={currentUser}
-    >
-      <article className="list-creation">
-        <section>
-          {renderErrors()}
-          <form
-            className="new_post"
-            id="new_post"
-            action="/posts"
-            acceptCharset="UTF-8"
-            method="post"
-          >
-            <br />
-            <input name="utf8" type="hidden" value="✓" />
-            <input type="hidden" name="authenticity_token" value={authToken} />
-            <input
-              placeholder="Title"
-              type="text"
-              name="post[title]"
-              id="post_title"
-            />
-            <textarea
-              placeholder="Body"
-              name="post[content]"
-              id="post_content"
-            />
-            <input
-              type="submit"
-              name="commit"
-              value="Submit"
-              className="submit"
-              data-disable-with="Submit"
-            />
-          </form>
-        </section>
-      </article>
-    </DiscussionLayout>
+    <article className="list-creation">
+      <section>
+        {renderErrors()}
+        <form onSubmit={submitHandler}>
+          <br />
+          <input
+            placeholder="Title"
+            type="text"
+            id="post_title"
+            value={title}
+            onChange={(event) => updateTitle(event.target.value)}
+          />
+          <textarea
+            placeholder="Body"
+            id="post_content"
+            value={content}
+            onChange={(event) => updateContent(event.target.value)}
+          />
+          <input
+            type="submit"
+            value="Submit"
+            className="submit"
+            data-disable-with="Submit"
+          />
+        </form>
+      </section>
+    </article>
   );
 };
 
 DiscussionsNew.propTypes = {
-  thread: PropTypes.object.isRequired,
-  post: PropTypes.object.isRequired,
-  authToken: PropTypes.string.isRequired,
-  currentUser: PropTypes.object,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
+  token: PropTypes.string.isRequired,
+  navigateTo: PropTypes.object.isRequired,
 };
 
-DiscussionsNew.defaultProps = {
-  warning: "",
-  currentUser: {},
-  notice: "",
-};
+DiscussionsNew.defaultProps = {};
 
-export default DiscussionsNew;
+const mapStateToProps = (state) => ({
+  token: getToken(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DiscussionsNew);
