@@ -1,125 +1,124 @@
 // React imports
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import axios from "axios";
 import DiscussionPost from "./DiscussionPost";
-import DiscussionLayout from "./DiscussionLayout";
+import { getDiscussion, postPost } from "../../../api/bulletins";
 
-const DiscussionShow = ({
-  thread,
-  posts,
-  currentUser,
-  authToken,
-  notice,
-  warning,
-}) => {
-  const [currPosts, updatePosts] = useState(posts);
+// Redux imports
+import { connect } from "react-redux";
+
+// External Imports
+import { createRouteNodeSelector } from "redux-router5";
+import { checkAndHandleError } from "../../../lib/general";
+import { getToken, getCurrUser } from "../../../selectors/auth";
+
+const DiscussionShow = ({ token, route }) => {
+  const [posts, updatePosts] = useState([]);
   const [reply, updateReply] = useState("");
+  const [discussion, updateDiscussion] = useState(null);
 
-  const replyHandler = () => {
-    axios({
-      url: `/posts`,
-      data: {
-        utf8: "✓",
-        post: {
-          discussion_id: thread.id,
-          content: reply,
-        },
-        commit: "submit",
-      },
-      method: "post",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    }).then((response) => {
-      updatePosts(currPosts.concat([response.data.post]));
-      updateReply("");
-    });
+  const [errors, updateErrors] = useState([]);
+
+  useEffect(() => {
+    const loadDiscussion = async () => {
+      const discussionResponse = await getDiscussion(
+        token,
+        route.params.discussionID
+      );
+
+      if (checkAndHandleError(discussionResponse)) {
+        updateDiscussion(discussionResponse.data.data);
+        updatePosts(discussionResponse.data.data.posts);
+      } else if (discussionResponse.error.errors) {
+        updateErrors(discussionResponse.error.errors);
+      } else {
+        updateErrors(discussionResponse.error.message);
+      }
+    };
+
+    loadDiscussion();
+  }, [token]);
+
+  const submitHandler = async (event) => {
+    event.preventDefault();
+
+    if (!reply) return;
+
+    const params = { content: reply, discussionID: discussion.id };
+    const response = await postPost(token, params);
+
+    if (checkAndHandleError(response)) {
+      updatePosts(posts.concat([response.data.data]));
+    }
   };
 
   const renderPosts = () => {
-    if (currPosts.length === 0) return null;
-    return currPosts.map((post) => (
-      <DiscussionPost
-        currentUser={currentUser}
-        authToken={authToken}
-        post={post}
-        key={post.id}
-      />
+    if (posts.length === 0) return null;
+
+    return posts.map((post) => (
+      <DiscussionPost post={post} key={post.id} token={token} />
     ));
   };
 
+  if (!discussion) return null;
+
   return (
-    <DiscussionLayout
-      notice={notice}
-      warning={warning}
-      currentUser={currentUser}
-    >
-      <section className="discussion-thread">
-        <h5>
-          <b>{thread.title}</b>
-          <br />
-          <br />
-          <br />
-        </h5>
+    <section className="discussion-thread">
+      <h5>
+        <b>{discussion.title}</b>
+        <br />
+        <br />
+        <br />
+      </h5>
 
-        {renderPosts()}
+      {renderPosts()}
 
-        <div className="reply">
-          <form
-            className="new_post"
-            id="new_post"
-            action="/posts"
-            acceptCharset="UTF-8"
-            data-remote="true"
-            method="post"
-          >
-            <input name="utf8" type="hidden" value="✓" />
-            <input
-              value={thread.id}
-              type="hidden"
-              name="post[discussion_id]"
-              id="post_discussion_id"
-            />
-            <strong>Reply</strong>
-            <textarea
-              name="post[content]"
-              id="post_content"
-              value={reply}
-              onChange={(event) => updateReply(event.target.value)}
-            />
+      <div className="reply">
+        <form onSubmit={submitHandler}>
+          <strong>Reply</strong>
+          <textarea
+            id="post_content"
+            value={reply}
+            onChange={(event) => updateReply(event.target.value)}
+          />
 
-            <div id="errors" />
-            <button
-              type="button"
-              name="commit"
-              value="Submit"
-              data-disable-with="Submit"
-              onClick={replyHandler}
-            >
-              Submit
-            </button>
-          </form>
-        </div>
-      </section>
-    </DiscussionLayout>
+          {errors && errors.length > 0 ? (
+            <div id="errors">
+              <b>Please correct the following error(s):</b>
+              {errors.map((msg) => (
+                <p key={msg}>{msg}</p>
+              ))}
+            </div>
+          ) : null}
+
+          <input
+            type="submit"
+            value="Submit"
+            className="submit"
+            data-disable-with="Submit"
+          />
+        </form>
+      </div>
+    </section>
   );
 };
 
 DiscussionShow.propTypes = {
-  thread: PropTypes.object.isRequired,
-  posts: PropTypes.arrayOf(PropTypes.object).isRequired,
-  currentUser: PropTypes.object,
-  authToken: PropTypes.string.isRequired,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
+  token: PropTypes.string.isRequired,
+  route: PropTypes.object.isRequired,
 };
 
-DiscussionShow.defaultProps = {
-  notice: "",
-  warning: "",
-  currentUser: {},
+DiscussionShow.defaultProps = {};
+
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("discussions");
+
+  return (state) => ({
+    token: getToken(state),
+    currUser: getCurrUser(state),
+    ...routeNodeSelector(state),
+  });
 };
 
-export default DiscussionShow;
+export default connect(mapStateToProps)(DiscussionShow);

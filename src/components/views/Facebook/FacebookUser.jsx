@@ -14,6 +14,7 @@ const FacebookUser = ({ currUser, token, route }) => {
   const [viewPerson, updateTarget] = useState(null);
 
   useEffect(() => {
+    // @TODO: Handle not being able to find the current user
     const loadTarget = async () => {
       if (!route.params.userID) {
         updateTarget(null);

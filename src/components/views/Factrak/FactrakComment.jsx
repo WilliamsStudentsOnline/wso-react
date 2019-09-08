@@ -33,7 +33,7 @@ const FactrakComment = ({
   updateUser,
 }) => {
   const [survey, updateSurvey] = useState(comment);
-  const [isDeleted, updatedDeleted] = useState(false);
+  const [isDeleted, updateDeleted] = useState(false);
 
   const getAndUpdateSurvey = async () => {
     const surveyResponse = await getSurvey(token, survey.id);
@@ -50,7 +50,7 @@ const FactrakComment = ({
     const response = await deleteSurvey(token, survey.id);
 
     if (checkAndHandleError(response)) {
-      updatedDeleted(true);
+      updateDeleted(true);
       const userResponse = await getUser("me", token);
       if (checkAndHandleError(userResponse)) {
         updateUser(userResponse.data.data);

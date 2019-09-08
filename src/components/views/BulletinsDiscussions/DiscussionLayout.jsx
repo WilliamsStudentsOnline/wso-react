@@ -1,45 +1,34 @@
 // React imports
 import React from "react";
 import PropTypes from "prop-types";
-import Layout from "../../Layout";
 
-const DiscussionLayout = ({ children, notice, warning, currentUser }) => {
+import { Link } from "react-router5";
+
+const DiscussionLayout = ({ children }) => {
   return (
-    <Layout
-      bodyClass="announcement"
-      notice={notice}
-      warning={warning}
-      currentUser={currentUser}
-    >
+    <>
       <header>
         <div className="page-head">
           <h1>Discussions</h1>
           <ul>
             <li>
-              <a href="/discussions">Home</a>
+              <Link routeName="discussions">Home</Link>
             </li>
             <li>
-              <a href="/discussions/new">New</a>
+              <Link routeName="discussions.new">New</Link>
             </li>
           </ul>
         </div>
       </header>
       <article className="main-table">{children}</article>
-    </Layout>
+    </>
   );
 };
 
 DiscussionLayout.propTypes = {
   children: PropTypes.object.isRequired,
-  currentUser: PropTypes.object,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
 };
 
-DiscussionLayout.defaultProps = {
-  currentUser: {},
-  notice: "",
-  warning: "",
-};
+DiscussionLayout.defaultProps = {};
 
 export default DiscussionLayout;

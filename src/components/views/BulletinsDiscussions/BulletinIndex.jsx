@@ -49,7 +49,7 @@ const BulletinIndex = ({ type, token, currUser }) => {
     // Different because the api endpoints are different
     if (type === "ride") loadRides();
     else loadBulletins();
-  }, [token, type, loadBulletins, loadRides]);
+  }, [token, type]);
 
   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
 

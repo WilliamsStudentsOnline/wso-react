@@ -29,6 +29,7 @@ import { getRandomWSO } from "../api/misc";
 import { checkAndHandleError } from "../lib/general";
 import FourOhThree from "./views/Errors/FourOhThree";
 import BulletinMain from "./views/BulletinsDiscussions/BulletinMain";
+import DiscussionMain from "./views/BulletinsDiscussions/DiscussionMain";
 
 const App = ({
   route,
@@ -75,6 +76,8 @@ const App = ({
         return <EphcatchMain />;
       case "bulletins":
         return <BulletinMain />;
+      case "discussions":
+        return <DiscussionMain />;
       case "logout":
         removeCreds();
         navigateTo("home");

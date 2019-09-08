@@ -1,38 +1,59 @@
 // React imports
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
 
-const DiscussionPost = ({ post, currentUser, authToken }) => {
-  const [deleted, setDeleted] = useState(post.deleted);
+// Redux imports
+import { connect } from "react-redux";
+import { getCurrUser, getToken } from "../../../selectors/auth";
+
+import { Link } from "react-router5";
+import { checkAndHandleError } from "../../../lib/general";
+import { patchPost, deletePost } from "../../../api/bulletins";
+
+const DiscussionPost = ({ post, currUser, token }) => {
+  const [deleted, updateDeleted] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [value, setValue] = useState(post.content);
+  const [reply, updateReply] = useState(post.content);
+  const [currPost, updateCurrPost] = useState(post);
 
-  const deleteHandler = () => {
-    // @TODO: write something to overcome this confirm
-    // eslint-disable-next-line no-restricted-globals
-    const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
-    if (!confirmDelete) return;
-    axios({
-      url: `/posts/${post.id}`,
-      method: "delete",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    }).then(() => {
-      setDeleted(true);
-    });
-  };
   const editHandler = () => {
-    // @TODO: write something to overcome this confirm
     setEdit(true);
   };
 
+  const submitHandler = async (event) => {
+    event.preventDefault();
+
+    if (reply === "") return;
+    const params = { content: reply };
+
+    const response = await patchPost(token, post.id, params);
+
+    if (checkAndHandleError(response)) {
+      setEdit(false);
+      updateCurrPost(response.data.data);
+    }
+  };
+
+  const deleteHandler = async () => {
+    // eslint-disable-next-line no-restricted-globals
+    const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
+    if (!confirmDelete) return;
+
+    const response = await deletePost(token, post.id);
+
+    if (checkAndHandleError(response)) {
+      updateDeleted(true);
+    }
+  };
+
   const editControls = () => {
-    if (!post.user_id) return null;
-    if (post.user_id === currentUser.id || currentUser.admin) {
+    if (!post.userID) return null;
+    if (post.userID === currUser.id || currUser.admin) {
       return (
         <>
+          <button className="inline-button" type="button" onClick={editHandler}>
+            Edit
+          </button>
           <button
             className="inline-button"
             type="button"
@@ -40,9 +61,8 @@ const DiscussionPost = ({ post, currentUser, authToken }) => {
           >
             Delete
           </button>
-          <button className="inline-button" type="button" onClick={editHandler}>
-            Edit
-          </button>
+          <br />
+          <br />
         </>
       );
     }
@@ -55,49 +75,43 @@ const DiscussionPost = ({ post, currentUser, authToken }) => {
         <>
           <div className="comment-content">
             <b>
-              {post.user ? (
-                <a href={`/facebook/users/${post.user.id}`}>{post.user.name}</a>
+              {currPost.user ? (
+                <Link
+                  routeName="facebook.users"
+                  routeParams={{ userID: currPost.userID }}
+                >
+                  {currPost.user.name}
+                </Link>
               ) : (
-                post.ex_user_name
+                currPost.exUserName
               )}
             </b>
             &nbsp;
-            <em>{new Date(post.created_at).toDateString()}</em>
+            <em>{new Date(currPost.createdTime).toDateString()}</em>
             <br />
             <br />
-            {post.content}
+            {editControls()}
+            {currPost.content}
           </div>
-          <div>{editControls()}</div>
         </>
       );
     }
 
-    if (deleted) return "Deleted";
+    if (deleted) return null;
 
     return (
-      <form
-        className="edit_post"
-        id={`edit_post_${post.id}`}
-        action={`/posts/${post.id}`}
-        acceptCharset="UTF-8"
-        method="post"
-      >
-        <input name="utf8" type="hidden" value="✓" />
-        <input type="hidden" name="_method" value="patch" />
-        <input type="hidden" name="authenticity_token" value={authToken} />
+      <form onSubmit={submitHandler}>
         <textarea
-          name="post[content]"
           id="post_content"
-          value={value}
+          value={reply}
           onChange={(event) => {
-            setValue(event.target.value);
+            updateReply(event.target.value);
           }}
         >
-          {post.content}
+          {currPost.content}
         </textarea>
         <input
           type="submit"
-          name="commit"
           value="Save"
           className="submit"
           data-disable-with="Save"
@@ -106,18 +120,19 @@ const DiscussionPost = ({ post, currentUser, authToken }) => {
     );
   };
 
-  return (
-    <div id={`p${post.id}`} className="comment">
-      <div className="comment-image" />
-      {commentContent()}
-    </div>
-  );
+  return <div className="comment">{commentContent()}</div>;
 };
 
 DiscussionPost.propTypes = {
   post: PropTypes.object.isRequired,
-  currentUser: PropTypes.object.isRequired,
-  authToken: PropTypes.string.isRequired,
+  currUser: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
-export default DiscussionPost;
+DiscussionPost.defaultProps = {};
+
+const mapStateToProps = (state) => ({
+  currUser: getCurrUser(state),
+  token: getToken(state),
+});
+export default connect(mapStateToProps)(DiscussionPost);

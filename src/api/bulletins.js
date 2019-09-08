@@ -127,7 +127,7 @@ const postPost = async (token, createParams) => {
       Authorization: `Bearer ${token}`,
     },
     method: "post",
-    params: createParams,
+    data: createParams,
   }).catch((error) => {
     return error.response;
   });
@@ -171,7 +171,8 @@ const patchPost = async (token, postID, updateParams) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    params: updateParams,
+    method: "patch",
+    data: updateParams,
   }).catch((error) => {
     return error.response;
   });
