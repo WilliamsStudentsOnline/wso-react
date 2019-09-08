@@ -14,6 +14,9 @@ import { checkAndHandleError } from "../../../lib/general";
 import { getToken } from "../../../selectors/auth";
 
 const DiscussionShow = ({ token, route }) => {
+  // const perPage = 20;
+  // const [page, updatePage] = useState(0);
+  // const [total, updateTotal] = useState(0);
   const [posts, updatePosts] = useState([]);
   const [reply, updateReply] = useState("");
   const [discussion, updateDiscussion] = useState(null);
@@ -30,6 +33,7 @@ const DiscussionShow = ({ token, route }) => {
       if (checkAndHandleError(discussionResponse)) {
         updateDiscussion(discussionResponse.data.data);
         updatePosts(discussionResponse.data.data.posts);
+        // updateTotal(discussionResponse.data.paginationTotal);
       } else if (discussionResponse.error.errors) {
         updateErrors(discussionResponse.error.errors);
       } else {

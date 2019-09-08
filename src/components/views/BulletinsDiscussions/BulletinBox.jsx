@@ -95,16 +95,16 @@ const BulletinBox = ({ token, type }) => {
   return (
     <div className="bulletin">
       <div className="bulletin-title">
-        {type !== "Discussions" ? (
+        {type === "Discussions" ? (
+          <Link className="bulletin-link" routeName="discussions">
+            {type}
+          </Link>
+        ) : (
           <Link
             className="bulletin-link"
             routeName="bulletins"
             routeParams={{ type: linkMap.get(type) }}
           >
-            {type}
-          </Link>
-        ) : (
-          <Link className="bulletin-link" routeName="discussions">
             {type}
           </Link>
         )}
@@ -114,16 +114,28 @@ const BulletinBox = ({ token, type }) => {
         {threads.map((thread) => {
           return (
             <div className="bulletin-children" key={thread.id}>
-              <Link
-                className="thread-link"
-                routeName="bulletins.show"
-                routeParams={{
-                  type: linkMap.get(type),
-                  bulletinID: thread.id,
-                }}
-              >
-                {threadTitle(thread)}
-              </Link>
+              {type === "Discussions" ? (
+                <Link
+                  className="thread-link"
+                  routeName="discussions.show"
+                  routeParams={{
+                    discussionID: thread.id,
+                  }}
+                >
+                  {threadTitle(thread)}
+                </Link>
+              ) : (
+                <Link
+                  className="thread-link"
+                  routeName="bulletins.show"
+                  routeParams={{
+                    type: linkMap.get(type),
+                    bulletinID: thread.id,
+                  }}
+                >
+                  {threadTitle(thread)}
+                </Link>
+              )}
 
               <span className="list-date">{date(threadDate(thread))}</span>
             </div>
