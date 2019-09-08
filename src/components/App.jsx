@@ -15,11 +15,14 @@ import FactrakMain from "./views/Factrak/FactrakMain";
 import EphcatchMain from "./views/Ephcatch/EphcatchMain";
 import FourOhFour from "./views/Errors/FourOhFour";
 import Login from "./Login";
+import FourOhThree from "./views/Errors/FourOhThree";
+import BulletinMain from "./views/BulletinsDiscussions/BulletinMain";
+import DiscussionMain from "./views/BulletinsDiscussions/DiscussionMain";
+import BuildingHours from "./views/Misc/BuildingHours";
 
 // Redux/routing
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import BuildingHours from "./views/Misc/BuildingHours";
 import { getToken, getExpiry } from "../selectors/auth";
 import { doRemoveCreds, doUpdateToken } from "../actions/auth";
 
@@ -27,9 +30,6 @@ import { doRemoveCreds, doUpdateToken } from "../actions/auth";
 import { tokenExpiryHandler, getCampusToken } from "../api/auth";
 import { getRandomWSO } from "../api/misc";
 import { checkAndHandleError } from "../lib/general";
-import FourOhThree from "./views/Errors/FourOhThree";
-import BulletinMain from "./views/BulletinsDiscussions/BulletinMain";
-import DiscussionMain from "./views/BulletinsDiscussions/DiscussionMain";
 
 const App = ({
   route,
@@ -97,6 +97,7 @@ const App = ({
       if (refresh) return;
     }
 
+    // If the token does not exist, get a token based on whether user is on campus.
     const campusResponse = await getCampusToken();
 
     if (checkAndHandleError(campusResponse)) {

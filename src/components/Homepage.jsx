@@ -3,15 +3,15 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 // Component imports
-import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 import "./stylesheets/Homepage.css";
+import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
+
+// Redux Imports
+import { connect } from "react-redux";
 import { actions } from "redux-router5";
 
-// API imports
-import { connect } from "react-redux";
-
 const Homepage = ({ navigateTo }) => {
-  const bulletinTypes = [
+  const bulletinTypeWords = [
     "Discussions",
     "Announcements",
     "Exchanges",
@@ -40,9 +40,7 @@ const Homepage = ({ navigateTo }) => {
           <br />
           <form onSubmit={submitHandler}>
             <input
-              id="search"
               type="search"
-              autoFocus
               placeholder="Search Facebook"
               onChange={(event) => updateQuery(event.target.value)}
             />
@@ -57,8 +55,8 @@ const Homepage = ({ navigateTo }) => {
         <article>
           <section>
             <div className="bulletin-list">
-              {bulletinTypes.map((bulletin) => {
-                return <BulletinBox type={bulletin} key={bulletin} />;
+              {bulletinTypeWords.map((bulletin) => {
+                return <BulletinBox typeWord={bulletin} key={bulletin} />;
               })}
             </div>
           </section>

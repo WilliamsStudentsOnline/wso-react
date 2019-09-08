@@ -1,32 +1,43 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-
-// Component imports
 import "../../stylesheets/BulletinBox.css";
+
+// Redux/Routing imports
+import { connect } from "react-redux";
+import { getToken } from "../../../selectors/auth";
 
 // API imports
 import { getBulletins, getDiscussions, getRides } from "../../../api/bulletins";
 
-import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
-
+// Additional imports
 import { checkAndHandleError } from "../../../lib/general";
-
 import { Link } from "react-router5";
+import {
+  bulletinTypeRide,
+  bulletinTypeJob,
+  discussionType,
+  bulletinTypeLostAndFound,
+  bulletinTypeExchange,
+  bulletinTypeAnnouncement,
+} from "../../../constants/general";
 
-const BulletinBox = ({ token, type }) => {
-  // @TODO: make "type" consistent throughout all bulletin-related pages
+const BulletinBox = ({ token, typeWord }) => {
   const [threads, updateThreads] = useState([]);
+
+  // Converts the typeWord to the type of bulletin/discussion to be obtained.
   const linkMap = new Map([
-    ["Announcements", "announcement"],
-    ["Exchanges", "exchange"],
-    ["Lost And Found", "lostAndFound"],
-    ["Jobs", "job"],
-    ["Rides", "ride"],
-    ["Discussions", "discussions"],
+    ["Announcements", bulletinTypeAnnouncement],
+    ["Exchanges", bulletinTypeExchange],
+    ["Lost And Found", bulletinTypeLostAndFound],
+    ["Jobs", bulletinTypeJob],
+    ["Rides", bulletinTypeRide],
+    ["Discussions", discussionType],
   ]);
 
+  const type = linkMap.get(typeWord);
+
+  // Load the appropriate discussionns/bulletins
   useEffect(() => {
     const loadDiscussions = async () => {
       const loadParams = {
@@ -51,7 +62,7 @@ const BulletinBox = ({ token, type }) => {
     const loadBulletins = async () => {
       const loadParams = {
         limit: 5,
-        type: linkMap.get(type),
+        type,
       };
       const bulletinsResponse = await getBulletins(token, loadParams);
       if (checkAndHandleError(bulletinsResponse)) {
@@ -59,12 +70,12 @@ const BulletinBox = ({ token, type }) => {
       } else updateThreads([]);
     };
 
-    if (type === "Discussions") loadDiscussions();
-    else if (type === "Rides") loadRides();
+    if (type === discussionType) loadDiscussions();
+    else if (type === bulletinTypeRide) loadRides();
     else loadBulletins();
   }, [token, type]);
 
-  const date = (showDate) => {
+  const formatDate = (showDate) => {
     const options = {
       weekday: "short",
       month: "short",
@@ -74,42 +85,53 @@ const BulletinBox = ({ token, type }) => {
     return new Date(showDate).toLocaleString("en-US", options);
   };
 
+  // Generates the threadTitle
   const threadTitle = (thread) => {
-    if (type === "Rides") {
+    if (type === bulletinTypeRide) {
       const threadOffer = thread.offer ? "Offer" : "Request";
       return `${thread.source} to ${thread.destination} [${threadOffer}]`;
     }
     return thread.title;
   };
 
+  // Generates thread Date
   const threadDate = (thread) => {
-    if (type === "Rides") {
+    if (type === bulletinTypeRide) {
       return thread.date;
     }
-    if (type === "Discussions") {
+    if (type === discussionType) {
       return thread.lastActive;
     }
     return thread.startDate;
   };
 
-  return (
-    <div className="bulletin">
-      <div className="bulletin-title">
-        {type === "Discussions" ? (
+  // Generate bulletin title link
+  const bulletinTitle = () => {
+    if (type === discussionType) {
+      return (
+        <div className="bulletin-title">
           <Link className="bulletin-link" routeName="discussions">
-            {type}
+            {typeWord}
           </Link>
-        ) : (
-          <Link
-            className="bulletin-link"
-            routeName="bulletins"
-            routeParams={{ type: linkMap.get(type) }}
-          >
-            {type}
-          </Link>
-        )}
-      </div>
+        </div>
+      );
+    }
 
+    return (
+      <div className="bulletin-title">
+        <Link
+          className="bulletin-link"
+          routeName="bulletins"
+          routeParams={{ type }}
+        >
+          {typeWord}
+        </Link>
+      </div>
+    );
+  };
+
+  const bulletinThreads = () => {
+    return (
       <div className="bulletin-children-container">
         {threads.map((thread) => {
           return (
@@ -129,7 +151,7 @@ const BulletinBox = ({ token, type }) => {
                   className="thread-link"
                   routeName="bulletins.show"
                   routeParams={{
-                    type: linkMap.get(type),
+                    type,
                     bulletinID: thread.id,
                   }}
                 >
@@ -137,24 +159,30 @@ const BulletinBox = ({ token, type }) => {
                 </Link>
               )}
 
-              <span className="list-date">{date(threadDate(thread))}</span>
+              <span className="list-date">
+                {formatDate(threadDate(thread))}
+              </span>
             </div>
           );
         })}
       </div>
+    );
+  };
+
+  return (
+    <div className="bulletin">
+      {bulletinTitle()}
+      {bulletinThreads()}
     </div>
   );
 };
 
 BulletinBox.propTypes = {
-  // No isRequired because authentication not necessary for going to the homepage.
-  token: PropTypes.string,
-  type: PropTypes.string.isRequired,
+  token: PropTypes.string.isRequired,
+  typeWord: PropTypes.string.isRequired,
 };
 
-BulletinBox.defaultProps = {
-  token: "",
-};
+BulletinBox.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   token: getToken(state),
