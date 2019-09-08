@@ -38,7 +38,7 @@ const FacebookMain = ({ route, navigateTo, token }) => {
     return <FacebookLayout>{facebookBody()}</FacebookLayout>;
   }
 
-  navigateTo("403");
+  navigateTo("login");
   return null;
 };
 

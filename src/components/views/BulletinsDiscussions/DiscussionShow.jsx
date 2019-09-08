@@ -1,17 +1,16 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-
 import DiscussionPost from "./DiscussionPost";
-import { getDiscussion, postPost } from "../../../api/bulletins";
 
-// Redux imports
+// Redux/Routing imports
 import { connect } from "react-redux";
-
-// External Imports
 import { createRouteNodeSelector } from "redux-router5";
-import { checkAndHandleError } from "../../../lib/general";
 import { getToken } from "../../../selectors/auth";
+
+// Additional Imports
+import { checkAndHandleError } from "../../../lib/general";
+import { getDiscussion, postPost } from "../../../api/bulletins";
 
 const DiscussionShow = ({ token, route }) => {
   // const perPage = 20;

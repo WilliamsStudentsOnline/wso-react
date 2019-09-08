@@ -23,7 +23,7 @@ import BuildingHours from "./views/Misc/BuildingHours";
 // Redux/routing
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getToken, getExpiry } from "../selectors/auth";
+import { getToken, getExpiry, getCurrUser } from "../selectors/auth";
 import { doRemoveCreds, doUpdateToken } from "../actions/auth";
 
 // Additional Imports
@@ -38,6 +38,7 @@ const App = ({
   updateToken,
   token,
   expiry,
+  currUser,
 }) => {
   // @TODO: move it to reduce the number of api calls.
   const randomWSO = async () => {
@@ -71,12 +72,28 @@ const App = ({
       case "factrak":
         return <FactrakMain />;
       case "login":
-        return <Login />;
+        if (!currUser) {
+          return <Login />;
+        }
+        navigateTo("home");
+        return null;
       case "ephcatch":
+        if (!currUser) {
+          navigateTo("login");
+          return null;
+        }
         return <EphcatchMain />;
       case "bulletins":
+        if (!currUser) {
+          navigateTo("login");
+          return null;
+        }
         return <BulletinMain />;
       case "discussions":
+        if (!currUser) {
+          navigateTo("login");
+          return null;
+        }
         return <DiscussionMain />;
       case "logout":
         removeCreds();
@@ -118,6 +135,11 @@ App.propTypes = {
   updateToken: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
   expiry: PropTypes.string.isRequired,
+  currUser: PropTypes.object,
+};
+
+App.defaultProps = {
+  currUser: null,
 };
 
 const mapStateToProps = () => {
@@ -126,6 +148,7 @@ const mapStateToProps = () => {
   return (state) => ({
     token: getToken(state),
     expiry: getExpiry(state),
+    currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });
 };

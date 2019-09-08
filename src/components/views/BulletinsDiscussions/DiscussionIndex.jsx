@@ -2,15 +2,16 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
+// Redux/Routing imports
 import { getToken, getCurrUser } from "../../../selectors/auth";
-
-import { getDiscussions } from "../../../api/bulletins";
-
-import { checkAndHandleError } from "../../../lib/general";
 import { connect } from "react-redux";
-import { Link } from "react-router5";
 
+// Additional Imports
+import { getDiscussions, deleteDiscussion } from "../../../api/bulletins";
+import { checkAndHandleError } from "../../../lib/general";
+import { Link } from "react-router5";
 import { format } from "timeago.js";
+import PaginationButtons from "../../stylesheets/PaginationButtons";
 
 const DiscussionIndex = ({ currUser, token }) => {
   const perPage = 20;
@@ -18,6 +19,7 @@ const DiscussionIndex = ({ currUser, token }) => {
   const [total, updateTotal] = useState(0);
   const [threads, updateThreads] = useState([]);
 
+  // Load threads depending on what page it is
   const loadThreads = async (newPage) => {
     const params = {
       limit: 20,
@@ -36,16 +38,18 @@ const DiscussionIndex = ({ currUser, token }) => {
     loadThreads(0);
   }, [token]);
 
+  // Handles clicking of the next/previous page
   const clickHandler = (number) => {
     if (number === -1 && page > 0) {
-      updatePage(page - 1);
       loadThreads(page - 1);
+      updatePage(page - 1);
     } else if (number === 1 && total - (page + 1) * perPage > 0) {
-      updatePage(page + 1);
       loadThreads(page + 1);
+      updatePage(page + 1);
     }
   };
 
+  // Gets the username of the last commenter.
   const lastCommenter = (thread) => {
     if (!thread.posts) return "";
     const last = thread.posts[thread.posts.length - 1];
@@ -54,67 +58,98 @@ const DiscussionIndex = ({ currUser, token }) => {
     return last.exUserName;
   };
 
-  if (threads.length < 0) return null;
+  // Generates thread title.
+  const threadTitle = (thread) => {
+    return (
+      <h5>
+        <b>
+          <Link
+            routeName="discussions.show"
+            routeParams={{ discussionID: thread.id }}
+          >
+            {thread.title}
+          </Link>
+        </b>
+      </h5>
+    );
+  };
+
+  // Generates Started by
+  const startedBy = (thread) => {
+    return (
+      <div className="small-font">
+        Started {new Date(thread.createdTime).toDateString()}
+        {" by "}
+        {thread.user ? thread.user.name : thread.exUserName}
+      </div>
+    );
+  };
+
+  // Generates post information
+  const postInfo = (thread) => {
+    return (
+      <div className="small-font">
+        <span>
+          Posts: <b>{thread.posts.length}</b>
+        </span>
+        {` | Last post was about ${format(
+          new Date(thread.lastActive)
+        )} ago by ${lastCommenter(thread)}`}
+      </div>
+    );
+  };
+
+  // Handles events when the delete button is called.
+  const deleteHandler = async (threadID) => {
+    // eslint-disable-next-line no-restricted-globals
+    const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
+    if (!confirmDelete) return;
+
+    const response = await deleteDiscussion(token, threadID);
+
+    if (checkAndHandleError(response)) {
+      loadThreads(page);
+    }
+  };
+
+  // Generates the delete button if admin or thread starter
+  const deleteButton = (thread) => {
+    if (currUser && (currUser.admin || currUser.id === thread.userID)) {
+      return (
+        <div>
+          <button
+            className="inline-button"
+            type="button"
+            onClick={() => deleteHandler(thread.id)}
+          >
+            Delete
+          </button>
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <section className="margin-vertical-small">
       {threads.map((thread) => (
         <div className="comment" key={thread.id}>
-          <h5>
-            <b>
-              <Link
-                routeName="discussions.show"
-                routeParams={{ discussionID: thread.id }}
-              >
-                {thread.title}
-              </Link>
-            </b>
-          </h5>
-          <div className="small-font">
-            Started {new Date(thread.createdTime).toDateString()}
-            {" by "}
-            {thread.user ? thread.user.name : thread.exUserName}
-          </div>
-          <div className="small-font">
-            <span>
-              Posts: <b>{thread.posts.length}</b>
-            </span>
-            {thread.posts.length > 0
-              ? `| Last post was about ${format(
-                  new Date(thread.lastActive)
-                )} ago by ${lastCommenter(thread)}`
-              : null}
-          </div>
-          {currUser.admin ? (
-            <div>
-              <a
-                confirm="Are you sure?"
-                rel="nofollow"
-                data-method="delete"
-                href={`/discussions/${thread.id}`}
-              >
-                [CLOSE]
-              </a>
-            </div>
-          ) : null}
+          {threadTitle(thread)}
+          {startedBy(thread)}
+          {postInfo(thread)}
+
+          {deleteButton(thread)}
         </div>
       ))}
-      <div>
-        <button
-          type="button"
-          onClick={() => clickHandler(-1)}
-          disabled={page === 0}
-        >
-          Previous
-        </button>
-        <button
-          type="button"
-          onClick={() => clickHandler(1)}
-          disabled={total - (page + 1) * perPage <= 0}
-        >
-          Next
-        </button>
-      </div>
+
+      <PaginationButtons
+        clickHandler={clickHandler}
+        page={page}
+        total={total}
+        perPage={perPage}
+      />
+      <br />
     </section>
   );
 };

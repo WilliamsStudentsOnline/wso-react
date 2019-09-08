@@ -61,7 +61,7 @@ const FactrakMain = ({ route, token, navigateTo }) => {
     return <FactrakLayout>{factrakBody()}</FactrakLayout>;
   }
 
-  navigateTo("403");
+  navigateTo("login");
   return null;
 };
 

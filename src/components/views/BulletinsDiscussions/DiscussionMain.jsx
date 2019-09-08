@@ -1,20 +1,26 @@
 // React imports
 import React from "react";
 import PropTypes from "prop-types";
+
+// Component imports
 import DiscussionLayout from "./DiscussionLayout";
 import DiscussionShow from "./DiscussionShow";
 import DiscussionPost from "./DiscussionPost";
 import DiscussionIndex from "./DiscussionIndex";
-
-// Redux imports
-import { connect } from "react-redux";
-
-// External Imports
-import { createRouteNodeSelector, actions } from "redux-router5";
 import DiscussionNew from "./DiscussionNew";
 
-const DiscussionMain = ({ route, navigateTo }) => {
+// Redux/Routing imports
+import { connect } from "react-redux";
+import { createRouteNodeSelector, actions } from "redux-router5";
+import { getCurrUser } from "../../../selectors/auth";
+
+const DiscussionMain = ({ route, navigateTo, currUser }) => {
   const DiscussionBody = () => {
+    if (!currUser) {
+      navigateTo("login");
+      return null;
+    }
+
     const splitRoute = route.name.split(".");
 
     if (splitRoute.length < 2) {
@@ -44,6 +50,7 @@ const DiscussionMain = ({ route, navigateTo }) => {
 DiscussionMain.propTypes = {
   route: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  currUser: PropTypes.object.isRequired,
 };
 
 DiscussionMain.defaultProps = {};
@@ -52,6 +59,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("discussions");
 
   return (state) => ({
+    currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });
 };

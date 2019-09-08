@@ -4,15 +4,17 @@ import PropTypes from "prop-types";
 import EphcatchHome from "./EphcatchHome";
 import EphcatchLayout from "./EphcatchLayout";
 import EphcatchMatch from "./EphcatchMatch";
-
-// Redux imports
-import { connect } from "react-redux";
-
-// External Imports
-import { createRouteNodeSelector } from "redux-router5";
 import EphcatchOptOut from "./EphcatchOptOut";
 
-const EphcatchMain = ({ route }) => {
+// Redux/Routing imports
+import { connect } from "react-redux";
+import { createRouteNodeSelector, actions } from "redux-router5";
+import { getToken } from "../../../selectors/auth";
+
+// Additional Imports
+import { scopes, containsScopes } from "../../../lib/general";
+
+const EphcatchMain = ({ route, token, navigateTo }) => {
   const EphcatchBody = () => {
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <EphcatchHome />;
@@ -27,11 +29,24 @@ const EphcatchMain = ({ route }) => {
     }
   };
 
-  return <EphcatchLayout>{EphcatchBody()}</EphcatchLayout>;
+  if (
+    containsScopes(token, [
+      scopes.ScopeFactrakFull,
+      scopes.ScopeFactrakAdmin,
+      scopes.ScopeFactrakLimited,
+    ])
+  ) {
+    return <EphcatchLayout>{EphcatchBody()}</EphcatchLayout>;
+  }
+
+  navigateTo("login");
+  return null;
 };
 
 EphcatchMain.propTypes = {
   route: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
+  navigateTo: PropTypes.func.isRequired,
 };
 
 EphcatchMain.defaultProps = {};
@@ -40,8 +55,16 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("ephcatch");
 
   return (state) => ({
+    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };
 
-export default connect(mapStateToProps)(EphcatchMain);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EphcatchMain);

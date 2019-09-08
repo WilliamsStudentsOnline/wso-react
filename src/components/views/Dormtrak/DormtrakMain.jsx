@@ -50,7 +50,7 @@ const DormtrakMain = ({ route, token, navigateTo }) => {
     return <DormtrakLayout>{dormtrakBody()}</DormtrakLayout>;
   }
 
-  navigateTo("403");
+  navigateTo("login");
   return null;
 };
 

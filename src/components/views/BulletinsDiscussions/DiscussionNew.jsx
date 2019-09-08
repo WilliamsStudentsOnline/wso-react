@@ -2,24 +2,25 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-// Redux imports
+// Redux/Routing imports
 import { connect } from "react-redux";
-
-// External Imports
 import { actions } from "redux-router5";
-import { checkAndHandleError } from "../../../lib/general";
 import { getToken } from "../../../selectors/auth";
 
+// Additional Imports
+import { checkAndHandleError } from "../../../lib/general";
 import { postDiscussion } from "../../../api/bulletins";
 
 const DiscussionsNew = ({ token, navigateTo }) => {
-  const [errors] = useState([]);
+  const [errors, updateErrors] = useState([]);
 
+  // Discussion parameters
   const [title, updateTitle] = useState("");
   const [content, updateContent] = useState("");
 
+  // Render Errors
   const renderErrors = () => {
-    if (!errors || errors.length === 0) return null;
+    if (errors.length === 0) return null;
 
     return (
       <div id="error_explanation">
@@ -33,18 +34,19 @@ const DiscussionsNew = ({ token, navigateTo }) => {
     );
   };
 
+  // Handles submission of new discussion
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    const params = {
-      title,
-      content,
-    };
-
+    const params = { title, content };
     const response = await postDiscussion(token, params);
 
     if (checkAndHandleError(response)) {
       navigateTo("discussions");
+    } else if (response.error.errors) {
+      updateErrors(response.error.errors);
+    } else {
+      updateErrors(response.error.message);
     }
   };
 

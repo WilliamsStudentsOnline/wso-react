@@ -2,6 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+// Additional imports
 import { Link } from "react-router5";
 
 const DiscussionLayout = ({ children }) => {

@@ -105,6 +105,21 @@ const getDiscussion = async (token, discussionID) => {
   return response;
 };
 
+// Delete single discussion by ID
+const deleteDiscussion = async (token, discussionID) => {
+  const response = await axios({
+    url: `/api/v1/bulletin/discussions/${discussionID}`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "delete",
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
 // Create discussion
 const postDiscussion = async (token, createParams) => {
   const response = await axios({
@@ -292,9 +307,10 @@ export {
   getBulletins,
   postBulletin,
   getBulletin,
-  getDiscussion,
   deleteBulletin,
   patchBulletin,
+  getDiscussion,
+  deleteDiscussion,
   postDiscussion,
   patchDiscussion,
   getDiscussions,

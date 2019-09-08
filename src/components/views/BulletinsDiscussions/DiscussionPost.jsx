@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getCurrUser, getToken } from "../../../selectors/auth";
 
+// Additional imports
 import { Link } from "react-router5";
 import { checkAndHandleError } from "../../../lib/general";
 import { patchPost, deletePost } from "../../../api/bulletins";
@@ -16,10 +17,7 @@ const DiscussionPost = ({ post, currUser, token }) => {
   const [reply, updateReply] = useState(post.content);
   const [currPost, updateCurrPost] = useState(post);
 
-  const editHandler = () => {
-    setEdit(true);
-  };
-
+  // Handles submission of updated post.
   const submitHandler = async (event) => {
     event.preventDefault();
 
@@ -34,6 +32,7 @@ const DiscussionPost = ({ post, currUser, token }) => {
     }
   };
 
+  // Handles deletion of discussion post
   const deleteHandler = async () => {
     // eslint-disable-next-line no-restricted-globals
     const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
@@ -46,12 +45,17 @@ const DiscussionPost = ({ post, currUser, token }) => {
     }
   };
 
+  // renders edit controls if the current user has permissions
   const editControls = () => {
     if (!post.userID) return null;
     if (post.userID === currUser.id || currUser.admin) {
       return (
         <>
-          <button className="inline-button" type="button" onClick={editHandler}>
+          <button
+            className="inline-button"
+            type="button"
+            onClick={() => setEdit(true)}
+          >
             Edit
           </button>
           <button
@@ -69,31 +73,30 @@ const DiscussionPost = ({ post, currUser, token }) => {
     return null;
   };
 
+  // Generates comment contents
   const commentContent = () => {
     if (!deleted && !edit) {
       return (
-        <>
-          <div className="comment-content">
-            <b>
-              {currPost.user ? (
-                <Link
-                  routeName="facebook.users"
-                  routeParams={{ userID: currPost.userID }}
-                >
-                  {currPost.user.name}
-                </Link>
-              ) : (
-                currPost.exUserName
-              )}
-            </b>
-            &nbsp;
-            <em>{new Date(currPost.createdTime).toDateString()}</em>
-            <br />
-            <br />
-            {editControls()}
-            {currPost.content}
-          </div>
-        </>
+        <div className="comment-content">
+          <b>
+            {currPost.user ? (
+              <Link
+                routeName="facebook.users"
+                routeParams={{ userID: currPost.userID }}
+              >
+                {currPost.user.name}
+              </Link>
+            ) : (
+              currPost.exUserName
+            )}
+          </b>
+          &nbsp;
+          <em>{new Date(currPost.createdTime).toDateString()}</em>
+          <br />
+          <br />
+          {editControls()}
+          {currPost.content}
+        </div>
       );
     }
 
