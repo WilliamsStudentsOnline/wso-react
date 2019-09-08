@@ -2,13 +2,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-// Redux imports
+// Redux/Routing imports
 import { connect } from "react-redux";
 import { doUpdateToken, doUpdateUser } from "../actions/auth";
+import { actions } from "redux-router5";
 
 // External imports
 import { getToken } from "../api/auth";
-import { actions } from "redux-router5";
 import { getUser } from "../api/users";
 import { checkAndHandleError } from "../lib/general";
 import jwtDecode from "jwt-decode";
@@ -16,6 +16,7 @@ import jwtDecode from "jwt-decode";
 const Login = ({ navigateTo, updateToken, updateUser }) => {
   const [unixID, setUnix] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, updateErrors] = useState([]);
   // const [remember, setRemember] = useState(false);
 
   const unixHandler = (event) => {
@@ -30,6 +31,7 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
   const submitHandler = async (event) => {
     event.preventDefault();
     const response = await getToken(unixID, password);
+
     if (checkAndHandleError(response)) {
       const newToken = response.data.data.token;
       const decoded = jwtDecode(newToken);
@@ -41,6 +43,10 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
         // updateRemember(remember);
         navigateTo("home");
       }
+    } else if (response.data.error.errors) {
+      updateErrors(response.data.error.errors);
+    } else {
+      updateErrors([response.data.error.message]);
     }
   };
 
@@ -58,6 +64,9 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
       </div>
 
       <form onSubmit={submitHandler}>
+        <div id="errors">
+          {errors ? errors.map((msg) => <p key={msg}>{msg}</p>) : null}
+        </div>
         <br />
         <input
           type="text"
