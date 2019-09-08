@@ -136,7 +136,7 @@ const BulletinBox = ({ token, typeWord }) => {
         {threads.map((thread) => {
           return (
             <div className="bulletin-children" key={thread.id}>
-              {type === "Discussions" ? (
+              {type === discussionType ? (
                 <Link
                   className="thread-link"
                   routeName="discussions.show"
