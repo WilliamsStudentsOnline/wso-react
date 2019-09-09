@@ -29,13 +29,7 @@ const EphcatchMain = ({ route, token, navigateTo }) => {
     }
   };
 
-  if (
-    containsScopes(token, [
-      scopes.ScopeFactrakFull,
-      scopes.ScopeFactrakAdmin,
-      scopes.ScopeFactrakLimited,
-    ])
-  ) {
+  if (containsScopes(token, [scopes.ScopeEphcatch])) {
     return <EphcatchLayout>{EphcatchBody()}</EphcatchLayout>;
   }
 
