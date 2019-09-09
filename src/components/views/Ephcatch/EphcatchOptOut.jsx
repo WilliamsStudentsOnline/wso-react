@@ -2,19 +2,22 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
+// Redux/routing imports
 import { connect } from "react-redux";
 import { getToken, getCurrUser } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 
-// API imports
+// Additional imports
 import { patchCurrUser } from "../../../api/users";
 import { checkAndHandleError } from "../../../lib/general";
 
 const EphcatchOptOut = ({ token, currUser, updateUser }) => {
+  // optOutEphcatch might be null
   const [optOut, updateOptOut] = useState(
     currUser.optOutEphcatch ? currUser.optOutEphcatch : false
   );
 
+  // Handles clicking
   const clickHandler = (event) => {
     updateOptOut(event.target.checked);
   };

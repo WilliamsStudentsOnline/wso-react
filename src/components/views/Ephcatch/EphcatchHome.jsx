@@ -2,16 +2,19 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Trakyak from "../../../assets/images/trakyak.png";
+import PaginationButtons from "../../PaginationButtons";
 
+// Redux/ routing imports
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
+
+// Additional imports
 import {
   getEphcatchers,
   likeEphcatcher,
   unlikeEphcatcher,
   getEphcatcher,
 } from "../../../api/ephcatch";
-
 import { checkAndHandleError } from "../../../lib/general";
 
 const EphcatchHome = ({ token }) => {
@@ -62,6 +65,7 @@ const EphcatchHome = ({ token }) => {
     }
   };
 
+  // Handles clicking of pagination buttons
   const clickHandler = (number) => {
     if (number === -1 && page > 0) {
       updatePage(page - 1);
@@ -87,23 +91,13 @@ const EphcatchHome = ({ token }) => {
             else can.
           </p>
           <br />
-          <div>
-            {/* @TODO: nicer buttons */}
-            <button
-              type="button"
-              onClick={() => clickHandler(-1)}
-              disabled={page === 0}
-            >
-              Previous
-            </button>
-            <button
-              type="button"
-              onClick={() => clickHandler(1)}
-              disabled={total - (page + 1) * perPage <= 0}
-            >
-              Next
-            </button>
-          </div>
+          <PaginationButtons
+            clickHandler={clickHandler}
+            page={page}
+            total={total}
+            perPage={perPage}
+          />
+
           <br />
           {ephcatchers.map((ephcatcher, index) => (
             <aside

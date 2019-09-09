@@ -3,12 +3,15 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Trakyak from "../../../assets/images/trakyak.png";
 
-import { getEphcatchMatches } from "../../../api/ephcatch";
+// Redux/routing imports
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
 
+// Additional imports
 import { checkAndHandleError } from "../../../lib/general";
+import { getEphcatchMatches } from "../../../api/ephcatch";
 
+// @TODO need some way to test this.
 const EphcatchMatch = ({ token }) => {
   const [matches, updateMatches] = useState([]);
 

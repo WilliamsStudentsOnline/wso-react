@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getCurrUser } from "../../../selectors/auth";
 
+// Additional imports
 import { Link } from "react-router5";
 
 const EphcatchLayout = ({ currUser, children }) => {
