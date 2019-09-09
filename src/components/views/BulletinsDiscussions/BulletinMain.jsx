@@ -11,6 +11,13 @@ import { connect } from "react-redux";
 
 // External Imports
 import { createRouteNodeSelector, actions } from "redux-router5";
+import {
+  bulletinTypeLostAndFound,
+  bulletinTypeJob,
+  bulletinTypeRide,
+  bulletinTypeExchange,
+  bulletinTypeAnnouncement,
+} from "../../../constants/general";
 
 const BulletinMain = ({ route, navigateTo }) => {
   const BulletinBody = (bulletinType) => {
@@ -35,11 +42,11 @@ const BulletinMain = ({ route, navigateTo }) => {
   if (route.params && route.params.type) {
     // Check that the type is valid
     const validBulletinTypes = [
-      "lostAndFound",
-      "ride",
-      "job",
-      "exchange",
-      "announcement",
+      bulletinTypeLostAndFound,
+      bulletinTypeRide,
+      bulletinTypeJob,
+      bulletinTypeExchange,
+      bulletinTypeAnnouncement,
     ];
 
     if (validBulletinTypes.indexOf(route.params.type) !== -1) {

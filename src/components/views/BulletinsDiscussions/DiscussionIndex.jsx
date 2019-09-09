@@ -11,7 +11,7 @@ import { getDiscussions, deleteDiscussion } from "../../../api/bulletins";
 import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import { format } from "timeago.js";
-import PaginationButtons from "../../stylesheets/PaginationButtons";
+import PaginationButtons from "../../PaginationButtons";
 
 const DiscussionIndex = ({ currUser, token }) => {
   const perPage = 20;

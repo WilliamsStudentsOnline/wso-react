@@ -2,19 +2,21 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
+// Redux and Routing imports
+import { connect } from "react-redux";
 import { getToken, getCurrUser } from "../../../selectors/auth";
+import { createRouteNodeSelector, actions } from "redux-router5";
 
+// Additional Imports
 import {
   getBulletin,
   getRide,
   deleteBulletin,
   deleteRide,
 } from "../../../api/bulletins";
-
 import { checkAndHandleError } from "../../../lib/general";
-import { createRouteNodeSelector, actions } from "redux-router5";
-import { connect } from "react-redux";
 import { Link } from "react-router5";
+import { bulletinTypeRide } from "../../../constants/general";
 
 const BulletinShow = ({ currUser, token, route, navigateTo }) => {
   const [bulletin, updateBulletin] = useState(null);
@@ -33,7 +35,9 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
     }
 
     if (checkAndHandleError(response)) {
-      navigateTo("bulletins", { type: bulletin.type ? bulletin.type : "ride" });
+      navigateTo("bulletins", {
+        type: bulletin.type ? bulletin.type : bulletinTypeRide,
+      });
     }
   };
 
@@ -47,7 +51,7 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
 
       let bulletinResponse;
 
-      if (route.params.type === "ride") {
+      if (route.params.type === bulletinTypeRide) {
         bulletinResponse = await getRide(token, route.params.bulletinID);
       } else {
         bulletinResponse = await getBulletin(token, route.params.bulletinID);
@@ -65,64 +69,105 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
 
   if (!bulletin) return null;
 
+  // Creates the Bulletin Title link
+  const generateBulletinTitle = () => {
+    let title;
+
+    if (bulletin.type) {
+      title = bulletin.title;
+    } else if (bulletin.offer) {
+      title = `${bulletin.source} to ${bulletin.destination} (Offer)`;
+    } else {
+      title = `${bulletin.source} to ${bulletin.destination} (Request)`;
+    }
+
+    return title;
+  };
+
+  // Create the bulletin date
+  const generateBulletinDate = () => {
+    if (bulletin.type) {
+      return new Date(bulletin.startDate).toLocaleDateString(
+        "en-US",
+        dateOptions
+      );
+    }
+
+    return new Date(bulletin.date).toLocaleDateString("en-US", dateOptions);
+  };
+
+  // Generate bulletin creator name
+  const generateBulletinStarter = () => {
+    if (bulletin.userID) {
+      return (
+        <Link
+          routeName="facebook.users"
+          routeParams={{ userID: bulletin.userID }}
+        >
+          {bulletin.user.name}
+        </Link>
+      );
+    }
+
+    return bulletin.user.name;
+  };
+
+  // Generate the edit button only if the current user is the bulletin starter
+  const editButton = () => {
+    if (currUser.id === bulletin.user.id) {
+      return (
+        <button
+          type="button"
+          onClick={() =>
+            navigateTo("bulletins.edit", {
+              bulletinID: bulletin.id,
+              type: route.params.type,
+            })
+          }
+          className="inline-button"
+        >
+          Edit
+        </button>
+      );
+    }
+
+    return null;
+  };
+
+  // Generate the edit + delete buttons
+  const editDeleteButtons = () => {
+    if (currUser.id === bulletin.user.id || currUser.admin) {
+      return (
+        <>
+          <br />
+          {editButton()}
+          <button
+            type="button"
+            onClick={deleteHandler}
+            className="inline-button"
+          >
+            Delete
+          </button>
+        </>
+      );
+    }
+    return null;
+  };
+
   return (
     <article className="list-creation">
       <section>
         <div className="field">
           <h3>
             <br />
-            {bulletin.type
-              ? bulletin.title
-              : `${bulletin.source} to ${bulletin.destination} (${
-                  bulletin.offer ? "Offer" : "Request"
-                })`}
+            {generateBulletinTitle()}
             <br />
             <br />
           </h3>
+          {`${generateBulletinDate()} by `}
+          {generateBulletinStarter()}
 
-          {`${
-            bulletin.type
-              ? new Date(bulletin.startDate).toLocaleDateString(
-                  "en-US",
-                  dateOptions
-                )
-              : new Date(bulletin.date).toLocaleDateString("en-US", dateOptions)
-          } by `}
-          {bulletin.userID ? (
-            <Link
-              routeName="facebook.users"
-              routeParams={{ userID: bulletin.userID }}
-            >
-              {bulletin.user.name}
-            </Link>
-          ) : (
-            bulletin.user.name
-          )}
-          {currUser.id === bulletin.user.id || currUser.admin ? (
-            <>
-              <br />
-              <button
-                type="button"
-                onClick={() =>
-                  navigateTo("bulletins.edit", {
-                    bulletinID: bulletin.id,
-                    type: route.params.type,
-                  })
-                }
-                className="inline-button"
-              >
-                Edit
-              </button>
-              <button
-                type="button"
-                onClick={deleteHandler}
-                className="inline-button"
-              >
-                Delete
-              </button>
-            </>
-          ) : null}
-
+          {editDeleteButtons()}
           <br />
           <br />
           {bulletin.body}

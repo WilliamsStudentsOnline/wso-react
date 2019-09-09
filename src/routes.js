@@ -73,4 +73,5 @@ export default [
   { name: "login", path: "/account/login" },
   { name: "logout", path: "/account/logout" },
   { name: "403", path: "/403" },
+  { name: "500", path: "/500" },
 ];

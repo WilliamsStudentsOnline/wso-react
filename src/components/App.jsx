@@ -78,22 +78,10 @@ const App = ({
         navigateTo("home");
         return null;
       case "ephcatch":
-        if (!currUser) {
-          navigateTo("login");
-          return null;
-        }
         return <EphcatchMain />;
       case "bulletins":
-        if (!currUser) {
-          navigateTo("login");
-          return null;
-        }
         return <BulletinMain />;
       case "discussions":
-        if (!currUser) {
-          navigateTo("login");
-          return null;
-        }
         return <DiscussionMain />;
       case "logout":
         removeCreds();
