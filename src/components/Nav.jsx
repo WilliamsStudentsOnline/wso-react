@@ -1,10 +1,10 @@
 // React Imports
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 
-// Utility imports
+// React/Redux imports
 import { getCurrUser } from "../selectors/auth";
+import { connect } from "react-redux";
 
 // External imports
 // Connected Link is the same as link, except it re-renders on route changes
@@ -70,12 +70,15 @@ const Nav = ({ currUser }) => {
             {currUser ? (
               <>
                 <li className="avatar">
-                  <a href={`/facebook/users/${currUser.id}`}>
+                  <Link
+                    routeName="facebook.users"
+                    routeParams={{ userID: currUser.id }}
+                  >
                     <img src={`/pic/${currUser.unixID}`} alt="avatar" />
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/account/logout">Logout</a>
+                  <Link routeName="logout">Logout</Link>
                 </li>
               </>
             ) : (
@@ -91,12 +94,11 @@ const Nav = ({ currUser }) => {
 };
 
 Nav.propTypes = {
+  // No isRequired because it must work for non-authenticated users too
   currUser: PropTypes.object,
 };
 
-Nav.defaultProps = {
-  currUser: {},
-};
+Nav.defaultProps = { currUser: {} };
 
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
