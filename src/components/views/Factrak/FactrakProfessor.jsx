@@ -16,6 +16,7 @@ import {
   getProfessorRatings,
 } from "../../../api/factrak";
 import { checkAndHandleError } from "../../../lib/general";
+import { Link } from "react-router5";
 
 const FactrakProfessor = ({ token, route }) => {
   const [professor, updateProfessor] = useState(null);
@@ -224,9 +225,12 @@ const FactrakProfessor = ({ token, route }) => {
         <br />
 
         <br />
-        <a href={`/factrak/surveys/new?professorID=${professor.id}`}>
+        <Link
+          routeName="factrak.newSurvey"
+          routeParams={{ profID: professor.id }}
+        >
           Click here to review this professor
-        </a>
+        </Link>
         <br />
         <br />
         {surveyStats()}

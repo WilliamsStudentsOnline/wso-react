@@ -9,6 +9,7 @@ import { getToken } from "../../../selectors/auth";
 // External imports
 import { getFlagged, unflagSurvey, deleteSurvey } from "../../../api/factrak";
 import { checkAndHandleError } from "../../../lib/general";
+import { Link } from "react-router5";
 
 const FactrakModerate = ({ token }) => {
   const [flagged, updateFlagged] = useState([]);
@@ -56,13 +57,19 @@ const FactrakModerate = ({ token }) => {
           <div className="comment" key={`comment${f.id}`} id={`comment${f.id}`}>
             <div>
               <span>
-                <a href={`/facebook/users/${f.professorID}`}>
+                <Link
+                  routeName="factrak.professors"
+                  routeParams={{ profID: f.professorID }}
+                >
                   {f.professor.name}
-                </a>
+                </Link>
                 &nbsp;
-                <a href={`/factrak/courses/${f.course.id}`}>
+                <Link
+                  routeName="factrak.courses"
+                  routeParams={{ courseID: f.course.id }}
+                >
                   {`${f.course.areaOfStudy.abbreviation} ${f.course.number}`}
-                </a>{" "}
+                </Link>{" "}
                 (+{f.totalAgree}, -{f.totalDisagree})
               </span>
               <p>{f.comment}</p>

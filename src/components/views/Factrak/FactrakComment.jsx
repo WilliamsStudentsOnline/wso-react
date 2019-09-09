@@ -228,9 +228,12 @@ const FactrakComment = ({
           {truncatedsurvey}
           {survey.comment.length > 145 ? (
             <div>
-              <a href={`/factrak/professors/${survey.professorID}`}>
+              <Link
+                routeName="factrak.professors"
+                routeParams={{ profID: survey.professorID }}
+              >
                 ...See More
-              </a>
+              </Link>
             </div>
           ) : null}
         </div>

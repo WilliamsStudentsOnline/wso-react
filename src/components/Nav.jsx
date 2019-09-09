@@ -30,9 +30,9 @@ const Nav = ({ currUser }) => {
                 <Link routeName="ephcatch">Ephcatch</Link>
                 {currUser.ephcatches.length > 0 ? (
                   <span className="ephcatch-badge">
-                    <a href="<%=matches_path%>" title="New matches!">
+                    <Link routeName="ephcatch.matches" title="New matches!">
                       {currUser.ephcatches.length}
-                    </a>
+                    </Link>
                   </span>
                 ) : null}
               </li>

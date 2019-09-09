@@ -9,6 +9,8 @@ import { getAllUsers } from "../../../api/users";
 import { checkAndHandleError } from "../../../lib/general";
 import { createRouteNodeSelector } from "redux-router5";
 
+import { Link } from "react-router5";
+
 const FacebookHome = ({ token, route }) => {
   const [results, updateResults] = useState(null);
 
@@ -48,7 +50,12 @@ const FacebookHome = ({ token, route }) => {
             return (
               <tr key={user.id}>
                 <td>
-                  <a href={`/facebook/users/${user.id}`}>{user.name}</a>
+                  <Link
+                    routeName="facebook.users"
+                    routeParams={{ userID: user.id }}
+                  >
+                    {user.name}
+                  </Link>
                 </td>
                 <td>{user.unixID}</td>
                 <td>
@@ -76,14 +83,22 @@ const FacebookHome = ({ token, route }) => {
             <aside key={user.id}>
               <div className="third">
                 <div className="profile-photo">
-                  <a href={`/facebook/users/${user.id}`}>
+                  <Link
+                    routeName="facebook.users"
+                    routeParams={{ userID: user.id }}
+                  >
                     <img src={`/pic/${user.unixID}`} alt="avatar" />
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="two-third">
                 <h4>
-                  <a href={`/facebook/users/${user.id}`}>{user.name}</a>
+                  <Link
+                    routeName="facebook.users"
+                    routeParams={{ userID: user.id }}
+                  >
+                    {user.name}
+                  </Link>
                 </h4>
                 <ul>
                   {user.unixID ? (
