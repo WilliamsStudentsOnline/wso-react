@@ -41,7 +41,7 @@ const DiscussionShow = ({ token, route }) => {
     };
 
     loadDiscussion();
-  }, [token]);
+  }, [token, route.params.discussionID]);
 
   const submitHandler = async (event) => {
     event.preventDefault();

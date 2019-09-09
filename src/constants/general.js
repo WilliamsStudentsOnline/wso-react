@@ -8,3 +8,7 @@ export const bulletinTypeExchange = "exchange";
 export const bulletinTypeLostAndFound = "lostAndFound";
 export const bulletinTypeJob = "job";
 export const discussionType = "discussions";
+
+// Facebook Constants
+export const userTypeStudent = "student";
+export const userTypeAlumni = "alumni";

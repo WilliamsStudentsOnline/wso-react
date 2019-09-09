@@ -3,6 +3,8 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const PaginationButtons = ({ clickHandler, total, page, perPage }) => {
+  if (total <= perPage) return null;
+
   return (
     <div>
       <button

@@ -1,5 +1,5 @@
 // React imports
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
@@ -13,6 +13,15 @@ import { Link } from "react-router5";
 const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
   const [query, updateQuery] = useState("");
 
+  useEffect(() => {
+    if (route.params.q) {
+      updateQuery(route.params.q);
+    } else {
+      updateQuery("");
+    }
+  }, [route.params.q]);
+
+  // Handles submissions
   const submitHandler = (event) => {
     event.preventDefault();
     navigateTo("facebook", { q: query }, { reload: true });
@@ -52,7 +61,7 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
             placeholder="Search Facebook"
             autoFocus
             onChange={(event) => updateQuery(event.target.value)}
-            defaultValue={route.params.q ? route.params.q : ""}
+            value={query}
           />
           <input
             data-disable-with="Search"

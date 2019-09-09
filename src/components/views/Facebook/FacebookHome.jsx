@@ -12,6 +12,7 @@ import { createRouteNodeSelector } from "redux-router5";
 import { getAllUsers } from "../../../api/users";
 import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
+import { userTypeStudent } from "../../../constants/general";
 
 const FacebookHome = ({ token, route }) => {
   const [results, updateResults] = useState(null);
@@ -19,7 +20,7 @@ const FacebookHome = ({ token, route }) => {
   useEffect(() => {
     const loadUsers = async () => {
       if (!route.params.q) {
-        updateResults(null);
+        updateResults([]);
         return;
       }
 
@@ -28,7 +29,7 @@ const FacebookHome = ({ token, route }) => {
         preload: ["dorm", "office"],
       };
       const resultsResponse = await getAllUsers(token, queryParams);
-      // console.log(resultsResponse);
+
       if (checkAndHandleError(resultsResponse)) {
         updateResults(resultsResponse.data.data);
       } else updateResults([]);
@@ -37,6 +38,18 @@ const FacebookHome = ({ token, route }) => {
     loadUsers();
   }, [token, route.params.q]);
 
+  // Generates the user's room
+  const listUserRoom = (user) => {
+    if (user.type === userTypeStudent && (user.dormVisible && user.dormRoom)) {
+      return `${user.dormRoom.dorm.name} ${user.dormRoom.number}`;
+    }
+    if (user.type !== userTypeStudent && user.office) {
+      return user.office.number;
+    }
+    return null;
+  };
+
+  // Displays results in a list view when there are too many results
   const ListView = () => {
     return (
       <table>
@@ -60,15 +73,7 @@ const FacebookHome = ({ token, route }) => {
                   </Link>
                 </td>
                 <td>{user.unixID}</td>
-                <td>
-                  {user.type === "student" &&
-                  (user.dormVisible && user.dormRoom)
-                    ? `${user.dormRoom.dorm.name} ${user.dormRoom.number}`
-                    : ""}
-                  {user.type !== "student" && user.office
-                    ? user.office.number
-                    : ""}
-                </td>
+                <td>{listUserRoom(user)}</td>
               </tr>
             );
           })}
@@ -77,6 +82,43 @@ const FacebookHome = ({ token, route }) => {
     );
   };
 
+  // Generates the unix id field in grid view
+  const gridUnixID = (user) => {
+    if (user.unixID) {
+      return (
+        <>
+          <li className="list-headers">UNIX</li>
+          <li className="list-contents">{user.unixID}</li>
+        </>
+      );
+    }
+    return null;
+  };
+
+  // Generates the user's room in grid view
+  const gridUserRoom = (user) => {
+    if (user.type === userTypeStudent && (user.dormVisible && user.dormRoom)) {
+      return (
+        <>
+          <li className="list-headers"> Room</li>
+          <li className="list-contents">
+            {user.dormRoom.dorm.name} {user.dormRoom.number}
+          </li>
+        </>
+      );
+    }
+    if (user.type !== userTypeStudent && user.office) {
+      return (
+        <>
+          <li className="list-headers"> Office</li>
+          <li className="list-contents">{user.office.number}</li>
+        </>
+      );
+    }
+    return null;
+  };
+
+  // Displays results in a grid view when there aren't too many results
   const GridView = () => {
     return (
       <div className="grid-wrap">
@@ -104,27 +146,8 @@ const FacebookHome = ({ token, route }) => {
                   </Link>
                 </h4>
                 <ul>
-                  {user.unixID ? (
-                    <>
-                      <li className="list-headers">UNIX</li>
-                      <li className="list-contents">{user.unixID}</li>
-                    </>
-                  ) : null}
-                  {user.type === "student" &&
-                  (user.dormVisible && user.dormRoom) ? (
-                    <>
-                      <li className="list-headers"> Room</li>
-                      <li className="list-contents">
-                        {user.dormRoom.dorm.name} {user.dormRoom.number}
-                      </li>
-                    </>
-                  ) : null}
-                  {user.type !== "student" && user.office ? (
-                    <>
-                      <li className="list-headers"> Office</li>
-                      <li className="list-contents">{user.office.number}</li>
-                    </>
-                  ) : null}
+                  {gridUnixID(user)}
+                  {gridUserRoom(user)}
                 </ul>
               </div>
             </aside>
@@ -134,29 +157,38 @@ const FacebookHome = ({ token, route }) => {
     );
   };
 
+  // Returns the results of the search
   const FacebookResults = () => {
-    if (results.length > 6) return ListView();
+    if (results.length === 0)
+      return (
+        <>
+          <br />
+          <h1 className="no-matches-found">No matches were found.</h1>
+        </>
+      );
+
+    if (results.length > 10) return ListView();
     return GridView();
   };
 
-  if (results) {
+  // This will act as a loading buffer
+  if (!results) {
     return (
       <article className="facebook-results">
         <section>
-          {results.length > 0 ? (
-            FacebookResults()
-          ) : (
-            <>
-              <br />
-              <h1 className="no-matches-found">No matches were found.</h1>
-            </>
-          )}
+          {" "}
+          <br />
+          <h1 className="no-matches-found">Loading...</h1>
         </section>
       </article>
     );
   }
 
-  return null;
+  return (
+    <article className="facebook-results">
+      <section>{FacebookResults()}</section>
+    </article>
+  );
 };
 
 FacebookHome.propTypes = {

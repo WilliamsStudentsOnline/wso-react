@@ -2,10 +2,13 @@
 import React, { useState, useEffect, createRef } from "react";
 import PropTypes from "prop-types";
 
+// Redux/Routing imports
 import { connect } from "react-redux";
-
-// External Imports
 import { getCurrUser, getToken } from "../../../selectors/auth";
+import { actions } from "redux-router5";
+import { doUpdateUser } from "../../../actions/auth";
+
+// Additional Imports
 import { autocompleteTags } from "../../../api/autocomplete";
 import {
   putCurrUserTags,
@@ -13,11 +16,7 @@ import {
   patchCurrUser,
   putCurrUserPhoto,
 } from "../../../api/users";
-
-import { actions } from "redux-router5";
-
 import { checkAndHandleError } from "../../../lib/general";
-import { doUpdateUser } from "../../../actions/auth";
 
 const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
   const [tags, updateTags] = useState([]);

@@ -6,21 +6,21 @@ import Trakyak from "../../../assets/images/trakyak.png";
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getToken, getCurrUser } from "../../../selectors/auth";
-import { createRouteNodeSelector } from "redux-router5";
+import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
 import { getUser } from "../../../api/users";
 import { checkAndHandleError } from "../../../lib/general";
-import { Link } from "react-router5";
+import { ConnectedLink } from "react-router5";
+import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 
-const FacebookUser = ({ currUser, token, route }) => {
+const FacebookUser = ({ currUser, token, route, navigateTo }) => {
   const [viewPerson, updateTarget] = useState(null);
 
   useEffect(() => {
-    // @TODO: Handle not being able to find the current user
     const loadTarget = async () => {
       if (!route.params.userID) {
-        updateTarget(null);
+        navigateTo("404");
         return;
       }
 
@@ -28,15 +28,18 @@ const FacebookUser = ({ currUser, token, route }) => {
 
       if (checkAndHandleError(targetResponse)) {
         updateTarget(targetResponse.data.data);
-      } else updateTarget(null);
+      } else {
+        navigateTo("404");
+      }
     };
 
     loadTarget();
-  }, [token, route.params.userID]);
+  }, [token, route.params.userID, navigateTo]);
 
-  const displayRoom = () => {
+  // Returns the room/ office information of the user.
+  const userRoom = () => {
     if (
-      viewPerson.type === "student" &&
+      viewPerson.type === userTypeStudent &&
       (viewPerson.dormVisible && viewPerson.dormRoom)
     ) {
       return (
@@ -49,16 +52,130 @@ const FacebookUser = ({ currUser, token, route }) => {
         </>
       );
     }
-    return (
-      <>
-        <h5>Office:</h5>
-        <h4>{viewPerson.office ? viewPerson.office.number : ""}</h4>
-        <br />
-      </>
-    );
+
+    if (viewPerson.office) {
+      return (
+        <>
+          <h5>Office:</h5>
+          <h4>{viewPerson.office.number}</h4>
+          <br />
+        </>
+      );
+    }
+    return null;
   };
 
   if (!viewPerson) return null;
+
+  // Generates user's title
+  const userTitle = () => {
+    if (viewPerson.type === userTypeStudent) {
+      return <h5>Student</h5>;
+    }
+    if (viewPerson.title) {
+      return (
+        <h5>
+          {viewPerson.title ? viewPerson.title : null}
+          <br />
+          {viewPerson.department.name}
+        </h5>
+      );
+    }
+
+    return null;
+  };
+
+  // Generates user's pronouns
+  const userPronouns = () => {
+    if (viewPerson.pronoun) {
+      return <h5>{`Pronouns: ${viewPerson.pronoun}`}</h5>;
+    }
+    return null;
+  };
+
+  // Generate user's unix
+  const userUnix = () => {
+    if (viewPerson.unixID) {
+      return (
+        <>
+          <h5>Unix:</h5>
+          <h4>{viewPerson.unixID}</h4>
+          <br />
+        </>
+      );
+    }
+    return null;
+  };
+
+  // Generate user's tags
+  const userTags = () => {
+    if (
+      (viewPerson.type === userTypeStudent ||
+        viewPerson.type === userTypeAlumni) &&
+      viewPerson.tags
+    ) {
+      return (
+        <>
+          <h5>Tags:</h5>
+          <ul>
+            {viewPerson.tags.map((tag, index) => {
+              return (
+                <li className="view-tag" key={tag.name}>
+                  <ConnectedLink
+                    routeName="facebook"
+                    routeParams={{ q: `tag:"${tag.name}"` }}
+                  >
+                    {tag.name}
+                  </ConnectedLink>
+                  {index < viewPerson.tags.length - 1 ? (
+                    <span>,&nbsp;</span>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
+          <br />
+        </>
+      );
+    }
+    return null;
+  };
+
+  // Generate user's su box
+  const userSUBox = () => {
+    if (viewPerson.type === userTypeStudent) {
+      return (
+        <>
+          <h5>SU Box:</h5>
+          <h4>{viewPerson.suBox || "None listed"}</h4>
+          <br />
+        </>
+      );
+    }
+    return null;
+  };
+
+  // Generate user's hometown
+  const userHometown = () => {
+    if (
+      viewPerson.homeVisible &&
+      viewPerson.homeTown &&
+      viewPerson.type === userTypeStudent
+    ) {
+      return (
+        <>
+          <h5>Hometown:</h5>
+          <h4>
+            {viewPerson.homeTown},{" "}
+            {viewPerson.homeCountry === "United States"
+              ? viewPerson.homeState
+              : viewPerson.homeCountry}
+          </h4>
+        </>
+      );
+    }
+    return null;
+  };
 
   return (
     <article className="facebook-profile">
@@ -73,78 +190,14 @@ const FacebookUser = ({ currUser, token, route }) => {
             {viewPerson.name}
             {currUser.id === viewPerson.id ? <span>&nbsp;(me)</span> : null}
           </h3>
-
-          {viewPerson.type === "student" ? (
-            <h5>Student</h5>
-          ) : (
-            <h5>
-              {viewPerson.title ? viewPerson.title : null}
-              <br />
-              {viewPerson.department.name}
-            </h5>
-          )}
-
-          {viewPerson.pronoun ? (
-            <h5>{`Pronouns: ${viewPerson.pronoun}`}</h5>
-          ) : null}
-
+          {userTitle()}
+          {userPronouns()}
           <br />
-          {viewPerson.unixID ? (
-            <>
-              <h5>Unix:</h5>
-              <h4>{viewPerson.unixID}</h4>
-              <br />
-            </>
-          ) : null}
-
-          {(viewPerson.type === "student" || viewPerson.type === "alumni") &&
-          viewPerson.tags ? (
-            <>
-              <h5>Tags:</h5>
-              <ul>
-                {viewPerson.tags.map((tag, index) => {
-                  return (
-                    <li className="view-tag" key={tag.name}>
-                      <Link
-                        routeName="facebook"
-                        routeParams={{ q: `tag:${tag.name}` }}
-                      >
-                        {tag.name}
-                      </Link>
-                      {index < viewPerson.tags.length - 1 ? (
-                        <span>,&nbsp;</span>
-                      ) : null}
-                    </li>
-                  );
-                })}
-              </ul>
-              <br />
-            </>
-          ) : null}
-
-          {viewPerson.type === "student" ? (
-            <>
-              <h5>SU Box:</h5>
-              <h4>{viewPerson.suBox || "None listed"}</h4>
-              <br />
-            </>
-          ) : null}
-
-          {displayRoom()}
-
-          {viewPerson.homeVisible &&
-          viewPerson.homeTown &&
-          viewPerson.type === "student" ? (
-            <>
-              <h5>Hometown:</h5>
-              <h4>
-                {viewPerson.homeTown},{" "}
-                {viewPerson.homeCountry === "United States"
-                  ? viewPerson.homeState
-                  : viewPerson.homeCountry}
-              </h4>
-            </>
-          ) : null}
+          {userUnix()}
+          {userTags()}
+          {userSUBox()}
+          {userRoom()}
+          {userHometown()}
         </aside>
       </section>
     </article>
@@ -155,6 +208,7 @@ FacebookUser.propTypes = {
   token: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
 };
 
 FacebookUser.defaultProps = {};
@@ -169,4 +223,12 @@ const mapStateToProps = () => {
   });
 };
 
-export default connect(mapStateToProps)(FacebookUser);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FacebookUser);
