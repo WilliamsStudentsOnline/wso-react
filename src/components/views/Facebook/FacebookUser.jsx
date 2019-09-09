@@ -1,13 +1,16 @@
 // React Imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import Trakyak from "../../../assets/images/trakyak.png";
 
+// Redux/ Routing imports
 import { connect } from "react-redux";
 import { getToken, getCurrUser } from "../../../selectors/auth";
-import { getUser } from "../../../api/users";
-import { checkAndHandleError } from "../../../lib/general";
 import { createRouteNodeSelector } from "redux-router5";
 
+// Additional Imports
+import { getUser } from "../../../api/users";
+import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 
 const FacebookUser = ({ currUser, token, route }) => {
@@ -61,7 +64,8 @@ const FacebookUser = ({ currUser, token, route }) => {
     <article className="facebook-profile">
       <section>
         <aside className="picture">
-          <img src={`/pic/${viewPerson.unixID}`} alt="avatar" />
+          <img src={Trakyak} alt="avatar" />
+          {/* <img src={`/pic/${viewPerson.unixID}`} alt="avatar" /> */}
         </aside>
 
         <aside className="info">

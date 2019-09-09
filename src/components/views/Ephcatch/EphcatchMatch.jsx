@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import Trakyak from "../../../assets/images/trakyak.png";
 
 import { getEphcatchMatches } from "../../../api/ephcatch";
 import { connect } from "react-redux";
@@ -38,7 +39,8 @@ const EphcatchMatch = ({ token }) => {
             <aside>
               <div className="third">
                 <div className="profile-photo">
-                  <img alt="match" src={`/pic/${match.unixID}`} />
+                  <img src={Trakyak} alt="avatar" />
+                  {/* <img alt="profile" src={`/pic/${ephcatcher.unixID}`} /> */}
                 </div>
               </div>
               <div className="two-third">

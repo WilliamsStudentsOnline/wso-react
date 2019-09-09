@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import Trakyak from "../../../assets/images/trakyak.png";
 
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
@@ -117,7 +118,8 @@ const EphcatchHome = ({ token }) => {
             >
               <div className="third">
                 <div className="profile-photo">
-                  <img alt="profile" src={`/pic/${ephcatcher.unixID}`} />
+                  <img src={Trakyak} alt="avatar" />
+                  {/* <img alt="profile" src={`/pic/${ephcatcher.unixID}`} /> */}
                 </div>
               </div>
               <div className="two-thirds">

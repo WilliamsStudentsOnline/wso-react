@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { getCurrUser } from "../../../selectors/auth";
 import { actions, createRouteNodeSelector } from "redux-router5";
 
+// Additional imports
 import { Link } from "react-router5";
 
 const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
@@ -31,22 +32,17 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
             <li>
               <Link routeName="facebook.help">Help</Link>
             </li>
-
-            {currUser && currUser.id ? (
-              <>
-                <li>
-                  <Link
-                    routeName="facebook.users"
-                    routeParams={{ userID: currUser.id }}
-                  >
-                    View
-                  </Link>
-                </li>
-                <li>
-                  <Link routeName="facebook.edit"> Edit </Link>
-                </li>
-              </>
-            ) : null}
+            <li>
+              <Link
+                routeName="facebook.users"
+                routeParams={{ userID: currUser.id }}
+              >
+                View
+              </Link>
+            </li>
+            <li>
+              <Link routeName="facebook.edit"> Edit </Link>
+            </li>
           </ul>
         </div>
         <form onSubmit={submitHandler}>
@@ -81,11 +77,6 @@ FacebookLayout.propTypes = {
 FacebookLayout.defaultProps = {
   children: {},
 };
-
-/* const mapStateToProps = (state) => ({
-  const routeNodeSelector = createRouteNodeSelector("facebook");
-  currUser: getCurrUser(state),
-}); */
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("facebook");

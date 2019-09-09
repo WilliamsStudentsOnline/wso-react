@@ -1,6 +1,7 @@
 // React Imports
 import React from "react";
 import PropTypes from "prop-types";
+import Trakyak from "../assets/images/trakyak.png";
 
 // React/Redux imports
 import { getCurrUser } from "../selectors/auth";
@@ -74,7 +75,8 @@ const Nav = ({ currUser }) => {
                     routeName="facebook.users"
                     routeParams={{ userID: currUser.id }}
                   >
-                    <img src={`/pic/${currUser.unixID}`} alt="avatar" />
+                    {/* <img src={`/pic/${currUser.unixID}`} alt="avatar" /> */}
+                    <img src={Trakyak} alt="avatar" />
                   </Link>
                 </li>
                 <li>
