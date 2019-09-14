@@ -2,12 +2,12 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-// Redux imports
+// Redux/ Router imports
 import { connect } from "react-redux";
 import { getCurrUser, getToken } from "../../../selectors/auth";
 import { actions, createRouteNodeSelector } from "redux-router5";
 
-// External imports
+// Additional imports
 import { Link } from "react-router5";
 import { autocompleteFactrak } from "../../../api/autocomplete";
 import { checkAndHandleError } from "../../../lib/general";

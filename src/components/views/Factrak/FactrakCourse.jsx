@@ -3,13 +3,13 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import FactrakComment from "./FactrakComment";
 
-// Redux imports
+// Redux/ Router imports
 import { connect } from "react-redux";
+import { createRouteNodeSelector, actions } from "redux-router5";
 import { getToken } from "../../../selectors/auth";
 
-// API imports
+// Additional imports
 import { getCourse, getSurveys, getProfessors } from "../../../api/factrak";
-import { createRouteNodeSelector, actions } from "redux-router5";
 import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 

@@ -14,12 +14,12 @@ import FactrakCourse from "./FactrakCourse";
 import FactrakProfessor from "./FactrakProfessor";
 import FactrakSearch from "./FactrakSearch";
 
-// Redux imports
+// Redux/ Router imports
 import { connect } from "react-redux";
-
-// External Imports
 import { createRouteNodeSelector, actions } from "redux-router5";
 import { getToken } from "../../../selectors/auth";
+
+// Additional Imports
 import { scopes, containsScopes } from "../../../lib/general";
 
 const FactrakMain = ({ route, token, navigateTo }) => {

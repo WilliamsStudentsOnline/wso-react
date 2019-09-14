@@ -7,7 +7,7 @@ import FactrakComment from "./FactrakComment";
 import { connect } from "react-redux";
 import { getToken, getCurrUser } from "../../../selectors/auth";
 
-// API imports
+// Additional imports
 import { getSurveys } from "../../../api/factrak";
 import { checkAndHandleError } from "../../../lib/general";
 

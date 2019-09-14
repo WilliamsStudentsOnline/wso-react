@@ -2,12 +2,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-// Redux imports
+// Redux/ Router imports
 import { connect } from "react-redux";
 import { getCurrUser, getToken } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
+import { actions } from "redux-router5";
 
-// API Imports
+// Additional Imports
 import {
   postSurveyAgreement,
   patchSurveyAgreement,
@@ -17,7 +18,6 @@ import {
   deleteSurvey,
 } from "../../../api/factrak";
 import { getUser } from "../../../api/users";
-import { actions } from "redux-router5";
 import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import { format } from "timeago.js";

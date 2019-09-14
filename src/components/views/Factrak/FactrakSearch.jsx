@@ -2,14 +2,14 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
+// Redux/ Router imports
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
-
-import { checkAndHandleError } from "../../../lib/general";
 import { createRouteNodeSelector } from "redux-router5";
 
+// Additional imports
+import { checkAndHandleError } from "../../../lib/general";
 import { getProfessors, getCourses } from "../../../api/factrak";
-
 import { Link } from "react-router5";
 
 const FactrakSearch = ({ token, route }) => {

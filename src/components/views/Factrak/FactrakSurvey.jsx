@@ -2,13 +2,12 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-// Redux imports
+// Redux/ Routing imports
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
+import { createRouteNodeSelector, actions } from "redux-router5";
 
 // External Imports
-// import axios from "axios";
-import { createRouteNodeSelector, actions } from "redux-router5";
 import {
   getProfessor,
   postSurvey,

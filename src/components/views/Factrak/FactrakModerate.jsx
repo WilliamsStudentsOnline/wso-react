@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
 
-// External imports
+// Additional imports
 import { getFlagged, unflagSurvey, deleteSurvey } from "../../../api/factrak";
 import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";

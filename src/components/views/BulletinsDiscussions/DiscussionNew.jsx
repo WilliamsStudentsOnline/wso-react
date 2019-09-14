@@ -95,7 +95,7 @@ const DiscussionsNew = ({ token, navigateTo }) => {
 
 DiscussionsNew.propTypes = {
   token: PropTypes.string.isRequired,
-  navigateTo: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
 };
 
 DiscussionsNew.defaultProps = {};
