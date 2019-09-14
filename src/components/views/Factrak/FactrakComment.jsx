@@ -35,6 +35,7 @@ const FactrakComment = ({
   const [survey, updateSurvey] = useState(comment);
   const [isDeleted, updateDeleted] = useState(false);
 
+  // Get the survey and update it after editing.
   const getAndUpdateSurvey = async () => {
     const surveyResponse = await getSurvey(token, survey.id);
     if (checkAndHandleError(surveyResponse)) {
@@ -58,6 +59,7 @@ const FactrakComment = ({
     }
   };
 
+  // Handles survey agreement
   const agreeHandler = async (agree) => {
     const agreeParams = { agree };
     let response;
@@ -76,6 +78,7 @@ const FactrakComment = ({
     }
   };
 
+  // Generates the agree count
   const agreeCount = () => {
     if (abridged) return null;
     return (
@@ -99,6 +102,7 @@ const FactrakComment = ({
     );
   };
 
+  // Generates all the survey details
   const surveyDetail = () => {
     // If the current user was the one who made the survey
     if (currUser.id === survey.userID) {
@@ -134,6 +138,7 @@ const FactrakComment = ({
     );
   };
 
+  // Handling flagging
   const flagHandler = async () => {
     const response = await flagSurvey(token, survey.id);
     if (checkAndHandleError(response)) {
@@ -141,6 +146,7 @@ const FactrakComment = ({
     }
   };
 
+  // Generates the would take another sentence.
   const wouldTakeAnother = () => {
     if (survey.wouldTakeAnother === null) return null;
     if (survey.wouldTakeAnother)
@@ -158,6 +164,7 @@ const FactrakComment = ({
     );
   };
 
+  // Generate the would recommend field.
   const wouldRecommend = () => {
     if (survey.wouldRecommendCourse === null) return null;
     if (survey.wouldRecommendCourse)
@@ -175,6 +182,7 @@ const FactrakComment = ({
     );
   };
 
+  // Generate the agree/disagree buttons.
   const agree = () => {
     if (survey.userID === currUser.id) return null;
 
@@ -218,7 +226,12 @@ const FactrakComment = ({
     );
   };
 
+  // Generate the survey text.
   const surveyText = () => {
+    if (currUser.factrakSurveyDeficit === 0 || survey.userID === currUser.id) {
+      return <div className="blurred">Please do your Factrak surveys.</div>;
+    }
+
     let truncatedsurvey = survey.comment;
     if (survey.comment.length > 145)
       truncatedsurvey = survey.comment.substring(0, 145);
@@ -251,39 +264,51 @@ const FactrakComment = ({
     );
   };
 
+  // Generate Professor link
+  const profName = () => {
+    if (showProf) {
+      return (
+        <Link
+          routeName="factrak.professors"
+          routeParams={{ profID: survey.professorID }}
+        >
+          {`${survey.professor.name} `}
+        </Link>
+      );
+    }
+
+    return null;
+  };
+
+  // Generate Course Link
+  const courseLink = () => {
+    return (
+      <>
+        {showProf && survey.course ? ` | ` : ""}
+        <Link
+          routeName="factrak.courses"
+          routeParams={{ courseID: survey.courseID }}
+        >
+          {survey.course
+            ? `${survey.course.areaOfStudy.abbreviation} ${survey.course.number}`
+            : ""}
+        </Link>
+      </>
+    );
+  };
+
   if (isDeleted) return null;
 
   return (
     <div id={`comment${survey.id}`} className="comment">
       <div className="comment-content">
         <h1>
-          {showProf ? (
-            <Link
-              routeName="factrak.professors"
-              routeParams={{ profID: survey.professorID }}
-            >
-              {`${survey.professor.name} `}
-            </Link>
-          ) : null}
-          {showProf && survey.course ? ` | ` : ""}
-          <Link
-            routeName="factrak.courses"
-            routeParams={{ courseID: survey.courseID }}
-          >
-            {survey.course
-              ? `${survey.course.areaOfStudy.abbreviation} ${survey.course.number}`
-              : ""}
-          </Link>
+          {profName()}
+          {courseLink()}
         </h1>
 
         {agreeCount()}
-        {currUser.factrakSurveyDeficit === 0 ||
-        survey.userID === currUser.id ? (
-          surveyText()
-        ) : (
-          <div className="blurred">Please do your Factrak surveys.</div>
-        )}
-
+        {surveyText()}
         {surveyDetail()}
       </div>
     </div>
