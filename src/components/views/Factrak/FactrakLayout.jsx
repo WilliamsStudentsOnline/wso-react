@@ -25,9 +25,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
     loadQuery();
   }, [route.params.q]);
 
-  /**
-   * Initiates new autocomplete
-   */
+  // Initiates new autocomplete
   const factrakAutocomplete = async (event) => {
     setQuery(event.target.value);
     const factrakResponse = await autocompleteFactrak(token, query);
@@ -37,6 +35,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
       suggestData = factrakResponse.data.data;
     }
 
+    // Limit the number of factrak suggestions to 5.
     if (suggestData.length > 5) {
       setSuggestions(suggestData.slice(0, 5));
     } else {

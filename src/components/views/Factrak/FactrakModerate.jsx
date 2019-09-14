@@ -14,7 +14,7 @@ import { Link } from "react-router5";
 const FactrakModerate = ({ token }) => {
   const [flagged, updateFlagged] = useState([]);
 
-  // Equivalent to ComponentDidMount
+  // Loads all the flagged courses on mount.
   useEffect(() => {
     const loadFlagged = async () => {
       const flaggedResponse = await getFlagged(token, {
@@ -29,6 +29,7 @@ const FactrakModerate = ({ token }) => {
     loadFlagged();
   }, [token]);
 
+  // Unflag the survey
   const unflag = async (surveyID) => {
     const response = await unflagSurvey(token, surveyID);
     if (checkAndHandleError(response)) {
@@ -36,6 +37,7 @@ const FactrakModerate = ({ token }) => {
     }
   };
 
+  // Handles the deletion of the survey
   const deleteHandler = async (surveyID) => {
     // @TODO: write something to overcome this confirm
     // eslint-disable-next-line no-restricted-globals
@@ -48,49 +50,58 @@ const FactrakModerate = ({ token }) => {
     }
   };
 
+  // Generate a flagged survey.
+  const generateFlaggedSurvey = (f) => {
+    return (
+      <div className="comment" key={`comment${f.id}`} id={`comment${f.id}`}>
+        <div>
+          <span>
+            <Link
+              routeName="factrak.professors"
+              routeParams={{ profID: f.professorID }}
+            >
+              {f.professor.name}
+            </Link>
+            &nbsp;
+            <Link
+              routeName="factrak.courses"
+              routeParams={{ courseID: f.course.id }}
+            >
+              {`${f.course.areaOfStudy.abbreviation} ${f.course.number}`}
+            </Link>{" "}
+            (+{f.totalAgree}, -{f.totalDisagree})
+          </span>
+          <p>{f.comment}</p>
+          <button
+            className="inline-button"
+            type="button"
+            onClick={() => unflag(f.id)}
+          >
+            Unflag
+          </button>
+          &ensp;
+          <button
+            className="inline-button"
+            onClick={() => deleteHandler(f.id)}
+            type="button"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  // Generate all flagged surveys
+  const generateFlaggedSurveys = () => {
+    return flagged.map((f) => generateFlaggedSurvey(f));
+  };
+
   return (
     <article className="facebook-profile">
       <section className="margin-vertical-small">
         <h3>Moderation</h3>
-
-        {flagged.map((f) => (
-          <div className="comment" key={`comment${f.id}`} id={`comment${f.id}`}>
-            <div>
-              <span>
-                <Link
-                  routeName="factrak.professors"
-                  routeParams={{ profID: f.professorID }}
-                >
-                  {f.professor.name}
-                </Link>
-                &nbsp;
-                <Link
-                  routeName="factrak.courses"
-                  routeParams={{ courseID: f.course.id }}
-                >
-                  {`${f.course.areaOfStudy.abbreviation} ${f.course.number}`}
-                </Link>{" "}
-                (+{f.totalAgree}, -{f.totalDisagree})
-              </span>
-              <p>{f.comment}</p>
-              <button
-                className="inline-button"
-                type="button"
-                onClick={() => unflag(f.id)}
-              >
-                Unflag
-              </button>
-              &ensp;
-              <button
-                className="inline-button"
-                onClick={() => deleteHandler(f.id)}
-                type="button"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
+        {generateFlaggedSurveys()}
       </section>
     </article>
   );

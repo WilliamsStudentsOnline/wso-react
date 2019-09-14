@@ -51,6 +51,7 @@ const FactrakMain = ({ route, token, navigateTo }) => {
     }
   };
 
+  // Returns body only if the user has the respective scopes
   if (
     containsScopes(token, [
       scopes.ScopeFactrakFull,
