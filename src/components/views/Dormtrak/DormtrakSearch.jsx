@@ -2,13 +2,14 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
+// Redux/ Routing imports
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
-
-import { getDormtrakDorms } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
 import { createRouteNodeSelector } from "redux-router5";
 
+// Additional imports
+import { getDormtrakDorms } from "../../../api/dormtrak";
+import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 
 const DormtrakSearch = ({ token, route }) => {

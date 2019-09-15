@@ -6,9 +6,9 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
 
+// Additional imports
 import { Link } from "react-router5";
 import { getDormtrakDormFacts } from "../../../api/dormtrak";
-
 import { checkAndHandleError } from "../../../lib/general";
 
 const HoodTableRow = ({ dorm, token }) => {

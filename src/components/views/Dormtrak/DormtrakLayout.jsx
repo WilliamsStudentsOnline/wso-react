@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { getToken, getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
+// Additional imports
 import { getDormtrakNeighborhoods } from "../../../api/dormtrak";
 import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";

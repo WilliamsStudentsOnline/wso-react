@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
 
-// API imports
+// Additional imports
 import { getDormtrakRankings } from "../../../api/dormtrak";
 import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";

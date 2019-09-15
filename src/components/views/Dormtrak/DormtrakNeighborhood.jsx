@@ -3,15 +3,14 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import HoodTableRow from "./HoodTableRow";
 
-// Redux imports
+// Redux/ Routing imports
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
+import { createRouteNodeSelector } from "redux-router5";
 
-// API imports
+// Additional imports
 import { getDormtrakNeighborhood } from "../../../api/dormtrak";
 import { checkAndHandleError } from "../../../lib/general";
-
-import { createRouteNodeSelector } from "redux-router5";
 
 const DormtrakNeighborhood = ({ route, token }) => {
   const [neighborhood, updateHoodInfo] = useState(null);

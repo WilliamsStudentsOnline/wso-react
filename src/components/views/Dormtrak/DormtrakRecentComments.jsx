@@ -2,8 +2,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+// Additional imports
 import { Link } from "react-router5";
-
 import { avatarHelper } from "../../../lib/imageHelper";
 
 const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {

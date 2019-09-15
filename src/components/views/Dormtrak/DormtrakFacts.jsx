@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 // External Imports
 import { Chart } from "react-google-charts";
 
+// Additional imports
 import { getDormtrakDormFacts } from "../../../api/dormtrak";
 import { checkAndHandleError, capitalize } from "../../../lib/general";
 

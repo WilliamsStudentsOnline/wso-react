@@ -2,13 +2,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-// Redux imports
+// Redux/ Routing imports
 import { connect } from "react-redux";
 import { getCurrUser, getToken } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 import { doUpdateUser } from "../../../actions/auth";
 
-// API imports
+// Additional  imports
 import { patchCurrUser } from "../../../api/users";
 import { checkAndHandleError } from "../../../lib/general";
 

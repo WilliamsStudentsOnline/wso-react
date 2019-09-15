@@ -8,10 +8,9 @@ import DormtrakRecentComments from "./DormtrakRecentComments";
 import { connect } from "react-redux";
 import { getToken, getCurrUser } from "../../../selectors/auth";
 
+// Additional imports
 import { checkAndHandleError } from "../../../lib/general";
-
 import { getDormtrakDormReviews } from "../../../api/dormtrak";
-
 import { Link } from "react-router5";
 
 const DormtrakHome = ({ currUser, token }) => {

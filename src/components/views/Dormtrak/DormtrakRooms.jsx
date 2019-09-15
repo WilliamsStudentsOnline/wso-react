@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
+// Additional imports
 import { capitalize } from "../../../lib/general";
 
 const DormtrakRooms = ({ rooms }) => {

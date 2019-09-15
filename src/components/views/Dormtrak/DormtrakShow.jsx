@@ -4,15 +4,16 @@ import PropTypes from "prop-types";
 import DormtrakFacts from "./DormtrakFacts";
 import DormtrakRooms from "./DormtrakRooms";
 import DormtrakRecentComments from "./DormtrakRecentComments";
-import { getDormtrakDorm, getDormtrakDormReviews } from "../../../api/dormtrak";
 
-import { checkAndHandleError } from "../../../lib/general";
-import { bannerHelper } from "../../../lib/imageHelper";
+// Redux/ Routing imports
 import { getCurrUser, getToken } from "../../../selectors/auth";
 import { connect } from "react-redux";
-
-// External Imports
 import { createRouteNodeSelector } from "redux-router5";
+
+// Additional imports
+import { getDormtrakDorm, getDormtrakDormReviews } from "../../../api/dormtrak";
+import { checkAndHandleError } from "../../../lib/general";
+import { bannerHelper } from "../../../lib/imageHelper";
 import { Link } from "react-router5";
 
 const DormtrakShow = ({ route, currUser, token }) => {

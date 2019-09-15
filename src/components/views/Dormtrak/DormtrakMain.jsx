@@ -7,14 +7,14 @@ import DormtrakPolicy from "./DormtrakPolicy";
 import DormtrakShow from "./DormtrakShow";
 import DormtrakSearch from "./DormtrakSearch";
 import DormtrakNeighborhood from "./DormtrakNeighborhood";
-
-// Redux imports
-import { connect } from "react-redux";
-
-// External Imports
-import { createRouteNodeSelector, actions } from "redux-router5";
 import DormtrakReviewForm from "./DormtrakReviewForm";
+
+// Redux/ Routing imports
+import { connect } from "react-redux";
+import { createRouteNodeSelector, actions } from "redux-router5";
 import { getToken } from "../../../selectors/auth";
+
+// Additional Imports
 import { containsScopes, scopes } from "../../../lib/general";
 
 const DormtrakMain = ({ route, token, navigateTo }) => {

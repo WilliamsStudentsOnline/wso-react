@@ -2,14 +2,13 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-// Redux imports
+// Redux / Routing imports
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
-
 import { createRouteNodeSelector, actions } from "redux-router5";
 
+// Additional imports
 import { checkAndHandleError } from "../../../lib/general";
-
 import {
   getDormtrakDormReview,
   postDormtrakDormReview,
