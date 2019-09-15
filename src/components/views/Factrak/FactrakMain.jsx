@@ -20,7 +20,7 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 import { getToken } from "../../../selectors/auth";
 
 // Additional Imports
-import { scopes, containsScopes } from "../../../lib/general";
+import { scopes, containsScopes, getTokenLevel } from "../../../lib/general";
 
 const FactrakMain = ({ route, token, navigateTo }) => {
   const factrakBody = () => {
@@ -60,6 +60,15 @@ const FactrakMain = ({ route, token, navigateTo }) => {
     ])
   ) {
     return <FactrakLayout>{factrakBody()}</FactrakLayout>;
+  }
+
+  // @TODO: investigate if 2 is the best choice.
+  if (getTokenLevel(token) > 2) {
+    return (
+      <FactrakLayout>
+        <FactrakPolicy />
+      </FactrakLayout>
+    );
   }
 
   navigateTo("login");

@@ -43,6 +43,29 @@ const FactrakHome = ({ token, currUser }) => {
     loadAreas();
   }, [token]);
 
+  // Generates the factrak survey deficit message if necessary
+  const factrakSurveyDeficitMessage = () => {
+    if (currUser.factrakSurveyDeficit > 0) {
+      return (
+        <>
+          <strong>
+            {`Write just ${currUser.factrakSurveyDeficit} reviews to
+        make the blur go away!`}
+          </strong>
+          <br />
+          To write a review, just search a prof&apos;s name directly above, or
+          click a department on the left to see a list of profs in that
+          department. Then click the link on the prof&apos;s page to write a
+          review!
+          <br />
+          <br />
+        </>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <article className="dormtrak">
       <div className="container">
@@ -68,21 +91,7 @@ const FactrakHome = ({ token, currUser }) => {
           <section className="lead">
             <h3>Recent Comments</h3>
             <br />
-            {currUser.factrakSurveyDeficit > 0 ? (
-              <>
-                <strong>
-                  {`Write just ${currUser.factrakSurveyDeficit} reviews to
-                  make the blur go away!`}
-                </strong>
-                <br />
-                To write a review, just search a prof&apos;s name directly
-                above, or click a department on the left to see a list of profs
-                in that department. Then click the link on the prof&apos;s page
-                to write a review!
-                <br />
-                <br />
-              </>
-            ) : null}
+            {factrakSurveyDeficitMessage()}
 
             {surveys.map((survey) => (
               <FactrakComment

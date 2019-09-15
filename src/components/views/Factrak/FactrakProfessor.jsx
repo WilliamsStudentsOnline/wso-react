@@ -68,6 +68,7 @@ const FactrakProfessor = ({ token, route }) => {
     loadSurveys(professorParam);
   }, [route.params.professor, token, route.params.profID]);
 
+  // Generates the crowdsourced opinion on the professor's courses' workload
   const courseWorkload = () => {
     if (!ratings.numCourseWorkload) return null;
 
@@ -91,6 +92,7 @@ const FactrakProfessor = ({ token, route }) => {
     );
   };
 
+  // Generates the crowdsourced opinion on how stimulating the professor's courses are.
   const courseStimulating = () => {
     if (!ratings.numCourseStimulating) return null;
     const STIMULATING_DESCR = [
@@ -114,6 +116,7 @@ const FactrakProfessor = ({ token, route }) => {
     );
   };
 
+  // Generates the crowdsourced opinion on how approachable the professor is.
   const profApproachability = () => {
     if (!ratings.avgApproachability) return null;
     const APPROACH_DESCR = [
@@ -137,6 +140,8 @@ const FactrakProfessor = ({ token, route }) => {
       </li>
     );
   };
+
+  // Generates the crowdsourced opinion on how good the professor is at lecturing.
   const profLecture = () => {
     if (!ratings.numLeadLecture) return null;
     const LECTURE_DESCR = [
@@ -159,6 +164,7 @@ const FactrakProfessor = ({ token, route }) => {
     );
   };
 
+  // Generates the crowdsourced opinion on how helpful the professor is.
   const profHelpful = () => {
     if (!ratings.numOutsideHelpfulness) return null;
     const HELP_DESCR = [
@@ -181,6 +187,7 @@ const FactrakProfessor = ({ token, route }) => {
     );
   };
 
+  // Generates the survey statistics for the professor.
   const surveyStats = () => {
     if (!ratings) return null;
 
@@ -234,7 +241,6 @@ const FactrakProfessor = ({ token, route }) => {
         <br />
         <br />
         {surveyStats()}
-
         <br />
         <br />
 
@@ -266,7 +272,7 @@ FactrakProfessor.propTypes = {
 FactrakProfessor.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("factrak.areasOfStudy");
+  const routeNodeSelector = createRouteNodeSelector("factrak.professors");
 
   return (state) => ({
     token: getToken(state),

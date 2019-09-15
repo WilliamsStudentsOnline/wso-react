@@ -31,6 +31,7 @@ const parseToken = (token) => {
 const updateToken = (state, action) => {
   const response = action.response;
   const decoded = parseToken(response.token);
+  console.log(decoded);
 
   return Object.assign({}, state, {
     scope: decoded.scope,

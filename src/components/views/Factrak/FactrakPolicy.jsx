@@ -15,10 +15,12 @@ import { checkAndHandleError } from "../../../lib/general";
 const FactrakPolicy = ({ currUser, navigateTo, token, updateUser }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
 
+  // Handles clicking of the accept policy checkbox
   const clickHandler = (event) => {
     updateAcceptPolicy(event.target.checked);
   };
 
+  // Handles submission of the survey
   const submitHandler = async (event) => {
     event.preventDefault();
 
@@ -97,7 +99,9 @@ const FactrakPolicy = ({ currUser, navigateTo, token, updateUser }) => {
             .
           </p>
           {currUser.hasAcceptedFactrakPolicy ? (
-            <p>You have already accepted the Factrak policy.</p>
+            <p>
+              <b>You have already accepted the Factrak policy.</b>
+            </p>
           ) : (
             <form onSubmit={(event) => submitHandler(event)}>
               <p>

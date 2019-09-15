@@ -61,8 +61,8 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
     if (suggestion.type && suggestion.type === "area") {
       return (
         <Link
-          routeName="factrak.search"
-          routeParams={{ q: suggestion.value }}
+          routeName="factrak.areasOfStudy"
+          routeParams={{ area: suggestion.id }}
           routeOptions={{ reload: true }}
           onMouseDown={(e) => e.preventDefault()}
         >

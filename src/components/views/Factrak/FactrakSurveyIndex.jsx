@@ -14,7 +14,6 @@ import { checkAndHandleError } from "../../../lib/general";
 const FactrakSurveyIndex = ({ token, currUser }) => {
   const [surveys, updateSurveys] = useState([]);
 
-  // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadUserSurveys = async () => {
       const params = {

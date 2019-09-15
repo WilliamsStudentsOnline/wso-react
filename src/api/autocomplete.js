@@ -9,6 +9,7 @@ const autocompleteAOS = async (token, query) => {
     },
     params: {
       q: query,
+      limit: 5,
     },
   }).catch((error) => {
     return error.response;

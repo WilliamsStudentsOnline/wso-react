@@ -22,7 +22,6 @@ import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import { format } from "timeago.js";
 
-// @TODO: investigate survey deficit
 const FactrakComment = ({
   comment,
   showProf,
@@ -228,7 +227,7 @@ const FactrakComment = ({
 
   // Generate the survey text.
   const surveyText = () => {
-    if (currUser.factrakSurveyDeficit === 0 || survey.userID === currUser.id) {
+    if (currUser.factrakSurveyDeficit !== 0 && survey.userID !== currUser.id) {
       return <div className="blurred">Please do your Factrak surveys.</div>;
     }
 

@@ -22,7 +22,6 @@ const updateTokenAPI = async (token) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    method: "post",
   }).catch((error) => {
     return error.response;
   });

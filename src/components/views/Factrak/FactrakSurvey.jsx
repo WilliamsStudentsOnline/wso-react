@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import "../../stylesheets/FactrakSurvey.css";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
@@ -13,7 +14,9 @@ import {
   postSurvey,
   patchSurvey,
   getSurvey,
+  getAreasOfStudy,
 } from "../../../api/factrak";
+// import { autocompleteAOS } from "../../../api/autocomplete";
 import { checkAndHandleError } from "../../../lib/general";
 
 // @TODO: look into react form handlers
@@ -21,10 +24,6 @@ import { checkAndHandleError } from "../../../lib/general";
 // @TODO: Error display
 
 const FactrakSurvey = ({ token, route, navigateTo }) => {
-  // const defaultQuery = "";
-  // @TODO: if (survey.course) defaultQuery = survey.course.department;
-  // const [query, setQuery] = useState(defaultQuery);
-  // const [suggestions, setSuggestions] = useState([]);
   const [survey, updateSurvey] = useState(null);
   const [prof, updateProf] = useState(null);
 
@@ -43,8 +42,9 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
   const [discussion, updateDiscussion] = useState(null);
   const [helpful, updateHelpful] = useState(null);
 
-  const professorParam = route.params.professorID;
+  const professorParam = route.params.profID;
   const surveyParam = route.params.surveyID;
+  const [areasOfStudy, updateAreasOfStudy] = useState([]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -69,14 +69,14 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
       ? await patchSurvey(token, surveyParams, survey.id)
       : await postSurvey(token, surveyParams);
 
-    if (response.data.status === 200 || response.data.status === 201) {
+    if (checkAndHandleError(response)) {
       // @TODO navigate to previous page?
       navigateTo("factrak.surveys");
     } else {
       updateErrors([response.data.error.message]);
     }
   };
-  // Equivalent to ComponentDidMount
+
   useEffect(() => {
     const loadProf = async (professorID) => {
       const profResponse = await getProfessor(token, professorID);
@@ -89,11 +89,11 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
       const surveyResponse = await getSurvey(token, surveyID);
       if (checkAndHandleError(surveyResponse)) {
         const surveyData = surveyResponse.data.data;
+
         // Could use a defaultSurvey and update that object, but will hardly save any lines.
         updateSurvey(surveyData);
         updateProf(surveyData.professor);
         updateCourseAOS(surveyData.course.areaOfStudy.abbreviation);
-
         updateRecommend(surveyData.wouldRecommendCourse);
         updateWorkload(surveyData.courseWorkload);
         updateApprochability(surveyData.approachability);
@@ -106,66 +106,41 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
       }
     };
 
+    const loadAreasOfStudy = async () => {
+      const areasOfStudyResponse = await getAreasOfStudy(token);
+      if (checkAndHandleError(areasOfStudyResponse)) {
+        updateAreasOfStudy(areasOfStudyResponse.data.data);
+      }
+    };
+
     if (surveyParam) loadSurvey(surveyParam);
     if (professorParam) loadProf(professorParam);
+    loadAreasOfStudy();
   }, [token, professorParam, surveyParam]);
 
-  /**
-   * For autocompleting departments in the survey form
-   * @TODO add this functionality
-   */
-  const factrakDeptAutocomplete = (event) => {
-    updateCourseAOS(event.target.value);
-    // setQuery(event.target.value);
-    // axios({
-    //   url: "/factrak/find_depts_autocomplete",
-    //   params: { q: event.target.value },
-    //   headers: {
-    //     "X-Requested-With": "XMLHttpRequest",
-    //   },
-    // }).then((response) => {
-    //   return setSuggestions(response.data);
-    // });
+  // Generates the dropdown for the department
+  const deptDropdown = () => {
+    if (areasOfStudy.length === 0)
+      return (
+        <select className="select-dept">
+          <option>Loading...</option>
+        </select>
+      );
+    return (
+      <select
+        className="select-dept"
+        onChange={(event) => updateCourseAOS(event.target.value)}
+      >
+        {areasOfStudy.map((areaOfStudy) => (
+          <option value={areaOfStudy.abbreviation} key={areaOfStudy.id}>
+            {areaOfStudy.abbreviation}
+          </option>
+        ))}
+      </select>
+    );
   };
 
-  const deptSuggestions = () => {
-    // if (suggestions) {
-    //   return (
-    //     <table id="factrak_dept_suggestions">
-    //       <tbody>
-    //         {suggestions.map((suggestion) => (
-    //           <tr key={suggestion}>
-    //             <td>
-    //               <button
-    //                 type="button"
-    //                 className="autocomplete-option"
-    //                 // @TODO implement dept autocomplete.
-    //                 // onClick={() => {
-    //                 //   axios({
-    //                 //     url: "/factrak/find_depts_autocomplete",
-    //                 //     params: { q: suggestion.value },
-    //                 //     headers: {
-    //                 //       "X-Requested-With": "XMLHttpRequest",
-    //                 //     },
-    //                 //   }).then((response) => {
-    //                 //     return setSuggestions(response.data);
-    //                 //   });
-
-    //                 // @TODO setQuery(suggestion);
-    //                 // }}
-    //               >
-    //                 {suggestion}
-    //               </button>
-    //             </td>
-    //           </tr>
-    //         ))}
-    //       </tbody>
-    //     </table>
-    //   );
-    // }
-    return null;
-  };
-
+  // Constructor which helps us build the option bubbles for each option
   const optionBuilder = (type, changeHandler) => {
     return [1, 2, 3, 4, 5, 6, 7].map((ans) => {
       return (
@@ -182,6 +157,27 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
     });
   };
 
+  // Generates the title of the survey
+  const surveyTitle = () => {
+    if (prof) {
+      return (
+        <>
+          {edit && survey ? (
+            <h3>
+              Editing review on
+              {survey.course
+                ? ` ${survey.course.areaOfStudy.abbreviation} ${survey.course.number} with `
+                : " "}
+              {prof.name}
+            </h3>
+          ) : null}
+          <h3>{`Review of ${prof.name}`}</h3>
+        </>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="article">
       <section>
@@ -191,21 +187,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
           </div>
 
           <form onSubmit={(event) => submitHandler(event)}>
-            {prof ? (
-              <>
-                {edit && (prof && survey) ? (
-                  <h3>
-                    Editing review on
-                    {survey.course
-                      ? ` ${survey.course.areaOfStudy.abbreviation} ${survey.course.number} with `
-                      : " "}
-                    {prof.name}
-                  </h3>
-                ) : null}
-                <h3>{`Review of ${prof.name}`}</h3>
-              </>
-            ) : null}
-
+            {surveyTitle()}
             <table id="factrak-survey-table">
               <tbody>
                 <tr>
@@ -214,14 +196,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                   </td>
                   <td align="left">
                     <div className="survey_course_name">
-                      <input
-                        placeholder="DEPT"
-                        onChange={factrakDeptAutocomplete}
-                        type="text"
-                        id="factrak_survey_aos_abbrev"
-                        value={/* query */ courseAOS}
-                      />
-                      {deptSuggestions()}
+                      {deptDropdown()}
                       <input
                         placeholder="NUMBER"
                         type="text"
@@ -272,13 +247,13 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                     Yes&nbsp;
                     <input
                       type="radio"
-                      defaultChecked={wouldTakeAnother}
+                      checked={wouldTakeAnother}
                       onChange={() => updateTakeAnother(true)}
                     />
                     No&nbsp;
                     <input
                       type="radio"
-                      defaultChecked={
+                      checked={
                         wouldTakeAnother !== null && wouldTakeAnother === false
                       }
                       onChange={() => updateTakeAnother(false)}

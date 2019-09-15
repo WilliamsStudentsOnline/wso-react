@@ -1,10 +1,16 @@
-import store from "../store";
+import configureStore from "../store";
 
 // import { actions } from "redux-router5";
 import { doUpdateToken, doUpdateUser } from "../actions/auth";
 import { updateTokenAPI } from "../api/auth";
 import { getUser } from "../api/users";
 import jwtDecode from "jwt-decode";
+import configureRouter from "../create-router";
+import { loadState } from "../loadState";
+
+const router = configureRouter();
+const persistedState = loadState();
+const store = configureStore(router, persistedState);
 
 // The current scopes
 export const scopes = {
@@ -45,9 +51,12 @@ export const checkAndUpdateUser = async (response) => {
     const token = store.getState().authState.token;
     if (token === "") return;
     const updateResponse = await updateTokenAPI(token);
+    console.log(updateResponse);
     if (updateResponse.status === 200) {
       store.dispatch(doUpdateToken(updateResponse.data.data));
-      const userResponse = await getUser("me", token);
+      const decoded = jwtDecode(token);
+      const userResponse = await getUser(token, decoded.id);
+      console.log(userResponse);
       if (userResponse.status === 200) {
         store.dispatch(doUpdateUser(userResponse.data.data));
       }
@@ -69,6 +78,20 @@ export const containsScopes = (token, scopesToCheck) => {
   }
 
   return false;
+};
+
+// Gets the token level of a given token
+export const getTokenLevel = (token) => {
+  try {
+    const decoded = jwtDecode(token);
+    if (decoded.tokenLevel) {
+      return decoded.tokenLevel;
+    }
+  } catch (err) {
+    return -1;
+  }
+
+  return -1;
 };
 
 // Returns true if there is no error and the status is OK

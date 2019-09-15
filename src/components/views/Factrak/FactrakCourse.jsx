@@ -18,7 +18,6 @@ const FactrakCourse = ({ route, token }) => {
   const [courseSurveys, updateSurveys] = useState([]);
   const [courseProfs, updateProfs] = useState([]);
 
-  // Equivalent to ComponentDidMount
   useEffect(() => {
     const courseID = route.params.courseID;
     const profID = route.params.profID ? route.params.profID : -1;
@@ -59,6 +58,7 @@ const FactrakCourse = ({ route, token }) => {
     loadProfs();
   }, [token, route.params.course, route.params.profID, route.params.courseID]);
 
+  // Generates the list of professors who teach the course
   const professorList = () => {
     if (courseProfs.length === 0) return null;
     return (
@@ -85,6 +85,7 @@ const FactrakCourse = ({ route, token }) => {
     );
   };
 
+  // Generates the factrak survey comments of the course
   const commentList = () => {
     return (
       <div className="factrak-prof-comments">
