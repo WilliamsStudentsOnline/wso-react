@@ -190,7 +190,7 @@ const FacebookHome = ({ token, route }) => {
 
   // Returns the results of the search
   const FacebookResults = () => {
-    if (results.length === 0)
+    if (results.length === 0 && route.params.q)
       return (
         <>
           <br />
