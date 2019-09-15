@@ -57,11 +57,15 @@ const AdditionalOptions = ({
   twelveHour,
   counts,
 }) => {
+  // Generates a description of how many courses were found.
   const numFound = (length) => {
-    if (length === 1) return <span className="num-found">1 course found</span>;
+    if (length === 1) {
+      return <span className="num-found">1 course found</span>;
+    }
     return <span className="num-found">{`${length} courses found`}</span>;
   };
 
+  // Handles the clicking
   const clickLoader = (funct, param) => {
     if (param && param.target) {
       funct(param.target.value);
@@ -69,6 +73,7 @@ const AdditionalOptions = ({
     onSearch();
   };
 
+  // Determining which set of start times should be used.
   const startTimes = twelveHour ? START_TIMES12 : START_TIMES;
   const endTimes = twelveHour ? END_TIMES12 : END_TIMES;
 

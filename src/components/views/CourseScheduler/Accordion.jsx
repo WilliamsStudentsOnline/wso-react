@@ -1,10 +1,9 @@
 // React imports
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
-// Component imports
 import "../../stylesheets/Accordion.css";
 
+// Simple component that takes in a header and children, with the ability to show or hide children.
 const Accordion = ({ header, children }) => {
   const [hidden, setHidden] = useState(true);
 
