@@ -57,7 +57,7 @@ export default [
       { name: "policy", path: "/policy" },
       { name: "neighborhoods", path: "/neighborhoods/:neighborhoodID" },
       { name: "dorms", path: "/dorms/:dormID" },
-      { name: "newReview", path: "/reviews/new?:dormID" },
+      { name: "newReview", path: "/reviews/new" },
       { name: "editReview", path: "/reviews/edit?:reviewID" },
       { name: "search", path: "/search?:q" },
     ],

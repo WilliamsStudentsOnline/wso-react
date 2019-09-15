@@ -15,7 +15,7 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 import { getToken } from "../../../selectors/auth";
 
 // Additional Imports
-import { containsScopes, scopes } from "../../../lib/general";
+import { containsScopes, scopes, getTokenLevel } from "../../../lib/general";
 
 const DormtrakMain = ({ route, token, navigateTo }) => {
   const dormtrakBody = () => {
@@ -48,6 +48,14 @@ const DormtrakMain = ({ route, token, navigateTo }) => {
     ])
   ) {
     return <DormtrakLayout>{dormtrakBody()}</DormtrakLayout>;
+  }
+
+  if (getTokenLevel(token) > 2) {
+    return (
+      <DormtrakLayout>
+        <DormtrakPolicy />
+      </DormtrakLayout>
+    );
   }
 
   navigateTo("login");

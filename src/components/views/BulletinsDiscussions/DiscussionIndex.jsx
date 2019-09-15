@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import PaginationButtons from "../../PaginationButtons";
 
 // Redux/Routing imports
 import { getToken, getCurrUser } from "../../../selectors/auth";
@@ -11,7 +12,6 @@ import { getDiscussions, deleteDiscussion } from "../../../api/bulletins";
 import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import { format } from "timeago.js";
-import PaginationButtons from "../../PaginationButtons";
 
 const DiscussionIndex = ({ currUser, token }) => {
   const perPage = 20;

@@ -54,7 +54,6 @@ const DormtrakShow = ({ route, currUser, token }) => {
     <div className="container">
       <aside className="sidebar">
         {dorm ? <DormtrakFacts dorm={dorm} token={token} /> : null}
-
         <hr />
 
         <section className="building-rooms">

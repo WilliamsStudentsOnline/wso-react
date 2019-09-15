@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 // Redux / Routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getToken, getCurrUser } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional imports
@@ -16,7 +16,7 @@ import {
 } from "../../../api/dormtrak";
 
 // @TODO: Come up with a whole new form mechanism.
-const DormtrakReviewForm = ({ token, route, navigateTo }) => {
+const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
   const [review, updateReview] = useState(null);
 
   const edit = route.name.split(".")[1] === "editReview";
@@ -65,7 +65,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo }) => {
       ? await patchDormtrakDormReview(token, reviewParams, review.id)
       : await postDormtrakDormReview(token, reviewParams);
 
-    if (response.data.status === 200 || response.data.status === 201) {
+    if (checkAndHandleError(response)) {
       // @TODO navigate to previous page?
       navigateTo("dormtrak");
     } else {
@@ -73,10 +73,8 @@ const DormtrakReviewForm = ({ token, route, navigateTo }) => {
     }
   };
 
-  const roomParam = route.params.roomID;
   const reviewParam = route.params.reviewID;
 
-  // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadReview = async (reviewID) => {
       const reviewResponse = await getDormtrakDormReview(token, reviewID);
@@ -105,8 +103,9 @@ const DormtrakReviewForm = ({ token, route, navigateTo }) => {
     };
 
     if (reviewParam) loadReview(reviewParam);
-  }, [token, roomParam, reviewParam]);
+  }, [token, reviewParam]);
 
+  // Generator for the various MCQ options
   const optionBuilder = (options, labels, type, changeHandler) => {
     return options.map((ans, index) => {
       return (
@@ -123,21 +122,33 @@ const DormtrakReviewForm = ({ token, route, navigateTo }) => {
     });
   };
 
+  // Generates the title for the review
+  const reviewTitle = () => {
+    // If we're editing a review and the room is already loaded.
+    if (edit && room) {
+      return (
+        <h3>
+          Editing review on
+          {` ${room.dorm.name} ${room.number}`}
+        </h3>
+      );
+    }
+
+    // If we're creating a new review, use the current User's room
+    if (currUser.dormRoom && currUser.dormRoom.dorm) {
+      return (
+        <h3>{`Review of ${currUser.dormRoom.dorm.name} ${currUser.dormRoom.number}`}</h3>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className="article">
       <section>
         <article>
-          {room ? (
-            <>
-              {edit ? (
-                <h3>
-                  Editing review on
-                  {` ${room.dorm.name} ${room.number}`}
-                </h3>
-              ) : null}
-              <h3>{`Review of ${room.dorm.name} ${room.number}`}</h3>
-            </>
-          ) : null}
+          {reviewTitle()}
           <strong>* Indicates a required field</strong>
           <br />
           <br />
@@ -377,6 +388,7 @@ DormtrakReviewForm.propTypes = {
   token: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  currUser: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = () => {
@@ -384,6 +396,7 @@ const mapStateToProps = () => {
 
   return (state) => ({
     token: getToken(state),
+    currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });
 };

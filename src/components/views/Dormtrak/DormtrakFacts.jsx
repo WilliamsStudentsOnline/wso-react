@@ -179,7 +179,7 @@ const DormtrakFacts = ({ dorm, token }) => {
               if (!facts[`average${attr}`]) return null;
               return (
                 <div key={attr}>
-                  {capitalize(attr)}: {facts[`average${attr}`]}
+                  {capitalize(attr)}: {facts[`average${attr}`].toPrecision(2)}
                   <br />
                 </div>
               );

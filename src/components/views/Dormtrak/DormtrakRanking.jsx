@@ -26,10 +26,7 @@ const DormtrakRanking = ({ token }) => {
     loadRankings();
   }, [token]);
 
-  const times = [];
-  for (let i = 0; i < 3; i += 1) {
-    times.push(0);
-  }
+  const times = [0, 0, 0];
 
   return (
     <>

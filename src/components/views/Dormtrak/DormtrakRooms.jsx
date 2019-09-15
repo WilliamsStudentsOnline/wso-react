@@ -1,6 +1,7 @@
 // React imports
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import PaginationButtons from "../../PaginationButtons";
 
 // Additional imports
 import { capitalize } from "../../../lib/general";
@@ -14,6 +15,7 @@ const DormtrakRooms = ({ rooms }) => {
       ? rooms.slice(page * perPage, (page + 1) * perPage)
       : rooms.slice(page * perPage, rooms.length - 1);
 
+  // Returns Private bathroom descriptions
   const privateBathrooms = (room) => {
     if (!room.privateBathroom) return null;
     let bathroomDesc = "Yes. ";
@@ -28,6 +30,7 @@ const DormtrakRooms = ({ rooms }) => {
     );
   };
 
+  // Handles clicking of the next/previous page
   const clickHandler = (number) => {
     if (number === -1 && page > 0) {
       updatePage(page - 1);
@@ -36,6 +39,7 @@ const DormtrakRooms = ({ rooms }) => {
     }
   };
 
+  // Generates the description of the common room.
   const commonRooms = (room) => {
     let crDesc = "";
     if (room.commonRoomAccess) {
@@ -57,22 +61,15 @@ const DormtrakRooms = ({ rooms }) => {
     );
   };
 
+  // Generates descriptions for whether the beds are adjustable
   const adjustableBeds = (room) => {
-    if (!room.bed_adjustable) return null;
-    let desc = "";
-
-    if (room.bed_adjustable) {
-      desc = "Yes";
-    } else {
-      desc = "Unavailable";
-    }
-
+    if (!room.bedAdjustable) return null;
     return (
       <>
         <small>
           <strong>Adjustable bed:&nbsp;</strong>
         </small>
-        {desc}
+        {room.bedAdjustable ? "Yes" : "Unavailable"}
         <br />
       </>
     );
@@ -80,23 +77,12 @@ const DormtrakRooms = ({ rooms }) => {
 
   return displayRooms ? (
     <>
-      <div>
-        {/* @TODO: nicer buttons */}
-        <button
-          type="button"
-          onClick={() => clickHandler(-1)}
-          disabled={page === 0}
-        >
-          Previous
-        </button>
-        <button
-          type="button"
-          onClick={() => clickHandler(1)}
-          disabled={rooms.length - (page + 1) * perPage <= 0}
-        >
-          Next
-        </button>
-      </div>
+      <PaginationButtons
+        clickHandler={clickHandler}
+        page={page}
+        total={rooms.length}
+        perPage={perPage}
+      />
       {displayRooms.map((room) => {
         return (
           <React.Fragment key={room.number}>
@@ -129,29 +115,19 @@ const DormtrakRooms = ({ rooms }) => {
                 return null;
               })}
               {adjustableBeds(room)}
-
               {commonRooms(room)}
-
               {privateBathrooms(room)}
             </div>
             <br />
           </React.Fragment>
         );
       })}
-      <button
-        type="button"
-        onClick={() => clickHandler(-1)}
-        disabled={page === 0}
-      >
-        Previous
-      </button>
-      <button
-        type="button"
-        onClick={() => clickHandler(1)}
-        disabled={rooms.length - (page + 1) * perPage <= 0}
-      >
-        Next
-      </button>
+      <PaginationButtons
+        clickHandler={clickHandler}
+        page={page}
+        total={rooms.length}
+        perPage={perPage}
+      />
     </>
   ) : (
     "No room-level information yet!"

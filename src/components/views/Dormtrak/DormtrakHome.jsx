@@ -36,6 +36,22 @@ const DormtrakHome = ({ currUser, token }) => {
     loadReviews();
   }, [token]);
 
+  // Link to survey.
+  const surveyLink = () => {
+    if (currUser.dormRoomID) {
+      return (
+        <p>
+          <strong>
+            To fill out the survey, click{" "}
+            <Link routeName="dormtrak.newReview">here</Link>
+          </strong>
+          .
+        </p>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="container">
       <aside className="sidebar">
@@ -54,15 +70,7 @@ const DormtrakHome = ({ currUser, token }) => {
             filling out the survey for your building, you help all of us make
             the most informed decision we can about where to live.
           </p>
-
-          <p>
-            <strong>
-              To fill out the survey, click{" "}
-              {/* @TODO: does new review automatically know what dorm to fill in? */}
-              <Link routeName="dormtrak.newReview">here</Link>
-            </strong>
-            .
-          </p>
+          {surveyLink()}
         </section>
         <section>
           {

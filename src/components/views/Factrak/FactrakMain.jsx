@@ -62,7 +62,7 @@ const FactrakMain = ({ route, token, navigateTo }) => {
     return <FactrakLayout>{factrakBody()}</FactrakLayout>;
   }
 
-  // @TODO: investigate if 2 is the best choice.
+  // Token level of 3 corresponds to an authenticated user.
   if (getTokenLevel(token) > 2) {
     return (
       <FactrakLayout>
