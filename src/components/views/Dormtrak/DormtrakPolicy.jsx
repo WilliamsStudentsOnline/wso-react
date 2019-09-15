@@ -83,7 +83,9 @@ const DormtrakPolicy = ({ currUser, token, navigateTo, updateUser }) => {
           <p>By using Dormtrak, you agree to abide by this policy.</p>
 
           {currUser.hasAcceptedDormtrakPolicy ? (
-            <p> You have already accepted the Dormtrak policy.</p>
+            <p>
+              <b>You have already accepted the Dormtrak policy.</b>
+            </p>
           ) : (
             <form onSubmit={(event) => submitHandler(event)}>
               <p>

@@ -20,7 +20,6 @@ const DormtrakHome = ({ currUser, token }) => {
     const loadReviews = async () => {
       const queryParams = {
         limit: 10,
-        offset: new Date(),
         preload: ["dormRoom", "dorm"],
         commented: true,
       };
