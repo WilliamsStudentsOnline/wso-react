@@ -40,6 +40,8 @@ const DormtrakMain = ({ route, token, navigateTo }) => {
     }
   };
 
+  console.log(token);
+
   if (
     containsScopes(token, [
       scopes.ScopeDormtrak,

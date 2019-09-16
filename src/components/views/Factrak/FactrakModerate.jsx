@@ -39,7 +39,6 @@ const FactrakModerate = ({ token }) => {
 
   // Handles the deletion of the survey
   const deleteHandler = async (surveyID) => {
-    // @TODO: write something to overcome this confirm
     // eslint-disable-next-line no-restricted-globals
     const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
     if (!confirmDelete) return;

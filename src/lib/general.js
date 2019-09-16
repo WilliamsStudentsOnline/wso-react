@@ -1,16 +1,8 @@
-import configureStore from "../store";
-
 // import { actions } from "redux-router5";
 import { doUpdateToken, doUpdateUser } from "../actions/auth";
 import { updateTokenAPI } from "../api/auth";
 import { getUser } from "../api/users";
 import jwtDecode from "jwt-decode";
-import configureRouter from "../create-router";
-import { loadState } from "../loadState";
-
-const router = configureRouter();
-const persistedState = loadState();
-const store = configureStore(router, persistedState);
 
 // The current scopes
 export const scopes = {
@@ -48,17 +40,15 @@ export const scopes = {
 // Assumes a valid and error-free response
 export const checkAndUpdateUser = async (response) => {
   if (response.data.updateToken) {
-    const token = store.getState().authState.token;
+    const token = window.store.getState().authState.token;
     if (token === "") return;
     const updateResponse = await updateTokenAPI(token);
-    console.log(updateResponse);
     if (updateResponse.status === 200) {
-      store.dispatch(doUpdateToken(updateResponse.data.data));
+      window.store.dispatch(doUpdateToken(updateResponse.data.data));
       const decoded = jwtDecode(token);
       const userResponse = await getUser(token, decoded.id);
-      console.log(userResponse);
       if (userResponse.status === 200) {
-        store.dispatch(doUpdateUser(userResponse.data.data));
+        window.store.dispatch(doUpdateUser(userResponse.data.data));
       }
     }
   }
@@ -95,12 +85,12 @@ export const getTokenLevel = (token) => {
 };
 
 // Returns true if there is no error and the status is OK
-export const checkAndHandleError = (response) => {
+export const checkAndHandleError = (response, token = "") => {
   if (response && response.status) {
     switch (response.status) {
       case 200: // GET request succeded
       case 201: // PATCH request updated
-        checkAndUpdateUser(response);
+        checkAndUpdateUser(response, token);
         return true;
       case 500:
         return false; // return store.dispatch(actions.navigateTo("500"));

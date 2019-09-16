@@ -14,6 +14,11 @@ import { checkAndHandleError } from "../../../lib/general";
 
 const DormtrakPolicy = ({ currUser, token, navigateTo, updateUser }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
+  const [didUpdateUser, toggleDidUpdateUser] = useState(false);
+
+  if (didUpdateUser === true) {
+    navigateTo("dormtrak");
+  }
 
   const clickHandler = (event) => {
     updateAcceptPolicy(event.target.checked);
@@ -30,7 +35,7 @@ const DormtrakPolicy = ({ currUser, token, navigateTo, updateUser }) => {
     // PATCH succeeded, update user
     if (checkAndHandleError(response)) {
       updateUser(response.data.data);
-      navigateTo("dormtrak");
+      toggleDidUpdateUser(true);
     }
 
     return acceptPolicy;

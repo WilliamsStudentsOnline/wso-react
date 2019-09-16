@@ -33,10 +33,8 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
 
   const fileRef = createRef();
 
-  // @TODO: Think of a better logic for this
   useEffect(() => {
     // We need to load tags because tag updating happens with each "Add Tag" button press.
-    // Alternatively, this could be implemented as 1)
     const loadTags = async () => {
       const userResponse = await getUser(token);
       if (checkAndHandleError(userResponse)) {

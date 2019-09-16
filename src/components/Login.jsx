@@ -80,7 +80,7 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
           placeholder="Password"
           onChange={passwordHandler}
         />
-        {/* @TODO: Saving state between tabs but not between sessions. 
+        {/* 
         <label htmlFor="remember_me">
           <input
             type="checkbox"

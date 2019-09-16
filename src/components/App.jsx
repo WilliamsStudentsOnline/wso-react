@@ -40,15 +40,16 @@ const App = ({
   expiry,
   currUser,
 }) => {
-  // @TODO: move it to reduce the number of api calls.
   const randomWSO = async () => {
-    const wsoResponse = await getRandomWSO();
+    if (document.title !== "WSO: Williams Students Online") {
+      const wsoResponse = await getRandomWSO();
 
-    if (checkAndHandleError(wsoResponse)) {
-      document.title = `WSO: ${wsoResponse.data.data}`;
+      if (checkAndHandleError(wsoResponse)) {
+        document.title = `WSO: ${wsoResponse.data.data}`;
+      }
+      // Return default if there is an error in the response.
+      else document.title = "WSO: Williams Students Online";
     }
-    // Return default if there is an error in the response.
-    else document.title = "WSO: Williams Students Online";
   };
 
   const mainBody = () => {
@@ -122,7 +123,7 @@ App.propTypes = {
   removeCreds: PropTypes.func.isRequired,
   updateToken: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
-  expiry: PropTypes.string.isRequired,
+  expiry: PropTypes.number.isRequired,
   currUser: PropTypes.object,
 };
 

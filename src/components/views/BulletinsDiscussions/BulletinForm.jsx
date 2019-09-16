@@ -67,7 +67,6 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
         } else {
           // User came to this page but is not original author of the post - must be
           // a malicious attempt.
-          // @TODO: Consider this vs a redirecting to bulletin index, with error toast
           navigateTo("403");
         }
       } else {
@@ -120,7 +119,6 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    // @TODO: extend more client-side validation?
     if (!body.trim()) {
       updateErrors(["Message is empty."]);
       return;
@@ -158,7 +156,7 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
     }
   };
 
-  // @TODO make a component for errors?
+  // Generates the errors
   const generateErrors = () => {
     if (errors && errors.length > 0) {
       return (

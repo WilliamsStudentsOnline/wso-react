@@ -58,16 +58,7 @@ const DormtrakShow = ({ route, currUser, token }) => {
 
         <section className="building-rooms">
           <h3 id="roomstop">Rooms</h3>
-          <small>
-            <strong>
-              {/* @TODO: Floorplans
-              dorm ? (
-                
-                <a href={`/floorplans/${dorm.name}`}>Floorplan&nbsp;</a>
-              ) : null */}
-            </strong>
-            (Courtesy of OSL)
-          </small>
+          <small>(Courtesy of OSL)</small>
           <br />
           {dorm ? <DormtrakRooms rooms={dorm.dormRooms} perPage={15} /> : null}
         </section>

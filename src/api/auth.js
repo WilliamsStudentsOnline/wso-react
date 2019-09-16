@@ -68,11 +68,11 @@ const getCampusToken = async () => {
 // Helper method to check the expiry of the authToken, refreshing if necessary
 const tokenExpiryHandler = async (token, expiry) => {
   try {
-    const expiryDate = Date.parse(expiry);
+    const expiryDate = new Date(expiry);
     if (expiryDate) {
       const now = Date.now();
 
-      if (expiryDate - now < 1800000) {
+      if (expiryDate - now < 3600000) {
         const refreshResponse = await refreshToken(token);
         if (refreshResponse && !refreshResponse.data.error) return true;
 

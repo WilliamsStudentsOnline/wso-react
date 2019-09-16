@@ -11,7 +11,6 @@ import { getToken } from "../../../selectors/auth";
 import { checkAndHandleError } from "../../../lib/general";
 import { getEphcatchMatches } from "../../../api/ephcatch";
 
-// @TODO need some way to test this.
 const EphcatchMatch = ({ token }) => {
   const [matches, updateMatches] = useState([]);
 

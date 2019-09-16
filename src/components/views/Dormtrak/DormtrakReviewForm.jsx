@@ -15,7 +15,6 @@ import {
   patchDormtrakDormReview,
 } from "../../../api/dormtrak";
 
-// @TODO: Come up with a whole new form mechanism.
 const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
   const [review, updateReview] = useState(null);
 
@@ -66,7 +65,6 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
       : await postDormtrakDormReview(token, reviewParams);
 
     if (checkAndHandleError(response)) {
-      // @TODO navigate to previous page?
       navigateTo("dormtrak");
     } else {
       updateErrors([response.data.error.message]);

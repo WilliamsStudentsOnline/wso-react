@@ -16,12 +16,7 @@ import {
   getSurvey,
   getAreasOfStudy,
 } from "../../../api/factrak";
-// import { autocompleteAOS } from "../../../api/autocomplete";
 import { checkAndHandleError } from "../../../lib/general";
-
-// @TODO: look into react form handlers
-// @TODO: Client side form validation?
-// @TODO: Error display
 
 const FactrakSurvey = ({ token, route, navigateTo }) => {
   const [survey, updateSurvey] = useState(null);
@@ -70,7 +65,6 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
       : await postSurvey(token, surveyParams);
 
     if (checkAndHandleError(response)) {
-      // @TODO navigate to previous page?
       navigateTo("factrak.surveys");
     } else {
       updateErrors([response.data.error.message]);

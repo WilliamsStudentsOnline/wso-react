@@ -33,7 +33,6 @@ store.subscribe(
     const authState = store.getState().authState;
     saveState({ authState });
 
-    // @TODO: Saving state in between tabs but not across sessions -> absolutely no idea how.
     // if (authState.remember) {
     //   saveState({ authState });
     // } else {
