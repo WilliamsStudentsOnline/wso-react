@@ -17,11 +17,8 @@ const EphcatchMatch = ({ token }) => {
   useEffect(() => {
     const loadMatches = async () => {
       const ephcatchersResponse = await getEphcatchMatches(token);
-
       if (checkAndHandleError(ephcatchersResponse)) {
         updateMatches(ephcatchersResponse.data.data);
-        // @TODO pagination
-        // updateTotal(ephcatchersResponse.data.paginationTotal);
       }
     };
 

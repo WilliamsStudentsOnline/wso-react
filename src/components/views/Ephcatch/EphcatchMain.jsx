@@ -29,7 +29,7 @@ const EphcatchMain = ({ route, token, navigateTo }) => {
     }
   };
 
-  if (containsScopes(token, [scopes.ScopeEphcatch])) {
+  if (containsScopes(token, [scopes.ScopeEphcatch, scopes.ScopeAdminAll])) {
     return <EphcatchLayout>{EphcatchBody()}</EphcatchLayout>;
   }
 
