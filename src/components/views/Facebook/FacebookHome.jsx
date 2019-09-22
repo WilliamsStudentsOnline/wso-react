@@ -35,10 +35,8 @@ const FacebookHome = ({ token, route }) => {
       preload: ["dorm", "office"],
     };
     const resultsResponse = await getAllUsers(token, queryParams);
-    console.log(resultsResponse);
     if (checkAndHandleError(resultsResponse)) {
       updateResults(resultsResponse.data.data);
-      // @TODO: update when pagination support is done
       updateTotal(resultsResponse.data.paginationTotal);
     } else {
       updateResults([]);
@@ -48,6 +46,7 @@ const FacebookHome = ({ token, route }) => {
 
   useEffect(() => {
     loadUsers(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, route.params.q]);
 
   // Handles clicking of the next/previous page

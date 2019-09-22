@@ -39,6 +39,7 @@ const EphcatchHome = ({ token }) => {
 
   useEffect(() => {
     loadNextEphcatchers(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const selectEphcatcher = async (event, index) => {

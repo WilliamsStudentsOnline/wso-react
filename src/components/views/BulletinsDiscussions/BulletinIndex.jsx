@@ -73,6 +73,7 @@ const BulletinIndex = ({ type, token, currUser }) => {
 
   useEffect(() => {
     loadNext(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, type]);
 
   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
