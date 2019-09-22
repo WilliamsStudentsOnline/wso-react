@@ -35,7 +35,7 @@ const FacebookHome = ({ token, route }) => {
       preload: ["dorm", "office"],
     };
     const resultsResponse = await getAllUsers(token, queryParams);
-
+    console.log(resultsResponse);
     if (checkAndHandleError(resultsResponse)) {
       updateResults(resultsResponse.data.data);
       // @TODO: update when pagination support is done

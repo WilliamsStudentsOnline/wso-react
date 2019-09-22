@@ -27,11 +27,13 @@ const PaginationButtons = ({ clickHandler, total, page, perPage }) => {
 
 PaginationButtons.propTypes = {
   clickHandler: PropTypes.func.isRequired,
-  total: PropTypes.number.isRequired,
+  total: PropTypes.number,
   page: PropTypes.number.isRequired,
   perPage: PropTypes.number.isRequired,
 };
 
-PaginationButtons.defaultProps = {};
+PaginationButtons.defaultProps = {
+  total: 0,
+};
 
 export default PaginationButtons;

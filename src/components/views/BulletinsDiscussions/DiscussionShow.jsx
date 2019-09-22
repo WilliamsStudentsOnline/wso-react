@@ -24,9 +24,11 @@ const DiscussionShow = ({ token, route }) => {
 
   useEffect(() => {
     const loadDiscussion = async () => {
+      const params = { preload: ["posts", "postsUsers"] };
       const discussionResponse = await getDiscussion(
         token,
-        route.params.discussionID
+        route.params.discussionID,
+        params
       );
 
       if (checkAndHandleError(discussionResponse)) {

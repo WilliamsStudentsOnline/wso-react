@@ -92,12 +92,13 @@ const getDiscussions = async (token, params) => {
 };
 
 // Get single discussion by ID
-const getDiscussion = async (token, discussionID) => {
+const getDiscussion = async (token, discussionID, params) => {
   const response = await axios({
     url: `/api/v1/bulletin/discussions/${discussionID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
+    params,
   }).catch((error) => {
     return error.response;
   });
