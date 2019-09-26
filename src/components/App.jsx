@@ -24,7 +24,7 @@ import BuildingHours from "./views/Misc/BuildingHours";
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
 import { getToken, getExpiry, getCurrUser } from "../selectors/auth";
-import { doRemoveCreds, doUpdateToken } from "../actions/auth";
+import { doRemoveCreds, doUpdateToken, doUpdateUser } from "../actions/auth";
 
 // Additional Imports
 import { tokenExpiryHandler, getCampusToken } from "../api/auth";
@@ -39,6 +39,7 @@ const App = ({
   token,
   expiry,
   currUser,
+  updateUser,
 }) => {
   const randomWSO = async () => {
     if (document.title !== "WSO: Williams Students Online") {
@@ -108,6 +109,7 @@ const App = ({
 
     if (checkAndHandleError(campusResponse)) {
       updateToken(campusResponse.data.data);
+      updateUser(null);
     }
   };
 
@@ -125,6 +127,7 @@ App.propTypes = {
   token: PropTypes.string.isRequired,
   expiry: PropTypes.number.isRequired,
   currUser: PropTypes.object,
+  updateUser: PropTypes.func.isRequired,
 };
 
 App.defaultProps = {
@@ -146,6 +149,7 @@ const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
   removeCreds: () => dispatch(doRemoveCreds()),
   updateToken: (token) => dispatch(doUpdateToken(token)),
+  updateUser: (user) => dispatch(doUpdateUser(user)),
 });
 
 export default connect(
