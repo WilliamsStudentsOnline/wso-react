@@ -1,5 +1,5 @@
 // React Imports
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Trakyak from "../assets/images/trakyak.png";
 
@@ -12,14 +12,29 @@ import { connect } from "react-redux";
 import { Link, ConnectedLink } from "react-router5";
 
 const Nav = ({ currUser }) => {
+  const [menuVisible, updateMenuVisibility] = useState(true);
+
   return (
     <nav>
       <div className="nav-container">
         <span className="nav-left-container">
-          <button type="button" id="nav-menu-button">
+          <a
+            href="#top"
+            type="button"
+            id="nav-menu-button"
+            onClick={(event) => {
+              event.preventDefault();
+              updateMenuVisibility(!menuVisible);
+            }}
+          >
             Menu
-          </button>
-          <ul className="nav-left" id="nav-menu-content">
+          </a>
+
+          <ul
+            className="nav-left"
+            id="nav-menu-content"
+            style={{ display: menuVisible ? "block" : "" }}
+          >
             <li>
               <ConnectedLink routeName="home">Home</ConnectedLink>
             </li>
