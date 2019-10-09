@@ -3,7 +3,7 @@ import axios from "axios";
 // Returns all the users
 const getAllUsers = async (token, params) => {
   const response = await axios({
-    url: "/api/v1/users",
+    url: "/api/v2/users",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -18,7 +18,7 @@ const getAllUsers = async (token, params) => {
 // Returns a user
 const getUser = async (token, userID = "me") => {
   const response = await axios({
-    url: `/api/v1/users/${userID}`,
+    url: `/api/v2/users/${userID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -32,7 +32,7 @@ const getUser = async (token, userID = "me") => {
 // Update current user
 const patchCurrUser = async (token, updateParams) => {
   const response = await axios({
-    url: `/api/v1/users/me`,
+    url: `/api/v2/users/me`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -48,7 +48,7 @@ const patchCurrUser = async (token, updateParams) => {
 // Replaces current user's tags
 const putCurrUserTags = async (token, updateParams) => {
   const response = await axios({
-    url: `/api/v1/users/me/tags`,
+    url: `/api/v2/users/me/tags`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -64,7 +64,7 @@ const putCurrUserTags = async (token, updateParams) => {
 // Replaces current user's photo
 const putCurrUserPhoto = async (token, file) => {
   const response = await axios({
-    url: `/api/v1/users/me/photo`,
+    url: `/api/v2/users/me/photo`,
     headers: {
       Authorization: `Bearer ${token}`,
     },

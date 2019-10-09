@@ -3,7 +3,7 @@ import axios from "axios";
 // Get Random WSO
 const getRandomWSO = async () => {
   const response = await axios({
-    url: "/api/v1/words",
+    url: "/api/v2/words",
     method: "get",
   }).catch((error) => {
     return error.response;

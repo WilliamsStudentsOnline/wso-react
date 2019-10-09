@@ -3,7 +3,7 @@ import axios from "axios";
 // Get rankings of dorms by specific metrics
 const getDormtrakRankings = async (token) => {
   const response = await axios({
-    url: "/api/v1/dormtrak/rankings",
+    url: "/api/v2/dormtrak/rankings",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -17,7 +17,7 @@ const getDormtrakRankings = async (token) => {
 // Get the list of all dormtrak neighborhoods
 const getDormtrakNeighborhoods = async (token) => {
   const response = await axios({
-    url: "/api/v1/dormtrak/neighborhoods",
+    url: "/api/v2/dormtrak/neighborhoods",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -31,7 +31,7 @@ const getDormtrakNeighborhoods = async (token) => {
 // Get a specific dormtrak neighborhood
 const getDormtrakNeighborhood = async (token, neighborhoodID) => {
   const response = await axios({
-    url: `/api/v1/dormtrak/neighborhoods/${neighborhoodID}`,
+    url: `/api/v2/dormtrak/neighborhoods/${neighborhoodID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -45,7 +45,7 @@ const getDormtrakNeighborhood = async (token, neighborhoodID) => {
 // Get facts for a specific dormtrak neighborhood
 const getDormtrakNeighborhoodFacts = async (token, neighborhoodID) => {
   const response = await axios({
-    url: `/api/v1/dormtrak/neighborhoods/${neighborhoodID}/facts`,
+    url: `/api/v2/dormtrak/neighborhoods/${neighborhoodID}/facts`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -59,7 +59,7 @@ const getDormtrakNeighborhoodFacts = async (token, neighborhoodID) => {
 // Get the list of all dormtrak dorms
 const getDormtrakDorms = async (token, params) => {
   const response = await axios({
-    url: "/api/v1/dormtrak/dorms",
+    url: "/api/v2/dormtrak/dorms",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -74,7 +74,7 @@ const getDormtrakDorms = async (token, params) => {
 // Get the dorm corresponding to a specific dormID
 const getDormtrakDorm = async (token, dormID) => {
   const response = await axios({
-    url: `/api/v1/dormtrak/dorms/${dormID}`,
+    url: `/api/v2/dormtrak/dorms/${dormID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -88,7 +88,7 @@ const getDormtrakDorm = async (token, dormID) => {
 // Get the dorm facts for a specific dorm
 const getDormtrakDormFacts = async (token, dormID) => {
   const response = await axios({
-    url: `/api/v1/dormtrak/dorms/${dormID}/facts`,
+    url: `/api/v2/dormtrak/dorms/${dormID}/facts`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -102,7 +102,7 @@ const getDormtrakDormFacts = async (token, dormID) => {
 // Get the dorm rooms for a specific dorm
 const getDormtrakDormRooms = async (token, dormID) => {
   const response = await axios({
-    url: `/api/v1/dormtrak/dorms/${dormID}/rooms`,
+    url: `/api/v2/dormtrak/dorms/${dormID}/rooms`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -116,7 +116,7 @@ const getDormtrakDormRooms = async (token, dormID) => {
 // Get all dormtrak reviews
 const getDormtrakDormReviews = async (token, queryParams = {}) => {
   const response = await axios({
-    url: `/api/v1/dormtrak/reviews`,
+    url: `/api/v2/dormtrak/reviews`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -131,7 +131,7 @@ const getDormtrakDormReviews = async (token, queryParams = {}) => {
 // Creates a dormtrak review
 const postDormtrakDormReview = async (token, createParams) => {
   const response = await axios({
-    url: `/api/v1/dormtrak/reviews`,
+    url: `/api/v2/dormtrak/reviews`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -147,7 +147,7 @@ const postDormtrakDormReview = async (token, createParams) => {
 // Get a specific dormtrak review
 const getDormtrakDormReview = async (token, reviewID) => {
   const response = await axios({
-    url: `/api/v1/dormtrak/reviews/${reviewID}`,
+    url: `/api/v2/dormtrak/reviews/${reviewID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -161,7 +161,7 @@ const getDormtrakDormReview = async (token, reviewID) => {
 // Deletes a specific Dormtrak survey
 const deleteDormtrakDormReview = async (token, reviewID) => {
   const response = await axios({
-    url: `/api/v1/dormtrak/reviews/${reviewID}`,
+    url: `/api/v2/dormtrak/reviews/${reviewID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -176,7 +176,7 @@ const deleteDormtrakDormReview = async (token, reviewID) => {
 // Patches a specific dormtrak survey
 const patchDormtrakDormReview = async (token, reviewParams, reviewID) => {
   const response = await axios({
-    url: `/api/v1/dormtrak/reviews/${reviewID}`,
+    url: `/api/v2/dormtrak/reviews/${reviewID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },

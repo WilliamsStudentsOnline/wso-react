@@ -3,7 +3,7 @@ import axios from "axios";
 // List bulletins
 const getBulletins = async (token, params) => {
   const response = await axios({
-    url: "/api/v1/bulletin/bulletins",
+    url: "/api/v2/bulletin/bulletins",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -18,7 +18,7 @@ const getBulletins = async (token, params) => {
 // Get single bulletin by ID
 const getBulletin = async (token, bulletinID) => {
   const response = await axios({
-    url: `/api/v1/bulletin/bulletins/${bulletinID}`,
+    url: `/api/v2/bulletin/bulletins/${bulletinID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -32,7 +32,7 @@ const getBulletin = async (token, bulletinID) => {
 // Create bulletins
 const postBulletin = async (token, createParams) => {
   const response = await axios({
-    url: "/api/v1/bulletin/bulletins",
+    url: "/api/v2/bulletin/bulletins",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -48,7 +48,7 @@ const postBulletin = async (token, createParams) => {
 // Delete single bulletin by ID
 const deleteBulletin = async (token, bulletinID) => {
   const response = await axios({
-    url: `/api/v1/bulletin/bulletins/${bulletinID}`,
+    url: `/api/v2/bulletin/bulletins/${bulletinID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -63,7 +63,7 @@ const deleteBulletin = async (token, bulletinID) => {
 // Update bulletin
 const patchBulletin = async (token, bulletinID, updateParams) => {
   const response = await axios({
-    url: `/api/v1/bulletin/bulletins/${bulletinID}`,
+    url: `/api/v2/bulletin/bulletins/${bulletinID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -79,7 +79,7 @@ const patchBulletin = async (token, bulletinID, updateParams) => {
 // List Discussions
 const getDiscussions = async (token, params) => {
   const response = await axios({
-    url: "/api/v1/bulletin/discussions",
+    url: "/api/v2/bulletin/discussions",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -94,7 +94,7 @@ const getDiscussions = async (token, params) => {
 // Get single discussion by ID
 const getDiscussion = async (token, discussionID, params) => {
   const response = await axios({
-    url: `/api/v1/bulletin/discussions/${discussionID}`,
+    url: `/api/v2/bulletin/discussions/${discussionID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -109,7 +109,7 @@ const getDiscussion = async (token, discussionID, params) => {
 // Delete single discussion by ID
 const deleteDiscussion = async (token, discussionID) => {
   const response = await axios({
-    url: `/api/v1/bulletin/discussions/${discussionID}`,
+    url: `/api/v2/bulletin/discussions/${discussionID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -124,7 +124,7 @@ const deleteDiscussion = async (token, discussionID) => {
 // Create discussion
 const postDiscussion = async (token, createParams) => {
   const response = await axios({
-    url: `/api/v1/bulletin/discussions`,
+    url: `/api/v2/bulletin/discussions`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -140,7 +140,7 @@ const postDiscussion = async (token, createParams) => {
 // Patch discussion
 const patchDiscussion = async (token, discussionID, updateParams) => {
   const response = await axios({
-    url: `/api/v1/bulletin/discussions`,
+    url: `/api/v2/bulletin/discussions`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -156,7 +156,7 @@ const patchDiscussion = async (token, discussionID, updateParams) => {
 // Get discussion posts
 const getDiscussionPosts = async (token, discussionID) => {
   const response = await axios({
-    url: `/api/v1/bulletin/discussions/${discussionID}/posts`,
+    url: `/api/v2/bulletin/discussions/${discussionID}/posts`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -170,7 +170,7 @@ const getDiscussionPosts = async (token, discussionID) => {
 // Create post
 const postPost = async (token, createParams) => {
   const response = await axios({
-    url: `/api/v1/bulletin/posts`,
+    url: `/api/v2/bulletin/posts`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -186,7 +186,7 @@ const postPost = async (token, createParams) => {
 // Get single post
 const getPost = async (token, postID) => {
   const response = await axios({
-    url: `/api/v1/bulletin/posts/${postID}`,
+    url: `/api/v2/bulletin/posts/${postID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -200,7 +200,7 @@ const getPost = async (token, postID) => {
 // Deletes single post
 const deletePost = async (token, postID) => {
   const response = await axios({
-    url: `/api/v1/bulletin/posts/${postID}`,
+    url: `/api/v2/bulletin/posts/${postID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -215,7 +215,7 @@ const deletePost = async (token, postID) => {
 // Update post
 const patchPost = async (token, postID, updateParams) => {
   const response = await axios({
-    url: `/api/v1/bulletin/posts/${postID}`,
+    url: `/api/v2/bulletin/posts/${postID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -231,7 +231,7 @@ const patchPost = async (token, postID, updateParams) => {
 // List rides
 const getRides = async (token, params) => {
   const response = await axios({
-    url: `/api/v1/bulletin/rides`,
+    url: `/api/v2/bulletin/rides`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -246,7 +246,7 @@ const getRides = async (token, params) => {
 // Create ride
 const postRide = async (token, createParams) => {
   const response = await axios({
-    url: `/api/v1/bulletin/rides`,
+    url: `/api/v2/bulletin/rides`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -262,7 +262,7 @@ const postRide = async (token, createParams) => {
 // Get ride
 const getRide = async (token, rideID) => {
   const response = await axios({
-    url: `/api/v1/bulletin/rides/${rideID}`,
+    url: `/api/v2/bulletin/rides/${rideID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -276,7 +276,7 @@ const getRide = async (token, rideID) => {
 // Delete single ride
 const deleteRide = async (token, rideID) => {
   const response = await axios({
-    url: `/api/v1/bulletin/rides/${rideID}`,
+    url: `/api/v2/bulletin/rides/${rideID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -291,7 +291,7 @@ const deleteRide = async (token, rideID) => {
 // Update single ride
 const patchRide = async (token, rideID, updateParams) => {
   const response = await axios({
-    url: `/api/v1/bulletin/rides/${rideID}`,
+    url: `/api/v2/bulletin/rides/${rideID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
