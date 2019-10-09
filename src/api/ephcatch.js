@@ -3,7 +3,7 @@ import axios from "axios";
 // Lists all ephcatchers
 const getEphcatchers = async (token, params) => {
   const response = await axios({
-    url: "/api/v1/ephcatch/ephcatchers",
+    url: "/api/v2/ephcatch/ephcatchers",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -18,7 +18,7 @@ const getEphcatchers = async (token, params) => {
 // Gets one ephcatcher
 const getEphcatcher = async (token, ephcatcherID) => {
   const response = await axios({
-    url: `/api/v1/ephcatch/ephcatchers/${ephcatcherID}`,
+    url: `/api/v2/ephcatch/ephcatchers/${ephcatcherID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -32,7 +32,7 @@ const getEphcatcher = async (token, ephcatcherID) => {
 // Likes an ephcatcher
 const likeEphcatcher = async (token, ephcatcherID) => {
   const response = await axios({
-    url: `/api/v1/ephcatch/ephcatchers/${ephcatcherID}/like`,
+    url: `/api/v2/ephcatch/ephcatchers/${ephcatcherID}/like`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -47,7 +47,7 @@ const likeEphcatcher = async (token, ephcatcherID) => {
 // Dislikes an ephcatcher
 const unlikeEphcatcher = async (token, ephcatcherID) => {
   const response = await axios({
-    url: `/api/v1/ephcatch/ephcatchers/${ephcatcherID}/unlike`,
+    url: `/api/v2/ephcatch/ephcatchers/${ephcatcherID}/unlike`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -62,7 +62,7 @@ const unlikeEphcatcher = async (token, ephcatcherID) => {
 // Lists all matches
 const getEphcatchMatches = async (token) => {
   const response = await axios({
-    url: "/api/v1/ephcatch/matches",
+    url: "/api/v2/ephcatch/matches",
     headers: {
       Authorization: `Bearer ${token}`,
     },

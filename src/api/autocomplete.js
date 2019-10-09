@@ -3,7 +3,7 @@ import axios from "axios";
 // Get autocomplete results for Areas of Study
 const autocompleteAOS = async (token, query) => {
   const response = await axios({
-    url: "/api/v1/autocomplete/area-of-study",
+    url: "/api/v2/autocomplete/area-of-study",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -23,7 +23,7 @@ const autocompleteAOS = async (token, query) => {
 // E.g. csc will return ["csci"] but csci will return ["134", "136"].
 const autocompleteCourses = async (token, query) => {
   const response = await axios({
-    url: "/api/v1/autocomplete/course",
+    url: "/api/v2/autocomplete/course",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -40,7 +40,7 @@ const autocompleteCourses = async (token, query) => {
 // Get autocomplete results for {Professors
 const autocompleteProfs = async (token, query) => {
   const response = await axios({
-    url: "/api/v1/autocomplete/professor",
+    url: "/api/v2/autocomplete/professor",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -57,7 +57,7 @@ const autocompleteProfs = async (token, query) => {
 // Get autocomplete results for tags
 const autocompleteTags = async (token, query) => {
   const response = await axios({
-    url: "/api/v1/autocomplete/tag",
+    url: "/api/v2/autocomplete/tag",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -75,7 +75,7 @@ const autocompleteTags = async (token, query) => {
 // Get autocomplete results for Factrak (Professors, Courses)
 const autocompleteFactrak = async (token, query) => {
   const response = await axios({
-    url: "/api/v1/autocomplete/factrak",
+    url: "/api/v2/autocomplete/factrak",
     headers: {
       Authorization: `Bearer ${token}`,
     },

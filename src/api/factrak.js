@@ -3,7 +3,7 @@ import axios from "axios";
 // Lists all areas of study (note plural)
 const getAreasOfStudy = async (token) => {
   const response = await axios({
-    url: "/api/v1/factrak/areas-of-study",
+    url: "/api/v2/factrak/areas-of-study",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -17,7 +17,7 @@ const getAreasOfStudy = async (token) => {
 // List one area of study (note singular)
 const getAreaOfStudy = async (token, area) => {
   const response = await axios({
-    url: `/api/v1/factrak/areas-of-study/${area}`,
+    url: `/api/v2/factrak/areas-of-study/${area}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -31,7 +31,7 @@ const getAreaOfStudy = async (token, area) => {
 // List all the departments
 const getDepartments = async (token) => {
   const response = await axios({
-    url: "/api/v1/factrak/departments",
+    url: "/api/v2/factrak/departments",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -45,7 +45,7 @@ const getDepartments = async (token) => {
 // Lists all surveys
 const getSurveys = async (token, params) => {
   const response = await axios({
-    url: "/api/v1/factrak/surveys",
+    url: "/api/v2/factrak/surveys",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -60,7 +60,7 @@ const getSurveys = async (token, params) => {
 // Lists all flagged surveys
 const getFlagged = async (token, params) => {
   const response = await axios({
-    url: `/api/v1/factrak/admin/surveys`,
+    url: `/api/v2/factrak/admin/surveys`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -75,7 +75,7 @@ const getFlagged = async (token, params) => {
 // Unflag survey
 const unflagSurvey = async (token, surveyID) => {
   const response = await axios({
-    url: `/api/v1/factrak/admin/surveys/${surveyID}/flag`,
+    url: `/api/v2/factrak/admin/surveys/${surveyID}/flag`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -90,7 +90,7 @@ const unflagSurvey = async (token, surveyID) => {
 // Delete survey
 const deleteSurvey = async (token, surveyID) => {
   const response = await axios({
-    url: `/api/v1/factrak/surveys/${surveyID}`,
+    url: `/api/v2/factrak/surveys/${surveyID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -105,7 +105,7 @@ const deleteSurvey = async (token, surveyID) => {
 // Get Factrak course
 const getCourse = async (token, courseID) => {
   const response = await axios({
-    url: `/api/v1/factrak/courses/${courseID}`,
+    url: `/api/v2/factrak/courses/${courseID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -119,7 +119,7 @@ const getCourse = async (token, courseID) => {
 // Creates survey agreement
 const postSurveyAgreement = async (token, surveyID, createParams) => {
   const response = await axios({
-    url: `/api/v1/factrak/surveys/${surveyID}/agreement`,
+    url: `/api/v2/factrak/surveys/${surveyID}/agreement`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -135,7 +135,7 @@ const postSurveyAgreement = async (token, surveyID, createParams) => {
 // Update survey agreement
 const patchSurveyAgreement = async (token, surveyID, updateParams) => {
   const response = await axios({
-    url: `/api/v1/factrak/surveys/${surveyID}/agreement`,
+    url: `/api/v2/factrak/surveys/${surveyID}/agreement`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -151,7 +151,7 @@ const patchSurveyAgreement = async (token, surveyID, updateParams) => {
 // Deletes survey agreement
 const deleteSurveyAgreement = async (token, surveyID) => {
   const response = await axios({
-    url: `/api/v1/factrak/surveys/${surveyID}/agreement`,
+    url: `/api/v2/factrak/surveys/${surveyID}/agreement`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -166,7 +166,7 @@ const deleteSurveyAgreement = async (token, surveyID) => {
 // Flag Survey
 const flagSurvey = async (token, surveyID) => {
   const response = await axios({
-    url: `/api/v1/factrak/surveys/${surveyID}/flag`,
+    url: `/api/v2/factrak/surveys/${surveyID}/flag`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -181,7 +181,7 @@ const flagSurvey = async (token, surveyID) => {
 // Get Professors
 const getProfessors = async (token, params) => {
   const response = await axios({
-    url: "/api/v1/factrak/professors",
+    url: "/api/v2/factrak/professors",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -198,14 +198,14 @@ const getProfessor = async (token, professorID, courseID = -1) => {
   let request;
   if (courseID === -1 || typeof courseID !== "number") {
     request = {
-      url: `/api/v1/factrak/professors/${professorID}`,
+      url: `/api/v2/factrak/professors/${professorID}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
   } else {
     request = {
-      url: `/api/v1/factrak/professors/${professorID}`,
+      url: `/api/v2/factrak/professors/${professorID}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -223,7 +223,7 @@ const getProfessor = async (token, professorID, courseID = -1) => {
 // Get Survey
 const getSurvey = async (token, surveyID) => {
   const response = await axios({
-    url: `/api/v1/factrak/surveys/${surveyID}`,
+    url: `/api/v2/factrak/surveys/${surveyID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -237,7 +237,7 @@ const getSurvey = async (token, surveyID) => {
 // Get Department
 const getDepartment = async (token, departmentID) => {
   const response = await axios({
-    url: `/api/v1/factrak/departments/${departmentID}`,
+    url: `/api/v2/factrak/departments/${departmentID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -253,14 +253,14 @@ const getProfessorRatings = async (token, professorID, courseID = -1) => {
   let request;
   if (courseID === -1 || typeof courseID !== "number") {
     request = {
-      url: `/api/v1/factrak/professors/${professorID}/ratings`,
+      url: `/api/v2/factrak/professors/${professorID}/ratings`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
   } else {
     request = {
-      url: `/api/v1/factrak/professors/${professorID}/ratings`,
+      url: `/api/v2/factrak/professors/${professorID}/ratings`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -278,7 +278,7 @@ const getProfessorRatings = async (token, professorID, courseID = -1) => {
 // Create New Survey
 const postSurvey = async (token, createParams) => {
   const response = await axios({
-    url: `/api/v1/factrak/surveys`,
+    url: `/api/v2/factrak/surveys`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -294,7 +294,7 @@ const postSurvey = async (token, createParams) => {
 // Updates Survey
 const patchSurvey = async (token, updateParams, surveyID) => {
   const response = await axios({
-    url: `/api/v1/factrak/surveys/${surveyID}`,
+    url: `/api/v2/factrak/surveys/${surveyID}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -310,7 +310,7 @@ const patchSurvey = async (token, updateParams, surveyID) => {
 // Get Courses
 const getCourses = async (token, params) => {
   const response = await axios({
-    url: "/api/v1/factrak/courses",
+    url: "/api/v2/factrak/courses",
     headers: {
       Authorization: `Bearer ${token}`,
     },

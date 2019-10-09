@@ -3,7 +3,7 @@ import axios from "axios";
 // Refreshes the auth token
 const refreshToken = async (token) => {
   const response = await axios({
-    url: "/api/v1/auth/refresh-token",
+    url: "/api/v2/auth/refresh-token",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -18,7 +18,7 @@ const refreshToken = async (token) => {
 // Updates the auth token with new scopes.
 const updateTokenAPI = async (token) => {
   const response = await axios({
-    url: "/api/v1/auth/update-token",
+    url: "/api/v2/auth/update-token",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -35,7 +35,7 @@ const getToken = async (unixID, password) => {
     return null;
   }
   const response = await axios({
-    url: "/api/v1/auth/login",
+    url: "/api/v2/auth/login",
     method: "post",
     data: {
       unixID,
@@ -51,7 +51,7 @@ const getToken = async (unixID, password) => {
 // Get on/off-campus tokens, do not log in
 const getCampusToken = async () => {
   const response = await axios({
-    url: "/api/v1/auth/login",
+    url: "/api/v2/auth/login",
     method: "post",
     data: {
       unixID: "invalid",
