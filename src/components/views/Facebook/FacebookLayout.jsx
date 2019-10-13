@@ -41,17 +41,21 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
             <li>
               <Link routeName="facebook.help">Help</Link>
             </li>
-            <li>
-              <Link
-                routeName="facebook.users"
-                routeParams={{ userID: currUser.id }}
-              >
-                View
-              </Link>
-            </li>
-            <li>
-              <Link routeName="facebook.edit"> Edit </Link>
-            </li>
+            {currUser != null
+              ? [
+                  <li>
+                    <Link
+                      routeName="facebook.users"
+                      routeParams={{ userID: currUser.id }}
+                    >
+                      View
+                    </Link>
+                  </li>,
+                  <li>
+                    <Link routeName="facebook.edit"> Edit </Link>
+                  </li>,
+                ]
+              : null}
           </ul>
         </div>
         <form onSubmit={submitHandler}>

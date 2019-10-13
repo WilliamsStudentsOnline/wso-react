@@ -13,6 +13,7 @@ const INITIAL_STATE = {
   expiry: "",
   currUser: null, // Stores the user object.
   remember: false,
+  tokenLevel: 0,
 };
 
 // Method to get scopes.
@@ -35,6 +36,7 @@ const updateToken = (state, action) => {
     scope: decoded.scope,
     token: response.token,
     expiry: decoded.exp * 1000,
+    tokenLevel: decoded.tokenLevel,
   });
 };
 
