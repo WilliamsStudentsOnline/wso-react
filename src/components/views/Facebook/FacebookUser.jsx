@@ -188,7 +188,9 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
         <aside className="info">
           <h3>
             {viewPerson.name}
-            {currUser.id === viewPerson.id ? <span>&nbsp;(me)</span> : null}
+            {currUser && currUser.id === viewPerson.id ? (
+              <span>&nbsp;(me)</span>
+            ) : null}
           </h3>
           {userTitle()}
           {userPronouns()}
