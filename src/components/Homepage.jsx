@@ -40,6 +40,7 @@ const Homepage = ({ navigateTo }) => {
           <br />
           <form onSubmit={submitHandler}>
             <input
+              aria-label="Search box for Facebook"
               type="search"
               placeholder="Search Facebook"
               onChange={(event) => updateQuery(event.target.value)}

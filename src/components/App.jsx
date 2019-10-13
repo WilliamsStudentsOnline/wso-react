@@ -1,24 +1,11 @@
 // React imports
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import PropTypes from "prop-types";
 
 // Component Imports
 import "./stylesheets/Application.css";
 import Layout from "./Layout";
 import Homepage from "./Homepage";
-import About from "./views/Misc/About";
-import Listserv from "./views/Misc/Listserv";
-import Scheduler from "./views/CourseScheduler/Scheduler";
-import FacebookMain from "./views/Facebook/FacebookMain";
-import DormtrakMain from "./views/Dormtrak/DormtrakMain";
-import FactrakMain from "./views/Factrak/FactrakMain";
-import EphcatchMain from "./views/Ephcatch/EphcatchMain";
-import FourOhFour from "./views/Errors/FourOhFour";
-import Login from "./Login";
-import FourOhThree from "./views/Errors/FourOhThree";
-import BulletinMain from "./views/BulletinsDiscussions/BulletinMain";
-import DiscussionMain from "./views/BulletinsDiscussions/DiscussionMain";
-import BuildingHours from "./views/Misc/BuildingHours";
 
 // Redux/routing
 import { connect } from "react-redux";
@@ -30,6 +17,25 @@ import { doRemoveCreds, doUpdateToken, doUpdateUser } from "../actions/auth";
 import { tokenExpiryHandler, getCampusToken } from "../api/auth";
 import { getRandomWSO } from "../api/misc";
 import { checkAndHandleError } from "../lib/general";
+
+// More component imports
+const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
+const About = lazy(() => import("./views/Misc/About"));
+const Listserv = lazy(() => import("./views/Misc/Listserv"));
+const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
+const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
+const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
+const EphcatchMain = lazy(() => import("./views/Ephcatch/EphcatchMain"));
+const FourOhFour = lazy(() => import("./views/Errors/FourOhFour"));
+const Login = lazy(() => import("./Login"));
+const FourOhThree = lazy(() => import("./views/Errors/FourOhThree"));
+const BulletinMain = lazy(() =>
+  import("./views/BulletinsDiscussions/BulletinMain")
+);
+const DiscussionMain = lazy(() =>
+  import("./views/BulletinsDiscussions/DiscussionMain")
+);
+const BuildingHours = lazy(() => import("./views/Misc/BuildingHours"));
 
 const App = ({
   route,
@@ -116,7 +122,11 @@ const App = ({
   initialize();
   randomWSO();
 
-  return <Layout>{mainBody()}</Layout>;
+  return (
+    <Layout>
+      <Suspense fallback={<div>Loading...</div>}>{mainBody()}</Suspense>
+    </Layout>
+  );
 };
 
 App.propTypes = {
