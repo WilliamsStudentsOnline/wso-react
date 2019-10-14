@@ -5,8 +5,8 @@
   "dependencies": {
     "axios": "^0.19.0",
     "dayjs": "^1.8.15",
+    "dom-to-image": "^2.6.0",
     "google-client-api": "^1.0.4",
-    "html2canvas": "^1.0.0-rc.3",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.15",
     "prop-types": "^15.7.2",

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 // External imports
-import html2canvas from "html2canvas";
+import domtoimage from "dom-to-image";
 
 // Component imports
 import Schedule from "./Schedule";
@@ -67,26 +67,17 @@ const Timetable = ({
       ? document.querySelector(".day-horizontal").offsetWidth
       : document.querySelector(".schedule-vertical").offsetWidth;
 
-    const leftOffset = horizontal
-      ? document.querySelector(".day-horizontal").offsetLeft
-      : document.querySelector(".schedule-vertical").offsetLeft;
-
-    // Set overflows to visible because html2canvas does not render components hidden from screen.
-    schedule.style.overflowX = "visible";
-    schedule.style.overflowY = "visible";
-
-    html2canvas(schedule, {
-      width: scheduleWidth,
-      x: leftOffset,
-      y: schedule.offsetTop,
-    }).then((canvas) => {
-      // Export the canvas to its data URI representation
-      window
-        .open()
-        .document.write(`<img src="${canvas.toDataURL("image/png")}" />`);
-    });
-    schedule.style.overflowX = horizontal ? "auto" : "hidden";
-    schedule.style.overflowY = "hidden";
+    domtoimage
+      .toPng(schedule, {
+        style: {
+          margin: 0,
+          overflow: "visible visible",
+          width: scheduleWidth,
+        },
+      })
+      .then((dataUrl) => {
+        window.open().document.write(`<img src="${dataUrl}" />`);
+      });
   };
 
   const dayConversionGCal = (days) => {
