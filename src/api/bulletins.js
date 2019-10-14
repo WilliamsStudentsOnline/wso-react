@@ -87,7 +87,6 @@ const getDiscussions = async (token, params) => {
   }).catch((error) => {
     return error.response;
   });
-
   return response;
 };
 

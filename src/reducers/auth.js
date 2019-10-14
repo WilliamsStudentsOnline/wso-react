@@ -10,7 +10,7 @@ import jwtDecode from "jwt-decode";
 const INITIAL_STATE = {
   scope: [],
   token: "",
-  expiry: "",
+  expiry: 0,
   currUser: null, // Stores the user object.
   remember: false,
   tokenLevel: 0,

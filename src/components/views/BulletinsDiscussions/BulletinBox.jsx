@@ -70,9 +70,11 @@ const BulletinBox = ({ token, typeWord }) => {
       } else updateThreads([]);
     };
 
-    if (type === discussionType) loadDiscussions();
-    else if (type === bulletinTypeRide) loadRides();
-    else loadBulletins();
+    if (token !== "") {
+      if (type === discussionType) loadDiscussions();
+      else if (type === bulletinTypeRide) loadRides();
+      else loadBulletins();
+    }
   }, [token, type]);
 
   const formatDate = (showDate) => {
