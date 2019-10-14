@@ -12,7 +12,7 @@ import { connect } from "react-redux";
 import { Link, ConnectedLink } from "react-router5";
 
 const Nav = ({ currUser }) => {
-  const [menuVisible, updateMenuVisibility] = useState(true);
+  const [menuVisible, updateMenuVisibility] = useState(false);
 
   return (
     <nav>
