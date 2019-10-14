@@ -30,6 +30,13 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
+
+    // Guard clause for empty id or password field.
+    if (unixID === "" || password === "") {
+      updateErrors(["Please enter a valid unixID and password."]);
+      return;
+    }
+
     const response = await getToken(unixID, password);
 
     if (checkAndHandleError(response)) {

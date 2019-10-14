@@ -124,7 +124,7 @@ const App = ({
 
   return (
     <Layout>
-      <Suspense fallback={<div>Loading...</div>}>{mainBody()}</Suspense>
+      <Suspense fallback={<div>&nbsp;</div>}>{mainBody()}</Suspense>
     </Layout>
   );
 };

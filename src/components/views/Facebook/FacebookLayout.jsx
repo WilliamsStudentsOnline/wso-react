@@ -41,8 +41,9 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
             <li>
               <Link routeName="facebook.help">Help</Link>
             </li>
-            {currUser != null
-              ? [
+            {currUser === null
+              ? null
+              : [
                   <li>
                     <Link
                       routeName="facebook.users"
@@ -54,8 +55,7 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
                   <li>
                     <Link routeName="facebook.edit"> Edit </Link>
                   </li>,
-                ]
-              : null}
+                ]}
           </ul>
         </div>
         <form onSubmit={submitHandler}>
