@@ -2,13 +2,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Footer from "./Footer";
-import Header from "./Header";
+import Nav from "./Nav";
 import "./stylesheets/Application.css";
 
-const Layout = ({ children, bodyClass, notice, warning, currentUser }) => {
+const Layout = ({ children, notice, warning }) => {
   return (
-    <div className={bodyClass}>
-      <Header ephCatch={false} currentUser={currentUser} />
+    <div className="front dormtrak facebook factrak announcement">
+      <Nav />
 
       <aside>
         {notice ? <section className="notice">{notice}</section> : null}
@@ -26,14 +26,13 @@ const Layout = ({ children, bodyClass, notice, warning, currentUser }) => {
 Layout.propTypes = {
   notice: PropTypes.string,
   warning: PropTypes.string,
-  currentUser: PropTypes.object.isRequired,
-  bodyClass: PropTypes.string.isRequired,
-  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 Layout.defaultProps = {
   notice: "",
   warning: "",
+  children: null,
 };
 
 export default Layout;

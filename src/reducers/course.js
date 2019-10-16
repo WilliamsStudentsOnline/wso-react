@@ -46,7 +46,7 @@ const parseAddedCourses = () => {
         const bites = brownie.split(";");
         if (
           bites[0] === course.department &&
-          parseInt(bites[1]) === course.peoplesoftNumber
+          parseInt(bites[1], 10) === course.peoplesoftNumber
         ) {
           check = true;
         }

@@ -1,13 +1,32 @@
 // React imports
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 // Component imports
-import BulletinBox from "./BulletinBox";
-import SearchBox from "./SearchBox";
 import "./stylesheets/Homepage.css";
+import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 
-const Homepage = ({ bulletins, authToken }) => {
+// Redux Imports
+import { connect } from "react-redux";
+import { actions } from "redux-router5";
+
+const Homepage = ({ navigateTo }) => {
+  const bulletinTypeWords = [
+    "Discussions",
+    "Announcements",
+    "Exchanges",
+    "Lost And Found",
+    "Jobs",
+    "Rides",
+  ];
+  const [query, updateQuery] = useState("");
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    navigateTo("facebook", { q: query }, { reload: true });
+  };
+
   return (
     <div className="home">
       <div className="full-width">
@@ -19,13 +38,26 @@ const Homepage = ({ bulletins, authToken }) => {
           <h2 align="center">WSO</h2>
           <h4 align="center">By Students, For Students!</h4>
           <br />
-          <SearchBox authToken={authToken} />
+          <form onSubmit={submitHandler}>
+            <input
+              aria-label="Search box for Facebook"
+              type="search"
+              placeholder="Search Facebook"
+              onChange={(event) => updateQuery(event.target.value)}
+            />
+            <input
+              data-disable-with="Search"
+              type="submit"
+              value="Search"
+              className="submit"
+            />
+          </form>
         </header>
         <article>
           <section>
             <div className="bulletin-list">
-              {bulletins.map(bulletin => {
-                return <BulletinBox bulletin={bulletin} />;
+              {bulletinTypeWords.map((bulletin) => {
+                return <BulletinBox typeWord={bulletin} key={bulletin} />;
               })}
             </div>
           </section>
@@ -35,27 +67,16 @@ const Homepage = ({ bulletins, authToken }) => {
   );
 };
 
-Homepage.propTypes = {
-  bulletins: PropTypes.arrayOf(PropTypes.array),
-  authToken: PropTypes.string,
-  notice: PropTypes.string,
-  warning: PropTypes.string,
-  currentUser: PropTypes.object
-};
+Homepage.propTypes = { navigateTo: PropTypes.func.isRequired };
 
-Homepage.defaultProps = {
-  currentUser: {},
-  notice: "",
-  warning: "",
-  bulletins: [
-    [[], "Discussions", "/discussions"],
-    [[], "Announcements", "/announcements"],
-    [[], "Exchanges", "/exchanges"],
-    [[], "Lost + Found", "/lostAndFound"],
-    [[], "Jobs", "/jobs"],
-    [[], "Rides", "/rides"]
-  ],
-  authToken: ""
-};
+Homepage.defaultProps = {};
 
-export default Homepage;
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Homepage);

@@ -1,40 +1,62 @@
 // React imports
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import PropTypes from "prop-types";
 
 // Component Imports
 import "./stylesheets/Application.css";
 import Layout from "./Layout";
 import Homepage from "./Homepage";
-import About from "./About";
-import Listserv from "./Listserv";
-import Scheduler from "./Scheduler";
-import Facebook from "./Facebook";
-import DormtrakIndex from "./DormtrakIndex";
-import Factrak from "./Factrak";
 
 // Redux/routing
 import { connect } from "react-redux";
-import { createRouteNodeSelector } from "redux-router5";
-import BuildingHours from "./BuildingHours";
+import { createRouteNodeSelector, actions } from "redux-router5";
+import { getToken, getExpiry, getCurrUser } from "../selectors/auth";
+import { doRemoveCreds, doUpdateToken, doUpdateUser } from "../actions/auth";
 
 // Additional Imports
-import wordFile from "../constants/words.json";
-import { initializeToken } from "../api/utils";
-import { getAllUsers } from "../api/users";
+import { tokenExpiryHandler, getCampusToken } from "../api/auth";
+import { getRandomWSO } from "../api/misc";
+import { checkAndHandleError } from "../lib/general";
 
-const App = ({ notice, warning, currentUser, route }) => {
-  initializeToken();
-  getAllUsers();
+// More component imports
+const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
+const About = lazy(() => import("./views/Misc/About"));
+const Listserv = lazy(() => import("./views/Misc/Listserv"));
+const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
+const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
+const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
+const EphcatchMain = lazy(() => import("./views/Ephcatch/EphcatchMain"));
+const FourOhFour = lazy(() => import("./views/Errors/FourOhFour"));
+const Login = lazy(() => import("./Login"));
+const FourOhThree = lazy(() => import("./views/Errors/FourOhThree"));
+const BulletinMain = lazy(() =>
+  import("./views/BulletinsDiscussions/BulletinMain")
+);
+const DiscussionMain = lazy(() =>
+  import("./views/BulletinsDiscussions/DiscussionMain")
+);
+const BuildingHours = lazy(() => import("./views/Misc/BuildingHours"));
 
-  const randomWSO = () => {
-    if (wordFile) {
-      let w = wordFile.w[Math.floor(Math.random() * wordFile.w.length)];
-      let s = wordFile.s[Math.floor(Math.random() * wordFile.s.length)];
-      let o = wordFile.o[Math.floor(Math.random() * wordFile.o.length)];
+const App = ({
+  route,
+  navigateTo,
+  removeCreds,
+  updateToken,
+  token,
+  expiry,
+  currUser,
+  updateUser,
+}) => {
+  const randomWSO = async () => {
+    if (document.title !== "WSO: Williams Students Online") {
+      const wsoResponse = await getRandomWSO();
 
-      return "WSO: " + w + " " + s + "  " + o;
-    } else return "WSO: Williams Students Online";
+      if (checkAndHandleError(wsoResponse)) {
+        document.title = `WSO: ${wsoResponse.data.data}`;
+      }
+      // Return default if there is an error in the response.
+      else document.title = "WSO: Williams Students Online";
+    }
   };
 
   const mainBody = () => {
@@ -52,41 +74,95 @@ const App = ({ notice, warning, currentUser, route }) => {
       case "scheduler":
         return <Scheduler />;
       case "facebook":
-        return <Facebook />;
+        return <FacebookMain />;
       case "dormtrak":
-        return <DormtrakIndex />;
+        return <DormtrakMain />;
       case "factrak":
-        return <Factrak />;
+        return <FactrakMain />;
+      case "login":
+        if (!currUser) {
+          return <Login />;
+        }
+        navigateTo("home");
+        return null;
+      case "ephcatch":
+        return <EphcatchMain />;
+      case "bulletins":
+        return <BulletinMain />;
+      case "discussions":
+        return <DiscussionMain />;
+      case "logout":
+        removeCreds();
+        navigateTo("home");
+        return null;
+      case "403":
+        return <FourOhThree />;
       default:
-        return <div>whoops</div>;
+        return <FourOhFour />;
     }
   };
 
-  document.title = randomWSO();
+  // Refreshes the token
+  const initialize = async () => {
+    if (token && expiry) {
+      // Checks if the token can be refreshed, refreshes if necessary
+      const refresh = await tokenExpiryHandler(token, expiry);
+      if (refresh) return;
+    }
+
+    // If the token does not exist, get a token based on whether user is on campus.
+    const campusResponse = await getCampusToken();
+
+    if (checkAndHandleError(campusResponse)) {
+      updateToken(campusResponse.data.data);
+      updateUser(null);
+    }
+  };
+
+  initialize();
+  randomWSO();
 
   return (
-    <Layout
-      bodyClass="front dormtrak facebook"
-      notice={notice}
-      warning={warning}
-      currentUser={currentUser}
-    >
-      {mainBody()}
+    <Layout>
+      <Suspense fallback={<div>&nbsp;</div>}>{mainBody()}</Suspense>
     </Layout>
   );
 };
 
 App.propTypes = {
-  notice: PropTypes.string,
-  warning: PropTypes.string,
-  currentUser: PropTypes.object,
   route: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  removeCreds: PropTypes.func.isRequired,
+  updateToken: PropTypes.func.isRequired,
+  token: PropTypes.string.isRequired,
+  expiry: PropTypes.number.isRequired,
+  currUser: PropTypes.object,
+  updateUser: PropTypes.func.isRequired,
 };
 
 App.defaultProps = {
-  notice: "",
-  warning: "",
-  currentUser: {},
+  currUser: null,
 };
 
-export default connect(createRouteNodeSelector(""))(App);
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("");
+
+  return (state) => ({
+    token: getToken(state),
+    expiry: getExpiry(state),
+    currUser: getCurrUser(state),
+    ...routeNodeSelector(state),
+  });
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  removeCreds: () => dispatch(doRemoveCreds()),
+  updateToken: (token) => dispatch(doUpdateToken(token)),
+  updateUser: (user) => dispatch(doUpdateUser(user)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

@@ -6,9 +6,19 @@
   margin: 0.5rem;
 }
 
+.inline-button-inverted {
+  background: #6f4399;
+  padding: 0.5rem 2rem;
+  color: #fff;
+  border: 1px solid #fff;
+  margin: 0.5rem;
+}
+
 .autocomplete-option {
   background: none;
   color: #6f4399;
   padding: 0;
   min-width: 0;
+  white-space: normal;
+  text-align: left;
 }

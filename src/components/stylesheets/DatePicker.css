@@ -1,0 +1,18 @@
+.react-date-picker {
+  margin-bottom: 0.8rem;
+}
+
+.react-date-picker__wrapper {
+  padding-left: 0.8rem;
+}
+
+.react-date-picker button {
+  min-width: 0;
+  color: initial;
+}
+
+.react-date-picker input[type="number"] {
+  box-sizing: initial;
+  border: none;
+  padding: 0;
+}

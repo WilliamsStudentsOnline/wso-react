@@ -779,7 +779,8 @@ input[type="datetime"],
 input[type="datetime-local"],
 input[type="month"],
 input[type="time"],
-input[type="week"] {
+input[type="week"],
+select {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -3116,20 +3117,6 @@ ul#tag-list .tag-input {
   .home article aside .list-left {
     max-width: 80%;
   }
-}
-.home article aside .list-date {
-  display: block;
-  background: #fcfcfc;
-  padding-left: 5px;
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  font-variant: small-caps;
-  font-weight: bold;
-  font-size: 0.9em;
-  color: #aaa;
 }
 header {
   *zoom: 1;
