@@ -1,7 +1,6 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import Trakyak from "../../../assets/images/trakyak.png";
 import PaginationButtons from "../../PaginationButtons";
 
 // Redux/ routing imports
@@ -16,6 +15,7 @@ import {
   getEphcatcher,
 } from "../../../api/ephcatch";
 import { checkAndHandleError } from "../../../lib/general";
+import Ephcatcher from "./Ephcatcher";
 
 const EphcatchHome = ({ token }) => {
   const perPage = 20; // Number of results per page
@@ -39,7 +39,7 @@ const EphcatchHome = ({ token }) => {
 
   useEffect(() => {
     loadNextEphcatchers(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, []);
 
   const selectEphcatcher = async (event, index) => {
@@ -101,26 +101,13 @@ const EphcatchHome = ({ token }) => {
 
           <br />
           {ephcatchers.map((ephcatcher, index) => (
-            <aside
+            <Ephcatcher
+              ephcatcher={ephcatcher}
+              selectEphcatcher={selectEphcatcher}
+              index={index}
+              token={token}
               key={ephcatcher.id}
-              className={
-                ephcatcher.liked
-                  ? "ephcatch-select-link ephcatch-selected"
-                  : "ephcatch-select-link"
-              }
-              onClick={(event) => selectEphcatcher(event, index)}
-              role="presentation"
-            >
-              <div className="third">
-                <div className="profile-photo">
-                  <img src={Trakyak} alt="avatar" />
-                  {/* <img alt="profile" src={`/pic/${ephcatcher.unixID}`} /> */}
-                </div>
-              </div>
-              <div className="two-thirds">
-                <h4>{ephcatcher.name}</h4>
-              </div>
-            </aside>
+            />
           ))}
         </div>
       </section>

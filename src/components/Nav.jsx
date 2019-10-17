@@ -24,7 +24,7 @@ const Nav = ({ currUser, token }) => {
       }
     };
 
-    if (token && token !== "") loadPhoto();
+    if (currUser && token && token !== "") loadPhoto();
     // eslint-disable-next-line
   }, [token]);
 
