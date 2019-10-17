@@ -1,7 +1,6 @@
 // React Imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import Trakyak from "../../../assets/images/trakyak.png";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
@@ -14,6 +13,7 @@ import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import { userTypeStudent } from "../../../constants/general";
 import PaginationButtons from "../../PaginationButtons";
+import FacebookGridUser from "./FacebookGridUser";
 
 const FacebookHome = ({ token, route }) => {
   const [results, updateResults] = useState(null);
@@ -46,7 +46,7 @@ const FacebookHome = ({ token, route }) => {
 
   useEffect(() => {
     loadUsers(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [token, route.params.q]);
 
   // Handles clicking of the next/previous page
@@ -112,77 +112,13 @@ const FacebookHome = ({ token, route }) => {
     );
   };
 
-  // Generates the unix id field in grid view
-  const gridUnixID = (user) => {
-    if (user.unixID) {
-      return (
-        <>
-          <li className="list-headers">UNIX</li>
-          <li className="list-contents">{user.unixID}</li>
-        </>
-      );
-    }
-    return null;
-  };
-
-  // Generates the user's room in grid view
-  const gridUserRoom = (user) => {
-    if (user.type === userTypeStudent && (user.dormVisible && user.dormRoom)) {
-      return (
-        <>
-          <li className="list-headers"> Room</li>
-          <li className="list-contents">
-            {user.dormRoom.dorm.name} {user.dormRoom.number}
-          </li>
-        </>
-      );
-    }
-    if (user.type !== userTypeStudent && user.office) {
-      return (
-        <>
-          <li className="list-headers"> Office</li>
-          <li className="list-contents">{user.office.number}</li>
-        </>
-      );
-    }
-    return null;
-  };
-
   // Displays results in a grid view when there aren't too many results
   const GridView = () => {
     return (
       <div className="grid-wrap">
-        {results.map((user) => {
-          return (
-            <aside key={user.id}>
-              <div className="third">
-                <div className="profile-photo">
-                  <Link
-                    routeName="facebook.users"
-                    routeParams={{ userID: user.id }}
-                  >
-                    <img src={Trakyak} alt="avatar" />
-                    {/* <img src={`/pic/${user.unixID}`} alt="avatar" /> */}
-                  </Link>
-                </div>
-              </div>
-              <div className="two-third">
-                <h4>
-                  <Link
-                    routeName="facebook.users"
-                    routeParams={{ userID: user.id }}
-                  >
-                    {user.name}
-                  </Link>
-                </h4>
-                <ul>
-                  {gridUnixID(user)}
-                  {gridUserRoom(user)}
-                </ul>
-              </div>
-            </aside>
-          );
-        })}
+        {results.map((user) => (
+          <FacebookGridUser key={user.id} gridUser={user} token={token} />
+        ))}
       </div>
     );
   };

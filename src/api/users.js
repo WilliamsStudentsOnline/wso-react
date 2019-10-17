@@ -77,10 +77,42 @@ const putCurrUserPhoto = async (token, file) => {
   return response;
 };
 
+// Gets the thumbnail photo of a specified user.
+const getUserThumbPhoto = async (token, unixID) => {
+  const response = await axios({
+    url: `/pic/thumb/${unixID}.png`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    responseType: "blob",
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
+// Gets the large photo of a specified user.
+const getUserLargePhoto = async (token, unixID) => {
+  const response = await axios({
+    url: `/pic/large/${unixID}.png`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    responseType: "blob",
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
 export {
   getAllUsers,
   getUser,
   patchCurrUser,
   putCurrUserTags,
   putCurrUserPhoto,
+  getUserThumbPhoto,
+  getUserLargePhoto,
 };
