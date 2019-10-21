@@ -416,11 +416,11 @@ const updateCounts = (state) => {
   return newCounts;
 };
 
-const updateScores = (state, param) => {
+const updateScores = (param) => {
   // Assign scores based on current search parameters
   for (let i = 0; i < INITIAL_CATALOG.length; i += 1) {
     INITIAL_CATALOG[i] = Object.assign({}, INITIAL_CATALOG[i], {
-      score: scoreCourses(state, param, INITIAL_CATALOG[i]),
+      score: scoreCourses(param, INITIAL_CATALOG[i]),
     });
   }
 
@@ -431,7 +431,7 @@ const applySearchCourse = (state, param = state.query) => {
   // Update scores only if search query is changed.
   let queried = state.queried;
   if (param !== state.query) {
-    queried = updateScores(state, param);
+    queried = updateScores(param);
     queried = queried
       .filter((course) => {
         return course.score && course.score > 0;
