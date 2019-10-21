@@ -17,8 +17,6 @@ const DiscussionPost = ({ post, currUser, token }) => {
   const [reply, updateReply] = useState(post.content);
   const [currPost, updateCurrPost] = useState(post);
 
-  console.log(post);
-
   // Handles submission of updated post.
   const submitHandler = async (event) => {
     event.preventDefault();
