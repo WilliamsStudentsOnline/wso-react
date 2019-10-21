@@ -43,6 +43,18 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
+
+    // Some error checking
+    if (courseAOS === "") {
+      updateErrors(["Please choose a Course Prefix!"]);
+      return;
+    }
+
+    if (courseNumber === "") {
+      updateErrors(["Please enter a valid Course Number"]);
+      return;
+    }
+
     // Parse integers here rather than below to minimize the expensive operation
     const surveyParams = {
       areaOfStudyAbbreviation: courseAOS,
@@ -125,6 +137,9 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
         className="select-dept"
         onChange={(event) => updateCourseAOS(event.target.value)}
       >
+        <option value="" selected disabled hidden>
+          Select Prefix
+        </option>
         {areasOfStudy.map((areaOfStudy) => (
           <option value={areaOfStudy.abbreviation} key={areaOfStudy.id}>
             {areaOfStudy.abbreviation}
