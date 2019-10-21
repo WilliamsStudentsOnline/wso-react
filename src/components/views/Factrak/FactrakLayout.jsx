@@ -65,8 +65,8 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
         <Link
           routeName="factrak.areasOfStudy"
           routeParams={{ area: suggestion.id }}
-          routeOptions={{ reload: true }}
           onMouseDown={(e) => e.preventDefault()}
+          successCallback={() => setShowSuggestions(false)}
         >
           {suggestion.value}
         </Link>
@@ -78,7 +78,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
           routeName="factrak.courses"
           routeParams={{ courseID: suggestion.id }}
           onMouseDown={(e) => e.preventDefault()}
-          routeOptions={{ reload: true }}
+          successCallback={() => setShowSuggestions(false)}
         >
           {suggestion.value}
         </Link>
@@ -90,7 +90,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
           routeName="factrak.professors"
           routeParams={{ profID: suggestion.id }}
           onMouseDown={(e) => e.preventDefault()}
-          routeOptions={{ reload: true }}
+          successCallback={() => setShowSuggestions(false)}
         >
           {suggestion.value}
         </Link>
@@ -191,7 +191,7 @@ FactrakLayout.propTypes = {
 FactrakLayout.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("factrak.search");
+  const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
     currUser: getCurrUser(state),
