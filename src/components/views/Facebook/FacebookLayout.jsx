@@ -44,7 +44,7 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
             {currUser === null
               ? null
               : [
-                  <li>
+                  <li key="view">
                     <Link
                       routeName="facebook.users"
                       routeParams={{ userID: currUser.id }}
@@ -52,7 +52,7 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
                       View
                     </Link>
                   </li>,
-                  <li>
+                  <li key="edit">
                     <Link routeName="facebook.edit"> Edit </Link>
                   </li>,
                 ]}

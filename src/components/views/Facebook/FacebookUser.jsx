@@ -1,7 +1,6 @@
 // React Imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import Trakyak from "../../../assets/images/trakyak.png";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
@@ -9,13 +8,14 @@ import { getToken, getCurrUser } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
-import { getUser } from "../../../api/users";
+import { getUser, getUserLargePhoto } from "../../../api/users";
 import { checkAndHandleError } from "../../../lib/general";
 import { ConnectedLink } from "react-router5";
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 
 const FacebookUser = ({ currUser, token, route, navigateTo }) => {
   const [viewPerson, updateTarget] = useState(null);
+  const [userPhoto, updateUserPhoto] = useState(null);
 
   useEffect(() => {
     const loadTarget = async () => {
@@ -30,6 +30,14 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
         updateTarget(targetResponse.data.data);
       } else {
         navigateTo("404");
+      }
+
+      const photoResponse = await getUserLargePhoto(
+        token,
+        targetResponse.data.data.unixID
+      );
+      if (checkAndHandleError(photoResponse)) {
+        updateUserPhoto(URL.createObjectURL(photoResponse.data));
       }
     };
 
@@ -181,8 +189,7 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
     <article className="facebook-profile">
       <section>
         <aside className="picture">
-          <img src={Trakyak} alt="avatar" />
-          {/* <img src={`/pic/${viewPerson.unixID}`} alt="avatar" /> */}
+          <img src={userPhoto} alt="avatar" />
         </aside>
 
         <aside className="info">

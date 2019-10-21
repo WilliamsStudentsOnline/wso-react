@@ -2199,7 +2199,11 @@ section:after {
     height: 11.25em;
   }
 }
-.facebook .grid-wrap aside .profile-photo img,
+.facebook .grid-wrap aside .profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .factrak .grid-wrap aside .profile-photo img,
 .dormtrak .grid-wrap aside .profile-photo img {
   width: 100%;

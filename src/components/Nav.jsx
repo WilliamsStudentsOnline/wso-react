@@ -1,18 +1,32 @@
 // React Imports
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import Trakyak from "../assets/images/trakyak.png";
 
 // React/Redux imports
-import { getCurrUser } from "../selectors/auth";
+import { getCurrUser, getToken } from "../selectors/auth";
 import { connect } from "react-redux";
 
 // External imports
 // Connected Link is the same as link, except it re-renders on route changes
 import { Link, ConnectedLink } from "react-router5";
+import { checkAndHandleError } from "../lib/general";
+import { getUserThumbPhoto } from "../api/users";
 
-const Nav = ({ currUser }) => {
+const Nav = ({ currUser, token }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
+  const [userPhoto, updateUserPhoto] = useState(null);
+
+  useEffect(() => {
+    const loadPhoto = async () => {
+      const photoResponse = await getUserThumbPhoto(token, currUser.unixID);
+      if (checkAndHandleError(photoResponse)) {
+        updateUserPhoto(URL.createObjectURL(photoResponse.data));
+      }
+    };
+
+    if (currUser && token && token !== "") loadPhoto();
+    // eslint-disable-next-line
+  }, [token]);
 
   return (
     <nav>
@@ -90,8 +104,7 @@ const Nav = ({ currUser }) => {
                     routeName="facebook.users"
                     routeParams={{ userID: currUser.id }}
                   >
-                    {/* <img src={`/pic/${currUser.unixID}`} alt="avatar" /> */}
-                    <img src={Trakyak} alt="avatar" />
+                    <img src={userPhoto} alt="avatar" />
                   </Link>
                 </li>
                 <li>
@@ -113,12 +126,14 @@ const Nav = ({ currUser }) => {
 Nav.propTypes = {
   // No isRequired because it must work for non-authenticated users too
   currUser: PropTypes.object,
+  token: PropTypes.string,
 };
 
-Nav.defaultProps = { currUser: {} };
+Nav.defaultProps = { currUser: {}, token: "" };
 
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
+  token: getToken(state),
 });
 
 export default connect(mapStateToProps)(Nav);

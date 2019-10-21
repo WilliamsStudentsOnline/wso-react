@@ -1,6 +1,6 @@
 // React imports
 import React from "react";
-import DoughtyBanner from "../../../assets/images/banners/Doughty.png";
+import DoughtyBanner from "../../../assets/images/banners/Doughty.jpg";
 
 const About = () => {
   return (
