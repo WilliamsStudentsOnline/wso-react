@@ -11,8 +11,9 @@ import { connect } from "react-redux";
 import { Link, ConnectedLink } from "react-router5";
 import { checkAndHandleError } from "../lib/general";
 import { getUserThumbPhoto } from "../api/users";
+import { createRouteNodeSelector } from "redux-router5";
 
-const Nav = ({ currUser, token }) => {
+const Nav = ({ currUser, token, route }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
 
@@ -25,8 +26,9 @@ const Nav = ({ currUser, token }) => {
     };
 
     if (currUser && token && token !== "") loadPhoto();
+    updateMenuVisibility(false);
     // eslint-disable-next-line
-  }, [token]);
+  }, [token, route]);
 
   return (
     <nav>
@@ -127,13 +129,19 @@ Nav.propTypes = {
   // No isRequired because it must work for non-authenticated users too
   currUser: PropTypes.object,
   token: PropTypes.string,
+  route: PropTypes.object.isRequired,
 };
 
 Nav.defaultProps = { currUser: {}, token: "" };
 
-const mapStateToProps = (state) => ({
-  currUser: getCurrUser(state),
-  token: getToken(state),
-});
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("");
+
+  return (state) => ({
+    currUser: getCurrUser(state),
+    token: getToken(state),
+    ...routeNodeSelector(state),
+  });
+};
 
 export default connect(mapStateToProps)(Nav);
