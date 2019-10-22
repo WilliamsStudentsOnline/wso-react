@@ -85,11 +85,11 @@ const FactrakComment = ({
         <span id={`${survey.id}agree-count`}>
           {survey.totalAgree ? survey.totalAgree : 0}
         </span>
-        {` agree, `}
+        ` agree, `
         <span id={`${survey.id}disagree-count`}>
           {survey.totalDisagree ? survey.totalDisagree : 0}
         </span>
-        {` disagree`}
+        ` disagree`
         <span
           id={`${survey.id}flagged`}
           className="factrak-flag"
@@ -217,7 +217,7 @@ const FactrakComment = ({
               className="inline-button"
               onClick={flagHandler}
             >
-              {" Flag for moderator attention"}
+              Flag for moderator attention
             </button>
           </span>
         ) : null}

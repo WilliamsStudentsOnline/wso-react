@@ -5,12 +5,13 @@ import PropTypes from "prop-types";
 // Additional imports
 import { Link } from "react-router5";
 import { avatarHelper } from "../../../lib/imageHelper";
+import { format } from "timeago.js";
 
 const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
   // Renders the Edit/Delete buttons
   const editDeleteButtons = (review) => {
     if (
-      currUser.type === "Student" ||
+      currUser.type === "student" &&
       (currUser.id === review.userID || currUser.admin)
     ) {
       return (
@@ -59,7 +60,7 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
 
           <p>{review.comment.substring(0, 200)}</p>
           <p className="comment-detail">
-            {`Posted ${new Date(review.createdTime).toDateString()}`}
+            {`Posted ${format(new Date(review.createdTime))}`}
           </p>
           {editDeleteButtons(review)}
         </div>
@@ -73,7 +74,7 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
       <div className="comment" key={review.id}>
         <p>{review.comment}</p>
         <p className="comment-detail">
-          {`Posted ${new Date(review.createdTime).toDateString()}`}
+          {`Posted ${format(new Date(review.createdTime))}`}
         </p>
         <p className="comment-detail">{editDeleteButtons(review)}</p>
       </div>

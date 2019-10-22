@@ -73,13 +73,11 @@ const DormtrakHome = ({ currUser, token }) => {
           {surveyLink()}
         </section>
         <section>
-          {
-            <DormtrakRecentComments
-              abridged
-              currUser={currUser}
-              reviews={reviews}
-            />
-          }
+          <DormtrakRecentComments
+            abridged
+            currUser={currUser}
+            reviews={reviews}
+          />
         </section>
       </article>
     </div>
