@@ -23,7 +23,8 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
       else setQuery("");
     };
     loadQuery();
-  }, [route.params.q]);
+    setShowSuggestions(false);
+  }, [route.params.q, route.path]);
 
   // Initiates new autocomplete
   const factrakAutocomplete = async (event) => {
@@ -41,6 +42,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
     } else {
       setSuggestions(suggestData);
     }
+    setShowSuggestions(true);
   };
 
   const submitHandler = (event) => {
@@ -63,8 +65,8 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
         <Link
           routeName="factrak.areasOfStudy"
           routeParams={{ area: suggestion.id }}
-          routeOptions={{ reload: true }}
           onMouseDown={(e) => e.preventDefault()}
+          successCallback={() => setShowSuggestions(false)}
         >
           {suggestion.value}
         </Link>
@@ -76,6 +78,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
           routeName="factrak.courses"
           routeParams={{ courseID: suggestion.id }}
           onMouseDown={(e) => e.preventDefault()}
+          successCallback={() => setShowSuggestions(false)}
         >
           {suggestion.value}
         </Link>
@@ -87,6 +90,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
           routeName="factrak.professors"
           routeParams={{ profID: suggestion.id }}
           onMouseDown={(e) => e.preventDefault()}
+          successCallback={() => setShowSuggestions(false)}
         >
           {suggestion.value}
         </Link>
@@ -102,7 +106,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
       <div className="autocomplete">
         <table id="suggestions">
           <tbody>
-            {suggestions !== [] && showSuggestions
+            {suggestions.length > 0 && showSuggestions
               ? suggestions.map((suggestion) => (
                   <tr key={suggestion.value}>
                     <td>{suggestionRow(suggestion)}</td>
@@ -187,7 +191,7 @@ FactrakLayout.propTypes = {
 FactrakLayout.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("factrak.search");
+  const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
     currUser: getCurrUser(state),

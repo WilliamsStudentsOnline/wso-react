@@ -21,7 +21,7 @@ const Ephcatcher = ({ ephcatcher, selectEphcatcher, index, token }) => {
     // eslint-disable-next-line
   }, [token]);
 
-  if (selectEphcatcher == null)
+  if (selectEphcatcher === null)
     return (
       <aside>
         <div className="third">

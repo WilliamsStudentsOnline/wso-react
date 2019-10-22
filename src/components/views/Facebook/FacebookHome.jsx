@@ -71,6 +71,14 @@ const FacebookHome = ({ token, route }) => {
     return null;
   };
 
+  // Generates the user's class year
+  const classYear = (user) => {
+    if (!user.classYear || user.type !== userTypeStudent) return null;
+    if (user.offCycle) return `'${user.classYear % 100}.5`;
+
+    return `'${user.classYear % 100}`;
+  };
+
   // Displays results in a list view when there are too many results
   const ListView = () => {
     return (
@@ -92,7 +100,7 @@ const FacebookHome = ({ token, route }) => {
                       routeName="facebook.users"
                       routeParams={{ userID: user.id }}
                     >
-                      {user.name}
+                      {user.name} {classYear(user)}
                     </Link>
                   </td>
                   <td>{user.unixID}</td>
@@ -117,7 +125,12 @@ const FacebookHome = ({ token, route }) => {
     return (
       <div className="grid-wrap">
         {results.map((user) => (
-          <FacebookGridUser key={user.id} gridUser={user} token={token} />
+          <FacebookGridUser
+            key={user.id}
+            gridUser={user}
+            token={token}
+            gridUserClassYear={classYear(user)}
+          />
         ))}
       </div>
     );

@@ -65,7 +65,7 @@ const FactrakSearch = ({ token, route }) => {
           </Link>
         </td>
         <td>{prof.unixID || ""}</td>
-        <td>{prof.office.number || ""}</td>
+        <td>{prof.office ? prof.office.number : ""}</td>
       </tr>
     );
   };

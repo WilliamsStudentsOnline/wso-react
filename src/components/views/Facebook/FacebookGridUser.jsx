@@ -10,7 +10,7 @@ import { userTypeStudent } from "../../../constants/general";
 import { checkAndHandleError } from "../../../lib/general";
 import { getUserLargePhoto } from "../../../api/users";
 
-const FacebookGridUser = ({ gridUser, token }) => {
+const FacebookGridUser = ({ gridUser, token, gridUserClassYear }) => {
   const [userPhoto, updateUserPhoto] = useState(null);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ const FacebookGridUser = ({ gridUser, token }) => {
             routeName="facebook.users"
             routeParams={{ userID: gridUser.id }}
           >
-            {gridUser.name}
+            {gridUser.name} {gridUserClassYear}
           </Link>
         </h4>
         <ul>
@@ -93,6 +93,11 @@ const FacebookGridUser = ({ gridUser, token }) => {
 FacebookGridUser.propTypes = {
   gridUser: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
+  gridUserClassYear: PropTypes.string,
+};
+
+FacebookGridUser.defaultProps = {
+  gridUserClassYear: "",
 };
 
 export default FacebookGridUser;

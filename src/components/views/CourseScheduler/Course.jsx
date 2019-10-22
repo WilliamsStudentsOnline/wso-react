@@ -37,8 +37,10 @@ const Course = ({
   // State of body visibiity
   const [bodyHidden, setHidden] = useState(true);
 
-  const addIndex = added.indexOf(course);
+  const addedIds = added.map((addedCourse) => addedCourse.peoplesoftNumber);
+  const addIndex = addedIds.indexOf(course.peoplesoftNumber);
   const isAdded = addIndex !== -1;
+
   const isHidden = hidden.indexOf(course) !== -1;
 
   const instructors = () => {
