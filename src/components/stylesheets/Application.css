@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
 .inline-button {
   background: none;
   padding: 0.5rem 2rem;
@@ -21,4 +23,24 @@
   min-width: 0;
   white-space: normal;
   text-align: left;
+}
+
+.floating-button-link {
+  background: #6f4399;
+  padding: 0.5rem 2rem;
+  color: #fff;
+  position: fixed;
+  width: 70px;
+  height: 70px;
+  bottom: 40px;
+  right: 40px;
+  border-radius: 35px;
+  line-height: 64px;
+  box-shadow: 0 6px 10px #888;
+  z-index: 100;
+}
+.floating-button-link:visited,
+.floating-button-link:hover,
+.floating-button-link:active {
+  color: #fff;
 }

@@ -18,6 +18,18 @@ const Layout = ({ children, notice, warning }) => {
       </aside>
 
       {children}
+      <a
+        href="https://forms.gle/NqYdAAbZKPQmPq866"
+        className="floating-button-link"
+        title="Provide Feedback!"
+      >
+        <i
+          className="material-icons"
+          style={{ position: "relative", left: "-8px" }}
+        >
+          feedback
+        </i>
+      </a>
       <Footer />
     </div>
   );
