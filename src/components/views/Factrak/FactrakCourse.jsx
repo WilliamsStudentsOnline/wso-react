@@ -63,7 +63,7 @@ const FactrakCourse = ({ route, token }) => {
     if (courseProfs.length === 0) return null;
     return (
       <div>
-        {`View comments only for `}
+        `View comments only for `
         <br />
         {course && course.id
           ? courseProfs.map((prof) => (

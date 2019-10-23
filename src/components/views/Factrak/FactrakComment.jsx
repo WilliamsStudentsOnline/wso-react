@@ -237,14 +237,14 @@ const FactrakComment = ({
     if (abridged) {
       return (
         <div className="survey-text">
-          {truncatedsurvey}
+          {`${truncatedsurvey}...`}
           {survey.comment.length > 145 ? (
             <div>
               <Link
                 routeName="factrak.professors"
                 routeParams={{ profID: survey.professorID }}
               >
-                ...See More
+                See More
               </Link>
             </div>
           ) : null}
