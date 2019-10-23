@@ -36,10 +36,12 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
   // Detect if there are classes that end after 4pm, and adjust schedule length accordingly.
   for (let i = 0; i < filtered.length; i += 1) {
     if (endHour === 22) break;
-    for (let j = 0; j < filtered[i].meetings.length; j += 1) {
-      if (filtered[i].meetings[j].end > "16:00") {
-        endHour = 22;
-        break;
+    if (filtered[i].meetings) {
+      for (let j = 0; j < filtered[i].meetings.length; j += 1) {
+        if (filtered[i].meetings[j].end > "16:00") {
+          endHour = 22;
+          break;
+        }
       }
     }
   }
