@@ -36,7 +36,7 @@ const DiscussionIndex = ({ currUser, token }) => {
 
   useEffect(() => {
     loadThreads(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [token]);
 
   // Handles clicking of the next/previous page
