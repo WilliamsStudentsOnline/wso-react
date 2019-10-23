@@ -5,7 +5,7 @@ const autocompleteTags = async (token, query) => {
   const response = await axios({
     url: "/api/v2/autocomplete/tag",
     headers: {
-      Authorization: `Bearer ${token}`,
+      "Authorization-Token": `Bearer ${token}`,
     },
     params: {
       q: query,
@@ -23,7 +23,7 @@ const autocompleteFactrak = async (token, query) => {
   const response = await axios({
     url: "/api/v2/autocomplete/factrak",
     headers: {
-      Authorization: `Bearer ${token}`,
+      "Authorization-Token": `Bearer ${token}`,
     },
     params: {
       q: query,
