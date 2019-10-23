@@ -106,3 +106,10 @@ export const checkAndHandleError = (response, token = "") => {
 export const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+// Adds or remove days from a date (String).
+export const addDays = (date, days) => {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};

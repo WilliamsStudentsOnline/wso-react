@@ -71,9 +71,6 @@ class Scheduler extends Component {
         );
     });
 
-    // Use this code for testing purposes, remember to import above.
-    // this.props.loadCatalog(COURSE_INFO);
-
     axios({
       url: "/courses.json",
       headers: {

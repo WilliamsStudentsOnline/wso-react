@@ -30,6 +30,7 @@ import {
   DATES,
 } from "../constants/constants.json";
 import { DEPARTMENT } from "../constants/departments.json";
+import { addDays } from "../lib/general";
 
 const INITIAL_STATE = {};
 let INITIAL_CATALOG = [];
@@ -86,15 +87,33 @@ const INITIAL_COUNT_STATE = {
   classTypes: [0, 0, 0, 0, 0, 0],
 };
 
-// Set default semester based on date.
+/* 
+  Set default semester based on date. 
+  
+  Academic year Period: SEMESTER TO SHOW
+
+  1. Start of Fall Semester - 2 Weeks before Spring Preregistration: FALL
+  2. 2 Weeks before Spring Pre-registration to Winter Registration: SPRING
+  3. Winter Registration to 1 week before Winter ends: WINTER
+  4. 1 week before Winter ends to 2 Weeks before Fall Pre-registration: SPRING
+  5. 2 Weeks before Fall Pre-registration to next year: FALL
+*/
 const DEFAULT_SEMESTER = [false, false, false];
 const now = new Date();
-if (now < new Date(DATES.Winter.START_GCAL.slice(0, -1))) {
-  DEFAULT_SEMESTER[0] = SEMESTERS[0];
-} else if (now > new Date(DATES.Spring.START_GCAL.slice(0, -1))) {
+// Check if Winter (Period 3, above)
+if (
+  new Date(DATES.PREREG.WINTER) < now &&
+  now < addDays(new Date(DATES.Winter.END), -7)
+) {
+  DEFAULT_SEMESTER[1] = SEMESTERS[1];
+} else if (
+  // Check if Spring (Periods 2 and 4, above)
+  addDays(new Date(DATES.PREREG.SPRING), -14) < now &&
+  now < addDays(new Date(DATES.PREREG.FALL), -14)
+) {
   DEFAULT_SEMESTER[2] = SEMESTERS[2];
 } else {
-  DEFAULT_SEMESTER[1] = SEMESTERS[1];
+  DEFAULT_SEMESTER[0] = SEMESTERS[0];
 }
 
 Object.assign(INITIAL_FILTER_STATE, {
