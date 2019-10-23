@@ -5,7 +5,7 @@ const getAreasOfStudy = async (token) => {
   const response = await axios({
     url: "/api/v2/factrak/areas-of-study",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -19,7 +19,7 @@ const getAreaOfStudy = async (token, area) => {
   const response = await axios({
     url: `/api/v2/factrak/areas-of-study/${area}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -33,7 +33,7 @@ const getDepartments = async (token) => {
   const response = await axios({
     url: "/api/v2/factrak/departments",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -47,7 +47,7 @@ const getSurveys = async (token, params) => {
   const response = await axios({
     url: "/api/v2/factrak/surveys",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params,
   }).catch((error) => {
@@ -62,7 +62,7 @@ const getFlagged = async (token, params) => {
   const response = await axios({
     url: `/api/v2/factrak/admin/surveys`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params,
   }).catch((error) => {
@@ -77,7 +77,7 @@ const unflagSurvey = async (token, surveyID) => {
   const response = await axios({
     url: `/api/v2/factrak/admin/surveys/${surveyID}/flag`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "delete",
   }).catch((error) => {
@@ -92,7 +92,7 @@ const deleteSurvey = async (token, surveyID) => {
   const response = await axios({
     url: `/api/v2/factrak/surveys/${surveyID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "delete",
   }).catch((error) => {
@@ -107,7 +107,7 @@ const getCourse = async (token, courseID) => {
   const response = await axios({
     url: `/api/v2/factrak/courses/${courseID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -121,7 +121,7 @@ const postSurveyAgreement = async (token, surveyID, createParams) => {
   const response = await axios({
     url: `/api/v2/factrak/surveys/${surveyID}/agreement`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     data: createParams,
     method: "post",
@@ -137,7 +137,7 @@ const patchSurveyAgreement = async (token, surveyID, updateParams) => {
   const response = await axios({
     url: `/api/v2/factrak/surveys/${surveyID}/agreement`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     data: updateParams,
     method: "patch",
@@ -153,7 +153,7 @@ const deleteSurveyAgreement = async (token, surveyID) => {
   const response = await axios({
     url: `/api/v2/factrak/surveys/${surveyID}/agreement`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "delete",
   }).catch((error) => {
@@ -168,7 +168,7 @@ const flagSurvey = async (token, surveyID) => {
   const response = await axios({
     url: `/api/v2/factrak/surveys/${surveyID}/flag`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "post",
   }).catch((error) => {
@@ -183,7 +183,7 @@ const getProfessors = async (token, params) => {
   const response = await axios({
     url: "/api/v2/factrak/professors",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params,
   }).catch((error) => {
@@ -200,14 +200,14 @@ const getProfessor = async (token, professorID, courseID = -1) => {
     request = {
       url: `/api/v2/factrak/professors/${professorID}`,
       headers: {
-        "Authorization-Token": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     };
   } else {
     request = {
       url: `/api/v2/factrak/professors/${professorID}`,
       headers: {
-        "Authorization-Token": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       params: { courseID },
     };
@@ -225,7 +225,7 @@ const getSurvey = async (token, surveyID) => {
   const response = await axios({
     url: `/api/v2/factrak/surveys/${surveyID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -239,7 +239,7 @@ const getDepartment = async (token, departmentID) => {
   const response = await axios({
     url: `/api/v2/factrak/departments/${departmentID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -255,14 +255,14 @@ const getProfessorRatings = async (token, professorID, courseID = -1) => {
     request = {
       url: `/api/v2/factrak/professors/${professorID}/ratings`,
       headers: {
-        "Authorization-Token": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     };
   } else {
     request = {
       url: `/api/v2/factrak/professors/${professorID}/ratings`,
       headers: {
-        "Authorization-Token": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       params: { courseID },
     };
@@ -280,7 +280,7 @@ const postSurvey = async (token, createParams) => {
   const response = await axios({
     url: `/api/v2/factrak/surveys`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "post",
     data: createParams,
@@ -296,7 +296,7 @@ const patchSurvey = async (token, updateParams, surveyID) => {
   const response = await axios({
     url: `/api/v2/factrak/surveys/${surveyID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "patch",
     data: updateParams,
@@ -312,7 +312,7 @@ const getCourses = async (token, params) => {
   const response = await axios({
     url: "/api/v2/factrak/courses",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params,
   }).catch((error) => {

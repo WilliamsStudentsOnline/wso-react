@@ -5,7 +5,7 @@ const getEphcatchers = async (token, params) => {
   const response = await axios({
     url: "/api/v2/ephcatch/ephcatchers",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params,
   }).catch((error) => {
@@ -20,7 +20,7 @@ const getEphcatcher = async (token, ephcatcherID) => {
   const response = await axios({
     url: `/api/v2/ephcatch/ephcatchers/${ephcatcherID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -34,7 +34,7 @@ const likeEphcatcher = async (token, ephcatcherID) => {
   const response = await axios({
     url: `/api/v2/ephcatch/ephcatchers/${ephcatcherID}/like`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "post",
   }).catch((error) => {
@@ -49,7 +49,7 @@ const unlikeEphcatcher = async (token, ephcatcherID) => {
   const response = await axios({
     url: `/api/v2/ephcatch/ephcatchers/${ephcatcherID}/unlike`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "post",
   }).catch((error) => {
@@ -64,7 +64,7 @@ const getEphcatchMatches = async (token) => {
   const response = await axios({
     url: "/api/v2/ephcatch/matches",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;

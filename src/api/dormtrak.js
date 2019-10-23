@@ -5,7 +5,7 @@ const getDormtrakRankings = async (token) => {
   const response = await axios({
     url: "/api/v2/dormtrak/rankings",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -19,7 +19,7 @@ const getDormtrakNeighborhoods = async (token) => {
   const response = await axios({
     url: "/api/v2/dormtrak/neighborhoods",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -33,7 +33,7 @@ const getDormtrakNeighborhood = async (token, neighborhoodID) => {
   const response = await axios({
     url: `/api/v2/dormtrak/neighborhoods/${neighborhoodID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -47,7 +47,7 @@ const getDormtrakNeighborhoodFacts = async (token, neighborhoodID) => {
   const response = await axios({
     url: `/api/v2/dormtrak/neighborhoods/${neighborhoodID}/facts`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -61,7 +61,7 @@ const getDormtrakDorms = async (token, params) => {
   const response = await axios({
     url: "/api/v2/dormtrak/dorms",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params,
   }).catch((error) => {
@@ -76,7 +76,7 @@ const getDormtrakDorm = async (token, dormID) => {
   const response = await axios({
     url: `/api/v2/dormtrak/dorms/${dormID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -90,7 +90,7 @@ const getDormtrakDormFacts = async (token, dormID) => {
   const response = await axios({
     url: `/api/v2/dormtrak/dorms/${dormID}/facts`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -104,7 +104,7 @@ const getDormtrakDormRooms = async (token, dormID) => {
   const response = await axios({
     url: `/api/v2/dormtrak/dorms/${dormID}/rooms`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -118,7 +118,7 @@ const getDormtrakDormReviews = async (token, queryParams = {}) => {
   const response = await axios({
     url: `/api/v2/dormtrak/reviews`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params: queryParams,
   }).catch((error) => {
@@ -133,7 +133,7 @@ const postDormtrakDormReview = async (token, createParams) => {
   const response = await axios({
     url: `/api/v2/dormtrak/reviews`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params: createParams,
     method: "post",
@@ -149,7 +149,7 @@ const getDormtrakDormReview = async (token, reviewID) => {
   const response = await axios({
     url: `/api/v2/dormtrak/reviews/${reviewID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -163,7 +163,7 @@ const deleteDormtrakDormReview = async (token, reviewID) => {
   const response = await axios({
     url: `/api/v2/dormtrak/reviews/${reviewID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "delete",
   }).catch((error) => {
@@ -178,7 +178,7 @@ const patchDormtrakDormReview = async (token, reviewParams, reviewID) => {
   const response = await axios({
     url: `/api/v2/dormtrak/reviews/${reviewID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params: reviewParams,
     method: "patch",

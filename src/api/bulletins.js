@@ -5,7 +5,7 @@ const getBulletins = async (token, params) => {
   const response = await axios({
     url: "/api/v2/bulletin/bulletins",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params,
   }).catch((error) => {
@@ -20,7 +20,7 @@ const getBulletin = async (token, bulletinID) => {
   const response = await axios({
     url: `/api/v2/bulletin/bulletins/${bulletinID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -34,7 +34,7 @@ const postBulletin = async (token, createParams) => {
   const response = await axios({
     url: "/api/v2/bulletin/bulletins",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     data: createParams,
     method: "post",
@@ -50,7 +50,7 @@ const deleteBulletin = async (token, bulletinID) => {
   const response = await axios({
     url: `/api/v2/bulletin/bulletins/${bulletinID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "delete",
   }).catch((error) => {
@@ -65,7 +65,7 @@ const patchBulletin = async (token, bulletinID, updateParams) => {
   const response = await axios({
     url: `/api/v2/bulletin/bulletins/${bulletinID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params: updateParams,
     method: "patch",
@@ -81,7 +81,7 @@ const getDiscussions = async (token, params) => {
   const response = await axios({
     url: "/api/v2/bulletin/discussions",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params,
   }).catch((error) => {
@@ -95,7 +95,7 @@ const getDiscussion = async (token, discussionID, params) => {
   const response = await axios({
     url: `/api/v2/bulletin/discussions/${discussionID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params,
   }).catch((error) => {
@@ -110,7 +110,7 @@ const deleteDiscussion = async (token, discussionID) => {
   const response = await axios({
     url: `/api/v2/bulletin/discussions/${discussionID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "delete",
   }).catch((error) => {
@@ -125,7 +125,7 @@ const postDiscussion = async (token, createParams) => {
   const response = await axios({
     url: `/api/v2/bulletin/discussions`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "post",
     data: createParams,
@@ -141,7 +141,7 @@ const patchDiscussion = async (token, discussionID, updateParams) => {
   const response = await axios({
     url: `/api/v2/bulletin/discussions`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "patch",
     params: updateParams,
@@ -157,7 +157,7 @@ const getDiscussionPosts = async (token, discussionID) => {
   const response = await axios({
     url: `/api/v2/bulletin/discussions/${discussionID}/posts`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -171,7 +171,7 @@ const postPost = async (token, createParams) => {
   const response = await axios({
     url: `/api/v2/bulletin/posts`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "post",
     data: createParams,
@@ -187,7 +187,7 @@ const getPost = async (token, postID) => {
   const response = await axios({
     url: `/api/v2/bulletin/posts/${postID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -201,7 +201,7 @@ const deletePost = async (token, postID) => {
   const response = await axios({
     url: `/api/v2/bulletin/posts/${postID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "delete",
   }).catch((error) => {
@@ -216,7 +216,7 @@ const patchPost = async (token, postID, updateParams) => {
   const response = await axios({
     url: `/api/v2/bulletin/posts/${postID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "patch",
     data: updateParams,
@@ -232,7 +232,7 @@ const getRides = async (token, params) => {
   const response = await axios({
     url: `/api/v2/bulletin/rides`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params,
   }).catch((error) => {
@@ -247,7 +247,7 @@ const postRide = async (token, createParams) => {
   const response = await axios({
     url: `/api/v2/bulletin/rides`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "post",
     data: createParams,
@@ -263,7 +263,7 @@ const getRide = async (token, rideID) => {
   const response = await axios({
     url: `/api/v2/bulletin/rides/${rideID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -277,7 +277,7 @@ const deleteRide = async (token, rideID) => {
   const response = await axios({
     url: `/api/v2/bulletin/rides/${rideID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "delete",
   }).catch((error) => {
@@ -292,7 +292,7 @@ const patchRide = async (token, rideID, updateParams) => {
   const response = await axios({
     url: `/api/v2/bulletin/rides/${rideID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "patch",
     params: updateParams,

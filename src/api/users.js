@@ -5,7 +5,7 @@ const getAllUsers = async (token, params) => {
   const response = await axios({
     url: "/api/v2/users",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     params,
   }).catch((error) => {
@@ -20,7 +20,7 @@ const getUser = async (token, userID = "me") => {
   const response = await axios({
     url: `/api/v2/users/${userID}`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;
@@ -34,7 +34,7 @@ const patchCurrUser = async (token, updateParams) => {
   const response = await axios({
     url: `/api/v2/users/me`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     data: updateParams,
     method: "patch",
@@ -50,7 +50,7 @@ const putCurrUserTags = async (token, updateParams) => {
   const response = await axios({
     url: `/api/v2/users/me/tags`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     data: updateParams,
     method: "put",
@@ -66,7 +66,7 @@ const putCurrUserPhoto = async (token, file) => {
   const response = await axios({
     url: `/api/v2/users/me/photo`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     data: file,
     method: "put",
@@ -82,7 +82,7 @@ const getUserThumbPhoto = async (token, unixID) => {
   const response = await axios({
     url: `/pic/thumb/${unixID}.jpg`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     responseType: "blob",
   }).catch((error) => {
@@ -97,7 +97,7 @@ const getUserLargePhoto = async (token, unixID) => {
   const response = await axios({
     url: `/pic/large/${unixID}.jpg`,
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     responseType: "blob",
   }).catch((error) => {

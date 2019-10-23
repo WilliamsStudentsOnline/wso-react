@@ -5,7 +5,7 @@ const refreshToken = async (token) => {
   const response = await axios({
     url: "/api/v2/auth/refresh-token",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     method: "post",
   }).catch((error) => {
@@ -20,7 +20,7 @@ const updateTokenAPI = async (token) => {
   const response = await axios({
     url: "/api/v2/auth/update-token",
     headers: {
-      "Authorization-Token": `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   }).catch((error) => {
     return error.response;

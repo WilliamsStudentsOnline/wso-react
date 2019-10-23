@@ -630,11 +630,12 @@ const removeSemesterCourses = (state, action) => {
 };
 
 const applyLoadCatalog = (state, catalog) => {
-  INITIAL_CATALOG = catalog;
+  INITIAL_CATALOG = catalog.courses;
 
   Object.assign(INITIAL_STATE, {
     queried: INITIAL_CATALOG,
     added: parseAddedCourses(),
+    updateTime: catalog.updateTime,
   });
 
   Object.assign(INITIAL_STATE, applySearchCourse(INITIAL_STATE));

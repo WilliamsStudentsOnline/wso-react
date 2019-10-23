@@ -277,19 +277,21 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
 
   const courseTimeParsed = (course) => {
     const result = [];
-
-    for (const meeting of course.meetings) {
-      const courseDays = getCourseDays(meeting.days);
-      for (const day of courseDays) {
-        const slot = [
-          day,
-          parseTime(meeting.start),
-          parseTime(meeting.end) - parseTime(meeting.start),
-          meeting,
-        ];
-        result.push(slot);
+    if (course.meetings) {
+      for (const meeting of course.meetings) {
+        const courseDays = getCourseDays(meeting.days);
+        for (const day of courseDays) {
+          const slot = [
+            day,
+            parseTime(meeting.start),
+            parseTime(meeting.end) - parseTime(meeting.start),
+            meeting,
+          ];
+          result.push(slot);
+        }
       }
     }
+
     return result;
   };
 
