@@ -70,10 +70,7 @@ const FactrakProfessor = ({ token, route, currUser }) => {
     loadProfs(professorParam);
     loadRatings(professorParam);
     loadSurveys(professorParam);
-    if (
-      containsScopes(token, scopes.ScopeFactrakAdmin) ||
-      containsScopes(token, scopes.ScopeFactrakFull)
-    ) {
+    if (containsScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys(professorParam);
     } else {
       updateSurveys([
@@ -295,10 +292,7 @@ const FactrakProfessor = ({ token, route, currUser }) => {
         <div id="factrak-comments-section">
           {surveys && surveys.length > 0
             ? surveys.map((survey) => {
-                if (
-                  containsScopes(token, scopes.ScopeFactrakAdmin) ||
-                  containsScopes(token, scopes.ScopeFactrakFull)
-                ) {
+                if (containsScopes(token, [scopes.ScopeFactrakFull])) {
                   return (
                     <FactrakComment
                       comment={survey}

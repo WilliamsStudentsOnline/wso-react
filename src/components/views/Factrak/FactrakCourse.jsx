@@ -59,8 +59,7 @@ const FactrakCourse = ({ route, token, currUser }) => {
 
     loadCourse();
     if (
-      containsScopes(token, scopes.ScopeFactrakAdmin) ||
-      containsScopes(token, scopes.ScopeFactrakFull)
+      containsScopes(token, [scopes.ScopeFactrakAdmin, scopes.ScopeFactrakFull])
     ) {
       loadSurveys();
     } else {
@@ -115,10 +114,7 @@ const FactrakCourse = ({ route, token, currUser }) => {
         {courseSurveys.length === 0
           ? "None yet."
           : courseSurveys.map((comment) => {
-              if (
-                containsScopes(token, scopes.ScopeFactrakAdmin) ||
-                containsScopes(token, scopes.ScopeFactrakFull)
-              ) {
+              if (containsScopes(token, [scopes.ScopeFactrakFull])) {
                 return (
                   <FactrakComment
                     comment={comment}

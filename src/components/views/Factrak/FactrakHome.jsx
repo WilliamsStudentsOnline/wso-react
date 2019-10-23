@@ -42,11 +42,7 @@ const FactrakHome = ({ token, currUser }) => {
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
       }
     };
-
-    if (
-      containsScopes(token, scopes.ScopeFactrakAdmin) ||
-      containsScopes(token, scopes.ScopeFactrakFull)
-    ) {
+    if (containsScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys();
     } else {
       updateSurveys([
@@ -117,10 +113,7 @@ const FactrakHome = ({ token, currUser }) => {
             {factrakSurveyDeficitMessage()}
 
             {surveys.map((survey) => {
-              if (
-                containsScopes(token, scopes.ScopeFactrakAdmin) ||
-                containsScopes(token, scopes.ScopeFactrakFull)
-              ) {
+              if (containsScopes(token, [scopes.ScopeFactrakFull])) {
                 return (
                   <FactrakComment
                     comment={survey}
