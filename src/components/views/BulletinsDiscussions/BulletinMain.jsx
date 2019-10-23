@@ -18,7 +18,7 @@ import {
   bulletinTypeExchange,
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
-import { scopes, containsScopes } from "../../../lib/general";
+import { scopes, containsScopes, getTokenLevel } from "../../../lib/general";
 import { getToken } from "../../../selectors/auth";
 
 const BulletinMain = ({ route, navigateTo, token }) => {
@@ -34,7 +34,9 @@ const BulletinMain = ({ route, navigateTo, token }) => {
         return <BulletinShow />;
       case "new":
       case "edit":
-        return <BulletinForm />;
+        if (getTokenLevel(token) > 2) return <BulletinForm />;
+        navigateTo("home");
+        return null;
       default:
         return <BulletinIndex type={bulletinType} />;
     }
@@ -53,7 +55,7 @@ const BulletinMain = ({ route, navigateTo, token }) => {
 
     if (
       containsScopes(token, [scopes.ScopeBulletin]) &&
-      containsScopes(token, [scopes.ScopeUser]) &&
+      containsScopes(token, [scopes.ScopeUsers]) &&
       validBulletinTypes.indexOf(route.params.type) !== -1
     ) {
       return (

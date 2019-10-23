@@ -48,7 +48,7 @@ const DiscussionPost = ({ post, currUser, token }) => {
   // renders edit controls if the current user has permissions
   const editControls = () => {
     if (!post.userID) return null;
-    if (post.userID === currUser.id || currUser.admin) {
+    if (currUser && (post.userID === currUser.id || currUser.admin)) {
       return (
         <div>
           {post.userID === currUser.id ? (
