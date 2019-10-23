@@ -6,14 +6,18 @@ import FactrakComment from "./FactrakComment";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getToken } from "../../../selectors/auth";
+import { getToken, getCurrUser } from "../../../selectors/auth";
 
 // Additional imports
 import { getCourse, getSurveys, getProfessors } from "../../../api/factrak";
-import { checkAndHandleError } from "../../../lib/general";
+import {
+  checkAndHandleError,
+  scopes,
+  containsScopes,
+} from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakCourse = ({ route, token }) => {
+const FactrakCourse = ({ route, token, currUser }) => {
   const [course, updateCourse] = useState({});
   const [courseSurveys, updateSurveys] = useState([]);
   const [courseProfs, updateProfs] = useState([]);
@@ -54,7 +58,26 @@ const FactrakCourse = ({ route, token }) => {
     };
 
     loadCourse();
-    loadSurveys();
+    if (
+      containsScopes(token, scopes.ScopeFactrakAdmin) ||
+      containsScopes(token, scopes.ScopeFactrakFull)
+    ) {
+      loadSurveys();
+    } else {
+      updateSurveys([
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+        { id: 6 },
+        { id: 7 },
+        { id: 8 },
+        { id: 9 },
+        { id: 10 },
+      ]);
+    }
+
     loadProfs();
   }, [token, route.params.course, route.params.profID, route.params.courseID]);
 
@@ -63,7 +86,7 @@ const FactrakCourse = ({ route, token }) => {
     if (courseProfs.length === 0) return null;
     return (
       <div>
-        `View comments only for `
+        View comments only for:
         <br />
         {course && course.id
           ? courseProfs.map((prof) => (
@@ -91,16 +114,50 @@ const FactrakCourse = ({ route, token }) => {
       <div className="factrak-prof-comments">
         {courseSurveys.length === 0
           ? "None yet."
-          : courseSurveys.map((comment) => (
-              <FactrakComment
-                comment={comment}
-                abridged={false}
-                showProf
-                key={comment.id}
-              />
-            ))}
+          : courseSurveys.map((comment) => {
+              if (
+                containsScopes(token, scopes.ScopeFactrakAdmin) ||
+                containsScopes(token, scopes.ScopeFactrakFull)
+              ) {
+                return (
+                  <FactrakComment
+                    comment={comment}
+                    abridged={false}
+                    showProf
+                    key={comment.id}
+                  />
+                );
+              }
+
+              return (
+                <FactrakComment abridged={false} showProf key={comment.id} />
+              );
+            })}
       </div>
     );
+  };
+
+  // Generates the factrak survey deficit message if necessary
+  const factrakSurveyDeficitMessage = () => {
+    if (currUser.factrakSurveyDeficit > 0) {
+      return (
+        <>
+          <strong>
+            {`Write just ${currUser.factrakSurveyDeficit} reviews to
+          make the blur go away!`}
+          </strong>
+          <br />
+          To write a review, just search a prof&apos;s name directly above, or
+          click a department on the left to see a list of profs in that
+          department. Then click the link on the prof&apos;s page to write a
+          review!
+          <br />
+          <br />
+        </>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -114,6 +171,7 @@ const FactrakCourse = ({ route, token }) => {
         <br />
         {professorList()}
         <br />
+        {factrakSurveyDeficitMessage()}
         {commentList()}
       </section>
     </article>
@@ -123,6 +181,7 @@ const FactrakCourse = ({ route, token }) => {
 FactrakCourse.propTypes = {
   token: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
+  currUser: PropTypes.object.isRequired,
 };
 
 FactrakCourse.defaultProps = {};
@@ -132,6 +191,7 @@ const mapStateToProps = () => {
 
   return (state) => ({
     token: getToken(state),
+    currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });
 };
