@@ -12,15 +12,13 @@ import DiscussionNew from "./DiscussionNew";
 // Redux/Routing imports
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getCurrUser } from "../../../selectors/auth";
 
-const DiscussionMain = ({ route, navigateTo, currUser }) => {
+// External Imports
+import { getToken } from "../../../selectors/auth";
+import { scopes, containsScopes } from "../../../lib/general";
+
+const DiscussionMain = ({ route, navigateTo, token }) => {
   const DiscussionBody = () => {
-    if (!currUser) {
-      navigateTo("login");
-      return null;
-    }
-
     const splitRoute = route.name.split(".");
 
     if (splitRoute.length < 2) {
@@ -40,17 +38,25 @@ const DiscussionMain = ({ route, navigateTo, currUser }) => {
     }
   };
 
-  return (
-    <DiscussionLayout type={route.params.type}>
-      {DiscussionBody(route.params.type)}
-    </DiscussionLayout>
-  );
+  if (
+    containsScopes(token, [scopes.ScopeBulletin]) &&
+    containsScopes(token, [scopes.ScopeUsers])
+  ) {
+    return (
+      <DiscussionLayout type={route.params.type}>
+        {DiscussionBody(route.params.type)}
+      </DiscussionLayout>
+    );
+  }
+
+  navigateTo("login");
+  return null;
 };
 
 DiscussionMain.propTypes = {
   route: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  currUser: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
 DiscussionMain.defaultProps = {};
@@ -59,7 +65,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("discussions");
 
   return (state) => ({
-    currUser: getCurrUser(state),
+    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };

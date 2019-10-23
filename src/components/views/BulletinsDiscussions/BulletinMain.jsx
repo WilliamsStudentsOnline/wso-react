@@ -18,8 +18,10 @@ import {
   bulletinTypeExchange,
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
+import { scopes, containsScopes } from "../../../lib/general";
+import { getToken } from "../../../selectors/auth";
 
-const BulletinMain = ({ route, navigateTo }) => {
+const BulletinMain = ({ route, navigateTo, token }) => {
   const BulletinBody = (bulletinType) => {
     const splitRoute = route.name.split(".");
 
@@ -49,7 +51,11 @@ const BulletinMain = ({ route, navigateTo }) => {
       bulletinTypeAnnouncement,
     ];
 
-    if (validBulletinTypes.indexOf(route.params.type) !== -1) {
+    if (
+      containsScopes(token, [scopes.ScopeBulletin]) &&
+      containsScopes(token, [scopes.ScopeUser]) &&
+      validBulletinTypes.indexOf(route.params.type) !== -1
+    ) {
       return (
         <BulletinLayout type={route.params.type}>
           {BulletinBody(route.params.type)}
@@ -58,13 +64,14 @@ const BulletinMain = ({ route, navigateTo }) => {
     }
   }
 
-  navigateTo("home");
+  navigateTo("login");
   return null;
 };
 
 BulletinMain.propTypes = {
   route: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
 BulletinMain.defaultProps = {};
@@ -73,6 +80,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("bulletins");
 
   return (state) => ({
+    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };
