@@ -36,10 +36,12 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
   // Detect if there are classes that end after 4pm, and adjust schedule length accordingly.
   for (let i = 0; i < filtered.length; i += 1) {
     if (endHour === 22) break;
-    for (let j = 0; j < filtered[i].meetings.length; j += 1) {
-      if (filtered[i].meetings[j].end > "16:00") {
-        endHour = 22;
-        break;
+    if (filtered[i].meetings) {
+      for (let j = 0; j < filtered[i].meetings.length; j += 1) {
+        if (filtered[i].meetings[j].end > "16:00") {
+          endHour = 22;
+          break;
+        }
       }
     }
   }
@@ -275,19 +277,21 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
 
   const courseTimeParsed = (course) => {
     const result = [];
-
-    for (const meeting of course.meetings) {
-      const courseDays = getCourseDays(meeting.days);
-      for (const day of courseDays) {
-        const slot = [
-          day,
-          parseTime(meeting.start),
-          parseTime(meeting.end) - parseTime(meeting.start),
-          meeting,
-        ];
-        result.push(slot);
+    if (course.meetings) {
+      for (const meeting of course.meetings) {
+        const courseDays = getCourseDays(meeting.days);
+        for (const day of courseDays) {
+          const slot = [
+            day,
+            parseTime(meeting.start),
+            parseTime(meeting.end) - parseTime(meeting.start),
+            meeting,
+          ];
+          result.push(slot);
+        }
       }
     }
+
     return result;
   };
 
