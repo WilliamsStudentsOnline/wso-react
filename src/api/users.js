@@ -63,12 +63,15 @@ const putCurrUserTags = async (token, updateParams) => {
 
 // Replaces current user's photo
 const putCurrUserPhoto = async (token, file) => {
+  const formData = new FormData();
+  formData.append("file", file);
   const response = await axios({
     url: `/api/v2/users/me/photo`,
     headers: {
       Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
     },
-    data: file,
+    data: formData,
     method: "put",
   }).catch((error) => {
     return error.response;
