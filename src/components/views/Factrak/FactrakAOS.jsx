@@ -144,7 +144,7 @@ const FactrakAOS = ({ route, token }) => {
   // Generates the component which holds the list of courses in the area of study
   const generateCourses = () => {
     // If no profs were found, return null. Should not happen for Area of Study unless it's new.
-    if (profs.length === 0) return null;
+    if (courses.length === 0) return null;
     return (
       <>
         <h4>Courses</h4>
