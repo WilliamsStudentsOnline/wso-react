@@ -15,7 +15,7 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 
 // External Imports
 import { getToken } from "../../../selectors/auth";
-import { scopes, containsScopes } from "../../../lib/general";
+import { scopes, containsScopes, getTokenLevel } from "../../../lib/general";
 
 const DiscussionMain = ({ route, navigateTo, token }) => {
   const DiscussionBody = () => {
@@ -31,10 +31,13 @@ const DiscussionMain = ({ route, navigateTo, token }) => {
       case "posts":
         return <DiscussionPost />;
       case "new":
-        return <DiscussionNew />;
-      default:
-        navigateTo("discussion");
+        if (getTokenLevel(token) > 2) {
+          return <DiscussionNew />;
+        }
+        navigateTo("home");
         return null;
+      default:
+        return <DiscussionIndex />;
     }
   };
 

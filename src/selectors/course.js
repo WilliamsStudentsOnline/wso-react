@@ -1,4 +1,4 @@
-const isNotHidden = hiddenCourses => course =>
+const isNotHidden = (hiddenCourses) => (course) =>
   hiddenCourses.indexOf(course) === -1;
 const getFilters = ({ courseState }) => courseState.filters;
 const getAddedCourses = ({ courseState }) => courseState.added;
@@ -7,6 +7,10 @@ const getUnhiddenCourses = ({ courseState }) => {
   if (!courseState.added) return [];
   if (!courseState.hidden) return courseState.added;
   return courseState.added.filter(isNotHidden(courseState.hidden));
+};
+
+const getCatalogUpdateTime = ({ courseState }) => {
+  return courseState.updateTime;
 };
 
 const getSearchedCourses = ({ courseState }) => courseState.searched;
@@ -36,4 +40,5 @@ export {
   getFilters,
   getCounts,
   getQuery,
+  getCatalogUpdateTime,
 };

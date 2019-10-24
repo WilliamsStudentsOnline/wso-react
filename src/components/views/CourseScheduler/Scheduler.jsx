@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 
 // External imports
 import axios from "axios";
-// import COURSE_INFO from "../../../constants/courses.json";
 
 // Component imports
 import "../../stylesheets/Scheduler.css";
@@ -73,7 +72,7 @@ class Scheduler extends Component {
     });
 
     // Use this code for testing purposes, remember to import above.
-    // this.props.loadCatalog(COURSE_INFO.courses);
+    // this.props.loadCatalog(COURSE_INFO);
 
     axios({
       url: "/courses.json",
@@ -81,7 +80,7 @@ class Scheduler extends Component {
         "X-Requested-With": "XMLHttpRequest",
       },
     }).then((response) => {
-      this.props.loadCatalog(response.data.courses);
+      this.props.loadCatalog(response.data);
     });
   }
 

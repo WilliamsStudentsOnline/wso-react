@@ -137,7 +137,7 @@ const BulletinIndex = ({ type, token, currUser }) => {
 
   // Link to edit bulletin
   const editLink = (bulletin) => {
-    if (currUser.id === bulletin.user.id) {
+    if (currUser && currUser.id === bulletin.user.id) {
       return (
         <>
           <Link
@@ -155,7 +155,7 @@ const BulletinIndex = ({ type, token, currUser }) => {
 
   // Edit/Delete Links
   const editDeleteLinks = (bulletin) => {
-    if (currUser.id === bulletin.user.id || currUser.admin) {
+    if (currUser && (currUser.id === bulletin.user.id || currUser.admin)) {
       return (
         <>
           &nbsp;[&nbsp;

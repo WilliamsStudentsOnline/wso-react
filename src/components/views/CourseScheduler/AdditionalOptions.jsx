@@ -16,10 +16,10 @@ import {
   getStartTimes,
   getEndTimes,
   getCounts,
+  getCatalogUpdateTime,
 } from "../../../selectors/course";
 import { getTimeFormat } from "../../../selectors/schedulerUtils";
 import {
-  UPDATE_DATE,
   START_TIMES,
   START_TIMES12,
   END_TIMES,
@@ -56,6 +56,7 @@ const AdditionalOptions = ({
   resetFilters,
   twelveHour,
   counts,
+  updateTime,
 }) => {
   // Generates a description of how many courses were found.
   const numFound = (length) => {
@@ -334,7 +335,7 @@ const AdditionalOptions = ({
           </button>
         </div>
         <span className="last-update">
-          {`Catalog last updated on ${new Date(UPDATE_DATE).toLocaleString()}`}
+          {updateTime ? `Catalog last updated on ${updateTime}` : ""}
         </span>
       </div>
     </div>
@@ -357,6 +358,7 @@ AdditionalOptions.propTypes = {
   resetFilters: PropTypes.func.isRequired,
   twelveHour: PropTypes.bool.isRequired,
   counts: PropTypes.object.isRequired,
+  updateTime: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -366,6 +368,7 @@ const mapStateToProps = (state) => ({
   endTimes: getEndTimes(state),
   twelveHour: getTimeFormat(state),
   counts: getCounts(state),
+  updateTime: getCatalogUpdateTime(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -18,24 +18,24 @@ import {
   RESET_FILTERS,
   REMOVE_SEMESTER_COURSES,
   LOAD_CATALOG,
-} from '../constants/actionTypes';
+} from "../constants/actionTypes";
 
-const doAddCourse = course => ({
+const doAddCourse = (course) => ({
   type: COURSE_ADD,
   course,
 });
 
-const doRemoveCourse = course => ({
+const doRemoveCourse = (course) => ({
   type: COURSE_REMOVE,
   course,
 });
 
-const doHideCourse = course => ({
+const doHideCourse = (course) => ({
   type: COURSE_HIDE,
   course,
 });
 
-const doUnhideCourse = course => ({
+const doUnhideCourse = (course) => ({
   type: COURSE_UNHIDE,
   course,
 });
@@ -45,12 +45,12 @@ const doSearchCourse = (param = undefined) => ({
   param,
 });
 
-const doLoadCourses = newLoadGroup => ({
+const doLoadCourses = (newLoadGroup) => ({
   type: LOAD_COURSES,
   newLoadGroup,
 });
 
-const doLoadCatalog = catalog => ({
+const doLoadCatalog = (catalog) => ({
   type: LOAD_CATALOG,
   catalog,
 });
@@ -59,22 +59,22 @@ const doResetLoad = () => ({
   type: RESET_LOAD,
 });
 
-const doToggleSem = index => ({
+const doToggleSem = (index) => ({
   type: TOGGLE_SEM,
   index,
 });
 
-const doToggleDist = index => ({
+const doToggleDist = (index) => ({
   type: TOGGLE_DIST,
   index,
 });
 
-const doToggleDiv = index => ({
+const doToggleDiv = (index) => ({
   type: TOGGLE_DIV,
   index,
 });
 
-const doToggleOthers = index => ({
+const doToggleOthers = (index) => ({
   type: TOGGLE_OTHERS,
   index,
 });
@@ -83,22 +83,22 @@ const doToggleConflict = () => ({
   type: TOGGLE_CONFLICT,
 });
 
-const doToggleLevel = index => ({
+const doToggleLevel = (index) => ({
   type: TOGGLE_LEVEL,
   index,
 });
 
-const doToggleType = index => ({
+const doToggleType = (index) => ({
   type: TOGGLE_TYPE,
   index,
 });
 
-const doUpdateStart = time => ({
+const doUpdateStart = (time) => ({
   type: UPDATE_START,
   time,
 });
 
-const doUpdateEnd = time => ({
+const doUpdateEnd = (time) => ({
   type: UPDATE_END,
   time,
 });
@@ -107,7 +107,7 @@ const doResetFilters = () => ({
   type: RESET_FILTERS,
 });
 
-const doRemoveSemesterCourses = semester => ({
+const doRemoveSemesterCourses = (semester) => ({
   type: REMOVE_SEMESTER_COURSES,
   semester,
 });

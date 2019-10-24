@@ -85,11 +85,11 @@ const FactrakComment = ({
         <span id={`${survey.id}agree-count`}>
           {survey.totalAgree ? survey.totalAgree : 0}
         </span>
-        ` agree, `
+        &nbsp;agree&emsp;
         <span id={`${survey.id}disagree-count`}>
           {survey.totalDisagree ? survey.totalDisagree : 0}
         </span>
-        ` disagree`
+        &nbsp;disagree
         <span
           id={`${survey.id}flagged`}
           className="factrak-flag"
