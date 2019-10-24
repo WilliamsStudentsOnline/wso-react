@@ -664,15 +664,9 @@ small {
 }
 a {
   text-decoration: none;
-  -webkit-transition: all 0.4s ease-in-out;
-  -moz-transition: all 0.4s ease-in-out;
-  transition: all 0.4s ease-in-out;
 }
 a:hover {
   opacity: 0.6;
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
 }
 a:active,
 a:focus {
@@ -681,16 +675,10 @@ a:focus {
 }
 article a {
   text-decoration: none;
-  -webkit-transition: all 0.4s ease-in-out;
-  -moz-transition: all 0.4s ease-in-out;
-  transition: all 0.4s ease-in-out;
   color: #6f4993;
 }
 article a:hover {
   opacity: 0.6;
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
 }
 article a:active,
 article a:focus {
@@ -1354,6 +1342,8 @@ dl dd {
   box-sizing: border-box;
   font: inherit;
   vertical-align: baseline;
+}
+*:not(a) {
   -webkit-transition: all 0.33s ease-in-out;
   -moz-transition: all 0.33s ease-in-out;
   transition: all 0.33s ease-in-out;
@@ -1370,7 +1360,6 @@ body {
   margin: 0 0 6em;
   background: #fcfcfc;
   -webkit-text-smoothing: antialiased;
-  font-smoothing: antialiased;
 }
 em {
   font-style: italic;

@@ -5,7 +5,7 @@ import FactrakComment from "./FactrakComment";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getToken, getCurrUser } from "../../../selectors/auth";
 import { createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
@@ -15,10 +15,14 @@ import {
   getSurveys,
   getProfessorRatings,
 } from "../../../api/factrak";
-import { checkAndHandleError } from "../../../lib/general";
+import {
+  checkAndHandleError,
+  containsScopes,
+  scopes,
+} from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakProfessor = ({ token, route }) => {
+const FactrakProfessor = ({ token, route, currUser }) => {
   const [professor, updateProfessor] = useState(null);
   const [department, updateDepartment] = useState(null);
   const [ratings, updateRatings] = useState(null);
@@ -66,6 +70,22 @@ const FactrakProfessor = ({ token, route }) => {
     loadProfs(professorParam);
     loadRatings(professorParam);
     loadSurveys(professorParam);
+    if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+      loadSurveys(professorParam);
+    } else {
+      updateSurveys([
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+        { id: 6 },
+        { id: 7 },
+        { id: 8 },
+        { id: 9 },
+        { id: 10 },
+      ]);
+    }
   }, [route.params.professor, token, route.params.profID]);
 
   // Generates the crowdsourced opinion on the professor's courses' workload
@@ -216,6 +236,28 @@ const FactrakProfessor = ({ token, route }) => {
       </div>
     );
   };
+  // Generates the factrak survey deficit message if necessary
+  const factrakSurveyDeficitMessage = () => {
+    if (currUser.factrakSurveyDeficit > 0) {
+      return (
+        <>
+          <strong>
+            {`Write just ${currUser.factrakSurveyDeficit} reviews to
+            make the blur go away!`}
+          </strong>
+          <br />
+          To write a review, just search a prof&apos;s name directly above, or
+          click a department on the left to see a list of profs in that
+          department. Then click the link on the prof&apos;s page to write a
+          review!
+          <br />
+          <br />
+        </>
+      );
+    }
+
+    return null;
+  };
 
   if (!professor) return null;
 
@@ -246,17 +288,29 @@ const FactrakProfessor = ({ token, route }) => {
 
         <h3>Comments</h3>
         <br />
-
+        {factrakSurveyDeficitMessage()}
         <div id="factrak-comments-section">
           {surveys && surveys.length > 0
-            ? surveys.map((survey) => (
-                <FactrakComment
-                  comment={survey}
-                  showProf={false}
-                  abridged={false}
-                  key={survey.comment}
-                />
-              ))
+            ? surveys.map((survey) => {
+                if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+                  return (
+                    <FactrakComment
+                      comment={survey}
+                      showProf={false}
+                      abridged={false}
+                      key={survey.id}
+                    />
+                  );
+                }
+
+                return (
+                  <FactrakComment
+                    abridged={false}
+                    showProf={false}
+                    key={survey.id}
+                  />
+                );
+              })
             : "No comments yet."}
         </div>
       </section>
@@ -267,6 +321,7 @@ const FactrakProfessor = ({ token, route }) => {
 FactrakProfessor.propTypes = {
   token: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
+  currUser: PropTypes.object.isRequired,
 };
 
 FactrakProfessor.defaultProps = {};
@@ -276,6 +331,7 @@ const mapStateToProps = () => {
 
   return (state) => ({
     token: getToken(state),
+    currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });
 };

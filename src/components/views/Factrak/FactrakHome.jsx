@@ -9,7 +9,11 @@ import { getToken, getCurrUser } from "../../../selectors/auth";
 
 // Additional imports
 import { getSurveys, getAreasOfStudy } from "../../../api/factrak";
-import { checkAndHandleError } from "../../../lib/general";
+import {
+  checkAndHandleError,
+  containsScopes,
+  scopes,
+} from "../../../lib/general";
 import { Link } from "react-router5";
 
 const FactrakHome = ({ token, currUser }) => {
@@ -38,8 +42,23 @@ const FactrakHome = ({ token, currUser }) => {
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
       }
     };
+    if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+      loadSurveys();
+    } else {
+      updateSurveys([
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+        { id: 6 },
+        { id: 7 },
+        { id: 8 },
+        { id: 9 },
+        { id: 10 },
+      ]);
+    }
 
-    loadSurveys();
     loadAreas();
   }, [token]);
 
@@ -93,14 +112,19 @@ const FactrakHome = ({ token, currUser }) => {
             <br />
             {factrakSurveyDeficitMessage()}
 
-            {surveys.map((survey) => (
-              <FactrakComment
-                comment={survey}
-                showProf
-                abridged
-                key={survey.id}
-              />
-            ))}
+            {surveys.map((survey) => {
+              if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+                return (
+                  <FactrakComment
+                    comment={survey}
+                    showProf
+                    abridged
+                    key={survey.id}
+                  />
+                );
+              }
+              return <FactrakComment showProf abridged key={survey.id} />;
+            })}
           </section>
         </article>
       </div>

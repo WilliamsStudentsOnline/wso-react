@@ -80,6 +80,16 @@ const FactrakComment = ({
   // Generates the agree count
   const agreeCount = () => {
     if (abridged) return null;
+    if (survey.lorem) {
+      return (
+        <h1>
+          <span style={{ color: "transparent" }}>0</span>
+          &nbsp;agree&emsp;
+          <span style={{ color: "transparent" }}>0</span>
+          &nbsp;disagree
+        </h1>
+      );
+    }
     return (
       <h1>
         <span id={`${survey.id}agree-count`}>
@@ -126,6 +136,14 @@ const FactrakComment = ({
           >
             Delete
           </button>
+        </p>
+      );
+    }
+
+    if (survey.lorem) {
+      return (
+        <p className="comment-detail">
+          posted about <span className="blurred">1793</span>
         </p>
       );
     }
@@ -183,7 +201,7 @@ const FactrakComment = ({
 
   // Generate the agree/disagree buttons.
   const agree = () => {
-    if (survey.userID === currUser.id) return null;
+    if (survey.lorem || survey.userID === currUser.id) return null;
 
     return (
       <>
@@ -227,10 +245,6 @@ const FactrakComment = ({
 
   // Generate the survey text.
   const surveyText = () => {
-    if (currUser.factrakSurveyDeficit !== 0 && survey.userID !== currUser.id) {
-      return <div className="blurred">Please do your Factrak surveys.</div>;
-    }
-
     let truncatedsurvey = survey.comment;
     if (survey.comment.length > 145)
       truncatedsurvey = survey.comment.substring(0, 145);
@@ -266,6 +280,13 @@ const FactrakComment = ({
   // Generate Professor link
   const profName = () => {
     if (showProf) {
+      if (survey.lorem) {
+        return (
+          <Link routeName="factrak" style={{ color: "transparent" }}>
+            Ephraiem Williams
+          </Link>
+        );
+      }
       return (
         <Link
           routeName="factrak.professors"
@@ -298,8 +319,21 @@ const FactrakComment = ({
 
   if (isDeleted) return null;
 
+  if (survey.lorem)
+    return (
+      <div className="comment">
+        <div className="comment-content blurred">
+          <h1>{profName()}</h1>
+
+          {agreeCount()}
+          {surveyText()}
+          {surveyDetail()}
+        </div>
+      </div>
+    );
+
   return (
-    <div id={`comment${survey.id}`} className="comment">
+    <div className="comment">
       <div className="comment-content">
         <h1>
           {profName()}
@@ -317,14 +351,25 @@ const FactrakComment = ({
 FactrakComment.propTypes = {
   showProf: PropTypes.bool.isRequired,
   abridged: PropTypes.bool.isRequired,
-  comment: PropTypes.object.isRequired,
+  comment: PropTypes.object,
   currUser: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
 };
 
-FactrakComment.defaultProps = {};
+FactrakComment.defaultProps = {
+  comment: {
+    id: 1,
+    comment:
+      "Hi! Good job on using the web inspector to attempt to find out what the survey is. Consider joining WSO!",
+    lorem: true,
+    professorID: 1,
+    wouldRecommendCourse: true,
+    wouldTakeAnother: false,
+    userID: -1,
+  },
+};
 
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),

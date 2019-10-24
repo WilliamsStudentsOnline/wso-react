@@ -5,17 +5,17 @@ import PropTypes from "prop-types";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
-import { createRouteNodeSelector } from "redux-router5";
+import { createRouteNodeSelector, actions } from "redux-router5";
+import { Link } from "react-router5";
 
 // Additional Imports
 import { getAllUsers } from "../../../api/users";
 import { checkAndHandleError } from "../../../lib/general";
-import { Link } from "react-router5";
 import { userTypeStudent } from "../../../constants/general";
 import PaginationButtons from "../../PaginationButtons";
 import FacebookGridUser from "./FacebookGridUser";
 
-const FacebookHome = ({ token, route }) => {
+const FacebookHome = ({ token, route, navigateTo }) => {
   const [results, updateResults] = useState(null);
   const perPage = 20;
   const [page, updatePage] = useState(0);
@@ -146,6 +146,10 @@ const FacebookHome = ({ token, route }) => {
         </>
       );
 
+    if (results.length === 1) {
+      navigateTo("facebook.users", { userID: results[0].id });
+    }
+
     if (results.length > 10) return ListView();
     return GridView();
   };
@@ -155,7 +159,6 @@ const FacebookHome = ({ token, route }) => {
     return (
       <article className="facebook-results">
         <section>
-          {" "}
           <br />
           <h1 className="no-matches-found">Loading...</h1>
         </section>
@@ -173,6 +176,7 @@ const FacebookHome = ({ token, route }) => {
 FacebookHome.propTypes = {
   token: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
 };
 
 FacebookHome.defaultProps = {};
@@ -186,4 +190,12 @@ const mapStateToProps = () => {
   });
 };
 
-export default connect(mapStateToProps)(FacebookHome);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FacebookHome);
