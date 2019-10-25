@@ -158,8 +158,10 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
           &nbsp;
           <input
             type="radio"
-            checked={edit && type ? type === ans : false}
-            onChange={() => changeHandler(ans)}
+            checked={type ? type === ans : false}
+            onChange={() => {
+              changeHandler(ans);
+            }}
           />
         </React.Fragment>
       );
