@@ -174,7 +174,7 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
         <>
           <h5>Hometown:</h5>
           <h4>
-            {viewPerson.homeTown},{" "}
+            {viewPerson.homeTown},&nbsp;
             {viewPerson.homeCountry === "United States"
               ? viewPerson.homeState
               : viewPerson.homeCountry}
@@ -183,6 +183,15 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
       );
     }
     return null;
+  };
+
+  // Generates the user's class year
+  const classYear = () => {
+    if (!viewPerson.classYear || viewPerson.type !== userTypeStudent)
+      return null;
+    if (viewPerson.offCycle) return `'${viewPerson.classYear % 100}.5`;
+
+    return `'${viewPerson.classYear % 100}`;
   };
 
   return (
@@ -194,7 +203,7 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
 
         <aside className="info">
           <h3>
-            {viewPerson.name}
+            {viewPerson.name}&nbsp;{classYear()}
             {currUser && currUser.id === viewPerson.id ? (
               <span>&nbsp;(me)</span>
             ) : null}
