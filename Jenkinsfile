@@ -91,6 +91,11 @@ pipeline {
             }
           }
         }
+  }
+  options { buildDiscarder(logRotator(numToKeepStr: '2')) }
+  post {
+    cleanup {
+      cleanWs()
     }
   }
 }
