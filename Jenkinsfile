@@ -37,7 +37,7 @@ pipeline {
             remote_dev.password = SSH_PASS
 
             sshRemove remote: remote_dev, path: '/home/wsodev/wso-react/build'
-            sshPut remote: remote_dev, from: 'build', into: '/home/wsodev/wso-react/build'
+            sshPut remote: remote_dev, from: 'build', into: '/home/wsodev/wso-react/'
           }
         }
         script {
@@ -73,7 +73,7 @@ pipeline {
                 remote_dev.password = SSH_PASS
 
                 sshRemove remote: remote_dev, path: '/home/wso/wso/wso-react/build'
-                sshPut remote: remote_dev, from: 'build', into: '/home/wso/wso/wso-react/build'
+                sshPut remote: remote_dev, from: 'build', into: '/home/wso/wso/wso-react/'
               }
             }
             script {
