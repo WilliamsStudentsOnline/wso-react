@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 // External imports
 // Connected Link is the same as link, except it re-renders on route changes
 import { Link, ConnectedLink } from "react-router5";
-import { checkAndHandleError } from "../lib/general";
+import { checkAndHandleError, containsScopes, scopes } from "../lib/general";
 import { getUserThumbPhoto } from "../api/users";
 import { createRouteNodeSelector } from "redux-router5";
 
@@ -57,7 +57,7 @@ const Nav = ({ currUser, token, route }) => {
             <li>
               <Link routeName="facebook">Facebook</Link>
             </li>
-            {currUser && currUser.ephCatchEligibility ? (
+            {currUser && containsScopes(token, [scopes.ScopeEphcatch]) ? (
               <li>
                 <Link routeName="ephcatch">Ephcatch</Link>
                 {currUser.ephcatches.length > 0 ? (
