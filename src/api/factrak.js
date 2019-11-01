@@ -275,6 +275,33 @@ const getProfessorRatings = async (token, professorID, courseID = -1) => {
   return response;
 };
 
+// Get Course Ratings.
+const getCourseRatings = async (token, professorID = -1, courseID) => {
+  let request;
+  if (professorID === -1 || typeof professorID !== "number") {
+    request = {
+      url: `/api/v2/factrak/courses/${courseID}/ratings`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  } else {
+    request = {
+      url: `/api/v2/factrak/courses/${courseID}/ratings`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: { professorID },
+    };
+  }
+
+  const response = await axios(request).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
 // Create New Survey
 const postSurvey = async (token, createParams) => {
   const response = await axios({
@@ -341,6 +368,7 @@ export {
   getProfessors,
   getDepartment,
   getProfessorRatings,
+  getCourseRatings,
   postSurvey,
   patchSurvey,
 };
