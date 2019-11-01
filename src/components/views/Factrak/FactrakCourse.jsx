@@ -9,18 +9,25 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 import { getToken, getCurrUser } from "../../../selectors/auth";
 
 // Additional imports
-import { getCourse, getSurveys, getProfessors } from "../../../api/factrak";
+import {
+  getCourse,
+  getSurveys,
+  getProfessors,
+  getCourseRatings,
+} from "../../../api/factrak";
 import {
   checkAndHandleError,
   scopes,
   containsScopes,
 } from "../../../lib/general";
 import { Link } from "react-router5";
+import FactrakRatings from "./FactrakRatings";
 
 const FactrakCourse = ({ route, token, currUser }) => {
   const [course, updateCourse] = useState({});
   const [courseSurveys, updateSurveys] = useState([]);
   const [courseProfs, updateProfs] = useState([]);
+  const [ratings, updateRatings] = useState(null);
 
   useEffect(() => {
     const courseID = route.params.courseID;
@@ -49,6 +56,13 @@ const FactrakCourse = ({ route, token, currUser }) => {
       }
     };
 
+    const loadRatings = async () => {
+      const ratingsResponse = await getCourseRatings(token, profID, courseID);
+      if (checkAndHandleError(ratingsResponse)) {
+        updateRatings(ratingsResponse.data.data);
+      }
+    };
+
     const loadProfs = async () => {
       const params = { courseID };
       const profResponse = await getProfessors(token, params);
@@ -58,9 +72,8 @@ const FactrakCourse = ({ route, token, currUser }) => {
     };
 
     loadCourse();
-    if (
-      containsScopes(token, [scopes.ScopeFactrakAdmin, scopes.ScopeFactrakFull])
-    ) {
+    loadRatings(profID);
+    if (containsScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys();
     } else {
       updateSurveys([
@@ -156,6 +169,41 @@ const FactrakCourse = ({ route, token, currUser }) => {
     return null;
   };
 
+  const selectedProf = () => {
+    if (route.params.profID === null && route.params.profID === -1) return null;
+
+    const prof = courseProfs.find(
+      (courseProf) => courseProf.id === route.params.profID
+    );
+
+    if (!prof) {
+      return (
+        <>
+          <br />
+          {containsScopes(token, [scopes.ScopeFactrakFull]) ? (
+            <h4>
+              <u>Average Course Ratings</u>
+            </h4>
+          ) : null}
+          <br />
+          <FactrakRatings ratings={ratings} general />
+        </>
+      );
+    }
+    return (
+      <>
+        <br />
+        {containsScopes(token, [scopes.ScopeFactrakFull]) ? (
+          <h4>
+            <u>Ratings for {prof.name} in this course</u>
+          </h4>
+        ) : null}
+        <br />
+        <FactrakRatings ratings={ratings} />
+      </>
+    );
+  };
+
   return (
     <article className="facebook-profile">
       <section className="info">
@@ -166,6 +214,7 @@ const FactrakCourse = ({ route, token, currUser }) => {
         </h3>
         <br />
         {professorList()}
+        {selectedProf()}
         <br />
         {factrakSurveyDeficitMessage()}
         {commentList()}
