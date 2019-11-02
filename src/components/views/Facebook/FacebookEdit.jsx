@@ -40,12 +40,14 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
       if (checkAndHandleError(userResponse)) {
         const currTags = userResponse.data.data.tags;
 
-        const defaultTags = [];
-        for (let i = 0; i < currTags.length; i += 1) {
-          defaultTags.push(currTags[i].name);
-        }
+        if (currTags) {
+          const defaultTags = [];
+          for (let i = 0; i < currTags.length; i += 1) {
+            defaultTags.push(currTags[i].name);
+          }
 
-        updateTags(defaultTags);
+          updateTags(defaultTags);
+        }
       } else {
         updateErrors([userResponse.data.error.message]);
       }
