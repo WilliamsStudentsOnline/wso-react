@@ -83,22 +83,15 @@ const Nav = ({ currUser, token, route }) => {
                   </span>
                 ) : null}
               </li>
-            ) : (
-              <>
-                <li>
-                  <Link routeName="factrak">Factrak</Link>
-                </li>
-                <li>
-                  <Link routeName="dormtrak">Dormtrak</Link>
-                </li>
-              </>
-            )}
-
+            ) : null}
             <li>
-              <Link routeName="listserv">Listserv</Link>
+              <Link routeName="factrak">Factrak</Link>
             </li>
             <li>
-              <Link routeName="hours">Hours</Link>
+              <Link routeName="dormtrak">Dormtrak</Link>
+            </li>
+            <li>
+              <Link routeName="faq">FAQ</Link>
             </li>
             <li>
               <a href="/wiki">Wiki</a>

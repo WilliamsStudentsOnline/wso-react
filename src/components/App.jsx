@@ -21,7 +21,7 @@ import { checkAndHandleError } from "../lib/general";
 // More component imports
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
 const About = lazy(() => import("./views/Misc/About"));
-const Listserv = lazy(() => import("./views/Misc/Listserv"));
+const FAQ = lazy(() => import("./views/Misc/FAQ"));
 const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
 const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
 const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
@@ -35,7 +35,6 @@ const BulletinMain = lazy(() =>
 const DiscussionMain = lazy(() =>
   import("./views/BulletinsDiscussions/DiscussionMain")
 );
-const BuildingHours = lazy(() => import("./views/Misc/BuildingHours"));
 
 const App = ({
   route,
@@ -67,10 +66,6 @@ const App = ({
         return <Homepage />;
       case "about":
         return <About />;
-      case "listserv":
-        return <Listserv />;
-      case "hours":
-        return <BuildingHours />;
       case "scheduler":
         return <Scheduler />;
       case "facebook":
@@ -79,6 +74,8 @@ const App = ({
         return <DormtrakMain />;
       case "factrak":
         return <FactrakMain />;
+      case "faq":
+        return <FAQ />;
       case "login":
         if (!currUser) {
           return <Login />;
