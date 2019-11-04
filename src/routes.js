@@ -19,8 +19,6 @@ export default [
   },
   { name: "rides", path: "/rides" },
   { name: "about", path: "/about" },
-  { name: "listserv", path: "/listserv" },
-  { name: "hours", path: "/hours" },
   { name: "scheduler", path: "/schedulecourses" },
   {
     name: "facebook",
@@ -72,6 +70,7 @@ export default [
   },
   { name: "login", path: "/account/login" },
   { name: "logout", path: "/account/logout" },
+  { name: "faq", path: "/faq" },
   { name: "403", path: "/403" },
   { name: "500", path: "/500" },
 ];

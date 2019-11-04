@@ -9,13 +9,15 @@ import { connect } from "react-redux";
 // External imports
 // Connected Link is the same as link, except it re-renders on route changes
 import { Link, ConnectedLink } from "react-router5";
-import { checkAndHandleError } from "../lib/general";
+import { checkAndHandleError, containsScopes, scopes } from "../lib/general";
 import { getUserThumbPhoto } from "../api/users";
 import { createRouteNodeSelector } from "redux-router5";
+import { getEphcatchMatches } from "../api/ephcatch";
 
 const Nav = ({ currUser, token, route }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
+  const [ephcatches, updateEphcatches] = useState(null);
 
   useEffect(() => {
     const loadPhoto = async () => {
@@ -25,8 +27,21 @@ const Nav = ({ currUser, token, route }) => {
       }
     };
 
+    const loadEphcatches = async () => {
+      if (currUser && token && containsScopes(token, [scopes.ScopeEphcatch])) {
+        const ephcatchResponse = await getEphcatchMatches(token);
+
+        if (checkAndHandleError(ephcatchResponse)) {
+          updateEphcatches(ephcatchResponse.data.data);
+        }
+      }
+
+      return null;
+    };
+
     if (currUser && token && token !== "") loadPhoto();
     updateMenuVisibility(false);
+    loadEphcatches();
     // eslint-disable-next-line
   }, [token, route]);
 
@@ -57,33 +72,26 @@ const Nav = ({ currUser, token, route }) => {
             <li>
               <Link routeName="facebook">Facebook</Link>
             </li>
-            {currUser && currUser.ephCatchEligibility ? (
+            {currUser && containsScopes(token, [scopes.ScopeEphcatch]) ? (
               <li>
                 <Link routeName="ephcatch">Ephcatch</Link>
-                {currUser.ephcatches.length > 0 ? (
+                {ephcatches.length > 0 ? (
                   <span className="ephcatch-badge">
                     <Link routeName="ephcatch.matches" title="New matches!">
-                      {currUser.ephcatches.length}
+                      {ephcatches.length}
                     </Link>
                   </span>
                 ) : null}
               </li>
-            ) : (
-              <>
-                <li>
-                  <Link routeName="factrak">Factrak</Link>
-                </li>
-                <li>
-                  <Link routeName="dormtrak">Dormtrak</Link>
-                </li>
-              </>
-            )}
-
+            ) : null}
             <li>
-              <Link routeName="listserv">Listserv</Link>
+              <Link routeName="factrak">Factrak</Link>
             </li>
             <li>
-              <Link routeName="hours">Hours</Link>
+              <Link routeName="dormtrak">Dormtrak</Link>
+            </li>
+            <li>
+              <Link routeName="faq">FAQ</Link>
             </li>
             <li>
               <a href="/wiki">Wiki</a>
