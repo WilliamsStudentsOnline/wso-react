@@ -189,7 +189,7 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
   const classYear = () => {
     if (!viewPerson.classYear || viewPerson.type !== userTypeStudent)
       return null;
-    if (viewPerson.offCycle) return `'${viewPerson.classYear % 100}.5`;
+    if (viewPerson.offCycle) return `'${(viewPerson.classYear - 1) % 100}.5`;
 
     return `'${viewPerson.classYear % 100}`;
   };
