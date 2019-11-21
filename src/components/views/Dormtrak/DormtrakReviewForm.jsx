@@ -45,9 +45,10 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
       bathroomDesc,
       bedAdjustable,
       comment,
+      closet,
       commonRoomAccess,
       commonRoomDesc,
-      DormRoomID: room ? room.id : currUser.dormRoom.id,
+      dormRoomID: room ? room.id : currUser.dormRoom.id,
       flooring,
       keyOrCard,
       location,
@@ -258,6 +259,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
                   onChange={(event) => updateCRoomDesc(event.target.value)}
                 />
                 <br />
+                <br />
               </>
             ) : null}
             {!(room && room.thermostatAccess) ? (
@@ -310,9 +312,9 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
             <br />
             <textarea
               style={{ minHeight: "100px" }}
-              placeholder="Share your thoughts, likes, dislikes, things to be aware of, etc..."
+              placeholder="Share what you thought were the main causes of noise!"
               value={noise}
-              onChange={(event) => updateNoise(event.target.noise)}
+              onChange={(event) => updateNoise(event.target.value)}
             />
             <strong>How convenient was the location?</strong>
             <br />
@@ -352,22 +354,6 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
               placeholder="Share your thoughts, likes, dislikes, things to be aware of, etc..."
               value={comment}
               onChange={(event) => updateComment(event.target.value)}
-            />
-            <br />
-            <br />
-            <strong>*Anonymous?</strong>
-            <br />
-            (this will hide your common room and noise comments, if any, until
-            next school year)
-            <br />
-            Yes&nbsp;
-            <input type="radio" value={1} id="dormtrak_review_anonymous_1" />
-            No &nbsp;
-            <input
-              type="radio"
-              value={0}
-              id="dormtrak_review_anonymous_0"
-              defaultChecked
             />
             <br />
             <br />
