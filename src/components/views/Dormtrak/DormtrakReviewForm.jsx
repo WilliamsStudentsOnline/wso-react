@@ -41,14 +41,13 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
-    // Parse integers here rather than below to minimize the expensive operation
     const reviewParams = {
       bathroomDesc,
       bedAdjustable,
       comment,
       commonRoomAccess,
       commonRoomDesc,
-      dormRoomID: room.id,
+      DormRoomID: room ? room.id : currUser.dormRoom.id,
       flooring,
       keyOrCard,
       location,
@@ -112,7 +111,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
           &nbsp;
           <input
             type="radio"
-            checked={edit && type ? type === ans : false}
+            checked={type !== null ? type === ans : false}
             onChange={() => changeHandler(ans)}
           />
         </React.Fragment>
@@ -169,7 +168,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
                 </strong>
                 <br />
                 {optionBuilder(
-                  ["Keypad/card", "Physical Key"],
+                  ["Keypad/Card", "Physical Key"],
                   ["Keypad/Card", "Physical Key"],
                   keyOrCard,
                   updateKoC
@@ -211,7 +210,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
             <strong>*Private bathroom?</strong>
             <br />
             {optionBuilder(
-              [1, 0],
+              [true, false],
               ["Yes", "No"],
               privateBathroom,
               updatePBathroom
@@ -237,7 +236,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
             (Readily accessible and on the same floor as you)
             <br />
             {optionBuilder(
-              [1, 0],
+              [true, false],
               ["Yes", "No"],
               commonRoomAccess,
               updateCRoomAccess
@@ -268,7 +267,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
                 </strong>
                 <br />
                 {optionBuilder(
-                  [1, 0],
+                  [true, false],
                   ["Yes", "No"],
                   thermostatAccess,
                   updateThermostat
@@ -281,7 +280,12 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
             <br />
             (without risers you brought)
             <br />
-            {optionBuilder([1, 0], ["Yes", "No"], bedAdjustable, updateBed)}
+            {optionBuilder(
+              [true, false],
+              ["Yes", "No"],
+              bedAdjustable,
+              updateBed
+            )}
             <br />
             <br />
             <strong>How good was wifi?</strong>
