@@ -1486,7 +1486,7 @@ section:after {
 .comment .comment-content p {
   margin-bottom: 0.5em;
 }
-.comment .comment-content p.comment-detail {
+.comment .comment-detail {
   font-style: italic;
   font-size: 0.9em;
   color: rgba(68, 68, 68, 0.5);

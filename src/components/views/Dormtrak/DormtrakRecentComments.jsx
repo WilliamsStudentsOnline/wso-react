@@ -74,7 +74,7 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
       <div className="comment" key={review.id}>
         <p>{review.comment}</p>
         <p className="comment-detail">
-          {`Posted ${format(new Date(review.createdTime))}`}
+          {`posted about ${format(new Date(review.createdTime))}`}
         </p>
         <p className="comment-detail">{editDeleteButtons(review)}</p>
       </div>

@@ -41,14 +41,14 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
-    // Parse integers here rather than below to minimize the expensive operation
     const reviewParams = {
       bathroomDesc,
       bedAdjustable,
       comment,
+      closet,
       commonRoomAccess,
       commonRoomDesc,
-      dormRoomID: room.id,
+      dormRoomID: room ? room.id : currUser.dormRoom.id,
       flooring,
       keyOrCard,
       location,
@@ -112,7 +112,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
           &nbsp;
           <input
             type="radio"
-            checked={edit && type ? type === ans : false}
+            checked={type !== null ? type === ans : false}
             onChange={() => changeHandler(ans)}
           />
         </React.Fragment>
@@ -169,7 +169,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
                 </strong>
                 <br />
                 {optionBuilder(
-                  ["Keypad/card", "Physical Key"],
+                  ["Keypad/Card", "Physical Key"],
                   ["Keypad/Card", "Physical Key"],
                   keyOrCard,
                   updateKoC
@@ -211,7 +211,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
             <strong>*Private bathroom?</strong>
             <br />
             {optionBuilder(
-              [1, 0],
+              [true, false],
               ["Yes", "No"],
               privateBathroom,
               updatePBathroom
@@ -237,7 +237,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
             (Readily accessible and on the same floor as you)
             <br />
             {optionBuilder(
-              [1, 0],
+              [true, false],
               ["Yes", "No"],
               commonRoomAccess,
               updateCRoomAccess
@@ -259,6 +259,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
                   onChange={(event) => updateCRoomDesc(event.target.value)}
                 />
                 <br />
+                <br />
               </>
             ) : null}
             {!(room && room.thermostatAccess) ? (
@@ -268,7 +269,7 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
                 </strong>
                 <br />
                 {optionBuilder(
-                  [1, 0],
+                  [true, false],
                   ["Yes", "No"],
                   thermostatAccess,
                   updateThermostat
@@ -281,7 +282,12 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
             <br />
             (without risers you brought)
             <br />
-            {optionBuilder([1, 0], ["Yes", "No"], bedAdjustable, updateBed)}
+            {optionBuilder(
+              [true, false],
+              ["Yes", "No"],
+              bedAdjustable,
+              updateBed
+            )}
             <br />
             <br />
             <strong>How good was wifi?</strong>
@@ -306,9 +312,9 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
             <br />
             <textarea
               style={{ minHeight: "100px" }}
-              placeholder="Share your thoughts, likes, dislikes, things to be aware of, etc..."
+              placeholder="Share what you thought were the main causes of noise!"
               value={noise}
-              onChange={(event) => updateNoise(event.target.noise)}
+              onChange={(event) => updateNoise(event.target.value)}
             />
             <strong>How convenient was the location?</strong>
             <br />
@@ -348,22 +354,6 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
               placeholder="Share your thoughts, likes, dislikes, things to be aware of, etc..."
               value={comment}
               onChange={(event) => updateComment(event.target.value)}
-            />
-            <br />
-            <br />
-            <strong>*Anonymous?</strong>
-            <br />
-            (this will hide your common room and noise comments, if any, until
-            next school year)
-            <br />
-            Yes&nbsp;
-            <input type="radio" value={1} id="dormtrak_review_anonymous_1" />
-            No &nbsp;
-            <input
-              type="radio"
-              value={0}
-              id="dormtrak_review_anonymous_0"
-              defaultChecked
             />
             <br />
             <br />
