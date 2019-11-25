@@ -1,113 +1,105 @@
-import deepFreeze from 'deep-freeze';
-import courseReducer from '../../reducers/course';
+import deepFreeze from "deep-freeze";
+import courseReducer from "../../reducers/course";
 import {
   SEMESTERS,
   DISTRIBUTIONS,
   DIVISIONS,
   OTHERS,
   LEVELS,
-} from '../../constants/constants';
+} from "../../constants/constants";
 
-jest.mock('axios');
+jest.mock("axios");
 
-describe('Course reducer', () => {
+describe("Course reducer", () => {
   const course = {
-    academic_year: 2020,
-    semester: 'Fall',
-    course_id: '020209',
-    department: 'AFR',
+    year: 2020,
+    semester: "Fall",
+    courseID: "020209",
+    department: "AFR",
     number: 105,
-    components: ['Lecture'],
-    cross_listings: ['AFR 105', 'ARTH 104'],
-    section: '01',
-    peoplesoft_number: '1089',
-    consent: 'N',
-    grading_basis: 'OPT',
-    grading_basis_desc: 'Pass/Fail Available, Fifth Course Available',
-    class_type: 'Lecture',
-    title_long: 'Materials, Meanings, and Messages in the Arts of Africa',
-    title_short: 'African Art Survey',
-    instructors: [
-      { name: 'Michelle M. Apotsos', url: '' },
-      // Use the below for prod/dev testing, above for local
-      // {name: 'Michelle M. Apotsos', url: 'https://wso.williams.edu/factrak/professors/5558'}
-    ],
+    section: "01",
+    peoplesoftNumber: 1089,
+    consent: "N",
+    gradingBasisDesc: "Pass/Fail Available, Fifth Course Available",
+    classType: "Lecture",
+    titleLong: "Materials, Meanings, And Messages In The Arts Of Africa",
+    titleShort: "African Art Survey",
+    instructors: [{ id: 0, name: "Michelle M. Apotsos" }],
     meetings: [
-      {
-        days: 'MW',
-        start: '11:00',
-        start12: '11:00AM',
-        end: '12:15',
-        end12: '12:15PM',
-        facil: ' ',
-      },
+      { days: "MW", start: "11:00", end: "12:15", facility: "Lawrence 231" },
     ],
-    attributes: {
-      div_1: false,
-      div_2: true,
-      div_3: false,
+    courseAttributes: {
+      div1: false,
+      div2: true,
+      div3: false,
       dpe: true,
       qfr: false,
       wac: false,
+      passFail: true,
+      fifthCourse: true,
     },
-    class_format: 'Lecture',
-    class_req_eval:
-      'Three 2-page response papers, class journal on wcma objects lab, midterm exam and final exam',
-    extra_info: '',
-    prereqs: 'none',
-    department_notes: '',
-    description_search:
-      'This course introduces students to the wealth, power, and diversity of expressive forms that have characterized the arts of Africa and its Diaspora from prehistory to the present. Pulling extensively from the collections at the Williams College Museum of Art and other campus resources, students will not only experience firsthand the wide array of objects that have been produced within this vast geography, but will also come to recognize how multiple senses including sight, sound, smell, and touch play a key role in understanding how these objects work within their respective contexts. As tools of political control, social protest, divine manifestation, and spiritual intervention, these objects and their associated performances also challenge what we might typically consider art in the Western tradition and as such students will be pushed to think beyond such terms in their examinations of these rich creative traditions.',
-    enrl_pref: 'Art History and African Studies majors',
+    classFormat: "",
+    classReqEval:
+      "Three 2-page response papers, class journal on WCMA objects lab, midterm exam and final exam",
+    extraInfo: "",
+    prereqs: "None",
+    departmentNotes: "",
+    descriptionSearch:
+      "This course introduces students to the wealth, power, and diversity of expressive forms..",
+    enrolmentPreferences: "Art History and African Studies majors",
+    crossListing: ["AFR 105", "ARTH 104"],
+    components: ["Lecture"],
   };
 
   const otherCourse = {
-    academic_year: 2020,
-    semester: 'Fall',
-    course_id: '020209',
-    department: 'AMST',
+    year: 2020,
+    semester: "Fall",
+    courseID: "020941",
+    department: "AMST",
     number: 126,
-    components: ['Lecture'],
-    cross_listings: 'AMST 126',
-    section: '01',
-    peoplesoft_number: '1092',
-    consent: 'N',
-    grading_basis: 'OPT',
-    grading_basis_desc: 'Pass/Fail Available, Fifth Course Available',
-    class_type: 'Lecture',
-    title_long: 'something',
-    title_short: 'Independent Study: WSO Development',
-    instructors: [{ name: 'Garett Tok', url: '' }],
+    section: "01",
+    peoplesoftNumber: 1697,
+    consent: "N",
+    gradingBasisDesc: "No Pass/Fail and No Fifth Course",
+    classType: "Seminar",
+    titleLong: "Black Literature Matters",
+    titleShort: "Black Literature Matters",
+    instructors: [{ id: 0, name: "Kimberly S. Love" }],
     meetings: [
       {
-        days: 'MW',
-        start: '11:00',
-        start12: '11:00AM',
-        end: '12:15',
-        end12: '12:15PM',
-        facil: ' ',
+        days: "TR",
+        start: "08:30",
+        end: "09:45",
+        facility: "Hopkins Hall 400 (Rogers Room)",
       },
     ],
-    attributes: {
-      div_1: false,
-      div_2: true,
-      div_3: false,
+    courseAttributes: {
+      div1: false,
+      div2: true,
+      div3: false,
       dpe: true,
       qfr: false,
-      wac: false,
+      wac: true,
+      passFail: false,
+      fifthCourse: false,
     },
-    class_format: 'Lecture',
-    class_req_eval: 'None',
-    extra_info: '',
-    prereqs: 'none',
-    department_notes: '',
-    description_search: 'This course introduces students to develop WSO.',
-    enrl_pref: 'Computer Science majors',
+    classFormat: "",
+    classReqEval:
+      "Four papers totaling at least 20 pages, active class participation, class presentation",
+    extraInfo: "",
+    prereqs: "None",
+    departmentNotes: "",
+    descriptionSearch:
+      "Black literature remains central to struggles for freedom and equality across the African ...",
+    enrolmentPreferences:
+      "First-year students who have not taken or placed out of a 100-level English course; Africana Studies concentrators; American Studies majors",
+    crossListing: ["AFR 126", "AMST 126", "ENGL 126"],
+    components: ["Seminar"],
   };
 
-  it('resets loads', () => {
+  it("resets loads", () => {
     const action = {
-      type: 'RESET_LOAD',
+      type: "RESET_LOAD",
     };
 
     const previousState = { loadGroup: 5, error: null };
@@ -119,11 +111,11 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('loads courses', () => {
+  it("loads courses", () => {
     const index = 3;
 
     const action = {
-      type: 'LOAD_COURSES',
+      type: "LOAD_COURSES",
       newLoadGroup: index,
     };
 
@@ -136,9 +128,9 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('add courses', () => {
+  it("add courses", () => {
     const action = {
-      type: 'COURSE_ADD',
+      type: "COURSE_ADD",
       course,
     };
 
@@ -151,9 +143,9 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('removes courses', () => {
+  it("removes courses", () => {
     const action = {
-      type: 'COURSE_REMOVE',
+      type: "COURSE_REMOVE",
       course,
     };
 
@@ -166,9 +158,9 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('hide courses', () => {
+  it("hide courses", () => {
     const action = {
-      type: 'COURSE_HIDE',
+      type: "COURSE_HIDE",
       course,
     };
 
@@ -181,9 +173,9 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('unhides courses', () => {
+  it("unhides courses", () => {
     const action = {
-      type: 'COURSE_UNHIDE',
+      type: "COURSE_UNHIDE",
       course,
     };
 
@@ -196,8 +188,8 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('searches courses', () => {
-    const param = 'AFR105';
+  it("searches courses", () => {
+    const param = "AFR105";
     const filters = {
       semesters: [false, false, false],
       distributions: [false, false, false],
@@ -205,8 +197,8 @@ describe('Course reducer', () => {
       others: [false, false],
       levels: [false, false, false, false, false],
       conflict: [false],
-      start: '',
-      end: '',
+      start: "",
+      end: "",
       classTypes: [false, false, false, false, false, false],
     };
     const counts = {
@@ -220,18 +212,20 @@ describe('Course reducer', () => {
     };
 
     const loadAction = {
-      type: 'LOAD_CATALOG',
-      catalog: [course, otherCourse],
+      type: "LOAD_CATALOG",
+      catalog: {
+        courses: [course, otherCourse],
+      },
     };
     const action = {
-      type: 'SEARCH_COURSE',
+      type: "SEARCH_COURSE",
       param,
     };
 
     const previousState = {
       filters,
       searched: null,
-      query: '',
+      query: "",
       error: null,
       loadGroup: 1,
       counts,
@@ -247,7 +241,7 @@ describe('Course reducer', () => {
         semesters: [1, 0, 0],
         distributions: [1, 0, 0],
         divisions: [0, 1, 0],
-        others: [0, 0],
+        others: [1, 1],
         levels: [0, 1, 0, 0, 0],
         conflict: [1],
         classTypes: [1, 0, 0, 0, 0, 0],
@@ -262,9 +256,9 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('toggles conflict', () => {
+  it("toggles conflict", () => {
     const action = {
-      type: 'TOGGLE_CONFLICT',
+      type: "TOGGLE_CONFLICT",
     };
 
     const previousState = { filters: { conflict: [true] }, error: null };
@@ -276,11 +270,11 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('toggles semester', () => {
+  it("toggles semester", () => {
     const index = 1;
 
     const action = {
-      type: 'TOGGLE_SEM',
+      type: "TOGGLE_SEM",
       index,
     };
 
@@ -299,11 +293,11 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('toggles distribution', () => {
+  it("toggles distribution", () => {
     const index = 1;
 
     const action = {
-      type: 'TOGGLE_DIST',
+      type: "TOGGLE_DIST",
       index,
     };
 
@@ -322,11 +316,11 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('toggles division', () => {
+  it("toggles division", () => {
     const index = 1;
 
     const action = {
-      type: 'TOGGLE_DIV',
+      type: "TOGGLE_DIV",
       index,
     };
 
@@ -345,11 +339,11 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('toggles others', () => {
+  it("toggles others", () => {
     const index = 1;
 
     const action = {
-      type: 'TOGGLE_OTHERS',
+      type: "TOGGLE_OTHERS",
       index,
     };
 
@@ -364,11 +358,11 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('toggles level', () => {
+  it("toggles level", () => {
     const index = 1;
 
     const action = {
-      type: 'TOGGLE_LEVEL',
+      type: "TOGGLE_LEVEL",
       index,
     };
 
@@ -386,15 +380,15 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('updates start time', () => {
-    const time = '14:30';
+  it("updates start time", () => {
+    const time = "14:30";
 
     const action = {
-      type: 'UPDATE_START',
+      type: "UPDATE_START",
       time,
     };
 
-    const previousState = { filters: { start: '' }, error: null };
+    const previousState = { filters: { start: "" }, error: null };
     const expectedNewState = { filters: { start: time }, error: null };
 
     deepFreeze(previousState);
@@ -402,15 +396,15 @@ describe('Course reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('updates end time', () => {
-    const time = '15:35';
+  it("updates end time", () => {
+    const time = "15:35";
 
     const action = {
-      type: 'UPDATE_END',
+      type: "UPDATE_END",
       time,
     };
 
-    const previousState = { filters: { end: '' }, error: null };
+    const previousState = { filters: { end: "" }, error: null };
     const expectedNewState = { filters: { end: time }, error: null };
 
     deepFreeze(previousState);

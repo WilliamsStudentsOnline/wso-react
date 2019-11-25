@@ -1,17 +1,17 @@
-import deepFreeze from 'deep-freeze';
-import utilReducer from '../../reducers/utils';
+import deepFreeze from "deep-freeze";
+import utilReducer from "../../reducers/schedulerUtils";
 
-describe('Utility reducer', () => {
-  it('changes semester', () => {
+describe("Utility reducer", () => {
+  it("changes semester", () => {
     const semester = 1;
 
     const action = {
-      type: 'CHANGE_SEMESTER',
-      semester
+      type: "CHANGE_SEMESTER",
+      semester,
     };
 
-    const previousState = {semester: 0, error: null};
-    const expectedNewState = {semester, error: null};
+    const previousState = { semester: 0, error: null };
+    const expectedNewState = { semester, error: null };
 
     deepFreeze(previousState);
     const changedState = utilReducer(previousState, action);
@@ -19,16 +19,16 @@ describe('Utility reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('changes time format', () => {
+  it("changes time format", () => {
     const twelveHour = true;
 
     const action = {
-      type: 'CHANGE_TIME_FORMAT',
-      twelveHour
+      type: "CHANGE_TIME_FORMAT",
+      twelveHour,
     };
 
-    const previousState = {twelveHour: false, error: null};
-    const expectedNewState = {twelveHour, error: null};
+    const previousState = { twelveHour: false, error: null };
+    const expectedNewState = { twelveHour, error: null };
 
     deepFreeze(previousState);
     const changedState = utilReducer(previousState, action);
@@ -36,16 +36,16 @@ describe('Utility reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('changes active menu', () => {
-    const newState = 'Catalog';
+  it("changes active menu", () => {
+    const newState = "Catalog";
 
     const action = {
-      type: 'SUBMENU_CHANGE',
-      newState
+      type: "SUBMENU_CHANGE",
+      newState,
     };
 
-    const previousState = {active: 'Timetable', error: null};
-    const expectedNewState = {active: newState, error: null};
+    const previousState = { active: "Timetable", error: null };
+    const expectedNewState = { active: newState, error: null };
 
     deepFreeze(previousState);
     const changedState = utilReducer(previousState, action);
@@ -53,20 +53,20 @@ describe('Utility reducer', () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
-  it('adds notifications', () => {
+  it("adds notifications", () => {
     const notification = {
-      type: 'SUCCESS',
-      title: 'Title',
-      body: 'Body'
+      type: "SUCCESS",
+      title: "Title",
+      body: "Body",
     };
 
     const action = {
-      type: 'ADD_NOTIF',
-      notification
+      type: "ADD_NOTIF",
+      notification,
     };
 
-    const previousState = {notifications: [], error: null};
-    const expectedNewState = {notifications: [notification], error: null};
+    const previousState = { notifications: [], error: null };
+    const expectedNewState = { notifications: [notification], error: null };
 
     deepFreeze(previousState);
     const newState = utilReducer(previousState, action);
@@ -74,20 +74,20 @@ describe('Utility reducer', () => {
     expect(newState).toEqual(expectedNewState);
   });
 
-  it('removes notifications', () => {
+  it("removes notifications", () => {
     const notification = {
-      type: 'SUCCESS',
-      title: 'Title',
-      body: 'Body'
+      type: "SUCCESS",
+      title: "Title",
+      body: "Body",
     };
 
     const action = {
-      type: 'REMOVE_NOTIF',
-      notification
+      type: "REMOVE_NOTIF",
+      notification,
     };
 
-    const previousState = {notifications: [notification], error: null};
-    const expectedNewState = {notifications: [], error: null};
+    const previousState = { notifications: [notification], error: null };
+    const expectedNewState = { notifications: [], error: null };
 
     deepFreeze(previousState);
     const newState = utilReducer(previousState, action);
@@ -95,19 +95,19 @@ describe('Utility reducer', () => {
     expect(newState).toEqual(expectedNewState);
   });
 
-  it('updates gapi', () => {
+  it("updates gapi", () => {
     const gapi = {
       loaded_0: null,
-      loaded_1: null
+      loaded_1: null,
     };
 
     const action = {
-      type: 'UPDATE_GAPI',
-      gapi
+      type: "UPDATE_GAPI",
+      gapi,
     };
 
-    const previousState = {gapi: null, error: null};
-    const expectedNewState = {gapi, error: null};
+    const previousState = { gapi: null, error: null };
+    const expectedNewState = { gapi, error: null };
 
     deepFreeze(previousState);
     const newState = utilReducer(previousState, action);
@@ -115,16 +115,16 @@ describe('Utility reducer', () => {
     expect(newState).toEqual(expectedNewState);
   });
 
-  it('Updates Sign-in status', () => {
+  it("Updates Sign-in status", () => {
     const signedIn = true;
 
     const action = {
-      type: 'UPDATE_SIGNIN',
-      signedIn
+      type: "UPDATE_SIGNIN",
+      signedIn,
     };
 
-    const previousState = {signedIn: false, error: null};
-    const expectedNewState = {signedIn, error: null};
+    const previousState = { signedIn: false, error: null };
+    const expectedNewState = { signedIn, error: null };
 
     deepFreeze(previousState);
     const newState = utilReducer(previousState, action);
