@@ -60,6 +60,7 @@
     "build": "react-scripts build",
     "postbuild": "purgecss --config ./purgecss.config.js --out build/static/css",
     "test": "react-scripts test",
+    "test:ci": "CI=true react-scripts test ",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
