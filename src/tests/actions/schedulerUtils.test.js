@@ -6,14 +6,25 @@ import {
   removeNotif,
   changeSem,
   changeTimeFormat,
+  toggleOrientation,
 } from "../../actions/schedulerUtils";
+import {
+  SUBMENU_CHANGE,
+  UPDATE_GAPI,
+  UPDATE_SIGNIN,
+  ADD_NOTIF,
+  REMOVE_NOTIF,
+  CHANGE_SEMESTER,
+  CHANGE_TIME_FORMAT,
+  TOGGLE_ORIENTATION,
+} from "../../constants/actionTypes";
 
 describe("util action", () => {
   it("changes submenu state", () => {
     const newState = "Catalog";
 
     const expectedAction = {
-      type: "SUBMENU_CHANGE",
+      type: SUBMENU_CHANGE,
       newState,
     };
     const action = doSubmenuChange(newState);
@@ -25,7 +36,7 @@ describe("util action", () => {
     const gapi = { loaded_0: null, loaded_1: null };
 
     const expectedAction = {
-      type: "UPDATE_GAPI",
+      type: UPDATE_GAPI,
       gapi,
     };
     const action = updateGAPI(gapi);
@@ -37,7 +48,7 @@ describe("util action", () => {
     const signedIn = true;
 
     const expectedAction = {
-      type: "UPDATE_SIGNIN",
+      type: UPDATE_SIGNIN,
       signedIn,
     };
     const action = updateSignIn(signedIn);
@@ -53,7 +64,7 @@ describe("util action", () => {
     };
 
     const expectedAction = {
-      type: "ADD_NOTIF",
+      type: ADD_NOTIF,
       notification,
     };
     const action = addNotif(notification);
@@ -69,7 +80,7 @@ describe("util action", () => {
     };
 
     const expectedAction = {
-      type: "REMOVE_NOTIF",
+      type: REMOVE_NOTIF,
       notification,
     };
     const action = removeNotif(notification);
@@ -81,7 +92,7 @@ describe("util action", () => {
     const semester = 1;
 
     const expectedAction = {
-      type: "CHANGE_SEMESTER",
+      type: CHANGE_SEMESTER,
       semester,
     };
     const action = changeSem(semester);
@@ -93,10 +104,19 @@ describe("util action", () => {
     const twelveHour = true;
 
     const expectedAction = {
-      type: "CHANGE_TIME_FORMAT",
+      type: CHANGE_TIME_FORMAT,
       twelveHour,
     };
     const action = changeTimeFormat(twelveHour);
+
+    expect(action).toEqual(expectedAction);
+  });
+
+  it("toggles scheduler orientation", () => {
+    const expectedAction = {
+      type: TOGGLE_ORIENTATION,
+    };
+    const action = toggleOrientation();
 
     expect(action).toEqual(expectedAction);
   });

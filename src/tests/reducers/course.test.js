@@ -1,12 +1,34 @@
 import deepFreeze from "deep-freeze";
-import courseReducer from "../../reducers/course";
+import courseReducer, { DEFAULT_SEMESTER } from "../../reducers/course";
 import {
   SEMESTERS,
   DISTRIBUTIONS,
   DIVISIONS,
   OTHERS,
   LEVELS,
+  CLASS_TYPES,
 } from "../../constants/constants";
+import {
+  SEARCH_COURSE,
+  RESET_LOAD,
+  LOAD_COURSES,
+  LOAD_CATALOG,
+  COURSE_ADD,
+  COURSE_REMOVE,
+  COURSE_HIDE,
+  COURSE_UNHIDE,
+  TOGGLE_SEM,
+  TOGGLE_DIST,
+  TOGGLE_DIV,
+  TOGGLE_OTHERS,
+  TOGGLE_CONFLICT,
+  TOGGLE_LEVEL,
+  TOGGLE_TYPE,
+  UPDATE_END,
+  UPDATE_START,
+  RESET_FILTERS,
+  REMOVE_SEMESTER_COURSES,
+} from "../../constants/actionTypes";
 
 jest.mock("axios");
 
@@ -99,7 +121,7 @@ describe("Course reducer", () => {
 
   it("resets loads", () => {
     const action = {
-      type: "RESET_LOAD",
+      type: RESET_LOAD,
     };
 
     const previousState = { loadGroup: 5, error: null };
@@ -115,7 +137,7 @@ describe("Course reducer", () => {
     const index = 3;
 
     const action = {
-      type: "LOAD_COURSES",
+      type: LOAD_COURSES,
       newLoadGroup: index,
     };
 
@@ -130,7 +152,7 @@ describe("Course reducer", () => {
 
   it("add courses", () => {
     const action = {
-      type: "COURSE_ADD",
+      type: COURSE_ADD,
       course,
     };
 
@@ -145,7 +167,7 @@ describe("Course reducer", () => {
 
   it("removes courses", () => {
     const action = {
-      type: "COURSE_REMOVE",
+      type: COURSE_REMOVE,
       course,
     };
 
@@ -160,7 +182,7 @@ describe("Course reducer", () => {
 
   it("hide courses", () => {
     const action = {
-      type: "COURSE_HIDE",
+      type: COURSE_HIDE,
       course,
     };
 
@@ -175,7 +197,7 @@ describe("Course reducer", () => {
 
   it("unhides courses", () => {
     const action = {
-      type: "COURSE_UNHIDE",
+      type: COURSE_UNHIDE,
       course,
     };
 
@@ -212,13 +234,13 @@ describe("Course reducer", () => {
     };
 
     const loadAction = {
-      type: "LOAD_CATALOG",
+      type: LOAD_CATALOG,
       catalog: {
         courses: [course, otherCourse],
       },
     };
     const action = {
-      type: "SEARCH_COURSE",
+      type: SEARCH_COURSE,
       param,
     };
 
@@ -258,7 +280,7 @@ describe("Course reducer", () => {
 
   it("toggles conflict", () => {
     const action = {
-      type: "TOGGLE_CONFLICT",
+      type: TOGGLE_CONFLICT,
     };
 
     const previousState = { filters: { conflict: [true] }, error: null };
@@ -274,7 +296,7 @@ describe("Course reducer", () => {
     const index = 1;
 
     const action = {
-      type: "TOGGLE_SEM",
+      type: TOGGLE_SEM,
       index,
     };
 
@@ -297,7 +319,7 @@ describe("Course reducer", () => {
     const index = 1;
 
     const action = {
-      type: "TOGGLE_DIST",
+      type: TOGGLE_DIST,
       index,
     };
 
@@ -320,7 +342,7 @@ describe("Course reducer", () => {
     const index = 1;
 
     const action = {
-      type: "TOGGLE_DIV",
+      type: TOGGLE_DIV,
       index,
     };
 
@@ -339,11 +361,36 @@ describe("Course reducer", () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
+  it("toggles type", () => {
+    const index = 1;
+
+    const action = {
+      type: TOGGLE_TYPE,
+      index,
+    };
+
+    const previousState = {
+      filters: { classTypes: [false, false, false, false, false, false] },
+      error: null,
+    };
+    const expectedNewState = {
+      filters: {
+        classTypes: [false, CLASS_TYPES[1], false, false, false, false],
+      },
+      error: null,
+    };
+
+    deepFreeze(previousState);
+    const changedState = courseReducer(previousState, action);
+
+    expect(changedState).toEqual(expectedNewState);
+  });
+
   it("toggles others", () => {
     const index = 1;
 
     const action = {
-      type: "TOGGLE_OTHERS",
+      type: TOGGLE_OTHERS,
       index,
     };
 
@@ -362,7 +409,7 @@ describe("Course reducer", () => {
     const index = 1;
 
     const action = {
-      type: "TOGGLE_LEVEL",
+      type: TOGGLE_LEVEL,
       index,
     };
 
@@ -384,7 +431,7 @@ describe("Course reducer", () => {
     const time = "14:30";
 
     const action = {
-      type: "UPDATE_START",
+      type: UPDATE_START,
       time,
     };
 
@@ -400,12 +447,55 @@ describe("Course reducer", () => {
     const time = "15:35";
 
     const action = {
-      type: "UPDATE_END",
+      type: UPDATE_END,
       time,
     };
 
     const previousState = { filters: { end: "" }, error: null };
     const expectedNewState = { filters: { end: time }, error: null };
+
+    deepFreeze(previousState);
+    const changedState = courseReducer(previousState, action);
+    expect(changedState).toEqual(expectedNewState);
+  });
+
+  it("reset filters", () => {
+    const action = {
+      type: RESET_FILTERS,
+    };
+
+    const previousState = { filters: { end: "previous" }, error: null };
+    const expectedNewState = {
+      filters: {
+        semesters: DEFAULT_SEMESTER,
+        distributions: [false, false, false],
+        divisions: [false, false, false],
+        others: [false, false],
+        levels: [false, false, false, false, false],
+        conflict: [false],
+        start: "",
+        end: "",
+        classTypes: [false, false, false, false, false, false],
+      },
+      error: null,
+    };
+
+    deepFreeze(previousState);
+    const changedState = courseReducer(previousState, action);
+    expect(changedState).toEqual(expectedNewState);
+  });
+
+  it("removes semester courses", () => {
+    const action = {
+      type: REMOVE_SEMESTER_COURSES,
+      semester: "Fall",
+    };
+
+    const previousState = { added: [course], error: null };
+    const expectedNewState = {
+      added: [],
+      error: null,
+    };
 
     deepFreeze(previousState);
     const changedState = courseReducer(previousState, action);

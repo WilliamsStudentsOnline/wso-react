@@ -5,6 +5,7 @@ import {
   getNotifications,
   getSemester,
   getTimeFormat,
+  getOrientation,
 } from "../../selectors/schedulerUtils";
 
 describe("Utility Selector", () => {
@@ -22,6 +23,7 @@ describe("Utility Selector", () => {
       ],
       semester: 2,
       twelveHour: true,
+      horizontal: false,
     },
   };
 
@@ -65,5 +67,11 @@ describe("Utility Selector", () => {
     const expectedSignInStatus = true;
     const signInStatus = getSignInStatus(INITIAL_STATE);
     expect(signInStatus).toEqual(expectedSignInStatus);
+  });
+
+  it("retrieves Orientation", () => {
+    const expectedOrientation = false;
+    const orientation = getOrientation(INITIAL_STATE);
+    expect(orientation).toEqual(expectedOrientation);
   });
 });

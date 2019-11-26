@@ -1,12 +1,22 @@
 import deepFreeze from "deep-freeze";
 import utilReducer from "../../reducers/schedulerUtils";
+import {
+  SUBMENU_CHANGE,
+  UPDATE_GAPI,
+  UPDATE_SIGNIN,
+  ADD_NOTIF,
+  REMOVE_NOTIF,
+  CHANGE_SEMESTER,
+  CHANGE_TIME_FORMAT,
+  TOGGLE_ORIENTATION,
+} from "../../constants/actionTypes";
 
 describe("Utility reducer", () => {
   it("changes semester", () => {
     const semester = 1;
 
     const action = {
-      type: "CHANGE_SEMESTER",
+      type: CHANGE_SEMESTER,
       semester,
     };
 
@@ -23,7 +33,7 @@ describe("Utility reducer", () => {
     const twelveHour = true;
 
     const action = {
-      type: "CHANGE_TIME_FORMAT",
+      type: CHANGE_TIME_FORMAT,
       twelveHour,
     };
 
@@ -40,7 +50,7 @@ describe("Utility reducer", () => {
     const newState = "Catalog";
 
     const action = {
-      type: "SUBMENU_CHANGE",
+      type: SUBMENU_CHANGE,
       newState,
     };
 
@@ -61,7 +71,7 @@ describe("Utility reducer", () => {
     };
 
     const action = {
-      type: "ADD_NOTIF",
+      type: ADD_NOTIF,
       notification,
     };
 
@@ -82,7 +92,7 @@ describe("Utility reducer", () => {
     };
 
     const action = {
-      type: "REMOVE_NOTIF",
+      type: REMOVE_NOTIF,
       notification,
     };
 
@@ -102,7 +112,7 @@ describe("Utility reducer", () => {
     };
 
     const action = {
-      type: "UPDATE_GAPI",
+      type: UPDATE_GAPI,
       gapi,
     };
 
@@ -119,12 +129,26 @@ describe("Utility reducer", () => {
     const signedIn = true;
 
     const action = {
-      type: "UPDATE_SIGNIN",
+      type: UPDATE_SIGNIN,
       signedIn,
     };
 
     const previousState = { signedIn: false, error: null };
     const expectedNewState = { signedIn, error: null };
+
+    deepFreeze(previousState);
+    const newState = utilReducer(previousState, action);
+
+    expect(newState).toEqual(expectedNewState);
+  });
+
+  it("Toggles Orientation", () => {
+    const action = {
+      type: TOGGLE_ORIENTATION,
+    };
+
+    const previousState = { horizontal: true };
+    const expectedNewState = { horizontal: false };
 
     deepFreeze(previousState);
     const newState = utilReducer(previousState, action);
