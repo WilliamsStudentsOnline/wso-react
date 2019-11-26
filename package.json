@@ -28,8 +28,6 @@
     "typeface-source-sans-pro": "^0.0.75"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^4.0.0",
-    "@testing-library/react": "^8.0.4",
     "babel-eslint": "^10.0.3",
     "deep-freeze": "^0.0.1",
     "eslint": "^6.5.1",
