@@ -713,4 +713,5 @@ const courseReducer = (state = INITIAL_STATE, action) => {
   return state;
 };
 
+export { DEFAULT_SEMESTER };
 export default courseReducer;
