@@ -12,6 +12,7 @@ pipeline {
     stage('Test') {
       steps {
         echo 'Testing'
+        sh '''yarn run test:ci'''
       }
     }
     stage('Lint') {
