@@ -17,7 +17,7 @@ import {
   putCurrUserPhoto,
 } from "../../../api/users";
 import { checkAndHandleError } from "../../../lib/general";
-import { Form, Field } from "react-final-form";
+import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 
 const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
   const [tags, updateTags] = useState([]);
@@ -182,54 +182,9 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
     } else {
       // If there are no errors, it means that patchCurrUser must have gone smoothly
       updateUser(updateResponse.data.data);
-      navigateTo("facebook.users", { userID: currUser.id });
+      navigateTo("facebook.users", { userID: currUser.id }, { reload: true });
     }
   };
-
-  const initialValues = {};
-
-  const validate = (values) => {
-    const errs = {};
-    if (!values.firstName) {
-      errs.firstName = "Required";
-    } else if (values.firstName.length < 2) {
-      errs.firstName = "Too Short!";
-    } else if (values.firstName.length > 50) {
-      errs.firstName = "Too Long!";
-    }
-
-    if (!values.lastName) {
-      errs.lastName = "Required";
-    } else if (values.lastName.length < 2) {
-      errs.lastName = "Too Short!";
-    } else if (values.lastName.length > 50) {
-      errs.lastName = "Too Long!";
-    }
-
-    if (!values.email) {
-      errs.email = "Email is required";
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,}$/i.test(values.email)) {
-      errs.email = "Invalid email address";
-    }
-
-    if (!values.password) {
-      errs.password = "Required";
-    } else if (values.password.length < 6) {
-      errs.password = "Too Short!";
-    } else if (values.password.length > 50) {
-      errs.password = "Too Long!";
-    }
-
-    if (!values.country) {
-      errs.country = "Required";
-    }
-
-    if (!values.region) {
-      errs.region = "Required";
-    }
-    return errs;
-  };
-
   return (
     <article className="list-creation">
       <section>
@@ -240,28 +195,6 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
               })
             : null}
         </div>
-
-        <Form
-          onSubmit={submitHandler}
-          validate={validate}
-          initialValues={initialValues}
-        >
-          {({ handleSubmit, form }) => (
-            <form onSubmit={handleSubmit}>
-              <Field
-                name="firstName"
-                component="input"
-                placeholder="First Name"
-              />
-              <Field
-                name="lastName"
-                component="input"
-                placeholder="Last Name"
-              />
-              <Field name="email" component="input" placeholder="Email" />
-            </form>
-          )}
-        </Form>
 
         <form onSubmit={submitHandler}>
           <div className="field">
@@ -274,7 +207,8 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
           <br />
 
           <div className="field">
-            {currUser.type === "student" || currUser.type === "alumni" ? (
+            {currUser.type === userTypeAlumni ||
+            currUser.type === userTypeStudent ? (
               <>
                 <h3>Tags</h3>
                 <p>
@@ -449,7 +383,4 @@ const mapDispatchToProps = (dispatch) => ({
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FacebookEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(FacebookEdit);
