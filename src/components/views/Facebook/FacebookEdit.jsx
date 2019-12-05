@@ -344,7 +344,6 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
             ) : null}
             <strong>Pronouns:</strong>
             <input
-              required
               type="text"
               value={pronoun || ""}
               onChange={(event) => setPronoun(event.target.value)}
