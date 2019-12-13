@@ -6,12 +6,13 @@ import PropTypes from "prop-types";
 import { Link } from "react-router5";
 import { avatarHelper } from "../../../lib/imageHelper";
 import { format } from "timeago.js";
+import { userTypeStudent } from "../../../constants/general";
 
 const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
   // Renders the Edit/Delete buttons
   const editDeleteButtons = (review) => {
     if (
-      currUser.type === "student" &&
+      currUser.type === userTypeStudent &&
       (currUser.id === review.userID || currUser.admin)
     ) {
       return (

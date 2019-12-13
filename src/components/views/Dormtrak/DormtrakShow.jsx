@@ -15,6 +15,7 @@ import { getDormtrakDorm, getDormtrakDormReviews } from "../../../api/dormtrak";
 import { checkAndHandleError } from "../../../lib/general";
 import { bannerHelper } from "../../../lib/imageHelper";
 import { Link } from "react-router5";
+import { userTypeStudent } from "../../../constants/general";
 
 const DormtrakShow = ({ route, currUser, token }) => {
   const [reviews, updateReviews] = useState([]);
@@ -47,7 +48,7 @@ const DormtrakShow = ({ route, currUser, token }) => {
 
   const checkUserCommentRights = () => {
     if (!currUser || !currUser.dorm) return false;
-    return currUser.type === "Student" && currUser.dorm.id === dorm.id;
+    return currUser.type === userTypeStudent && currUser.dorm.id === dorm.id;
   };
 
   return (

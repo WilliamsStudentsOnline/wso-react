@@ -313,7 +313,7 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
             />
             <br />
             <br />
-            {currUser.type === "student" ? (
+            {currUser.type === userTypeStudent ? (
               <>
                 <strong>Dorm Address:</strong>
                 <br />
