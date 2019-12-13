@@ -34,7 +34,8 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
 
       const photoResponse = await getUserLargePhoto(
         token,
-        targetResponse.data.data.unixID
+        targetResponse.data.data.unixID,
+        true
       );
       if (checkAndHandleError(photoResponse)) {
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
@@ -48,7 +49,8 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
   const userRoom = () => {
     if (
       viewPerson.type === userTypeStudent &&
-      (viewPerson.dormVisible && viewPerson.dormRoom)
+      viewPerson.dormVisible &&
+      viewPerson.dormRoom
     ) {
       return (
         <>
@@ -189,7 +191,7 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
   const classYear = () => {
     if (!viewPerson.classYear || viewPerson.type !== userTypeStudent)
       return null;
-    if (viewPerson.offCycle) return `'${viewPerson.classYear % 100}.5`;
+    if (viewPerson.offCycle) return `'${(viewPerson.classYear - 1) % 100}.5`;
 
     return `'${viewPerson.classYear % 100}`;
   };
@@ -246,7 +248,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FacebookUser);
+export default connect(mapStateToProps, mapDispatchToProps)(FacebookUser);

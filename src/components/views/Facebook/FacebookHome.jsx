@@ -74,7 +74,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
   // Generates the user's class year
   const classYear = (user) => {
     if (!user.classYear || user.type !== userTypeStudent) return null;
-    if (user.offCycle) return `'${user.classYear % 100}.5`;
+    if (user.offCycle) return `'${(user.classYear - 1) % 100}.5`;
 
     return `'${user.classYear % 100}`;
   };

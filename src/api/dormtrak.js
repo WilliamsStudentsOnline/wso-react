@@ -135,7 +135,7 @@ const postDormtrakDormReview = async (token, createParams) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    params: createParams,
+    data: createParams,
     method: "post",
   }).catch((error) => {
     return error.response;
@@ -180,7 +180,7 @@ const patchDormtrakDormReview = async (token, reviewParams, reviewID) => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    params: reviewParams,
+    data: reviewParams,
     method: "patch",
   }).catch((error) => {
     return error.response;

@@ -21,7 +21,11 @@ const Nav = ({ currUser, token, route }) => {
 
   useEffect(() => {
     const loadPhoto = async () => {
-      const photoResponse = await getUserThumbPhoto(token, currUser.unixID);
+      const photoResponse = await getUserThumbPhoto(
+        token,
+        currUser.unixID,
+        true
+      );
       if (checkAndHandleError(photoResponse)) {
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
       }
@@ -43,7 +47,7 @@ const Nav = ({ currUser, token, route }) => {
     updateMenuVisibility(false);
     loadEphcatches();
     // eslint-disable-next-line
-  }, [token, route]);
+  }, [currUser, token, route]);
 
   return (
     <nav>

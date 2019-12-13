@@ -17,6 +17,7 @@ import {
   putCurrUserPhoto,
 } from "../../../api/users";
 import { checkAndHandleError } from "../../../lib/general";
+import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 
 const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
   const [tags, updateTags] = useState([]);
@@ -181,10 +182,9 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
     } else {
       // If there are no errors, it means that patchCurrUser must have gone smoothly
       updateUser(updateResponse.data.data);
-      navigateTo("facebook.users", { userID: currUser.id });
+      navigateTo("facebook.users", { userID: currUser.id }, { reload: true });
     }
   };
-
   return (
     <article className="list-creation">
       <section>
@@ -207,7 +207,8 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
           <br />
 
           <div className="field">
-            {currUser.type === "student" || currUser.type === "alumni" ? (
+            {currUser.type === userTypeAlumni ||
+            currUser.type === userTypeStudent ? (
               <>
                 <h3>Tags</h3>
                 <p>
@@ -381,7 +382,4 @@ const mapDispatchToProps = (dispatch) => ({
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FacebookEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(FacebookEdit);
