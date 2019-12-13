@@ -52,56 +52,46 @@ const INITIAL_STATE = {
 };
 
 const changeActive = (state, action) => {
-  return Object.assign({}, state, {
-    active: action.newState,
-  });
+  return { ...state, active: action.newState };
 };
 
 const updateGapi = (state, action) => {
-  return Object.assign({}, state, {
-    gapi: action.gapi,
-  });
+  return { ...state, gapi: action.gapi };
 };
 
 const updateSignInStatus = (state, action) => {
-  return Object.assign({}, state, {
-    signedIn: action.signedIn,
-  });
+  return { ...state, signedIn: action.signedIn };
 };
 
 const addNotification = (state, action) => {
-  return Object.assign({}, state, {
+  return {
+    ...state,
     notifications: [...state.notifications, action.notification],
-  });
+  };
 };
 
 const removeNotification = (state, action) => {
-  return Object.assign({}, state, {
+  return {
+    ...state,
     notifications: state.notifications.filter((notification) => {
       return (
         notification.title !== action.notification.title &&
         notification.body !== action.notification.body
       );
     }),
-  });
+  };
 };
 
 const changeSemester = (state, action) => {
-  return Object.assign({}, state, {
-    semester: action.semester,
-  });
+  return { ...state, semester: action.semester };
 };
 
 const changeTimeFormat = (state, action) => {
-  return Object.assign({}, state, {
-    twelveHour: action.twelveHour,
-  });
+  return { ...state, twelveHour: action.twelveHour };
 };
 
 const toggleOrientation = (state) => {
-  return Object.assign({}, state, {
-    horizontal: !state.horizontal,
-  });
+  return { ...state, horizontal: !state.horizontal };
 };
 
 function schedulerUtilReducer(state = INITIAL_STATE, action) {
