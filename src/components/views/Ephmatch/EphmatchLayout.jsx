@@ -4,33 +4,27 @@ import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getCurrUser } from "../../../selectors/auth";
 
 // Additional imports
 import { Link } from "react-router5";
 
-const EphmatchLayout = ({ currUser, children }) => {
+const EphmatchLayout = ({ children }) => {
   return (
     <>
       <header>
         <div className="page-head">
           <h1>
-            <Link routeName="Ephmatch">Ephmatch</Link>
+            <Link routeName="ephmatch">Ephmatch</Link>
           </h1>
           <ul>
             <li>
-              <Link routeName="Ephmatch">Home</Link>
+              <Link routeName="ephmatch">Home</Link>
             </li>
             <li>
-              <Link routeName="Ephmatch.matches">Matches</Link>
-              {currUser.ephmatches && currUser.ephmatches.length > 0 ? (
-                <span className="Ephmatch-badge" title="Matches!">
-                  {currUser.ephmatches.length}
-                </span>
-              ) : null}
+              <Link routeName="ephmatch.matches">Matches</Link>
             </li>
             <li>
-              <Link routeName="Ephmatch.optout">Opt Out</Link>
+              <Link routeName="ephmatch.profile">Profile</Link>
             </li>
           </ul>
         </div>
@@ -41,14 +35,12 @@ const EphmatchLayout = ({ currUser, children }) => {
 };
 
 EphmatchLayout.propTypes = {
-  currUser: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired,
 };
 
 EphmatchLayout.defaultProps = {};
 
-const mapStateToProps = (state) => ({
-  currUser: getCurrUser(state),
-});
+// TODO remove if uneeded
+const mapStateToProps = () => ({});
 
 export default connect(mapStateToProps)(EphmatchLayout);
