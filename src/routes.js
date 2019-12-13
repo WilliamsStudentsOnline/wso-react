@@ -68,6 +68,14 @@ export default [
       { name: "matches", path: "/matches" },
     ],
   },
+  {
+    name: "ephmatch",
+    path: "/ephmatch",
+    children: [
+      { name: "optout", path: "/opt-out" },
+      { name: "matches", path: "/matches" },
+    ],
+  },
   { name: "login", path: "/account/login" },
   { name: "logout", path: "/account/logout" },
   { name: "faq", path: "/faq" },
