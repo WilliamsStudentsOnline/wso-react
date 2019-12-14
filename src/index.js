@@ -25,13 +25,13 @@ import throttle from "lodash/throttle";
 
 const router = configureRouter();
 
-const persistedState = loadState();
+const persistedState = loadState("state");
 const store = configureStore(router, persistedState);
 
 store.subscribe(
   throttle(() => {
     const authState = store.getState().authState;
-    saveState({ authState }, authState.remember);
+    saveState("state", { authState }, authState.remember);
   }, 1000)
 );
 

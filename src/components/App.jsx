@@ -90,6 +90,9 @@ const App = ({
         return <DiscussionMain />;
       case "logout":
         removeCreds();
+        // Remove credentials from localStorage, since after logging out the edits will be done in
+        // sessionStorage instead.
+        localStorage.removeItem("state");
         navigateTo("home");
         return null;
       case "403":
@@ -159,7 +162,4 @@ const mapDispatchToProps = (dispatch) => ({
   updateUser: (user) => dispatch(doUpdateUser(user)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

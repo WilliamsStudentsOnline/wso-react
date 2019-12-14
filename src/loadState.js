@@ -1,12 +1,12 @@
-export const loadState = () => {
+export const loadState = (stateName) => {
   try {
-    let serializedState = localStorage.getItem("state");
+    let serializedState = localStorage.getItem(stateName);
     // If no saved state found return undefined.
     // Note that you cannot return null, because an undefined input
     // causes the second argument to be treated as empty, whereas
     // a null input causes the second argument to be treated as null
     if (serializedState === null) {
-      serializedState = sessionStorage.getItem("state");
+      serializedState = sessionStorage.getItem(stateName);
       if (serializedState === null) {
         return undefined;
       }
@@ -17,14 +17,13 @@ export const loadState = () => {
   }
 };
 
-export const saveState = (state, useLocalStorage) => {
+export const saveState = (stateName, state, useLocalStorage) => {
   try {
     const serializedState = JSON.stringify(state);
     if (useLocalStorage) {
-      localStorage.setItem("state", serializedState);
+      localStorage.setItem(stateName, serializedState);
     } else {
-      localStorage.removeItem("state");
-      sessionStorage.setItem("state", serializedState);
+      sessionStorage.setItem(stateName, serializedState);
     }
   } catch (err) {
     // Ignore write errors.
