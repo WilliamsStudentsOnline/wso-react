@@ -14,7 +14,6 @@ import NotificationList from "./NotificationList";
 import SubMenu from "./SubMenu";
 import Search from "./Search";
 import Timetable from "./Timetable";
-import Help from "./Help";
 import AdditionalOptions from "./AdditionalOptions";
 
 // Redux (Selector, Reducer, Actions) imports
@@ -103,15 +102,6 @@ class Scheduler extends Component {
         </div>
       );
     }
-
-    if (active === "Help") {
-      return (
-        <div className="row">
-          <Help />
-        </div>
-      );
-    }
-
     return null;
   }
 
@@ -162,7 +152,4 @@ const mapDispatchToProps = (dispatch) => ({
   loadCatalog: (catalog) => dispatch(doLoadCatalog(catalog)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Scheduler);
+export default connect(mapStateToProps, mapDispatchToProps)(Scheduler);
