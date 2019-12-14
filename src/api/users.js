@@ -81,11 +81,9 @@ const putCurrUserPhoto = async (token, file) => {
 };
 
 // Gets the thumbnail photo of a specified user.
-const getUserThumbPhoto = async (token, unixID, noCache = false) => {
+const getUserThumbPhoto = async (token, unixID) => {
   const response = await axios({
-    url: noCache
-      ? `/pic/thumb/${unixID}.jpg?timestamp=${new Date().getTime()}`
-      : `/pic/thumb/${unixID}.jpg`,
+    url: `/pic/thumb/${unixID}.jpg`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -98,11 +96,9 @@ const getUserThumbPhoto = async (token, unixID, noCache = false) => {
 };
 
 // Gets the large photo of a specified user.
-const getUserLargePhoto = async (token, unixID, noCache = false) => {
+const getUserLargePhoto = async (token, unixID) => {
   const response = await axios({
-    url: noCache
-      ? `/pic/large/${unixID}.jpg?timestamp=${new Date().getTime()}`
-      : `/pic/large/${unixID}.jpg`,
+    url: `/pic/large/${unixID}.jpg`,
     headers: {
       Authorization: `Bearer ${token}`,
     },

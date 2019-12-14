@@ -34,8 +34,7 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
 
       const photoResponse = await getUserLargePhoto(
         token,
-        targetResponse.data.data.unixID,
-        true
+        targetResponse.data.data.unixID
       );
       if (checkAndHandleError(photoResponse)) {
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
