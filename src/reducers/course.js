@@ -36,25 +36,20 @@ const INITIAL_STATE = {};
 let INITIAL_CATALOG = [];
 
 // Gets the added courses attributes from WebStorage and add the relevant courses.
+// TODO: binary search?
 const parseAddedCourses = () => {
   const addedCourses = localStorage.getItem("added");
   if (addedCourses) {
     const brownies = addedCourses.split(",");
-    // To refactor and take away parseInt
-    return INITIAL_CATALOG.filter((course) => {
-      let check = false;
-      brownies.forEach((brownie) => {
-        const bites = brownie.split(";");
-        if (
-          bites[0] === course.department &&
-          parseInt(bites[1], 10) === course.peoplesoftNumber
-        ) {
-          check = true;
-        }
-      });
-
-      return check;
-    });
+    for (let i = 0; i < brownies.length; i += 1) {
+      const bites = brownies[i].split(";");
+      bites[1] = parseInt(bites[1], 10);
+      brownies[i] = INITIAL_CATALOG.find(
+        (course) =>
+          bites[0] === course.department && bites[1] === course.peoplesoftNumber
+      );
+    }
+    return brownies.filter((brownie) => brownie);
   }
   return [];
 };
@@ -590,7 +585,7 @@ const resetFilters = (state) => {
 
 // Removes all courses from the current semester.
 const removeSemesterCourses = (state, action) => {
-  // Get all added semesters, remove all belonging to current semester, and update cookies
+  // Get all added semesters, remove all belonging to current semester, and update local storage
   const filteredAdded = state.added.filter(
     (course) => course.semester !== action.semester
   );

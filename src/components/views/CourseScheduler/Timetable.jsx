@@ -1,5 +1,5 @@
 // React imports
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -10,6 +10,7 @@ import domtoimage from "dom-to-image";
 import Schedule from "./Schedule";
 import Course from "./Course";
 import "../../stylesheets/Timetable.css";
+import Select from "./Select";
 
 // Redux (Selector, Reducer, Actions) imports
 import { getAddedCourses, getHiddenCourses } from "../../../selectors/course";
@@ -42,6 +43,33 @@ const Timetable = ({
   removeSemesterCourses,
   hidden,
 }) => {
+  const sortOrders = {
+    "Alphabetical(A-Z)": (courses) =>
+      courses.concat().sort((a, b) => {
+        // Sorts the courses by their name rather than add order for user convenience.
+        const titleA = a.department + a.number;
+        const titleB = b.department + b.number;
+
+        if (titleA < titleB) return -1;
+        if (titleA > titleB) return 1;
+        return 0;
+      }),
+    "Reverse Alphabetical (Z-A)": (courses) =>
+      courses.concat().sort((a, b) => {
+        // Sorts the courses by their name rather than add order for user convenience.
+        const titleA = a.department + a.number;
+        const titleB = b.department + b.number;
+
+        if (titleA < titleB) return 1;
+        if (titleA > titleB) return -1;
+        return 0;
+      }),
+    "Earliest Added First": (courses) => courses,
+    "Latest Added First": (courses) => courses.concat().reverse(),
+  };
+
+  const [sortOrder, updateSortOrder] = useState("Alphabetical(A-Z)");
+
   const semAdded = added.filter(
     (course) => course.semester === SEMESTERS[currSem]
   );
@@ -197,25 +225,31 @@ const Timetable = ({
       <div className="added">
         <div className="added-courses">
           <span>Added Courses:</span>
+          <div className="added-sort">
+            Sort By:
+            <Select
+              onChange={(event) => {
+                updateSortOrder(event.target.value);
+              }}
+              options={Object.keys(sortOrders)}
+              value={sortOrder}
+              valueList={Object.keys(sortOrders)}
+              style={{
+                display: "inline",
+                margin: "5px 0px 5px 20px",
+                padding: "4px",
+              }}
+            />
+          </div>
         </div>
 
-        {(semAdded || [])
-          .sort((a, b) => {
-            // Sorts the courses by their name rather than add order for user convenience.
-            const titleA = a.department + a.number;
-            const titleB = b.department + b.number;
-
-            if (titleA < titleB) return -1;
-            if (titleA > titleB) return 1;
-            return 0;
-          })
-          .map((course) => (
-            <Course
-              course={course}
-              key={course.department + course.courseID}
-              location="timetable"
-            />
-          ))}
+        {sortOrders[sortOrder](semAdded || []).map((course) => (
+          <Course
+            course={course}
+            key={course.department + course.courseID}
+            location="timetable"
+          />
+        ))}
       </div>
     );
   };
@@ -386,7 +420,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(doRemoveSemesterCourses(semester)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Timetable);
+export default connect(mapStateToProps, mapDispatchToProps)(Timetable);
