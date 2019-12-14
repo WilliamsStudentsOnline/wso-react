@@ -31,21 +31,7 @@ const store = configureStore(router, persistedState);
 store.subscribe(
   throttle(() => {
     const authState = store.getState().authState;
-    saveState({ authState });
-
-    // if (authState.remember) {
-    //   saveState({ authState });
-    // } else {
-    //   saveState({
-    //     authState: {
-    //       scope: [],
-    //       token: "",
-    //       expiry: "",
-    //       currUser: null, // Stores the user object.
-    //       remember: false,
-    //     },
-    //   });
-    // }
+    saveState({ authState }, authState.remember);
   }, 1000)
 );
 
