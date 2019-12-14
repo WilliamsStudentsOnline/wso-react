@@ -278,7 +278,7 @@ const Course = ({
 
         <p className="course-enroll-pref">
           <strong>Enrollment Preferences:&nbsp;</strong>
-          {course.enrlPref}
+          {course.enrlPref ? course.enrlPref : "No Enrollment Preferences"}
         </p>
 
         <p className="pass-fail">
@@ -333,7 +333,4 @@ const mapDispatchToProps = (dispatch) => ({
   onUnhide: (course) => dispatch(doUnhideCourse(course)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Course);
+export default connect(mapStateToProps, mapDispatchToProps)(Course);

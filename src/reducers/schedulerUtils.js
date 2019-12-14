@@ -48,7 +48,7 @@ const INITIAL_STATE = {
   notifications: [],
   semester: DEFAULT_SEMESTER,
   twelveHour: true,
-  horizontal: true,
+  horizontal: false,
 };
 
 const changeActive = (state, action) => {
