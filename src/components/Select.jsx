@@ -3,12 +3,16 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // Component imports
-import "../../stylesheets/Select.css";
+import "./stylesheets/Select.css";
 
 const Select = ({ onChange, options, value, valueList }) => {
   return (
-    <select className="select" onChange={onChange} value={value}>
-      <option value="">Pick a Time</option>
+    <select
+      className="select"
+      onChange={onChange}
+      value={value}
+      style={{ display: "inline" }}
+    >
       {options.map((option, index) => {
         if (option)
           return (
@@ -27,9 +31,13 @@ const Select = ({ onChange, options, value, valueList }) => {
 
 Select.propTypes = {
   onChange: PropTypes.func.isRequired,
-  options: PropTypes.arrayOf(PropTypes.string).isRequired,
-  value: PropTypes.string.isRequired,
-  valueList: PropTypes.arrayOf(PropTypes.string),
+  options: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  ).isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  valueList: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  ),
 };
 
 Select.defaultProps = {

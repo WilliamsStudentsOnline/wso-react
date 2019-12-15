@@ -77,7 +77,7 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
         <p className="comment-detail">
           {`posted about ${format(new Date(review.createdTime))}`}
         </p>
-        <p className="comment-detail">{editDeleteButtons(review)}</p>
+        <span className="comment-detail">{editDeleteButtons(review)}</span>
       </div>
     );
   };

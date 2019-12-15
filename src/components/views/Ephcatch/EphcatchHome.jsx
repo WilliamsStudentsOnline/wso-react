@@ -77,6 +77,13 @@ const EphcatchHome = ({ token }) => {
     }
   };
 
+  // Handles selection of page
+  const selectionHandler = (newPage) => {
+    console.log(newPage);
+    updatePage(newPage);
+    loadNextEphcatchers(newPage);
+  };
+
   return (
     <article className="facebook-results">
       <section>
@@ -93,12 +100,13 @@ const EphcatchHome = ({ token }) => {
           </p>
           <br />
           <PaginationButtons
+            selectionHandler={selectionHandler}
             clickHandler={clickHandler}
             page={page}
             total={total}
             perPage={perPage}
+            showPages
           />
-
           <br />
           {ephcatchers.map((ephcatcher, index) => (
             <Ephcatcher
@@ -109,6 +117,14 @@ const EphcatchHome = ({ token }) => {
               key={ephcatcher.id}
             />
           ))}
+          <PaginationButtons
+            selectionHandler={selectionHandler}
+            clickHandler={clickHandler}
+            page={page}
+            total={total}
+            perPage={perPage}
+            showPages
+          />
         </div>
       </section>
     </article>

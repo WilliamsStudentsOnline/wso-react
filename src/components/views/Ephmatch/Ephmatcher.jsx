@@ -32,7 +32,7 @@ const Ephmatcher = ({ ephmatcher, selectEphmatcher, index, token }) => {
         <div className="two-third">
           <h4>{ephmatcher.name}</h4>
 
-          {ephmatcher.unixID && ephmatcher.email ? (
+          {ephmatcher.unixID ? (
             <ul>
               <li className="list-headers">UNIX</li>
               <li className="list-contents">{ephmatcher.unixID}</li>

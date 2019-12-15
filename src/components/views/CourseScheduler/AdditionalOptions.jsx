@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 // Component imports
 import "../../stylesheets/AdditionalOptions.css";
 import Checkbox from "./Checkbox";
-import Select from "./Select";
+import Select from "../../Select";
 import Accordion from "./Accordion";
 
 // Redux (Selector, Reducer, Actions) imports
@@ -179,18 +179,14 @@ const AdditionalOptions = ({
                 onClick={() => clickLoader(distClick, 0)}
                 checked={filters.distributions[0]}
               />
-              {`Diversity, Power, and Equality (DPE) (${
-                counts.distributions[0]
-              })`}
+              {`Diversity, Power, and Equality (DPE) (${counts.distributions[0]})`}
             </li>
             <li>
               <Checkbox
                 onClick={() => clickLoader(distClick, 1)}
                 checked={filters.distributions[1]}
               />
-              {`Quantitative/Formal Reasoning (QFR) (${
-                counts.distributions[1]
-              })`}
+              {`Quantitative/Formal Reasoning (QFR) (${counts.distributions[1]})`}
             </li>
             <li>
               <Checkbox
@@ -208,9 +204,7 @@ const AdditionalOptions = ({
                 onClick={() => clickLoader(conflictClick, 0)}
                 checked={filters.conflict[0]}
               />
-              {`Only classes that fit my current schedule (${
-                counts.conflict[0]
-              })`}
+              {`Only classes that fit my current schedule (${counts.conflict[0]})`}
             </li>
           </ul>
         </Accordion>
@@ -386,7 +380,4 @@ const mapDispatchToProps = (dispatch) => ({
   typeClick: (index) => dispatch(doToggleType(index)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AdditionalOptions);
+export default connect(mapStateToProps, mapDispatchToProps)(AdditionalOptions);
