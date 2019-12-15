@@ -6,7 +6,7 @@ import {
   REMOVE_NOTIF,
   CHANGE_SEMESTER,
   CHANGE_TIME_FORMAT,
-  TOGGLE_ORIENTATION,
+  CHANGE_ORIENTATION,
 } from "../constants/actionTypes";
 
 const doSubmenuChange = (newState) => ({
@@ -44,8 +44,9 @@ const changeTimeFormat = (twelveHour) => ({
   twelveHour,
 });
 
-const toggleOrientation = () => ({
-  type: TOGGLE_ORIENTATION,
+const changeOrientation = (horizontal) => ({
+  type: CHANGE_ORIENTATION,
+  horizontal,
 });
 
 export {
@@ -56,5 +57,5 @@ export {
   removeNotif,
   changeSem,
   changeTimeFormat,
-  toggleOrientation,
+  changeOrientation,
 };

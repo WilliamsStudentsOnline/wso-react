@@ -8,7 +8,7 @@ import {
   REMOVE_NOTIF,
   CHANGE_SEMESTER,
   CHANGE_TIME_FORMAT,
-  TOGGLE_ORIENTATION,
+  CHANGE_ORIENTATION,
 } from "../../constants/actionTypes";
 
 describe("Utility reducer", () => {
@@ -144,7 +144,8 @@ describe("Utility reducer", () => {
 
   it("Toggles Orientation", () => {
     const action = {
-      type: TOGGLE_ORIENTATION,
+      type: CHANGE_ORIENTATION,
+      horizontal: false,
     };
 
     const previousState = { horizontal: true };

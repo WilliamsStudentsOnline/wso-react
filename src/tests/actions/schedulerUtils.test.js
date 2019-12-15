@@ -6,7 +6,7 @@ import {
   removeNotif,
   changeSem,
   changeTimeFormat,
-  toggleOrientation,
+  changeOrientation,
 } from "../../actions/schedulerUtils";
 import {
   SUBMENU_CHANGE,
@@ -16,7 +16,7 @@ import {
   REMOVE_NOTIF,
   CHANGE_SEMESTER,
   CHANGE_TIME_FORMAT,
-  TOGGLE_ORIENTATION,
+  CHANGE_ORIENTATION,
 } from "../../constants/actionTypes";
 
 describe("util action", () => {
@@ -113,10 +113,12 @@ describe("util action", () => {
   });
 
   it("toggles scheduler orientation", () => {
+    const horizontal = false;
     const expectedAction = {
-      type: TOGGLE_ORIENTATION,
+      type: CHANGE_ORIENTATION,
+      horizontal,
     };
-    const action = toggleOrientation();
+    const action = changeOrientation(horizontal);
 
     expect(action).toEqual(expectedAction);
   });

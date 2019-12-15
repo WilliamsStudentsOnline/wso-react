@@ -25,7 +25,7 @@ import {
   addNotif,
   changeSem,
   changeTimeFormat,
-  toggleOrientation,
+  changeOrientation,
 } from "../../../actions/schedulerUtils";
 import { SUCCESS } from "../../../constants/actionTypes";
 import { DATES, SEMESTERS } from "../../../constants/constants.json";
@@ -361,7 +361,7 @@ const Timetable = ({
           <i className="material-icons">access_time</i>
           <span>{twelveHour ? "12-Hour Time" : "24-Hour Time"}</span>
         </button>
-        <button onClick={() => orientationToggle()} type="button">
+        <button onClick={() => orientationToggle(!horizontal)} type="button">
           <i className="material-icons">
             {horizontal ? "crop_landscape" : "crop_portrait"}
           </i>
@@ -415,7 +415,7 @@ const mapDispatchToProps = (dispatch) => ({
   notifAdd: (notification) => dispatch(addNotif(notification)),
   semChange: (newSem) => dispatch(changeSem(newSem)),
   timeFormatChange: (twelveHour) => dispatch(changeTimeFormat(twelveHour)),
-  orientationToggle: () => dispatch(toggleOrientation()),
+  orientationToggle: (horizontal) => dispatch(changeOrientation(horizontal)),
   removeSemesterCourses: (semester) =>
     dispatch(doRemoveSemesterCourses(semester)),
 });
