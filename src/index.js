@@ -43,7 +43,6 @@ store.subscribe(
         schedulerUtilState: {
           ...schedulerUtilState,
           gapi: null,
-          signedIn: false,
           notifications: [],
         },
       },

@@ -15,7 +15,6 @@ export const TOGGLE_OTHERS = 'TOGGLE_OTHERS';
 export const TOGGLE_CONFLICT = 'TOGGLE_CONFLICT';
 export const TOGGLE_LEVEL = 'TOGGLE_LEVEL';
 export const UPDATE_GAPI = 'UPDATE_GAPI';
-export const UPDATE_SIGNIN = 'UPDATE_SIGNIN';
 export const UPDATE_START = 'UPDATE_START';
 export const UPDATE_END = 'UPDATE_END';
 export const ADD_NOTIF = 'ADD_NOTIF';

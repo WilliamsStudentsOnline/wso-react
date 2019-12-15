@@ -181,7 +181,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   doUpdateGAPI: (gapi) => dispatch(updateGAPI(gapi)),
-  // doUpdateSignIn: (signedIn) => dispatch(updateSignIn(signedIn)),
   doAddNotification: (notification) => dispatch(addNotif(notification)),
   loadCatalog: (catalog) => dispatch(doLoadCatalog(catalog)),
   doUpdateSemester: (semester) => dispatch(changeSem(semester)),

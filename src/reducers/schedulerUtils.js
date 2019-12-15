@@ -1,7 +1,6 @@
 import {
   SUBMENU_CHANGE,
   UPDATE_GAPI,
-  UPDATE_SIGNIN,
   ADD_NOTIF,
   REMOVE_NOTIF,
   CHANGE_SEMESTER,
@@ -12,7 +11,6 @@ import {
 const INITIAL_STATE = {
   active: "Timetable",
   gapi: null,
-  signedIn: false,
   notifications: [],
   semester: 0,
   twelveHour: true,
@@ -25,10 +23,6 @@ const changeActive = (state, action) => {
 
 const updateGapi = (state, action) => {
   return { ...state, gapi: action.gapi };
-};
-
-const updateSignInStatus = (state, action) => {
-  return { ...state, signedIn: action.signedIn };
 };
 
 const addNotification = (state, action) => {
@@ -66,8 +60,6 @@ function schedulerUtilReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case UPDATE_GAPI:
       return updateGapi(state, action);
-    case UPDATE_SIGNIN:
-      return updateSignInStatus(state, action);
     case SUBMENU_CHANGE:
       return changeActive(state, action);
     case ADD_NOTIF:

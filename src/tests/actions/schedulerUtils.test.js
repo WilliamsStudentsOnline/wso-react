@@ -1,7 +1,6 @@
 import {
   doSubmenuChange,
   updateGAPI,
-  updateSignIn,
   addNotif,
   removeNotif,
   changeSem,
@@ -11,7 +10,6 @@ import {
 import {
   SUBMENU_CHANGE,
   UPDATE_GAPI,
-  UPDATE_SIGNIN,
   ADD_NOTIF,
   REMOVE_NOTIF,
   CHANGE_SEMESTER,
@@ -40,18 +38,6 @@ describe("util action", () => {
       gapi,
     };
     const action = updateGAPI(gapi);
-
-    expect(action).toEqual(expectedAction);
-  });
-
-  it("update sign-in status", () => {
-    const signedIn = true;
-
-    const expectedAction = {
-      type: UPDATE_SIGNIN,
-      signedIn,
-    };
-    const action = updateSignIn(signedIn);
 
     expect(action).toEqual(expectedAction);
   });

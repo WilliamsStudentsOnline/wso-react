@@ -3,7 +3,6 @@ import utilReducer from "../../reducers/schedulerUtils";
 import {
   SUBMENU_CHANGE,
   UPDATE_GAPI,
-  UPDATE_SIGNIN,
   ADD_NOTIF,
   REMOVE_NOTIF,
   CHANGE_SEMESTER,
@@ -118,23 +117,6 @@ describe("Utility reducer", () => {
 
     const previousState = { gapi: null, error: null };
     const expectedNewState = { gapi, error: null };
-
-    deepFreeze(previousState);
-    const newState = utilReducer(previousState, action);
-
-    expect(newState).toEqual(expectedNewState);
-  });
-
-  it("Updates Sign-in status", () => {
-    const signedIn = true;
-
-    const action = {
-      type: UPDATE_SIGNIN,
-      signedIn,
-    };
-
-    const previousState = { signedIn: false, error: null };
-    const expectedNewState = { signedIn, error: null };
 
     deepFreeze(previousState);
     const newState = utilReducer(previousState, action);

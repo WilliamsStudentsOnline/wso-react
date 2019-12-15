@@ -1,7 +1,6 @@
 import {
   SUBMENU_CHANGE,
   UPDATE_GAPI,
-  UPDATE_SIGNIN,
   ADD_NOTIF,
   REMOVE_NOTIF,
   CHANGE_SEMESTER,
@@ -17,11 +16,6 @@ const doSubmenuChange = (newState) => ({
 const updateGAPI = (gapi) => ({
   type: UPDATE_GAPI,
   gapi,
-});
-
-const updateSignIn = (signedIn) => ({
-  type: UPDATE_SIGNIN,
-  signedIn,
 });
 
 const addNotif = (notification) => ({
@@ -52,7 +46,6 @@ const changeOrientation = (horizontal) => ({
 export {
   doSubmenuChange,
   updateGAPI,
-  updateSignIn,
   addNotif,
   removeNotif,
   changeSem,
