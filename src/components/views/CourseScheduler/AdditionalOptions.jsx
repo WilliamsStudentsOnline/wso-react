@@ -356,7 +356,11 @@ AdditionalOptions.propTypes = {
   resetFilters: PropTypes.func.isRequired,
   twelveHour: PropTypes.bool.isRequired,
   counts: PropTypes.object.isRequired,
-  updateTime: PropTypes.string.isRequired,
+  updateTime: PropTypes.string,
+};
+
+AdditionalOptions.defaultProps = {
+  updateTime: "",
 };
 
 const mapStateToProps = (state) => ({

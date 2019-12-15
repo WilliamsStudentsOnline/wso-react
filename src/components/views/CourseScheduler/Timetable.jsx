@@ -176,7 +176,7 @@ const Timetable = ({
     document.body.removeChild(link);
   };
 
-  const calendarEvent = (course, meeting) => {
+  const exportCalendarEvent = async (course, meeting) => {
     const event = {
       summary: courseString(course),
       location: meeting.facil,
@@ -195,27 +195,30 @@ const Timetable = ({
         }T000000Z;BYDAY=${dayConversionGCal(meeting.days)}`,
       ],
     };
-    gapi.client.calendar.events
-      .insert({
-        calendarId: "primary",
-        resource: event,
-      })
-      .execute(
+
+    const request = gapi.client.calendar.events.insert({
+      calendarId: "primary",
+      resource: event,
+    });
+
+    request.execute((response) => {
+      if (!response.error) {
         notifAdd({
           notifType: SUCCESS,
           title: "Success!",
           body: `Sucessfully exported ${courseString(
             course
           )} to Google Calendar!`,
-        })
-      );
+        });
+      }
+    });
   };
 
   const exportCalendar = () => {
     gapi.auth2.getAuthInstance().signIn();
     for (const course of semAddedVisible) {
       for (const meeting of course.meetings) {
-        calendarEvent(course, meeting);
+        exportCalendarEvent(course, meeting);
       }
     }
   };

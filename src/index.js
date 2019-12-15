@@ -29,7 +29,7 @@ const persistedAuthState = loadState("state");
 const persistedSchedulerOptions = loadState("schedulerOptions");
 const store = configureStore(
   router,
-  Object.assign(persistedAuthState, persistedSchedulerOptions)
+  Object.assign(persistedAuthState || {}, persistedSchedulerOptions)
 );
 
 store.subscribe(
@@ -44,6 +44,7 @@ store.subscribe(
           ...schedulerUtilState,
           gapi: null,
           signedIn: false,
+          notifications: [],
         },
       },
       true

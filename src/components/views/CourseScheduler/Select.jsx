@@ -41,8 +41,17 @@ Select.propTypes = {
   options: PropTypes.arrayOf(PropTypes.string).isRequired,
   value: PropTypes.string.isRequired,
   valueList: PropTypes.arrayOf(PropTypes.string),
-  fillerOption: PropTypes.string,
-  fillerValue: PropTypes.object,
+  fillerOption: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.bool,
+    PropTypes.string,
+  ]),
+  fillerValue: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.bool,
+    PropTypes.string,
+    PropTypes.object,
+  ]),
   style: PropTypes.object,
 };
 

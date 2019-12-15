@@ -17,11 +17,7 @@ import Timetable from "./Timetable";
 import AdditionalOptions from "./AdditionalOptions";
 
 // Redux (Selector, Reducer, Actions) imports
-import {
-  getCurrSubMenu,
-  // getGAPI,
-  // getSignInStatus,
-} from "../../../selectors/schedulerUtils";
+import { getCurrSubMenu } from "../../../selectors/schedulerUtils";
 import {
   updateGAPI,
   updateSignIn,
@@ -69,7 +65,6 @@ const Scheduler = ({
   doAddNotification,
   active,
   loadCatalog,
-  // gapi,
 }) => {
   useEffect(() => {
     const loadGAPI = async () => {
@@ -94,7 +89,6 @@ const Scheduler = ({
         doUpdateGAPI(gapiClient);
         doUpdateSignIn(gapiClient.auth2.getAuthInstance().isSignedIn.get());
       } catch (error) {
-        console.log(error);
         doAddNotification({
           type: FAILURE,
           title: "Failed to execute Google Authentication.",
@@ -183,8 +177,6 @@ Scheduler.propTypes = {
 
 const mapStateToProps = (state) => ({
   active: getCurrSubMenu(state),
-  // gapi: getGAPI(state),
-  // signedIn: getSignInStatus(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
