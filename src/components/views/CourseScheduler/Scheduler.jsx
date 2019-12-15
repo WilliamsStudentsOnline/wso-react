@@ -20,7 +20,7 @@ import AdditionalOptions from "./AdditionalOptions";
 import { getCurrSubMenu } from "../../../selectors/schedulerUtils";
 import {
   updateGAPI,
-  updateSignIn,
+  // updateSignIn,
   addNotif,
   changeSem,
 } from "../../../actions/schedulerUtils";
@@ -61,7 +61,7 @@ if (
 const Scheduler = ({
   doUpdateGAPI,
   doUpdateSemester,
-  doUpdateSignIn,
+  // doUpdateSignIn,
   doAddNotification,
   active,
   loadCatalog,
@@ -78,7 +78,7 @@ const Scheduler = ({
         ];
         const API_KEY = "AIzaSyAxGwi55Zk2mg-Hs-O3qLBcoEMx__cceD0";
 
-        await gapiClient.client.init({
+        gapiClient.client.init({
           clientId: CLIENT_ID,
           scope: SCOPES,
           discoveryDocs: DISCOVERY_DOCS,
@@ -87,7 +87,7 @@ const Scheduler = ({
 
         // Listen for sign-in state changes.
         doUpdateGAPI(gapiClient);
-        doUpdateSignIn(gapiClient.auth2.getAuthInstance().isSignedIn.get());
+        // doUpdateSignIn(gapiClient.auth2.getAuthInstance().isSignedIn.get());
       } catch (error) {
         doAddNotification({
           type: FAILURE,
@@ -114,7 +114,7 @@ const Scheduler = ({
   }, [
     doUpdateSemester,
     doUpdateGAPI,
-    doUpdateSignIn,
+    // doUpdateSignIn,
     loadCatalog,
     doAddNotification,
   ]);
@@ -168,7 +168,7 @@ const Scheduler = ({
 
 Scheduler.propTypes = {
   doUpdateGAPI: PropTypes.func.isRequired,
-  doUpdateSignIn: PropTypes.func.isRequired,
+  // doUpdateSignIn: PropTypes.func.isRequired,
   doUpdateSemester: PropTypes.func.isRequired,
   doAddNotification: PropTypes.func.isRequired,
   loadCatalog: PropTypes.func.isRequired,
@@ -181,7 +181,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   doUpdateGAPI: (gapi) => dispatch(updateGAPI(gapi)),
-  doUpdateSignIn: (signedIn) => dispatch(updateSignIn(signedIn)),
+  // doUpdateSignIn: (signedIn) => dispatch(updateSignIn(signedIn)),
   doAddNotification: (notification) => dispatch(addNotif(notification)),
   loadCatalog: (catalog) => dispatch(doLoadCatalog(catalog)),
   doUpdateSemester: (semester) => dispatch(changeSem(semester)),

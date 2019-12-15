@@ -19,6 +19,7 @@ import {
   getSemester,
   getTimeFormat,
   getOrientation,
+  // getSignInStatus,
 } from "../../../selectors/schedulerUtils";
 import { doRemoveSemesterCourses } from "../../../actions/course";
 import {
@@ -26,6 +27,7 @@ import {
   changeSem,
   changeTimeFormat,
   changeOrientation,
+  // updateSignIn,
 } from "../../../actions/schedulerUtils";
 import { SUCCESS } from "../../../constants/actionTypes";
 import { DATES, SEMESTERS } from "../../../constants/constants.json";
@@ -43,6 +45,15 @@ const Timetable = ({
   removeSemesterCourses,
   hidden,
 }) => {
+  let signedIn;
+  if (gapi && gapi.auth2.getAuthInstance()) {
+    signedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
+  } else {
+    signedIn = false;
+  }
+  let currApiRequests = [];
+
+  // Defines sorting orders
   const sortOrders = {
     "Alphabetical(A-Z)": (courses) =>
       courses.concat().sort((a, b) => {
@@ -176,7 +187,7 @@ const Timetable = ({
     document.body.removeChild(link);
   };
 
-  const exportCalendarEvent = async (course, meeting) => {
+  const exportCalendarEvent = (course, meeting) => {
     const event = {
       summary: courseString(course),
       location: meeting.facil,
@@ -196,30 +207,57 @@ const Timetable = ({
       ],
     };
 
-    const request = gapi.client.calendar.events.insert({
-      calendarId: "primary",
-      resource: event,
-    });
-
-    request.execute((response) => {
-      if (!response.error) {
-        notifAdd({
-          notifType: SUCCESS,
-          title: "Success!",
-          body: `Sucessfully exported ${courseString(
-            course
-          )} to Google Calendar!`,
-        });
-      }
+    currApiRequests.push({
+      request: gapi.client.calendar.events.insert({
+        calendarId: "primary",
+        resource: event,
+      }),
+      course,
     });
   };
 
+  const performAPIRequests = () => {
+    for (const { request, course } of currApiRequests) {
+      request.execute((response) => {
+        if (!response.error) {
+          notifAdd({
+            notifType: SUCCESS,
+            title: "Success!",
+            body: `Sucessfully exported ${courseString(
+              course
+            )} to Google Calendar!`,
+          });
+        }
+      });
+    }
+    // ? what if only one request fails?
+    currApiRequests = [];
+  };
+
+  const updateSignInStatus = (isSignedIn) => {
+    if (isSignedIn) {
+      signedIn = true;
+      if (currApiRequests.length > 0) {
+        performAPIRequests(currApiRequests);
+      }
+    } else {
+      signedIn = false;
+    }
+  };
+
   const exportCalendar = () => {
-    gapi.auth2.getAuthInstance().signIn();
     for (const course of semAddedVisible) {
       for (const meeting of course.meetings) {
         exportCalendarEvent(course, meeting);
       }
+    }
+
+    // If user is signed in, export all the events
+    if (signedIn) {
+      performAPIRequests();
+    } else {
+      gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+      gapi.auth2.getAuthInstance().signIn();
     }
   };
 

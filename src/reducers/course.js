@@ -128,12 +128,10 @@ Object.assign(INITIAL_STATE, {
 
 // Writing this rather than using regex for speed reasons
 const occurrences = (string = "", subString = "") => {
-  if (!string) return 0;
-  if (!subString) return 0;
+  if (!string || !subString) return 0;
 
   let n = 0;
 
-  // TODO: write a better loop?
   for (let pos = 0; pos < string.length; pos += 1) {
     pos = string.indexOf(subString, pos);
     if (pos >= 0) {
