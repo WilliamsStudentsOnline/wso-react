@@ -273,58 +273,44 @@ const AdditionalOptions = ({
           </ul>
         </Accordion>
         <Accordion header="Time">
-          <ul className="time">
-            <li>
-              <div className="row">
-                <div className="column">
-                  <span className="ul-header">Start Time</span>
-                </div>
-                <div className="column">
-                  <span className="ul-header">End Time</span>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div className="row">
-                <div className="column">
-                  {/* We pass in the 24 hour values for comparison so we don't have to write
+          <div className="row">
+            <div className="column">
+              <span className="ul-header">Start Time</span>
+              {/* We pass in the 24 hour values for comparison so we don't have to write
                     methods to parse them in the reducer. */}
-                  <Select
-                    onChange={(event) => clickLoader(startChange, event)}
-                    options={startTimes.filter((time, index) => {
-                      if (filters.end) return START_TIMES[index] < filters.end;
-                      return true;
-                    })}
-                    value={filters.start}
-                    valueList={START_TIMES.filter((time, index) => {
-                      if (filters.end) return START_TIMES[index] < filters.end;
-                      return true;
-                    })}
-                    fillerOption="Pick a Time"
-                    fillerValue=""
-                  />
-                </div>
-                <div className="column">
-                  <Select
-                    onChange={(event) => clickLoader(endChange, event)}
-                    options={endTimes.filter((time, index) => {
-                      if (filters.start)
-                        return END_TIMES[index] > filters.start;
-                      return true;
-                    })}
-                    value={filters.end}
-                    valueList={END_TIMES.filter((time, index) => {
-                      if (filters.start)
-                        return END_TIMES[index] > filters.start;
-                      return true;
-                    })}
-                    fillerOption="Pick a Time"
-                    fillerValue=""
-                  />
-                </div>
-              </div>
-            </li>
-          </ul>
+              <Select
+                onChange={(event) => clickLoader(startChange, event)}
+                options={startTimes.filter((time, index) => {
+                  if (filters.end) return START_TIMES[index] < filters.end;
+                  return true;
+                })}
+                value={filters.start}
+                valueList={START_TIMES.filter((time, index) => {
+                  if (filters.end) return START_TIMES[index] < filters.end;
+                  return true;
+                })}
+                fillerOption="Pick a Time"
+                fillerValue=""
+              />
+            </div>
+            <div className="column">
+              <span className="ul-header">End Time</span>
+              <Select
+                onChange={(event) => clickLoader(endChange, event)}
+                options={endTimes.filter((time, index) => {
+                  if (filters.start) return END_TIMES[index] > filters.start;
+                  return true;
+                })}
+                value={filters.end}
+                valueList={END_TIMES.filter((time, index) => {
+                  if (filters.start) return END_TIMES[index] > filters.start;
+                  return true;
+                })}
+                fillerOption="Pick a Time"
+                fillerValue=""
+              />
+            </div>
+          </div>
         </Accordion>
 
         <div className="reset-filters">
