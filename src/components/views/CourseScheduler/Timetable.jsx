@@ -1,5 +1,5 @@
 // React imports
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -10,6 +10,7 @@ import domtoimage from "dom-to-image";
 import Schedule from "./Schedule";
 import Course from "./Course";
 import "../../stylesheets/Timetable.css";
+import Select from "./Select";
 
 // Redux (Selector, Reducer, Actions) imports
 import { getAddedCourses, getHiddenCourses } from "../../../selectors/course";
@@ -18,13 +19,15 @@ import {
   getSemester,
   getTimeFormat,
   getOrientation,
+  // getSignInStatus,
 } from "../../../selectors/schedulerUtils";
 import { doRemoveSemesterCourses } from "../../../actions/course";
 import {
   addNotif,
   changeSem,
   changeTimeFormat,
-  toggleOrientation,
+  changeOrientation,
+  // updateSignIn,
 } from "../../../actions/schedulerUtils";
 import { SUCCESS } from "../../../constants/actionTypes";
 import { DATES, SEMESTERS } from "../../../constants/constants.json";
@@ -42,6 +45,42 @@ const Timetable = ({
   removeSemesterCourses,
   hidden,
 }) => {
+  let signedIn;
+  if (gapi && gapi.auth2.getAuthInstance()) {
+    signedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
+  } else {
+    signedIn = false;
+  }
+  let currApiRequests = [];
+
+  // Defines sorting orders
+  const sortOrders = {
+    "Alphabetical(A-Z)": (courses) =>
+      courses.concat().sort((a, b) => {
+        // Sorts the courses by their name rather than add order for user convenience.
+        const titleA = a.department + a.number;
+        const titleB = b.department + b.number;
+
+        if (titleA < titleB) return -1;
+        if (titleA > titleB) return 1;
+        return 0;
+      }),
+    "Reverse Alphabetical (Z-A)": (courses) =>
+      courses.concat().sort((a, b) => {
+        // Sorts the courses by their name rather than add order for user convenience.
+        const titleA = a.department + a.number;
+        const titleB = b.department + b.number;
+
+        if (titleA < titleB) return 1;
+        if (titleA > titleB) return -1;
+        return 0;
+      }),
+    "Earliest Added First": (courses) => courses,
+    "Latest Added First": (courses) => courses.concat().reverse(),
+  };
+
+  const [sortOrder, updateSortOrder] = useState("Alphabetical(A-Z)");
+
   const semAdded = added.filter(
     (course) => course.semester === SEMESTERS[currSem]
   );
@@ -148,7 +187,7 @@ const Timetable = ({
     document.body.removeChild(link);
   };
 
-  const calendarEvent = (course, meeting) => {
+  const exportCalendarEvent = (course, meeting) => {
     const event = {
       summary: courseString(course),
       location: meeting.facil,
@@ -167,28 +206,58 @@ const Timetable = ({
         }T000000Z;BYDAY=${dayConversionGCal(meeting.days)}`,
       ],
     };
-    gapi.client.calendar.events
-      .insert({
+
+    currApiRequests.push({
+      request: gapi.client.calendar.events.insert({
         calendarId: "primary",
         resource: event,
-      })
-      .execute(
-        notifAdd({
-          notifType: SUCCESS,
-          title: "Success!",
-          body: `Sucessfully exported ${courseString(
-            course
-          )} to Google Calendar!`,
-        })
-      );
+      }),
+      course,
+    });
+  };
+
+  const performAPIRequests = () => {
+    for (const { request, course } of currApiRequests) {
+      request.execute((response) => {
+        if (!response.error) {
+          notifAdd({
+            notifType: SUCCESS,
+            title: "Success!",
+            body: `Sucessfully exported ${courseString(
+              course
+            )} to Google Calendar!`,
+          });
+        }
+      });
+    }
+    // ? what if only one request fails?
+    currApiRequests = [];
+  };
+
+  const updateSignInStatus = (isSignedIn) => {
+    if (isSignedIn) {
+      signedIn = true;
+      if (currApiRequests.length > 0) {
+        performAPIRequests(currApiRequests);
+      }
+    } else {
+      signedIn = false;
+    }
   };
 
   const exportCalendar = () => {
-    gapi.auth2.getAuthInstance().signIn();
     for (const course of semAddedVisible) {
       for (const meeting of course.meetings) {
-        calendarEvent(course, meeting);
+        exportCalendarEvent(course, meeting);
       }
+    }
+
+    // If user is signed in, export all the events
+    if (signedIn) {
+      performAPIRequests();
+    } else {
+      gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
+      gapi.auth2.getAuthInstance().signIn();
     }
   };
 
@@ -197,25 +266,31 @@ const Timetable = ({
       <div className="added">
         <div className="added-courses">
           <span>Added Courses:</span>
+          <div className="added-sort">
+            Sort By:
+            <Select
+              onChange={(event) => {
+                updateSortOrder(event.target.value);
+              }}
+              options={Object.keys(sortOrders)}
+              value={sortOrder}
+              valueList={Object.keys(sortOrders)}
+              style={{
+                display: "inline",
+                margin: "5px 0px 5px 20px",
+                padding: "4px",
+              }}
+            />
+          </div>
         </div>
 
-        {(semAdded || [])
-          .sort((a, b) => {
-            // Sorts the courses by their name rather than add order for user convenience.
-            const titleA = a.department + a.number;
-            const titleB = b.department + b.number;
-
-            if (titleA < titleB) return -1;
-            if (titleA > titleB) return 1;
-            return 0;
-          })
-          .map((course) => (
-            <Course
-              course={course}
-              key={course.department + course.courseID}
-              location="timetable"
-            />
-          ))}
+        {sortOrders[sortOrder](semAdded || []).map((course) => (
+          <Course
+            course={course}
+            key={course.department + course.courseID}
+            location="timetable"
+          />
+        ))}
       </div>
     );
   };
@@ -327,7 +402,7 @@ const Timetable = ({
           <i className="material-icons">access_time</i>
           <span>{twelveHour ? "12-Hour Time" : "24-Hour Time"}</span>
         </button>
-        <button onClick={() => orientationToggle()} type="button">
+        <button onClick={() => orientationToggle(!horizontal)} type="button">
           <i className="material-icons">
             {horizontal ? "crop_landscape" : "crop_portrait"}
           </i>
@@ -381,12 +456,9 @@ const mapDispatchToProps = (dispatch) => ({
   notifAdd: (notification) => dispatch(addNotif(notification)),
   semChange: (newSem) => dispatch(changeSem(newSem)),
   timeFormatChange: (twelveHour) => dispatch(changeTimeFormat(twelveHour)),
-  orientationToggle: () => dispatch(toggleOrientation()),
+  orientationToggle: (horizontal) => dispatch(changeOrientation(horizontal)),
   removeSemesterCourses: (semester) =>
     dispatch(doRemoveSemesterCourses(semester)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Timetable);
+export default connect(mapStateToProps, mapDispatchToProps)(Timetable);

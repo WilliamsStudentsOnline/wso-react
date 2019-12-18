@@ -1,6 +1,5 @@
 const getCurrSubMenu = ({ schedulerUtilState }) => schedulerUtilState.active;
 const getGAPI = ({ schedulerUtilState }) => schedulerUtilState.gapi;
-const getSignInStatus = ({ schedulerUtilState }) => schedulerUtilState.signedIn;
 const getNotifications = ({ schedulerUtilState }) =>
   schedulerUtilState.notifications;
 const getSemester = ({ schedulerUtilState }) => schedulerUtilState.semester;
@@ -11,7 +10,6 @@ const getOrientation = ({ schedulerUtilState }) =>
 export {
   getCurrSubMenu,
   getGAPI,
-  getSignInStatus,
   getNotifications,
   getSemester,
   getTimeFormat,

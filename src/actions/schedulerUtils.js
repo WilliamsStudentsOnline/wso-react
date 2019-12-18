@@ -1,12 +1,11 @@
 import {
   SUBMENU_CHANGE,
   UPDATE_GAPI,
-  UPDATE_SIGNIN,
   ADD_NOTIF,
   REMOVE_NOTIF,
   CHANGE_SEMESTER,
   CHANGE_TIME_FORMAT,
-  TOGGLE_ORIENTATION,
+  CHANGE_ORIENTATION,
 } from "../constants/actionTypes";
 
 const doSubmenuChange = (newState) => ({
@@ -17,11 +16,6 @@ const doSubmenuChange = (newState) => ({
 const updateGAPI = (gapi) => ({
   type: UPDATE_GAPI,
   gapi,
-});
-
-const updateSignIn = (signedIn) => ({
-  type: UPDATE_SIGNIN,
-  signedIn,
 });
 
 const addNotif = (notification) => ({
@@ -44,17 +38,17 @@ const changeTimeFormat = (twelveHour) => ({
   twelveHour,
 });
 
-const toggleOrientation = () => ({
-  type: TOGGLE_ORIENTATION,
+const changeOrientation = (horizontal) => ({
+  type: CHANGE_ORIENTATION,
+  horizontal,
 });
 
 export {
   doSubmenuChange,
   updateGAPI,
-  updateSignIn,
   addNotif,
   removeNotif,
   changeSem,
   changeTimeFormat,
-  toggleOrientation,
+  changeOrientation,
 };

@@ -32,26 +32,23 @@ const updateToken = (state, action) => {
   const response = action.response;
   const decoded = parseToken(response.token);
 
-  return Object.assign({}, state, {
+  return {
+    ...state,
     scope: decoded.scope,
     token: response.token,
     expiry: decoded.exp * 1000,
     tokenLevel: decoded.tokenLevel,
-  });
+  };
 };
 
 // Updates the user
 const updateUser = (state, action) => {
-  return Object.assign({}, state, {
-    currUser: action.newUser,
-  });
+  return { ...state, currUser: action.newUser };
 };
 
 // Updates the boolean indicating if user info should be stored
 const updateRemember = (state, action) => {
-  return Object.assign({}, state, {
-    remember: action.remember,
-  });
+  return { ...state, remember: action.remember };
 };
 
 // Remove authentication credentials from storage

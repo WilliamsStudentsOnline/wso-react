@@ -21,11 +21,7 @@ const Nav = ({ currUser, token, route }) => {
 
   useEffect(() => {
     const loadPhoto = async () => {
-      const photoResponse = await getUserThumbPhoto(
-        token,
-        currUser.unixID,
-        true
-      );
+      const photoResponse = await getUserThumbPhoto(token, currUser.unixID);
       if (checkAndHandleError(photoResponse)) {
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
       }

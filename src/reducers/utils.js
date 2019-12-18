@@ -6,11 +6,11 @@ const INITIAL_STATE = {
 };
 
 const updateNotice = (state, notice) => {
-  return Object.assign({}, state, { notice });
+  return { ...state, notice };
 };
 
 const updateWarning = (state, warning) => {
-  return Object.assign({}, state, { warning });
+  return { ...state, warning };
 };
 
 function utilReducer(state = INITIAL_STATE, action) {

@@ -196,6 +196,35 @@ const Course = ({
     );
   };
 
+  const semesterInNumber = () => {
+    switch (course.semester) {
+      case "Fall":
+        return 1001 + 10 * (course.year % 100);
+      case "Winter":
+        return 1002 + 10 * (course.year % 100);
+      default:
+        return 1003 + 10 * (course.year % 100);
+    }
+  };
+
+  const bookstoreLink = () => {
+    const baseBookstoreLink =
+      "https://www.bkstr.com/williamsstore/follett-discover-view/booklook?shopBy=discoverViewCourse&bookstoreId=506&divisionDisplayName=";
+
+    return (
+      <a
+        href={`${baseBookstoreLink}&termId=${semesterInNumber()}&departmentDisplayName=${
+          course.department
+        }&courseDisplayName=${course.number}&sectionDisplayName=${
+          course.section
+        }`}
+        style={{ color: "rebeccapurple" }}
+      >
+        View Course Book Information
+      </a>
+    );
+  };
+
   const clickExpand = () => {
     // Addition of &nbsp; prevents div collapse.
     return (
@@ -268,6 +297,9 @@ const Course = ({
       </div>
 
       <div className="course-body" hidden={bodyHidden}>
+        {bookstoreLink()}
+        <br />
+        <br />
         {crossListing()}
         <p className="course-description">{course.descriptionSearch}</p>
         <p className="course-format">
@@ -278,7 +310,7 @@ const Course = ({
 
         <p className="course-enroll-pref">
           <strong>Enrollment Preferences:&nbsp;</strong>
-          {course.enrlPref}
+          {course.enrlPref ? course.enrlPref : "No Enrollment Preferences"}
         </p>
 
         <p className="pass-fail">
@@ -333,7 +365,4 @@ const mapDispatchToProps = (dispatch) => ({
   onUnhide: (course) => dispatch(doUnhideCourse(course)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Course);
+export default connect(mapStateToProps, mapDispatchToProps)(Course);

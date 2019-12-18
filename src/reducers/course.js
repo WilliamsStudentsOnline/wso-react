@@ -36,25 +36,20 @@ const INITIAL_STATE = {};
 let INITIAL_CATALOG = [];
 
 // Gets the added courses attributes from WebStorage and add the relevant courses.
+// TODO: binary search?
 const parseAddedCourses = () => {
   const addedCourses = localStorage.getItem("added");
   if (addedCourses) {
     const brownies = addedCourses.split(",");
-    // To refactor and take away parseInt
-    return INITIAL_CATALOG.filter((course) => {
-      let check = false;
-      brownies.forEach((brownie) => {
-        const bites = brownie.split(";");
-        if (
-          bites[0] === course.department &&
-          parseInt(bites[1], 10) === course.peoplesoftNumber
-        ) {
-          check = true;
-        }
-      });
-
-      return check;
-    });
+    for (let i = 0; i < brownies.length; i += 1) {
+      const bites = brownies[i].split(";");
+      bites[1] = parseInt(bites[1], 10);
+      brownies[i] = INITIAL_CATALOG.find(
+        (course) =>
+          bites[0] === course.department && bites[1] === course.peoplesoftNumber
+      );
+    }
+    return brownies.filter((brownie) => brownie);
   }
   return [];
 };
@@ -133,12 +128,10 @@ Object.assign(INITIAL_STATE, {
 
 // Writing this rather than using regex for speed reasons
 const occurrences = (string = "", subString = "") => {
-  if (!string) return 0;
-  if (!subString) return 0;
+  if (!string || !subString) return 0;
 
   let n = 0;
 
-  // TODO: write a better loop?
   for (let pos = 0; pos < string.length; pos += 1) {
     pos = string.indexOf(subString, pos);
     if (pos >= 0) {
@@ -395,7 +388,7 @@ const applyFilters = (state, queried, filters) => {
 
 const findCount = (
   state,
-  original = Object.assign({}, state.counts),
+  original = Object.assign(...state.counts),
   filter,
   constants
 ) => {
@@ -417,7 +410,7 @@ const findCount = (
 };
 
 const updateCounts = (state) => {
-  const newCounts = Object.assign({}, state.counts);
+  const newCounts = { ...state.counts };
 
   newCounts.semesters = findCount(state, newCounts, "semesters", SEMESTERS);
   newCounts.distributions = findCount(
@@ -438,9 +431,10 @@ const updateCounts = (state) => {
 const updateScores = (param) => {
   // Assign scores based on current search parameters
   for (let i = 0; i < INITIAL_CATALOG.length; i += 1) {
-    INITIAL_CATALOG[i] = Object.assign({}, INITIAL_CATALOG[i], {
+    INITIAL_CATALOG[i] = {
+      ...INITIAL_CATALOG[i],
       score: scoreCourses(param, INITIAL_CATALOG[i]),
-    });
+    };
   }
 
   return INITIAL_CATALOG;
@@ -458,27 +452,22 @@ const applySearchCourse = (state, param = state.query) => {
       .sort(compareRelevance);
   }
 
-  const newState = Object.assign({}, state, {
+  const newState = {
+    ...state,
     searched: applyFilters(state, queried, state.filters),
     queried,
     query: param,
-  });
+  };
 
-  return Object.assign({}, newState, {
-    counts: updateCounts(newState),
-  });
+  return { ...newState, counts: updateCounts(newState) };
 };
 
 const applyResetLoad = (state) => {
-  return Object.assign({}, state, {
-    loadGroup: 1,
-  });
+  return { ...state, loadGroup: 1 };
 };
 
 const applyLoadCourses = (state, action) => {
-  return Object.assign({}, state, {
-    loadGroup: action.newLoadGroup,
-  });
+  return { ...state, loadGroup: action.newLoadGroup };
 };
 
 const applyAddCourse = (state, action) => {
@@ -491,9 +480,7 @@ const applyAddCourse = (state, action) => {
   localStorage.setItem("added", addedCourses);
 
   // Update state
-  return Object.assign({}, state, {
-    added: [...state.added, action.course],
-  });
+  return { ...state, added: [...state.added, action.course] };
 };
 
 const applyRemoveCourse = (state, action) => {
@@ -510,29 +497,28 @@ const applyRemoveCourse = (state, action) => {
   localStorage.setItem("added", brownie.join(","));
 
   // Update State
-  return Object.assign({}, state, {
+  return {
+    ...state,
     added: state.added.filter((course) => course !== action.course),
-  });
+  };
 };
 
 const applyHideCourse = (state, action) => {
-  return Object.assign({}, state, {
-    hidden: [...state.hidden, action.course],
-  });
+  return { ...state, hidden: [...state.hidden, action.course] };
 };
 
 const applyUnhideCourse = (state, action) => {
-  return Object.assign({}, state, {
+  return {
+    ...state,
     hidden: state.hidden.filter((course) => course !== action.course),
-  });
+  };
 };
 
 const toggleConf = (state) => {
-  return Object.assign({}, state, {
-    filters: Object.assign({}, state.filters, {
-      conflict: [!state.filters.conflict[0]],
-    }),
-  });
+  return {
+    ...state,
+    filters: { ...state.filters, conflict: [!state.filters.conflict[0]] },
+  };
 };
 const toggleSem = (state, action) => {
   const final = state.filters.semesters.slice();
@@ -540,11 +526,7 @@ const toggleSem = (state, action) => {
   if (final[action.index]) final[action.index] = false;
   else final[action.index] = SEMESTERS[action.index];
 
-  return Object.assign({}, state, {
-    filters: Object.assign({}, state.filters, {
-      semesters: final,
-    }),
-  });
+  return { ...state, filters: { ...state.filters, semesters: final } };
 };
 const toggleDist = (state, action) => {
   const final = state.filters.distributions.slice();
@@ -552,11 +534,7 @@ const toggleDist = (state, action) => {
   if (final[action.index]) final[action.index] = false;
   else final[action.index] = DISTRIBUTIONS[action.index];
 
-  return Object.assign({}, state, {
-    filters: Object.assign({}, state.filters, {
-      distributions: final,
-    }),
-  });
+  return { ...state, filters: { ...state.filters, distributions: final } };
 };
 const toggleDiv = (state, action) => {
   const final = state.filters.divisions.slice();
@@ -564,22 +542,14 @@ const toggleDiv = (state, action) => {
   if (final[action.index]) final[action.index] = false;
   else final[action.index] = DIVISIONS[action.index];
 
-  return Object.assign({}, state, {
-    filters: Object.assign({}, state.filters, {
-      divisions: final,
-    }),
-  });
+  return { ...state, filters: { ...state.filters, divisions: final } };
 };
 const toggleOthers = (state, action) => {
   const final = state.filters.others.slice();
 
   if (final[action.index]) final[action.index] = false;
   else final[action.index] = OTHERS[action.index];
-  return Object.assign({}, state, {
-    filters: Object.assign({}, state.filters, {
-      others: final,
-    }),
-  });
+  return { ...state, filters: { ...state.filters, others: final } };
 };
 const toggleLevel = (state, action) => {
   const final = state.filters.levels.slice();
@@ -587,11 +557,7 @@ const toggleLevel = (state, action) => {
   if (final[action.index] !== false) final[action.index] = false;
   else final[action.index] = LEVELS[action.index];
 
-  return Object.assign({}, state, {
-    filters: Object.assign({}, state.filters, {
-      levels: final,
-    }),
-  });
+  return { ...state, filters: { ...state.filters, levels: final } };
 };
 
 const toggleType = (state, action) => {
@@ -600,38 +566,24 @@ const toggleType = (state, action) => {
   if (final[action.index] !== false) final[action.index] = false;
   else final[action.index] = CLASS_TYPES[action.index];
 
-  return Object.assign({}, state, {
-    filters: Object.assign({}, state.filters, {
-      classTypes: final,
-    }),
-  });
+  return { ...state, filters: { ...state.filters, classTypes: final } };
 };
 
 const updateStart = (state, action) => {
-  return Object.assign({}, state, {
-    filters: Object.assign({}, state.filters, {
-      start: action.time,
-    }),
-  });
+  return { ...state, filters: { ...state.filters, start: action.time } };
 };
 
 const updateEnd = (state, action) => {
-  return Object.assign({}, state, {
-    filters: Object.assign({}, state.filters, {
-      end: action.time,
-    }),
-  });
+  return { ...state, filters: { ...state.filters, end: action.time } };
 };
 
 const resetFilters = (state) => {
-  return Object.assign({}, state, {
-    filters: INITIAL_FILTER_STATE,
-  });
+  return { ...state, filters: INITIAL_FILTER_STATE };
 };
 
 // Removes all courses from the current semester.
 const removeSemesterCourses = (state, action) => {
-  // Get all added semesters, remove all belonging to current semester, and update cookies
+  // Get all added semesters, remove all belonging to current semester, and update local storage
   const filteredAdded = state.added.filter(
     (course) => course.semester !== action.semester
   );
@@ -643,9 +595,7 @@ const removeSemesterCourses = (state, action) => {
       .join(",")
   );
 
-  return Object.assign({}, state, {
-    added: filteredAdded,
-  });
+  return { ...state, added: filteredAdded };
 };
 
 const applyLoadCatalog = (state, catalog) => {
