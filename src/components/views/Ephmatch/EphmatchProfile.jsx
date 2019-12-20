@@ -16,6 +16,7 @@ import {
   deleteEphmatchProfile,
   createEphmatchProfile,
 } from "../../../api/ephmatch";
+import { Link } from "react-router5";
 
 const EphmatchProfile = ({ token, navigateTo }) => {
   // Note that this is different from Ephcatch
@@ -24,10 +25,11 @@ const EphmatchProfile = ({ token, navigateTo }) => {
   const [description, updateDescription] = useState("");
 
   useEffect(() => {
+    let isMounted = true;
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
       const ownProfile = await getSelfEphmatchProfile(token);
-      if (checkAndHandleError(ownProfile)) {
+      if (checkAndHandleError(ownProfile) && isMounted) {
         updateProfile(ownProfile.data.data);
         updateDescription(ownProfile.data.data.description);
         updateOptIn(!ownProfile.data.deleted);
@@ -35,6 +37,10 @@ const EphmatchProfile = ({ token, navigateTo }) => {
     };
 
     loadEphmatchProfile();
+
+    return () => {
+      isMounted = false;
+    };
   }, [token]);
 
   const submitHandler = async (event) => {
@@ -85,20 +91,10 @@ const EphmatchProfile = ({ token, navigateTo }) => {
             <br />
           </p>
           <br />
-          <h3>Profile</h3>
-
-          <br />
-          <b>
-            This is entirely optional - we respect your wishes, and you will not
-            be added into the Ephmatch system should you choose not to opt-in.
-            Opting in still allows for you to opt out in the future, and even if
-            you do not opt in today, the option will still be open for you in
-            the future.
-          </b>
-          <br />
-          <br />
 
           <form onSubmit={submitHandler}>
+            <h3>Profile</h3>
+            <br />
             <p>
               <strong>Profile Description:</strong>
               <input
@@ -106,13 +102,28 @@ const EphmatchProfile = ({ token, navigateTo }) => {
                 value={description || ""}
                 onChange={(event) => updateDescription(event.target.value)}
               />
-              <input
-                type="checkbox"
-                onChange={(event) => updateOptIn(event.target.checked)}
-                checked={optIn}
-              />
-              I want to participate in Ephmatch.
+              <br />
+              You may also edit other parts of your profile{" "}
+              <Link routeName="facebook.edit">here</Link>.
             </p>
+            <br />
+            <h3>Participation in Ephmatch</h3>
+            <br />
+            <b>
+              This is entirely optional - we respect your wishes, and you will
+              not be added into the Ephmatch system should you choose not to
+              opt-in.
+            </b>
+            <br />
+            <br />
+            <input
+              type="checkbox"
+              onChange={(event) => updateOptIn(event.target.checked)}
+              checked={optIn}
+            />
+            I want to participate in Ephmatch.
+            <br />
+            <br />
             <br />
             <input type="submit" value="Save" data-disable-with="Save" />
           </form>

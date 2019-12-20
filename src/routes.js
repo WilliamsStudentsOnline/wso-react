@@ -72,8 +72,8 @@ export default [
     name: "ephmatch",
     path: "/ephmatch",
     children: [
-      { name: "optout", path: "/opt-out" },
       { name: "matches", path: "/matches" },
+      { name: "profile", path: "/profile" },
     ],
   },
   { name: "login", path: "/account/login" },

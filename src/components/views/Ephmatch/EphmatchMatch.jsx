@@ -32,10 +32,15 @@ const EphmatchMatch = ({ token }) => {
     return (
       <section>
         <h3>Matches</h3>
-
-        <div className="grid-wrap">
+        <p>These Ephs have matched with you! Start the conversation!</p>
+        <div className="ephmatch-results">
           {matches.map((match) => (
-            <Ephmatcher ephmatcher={match} token={token} />
+            <Ephmatcher
+              ephmatcher={match.other}
+              ephmatcherProfile={match.other.ephmatchProfile}
+              token={token}
+              key={match.id}
+            />
           ))}
         </div>
       </section>

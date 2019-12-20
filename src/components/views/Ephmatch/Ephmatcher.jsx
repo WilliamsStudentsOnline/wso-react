@@ -6,8 +6,16 @@ import PropTypes from "prop-types";
 import { checkAndHandleError } from "../../../lib/general";
 import { getUserThumbPhoto } from "../../../api/users";
 
-const Ephmatcher = ({ ephmatcher, selectEphmatcher, index, token }) => {
-  const [userPhoto, updateUserPhoto] = useState(null);
+import Trakyak from "../../../assets/images/trakyak.png";
+
+const Ephmatcher = ({
+  ephmatcher,
+  selectEphmatcher,
+  index,
+  token,
+  ephmatcherProfile,
+}) => {
+  const [userPhoto, updateUserPhoto] = useState(Trakyak);
 
   useEffect(() => {
     const loadPhoto = async () => {
@@ -21,45 +29,50 @@ const Ephmatcher = ({ ephmatcher, selectEphmatcher, index, token }) => {
     // eslint-disable-next-line
   }, [token]);
 
-  if (selectEphmatcher === null)
-    return (
-      <aside>
-        <div className="third">
-          <div className="profile-photo">
-            <img src={userPhoto} alt="profile" />
-          </div>
-        </div>
-        <div className="two-third">
-          <h4>{ephmatcher.name}</h4>
+  // Generates the user's class year
+  const classYear = (year, offCycle) => {
+    if (!year) return null;
+    if (offCycle) return `'${(year - 1) % 100}.5`;
 
-          {ephmatcher.unixID ? (
-            <ul>
-              <li className="list-headers">UNIX</li>
-              <li className="list-contents">{ephmatcher.unixID}</li>
-            </ul>
-          ) : null}
-        </div>
-      </aside>
-    );
+    return `'${year % 100}`;
+  };
 
   return (
     <aside
-      key={ephmatcher.id}
+      key={ephmatcherProfile.id}
       className={
-        ephmatcher.liked
-          ? "ephmatch-select-link ephmatch-selected"
-          : "ephmatch-select-link"
+        ephmatcherProfile.liked
+          ? "ephcatch-selected ephcatch-select-link"
+          : "ephcatch-select-link"
       }
-      onClick={(event) => selectEphmatcher(event, index)}
+      onClick={
+        selectEphmatcher ? (event) => selectEphmatcher(event, index) : null
+      }
       role="presentation"
     >
-      <div className="third">
-        <div className="profile-photo">
-          <img src={userPhoto} alt="profile" />
-        </div>
+      <div style={{ width: "100%" }}>
+        <img
+          src={userPhoto}
+          style={{
+            width: "100%",
+            borderRadius: "10px 10px 0 0",
+            height: "300px",
+            objectFit: "cover",
+          }}
+          alt="profile"
+        />
       </div>
-      <div className="two-thirds">
-        <h4>{ephmatcher.name}</h4>
+      <div style={{ flex: 2, padding: "10px", textAlign: "left" }}>
+        <h4>{`${ephmatcher.name} ${classYear(
+          ephmatcher.classYear,
+          ephmatcher.offCycle
+        )}`}</h4>
+        {ephmatcher.unixID ? (
+          <span className="list-headers">{ephmatcher.unixID}</span>
+        ) : null}
+        {ephmatcherProfile.description ? (
+          <div>{ephmatcherProfile.description}</div>
+        ) : null}
       </div>
     </aside>
   );
@@ -67,6 +80,7 @@ const Ephmatcher = ({ ephmatcher, selectEphmatcher, index, token }) => {
 
 Ephmatcher.propTypes = {
   ephmatcher: PropTypes.object.isRequired,
+  ephmatcherProfile: PropTypes.object.isRequired,
   selectEphmatcher: PropTypes.func,
   index: PropTypes.number,
   token: PropTypes.string.isRequired,

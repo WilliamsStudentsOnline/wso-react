@@ -11,7 +11,7 @@ const Select = ({ onChange, options, value, valueList }) => {
       className="select"
       onChange={onChange}
       value={value}
-      style={{ display: "inline" }}
+      style={{ display: "inline", padding: "3px 10px" }}
     >
       {options.map((option, index) => {
         if (option)

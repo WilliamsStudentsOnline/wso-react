@@ -21,12 +21,18 @@ const PaginationButtons = ({
         <div style={{ display: "inline" }}>
           Page&nbsp;&nbsp;&nbsp;
           <Select
-            onChange={(event) =>
-              selectionHandler(parseInt(event.target.value, 10))
-            }
-            options={[1, 2]}
+            onChange={(event) => {
+              selectionHandler(parseInt(event.target.value, 10));
+            }}
+            options={Array.from(
+              Array(Math.ceil(total / perPage)),
+              (e, i) => i + 1
+            )}
             value={page + 1}
-            valueList={[1, 2]}
+            valueList={Array.from(
+              Array(Math.ceil(total / perPage)),
+              (e, i) => i + 1
+            )}
           />
           of&nbsp;
           {Math.ceil(total / perPage)}
@@ -44,7 +50,7 @@ const PaginationButtons = ({
         onClick={() => clickHandler(-1)}
         disabled={page === 0}
         style={{
-          backgroundColor: "#fff",
+          background: "none",
           color: "#4b2771",
           minWidth: 0,
           lineHeight: "normal",

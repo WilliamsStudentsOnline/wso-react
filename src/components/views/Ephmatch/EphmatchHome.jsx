@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import PaginationButtons from "../../PaginationButtons";
 
@@ -24,23 +24,25 @@ const EphmatchHome = ({ token, currUser }) => {
 
   const [ephmatchers, updateEphmatchers] = useState([]);
 
-  const loadNextEphmatchers = async (newPage) => {
-    const params = {
-      limit: perPage,
-      offset: newPage * perPage,
-    };
-    const EphmatchersResponse = await getEphmatchProfiles(token, params);
+  const loadNextEphmatchers = useCallback(
+    async (newPage) => {
+      const params = {
+        limit: perPage,
+        offset: newPage * perPage,
+      };
+      const EphmatchersResponse = await getEphmatchProfiles(token, params);
 
-    if (checkAndHandleError(EphmatchersResponse)) {
-      updateEphmatchers(EphmatchersResponse.data.data);
-      updateTotal(EphmatchersResponse.data.paginationTotal);
-    }
-  };
+      if (checkAndHandleError(EphmatchersResponse)) {
+        updateEphmatchers(EphmatchersResponse.data.data);
+        updateTotal(EphmatchersResponse.data.paginationTotal);
+      }
+    },
+    [updateEphmatchers, updateTotal, token]
+  );
 
   useEffect(() => {
     loadNextEphmatchers(0);
-    // eslint-disable-next-line
-  }, []);
+  }, [loadNextEphmatchers]);
 
   const selectEphmatcher = async (event, index) => {
     // Alternatively, use the classname to determine the method to be called.
@@ -50,15 +52,18 @@ const EphmatchHome = ({ token, currUser }) => {
     let ephmatchersResponse;
 
     if (ephmatcher.liked) {
-      ephmatchersResponse = await unlikeEphmatcher(token, ephmatcher.id);
-      target.className = "Ephmatch-select-link";
+      ephmatchersResponse = await unlikeEphmatcher(token, ephmatcher.userID);
+      target.className = "ephcatch-select-link";
     } else {
-      ephmatchersResponse = await likeEphmatcher(token, ephmatcher.id);
-      target.className = "Ephmatch-select-link Ephmatch-selected";
+      ephmatchersResponse = await likeEphmatcher(token, ephmatcher.userID);
+      target.className = "ephcatch-select-link ephcatch-selected";
     }
 
     if (checkAndHandleError(ephmatchersResponse)) {
-      const updatedEphmatcher = await getEphmatchProfile(token, ephmatcher.id);
+      const updatedEphmatcher = await getEphmatchProfile(
+        token,
+        ephmatcher.userID
+      );
 
       if (checkAndHandleError(updatedEphmatcher)) {
         ephmatchers.splice(index, 1, updatedEphmatcher.data.data);
@@ -77,10 +82,16 @@ const EphmatchHome = ({ token, currUser }) => {
     }
   };
 
+  // Handles selection of page
+  const selectionHandler = (newPage) => {
+    updatePage(newPage - 1);
+    loadNextEphmatchers(newPage - 1);
+  };
+
   return (
     <article className="facebook-results">
       <section>
-        <div className="grid-wrap">
+        <div>
           <p>
             Select as many people as you want by clicking on their profile. You
             can also come back later and modify your selections. To check if you
@@ -93,24 +104,37 @@ const EphmatchHome = ({ token, currUser }) => {
           </p>
           <br />
           <PaginationButtons
+            selectionHandler={selectionHandler}
             clickHandler={clickHandler}
             page={page}
             total={total}
             perPage={perPage}
+            showPages
           />
 
+          <div className="ephmatch-results">
+            {ephmatchers.map((ephmatcher, index) =>
+              ephmatcher.user && ephmatcher.user.id !== currUser.id ? (
+                <Ephmatcher
+                  ephmatcher={ephmatcher.user}
+                  ephmatcherProfile={ephmatcher}
+                  selectEphmatcher={selectEphmatcher}
+                  index={index}
+                  token={token}
+                  key={ephmatcher.id}
+                />
+              ) : null
+            )}
+          </div>
           <br />
-          {ephmatchers.map((ephmatcher, index) =>
-            ephmatcher.userId === currUser.id ? (
-              <Ephmatcher
-                ephmatcher={ephmatcher.user}
-                selectEphmatcher={selectEphmatcher}
-                index={index}
-                token={token}
-                key={ephmatcher.id}
-              />
-            ) : null
-          )}
+          <PaginationButtons
+            selectionHandler={selectionHandler}
+            clickHandler={clickHandler}
+            page={page}
+            total={total}
+            perPage={perPage}
+            showPages
+          />
         </div>
       </section>
     </article>
