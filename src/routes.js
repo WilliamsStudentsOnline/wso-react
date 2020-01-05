@@ -64,7 +64,7 @@ export default [
     name: "ephcatch",
     path: "/ephcatch",
     children: [
-      { name: "optout", path: "/opt-out" },
+      { name: "optOut", path: "/opt-out" },
       { name: "matches", path: "/matches" },
     ],
   },
@@ -74,6 +74,8 @@ export default [
     children: [
       { name: "matches", path: "/matches" },
       { name: "profile", path: "/profile" },
+      { name: "optIn", path: "/opt-in" },
+      { name: "optOut", path: "/opt-out" },
     ],
   },
   { name: "login", path: "/account/login" },

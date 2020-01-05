@@ -2,9 +2,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-// Redux imports
-import { connect } from "react-redux";
-
 // Additional imports
 import { Link } from "react-router5";
 
@@ -26,6 +23,9 @@ const EphmatchLayout = ({ children }) => {
             <li>
               <Link routeName="ephmatch.profile">Profile</Link>
             </li>
+            <li>
+              <Link routeName="ephmatch.optOut">Opt Out</Link>
+            </li>
           </ul>
         </div>
       </header>
@@ -40,7 +40,4 @@ EphmatchLayout.propTypes = {
 
 EphmatchLayout.defaultProps = {};
 
-// TODO remove if uneeded
-const mapStateToProps = () => ({});
-
-export default connect(mapStateToProps)(EphmatchLayout);
+export default EphmatchLayout;

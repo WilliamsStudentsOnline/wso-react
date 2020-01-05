@@ -5,19 +5,19 @@ import PropTypes from "prop-types";
 // Redux/routing imports
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
-import { doUpdateUser } from "../../../actions/auth";
 import { actions } from "redux-router5";
 
 // Additional imports
 import { checkAndHandleError } from "../../../lib/general";
 import {
   getSelfEphmatchProfile,
-  updateEphmatchProfile,
+  deleteEphmatchProfile,
 } from "../../../api/ephmatch";
-import { Link } from "react-router5";
 
-const EphmatchProfile = ({ token, navigateTo }) => {
-  const [description, updateDescription] = useState("");
+// Page created to handle both opting in and out.
+const EphmatchOpting = ({ token, navigateTo }) => {
+  // Note that this is different from Ephcatch
+  const [optOut, updateOptOut] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -25,7 +25,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
     const loadEphmatchProfile = async () => {
       const ownProfile = await getSelfEphmatchProfile(token);
       if (checkAndHandleError(ownProfile) && isMounted) {
-        updateDescription(ownProfile.data.data.description);
+        updateOptOut(ownProfile.data.deleted);
       }
     };
 
@@ -39,12 +39,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    const params = {
-      description,
-    };
-
-    // Update the profile.
-    const response = await updateEphmatchProfile(token, params);
+    const response = await deleteEphmatchProfile(token);
 
     // Update succeeded -> redirect them to main ephmatch page.
     if (checkAndHandleError(response)) {
@@ -57,26 +52,33 @@ const EphmatchProfile = ({ token, navigateTo }) => {
       <section>
         <article>
           <p>
-            Add a short description to your profile to help others know you
-            better!
+            Ephmatch is an exclusive feature for a limited time created to spark
+            encounters between yourself and other Ephs. Choosing to opt out
+            means you cannot select fellow Ephs or view matches. Your picture
+            and name will also not be shown to other users. You may opt back in
+            at anytime.
+            <br />
           </p>
-          <br />
           <br />
 
           <form onSubmit={submitHandler}>
-            <h3>Profile</h3>
+            <h3>Opting Out</h3>
             <br />
-            <p>
-              <strong>Profile Description:</strong>
-              <input
-                type="text"
-                value={description || ""}
-                onChange={(event) => updateDescription(event.target.value)}
-              />
-              <br />
-              You may also edit other parts of your profile{" "}
-              <Link routeName="facebook.edit">here</Link>.
-            </p>
+            <b>
+              This is entirely optional - we respect your wishes, and you will
+              not be added into the Ephmatch system should you choose to opt
+              out.
+            </b>
+            <br />
+            <br />
+            <input
+              type="checkbox"
+              onChange={(event) => updateOptOut(event.target.checked)}
+              defaultChecked={optOut}
+            />
+            I want to opt out of Ephmatch.
+            <br />
+            <br />
             <br />
             <input type="submit" value="Save" data-disable-with="Save" />
           </form>
@@ -86,12 +88,12 @@ const EphmatchProfile = ({ token, navigateTo }) => {
   );
 };
 
-EphmatchProfile.propTypes = {
+EphmatchOpting.propTypes = {
   token: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
-EphmatchProfile.defaultProps = {};
+EphmatchOpting.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   token: getToken(state),
@@ -99,7 +101,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
-  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EphmatchProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(EphmatchOpting);

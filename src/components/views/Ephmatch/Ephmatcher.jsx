@@ -25,7 +25,7 @@ const Ephmatcher = ({
       }
     };
 
-    loadPhoto();
+    if (ephmatcher) loadPhoto();
     // eslint-disable-next-line
   }, [token]);
 
@@ -62,24 +62,26 @@ const Ephmatcher = ({
           alt="profile"
         />
       </div>
-      <div style={{ flex: 2, padding: "10px", textAlign: "left" }}>
-        <h4>{`${ephmatcher.name} ${classYear(
-          ephmatcher.classYear,
-          ephmatcher.offCycle
-        )}`}</h4>
-        {ephmatcher.unixID ? (
-          <span className="list-headers">{ephmatcher.unixID}</span>
-        ) : null}
-        {ephmatcherProfile.description ? (
-          <div>{ephmatcherProfile.description}</div>
-        ) : null}
-      </div>
+      {ephmatcher && (
+        <div style={{ flex: 2, padding: "10px", textAlign: "left" }}>
+          <h4>{`${ephmatcher.name} ${classYear(
+            ephmatcher.classYear,
+            ephmatcher.offCycle
+          )}`}</h4>
+          {ephmatcher.unixID && (
+            <span className="list-headers">{ephmatcher.unixID}</span>
+          )}
+          {ephmatcherProfile.description && (
+            <div>{ephmatcherProfile.description}</div>
+          )}
+        </div>
+      )}
     </aside>
   );
 };
 
 Ephmatcher.propTypes = {
-  ephmatcher: PropTypes.object.isRequired,
+  ephmatcher: PropTypes.object,
   ephmatcherProfile: PropTypes.object.isRequired,
   selectEphmatcher: PropTypes.func,
   index: PropTypes.number,
@@ -89,6 +91,9 @@ Ephmatcher.propTypes = {
 Ephmatcher.defaultProps = {
   selectEphmatcher: null,
   index: 0,
+  ephmatcher: {
+    unixID: "Loading...",
+  },
 };
 
 export default Ephmatcher;

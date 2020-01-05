@@ -5,6 +5,8 @@ import EphmatchHome from "./EphmatchHome";
 import EphmatchLayout from "./EphmatchLayout";
 import EphmatchMatch from "./EphmatchMatch";
 import EphmatchProfile from "./EphmatchProfile";
+import EphmatchOptOut from "./EphmatchOptOut";
+import EphmatchOptIn from "./EphmatchOptIn";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
@@ -35,7 +37,11 @@ const EphmatchMain = ({ route, token, navigateTo }) => {
   }, [token]);
 
   const EphmatchBody = () => {
-    if (!ephmatchProfile) return <EphmatchProfile />;
+    // There won't be an infinite loop because the router does not transition on the same state
+    if (!ephmatchProfile || ephmatchProfile.deleted) {
+      navigateTo("ephmatch.optIn");
+      return <EphmatchOptIn />;
+    }
 
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <EphmatchHome />;
@@ -45,6 +51,14 @@ const EphmatchMain = ({ route, token, navigateTo }) => {
         return <EphmatchProfile />;
       case "matches":
         return <EphmatchMatch />;
+      case "optOut":
+        return <EphmatchOptOut />;
+      case "optIn":
+        if (ephmatchProfile) {
+          navigateTo("ephmatch");
+          return <EphmatchHome />;
+        }
+        return <EphmatchOptIn />;
       default:
         return <EphmatchHome />;
     }
