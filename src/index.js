@@ -25,27 +25,29 @@ import throttle from "lodash/throttle";
 
 const router = configureRouter();
 
-const persistedState = loadState();
-const store = configureStore(router, persistedState);
+const persistedAuthState = loadState("state");
+const persistedSchedulerOptions = loadState("schedulerOptions");
+const store = configureStore(
+  router,
+  Object.assign(persistedAuthState || {}, persistedSchedulerOptions)
+);
 
 store.subscribe(
   throttle(() => {
     const authState = store.getState().authState;
-    saveState({ authState });
-
-    // if (authState.remember) {
-    //   saveState({ authState });
-    // } else {
-    //   saveState({
-    //     authState: {
-    //       scope: [],
-    //       token: "",
-    //       expiry: "",
-    //       currUser: null, // Stores the user object.
-    //       remember: false,
-    //     },
-    //   });
-    // }
+    const schedulerUtilState = store.getState().schedulerUtilState;
+    saveState("state", { authState }, authState.remember);
+    saveState(
+      "schedulerOptions",
+      {
+        schedulerUtilState: {
+          ...schedulerUtilState,
+          gapi: null,
+          notifications: [],
+        },
+      },
+      true
+    );
   }, 1000)
 );
 

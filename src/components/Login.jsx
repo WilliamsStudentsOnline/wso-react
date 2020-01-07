@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { doUpdateToken, doUpdateUser } from "../actions/auth";
+import { doUpdateToken, doUpdateUser, doUpdateRemember } from "../actions/auth";
 import { actions } from "redux-router5";
 
 // External imports
@@ -13,19 +13,15 @@ import { getUser } from "../api/users";
 import { checkAndHandleError } from "../lib/general";
 import jwtDecode from "jwt-decode";
 
-const Login = ({ navigateTo, updateToken, updateUser }) => {
+const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
   const [unixID, setUnix] = useState("");
   const [password, setPassword] = useState("");
   const [errors, updateErrors] = useState([]);
-  // const [remember, setRemember] = useState(false);
+  const [remember, setRemember] = useState(true);
 
   const unixHandler = (event) => {
     const splitValue = event.target.value.split("@");
     setUnix(splitValue[0]);
-  };
-
-  const passwordHandler = (event) => {
-    setPassword(event.target.value);
   };
 
   const submitHandler = async (event) => {
@@ -47,7 +43,7 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
         // Only update if both requests pass.
         updateUser(userResponse.data.data);
         updateToken(response.data.data);
-        // updateRemember(remember);
+        updateRemember(remember);
         navigateTo("home");
       }
     } else if (response.data.error.errors) {
@@ -85,9 +81,9 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
           type="password"
           id="password"
           placeholder="Password"
-          onChange={passwordHandler}
+          onChange={(event) => setPassword(event.target.value)}
         />
-        {/* 
+
         <label htmlFor="remember_me">
           <input
             type="checkbox"
@@ -96,7 +92,7 @@ const Login = ({ navigateTo, updateToken, updateUser }) => {
             onChange={() => setRemember(!remember)}
           />
           Remember me
-        </label> */}
+        </label>
         <input
           type="submit"
           name="commit"
@@ -113,17 +109,14 @@ Login.propTypes = {
   updateToken: PropTypes.func.isRequired,
   navigateTo: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
-  // updateRemember: PropTypes.func.isRequired,
+  updateRemember: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
   updateToken: (response) => dispatch(doUpdateToken(response)),
   updateUser: (unixID) => dispatch(doUpdateUser(unixID)),
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
-  // updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
+  updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
 });
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Login);
+export default connect(null, mapDispatchToProps)(Login);

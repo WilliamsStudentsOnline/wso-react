@@ -47,7 +47,6 @@ const SubMenu = ({ handler, active }) => {
             text="Catalog"
             className={checkSelected("Catalog")}
           />
-          {/* <ListItem image="help_outline" text="Help" className={checkSelected('Help')} /> */}
         </ul>
       </div>
     </div>
@@ -67,7 +66,4 @@ const mapDispatchToProps = (dispatch) => ({
   handler: (newState) => dispatch(doSubmenuChange(newState)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SubMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(SubMenu);

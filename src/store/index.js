@@ -16,7 +16,6 @@ export default function configureStore(router, initialState = {}) {
       createStore
     );
   }
-
   const store = createStoreWithMiddleware(rootReducer, initialState);
 
   window.store = store;

@@ -1,22 +1,20 @@
 import {
   doSubmenuChange,
   updateGAPI,
-  updateSignIn,
   addNotif,
   removeNotif,
   changeSem,
   changeTimeFormat,
-  toggleOrientation,
+  changeOrientation,
 } from "../../actions/schedulerUtils";
 import {
   SUBMENU_CHANGE,
   UPDATE_GAPI,
-  UPDATE_SIGNIN,
   ADD_NOTIF,
   REMOVE_NOTIF,
   CHANGE_SEMESTER,
   CHANGE_TIME_FORMAT,
-  TOGGLE_ORIENTATION,
+  CHANGE_ORIENTATION,
 } from "../../constants/actionTypes";
 
 describe("util action", () => {
@@ -40,18 +38,6 @@ describe("util action", () => {
       gapi,
     };
     const action = updateGAPI(gapi);
-
-    expect(action).toEqual(expectedAction);
-  });
-
-  it("update sign-in status", () => {
-    const signedIn = true;
-
-    const expectedAction = {
-      type: UPDATE_SIGNIN,
-      signedIn,
-    };
-    const action = updateSignIn(signedIn);
 
     expect(action).toEqual(expectedAction);
   });
@@ -113,10 +99,12 @@ describe("util action", () => {
   });
 
   it("toggles scheduler orientation", () => {
+    const horizontal = false;
     const expectedAction = {
-      type: TOGGLE_ORIENTATION,
+      type: CHANGE_ORIENTATION,
+      horizontal,
     };
-    const action = toggleOrientation();
+    const action = changeOrientation(horizontal);
 
     expect(action).toEqual(expectedAction);
   });

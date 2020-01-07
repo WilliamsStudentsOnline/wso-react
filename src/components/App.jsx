@@ -93,6 +93,9 @@ const App = ({
         return <DiscussionMain />;
       case "logout":
         removeCreds();
+        // Remove credentials from localStorage, since after logging out the edits will be done in
+        // sessionStorage instead.
+        localStorage.removeItem("state");
         navigateTo("home");
         return null;
       case "403":

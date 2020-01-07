@@ -43,7 +43,7 @@ const EphmatchOpting = ({ token, navigateTo }) => {
 
     // Update succeeded -> redirect them to main ephmatch page.
     if (checkAndHandleError(response)) {
-      navigateTo("ephmatch");
+      navigateTo("ephmatch", null, { reload: true });
     }
   };
 
@@ -100,7 +100,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EphmatchOpting);

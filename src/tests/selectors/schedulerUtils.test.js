@@ -1,7 +1,6 @@
 import {
   getCurrSubMenu,
   getGAPI,
-  getSignInStatus,
   getNotifications,
   getSemester,
   getTimeFormat,
@@ -13,7 +12,6 @@ describe("Utility Selector", () => {
     schedulerUtilState: {
       active: "Timetable",
       gapi: { loaded_0: null, loaded_1: null },
-      signedIn: true,
       notifications: [
         {
           type: "SUCCESS",
@@ -61,12 +59,6 @@ describe("Utility Selector", () => {
     const expectedGAPI = { loaded_0: null, loaded_1: null };
     const gapi = getGAPI(INITIAL_STATE);
     expect(gapi).toEqual(expectedGAPI);
-  });
-
-  it("retrieves Sign-in status", () => {
-    const expectedSignInStatus = true;
-    const signInStatus = getSignInStatus(INITIAL_STATE);
-    expect(signInStatus).toEqual(expectedSignInStatus);
   });
 
   it("retrieves Orientation", () => {

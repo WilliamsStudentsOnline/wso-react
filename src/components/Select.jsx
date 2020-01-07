@@ -5,14 +5,21 @@ import PropTypes from "prop-types";
 // Component imports
 import "./stylesheets/Select.css";
 
-const Select = ({ onChange, options, value, valueList }) => {
+const Select = ({
+  onChange,
+  options,
+  value,
+  valueList,
+  fillerOption,
+  fillerValue,
+  style,
+}) => {
   return (
-    <select
-      className="select"
-      onChange={onChange}
-      value={value}
-      style={{ display: "inline", padding: "3px 10px" }}
-    >
+    <select className="select" style={style} onChange={onChange} value={value}>
+      {fillerOption ? (
+        <option value={fillerValue}>{fillerOption}</option>
+      ) : null}
+
       {options.map((option, index) => {
         if (option)
           return (
@@ -31,17 +38,28 @@ const Select = ({ onChange, options, value, valueList }) => {
 
 Select.propTypes = {
   onChange: PropTypes.func.isRequired,
-  options: PropTypes.arrayOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-  ).isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  valueList: PropTypes.arrayOf(
-    PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-  ),
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  value: PropTypes.string.isRequired,
+  valueList: PropTypes.arrayOf(PropTypes.string),
+  fillerOption: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.bool,
+    PropTypes.string,
+  ]),
+  fillerValue: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.bool,
+    PropTypes.string,
+    PropTypes.object,
+  ]),
+  style: PropTypes.object,
 };
 
 Select.defaultProps = {
   valueList: [],
+  fillerValue: null,
+  fillerOption: "",
+  style: {},
 };
 
 export default Select;
