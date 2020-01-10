@@ -26,6 +26,7 @@ const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
 const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
 const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
 const EphcatchMain = lazy(() => import("./views/Ephcatch/EphcatchMain"));
+const EphmatchMain = lazy(() => import("./views/Ephmatch/EphmatchMain"));
 const FourOhFour = lazy(() => import("./views/Errors/FourOhFour"));
 const Login = lazy(() => import("./Login"));
 const FourOhThree = lazy(() => import("./views/Errors/FourOhThree"));
@@ -84,6 +85,8 @@ const App = ({
         return null;
       case "ephcatch":
         return <EphcatchMain />;
+      case "ephmatch":
+        return <EphmatchMain />;
       case "bulletins":
         return <BulletinMain />;
       case "discussions":
