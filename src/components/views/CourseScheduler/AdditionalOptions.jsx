@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 // Component imports
 import "../../stylesheets/AdditionalOptions.css";
 import Checkbox from "./Checkbox";
-import Select from "./Select";
+import Select from "../../Select";
 import Accordion from "./Accordion";
 
 // Redux (Selector, Reducer, Actions) imports

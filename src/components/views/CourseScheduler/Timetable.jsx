@@ -10,7 +10,7 @@ import domtoimage from "dom-to-image";
 import Schedule from "./Schedule";
 import Course from "./Course";
 import "../../stylesheets/Timetable.css";
-import Select from "./Select";
+import Select from "../../Select";
 
 // Redux (Selector, Reducer, Actions) imports
 import { getAddedCourses, getHiddenCourses } from "../../../selectors/course";

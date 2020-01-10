@@ -9,60 +9,65 @@ import { getToken } from "../../../selectors/auth";
 
 // Additional imports
 import {
-  getEphcatchers,
-  likeEphcatcher,
-  unlikeEphcatcher,
-  getEphcatcher,
-} from "../../../api/ephcatch";
+  getEphmatchProfiles,
+  likeEphmatcher,
+  unlikeEphmatcher,
+  getEphmatchProfile,
+} from "../../../api/ephmatch";
 import { checkAndHandleError } from "../../../lib/general";
-import Ephcatcher from "./Ephcatcher";
+import Ephmatcher from "./Ephmatcher";
 
-const EphcatchHome = ({ token }) => {
+const EphmatchHome = ({ token }) => {
   const perPage = 20; // Number of results per page
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
-
-  const [ephcatchers, updateEphcatchers] = useState([]);
-
-  const loadNextEphcatchers = async (newPage) => {
-    const params = {
-      limit: perPage,
-      offset: newPage * perPage,
-      preload: ["users"],
-    };
-    const ephcatchersResponse = await getEphcatchers(token, params);
-
-    if (checkAndHandleError(ephcatchersResponse)) {
-      updateEphcatchers(ephcatchersResponse.data.data);
-      updateTotal(ephcatchersResponse.data.paginationTotal);
-    }
-  };
+  const [ephmatchers, updateEphmatchers] = useState([]);
 
   useEffect(() => {
-    loadNextEphcatchers(0);
-    // eslint-disable-next-line
-  }, []);
+    let isMounted = true;
 
-  const selectEphcatcher = async (event, index) => {
+    const loadNextEphmatchers = async (newPage) => {
+      const params = {
+        limit: perPage,
+        offset: newPage * perPage,
+      };
+      const EphmatchersResponse = await getEphmatchProfiles(token, params);
+
+      if (checkAndHandleError(EphmatchersResponse) && isMounted) {
+        updateEphmatchers(EphmatchersResponse.data.data);
+        updateTotal(EphmatchersResponse.data.paginationTotal);
+      }
+    };
+    loadNextEphmatchers(page);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [page, token]);
+
+  const selectEphmatcher = async (event, index) => {
     // Alternatively, use the classname to determine the method to be called.
     // That way works but is more hacky, and very prone to user editing the code.
-    const ephcatcher = ephcatchers[index];
+    const ephmatcher = ephmatchers[index];
     const target = event.currentTarget;
-    let ephcatchersResponse;
+    let ephmatchersResponse;
 
-    if (ephcatcher.liked) {
-      ephcatchersResponse = await unlikeEphcatcher(token, ephcatcher.id);
+    if (ephmatcher.liked) {
+      ephmatchersResponse = await unlikeEphmatcher(token, ephmatcher.userID);
       target.className = "ephcatch-select-link";
     } else {
-      ephcatchersResponse = await likeEphcatcher(token, ephcatcher.id);
+      ephmatchersResponse = await likeEphmatcher(token, ephmatcher.userID);
       target.className = "ephcatch-select-link ephcatch-selected";
     }
 
-    if (checkAndHandleError(ephcatchersResponse)) {
-      const updatedEphcatcher = await getEphcatcher(token, ephcatcher.id);
+    if (checkAndHandleError(ephmatchersResponse)) {
+      const updatedEphmatcher = await getEphmatchProfile(
+        token,
+        ephmatcher.userID
+      );
 
-      if (checkAndHandleError(updatedEphcatcher)) {
-        ephcatchers.splice(index, 1, updatedEphcatcher.data.data);
+      if (checkAndHandleError(updatedEphmatcher)) {
+        ephmatchers.splice(index, 1, updatedEphmatcher.data.data);
       }
     }
   };
@@ -71,17 +76,14 @@ const EphcatchHome = ({ token }) => {
   const clickHandler = (number) => {
     if (number === -1 && page > 0) {
       updatePage(page - 1);
-      loadNextEphcatchers(page - 1);
     } else if (number === 1 && total - (page + 1) * perPage > 0) {
       updatePage(page + 1);
-      loadNextEphcatchers(page + 1);
     }
   };
 
   // Handles selection of page
   const selectionHandler = (newPage) => {
-    updatePage(newPage);
-    loadNextEphcatchers(newPage);
+    updatePage(newPage - 1);
   };
 
   return (
@@ -107,17 +109,23 @@ const EphcatchHome = ({ token }) => {
             perPage={perPage}
             showPages
           />
-          <div style={{ textAlign: "center" }}>
-            {ephcatchers.map((ephcatcher, index) => (
-              <Ephcatcher
-                ephcatcher={ephcatcher}
-                selectEphcatcher={selectEphcatcher}
-                index={index}
-                token={token}
-                key={ephcatcher.id}
-              />
-            ))}
+
+          <div className="ephmatch-results">
+            {ephmatchers.map(
+              (ephmatcher, index) =>
+                ephmatcher.user && (
+                  <Ephmatcher
+                    ephmatcher={ephmatcher.user}
+                    ephmatcherProfile={ephmatcher}
+                    selectEphmatcher={selectEphmatcher}
+                    index={index}
+                    token={token}
+                    key={ephmatcher.id}
+                  />
+                )
+            )}
           </div>
+          <br />
           <PaginationButtons
             selectionHandler={selectionHandler}
             clickHandler={clickHandler}
@@ -132,14 +140,14 @@ const EphcatchHome = ({ token }) => {
   );
 };
 
-EphcatchHome.propTypes = {
+EphmatchHome.propTypes = {
   token: PropTypes.string.isRequired,
 };
 
-EphcatchHome.defaultProps = {};
+EphmatchHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   token: getToken(state),
 });
 
-export default connect(mapStateToProps)(EphcatchHome);
+export default connect(mapStateToProps)(EphmatchHome);

@@ -100,6 +100,9 @@ const Nav = ({ currUser, token, route }) => {
               <Link routeName="about">About</Link>
             </li>
             <li>
+              <Link routeName="ephmatch">Ephmatch</Link>
+            </li>
+            <li>
               <Link routeName="scheduler">Course Scheduler</Link>
             </li>
           </ul>

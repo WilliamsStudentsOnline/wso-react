@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // Component imports
-import "../../stylesheets/Select.css";
+import "./stylesheets/Select.css";
 
 const Select = ({
   onChange,
@@ -38,9 +38,17 @@ const Select = ({
 
 Select.propTypes = {
   onChange: PropTypes.func.isRequired,
-  options: PropTypes.arrayOf(PropTypes.string).isRequired,
-  value: PropTypes.string.isRequired,
-  valueList: PropTypes.arrayOf(PropTypes.string),
+  options: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.number, PropTypes.bool, PropTypes.string])
+  ).isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.bool,
+    PropTypes.string,
+  ]).isRequired,
+  valueList: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.number, PropTypes.bool, PropTypes.string])
+  ),
   fillerOption: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.bool,
