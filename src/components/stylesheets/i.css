@@ -138,12 +138,12 @@ a {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.facebook .grid-wrap aside .list-headers,
-.factrak .grid-wrap aside .list-headers,
-.dormtrak .grid-wrap aside .list-headers,
-.facebook .grid-wrap aside .list-contents,
-.factrak .grid-wrap aside .list-contents,
-.dormtrak .grid-wrap aside .list-contents,
+.facebook .list-headers,
+.factrak .list-headers,
+.dormtrak .list-headers,
+.facebook .list-contents,
+.factrak .list-contents,
+.dormtrak .list-contents,
 .facebook-profile .info h5,
 .facebook-profile .info h4,
 .facebook-edit .info h5,
@@ -2239,17 +2239,19 @@ section:after {
     font-size: 1em;
   }
 }
-.facebook .grid-wrap .ephcatch-selected,
-.factrak .grid-wrap .ephcatch-selected,
-.dormtrak .grid-wrap .ephcatch-selected {
-  border: 2px solid #6f4993;
+
+.ephcatch-select-link {
+  cursor: pointer;
+  box-shadow: 0 6px 10px #888;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.ephcatch-selected {
+  box-shadow: 0 6px 30px #6f4993;
   background: #e5dcfb;
 }
-.facebook .grid-wrap .ephcatch-select-link,
-.factrak .grid-wrap .ephcatch-select-link,
-.dormtrak .grid-wrap .ephcatch-select-link {
-  cursor: pointer;
-}
+
 .facebook-profile .name,
 .facebook-edit .name {
   margin: 0.25em 0;
@@ -2409,7 +2411,6 @@ section:after {
   text-decoration: none;
   background-clip: padding-box;
   font-weight: bold;
-  float: right;
 }
 .facebook-profile .info .save:active,
 .facebook-edit .info .save:active {
@@ -2431,10 +2432,8 @@ section:after {
 }
 .fb-tag {
   position: relative;
-  border: solid;
-  border-color: #6f4993;
+  border: solid 2px #6f4993;
   border-radius: 5px;
-  border-width: 2px;
   padding: 5px;
   margin: 5px;
   color: #444;
@@ -2448,7 +2447,6 @@ section:after {
 .fb-tag-remove {
   display: inline;
   margin-left: 4px;
-  float: right;
 }
 #tag-list {
   margin: 15px;
@@ -2465,9 +2463,9 @@ section:after {
   z-index: 999 !important;
 }
 ul#tag-list .tag-input {
-  height: 20px;
-  width: 90%;
   margin: 0;
+  padding: 0;
+  width: 90%;
   display: inline;
   border: none;
 }
@@ -2630,7 +2628,6 @@ ul#tag-list .tag-input {
   float: right;
 }
 .factrak #factrak_survey_factrak_course_id {
-  width: 4em;
   padding: 0em;
   display: inline;
   border: 2px solid rgba(17, 17, 17, 0.15);
@@ -2897,7 +2894,6 @@ ul#tag-list .tag-input {
   height: 20em;
 }
 .list-creation .submit {
-  float: right;
   background: #6f4993;
   border-radius: 2px;
   color: #fff;
@@ -3568,5 +3564,21 @@ header .login .toggles input[type="submit"]:last-child {
 #login-error-message {
   display: inline-block;
   font-variant: normal;
+}
+
+.ephmatch-results {
+  text-align: center;
+  grid-template-columns: 50% 50%;
+  grid-gap: 10px;
+  display: grid;
+}
+
+.tag-remove {
+  display: inline;
+  padding: 0px 0px 0px 12px;
+  margin: 0px;
+  background: rgb(255, 255, 255);
+  color: rgb(111, 73, 51);
+  min-width: 0px;
 }
 /*# sourceMappingURL=i.css.map */

@@ -224,14 +224,7 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
                       <button
                         type="button"
                         onClick={() => removeTagHandler(index)}
-                        style={{
-                          display: "inline",
-                          padding: 0,
-                          margin: 0,
-                          background: "#fff",
-                          color: "#6F4933",
-                          minWidth: 0,
-                        }}
+                        className="tag-remove"
                       >
                         X
                       </button>
@@ -252,14 +245,7 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
                     <button
                       type="button"
                       onClick={() => updateNewTag("")}
-                      style={{
-                        display: "inline",
-                        padding: 0,
-                        margin: 0,
-                        background: "#fff",
-                        color: "#6F4933",
-                        minWidth: 0,
-                      }}
+                      className="tag-remove"
                     >
                       X
                     </button>
@@ -313,7 +299,7 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
             />
             <br />
             <br />
-            {currUser.type === "student" ? (
+            {currUser.type === userTypeStudent ? (
               <>
                 <strong>Dorm Address:</strong>
                 <br />
