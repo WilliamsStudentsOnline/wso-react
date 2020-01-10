@@ -71,7 +71,7 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
     }
   };
 
-  if (containsScopes(token, [scopes.ScopeUsers])) {
+  if (containsScopes(token, [scopes.ScopeEphmatch])) {
     return <EphmatchLayout>{EphmatchBody()}</EphmatchLayout>;
   }
 
