@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 // External imports
 import { checkAndHandleError } from "../../../lib/general";
-import { getUserThumbPhoto } from "../../../api/users";
+import { getUserLargePhoto } from "../../../api/users";
 
 const Ephmatcher = ({
   ephmatcher,
@@ -17,7 +17,7 @@ const Ephmatcher = ({
 
   useEffect(() => {
     const loadPhoto = async () => {
-      const photoResponse = await getUserThumbPhoto(token, ephmatcher.unixID);
+      const photoResponse = await getUserLargePhoto(token, ephmatcher.unixID);
       if (checkAndHandleError(photoResponse)) {
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
       }
@@ -25,7 +25,7 @@ const Ephmatcher = ({
 
     if (ephmatcher) loadPhoto();
     // eslint-disable-next-line
-  }, [token]);
+  }, [token, ephmatcher]);
 
   // Generates the user's class year
   const classYear = (year, offCycle) => {
