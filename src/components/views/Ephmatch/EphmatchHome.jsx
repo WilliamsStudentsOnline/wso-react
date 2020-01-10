@@ -5,7 +5,7 @@ import PaginationButtons from "../../PaginationButtons";
 
 // Redux/ routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getToken, getCurrUser } from "../../../selectors/auth";
 
 // Additional imports
 import {
@@ -17,7 +17,7 @@ import {
 import { checkAndHandleError } from "../../../lib/general";
 import Ephmatcher from "./Ephmatcher";
 
-const EphmatchHome = ({ token }) => {
+const EphmatchHome = ({ token, currUser }) => {
   const perPage = 20; // Number of results per page
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -76,14 +76,17 @@ const EphmatchHome = ({ token }) => {
   const clickHandler = (number) => {
     if (number === -1 && page > 0) {
       updatePage(page - 1);
+      // loadNextEphmatchers(page - 1);
     } else if (number === 1 && total - (page + 1) * perPage > 0) {
       updatePage(page + 1);
+      // loadNextEphmatchers(page + 1);
     }
   };
 
   // Handles selection of page
   const selectionHandler = (newPage) => {
     updatePage(newPage - 1);
+    // loadNextEphmatchers(newPage - 1);
   };
 
   return (
@@ -111,18 +114,17 @@ const EphmatchHome = ({ token }) => {
           />
 
           <div className="ephmatch-results">
-            {ephmatchers.map(
-              (ephmatcher, index) =>
-                ephmatcher.user && (
-                  <Ephmatcher
-                    ephmatcher={ephmatcher.user}
-                    ephmatcherProfile={ephmatcher}
-                    selectEphmatcher={selectEphmatcher}
-                    index={index}
-                    token={token}
-                    key={ephmatcher.id}
-                  />
-                )
+            {ephmatchers.map((ephmatcher, index) =>
+              ephmatcher.user && ephmatcher.user.id !== currUser.id ? (
+                <Ephmatcher
+                  ephmatcher={ephmatcher.user}
+                  ephmatcherProfile={ephmatcher}
+                  selectEphmatcher={selectEphmatcher}
+                  index={index}
+                  token={token}
+                  key={ephmatcher.id}
+                />
+              ) : null
             )}
           </div>
           <br />
@@ -142,12 +144,14 @@ const EphmatchHome = ({ token }) => {
 
 EphmatchHome.propTypes = {
   token: PropTypes.string.isRequired,
+  currUser: PropTypes.object.isRequired,
 };
 
 EphmatchHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   token: getToken(state),
+  currUser: getCurrUser(state),
 });
 
 export default connect(mapStateToProps)(EphmatchHome);
