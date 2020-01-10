@@ -24,17 +24,21 @@ const Ephcatcher = ({ ephcatcher, selectEphcatcher, index, token }) => {
   if (selectEphcatcher === null)
     return (
       <aside>
-        <div className="profile-photo">
-          <img src={userPhoto} alt="profile" />
+        <div className="third">
+          <div className="profile-photo">
+            <img src={userPhoto} alt="profile" />
+          </div>
         </div>
-        <h4>{ephcatcher.name}</h4>
+        <div className="two-third">
+          <h4>{ephcatcher.name}</h4>
 
-        {ephcatcher.unixID ? (
-          <ul>
-            <li className="list-headers">UNIX</li>
-            <li className="list-contents">{ephcatcher.unixID}</li>
-          </ul>
-        ) : null}
+          {ephcatcher.unixID && ephcatcher.email ? (
+            <ul>
+              <li className="list-headers">UNIX</li>
+              <li className="list-contents">{ephcatcher.unixID}</li>
+            </ul>
+          ) : null}
+        </div>
       </aside>
     );
 
@@ -49,10 +53,12 @@ const Ephcatcher = ({ ephcatcher, selectEphcatcher, index, token }) => {
       onClick={(event) => selectEphcatcher(event, index)}
       role="presentation"
     >
-      <div className="profile-photo ephcatch-photo">
-        <img src={userPhoto} alt="profile" />
+      <div className="third">
+        <div className="profile-photo">
+          <img src={userPhoto} alt="profile" />
+        </div>
       </div>
-      <div className="ephcatch-info">
+      <div className="two-thirds">
         <h4>{ephcatcher.name}</h4>
       </div>
     </aside>

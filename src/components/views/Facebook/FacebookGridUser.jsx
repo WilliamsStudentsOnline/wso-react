@@ -39,7 +39,7 @@ const FacebookGridUser = ({ gridUser, token, gridUserClassYear }) => {
 
   // Generates the user's room in grid view
   const gridUserRoom = (user) => {
-    if (user.type === userTypeStudent && user.dormVisible && user.dormRoom) {
+    if (user.type === userTypeStudent && (user.dormVisible && user.dormRoom)) {
       return (
         <>
           <li className="list-headers"> Room</li>
