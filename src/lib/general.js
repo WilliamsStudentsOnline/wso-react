@@ -35,6 +35,8 @@ export const scopes = {
   ScopeUsers: "service:users",
   // Allows you to access other services not mentioned above
   ScopeAllOther: "service:other",
+
+  ScopeEphmatch: "service:ephmatch",
 };
 
 // Assumes a valid and error-free response

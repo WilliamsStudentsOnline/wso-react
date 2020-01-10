@@ -99,6 +99,11 @@ const Nav = ({ currUser, token, route }) => {
             <li>
               <Link routeName="about">About</Link>
             </li>
+            {currUser && containsScopes(token, [scopes.ScopeEphmatch]) && (
+              <li>
+                <Link routeName="ephmatch">Ephmatch</Link>
+              </li>
+            )}
             <li>
               <Link routeName="scheduler">Course Scheduler</Link>
             </li>
