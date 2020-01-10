@@ -6,8 +6,6 @@ import PropTypes from "prop-types";
 import { checkAndHandleError } from "../../../lib/general";
 import { getUserThumbPhoto } from "../../../api/users";
 
-import Trakyak from "../../../assets/images/trakyak.png";
-
 const Ephmatcher = ({
   ephmatcher,
   selectEphmatcher,
@@ -15,7 +13,7 @@ const Ephmatcher = ({
   token,
   ephmatcherProfile,
 }) => {
-  const [userPhoto, updateUserPhoto] = useState(Trakyak);
+  const [userPhoto, updateUserPhoto] = useState(null);
 
   useEffect(() => {
     const loadPhoto = async () => {
@@ -50,18 +48,20 @@ const Ephmatcher = ({
       }
       role="presentation"
     >
-      <div style={{ width: "100%" }}>
-        <img
-          src={userPhoto}
-          style={{
-            width: "100%",
-            borderRadius: "10px 10px 0 0",
-            height: "300px",
-            objectFit: "cover",
-          }}
-          alt="profile"
-        />
-      </div>
+      {userPhoto && (
+        <div style={{ width: "100%" }}>
+          <img
+            src={userPhoto}
+            style={{
+              width: "100%",
+              borderRadius: "10px 10px 0 0",
+              height: "300px",
+              objectFit: "cover",
+            }}
+            alt="profile"
+          />
+        </div>
+      )}
       {ephmatcher && (
         <div style={{ flex: 2, padding: "10px", textAlign: "left" }}>
           <h4>{`${ephmatcher.name} ${classYear(

@@ -33,6 +33,7 @@ const PaginationButtons = ({
               Array(Math.ceil(total / perPage)),
               (e, i) => i + 1
             )}
+            style={{ display: "inline" }}
           />
           of&nbsp;
           {Math.ceil(total / perPage)}

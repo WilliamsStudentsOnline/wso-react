@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import PaginationButtons from "../../PaginationButtons";
 
@@ -21,28 +21,29 @@ const EphmatchHome = ({ token, currUser }) => {
   const perPage = 20; // Number of results per page
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
-
   const [ephmatchers, updateEphmatchers] = useState([]);
 
-  const loadNextEphmatchers = useCallback(
-    async (newPage) => {
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadNextEphmatchers = async (newPage) => {
       const params = {
         limit: perPage,
         offset: newPage * perPage,
       };
       const EphmatchersResponse = await getEphmatchProfiles(token, params);
 
-      if (checkAndHandleError(EphmatchersResponse)) {
+      if (checkAndHandleError(EphmatchersResponse) && isMounted) {
         updateEphmatchers(EphmatchersResponse.data.data);
         updateTotal(EphmatchersResponse.data.paginationTotal);
       }
-    },
-    [updateEphmatchers, updateTotal, token]
-  );
+    };
+    loadNextEphmatchers(page);
 
-  useEffect(() => {
-    loadNextEphmatchers(0);
-  }, [loadNextEphmatchers]);
+    return () => {
+      isMounted = false;
+    };
+  }, [page, token]);
 
   const selectEphmatcher = async (event, index) => {
     // Alternatively, use the classname to determine the method to be called.
@@ -75,17 +76,17 @@ const EphmatchHome = ({ token, currUser }) => {
   const clickHandler = (number) => {
     if (number === -1 && page > 0) {
       updatePage(page - 1);
-      loadNextEphmatchers(page - 1);
+      // loadNextEphmatchers(page - 1);
     } else if (number === 1 && total - (page + 1) * perPage > 0) {
       updatePage(page + 1);
-      loadNextEphmatchers(page + 1);
+      // loadNextEphmatchers(page + 1);
     }
   };
 
   // Handles selection of page
   const selectionHandler = (newPage) => {
     updatePage(newPage - 1);
-    loadNextEphmatchers(newPage - 1);
+    // loadNextEphmatchers(newPage - 1);
   };
 
   return (

@@ -35,9 +35,9 @@ const EphmatchLayout = ({ children }) => {
 };
 
 EphmatchLayout.propTypes = {
-  children: PropTypes.object.isRequired,
+  children: PropTypes.object,
 };
 
-EphmatchLayout.defaultProps = {};
+EphmatchLayout.defaultProps = { children: null };
 
 export default EphmatchLayout;

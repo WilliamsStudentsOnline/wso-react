@@ -21,30 +21,42 @@ import {
 } from "../../../lib/general";
 import { getSelfEphmatchProfile } from "../../../api/ephmatch";
 
-const EphmatchMain = ({ route, token, navigateTo }) => {
-  const [ephmatchProfile, updateEphmatchProfile] = useState(null);
+const EphmatchMain = ({ route, token, navigateTo, profile }) => {
+  const [ephmatchProfile, updateEphmatchProfile] = useState(profile);
+  const [hasQueriedProfile, updateHasQueriedProfile] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
       const ownProfile = await getSelfEphmatchProfile(token);
-      if (checkAndHandleError(ownProfile)) {
+      if (checkAndHandleError(ownProfile) && isMounted) {
         updateEphmatchProfile(ownProfile.data.data);
       }
+      updateHasQueriedProfile(true);
     };
 
     loadEphmatchProfile();
-  }, [token]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [token, route]);
+
+  const hasValidEphmatchProfile = () => {
+    return ephmatchProfile && !ephmatchProfile.deleted;
+  };
 
   const EphmatchBody = () => {
-    // There won't be an infinite loop because the router does not transition on the same state
-    if (!ephmatchProfile || ephmatchProfile.deleted) {
-      navigateTo("ephmatch.optIn");
+    if (hasQueriedProfile && !hasValidEphmatchProfile()) {
+      navigateTo("ephmatch", null, { replace: true });
       return <EphmatchOptIn />;
     }
 
     const splitRoute = route.name.split(".");
-    if (splitRoute.length === 1) return <EphmatchHome />;
+    if (splitRoute.length === 1) {
+      return <EphmatchHome />;
+    }
 
     switch (splitRoute[1]) {
       case "profile":
@@ -53,14 +65,9 @@ const EphmatchMain = ({ route, token, navigateTo }) => {
         return <EphmatchMatch />;
       case "optOut":
         return <EphmatchOptOut />;
-      case "optIn":
-        if (ephmatchProfile) {
-          navigateTo("ephmatch");
-          return <EphmatchHome />;
-        }
-        return <EphmatchOptIn />;
       default:
-        return <EphmatchHome />;
+        navigateTo("ephmatch");
+        return null;
     }
   };
 
@@ -76,9 +83,10 @@ EphmatchMain.propTypes = {
   route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  profile: PropTypes.object,
 };
 
-EphmatchMain.defaultProps = {};
+EphmatchMain.defaultProps = { profile: null };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("ephmatch");
@@ -90,7 +98,8 @@ const mapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EphmatchMain);

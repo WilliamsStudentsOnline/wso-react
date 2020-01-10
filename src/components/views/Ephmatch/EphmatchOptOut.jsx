@@ -15,7 +15,7 @@ import {
 } from "../../../api/ephmatch";
 
 // Page created to handle both opting in and out.
-const EphmatchOpting = ({ token, navigateTo }) => {
+const EphmatchOptOut = ({ token, navigateTo }) => {
   // Note that this is different from Ephcatch
   const [optOut, updateOptOut] = useState(false);
 
@@ -43,7 +43,7 @@ const EphmatchOpting = ({ token, navigateTo }) => {
 
     // Update succeeded -> redirect them to main ephmatch page.
     if (checkAndHandleError(response)) {
-      navigateTo("ephmatch", null, { reload: true });
+      navigateTo("ephmatch", { profile: response.data.data }, { reload: true });
     }
   };
 
@@ -88,12 +88,12 @@ const EphmatchOpting = ({ token, navigateTo }) => {
   );
 };
 
-EphmatchOpting.propTypes = {
+EphmatchOptOut.propTypes = {
   token: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
-EphmatchOpting.defaultProps = {};
+EphmatchOptOut.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   token: getToken(state),
@@ -104,4 +104,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EphmatchOpting);
+export default connect(mapStateToProps, mapDispatchToProps)(EphmatchOptOut);
