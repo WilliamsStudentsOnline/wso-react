@@ -65,7 +65,7 @@ const getCampusToken = async () => {
   return response;
 };
 
-// Helper method to check the expiry of the authToken, refreshing if necessary
+// Helper method to check the expiry of the authToken, updating if necessary
 const tokenExpiryHandler = async (token, expiry) => {
   try {
     const expiryDate = new Date(expiry);
@@ -73,8 +73,8 @@ const tokenExpiryHandler = async (token, expiry) => {
       const now = Date.now();
 
       if (expiryDate - now < 3600000) {
-        const refreshResponse = await refreshToken(token);
-        if (refreshResponse && !refreshResponse.data.error) return true;
+        const updateResponse = await updateTokenAPI(token);
+        if (updateResponse && !updateResponse.data.error) return true;
 
         return false;
       }
@@ -87,4 +87,10 @@ const tokenExpiryHandler = async (token, expiry) => {
   return false;
 };
 
-export { tokenExpiryHandler, updateTokenAPI, getToken, getCampusToken };
+export {
+  tokenExpiryHandler,
+  updateTokenAPI,
+  getToken,
+  getCampusToken,
+  refreshToken,
+};
