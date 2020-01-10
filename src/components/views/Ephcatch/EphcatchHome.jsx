@@ -28,7 +28,6 @@ const EphcatchHome = ({ token }) => {
     const params = {
       limit: perPage,
       offset: newPage * perPage,
-      preload: ["users"],
     };
     const ephcatchersResponse = await getEphcatchers(token, params);
 
@@ -78,16 +77,10 @@ const EphcatchHome = ({ token }) => {
     }
   };
 
-  // Handles selection of page
-  const selectionHandler = (newPage) => {
-    updatePage(newPage);
-    loadNextEphcatchers(newPage);
-  };
-
   return (
     <article className="facebook-results">
       <section>
-        <div>
+        <div className="grid-wrap">
           <p>
             Select as many people as you want by clicking on their profile. You
             can also come back later and modify your selections. To check if you
@@ -100,32 +93,22 @@ const EphcatchHome = ({ token }) => {
           </p>
           <br />
           <PaginationButtons
-            selectionHandler={selectionHandler}
             clickHandler={clickHandler}
             page={page}
             total={total}
             perPage={perPage}
-            showPages
           />
-          <div style={{ textAlign: "center" }}>
-            {ephcatchers.map((ephcatcher, index) => (
-              <Ephcatcher
-                ephcatcher={ephcatcher}
-                selectEphcatcher={selectEphcatcher}
-                index={index}
-                token={token}
-                key={ephcatcher.id}
-              />
-            ))}
-          </div>
-          <PaginationButtons
-            selectionHandler={selectionHandler}
-            clickHandler={clickHandler}
-            page={page}
-            total={total}
-            perPage={perPage}
-            showPages
-          />
+
+          <br />
+          {ephcatchers.map((ephcatcher, index) => (
+            <Ephcatcher
+              ephcatcher={ephcatcher}
+              selectEphcatcher={selectEphcatcher}
+              index={index}
+              token={token}
+              key={ephcatcher.id}
+            />
+          ))}
         </div>
       </section>
     </article>
