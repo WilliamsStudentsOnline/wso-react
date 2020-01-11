@@ -102,7 +102,7 @@ const EphmatchHome = ({ token }) => {
           </p>
           <br />
 
-          {ephmatchers.length < 0 ? (
+          {ephmatchers.length > 0 ? (
             <>
               <PaginationButtons
                 selectionHandler={selectionHandler}
