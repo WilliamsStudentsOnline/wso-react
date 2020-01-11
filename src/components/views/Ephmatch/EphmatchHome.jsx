@@ -101,39 +101,47 @@ const EphmatchHome = ({ token }) => {
             else can.
           </p>
           <br />
-          <PaginationButtons
-            selectionHandler={selectionHandler}
-            clickHandler={clickHandler}
-            page={page}
-            total={total}
-            perPage={perPage}
-            showPages
-          />
 
-          <div className="ephmatch-results">
-            {ephmatchers.map(
-              (ephmatcher, index) =>
-                ephmatcher.user && (
-                  <Ephmatcher
-                    ephmatcher={ephmatcher.user}
-                    ephmatcherProfile={ephmatcher}
-                    selectEphmatcher={selectEphmatcher}
-                    index={index}
-                    token={token}
-                    key={ephmatcher.id}
-                  />
-                )
-            )}
-          </div>
-          <br />
-          <PaginationButtons
-            selectionHandler={selectionHandler}
-            clickHandler={clickHandler}
-            page={page}
-            total={total}
-            perPage={perPage}
-            showPages
-          />
+          {ephmatchers.length < 0 ? (
+            <>
+              <PaginationButtons
+                selectionHandler={selectionHandler}
+                clickHandler={clickHandler}
+                page={page}
+                total={total}
+                perPage={perPage}
+                showPages
+              />
+              <div className="ephmatch-results">
+                {ephmatchers.map(
+                  (ephmatcher, index) =>
+                    ephmatcher.user && (
+                      <Ephmatcher
+                        ephmatcher={ephmatcher.user}
+                        ephmatcherProfile={ephmatcher}
+                        selectEphmatcher={selectEphmatcher}
+                        index={index}
+                        token={token}
+                        key={ephmatcher.id}
+                      />
+                    )
+                )}
+              </div>
+              <br />
+              <PaginationButtons
+                selectionHandler={selectionHandler}
+                clickHandler={clickHandler}
+                page={page}
+                total={total}
+                perPage={perPage}
+                showPages
+              />
+            </>
+          ) : (
+            <h1 className="no-matches-found">
+              Invite your friends to join Ephmatch!
+            </h1>
+          )}
         </div>
       </section>
     </article>
