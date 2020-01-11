@@ -1,5 +1,5 @@
 // React imports
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useState } from "react";
 import PropTypes from "prop-types";
 
 // Component Imports
@@ -14,7 +14,8 @@ import { getToken, getExpiry, getCurrUser } from "../selectors/auth";
 import { doRemoveCreds, doUpdateToken, doUpdateUser } from "../actions/auth";
 
 // Additional Imports
-import { tokenExpiryHandler, getCampusToken } from "../api/auth";
+import { updateTokenAPI, getCampusToken } from "../api/auth";
+import { getUser } from "../api/users";
 import { getRandomWSO } from "../api/misc";
 import { checkAndHandleError } from "../lib/general";
 
@@ -43,10 +44,11 @@ const App = ({
   removeCreds,
   updateToken,
   token,
-  expiry,
   currUser,
   updateUser,
 }) => {
+  const [didGetToken, updateDidGetToken] = useState(false);
+
   const randomWSO = async () => {
     if (document.title !== "WSO: Williams Students Online") {
       const wsoResponse = await getRandomWSO();
@@ -107,10 +109,20 @@ const App = ({
 
   // Refreshes the token
   const initialize = async () => {
-    if (token && expiry) {
-      // Checks if the token can be refreshed, refreshes if necessary
-      const refresh = await tokenExpiryHandler(token, expiry);
-      if (refresh) return;
+    if (token && didGetToken) return;
+
+    if (token && !didGetToken) {
+      const updatedTokenResponse = await updateTokenAPI(token);
+      console.log(updatedTokenResponse);
+      updateDidGetToken(true);
+      if (checkAndHandleError(updatedTokenResponse)) {
+        updateToken(updatedTokenResponse.data.data);
+        const updatedUserResponse = await getUser(token);
+        console.log(updatedUserResponse);
+        if (checkAndHandleError(updatedUserResponse)) {
+          updateUser(updatedUserResponse.data.data);
+        }
+      }
     }
 
     // If the token does not exist, get a token based on whether user is on campus.
@@ -138,7 +150,6 @@ App.propTypes = {
   removeCreds: PropTypes.func.isRequired,
   updateToken: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
-  expiry: PropTypes.number.isRequired,
   currUser: PropTypes.object,
   updateUser: PropTypes.func.isRequired,
 };
