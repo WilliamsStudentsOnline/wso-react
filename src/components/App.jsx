@@ -116,11 +116,14 @@ const App = ({
       updateDidGetToken(true);
       if (checkAndHandleError(updatedTokenResponse)) {
         updateToken(updatedTokenResponse.data.data);
-        const updatedUserResponse = await getUser(token);
+        const updatedUserResponse = await getUser(
+          updatedTokenResponse.data.data.token
+        );
         if (checkAndHandleError(updatedUserResponse)) {
           updateUser(updatedUserResponse.data.data);
         }
       }
+      return;
     }
 
     // If the token does not exist, get a token based on whether user is on campus.
