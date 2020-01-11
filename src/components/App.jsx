@@ -113,12 +113,10 @@ const App = ({
 
     if (token && !didGetToken) {
       const updatedTokenResponse = await updateTokenAPI(token);
-      console.log(updatedTokenResponse);
       updateDidGetToken(true);
       if (checkAndHandleError(updatedTokenResponse)) {
         updateToken(updatedTokenResponse.data.data);
         const updatedUserResponse = await getUser(token);
-        console.log(updatedUserResponse);
         if (checkAndHandleError(updatedUserResponse)) {
           updateUser(updatedUserResponse.data.data);
         }
