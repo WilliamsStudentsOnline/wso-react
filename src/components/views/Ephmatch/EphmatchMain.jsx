@@ -19,14 +19,17 @@ import {
   containsScopes,
   checkAndHandleError,
 } from "../../../lib/general";
-import { getSelfEphmatchProfile } from "../../../api/ephmatch";
+import {
+  getSelfEphmatchProfile,
+  getEphmatchMatches,
+} from "../../../api/ephmatch";
 import { format } from "timeago.js";
 
 const EphmatchMain = ({ route, token, navigateTo, profile }) => {
   const [ephmatchProfile, updateEphmatchProfile] = useState(profile);
   const [hasQueriedProfile, updateHasQueriedProfile] = useState(false);
-
-  const ephmatchReleaseDate = new Date(2020, 0, 16, 23, 59, 59, 99);
+  const [matches, updateMatches] = useState([]);
+  const ephmatchReleaseDate = new Date(202, 0, 16, 23, 59, 59, 99);
 
   useEffect(() => {
     let isMounted = true;
@@ -38,6 +41,14 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
       }
       updateHasQueriedProfile(true);
     };
+    const loadMatches = async () => {
+      const ephmatchersResponse = await getEphmatchMatches(token);
+      if (checkAndHandleError(ephmatchersResponse)) {
+        updateMatches(ephmatchersResponse.data.data);
+      }
+    };
+
+    loadMatches();
 
     loadEphmatchProfile();
 
@@ -73,7 +84,7 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
       case "profile":
         return <EphmatchProfile />;
       case "matches":
-        return <EphmatchMatch />;
+        return <EphmatchMatch matches={matches} />;
       case "optOut":
         return <EphmatchOptOut />;
       default:
@@ -84,7 +95,10 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
 
   if (containsScopes(token, [scopes.ScopeEphmatch])) {
     return (
-      <EphmatchLayout ephmatchReleaseDate={ephmatchReleaseDate}>
+      <EphmatchLayout
+        matches={matches}
+        ephmatchReleaseDate={ephmatchReleaseDate}
+      >
         {EphmatchBody()}
       </EphmatchLayout>
     );

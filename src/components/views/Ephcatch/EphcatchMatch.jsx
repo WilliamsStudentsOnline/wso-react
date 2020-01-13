@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 // Redux/routing imports
@@ -7,24 +7,9 @@ import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
 
 // Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import { getEphcatchMatches } from "../../../api/ephcatch";
 import Ephcatcher from "./Ephcatcher";
 
-const EphcatchMatch = ({ token }) => {
-  const [matches, updateMatches] = useState([]);
-
-  useEffect(() => {
-    const loadMatches = async () => {
-      const ephcatchersResponse = await getEphcatchMatches(token);
-      if (checkAndHandleError(ephcatchersResponse)) {
-        updateMatches(ephcatchersResponse.data.data);
-      }
-    };
-
-    loadMatches();
-  }, [token]);
-
+const EphcatchMatch = ({ token, matches }) => {
   const renderMatches = () => {
     if (matches.length === 0)
       return <h1 className="no-matches-found">No matches.</h1>;
@@ -45,9 +30,12 @@ const EphcatchMatch = ({ token }) => {
   return <article className="facebook-results">{renderMatches()}</article>;
 };
 
-EphcatchMatch.propTypes = { token: PropTypes.string.isRequired };
+EphcatchMatch.propTypes = {
+  token: PropTypes.string.isRequired,
+  matches: PropTypes.arrayOf(PropTypes.object),
+};
 
-EphcatchMatch.defaultProps = {};
+EphcatchMatch.defaultProps = { matches: [] };
 
 const mapStateToProps = (state) => ({
   token: getToken(state),
