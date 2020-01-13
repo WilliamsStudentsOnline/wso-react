@@ -3581,4 +3581,36 @@ header .login .toggles input[type="submit"]:last-child {
   color: rgb(111, 73, 51);
   min-width: 0px;
 }
+
+@-webkit-keyframes ephmatch {
+  0% {
+    color: #fff;
+  }
+  50% {
+    color: #111;
+  }
+  100% {
+    color: #fff;
+  }
+}
+
+@keyframes ephmatch {
+  0% {
+    color: #fff;
+  }
+  50% {
+    color: #111;
+  }
+  100% {
+    color: #fff;
+  }
+}
+
+.ephmatch-link {
+  animation: ephmatch 2s;
+  animation-iteration-count: 3;
+  -webkit-animation: ephmatch 2s;
+  -webkit-animation-iteration-count: 3;
+}
+
 /*# sourceMappingURL=i.css.map */
