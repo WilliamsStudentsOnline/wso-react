@@ -37,7 +37,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
     const resultsResponse = await getAllUsers(token, queryParams);
     if (checkAndHandleError(resultsResponse)) {
       updateResults(resultsResponse.data.data);
-      updateTotal(resultsResponse.data.paginationTotal);
+      updateTotal(resultsResponse.data.paginationTotal || 0);
     } else {
       updateResults([]);
       updateTotal(0);
