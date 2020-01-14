@@ -12,12 +12,12 @@ import { Link, ConnectedLink } from "react-router5";
 import { checkAndHandleError, containsScopes, scopes } from "../lib/general";
 import { getUserThumbPhoto } from "../api/users";
 import { createRouteNodeSelector } from "redux-router5";
-import { getEphcatchMatches } from "../api/ephcatch";
+// import { getEphcatchMatches } from "../api/ephcatch";
 
-const Nav = ({ currUser, token, route }) => {
+const Nav = ({ currUser, token }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
-  const [ephcatches, updateEphcatches] = useState(null);
+  // const [ephcatches, updateEphcatches] = useState(null);
 
   useEffect(() => {
     const loadPhoto = async () => {
@@ -27,23 +27,22 @@ const Nav = ({ currUser, token, route }) => {
       }
     };
 
-    const loadEphcatches = async () => {
-      if (currUser && token && containsScopes(token, [scopes.ScopeEphcatch])) {
-        const ephcatchResponse = await getEphcatchMatches(token);
+    // const loadEphcatches = async () => {
+    //   if (currUser && token && containsScopes(token, [scopes.ScopeEphcatch])) {
+    //     const ephcatchResponse = await getEphcatchMatches(token);
 
-        if (checkAndHandleError(ephcatchResponse)) {
-          updateEphcatches(ephcatchResponse.data.data);
-        }
-      }
+    //     if (checkAndHandleError(ephcatchResponse)) {
+    //       updateEphcatches(ephcatchResponse.data.data);
+    //     }
+    //   }
 
-      return null;
-    };
+    //   return null;
+    // };
 
     if (currUser && token && token !== "") loadPhoto();
     updateMenuVisibility(false);
-    loadEphcatches();
-    // eslint-disable-next-line
-  }, [currUser, token, route]);
+    // loadEphcatches();
+  }, [currUser, token]);
 
   return (
     <nav>
@@ -72,7 +71,7 @@ const Nav = ({ currUser, token, route }) => {
             <li>
               <Link routeName="facebook">Facebook</Link>
             </li>
-            {currUser && containsScopes(token, [scopes.ScopeEphcatch]) ? (
+            {/* {currUser && containsScopes(token, [scopes.ScopeEphcatch]) ? (
               <li>
                 <Link routeName="ephcatch">Ephcatch</Link>
                 {ephcatches.length > 0 ? (
@@ -83,7 +82,7 @@ const Nav = ({ currUser, token, route }) => {
                   </span>
                 ) : null}
               </li>
-            ) : null}
+            ) : null} */}
             <li>
               <Link routeName="factrak">Factrak</Link>
             </li>
@@ -144,7 +143,6 @@ Nav.propTypes = {
   // No isRequired because it must work for non-authenticated users too
   currUser: PropTypes.object,
   token: PropTypes.string,
-  route: PropTypes.object.isRequired,
 };
 
 Nav.defaultProps = { currUser: {}, token: "" };
