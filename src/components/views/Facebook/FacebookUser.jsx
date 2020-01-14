@@ -28,16 +28,15 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
 
       if (checkAndHandleError(targetResponse)) {
         updateTarget(targetResponse.data.data);
+        const photoResponse = await getUserLargePhoto(
+          token,
+          targetResponse.data.data.unixID
+        );
+        if (checkAndHandleError(photoResponse)) {
+          updateUserPhoto(URL.createObjectURL(photoResponse.data));
+        }
       } else {
         navigateTo("404");
-      }
-
-      const photoResponse = await getUserLargePhoto(
-        token,
-        targetResponse.data.data.unixID
-      );
-      if (checkAndHandleError(photoResponse)) {
-        updateUserPhoto(URL.createObjectURL(photoResponse.data));
       }
     };
 
