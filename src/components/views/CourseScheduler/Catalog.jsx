@@ -1,5 +1,5 @@
 // React imports
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -11,45 +11,35 @@ import "../../stylesheets/Catalog.css";
 import { doLoadCourses } from "../../../actions/course";
 import { getLoadedCourses } from "../../../selectors/course";
 
-class Catalog extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.onLoad = this.props.onLoad.bind(this);
-    this.onScroll = this.onScroll.bind(this);
-  }
-
-  componentDidMount() {
-    window.addEventListener("scroll", this.onScroll, false);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.onScroll, false);
-  }
-
-  onScroll() {
+const Catalog = ({ onLoad, loaded }) => {
+  const onScroll = () => {
     if (
       window.innerHeight + window.scrollY >=
         document.body.offsetHeight - 2000 &&
-      this.props.loaded.length
+      loaded.length
     ) {
-      this.onLoad(this.props.loaded.length / 50 + 1);
+      onLoad(loaded.length / 50 + 1);
     }
-  }
+  };
 
-  render() {
-    return (
-      <div className="catalog">
-        {(this.props.loaded || []).map((course) => (
-          <Course
-            key={`${course.department}${course.peoplesoftNumber}`}
-            course={course}
-          />
-        ))}
-      </div>
-    );
-  }
-}
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll, false);
+    return () => {
+      window.removeEventListener("scroll", onScroll, false);
+    };
+  }, []);
+
+  return (
+    <div className="catalog">
+      {loaded.map((course) => (
+        <Course
+          key={`${course.department}${course.peoplesoftNumber}`}
+          course={course}
+        />
+      ))}
+    </div>
+  );
+};
 
 const mapStateToProps = (state) => ({
   loaded: getLoadedCourses(state),
@@ -64,7 +54,4 @@ Catalog.propTypes = {
   onLoad: PropTypes.func.isRequired,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Catalog);
+export default connect(mapStateToProps, mapDispatchToProps)(Catalog);
