@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import Ephmatcher from "./Ephmatcher";
 
 // Redux/routing imports
 import { connect } from "react-redux";
@@ -17,6 +18,7 @@ import {
 import { Link } from "react-router5";
 
 const EphmatchProfile = ({ token, navigateTo }) => {
+  const [profile, updateProfile] = useState(null);
   const [description, updateDescription] = useState("");
 
   useEffect(() => {
@@ -25,6 +27,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
     const loadEphmatchProfile = async () => {
       const ownProfile = await getSelfEphmatchProfile(token);
       if (checkAndHandleError(ownProfile) && isMounted) {
+        updateProfile(ownProfile.data.data);
         updateDescription(ownProfile.data.data.description);
       }
     };
@@ -52,6 +55,11 @@ const EphmatchProfile = ({ token, navigateTo }) => {
     }
   };
 
+  const dummyEphmatchProfile = {
+    ...profile,
+    description,
+  };
+
   return (
     <div className="article">
       <section>
@@ -66,6 +74,18 @@ const EphmatchProfile = ({ token, navigateTo }) => {
           <form onSubmit={submitHandler}>
             <h3>Profile</h3>
             <br />
+            {profile && (
+              <div style={{ width: "50%", margin: "auto" }}>
+                <Ephmatcher
+                  ephmatcherProfile={dummyEphmatchProfile}
+                  ephmatcher={profile.user}
+                  token={token}
+                />
+              </div>
+            )}
+            <br />
+            <br />
+
             <p>
               <strong>Profile Description:</strong>
               <input
