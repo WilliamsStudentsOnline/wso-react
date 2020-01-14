@@ -139,7 +139,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
 
   // Returns the results of the search
   const FacebookResults = () => {
-    if (results.length === 0 && route.params.q)
+    if (total === 0 && route.params.q)
       return (
         <>
           <br />
@@ -147,11 +147,11 @@ const FacebookHome = ({ token, route, navigateTo }) => {
         </>
       );
 
-    if (results.length === 1) {
+    if (total === 1) {
       navigateTo("facebook.users", { userID: results[0].id });
     }
 
-    if (results.length > 10) return ListView();
+    if (total > 10) return ListView();
     return GridView();
   };
 
