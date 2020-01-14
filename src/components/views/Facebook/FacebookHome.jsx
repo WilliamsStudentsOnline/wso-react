@@ -46,6 +46,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
 
   useEffect(() => {
     loadUsers(0);
+    updatePage(0);
     // eslint-disable-next-line
   }, [token, route.params.q]);
 
@@ -62,7 +63,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
 
   // Generates the user's room
   const listUserRoom = (user) => {
-    if (user.type === userTypeStudent && (user.dormVisible && user.dormRoom)) {
+    if (user.type === userTypeStudent && user.dormVisible && user.dormRoom) {
       return `${user.dormRoom.dorm.name} ${user.dormRoom.number}`;
     }
     if (user.type !== userTypeStudent && user.office) {
@@ -195,7 +196,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FacebookHome);
+export default connect(mapStateToProps, mapDispatchToProps)(FacebookHome);
