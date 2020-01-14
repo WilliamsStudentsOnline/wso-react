@@ -12,22 +12,21 @@ import { doLoadCourses } from "../../../actions/course";
 import { getLoadedCourses } from "../../../selectors/course";
 
 const Catalog = ({ onLoad, loaded }) => {
-  const onScroll = () => {
-    if (
-      window.innerHeight + window.scrollY >=
-        document.body.offsetHeight - 2000 &&
-      loaded.length
-    ) {
-      onLoad(loaded.length / 50 + 1);
-    }
-  };
-
   useEffect(() => {
+    const onScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >=
+          document.body.offsetHeight - 2000 &&
+        loaded.length
+      ) {
+        onLoad(loaded.length / 50 + 1);
+      }
+    };
     window.addEventListener("scroll", onScroll, false);
     return () => {
       window.removeEventListener("scroll", onScroll, false);
     };
-  }, []);
+  }, [onLoad, loaded]);
 
   return (
     <div className="catalog">
