@@ -50,7 +50,7 @@ const App = ({
   const [didGetToken, updateDidGetToken] = useState(false);
 
   const randomWSO = async () => {
-    if (document.title !== "WSO: Williams Students Online") {
+    if (document.title === "WSO: Williams Students Online") {
       const wsoResponse = await getRandomWSO();
 
       if (checkAndHandleError(wsoResponse)) {
