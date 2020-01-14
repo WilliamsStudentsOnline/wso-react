@@ -24,7 +24,7 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
   // Handles submissions
   const submitHandler = (event) => {
     event.preventDefault();
-    navigateTo("facebook", { q: query }, { reload: true });
+    navigateTo("facebook", { q: query });
   };
 
   return (
@@ -105,7 +105,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FacebookLayout);
+export default connect(mapStateToProps, mapDispatchToProps)(FacebookLayout);
