@@ -39,7 +39,6 @@ const FacebookHome = ({ token, route, navigateTo }) => {
     if (checkAndHandleError(resultsResponse)) {
       updateResults(resultsResponse.data.data);
       updateTotal(resultsResponse.data.paginationTotal || 0);
-      console.log(`hey ${resultsResponse.data.paginationTotal || 0}`);
     } else {
       updateResults([]);
       updateTotal(0);
@@ -47,6 +46,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
   };
 
   useEffect(() => {
+    updateTotal(0);
     loadUsers(0);
     updatePage(0);
     // eslint-disable-next-line
@@ -84,7 +84,6 @@ const FacebookHome = ({ token, route, navigateTo }) => {
 
   // Displays results in a list view when there are too many results
   const ListView = () => {
-    console.log("list");
     return (
       <>
         <table>
@@ -126,7 +125,6 @@ const FacebookHome = ({ token, route, navigateTo }) => {
 
   // Displays results in a grid view when there aren't too many results
   const GridView = () => {
-    console.log("grid");
     return (
       <div className="grid-wrap">
         {results.map((user) => (
@@ -155,7 +153,6 @@ const FacebookHome = ({ token, route, navigateTo }) => {
       navigateTo("facebook.users", { userID: results[0].id });
     }
 
-    console.log(total);
     if (total < 10) return GridView();
     return ListView();
   };
