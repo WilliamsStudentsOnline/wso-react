@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 // Additional imports
 import { Link } from "react-router5";
 
-const EphmatchLayout = ({ children }) => {
+const EphmatchLayout = ({ children, ephmatchReleaseDate, matches }) => {
   return (
     <>
       <header>
@@ -17,9 +17,14 @@ const EphmatchLayout = ({ children }) => {
             <li>
               <Link routeName="ephmatch">Home</Link>
             </li>
-            <li>
-              <Link routeName="ephmatch.matches">Matches</Link>
-            </li>
+            {new Date() > ephmatchReleaseDate && (
+              <li>
+                <Link routeName="ephmatch.matches">Matches</Link>
+                <span className="ephcatch-badge" title="Matches!">
+                  {matches.length}
+                </span>
+              </li>
+            )}
             <li>
               <Link routeName="ephmatch.profile">Profile</Link>
             </li>
@@ -36,8 +41,10 @@ const EphmatchLayout = ({ children }) => {
 
 EphmatchLayout.propTypes = {
   children: PropTypes.object,
+  ephmatchReleaseDate: PropTypes.object.isRequired,
+  matches: PropTypes.arrayOf(PropTypes.object),
 };
 
-EphmatchLayout.defaultProps = { children: null };
+EphmatchLayout.defaultProps = { children: null, matches: [] };
 
 export default EphmatchLayout;
