@@ -210,10 +210,33 @@ describe("Course reducer", () => {
     expect(changedState).toEqual(expectedNewState);
   });
 
+  it("toggles semester", () => {
+    const index = 1;
+
+    const action = {
+      type: TOGGLE_SEM,
+      index,
+    };
+
+    const previousState = {
+      filters: { semesters: [false, false, false] },
+      error: null,
+    };
+    const expectedNewState = {
+      filters: { semesters: [false, SEMESTERS[1], false] },
+      error: null,
+    };
+
+    deepFreeze(previousState);
+    const changedState = courseReducer(previousState, action);
+
+    expect(changedState).toEqual(expectedNewState);
+  });
+
   it("searches courses", () => {
     const param = "AFR105";
     const filters = {
-      semesters: [false, false, false],
+      semesters: DEFAULT_SEMESTER,
       distributions: [false, false, false],
       divisions: [false, false, false],
       others: [false, false],
@@ -233,12 +256,17 @@ describe("Course reducer", () => {
       classTypes: [0, 0, 0, 0, 0, 0],
     };
 
+    const defaultSemester = DEFAULT_SEMESTER.filter((e) => e)[0];
+    const semesterCourse = { ...course, semester: defaultSemester };
+    const semesterOtherCourse = { ...otherCourse, semester: defaultSemester };
+
     const loadAction = {
       type: LOAD_CATALOG,
       catalog: {
-        courses: [course, otherCourse],
+        courses: [semesterCourse, semesterOtherCourse],
       },
     };
+
     const action = {
       type: SEARCH_COURSE,
       param,
@@ -253,14 +281,15 @@ describe("Course reducer", () => {
       counts,
       queried: [],
     };
+
     const expectedNewState = {
       filters,
-      searched: [Object.assign({}, course, { score: 10001 })],
+      searched: [{ ...semesterCourse, score: 10001 }],
       query: param,
       error: null,
       loadGroup: 1,
       counts: {
-        semesters: [1, 0, 0],
+        semesters: DEFAULT_SEMESTER.map((e) => (e ? 1 : 0)),
         distributions: [1, 0, 0],
         divisions: [0, 1, 0],
         others: [1, 1],
@@ -268,7 +297,10 @@ describe("Course reducer", () => {
         conflict: [1],
         classTypes: [1, 0, 0, 0, 0, 0],
       },
-      queried: [Object.assign({}, course, { score: 10001 })],
+      queried: [{ ...semesterCourse, score: 10001 }],
+      added: [],
+      hidden: [],
+      updateTime: undefined,
     };
 
     deepFreeze(previousState);
@@ -285,29 +317,6 @@ describe("Course reducer", () => {
 
     const previousState = { filters: { conflict: [true] }, error: null };
     const expectedNewState = { filters: { conflict: [false] }, error: null };
-
-    deepFreeze(previousState);
-    const changedState = courseReducer(previousState, action);
-
-    expect(changedState).toEqual(expectedNewState);
-  });
-
-  it("toggles semester", () => {
-    const index = 1;
-
-    const action = {
-      type: TOGGLE_SEM,
-      index,
-    };
-
-    const previousState = {
-      filters: { semesters: [false, false, false] },
-      error: null,
-    };
-    const expectedNewState = {
-      filters: { semesters: [false, SEMESTERS[1], false] },
-      error: null,
-    };
 
     deepFreeze(previousState);
     const changedState = courseReducer(previousState, action);

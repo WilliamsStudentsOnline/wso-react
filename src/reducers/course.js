@@ -607,9 +607,7 @@ const applyLoadCatalog = (state, catalog) => {
     updateTime: catalog.updateTime,
   });
 
-  Object.assign(INITIAL_STATE, applySearchCourse(INITIAL_STATE));
-
-  return state;
+  return { ...state, ...applySearchCourse(INITIAL_STATE) };
 };
 
 const courseReducer = (state = INITIAL_STATE, action) => {

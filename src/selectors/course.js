@@ -18,7 +18,6 @@ const getSearchedCourses = ({ courseState }) => courseState.searched;
 const getLoadedCourses = ({ courseState }) => {
   const { loadGroup } = courseState;
 
-  if (courseState.searched.length === 0) return [];
   if (courseState.searched.length > loadGroup * 50)
     return courseState.searched.slice(0, loadGroup * 50);
   return courseState.searched;

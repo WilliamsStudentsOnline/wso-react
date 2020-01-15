@@ -25,6 +25,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
   const loadUsers = async (newPage) => {
     if (!route.params.q) {
       updateResults([]);
+      updateTotal(0);
       return;
     }
 
@@ -37,7 +38,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
     const resultsResponse = await getAllUsers(token, queryParams);
     if (checkAndHandleError(resultsResponse)) {
       updateResults(resultsResponse.data.data);
-      updateTotal(resultsResponse.data.paginationTotal);
+      updateTotal(resultsResponse.data.paginationTotal || 0);
     } else {
       updateResults([]);
       updateTotal(0);
@@ -45,7 +46,9 @@ const FacebookHome = ({ token, route, navigateTo }) => {
   };
 
   useEffect(() => {
+    updateTotal(0);
     loadUsers(0);
+    updatePage(0);
     // eslint-disable-next-line
   }, [token, route.params.q]);
 
@@ -62,7 +65,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
 
   // Generates the user's room
   const listUserRoom = (user) => {
-    if (user.type === userTypeStudent && (user.dormVisible && user.dormRoom)) {
+    if (user.type === userTypeStudent && user.dormVisible && user.dormRoom) {
       return `${user.dormRoom.dorm.name} ${user.dormRoom.number}`;
     }
     if (user.type !== userTypeStudent && user.office) {
@@ -138,7 +141,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
 
   // Returns the results of the search
   const FacebookResults = () => {
-    if (results.length === 0 && route.params.q)
+    if (total === 0 && route.params.q)
       return (
         <>
           <br />
@@ -146,12 +149,12 @@ const FacebookHome = ({ token, route, navigateTo }) => {
         </>
       );
 
-    if (results.length === 1) {
+    if (total === 1) {
       navigateTo("facebook.users", { userID: results[0].id });
     }
 
-    if (results.length > 10) return ListView();
-    return GridView();
+    if (total < 10) return GridView();
+    return ListView();
   };
 
   // This will act as a loading buffer
@@ -195,7 +198,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FacebookHome);
+export default connect(mapStateToProps, mapDispatchToProps)(FacebookHome);
