@@ -12,8 +12,9 @@ const Ephmatcher = ({
   index,
   token,
   ephmatcherProfile,
+  photo,
 }) => {
-  const [userPhoto, updateUserPhoto] = useState(null);
+  const [userPhoto, updateUserPhoto] = useState(photo);
 
   useEffect(() => {
     const loadPhoto = async () => {
@@ -23,9 +24,12 @@ const Ephmatcher = ({
       }
     };
 
-    if (ephmatcher) loadPhoto();
+    if (ephmatcher && !photo) loadPhoto();
+    else if (photo) {
+      updateUserPhoto(photo);
+    }
     // eslint-disable-next-line
-  }, [token, ephmatcher]);
+  }, [token, ephmatcher, photo]);
 
   // Generates the user's class year
   const classYear = (year, offCycle) => {
@@ -86,6 +90,7 @@ Ephmatcher.propTypes = {
   selectEphmatcher: PropTypes.func,
   index: PropTypes.number,
   token: PropTypes.string.isRequired,
+  photo: PropTypes.string,
 };
 
 Ephmatcher.defaultProps = {
@@ -94,6 +99,7 @@ Ephmatcher.defaultProps = {
   ephmatcher: {
     unixID: "Loading...",
   },
+  photo: null,
 };
 
 export default Ephmatcher;

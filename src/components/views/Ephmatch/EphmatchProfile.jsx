@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Ephmatcher from "./Ephmatcher";
+import Errors from "../../Errors";
 
 // Redux/routing imports
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 import { actions } from "redux-router5";
+import { Link } from "react-router5";
 
 // Additional imports
 import { checkAndHandleError } from "../../../lib/general";
@@ -15,11 +17,13 @@ import {
   getSelfEphmatchProfile,
   updateEphmatchProfile,
 } from "../../../api/ephmatch";
-import { Link } from "react-router5";
+import { putCurrUserPhoto } from "../../../api/users";
 
 const EphmatchProfile = ({ token, navigateTo }) => {
   const [profile, updateProfile] = useState(null);
   const [description, updateDescription] = useState("");
+  const [photo, updatePhoto] = useState(null);
+  const [errors, updateErrors] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -42,17 +46,34 @@ const EphmatchProfile = ({ token, navigateTo }) => {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    const params = {
-      description,
-    };
+    const newErrors = [];
+
+    const params = { description };
 
     // Update the profile.
     const response = await updateEphmatchProfile(token, params);
 
+    // Update Photos
+    if (photo) {
+      const fileResponse = await putCurrUserPhoto(token, photo);
+
+      if (!checkAndHandleError(fileResponse)) {
+        newErrors.push(fileResponse.data.error.message);
+      }
+    }
+
     // Update succeeded -> redirect them to main ephmatch page.
     if (checkAndHandleError(response)) {
       navigateTo("ephmatch");
+    } else {
+      newErrors.push(response.data.error.message);
     }
+
+    updateErrors(newErrors);
+  };
+
+  const handlePhotoUpload = (event) => {
+    updatePhoto(URL.createObjectURL(event.target.files[0]));
   };
 
   const dummyEphmatchProfile = {
@@ -72,6 +93,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
           <br />
 
           <form onSubmit={submitHandler}>
+            <Errors errors={errors} />
             <h3>Profile</h3>
             <br />
             {profile && (
@@ -80,12 +102,16 @@ const EphmatchProfile = ({ token, navigateTo }) => {
                   ephmatcherProfile={dummyEphmatchProfile}
                   ephmatcher={profile.user}
                   token={token}
+                  photo={photo}
                 />
               </div>
             )}
             <br />
             <br />
-
+            <strong>Profile Picture:</strong>
+            <br />
+            <input type="file" onChange={handlePhotoUpload} />
+            <br />
             <p>
               <strong>Profile Description:</strong>
               <input

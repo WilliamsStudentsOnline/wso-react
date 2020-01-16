@@ -1,6 +1,7 @@
 // React Imports
 import React, { useState, useEffect, createRef } from "react";
 import PropTypes from "prop-types";
+import Errors from "../../Errors";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
@@ -188,13 +189,7 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
   return (
     <article className="list-creation">
       <section>
-        <div id="errors">
-          {errors.length > 0
-            ? errors.map((msg) => {
-                return <p key={msg}>{`* ${msg}`}</p>;
-              })
-            : null}
-        </div>
+        <Errors errors={errors} />
 
         <form onSubmit={submitHandler}>
           <div className="field">
