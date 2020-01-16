@@ -22,8 +22,27 @@ import * as serviceWorker from "./serviceWorker";
 
 // External imports
 import throttle from "lodash/throttle";
+import ReactGA from "react-ga";
 
 const router = configureRouter();
+
+if (process.env.NODE_ENV === "production") {
+  ReactGA.initialize("UA-150865220-1", {
+    debug: true, // TODO
+    gaOptions: {
+      siteSpeedSampleRate: 100,
+    },
+  });
+  router.usePlugin(() => {
+    return {
+      onTransitionSuccess: (toState) => {
+        ReactGA.set({ page: toState.path });
+        console.log(toState.path);
+        ReactGA.pageview(toState.path);
+      },
+    };
+  });
+}
 
 const persistedAuthState = loadState("state");
 const persistedSchedulerOptions = loadState("schedulerOptions");
