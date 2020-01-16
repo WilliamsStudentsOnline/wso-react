@@ -135,9 +135,7 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
                   >
                     {tag.name}
                   </ConnectedLink>
-                  {index < viewPerson.tags.length - 1 ? (
-                    <span>,&nbsp;</span>
-                  ) : null}
+                  {index < viewPerson.tags.length - 1 && <span>,&nbsp;</span>}
                 </li>
               );
             })}
