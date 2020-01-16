@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 // External imports
 import { checkAndHandleError } from "../../../lib/general";
 import { getUserLargePhoto } from "../../../api/users";
+import { ConnectedLink } from "react-router5";
 
 const Ephmatcher = ({
   ephmatcher,
@@ -37,6 +38,29 @@ const Ephmatcher = ({
     if (offCycle) return `'${(year - 1) % 100}.5`;
 
     return `'${year % 100}`;
+  };
+
+  const userTags = () => {
+    if (ephmatcher.tags) {
+      return (
+        <ul style={{ paddingLeft: 0, margin: 0 }}>
+          {ephmatcher.tags.map((tag, i) => {
+            return (
+              <li className="view-tag" key={tag.name}>
+                <ConnectedLink
+                  routeName="facebook"
+                  routeParams={{ q: `tag:"${tag.name}"` }}
+                >
+                  {tag.name}
+                </ConnectedLink>
+                {i < ephmatcher.tags.length - 1 && <span>,&nbsp;</span>}
+              </li>
+            );
+          })}
+        </ul>
+      );
+    }
+    return null;
   };
 
   return (
@@ -75,6 +99,7 @@ const Ephmatcher = ({
           {ephmatcher.unixID && (
             <span className="list-headers">{ephmatcher.unixID}</span>
           )}
+          {userTags()}
           {ephmatcherProfile.description && (
             <div>{ephmatcherProfile.description}</div>
           )}

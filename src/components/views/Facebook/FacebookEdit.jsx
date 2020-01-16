@@ -202,8 +202,8 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
           <br />
 
           <div className="field">
-            {currUser.type === userTypeAlumni ||
-            currUser.type === userTypeStudent ? (
+            {(currUser.type === userTypeAlumni ||
+              currUser.type === userTypeStudent) && (
               <>
                 <h3>Tags</h3>
                 <p>
@@ -257,7 +257,7 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
                 <br />
                 <br />
               </>
-            ) : null}
+            )}
             <h3>Preferences</h3>
             Preselected values indicate current settings
             <br />

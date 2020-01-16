@@ -2426,8 +2426,7 @@ section:after {
   opacity: 0.5;
   cursor: not-allowed;
 }
-.facebook-profile .view-tag,
-.facebook-edit .view-tag {
+.view-tag {
   display: inline;
 }
 .fb-tag {
