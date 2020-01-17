@@ -13,6 +13,7 @@
     "react": "^16.8.6",
     "react-date-picker": "^7.8.1",
     "react-dom": "^16.8.6",
+    "react-ga": "^2.7.0",
     "react-google-charts": "^3.0.14",
     "react-redux": "^7.1.0",
     "react-router5": "^7.1.0",
