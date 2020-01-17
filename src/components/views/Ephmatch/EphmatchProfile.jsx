@@ -76,7 +76,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
   };
 
   const handlePhotoUpload = (event) => {
-    updatePhoto(URL.createObjectURL(event.target.files[0]));
+    updatePhoto(event.target.files[0]);
   };
 
   const dummyEphmatchProfile = {
@@ -112,7 +112,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
                   ephmatcherProfile={dummyEphmatchProfile}
                   ephmatcher={dummyEphmatcher}
                   token={token}
-                  photo={photo}
+                  photo={photo && URL.createObjectURL(photo)}
                 />
               </div>
             )}
