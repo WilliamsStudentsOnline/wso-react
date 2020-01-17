@@ -75,7 +75,7 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
 
       return (
         <h1 className="no-matches-found">
-          Ephmatch opens in {format(ephmatchReleaseDate)}.
+          Ephmatch opens {format(ephmatchReleaseDate)}.
         </h1>
       );
     }
