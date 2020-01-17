@@ -107,7 +107,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
             <h3>Profile</h3>
             <br />
             {profile && (
-              <div style={{ width: "50%", margin: "auto" }}>
+              <div style={{ width: "50%", margin: "auto", minWidth: "320px" }}>
                 <Ephmatcher
                   ephmatcherProfile={dummyEphmatchProfile}
                   ephmatcher={dummyEphmatcher}
