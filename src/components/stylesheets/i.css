@@ -3567,7 +3567,7 @@ header .login .toggles input[type="submit"]:last-child {
 
 .ephmatch-results {
   text-align: center;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   grid-gap: 10px;
   display: grid;
 }
