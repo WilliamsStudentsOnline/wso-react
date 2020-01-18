@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import PaginationButtons from "../../PaginationButtons";
+import Select from "../../Select";
 
 // Redux/ routing imports
 import { connect } from "react-redux";
@@ -22,6 +23,7 @@ const EphmatchHome = ({ token }) => {
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
   const [ephmatchers, updateEphmatchers] = useState([]);
+  const [sort, updateSort] = useState("alphabetical");
 
   useEffect(() => {
     let isMounted = true;
@@ -31,6 +33,7 @@ const EphmatchHome = ({ token }) => {
         limit: perPage,
         offset: newPage * perPage,
         preload: ["tags"],
+        sort,
       };
       const EphmatchersResponse = await getEphmatchProfiles(token, params);
 
@@ -44,7 +47,7 @@ const EphmatchHome = ({ token }) => {
     return () => {
       isMounted = false;
     };
-  }, [page, token]);
+  }, [page, token, sort]);
 
   const selectEphmatcher = async (event, index) => {
     // Alternatively, use the classname to determine the method to be called.
@@ -105,6 +108,22 @@ const EphmatchHome = ({ token }) => {
 
           {ephmatchers.length > 0 ? (
             <>
+              <div className="added-sort">
+                <strong>Sort By:</strong>
+                <Select
+                  onChange={(event) => {
+                    updateSort(event.target.value);
+                  }}
+                  options={["Newest First", "Alphabetical (A-Z)"]}
+                  value={sort}
+                  valueList={["new", "alphabetical"]}
+                  style={{
+                    display: "inline",
+                    margin: "5px 0px 5px 20px",
+                    padding: "4px",
+                  }}
+                />
+              </div>
               <PaginationButtons
                 selectionHandler={selectionHandler}
                 clickHandler={clickHandler}
