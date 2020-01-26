@@ -31,8 +31,7 @@ const Homepage = ({ navigateTo }) => {
     <div className="home">
       <div className="full-width">
         <div id="join-header">
-          WSO (web and app) will be down from Friday (1/24) afternoon to Sunday
-          (1/26) afternoon
+          <a href="https://forms.gle/RYeBrHvi776F24sE9">Join us today!</a>
         </div>
 
         <header>
@@ -77,4 +76,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(null, mapDispatchToProps)(Homepage);
+export default connect(
+  null,
+  mapDispatchToProps
+)(Homepage);
