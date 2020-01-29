@@ -103,6 +103,11 @@ const Ephmatcher = ({
           {ephmatcherProfile.description && (
             <div>{ephmatcherProfile.description}</div>
           )}
+          {ephmatcherProfile.matchMessage && (
+            <div className="match-message">
+              {ephmatcherProfile.matchMessage}
+            </div>
+          )}
         </div>
       )}
     </aside>

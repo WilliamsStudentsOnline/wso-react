@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Ephmatcher from "./Ephmatcher";
+import EphmatchForm from "./EphmatchForm";
 
 // Redux/routing imports
 import { connect } from "react-redux";
@@ -12,7 +13,6 @@ import { actions } from "redux-router5";
 import { checkAndHandleError } from "../../../lib/general";
 import { createEphmatchProfile } from "../../../api/ephmatch";
 import { getUser } from "../../../api/users";
-import { Link } from "react-router5";
 
 // Page created to handle both opting in and out.
 const EphmatchOptIn = ({ token, navigateTo }) => {
@@ -20,6 +20,8 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
   const [optIn, updateOptIn] = useState(null);
   const [description, updateDescription] = useState("");
   const [userInfo, updateUserInfo] = useState(null);
+  const [matchMessage, updateMatchMessage] = useState("");
+
   useEffect(() => {
     let isMounted = true;
 
@@ -40,7 +42,7 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    const params = { description, gender: "" };
+    const params = { description, matchMessage, gender: "" };
     const response = await createEphmatchProfile(token, params);
 
     // Update succeeded -> redirect them to main ephmatch page.
@@ -52,6 +54,7 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
   const dummyEphmatchProfile = {
     id: 0,
     description,
+    matchMessage,
   };
 
   return (
@@ -67,58 +70,31 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
           </p>
           <br />
           <br />
-          <form
-            onSubmit={submitHandler}
-            style={{ padding: "20px", boxShadow: "0 6px 10px #888" }}
+          <EphmatchForm
+            submitHandler={submitHandler}
+            description={description}
+            matchMessage={matchMessage}
+            updateDescription={updateDescription}
+            updateMatchMessage={updateMatchMessage}
           >
             <h3>Create your Ephmatch Profile</h3>
-            <br />
-            <div style={{ width: "50%", margin: "auto" }}>
+            <div className="ephmatch-sample-profile">
               <Ephmatcher
                 ephmatcherProfile={dummyEphmatchProfile}
                 ephmatcher={userInfo}
                 token={token}
               />
             </div>
-            <br />
-            <br />
-            <h5>Profile Description:</h5>
             <p>
               <input
-                type="text"
-                value={description || ""}
-                onChange={(event) => updateDescription(event.target.value)}
-                placeholder="Add a short description to your profile to help others know you
-                better!"
+                type="checkbox"
+                onChange={(event) => updateOptIn(event.target.checked)}
+                defaultChecked={optIn}
+                required
               />
-              <br />
-              You may also edit your display picture and other parts of your
-              profile <Link routeName="facebook.edit">here</Link>.
+              <strong>I want to opt into Ephmatch.</strong>
             </p>
-            <br />
-            <h5>Opting In</h5>
-            <b>
-              Opting in is entirely optional - we respect your wishes, and you
-              will not be added into Ephmatch should you not choose to opt in.
-            </b>
-            <br />
-            <br />
-            <input
-              type="checkbox"
-              onChange={(event) => updateOptIn(event.target.checked)}
-              defaultChecked={optIn}
-              required
-            />
-            I want to opt into Ephmatch.
-            <br />
-            <br />
-            <br />
-            <input
-              type="submit"
-              value="Explore Ephmatch"
-              data-disable-with="Entering Ephmatch..."
-            />
-          </form>
+          </EphmatchForm>
         </article>
       </section>
     </div>

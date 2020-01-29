@@ -4,13 +4,13 @@ import PropTypes from "prop-types";
 import Ephmatcher from "./Ephmatcher";
 import Errors from "../../Errors";
 import TagEdit from "../../TagEdit";
+import EphmatchForm from "./EphmatchForm";
 
 // Redux/routing imports
 import { connect } from "react-redux";
 import { getToken } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 import { actions } from "redux-router5";
-import { Link } from "react-router5";
 
 // Additional imports
 import { checkAndHandleError } from "../../../lib/general";
@@ -23,6 +23,7 @@ import { putCurrUserPhoto } from "../../../api/users";
 const EphmatchProfile = ({ token, navigateTo }) => {
   const [profile, updateProfile] = useState(null);
   const [description, updateDescription] = useState("");
+  const [matchMessage, updateMatchMessage] = useState("");
   const [photo, updatePhoto] = useState(null);
   const [errors, updateErrors] = useState([]);
   const [tags, updateTags] = useState([]);
@@ -33,9 +34,12 @@ const EphmatchProfile = ({ token, navigateTo }) => {
     const loadEphmatchProfile = async () => {
       const ownProfile = await getSelfEphmatchProfile(token);
       if (checkAndHandleError(ownProfile) && isMounted) {
-        updateProfile(ownProfile.data.data);
-        updateDescription(ownProfile.data.data.description);
-        updateTags(ownProfile.data.data.user.tags.map((tag) => tag.name));
+        const ephmatchProfile = ownProfile.data.data;
+
+        updateProfile(ephmatchProfile);
+        updateDescription(ephmatchProfile.description);
+        updateTags(ephmatchProfile.user.tags.map((tag) => tag.name));
+        updateMatchMessage(ephmatchProfile.matchMessage);
       }
     };
 
@@ -51,7 +55,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
 
     const newErrors = [];
 
-    const params = { description };
+    const params = { description, matchMessage };
 
     // Update the profile.
     const response = await updateEphmatchProfile(token, params);
@@ -95,19 +99,17 @@ const EphmatchProfile = ({ token, navigateTo }) => {
     <div className="article">
       <section>
         <article>
-          <p>
-            Add a short description to your profile to help others know you
-            better!
-          </p>
-          <br />
-          <br />
-
-          <form onSubmit={submitHandler}>
+          <EphmatchForm
+            submitHandler={submitHandler}
+            description={description}
+            matchMessage={matchMessage}
+            updateDescription={updateDescription}
+            updateMatchMessage={updateMatchMessage}
+          >
             <Errors errors={errors} />
             <h3>Profile</h3>
-            <br />
             {profile && (
-              <div style={{ width: "50%", margin: "auto", minWidth: "320px" }}>
+              <div className="ephmatch-sample-profile">
                 <Ephmatcher
                   ephmatcherProfile={dummyEphmatchProfile}
                   ephmatcher={dummyEphmatcher}
@@ -116,8 +118,6 @@ const EphmatchProfile = ({ token, navigateTo }) => {
                 />
               </div>
             )}
-            <br />
-            <br />
             <strong>Profile Picture:</strong>
             <br />
             <input type="file" onChange={handlePhotoUpload} />
@@ -136,20 +136,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
               updateErrors={updateErrors}
             />
             <br />
-            <p>
-              <strong>Profile Description:</strong>
-              <input
-                type="text"
-                value={description || ""}
-                onChange={(event) => updateDescription(event.target.value)}
-              />
-              <br />
-              You may also edit other parts of your profile{" "}
-              <Link routeName="facebook.edit">here</Link>.
-            </p>
-            <br />
-            <input type="submit" value="Save" data-disable-with="Save" />
-          </form>
+          </EphmatchForm>
         </article>
       </section>
     </div>
