@@ -5,10 +5,19 @@ import PropTypes from "prop-types";
 // Additional imports
 import { Link } from "react-router5";
 
-const EphmatchLayout = ({ children, ephmatchReleaseDate, matches }) => {
+import { format } from "timeago.js";
+
+const EphmatchLayout = ({ children, ephmatchEndDate, matches }) => {
+  const isOpen = new Date() < ephmatchEndDate;
   return (
     <>
       <header>
+        {isOpen && (
+          <section className="notice">
+            Ephmatch closes in {format(ephmatchEndDate)}
+          </section>
+        )}
+
         <div className="page-head">
           <h1>
             <Link routeName="ephmatch">Ephmatch</Link>
@@ -17,20 +26,22 @@ const EphmatchLayout = ({ children, ephmatchReleaseDate, matches }) => {
             <li>
               <Link routeName="ephmatch">Home</Link>
             </li>
-            {new Date() > ephmatchReleaseDate && (
-              <li>
-                <Link routeName="ephmatch.matches">Matches</Link>
-                <span className="ephcatch-badge" title="Matches!">
-                  {matches.length}
-                </span>
-              </li>
+            {isOpen && (
+              <>
+                <li>
+                  <Link routeName="ephmatch.matches">Matches</Link>
+                  <span className="ephcatch-badge" title="Matches!">
+                    {matches.length}
+                  </span>
+                </li>
+                <li>
+                  <Link routeName="ephmatch.profile">Profile</Link>
+                </li>
+                <li>
+                  <Link routeName="ephmatch.optOut">Opt Out</Link>
+                </li>
+              </>
             )}
-            <li>
-              <Link routeName="ephmatch.profile">Profile</Link>
-            </li>
-            <li>
-              <Link routeName="ephmatch.optOut">Opt Out</Link>
-            </li>
           </ul>
         </div>
       </header>
@@ -41,7 +52,7 @@ const EphmatchLayout = ({ children, ephmatchReleaseDate, matches }) => {
 
 EphmatchLayout.propTypes = {
   children: PropTypes.object,
-  ephmatchReleaseDate: PropTypes.object.isRequired,
+  ephmatchEndDate: PropTypes.object.isRequired,
   matches: PropTypes.arrayOf(PropTypes.object),
 };
 

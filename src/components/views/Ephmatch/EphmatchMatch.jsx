@@ -33,6 +33,7 @@ const EphmatchMatch = ({ token }) => {
       <section>
         <h3>Matches</h3>
         <p>These Ephs have matched with you! Start the conversation!</p>
+        <br />
         <div className="ephmatch-results">
           {matches.map((match) => (
             <Ephmatcher
