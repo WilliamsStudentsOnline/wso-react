@@ -86,6 +86,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
   const dummyEphmatchProfile = {
     ...profile,
     description,
+    matchMessage,
   };
 
   const dummyEphmatcher = profile && {
