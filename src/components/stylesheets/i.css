@@ -3567,9 +3567,10 @@ header .login .toggles input[type="submit"]:last-child {
 
 .ephmatch-results {
   text-align: center;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 0.5fr));
   grid-gap: 10px;
   display: grid;
+  justify-content: center;
 }
 
 .tag-remove {
@@ -3610,6 +3611,24 @@ header .login .toggles input[type="submit"]:last-child {
   animation-iteration-count: 3;
   -webkit-animation: ephmatch 2s;
   -webkit-animation-iteration-count: 3;
+}
+
+.match-message {
+  padding: 10px;
+  border: 2px dashed purple;
+  background: papayawhip;
+  margin-top: 10px;
+}
+
+.ephmatch-form {
+  padding: 20px;
+  box-shadow: 0 6px 10px #888;
+}
+
+.ephmatch-sample-profile {
+  width: 50%;
+  margin: 30px auto;
+  min-width: 320px;
 }
 
 /*# sourceMappingURL=i.css.map */
