@@ -25,7 +25,8 @@ const EphmatchForm = ({
         <div className="match-message">
           <strong>Match Message:</strong>
           <br />
-          Only shown to your matches!
+          Only shown to your matches - consider adding a Snapchat or Instagram
+          handle for your matches to see!
           <input
             type="text"
             value={matchMessage || ""}
