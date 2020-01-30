@@ -23,13 +23,12 @@ import {
   getSelfEphmatchProfile,
   getEphmatchMatches,
 } from "../../../api/ephmatch";
-import { format } from "timeago.js";
 
 const EphmatchMain = ({ route, token, navigateTo, profile }) => {
   const [ephmatchProfile, updateEphmatchProfile] = useState(profile);
   const [hasQueriedProfile, updateHasQueriedProfile] = useState(false);
   const [matches, updateMatches] = useState([]);
-  const ephmatchReleaseDate = new Date(2020, 0, 16, 23, 59, 59, 99);
+  const ephmatchEndDate = new Date(2020, 1, 4, 23, 59, 59, 99);
 
   useEffect(() => {
     let isMounted = true;
@@ -69,13 +68,13 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
 
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) {
-      if (new Date() > ephmatchReleaseDate) {
+      if (new Date() < ephmatchEndDate) {
         return <EphmatchHome />;
       }
 
       return (
         <h1 className="no-matches-found">
-          Ephmatch opens {format(ephmatchReleaseDate)}.
+          Ephmatch has officially closed for this year.
         </h1>
       );
     }
@@ -95,10 +94,7 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
 
   if (containsScopes(token, [scopes.ScopeEphmatch])) {
     return (
-      <EphmatchLayout
-        matches={matches}
-        ephmatchReleaseDate={ephmatchReleaseDate}
-      >
+      <EphmatchLayout matches={matches} ephmatchEndDate={ephmatchEndDate}>
         {EphmatchBody()}
       </EphmatchLayout>
     );

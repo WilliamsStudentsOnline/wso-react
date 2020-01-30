@@ -1286,52 +1286,44 @@ dl dd {
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
 }
-.error,
-#flash_failure {
+.error {
   background: #fbe3e4;
   color: #97161b;
   font-weight: bold;
   margin-bottom: 0.75em;
   padding: 0.75em;
 }
-.error a,
-#flash_failure a {
+.error a {
   color: #6a0f13;
 }
-.error a:hover,
-#flash_failure a:hover {
+.error a:hover {
   color: #110203;
 }
-.notice,
-#flash_notice {
+.notice {
   background: #fff6bf;
   color: #8c7800;
   font-weight: bold;
   margin-bottom: 0.75em;
   padding: 0.75em;
+  text-align: center;
 }
-.notice a,
-#flash_notice a {
+.notice a {
   color: #594c00;
 }
-.notice a:hover,
-#flash_notice a:hover {
+.notice a:hover {
   color: #000;
 }
-.success,
-#flash_success {
+.success {
   background: #e6efc2;
   color: #56651a;
   font-weight: bold;
   margin-bottom: 0.75em;
   padding: 0.75em;
 }
-.success a,
-#flash_success a {
+.success a {
   color: #333c10;
 }
-.success a:hover,
-#flash_success a:hover {
+.success a:hover {
   color: #000;
 }
 * {
@@ -3567,9 +3559,10 @@ header .login .toggles input[type="submit"]:last-child {
 
 .ephmatch-results {
   text-align: center;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 0.5fr));
   grid-gap: 10px;
   display: grid;
+  justify-content: center;
 }
 
 .tag-remove {
@@ -3610,6 +3603,24 @@ header .login .toggles input[type="submit"]:last-child {
   animation-iteration-count: 3;
   -webkit-animation: ephmatch 2s;
   -webkit-animation-iteration-count: 3;
+}
+
+.match-message {
+  padding: 10px;
+  border: 2px dashed purple;
+  background: papayawhip;
+  margin-top: 10px;
+}
+
+.ephmatch-form {
+  padding: 20px;
+  box-shadow: 0 6px 10px #888;
+}
+
+.ephmatch-sample-profile {
+  width: 50%;
+  margin: 30px auto;
+  min-width: 320px;
 }
 
 /*# sourceMappingURL=i.css.map */
