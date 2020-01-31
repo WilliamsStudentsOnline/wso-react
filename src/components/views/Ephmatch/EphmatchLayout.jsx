@@ -14,7 +14,7 @@ const EphmatchLayout = ({ children, ephmatchEndDate, matches }) => {
       <header>
         {isOpen && (
           <section className="notice">
-            Ephmatch closes in {format(ephmatchEndDate)}
+            Ephmatch closes {format(ephmatchEndDate)}
           </section>
         )}
 
