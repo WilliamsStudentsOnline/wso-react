@@ -2419,7 +2419,7 @@ section:after {
   cursor: not-allowed;
 }
 .view-tag {
-  display: inline;
+  display: inline-block;
 }
 .fb-tag {
   position: relative;
