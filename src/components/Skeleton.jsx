@@ -17,7 +17,7 @@ const commonDefaultProps = {
   className: "",
 };
 
-const SkeletonLine = ({ width, height, center, className }) => {
+const Line = ({ width, height, center, className }) => {
   return (
     <div
       className={`skeleton ${className}`}
@@ -26,35 +26,60 @@ const SkeletonLine = ({ width, height, center, className }) => {
   );
 };
 
-SkeletonLine.propTypes = commonPropTypes;
-SkeletonLine.defaultProps = commonDefaultProps;
+Line.propTypes = commonPropTypes;
+Line.defaultProps = commonDefaultProps;
 
 const randPercentBetween = (min, max) => {
   const randomPercent = min + Math.random() * (max - min);
   return `${randomPercent}%`;
 };
 
-const SkeletonList = React.memo(
-  ({ width, height, center, className, numRows }) => {
-    return (
-      <div className="skeleton-container">
-        {[...Array(numRows)].map((_, i) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <div key={i}>
-            <SkeletonLine
-              width={width || randPercentBetween(30, 90)}
-              height={height}
-              center={center}
-              className={className}
-            />
-          </div>
-        ))}
-      </div>
-    );
-  }
-);
+const List = React.memo(({ width, height, center, className, numRows }) => {
+  return (
+    <div className="skeleton-container">
+      {[...Array(numRows)].map((_, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <div key={i}>
+          <Line
+            width={width || randPercentBetween(30, 90)}
+            height={height}
+            center={center}
+            className={className}
+          />
+        </div>
+      ))}
+    </div>
+  );
+});
 
-SkeletonList.propTypes = { ...commonPropTypes, numRows: PropTypes.number };
-SkeletonList.defaultProps = { ...commonDefaultProps, numRows: 5 };
+List.propTypes = { ...commonPropTypes, numRows: PropTypes.number };
+List.defaultProps = { ...commonDefaultProps, numRows: 5 };
 
-export { SkeletonLine, SkeletonList };
+const Paragraph = ({ center, className, numRows }) => {
+  return (
+    <div className="skeleton-container">
+      {[...Array(numRows)].map((_, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <div key={i}>
+          <Line
+            width="100%"
+            height="0.8em"
+            center={center}
+            className={className}
+          />
+        </div>
+      ))}
+
+      <Line width="15%" height="0.8em" center={center} className={className} />
+    </div>
+  );
+};
+
+Paragraph.propTypes = {
+  center: PropTypes.bool,
+  className: PropTypes.string,
+  numRows: PropTypes.number,
+};
+Paragraph.defaultProps = { center: false, className: "", numRows: 5 };
+
+export { Line, List, Paragraph };

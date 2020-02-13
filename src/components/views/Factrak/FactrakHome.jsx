@@ -1,8 +1,8 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import FactrakComment from "./FactrakComment";
-import { SkeletonList } from "../../Skeleton";
+import FactrakComment, { FactrakCommentSkeleton } from "./FactrakComment";
+import { List } from "../../Skeleton";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -48,9 +48,7 @@ const FactrakHome = ({ token, currUser }) => {
     } else {
       updateSurveys(
         [...Array(10)].map((_, id) => {
-          return {
-            id,
-          };
+          return { id };
         })
       );
     }
@@ -100,7 +98,7 @@ const FactrakHome = ({ token, currUser }) => {
                   </li>
                 ))
               ) : (
-                <SkeletonList height="80%" center numRows={46} />
+                <List height="80%" center numRows={46} />
               )}
             </ul>
           </article>
@@ -112,20 +110,26 @@ const FactrakHome = ({ token, currUser }) => {
             <br />
             {factrakSurveyDeficitMessage()}
 
-            {surveys &&
-              surveys.map((survey) => {
-                if (containsScopes(token, [scopes.ScopeFactrakFull])) {
-                  return (
-                    <FactrakComment
-                      comment={survey}
-                      showProf
-                      abridged
-                      key={survey.id}
-                    />
-                  );
-                }
-                return <FactrakComment showProf abridged key={survey.id} />;
-              })}
+            {surveys
+              ? surveys.map((survey) => {
+                  if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+                    return (
+                      <FactrakComment
+                        comment={survey}
+                        showProf
+                        abridged
+                        key={survey.id}
+                      />
+                    );
+                  }
+                  return <FactrakComment showProf abridged key={survey.id} />;
+                })
+              : [...Array(10)].map((_, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <div key={i}>
+                    <FactrakCommentSkeleton />
+                  </div>
+                ))}
           </section>
         </article>
       </div>

@@ -1,6 +1,7 @@
 // React imports
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { Paragraph, Line } from "../../Skeleton";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
@@ -371,6 +372,18 @@ FactrakComment.defaultProps = {
   },
 };
 
+const FactrakCommentSkeleton = () => {
+  return (
+    <div className="comment">
+      <Line width="30%" height="0.8em" />
+      <Paragraph false numRows={3} />
+      <Line width="25%" height="0.8em" />
+      <br />
+      <Line width="30%" height="0.8em" />
+    </div>
+  );
+};
+
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
   token: getToken(state),
@@ -382,7 +395,5 @@ const mapDispatchToProps = (dispatch) => ({
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FactrakComment);
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakComment);
+export { FactrakCommentSkeleton };

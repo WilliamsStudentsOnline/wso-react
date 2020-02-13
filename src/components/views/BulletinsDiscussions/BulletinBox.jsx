@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "../../stylesheets/BulletinBox.css";
-import { SkeletonLine } from "../../Skeleton";
+import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
@@ -133,10 +133,10 @@ const BulletinBox = ({ token, typeWord }) => {
     return [...Array(5)].map((_, i) => (
       // eslint-disable-next-line react/no-array-index-key
       <div className="bulletin-children" key={i}>
-        <SkeletonLine width="90%" height="40%" center />
+        <Line width="90%" height="40%" center />
 
         <span className="list-date">
-          <SkeletonLine width="90%" height="40%" center />
+          <Line width="90%" height="40%" center />
         </span>
       </div>
     ));
