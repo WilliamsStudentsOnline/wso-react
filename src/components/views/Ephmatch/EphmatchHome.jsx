@@ -58,10 +58,10 @@ const EphmatchHome = ({ token }) => {
 
     if (ephmatcher.liked) {
       ephmatchersResponse = await unlikeEphmatcher(token, ephmatcher.userID);
-      target.className = "ephcatch-select-link";
+      target.className = "ephmatch-select-link";
     } else {
       ephmatchersResponse = await likeEphmatcher(token, ephmatcher.userID);
-      target.className = "ephcatch-select-link ephcatch-selected";
+      target.className = "ephmatch-select-link ephmatch-selected";
     }
 
     if (checkAndHandleError(ephmatchersResponse)) {
