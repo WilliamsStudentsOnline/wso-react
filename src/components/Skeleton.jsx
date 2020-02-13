@@ -12,7 +12,7 @@ const commonPropTypes = {
 
 const commonDefaultProps = {
   width: "",
-  height: "",
+  height: "0.8em",
   center: false,
   className: "",
 };

@@ -375,11 +375,11 @@ FactrakComment.defaultProps = {
 const FactrakCommentSkeleton = () => {
   return (
     <div className="comment">
-      <Line width="30%" height="0.8em" />
+      <Line width="30%" />
       <Paragraph false numRows={3} />
-      <Line width="25%" height="0.8em" />
+      <Line width="25%" />
       <br />
-      <Line width="30%" height="0.8em" />
+      <Line width="30%" />
     </div>
   );
 };
