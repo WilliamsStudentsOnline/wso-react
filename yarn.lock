@@ -9102,11 +9102,6 @@ react-calendar@^2.19.1:
     prop-types "^15.6.0"
     react-lifecycles-compat "^3.0.4"
 
-react-content-loader@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/react-content-loader/-/react-content-loader-5.0.1.tgz#8da35e362bd1f53233c9daec99a67d8ea14ecd68"
-  integrity sha512-id1zp9jcB+SfJV9Vrjpmk+Qt+zJ3owYiIAGkHy8V4Sffvcyr6zmZbai8qT+Y3bPrvnH3kWvr9iO5giC5g9cYKQ==
-
 react-date-picker@^7.8.1:
   version "7.8.2"
   resolved "https://registry.yarnpkg.com/react-date-picker/-/react-date-picker-7.8.2.tgz#448657c6d7fc8e225ff06c7f9345488894d416ce"
