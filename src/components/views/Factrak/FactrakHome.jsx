@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import FactrakComment from "./FactrakComment";
+import { SkeletonList } from "../../Skeleton";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -17,8 +18,8 @@ import {
 import { Link } from "react-router5";
 
 const FactrakHome = ({ token, currUser }) => {
-  const [areas, updateAreas] = useState([]);
-  const [surveys, updateSurveys] = useState([]);
+  const [areas, updateAreas] = useState(null);
+  const [surveys, updateSurveys] = useState(null);
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
@@ -45,18 +46,13 @@ const FactrakHome = ({ token, currUser }) => {
     if (containsScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys();
     } else {
-      updateSurveys([
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
-        { id: 9 },
-        { id: 10 },
-      ]);
+      updateSurveys(
+        [...Array(10)].map((_, id) => {
+          return {
+            id,
+          };
+        })
+      );
     }
 
     loadAreas();
@@ -92,16 +88,20 @@ const FactrakHome = ({ token, currUser }) => {
           <article className="home">
             <h3>Departments</h3>
             <ul id="dept_list">
-              {areas.map((area) => (
-                <li key={area.name}>
-                  <Link
-                    routeName="factrak.areasOfStudy"
-                    routeParams={{ area: area.id }}
-                  >
-                    {area.name}
-                  </Link>
-                </li>
-              ))}
+              {areas ? (
+                areas.map((area) => (
+                  <li key={area.name}>
+                    <Link
+                      routeName="factrak.areasOfStudy"
+                      routeParams={{ area: area.id }}
+                    >
+                      {area.name}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <SkeletonList height="80%" center numRows={46} />
+              )}
             </ul>
           </article>
         </aside>
@@ -112,19 +112,20 @@ const FactrakHome = ({ token, currUser }) => {
             <br />
             {factrakSurveyDeficitMessage()}
 
-            {surveys.map((survey) => {
-              if (containsScopes(token, [scopes.ScopeFactrakFull])) {
-                return (
-                  <FactrakComment
-                    comment={survey}
-                    showProf
-                    abridged
-                    key={survey.id}
-                  />
-                );
-              }
-              return <FactrakComment showProf abridged key={survey.id} />;
-            })}
+            {surveys &&
+              surveys.map((survey) => {
+                if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+                  return (
+                    <FactrakComment
+                      comment={survey}
+                      showProf
+                      abridged
+                      key={survey.id}
+                    />
+                  );
+                }
+                return <FactrakComment showProf abridged key={survey.id} />;
+              })}
           </section>
         </article>
       </div>

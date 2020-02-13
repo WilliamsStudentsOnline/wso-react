@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "../../stylesheets/BulletinBox.css";
-import SkeletonLine from "../../Skeleton";
+import { SkeletonLine } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
