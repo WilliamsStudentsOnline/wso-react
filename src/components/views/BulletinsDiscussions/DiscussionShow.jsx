@@ -111,7 +111,6 @@ const DiscussionShow = ({ token, route }) => {
       </h5>
 
       {renderPosts()}
-
       {replyArea()}
     </section>
   );
