@@ -76,11 +76,7 @@ const FactrakProfessor = ({ token, route, currUser }) => {
     if (containsScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys(professorParam);
     } else {
-      updateSurveys(
-        [...Array(10)].map((_, id) => {
-          return { id };
-        })
-      );
+      updateSurveys([...Array(10)].map((_, id) => ({ id })));
     }
   }, [route.params.professor, token, route.params.profID]);
 

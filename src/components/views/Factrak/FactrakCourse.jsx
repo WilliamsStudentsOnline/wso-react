@@ -48,10 +48,8 @@ const FactrakCourse = ({ route, token, currUser }) => {
         courseID,
         populateAgreements: true,
         populateClientAgreement: true,
+        professorID: profID > 0 ? profID : null,
       };
-      if (profID > 0) {
-        queryParams.professorID = profID;
-      }
       const surveyResponse = await getSurveys(token, queryParams);
       if (checkAndHandleError(surveyResponse)) {
         updateSurveys(surveyResponse.data.data);
@@ -78,11 +76,7 @@ const FactrakCourse = ({ route, token, currUser }) => {
     if (containsScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys();
     } else {
-      updateSurveys(
-        [...Array(10)].map((_, id) => {
-          return { id };
-        })
-      );
+      updateSurveys([...Array(10)].map((_, id) => ({ id })));
     }
 
     loadProfs();

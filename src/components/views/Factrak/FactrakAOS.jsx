@@ -123,10 +123,7 @@ const FactrakAOS = ({ route, token }) => {
           <tbody>
             {profs
               ? profs.map((prof) => generateProfRow(prof))
-              : [...Array(5)].map((_, i) =>
-                  // eslint-disable-next-line react/no-array-index-key
-                  profSkeleton(i)
-                )}
+              : [...Array(5)].map((_, i) => profSkeleton(i))}
           </tbody>
         </table>
       </>
@@ -205,10 +202,7 @@ const FactrakAOS = ({ route, token }) => {
           <tbody>
             {courses
               ? courses.map((course) => generateCourseRow(course))
-              : [...Array(5)].map((_, i) =>
-                  // eslint-disable-next-line react/no-array-index-key
-                  courseSkeleton(i)
-                )}
+              : [...Array(5)].map((_, i) => courseSkeleton(i))}
           </tbody>
         </table>
       </>
