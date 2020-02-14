@@ -91,18 +91,17 @@ const FactrakProfessor = ({ token, route, currUser }) => {
           <h3>
             <Line width="20%" />
           </h3>
-
           <h5>
             <Line width="20%" />
             <br />
             <Line width="40%" />
           </h5>
           <br />
-
+          <br />
+          <Line width="20%" />
           <br />
           <FactrakRatingsSkeleton />
           <br />
-
           <h3>Comments</h3>
           <br />
           <FactrakDeficitMessage currUser={currUser} />

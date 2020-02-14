@@ -1,8 +1,10 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import FactrakComment from "./FactrakComment";
+import FactrakComment, { FactrakCommentSkeleton } from "./FactrakComment";
 import FactrakDeficitMessage from "./FactrakUtils";
+import FactrakRatings, { FactrakRatingsSkeleton } from "./FactrakRatings";
+import { Line } from "../../Skeleton";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
@@ -22,11 +24,10 @@ import {
   containsScopes,
 } from "../../../lib/general";
 import { Link } from "react-router5";
-import FactrakRatings from "./FactrakRatings";
 
 const FactrakCourse = ({ route, token, currUser }) => {
-  const [course, updateCourse] = useState({});
-  const [courseSurveys, updateSurveys] = useState([]);
+  const [course, updateCourse] = useState(null);
+  const [courseSurveys, updateSurveys] = useState(null);
   const [courseProfs, updateProfs] = useState([]);
   const [ratings, updateRatings] = useState(null);
 
@@ -94,28 +95,39 @@ const FactrakCourse = ({ route, token, currUser }) => {
       <div>
         View comments only for:
         <br />
-        {course && course.id
-          ? courseProfs.map((prof) => (
-              <React.Fragment key={prof.name}>
-                <Link
-                  routeName="factrak.courses.singleProf"
-                  routeParams={{
-                    courseID: course.id,
-                    profID: prof.id,
-                  }}
-                >
-                  {prof.name}
-                </Link>
-                &emsp;
-              </React.Fragment>
-            ))
-          : null}
+        {course && course.id ? (
+          courseProfs.map((prof) => (
+            <React.Fragment key={prof.name}>
+              <Link
+                routeName="factrak.courses.singleProf"
+                routeParams={{
+                  courseID: course.id,
+                  profID: prof.id,
+                }}
+              >
+                {prof.name}
+              </Link>
+              &emsp;
+            </React.Fragment>
+          ))
+        ) : (
+          <Line width="50%" />
+        )}
       </div>
     );
   };
 
   // Generates the factrak survey comments of the course
   const commentList = () => {
+    if (!courseSurveys) {
+      return [...Array(5)].map((_, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <div key={i}>
+          <FactrakCommentSkeleton />
+        </div>
+      ));
+    }
+
     return (
       <div className="factrak-prof-comments">
         {courseSurveys.length === 0
@@ -157,7 +169,11 @@ const FactrakCourse = ({ route, token, currUser }) => {
             </h4>
           )}
           <br />
-          <FactrakRatings ratings={ratings} general />
+          {ratings ? (
+            <FactrakRatings ratings={ratings} general />
+          ) : (
+            <FactrakRatingsSkeleton />
+          )}
         </>
       );
     }
@@ -175,14 +191,18 @@ const FactrakCourse = ({ route, token, currUser }) => {
     );
   };
 
+  const courseTitle = () => {
+    if (!course) return <Line width="20%" />;
+
+    return `${course.areaOfStudy ? course.areaOfStudy.abbreviation : ""} ${
+      course.number
+    }`;
+  };
+
   return (
     <article className="facebook-profile">
       <section className="info">
-        <h3>
-          {`${course.areaOfStudy ? course.areaOfStudy.abbreviation : ""} ${
-            course.number
-          }`}
-        </h3>
+        <h3>{courseTitle()}</h3>
         <br />
         {professorList()}
         {selectedProf()}

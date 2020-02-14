@@ -176,8 +176,6 @@ FactrakRatings.propTypes = {
 const FactrakRatingsSkeleton = () => {
   return (
     <>
-      <Line width="20%" />
-      <br />
       <br />
       {["20%", "50%", "50%", "70%", "30%", "50%", "40%"].map((width, i) => (
         // eslint-disable-next-line react/no-array-index-key
