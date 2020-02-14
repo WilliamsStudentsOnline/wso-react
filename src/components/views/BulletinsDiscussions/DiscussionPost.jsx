@@ -137,19 +137,17 @@ DiscussionPost.propTypes = {
 
 DiscussionPost.defaultProps = {};
 
-const DiscussionPostSkeleton = () => {
-  return (
-    <div className="comment">
-      <div className="comment-content">
-        <Line width="20%" />
-        &nbsp;
-        <Line width="20%" />
-        <br />
-        <Paragraph numRows={5} />
-      </div>
+const DiscussionPostSkeleton = () => (
+  <div className="comment">
+    <div className="comment-content">
+      <Line width="20%" />
+      &nbsp;
+      <Line width="20%" />
+      <br />
+      <Paragraph numRows={5} />
     </div>
-  );
-};
+  </div>
+);
 
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),

@@ -80,21 +80,19 @@ const FactrakAOS = ({ route, token }) => {
   };
 
   // Generate a skeleton of prof information
-  const profSkeleton = (key) => {
-    return (
-      <tr key={key}>
-        <td>
-          <Line width="30%" />
-        </td>
-        <td>
-          <Line width="80%" />
-        </td>
-        <td>
-          <Line width="30%" />
-        </td>
-      </tr>
-    );
-  };
+  const profSkeleton = (key) => (
+    <tr key={key}>
+      <td>
+        <Line width="30%" />
+      </td>
+      <td>
+        <Line width="80%" />
+      </td>
+      <td>
+        <Line width="30%" />
+      </td>
+    </tr>
+  );
 
   // Generates the component which holds the list of professors in the area of study
   const generateProfs = () => {
@@ -172,18 +170,16 @@ const FactrakAOS = ({ route, token }) => {
   };
 
   // Generates a skeleton for the course
-  const courseSkeleton = (key) => {
-    return (
-      <tr key={key}>
-        <td className="col-20">
-          <Line width="30%" />
-        </td>
-        <td className="col-80">
-          <Line width="50%" />
-        </td>
-      </tr>
-    );
-  };
+  const courseSkeleton = (key) => (
+    <tr key={key}>
+      <td className="col-20">
+        <Line width="30%" />
+      </td>
+      <td className="col-80">
+        <Line width="50%" />
+      </td>
+    </tr>
+  );
 
   // Generates the component which holds the list of courses in the area of study
   const generateCourses = () => {

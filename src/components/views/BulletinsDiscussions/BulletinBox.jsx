@@ -129,8 +129,8 @@ const BulletinBox = ({ token, typeWord }) => {
     );
   };
 
-  const bulletinSkeleton = () => {
-    return [...Array(5)].map((_, i) => (
+  const bulletinSkeleton = () =>
+    [...Array(5)].map((_, i) => (
       // eslint-disable-next-line react/no-array-index-key
       <div className="bulletin-children" key={i}>
         <Line width="90%" center />
@@ -140,7 +140,6 @@ const BulletinBox = ({ token, typeWord }) => {
         </span>
       </div>
     ));
-  };
 
   const bulletinThreads = () => {
     return (

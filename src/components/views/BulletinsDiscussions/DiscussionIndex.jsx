@@ -145,21 +145,19 @@ const DiscussionIndex = ({ currUser, token }) => {
     );
   };
 
-  const discussionSkeleton = () => {
-    return (
-      <div className="comment">
-        <h5>
-          <Line width="35%" />
-        </h5>
-        <div className="small-font">
-          <Line width="30%" />
-        </div>
-        <div className="small-font">
-          <Line width="40%" />
-        </div>
+  const discussionSkeleton = () => (
+    <div className="comment">
+      <h5>
+        <Line width="35%" />
+      </h5>
+      <div className="small-font">
+        <Line width="30%" />
       </div>
-    );
-  };
+      <div className="small-font">
+        <Line width="40%" />
+      </div>
+    </div>
+  );
 
   return (
     <section className="margin-vertical-small">
