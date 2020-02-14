@@ -29,6 +29,15 @@ const Line = ({ width, height, center, className }) => {
 Line.propTypes = commonPropTypes;
 Line.defaultProps = commonDefaultProps;
 
+const Photo = () => {
+  return (
+    <div
+      className="skeleton-photo"
+      style={{ height: "250px", width: "250px" }}
+    />
+  );
+};
+
 const randPercentBetween = (min, max) => {
   const randomPercent = min + Math.random() * (max - min);
   return `${randomPercent}%`;
@@ -77,4 +86,4 @@ Paragraph.propTypes = {
 };
 Paragraph.defaultProps = { center: false, className: "", numRows: 5 };
 
-export { Line, List, Paragraph };
+export { Line, List, Paragraph, Photo };
