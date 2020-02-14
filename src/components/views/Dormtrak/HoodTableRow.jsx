@@ -43,9 +43,7 @@ const HoodTableRow = ({ dorm, token }) => {
         </>
       ) : (
         <>
-          <td>N/A</td>
-          <td>N/A</td>
-          <td>N/A</td>
+          <td /> <td /> <td />
         </>
       )}
     </tr>
