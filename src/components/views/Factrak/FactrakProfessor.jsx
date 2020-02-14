@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import FactrakComment from "./FactrakComment";
 import FactrakRatings from "./FactrakRatings";
+import FactrakDeficitMessage from "./FactrakUtils";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
@@ -74,43 +75,13 @@ const FactrakProfessor = ({ token, route, currUser }) => {
     if (containsScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys(professorParam);
     } else {
-      updateSurveys([
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
-        { id: 9 },
-        { id: 10 },
-      ]);
-    }
-  }, [route.params.professor, token, route.params.profID]);
-
-  // Generates the factrak survey deficit message if necessary
-  const factrakSurveyDeficitMessage = () => {
-    if (currUser.factrakSurveyDeficit > 0) {
-      return (
-        <>
-          <strong>
-            {`Write just ${currUser.factrakSurveyDeficit} reviews to
-            make the blur go away!`}
-          </strong>
-          <br />
-          To write a review, just search a prof&apos;s name directly above, or
-          click a department on the left to see a list of profs in that
-          department. Then click the link on the prof&apos;s page to write a
-          review!
-          <br />
-          <br />
-        </>
+      updateSurveys(
+        [...Array(10)].map((_, id) => {
+          return { id };
+        })
       );
     }
-
-    return null;
-  };
+  }, [route.params.professor, token, route.params.profID]);
 
   if (!professor) return null;
 
@@ -141,7 +112,7 @@ const FactrakProfessor = ({ token, route, currUser }) => {
 
         <h3>Comments</h3>
         <br />
-        {factrakSurveyDeficitMessage()}
+        <FactrakDeficitMessage currUser={currUser} />
         <div id="factrak-comments-section">
           {surveys && surveys.length > 0
             ? surveys.map((survey) => {
