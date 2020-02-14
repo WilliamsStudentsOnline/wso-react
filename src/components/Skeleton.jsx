@@ -61,12 +61,7 @@ const Paragraph = ({ center, className, numRows }) => {
       {[...Array(numRows)].map((_, i) => (
         // eslint-disable-next-line react/no-array-index-key
         <div key={i}>
-          <Line
-            width="100%"
-            height="0.8em"
-            center={center}
-            className={className}
-          />
+          <Line width="100%" center={center} className={className} />
         </div>
       ))}
 

@@ -1,6 +1,7 @@
 // React imports
 import React from "react";
 import PropTypes from "prop-types";
+import { Line } from "../../Skeleton";
 
 const FactrakRatings = ({ ratings, general = false }) => {
   if (!ratings) return null;
@@ -172,4 +173,22 @@ FactrakRatings.propTypes = {
   general: PropTypes.bool.isRequired,
 };
 
+const FactrakRatingsSkeleton = () => {
+  return (
+    <>
+      <Line width="20%" />
+      <br />
+      <br />
+      {["20%", "50%", "50%", "70%", "30%", "50%", "40%"].map((width, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <div key={i}>
+          <Line width={width} />
+        </div>
+      ))}
+      <br />
+    </>
+  );
+};
+
 export default FactrakRatings;
+export { FactrakRatingsSkeleton };

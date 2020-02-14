@@ -1,9 +1,10 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import FactrakComment from "./FactrakComment";
-import FactrakRatings from "./FactrakRatings";
+import FactrakComment, { FactrakCommentSkeleton } from "./FactrakComment";
+import FactrakRatings, { FactrakRatingsSkeleton } from "./FactrakRatings";
 import FactrakDeficitMessage from "./FactrakUtils";
+import { Line } from "../../Skeleton";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
@@ -83,7 +84,39 @@ const FactrakProfessor = ({ token, route, currUser }) => {
     }
   }, [route.params.professor, token, route.params.profID]);
 
-  if (!professor) return null;
+  if (!professor)
+    return (
+      <article className="facebook-profile" id="fbprof">
+        <section className="info">
+          <h3>
+            <Line width="20%" />
+          </h3>
+
+          <h5>
+            <Line width="20%" />
+            <br />
+            <Line width="40%" />
+          </h5>
+          <br />
+
+          <br />
+          <FactrakRatingsSkeleton />
+          <br />
+
+          <h3>Comments</h3>
+          <br />
+          <FactrakDeficitMessage currUser={currUser} />
+          <div id="factrak-comments-section">
+            {[...Array(10)].map((_, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <div key={i}>
+                <FactrakCommentSkeleton />
+              </div>
+            ))}
+          </div>
+        </section>
+      </article>
+    );
 
   return (
     <article className="facebook-profile" id="fbprof">
@@ -93,7 +126,7 @@ const FactrakProfessor = ({ token, route, currUser }) => {
         <h5>
           {department ? department.name : ""}
           <br />
-          {professor && professor.title ? <span>{professor.title}</span> : null}
+          {professor && professor.title && <span>{professor.title}</span>}
         </h5>
         <br />
 
