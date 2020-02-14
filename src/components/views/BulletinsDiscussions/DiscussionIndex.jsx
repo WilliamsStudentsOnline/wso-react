@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import PaginationButtons from "../../PaginationButtons";
+import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
 import { getToken, getCurrUser } from "../../../selectors/auth";
@@ -17,7 +18,7 @@ const DiscussionIndex = ({ currUser, token }) => {
   const perPage = 20;
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
-  const [threads, updateThreads] = useState([]);
+  const [threads, updateThreads] = useState(null);
 
   // Load threads depending on what page it is
   const loadThreads = async (newPage) => {
@@ -132,17 +133,39 @@ const DiscussionIndex = ({ currUser, token }) => {
     return null;
   };
 
+  const discussion = (thread) => {
+    return (
+      <div className="comment" key={thread.id}>
+        {threadTitle(thread)}
+        {startedBy(thread)}
+        {postInfo(thread)}
+
+        {deleteButton(thread)}
+      </div>
+    );
+  };
+
+  const discussionSkeleton = () => {
+    return (
+      <div className="comment">
+        <h5>
+          <Line width="35%" />
+        </h5>
+        <div className="small-font">
+          <Line width="30%" />
+        </div>
+        <div className="small-font">
+          <Line width="40%" />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <section className="margin-vertical-small">
-      {threads.map((thread) => (
-        <div className="comment" key={thread.id}>
-          {threadTitle(thread)}
-          {startedBy(thread)}
-          {postInfo(thread)}
-
-          {deleteButton(thread)}
-        </div>
-      ))}
+      {threads
+        ? threads.map((thread) => discussion(thread))
+        : [...Array(20)].map(() => discussionSkeleton())}
 
       <PaginationButtons
         clickHandler={clickHandler}

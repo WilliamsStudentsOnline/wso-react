@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { Line, Paragraph } from "../../Skeleton";
 
 // Redux and Routing imports
 import { connect } from "react-redux";
@@ -22,8 +23,8 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
   const [bulletin, updateBulletin] = useState(null);
 
   const deleteHandler = async () => {
-    // eslint-disable-next-line no-restricted-globals
-    const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
 
     let response;
@@ -36,18 +37,14 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
 
     if (checkAndHandleError(response)) {
       navigateTo("bulletins", {
-        type: bulletin.type ? bulletin.type : bulletinTypeRide,
+        type: bulletin.type || bulletinTypeRide,
       });
     }
   };
 
   useEffect(() => {
     const loadBulletin = async () => {
-      if (!route.params.bulletinID) {
-        // Just in case, to deal with special cases.
-        updateBulletin(null);
-        return;
-      }
+      if (!route.params.bulletinID) return;
 
       let bulletinResponse;
 
@@ -59,15 +56,13 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
 
       if (checkAndHandleError(bulletinResponse)) {
         updateBulletin(bulletinResponse.data.data);
-      } else updateBulletin(null);
+      }
     };
 
     loadBulletin();
   }, [token, route.params.bulletinID, route.params.type]);
 
   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
-
-  if (!bulletin) return null;
 
   // Creates the Bulletin Title link
   const generateBulletinTitle = () => {
@@ -154,6 +149,29 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
     return null;
   };
 
+  // Assumes that the bulletin will always work
+  // TODO: Check what happens when we try to access invalid bulletin link
+  if (!bulletin)
+    return (
+      <article className="list-creation">
+        <section>
+          <div className="field">
+            <h3>
+              <br />
+              <Line width="100%" />
+              <br />
+              <br />
+            </h3>
+            <Line width="30%" />
+            <br />
+            <br />
+            <Paragraph numRows={5} />
+          </div>
+          <br />
+        </section>
+      </article>
+    );
+
   return (
     <article className="list-creation">
       <section>
@@ -202,7 +220,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BulletinShow);
+export default connect(mapStateToProps, mapDispatchToProps)(BulletinShow);

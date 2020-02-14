@@ -99,9 +99,9 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
     if (viewPerson.title) {
       return (
         <h5>
-          {viewPerson.title ? viewPerson.title : null}
+          {viewPerson.title}
           <br />
-          {viewPerson.department.name}
+          {viewPerson.department && viewPerson.department.name}
         </h5>
       );
     }
