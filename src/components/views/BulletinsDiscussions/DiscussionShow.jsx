@@ -99,8 +99,6 @@ const DiscussionShow = ({ token, route }) => {
     );
   };
 
-  if (!discussion) return null;
-
   return (
     <section className="discussion-thread">
       <h5>
