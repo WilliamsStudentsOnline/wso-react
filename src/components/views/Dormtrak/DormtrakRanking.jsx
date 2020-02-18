@@ -48,13 +48,14 @@ const DormtrakRanking = ({ token }) => {
     return (
       <Link routeName="dormtrak.dorms" routeParams={{ dormID }}>
         {children}
+        <br />
       </Link>
     );
   };
 
   DormLink.propTypes = {
     dormID: PropTypes.number.isRequired,
-    children: PropTypes.object,
+    children: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   };
   DormLink.defaultProps = {
     children: null,
@@ -70,7 +71,7 @@ const DormtrakRanking = ({ token }) => {
             <th>Max Mean Single Size</th>
             <th>Min Mean Single Size</th>
           </tr>
-          {[...Array(3)].map((_, index) => {
+          {times.map((_, index) => {
             if (!dormInfo) return rankingSkeleton(index);
 
             const a = dormInfo.maxMeanSingleSize[index];
@@ -79,12 +80,10 @@ const DormtrakRanking = ({ token }) => {
               <tr key={b.averageSingleArea + a.averageSingleArea}>
                 <td>
                   <DormLink dormID={a.id}>{a.name}</DormLink>
-                  <br />
                   {`(${a.averageSingleArea} sq. ft.)`}
                 </td>
                 <td>
                   <DormLink dormID={b.id}>{b.name}</DormLink>
-                  <br />
                   {`(${b.averageSingleArea} sq. ft.)`}
                 </td>
               </tr>
@@ -110,14 +109,12 @@ const DormtrakRanking = ({ token }) => {
                   <DormLink dormID={a.dormID}>
                     {`${a.dorm.name} ${a.number}`}
                   </DormLink>
-                  <br />
                   {`(${a.area} sq. ft.)`}
                 </td>
                 <td>
                   <DormLink dormID={b.dormID}>
                     {`${b.dorm.name} ${b.number}`}
                   </DormLink>
-                  <br />
                   {`(${b.area} sq. ft.)`}
                 </td>
               </tr>
@@ -141,12 +138,10 @@ const DormtrakRanking = ({ token }) => {
               <tr key={a.averageDoubleArea}>
                 <td>
                   <DormLink dormID={a.id}>{a.name}</DormLink>
-                  <br />
                   {`(${a.averageDoubleArea} sq. ft.)`}
                 </td>
                 <td>
                   <DormLink dormID={b.id}>{b.name}</DormLink>
-                  <br />
                   {`(${b.averageDoubleArea} sq. ft.)`}
                 </td>
               </tr>
@@ -173,14 +168,12 @@ const DormtrakRanking = ({ token }) => {
                   <DormLink dormID={a.id}>
                     {`${a.dorm.name} ${a.number}`}
                   </DormLink>
-                  <br />
                   {`(${a.area} sq. ft.)`}
                 </td>
                 <td>
                   <DormLink dormID={b.id}>
                     {`${b.dorm.name} ${b.number}`}
                   </DormLink>
-                  <br />
                   {`(${b.area} sq. ft.)`}
                 </td>
               </tr>
@@ -205,12 +198,10 @@ const DormtrakRanking = ({ token }) => {
               <tr key={a.numberSingles}>
                 <td>
                   <DormLink dormID={a.id}>{a.name}</DormLink>
-                  <br />
                   {`(${a.numberSingles})`}
                 </td>
                 <td>
                   <DormLink dormID={b.id}>{b.name}</DormLink>
-                  <br />
                   {`(${b.numberDoubles})`}
                 </td>
               </tr>
@@ -235,12 +226,10 @@ const DormtrakRanking = ({ token }) => {
               <tr key={a.bathroomRatio}>
                 <td>
                   <DormLink dormID={a.id}>{a.name}</DormLink>
-                  <br />
                   {`(${a.bathroomRatio.toPrecision(3)}:1)`}
                 </td>
                 <td>
                   <DormLink dormID={b.id}>{b.name}</DormLink>
-                  <br />
                   {`(${b.bathroomRatio.toPrecision(3)}:1)`}
                 </td>
               </tr>
