@@ -36,17 +36,10 @@ const HoodTableRow = ({ dorm, token }) => {
       <td>{dorm.numberSingles}</td>
       <td>{dorm.numberDoubles}</td>
       <td>{dorm.numberFlex}</td>
-      {dormInfo ? (
-        <>
-          <td>{dormInfo.seniorCount}</td>
-          <td>{dormInfo.juniorCount}</td>
-          <td>{dormInfo.sophomoreCount}</td>
-        </>
-      ) : (
-        <>
-          <td /> <td /> <td />
-        </>
-      )}
+
+      <td>{dormInfo && dormInfo.seniorCount}</td>
+      <td>{dormInfo && dormInfo.juniorCount}</td>
+      <td>{dormInfo && dormInfo.sophomoreCount}</td>
     </tr>
   );
 };

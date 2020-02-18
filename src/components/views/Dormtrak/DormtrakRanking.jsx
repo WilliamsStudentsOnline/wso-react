@@ -29,8 +29,8 @@ const DormtrakRanking = ({ token }) => {
 
   const times = [0, 0, 0];
 
-  const rankingSkeleton = () => (
-    <tr>
+  const rankingSkeleton = (key) => (
+    <tr key={key}>
       <td>
         <Line width="45%" />
         <br />
@@ -54,8 +54,8 @@ const DormtrakRanking = ({ token }) => {
             <th>Max Mean Single Size</th>
             <th>Min Mean Single Size</th>
           </tr>
-          {times.map((_, index) => {
-            if (!dormInfo) return rankingSkeleton();
+          {[...Array(3)].map((_, index) => {
+            if (!dormInfo) return rankingSkeleton(index);
 
             const a = dormInfo.maxMeanSingleSize[index];
             const b = dormInfo.minMeanSingleSize[index];
@@ -94,7 +94,7 @@ const DormtrakRanking = ({ token }) => {
             <th>Smallest Singles</th>
           </tr>
           {times.map((_, index) => {
-            if (!dormInfo) return rankingSkeleton();
+            if (!dormInfo) return rankingSkeleton(index);
 
             const a = dormInfo.biggestSingles[index];
             const b = dormInfo.smallestSingles[index];
@@ -133,7 +133,7 @@ const DormtrakRanking = ({ token }) => {
             <th>Min Mean Double Size</th>
           </tr>
           {times.map((_, index) => {
-            if (!dormInfo) return rankingSkeleton();
+            if (!dormInfo) return rankingSkeleton(index);
 
             const a = dormInfo.maxMeanDoubleSize[index];
             const b = dormInfo.minMeanDoubleSize[index];
@@ -173,7 +173,7 @@ const DormtrakRanking = ({ token }) => {
           </tr>
 
           {times.map((_, index) => {
-            if (!dormInfo) return rankingSkeleton();
+            if (!dormInfo) return rankingSkeleton(index);
 
             const a = dormInfo.biggestDoubles[index];
             const b = dormInfo.smallestDoubles[index];
@@ -213,7 +213,7 @@ const DormtrakRanking = ({ token }) => {
           </tr>
 
           {times.map((_, index) => {
-            if (!dormInfo) return rankingSkeleton();
+            if (!dormInfo) return rankingSkeleton(index);
 
             const a = dormInfo.mostSingles[index];
             const b = dormInfo.mostDoubles[index];
@@ -253,7 +253,7 @@ const DormtrakRanking = ({ token }) => {
           </tr>
 
           {times.map((_, index) => {
-            if (!dormInfo) return rankingSkeleton();
+            if (!dormInfo) return rankingSkeleton(index);
 
             const a = dormInfo.mostBathrooms[index];
             const b = dormInfo.fewestBathrooms[index];

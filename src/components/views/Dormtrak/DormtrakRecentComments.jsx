@@ -90,9 +90,9 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
     return renderFullComment(review);
   };
 
-  const fullCommentSkeleton = () => {
+  const fullCommentSkeleton = (key) => {
     return (
-      <div className="comment">
+      <div className="comment" key={key}>
         <Paragraph numRows={4} />
         <br />
         <div className="comment-detail">
@@ -102,10 +102,9 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
     );
   };
 
-  // TODO
-  const abridgedCommentSkeleton = () => {
+  const abridgedCommentSkeleton = (key) => {
     return (
-      <div className="comment">
+      <div className="comment" key={key}>
         <div className="comment-image">
           <Photo width="6em" height="2em" />
         </div>
@@ -124,8 +123,9 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
 
   const renderCommentList = () => {
     if (!reviews) {
-      if (abridged) return [...Array(15)].map(() => abridgedCommentSkeleton());
-      return [...Array(15)].map(() => fullCommentSkeleton());
+      if (abridged)
+        return [...Array(15)].map((_, i) => abridgedCommentSkeleton(i));
+      return [...Array(15)].map((_, i) => fullCommentSkeleton(i));
     }
 
     if (reviews.length > 0)
