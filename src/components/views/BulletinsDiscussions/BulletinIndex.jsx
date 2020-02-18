@@ -189,21 +189,19 @@ const BulletinIndex = ({ type, token, currUser }) => {
     );
   };
 
-  const bulletinSkeleton = () => {
-    return (
-      <tr>
-        <td className="col-60">
-          <Line width="70%" />
-        </td>
-        <td className="col-20">
-          <Line width="80%" />
-        </td>
-        <td className="col-20">
-          <Line width="80%" />
-        </td>
-      </tr>
-    );
-  };
+  const bulletinSkeleton = (key) => (
+    <tr key={key}>
+      <td className="col-60">
+        <Line width="70%" />
+      </td>
+      <td className="col-20">
+        <Line width="80%" />
+      </td>
+      <td className="col-20">
+        <Line width="80%" />
+      </td>
+    </tr>
+  );
 
   // Generate Bulletin Table
   const generateBulletinTable = () => {
@@ -222,7 +220,7 @@ const BulletinIndex = ({ type, token, currUser }) => {
         <tbody>
           {bulletins
             ? bulletins.map((bulletin) => generateBulletin(bulletin))
-            : [...Array(20)].map(() => bulletinSkeleton())}
+            : [...Array(20)].map((_, i) => bulletinSkeleton(i))}
         </tbody>
       </table>
     );

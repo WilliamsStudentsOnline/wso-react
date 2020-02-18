@@ -60,7 +60,11 @@ const DiscussionShow = ({ token, route }) => {
   };
 
   const renderPosts = () => {
-    if (!posts) return [...Array(5)].map(() => <DiscussionPostSkeleton />);
+    if (!posts)
+      return [...Array(5)].map((_, index) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <DiscussionPostSkeleton key={index} />
+      ));
     if (posts.length === 0) return null;
 
     return posts.map((post) => (

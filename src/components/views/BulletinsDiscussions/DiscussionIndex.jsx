@@ -145,8 +145,8 @@ const DiscussionIndex = ({ currUser, token }) => {
     );
   };
 
-  const discussionSkeleton = () => (
-    <div className="comment">
+  const discussionSkeleton = (key) => (
+    <div className="comment" key={key}>
       <h5>
         <Line width="35%" />
       </h5>
@@ -163,7 +163,7 @@ const DiscussionIndex = ({ currUser, token }) => {
     <section className="margin-vertical-small">
       {threads
         ? threads.map((thread) => discussion(thread))
-        : [...Array(20)].map(() => discussionSkeleton())}
+        : [...Array(20)].map((_, i) => discussionSkeleton(i))}
 
       <PaginationButtons
         clickHandler={clickHandler}
