@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import DormtrakFacts from "./DormtrakFacts";
 import DormtrakRooms from "./DormtrakRooms";
 import DormtrakRecentComments from "./DormtrakRecentComments";
+import { Line, Photo, Paragraph } from "../../Skeleton";
 
 // Redux/ Routing imports
 import { getCurrUser, getToken } from "../../../selectors/auth";
@@ -18,7 +19,7 @@ import { Link } from "react-router5";
 import { userTypeStudent } from "../../../constants/general";
 
 const DormtrakShow = ({ route, currUser, token }) => {
-  const [reviews, updateReviews] = useState([]);
+  const [reviews, updateReviews] = useState(null);
   const [dorm, updateDorm] = useState(null);
 
   useEffect(() => {
@@ -51,57 +52,67 @@ const DormtrakShow = ({ route, currUser, token }) => {
     return currUser.type === userTypeStudent && currUser.dorm.id === dorm.id;
   };
 
+  const dormInfo = () => {
+    if (!dorm)
+      return (
+        <section className="lead">
+          <h2>
+            <Line width="25%" />
+          </h2>
+          <div>
+            <Photo width="100%" />
+          </div>
+
+          <strong>Summary</strong>
+          <Paragraph numRows={3} />
+        </section>
+      );
+
+    return (
+      <section className="lead">
+        <h2>
+          <Link routeName="dormtrak.dorms" routeParams={{ dormID: dorm.id }}>
+            {dorm.name}
+          </Link>
+        </h2>
+        <div>
+          <img alt={`${dorm.name} avatar`} src={bannerHelper(dorm.name)} />
+        </div>
+
+        <strong>Summary</strong>
+        <p>{dorm.description}</p>
+      </section>
+    );
+  };
+
   return (
     <div className="container">
       <aside className="sidebar">
-        {dorm ? <DormtrakFacts dorm={dorm} token={token} /> : null}
+        <DormtrakFacts dorm={dorm || undefined} token={token} />
         <hr />
 
         <section className="building-rooms">
-          <h3 id="roomstop">Rooms</h3>
+          <h3>Rooms</h3>
           <small>(Courtesy of OSL)</small>
           <br />
-          {dorm ? <DormtrakRooms rooms={dorm.dormRooms} perPage={15} /> : null}
+          <DormtrakRooms rooms={dorm ? dorm.dormRooms : undefined} />
         </section>
       </aside>
 
       <article className="main">
-        <section className="lead">
-          <h2>
-            {dorm ? (
-              <Link
-                routeName="dormtrak.dorms"
-                routeParams={{ dormID: dorm.id }}
-              >
-                {dorm.name}
-              </Link>
-            ) : null}
-          </h2>
-          <div>
-            {dorm ? (
-              <img alt={`${dorm.name} avatar`} src={bannerHelper(dorm.name)} />
-            ) : null}
-          </div>
-
-          <strong>Summary</strong>
-          <p>{dorm ? dorm.description : ""}</p>
-        </section>
-
+        {dormInfo()}
         <section>
-          {checkUserCommentRights() ? (
+          {checkUserCommentRights() && (
             <strong>
               <Link routeName="dormtrak.newReview">Fill out survey</Link>
             </strong>
-          ) : null}
-          {reviews.length > 0 ? (
-            <DormtrakRecentComments
-              reviews={reviews}
-              abridged={false}
-              currUser={currUser}
-            />
-          ) : (
-            <>None yet</>
           )}
+
+          <DormtrakRecentComments
+            reviews={reviews}
+            abridged={false}
+            currUser={currUser}
+          />
         </section>
       </article>
     </div>

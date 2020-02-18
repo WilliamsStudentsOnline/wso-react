@@ -3623,4 +3623,10 @@ header .login .toggles input[type="submit"]:last-child {
   min-width: 320px;
 }
 
+#dormtrak-piechart {
+  height: 160px;
+  text-align: center;
+  padding: 15px;
+}
+
 /*# sourceMappingURL=i.css.map */

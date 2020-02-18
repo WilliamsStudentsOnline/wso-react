@@ -29,14 +29,12 @@ const Line = ({ width, height, center, className }) => {
 Line.propTypes = commonPropTypes;
 Line.defaultProps = commonDefaultProps;
 
-const Photo = () => {
-  return (
-    <div
-      className="skeleton-photo"
-      style={{ height: "250px", width: "250px" }}
-    />
-  );
+const Photo = ({ height, width }) => {
+  return <div className="skeleton-photo" style={{ height, width }} />;
 };
+
+Photo.propTypes = { height: PropTypes.string, width: PropTypes.string };
+Photo.defaultProps = { height: "250px", width: "250px" };
 
 const randPercentBetween = (min, max) => {
   const randomPercent = min + Math.random() * (max - min);
@@ -86,4 +84,19 @@ Paragraph.propTypes = {
 };
 Paragraph.defaultProps = { center: false, className: "", numRows: 5 };
 
-export { Line, List, Paragraph, Photo };
+const Circle = ({ diameter, className }) => {
+  return (
+    <div
+      className={`skeleton ${className}`}
+      style={{ height: diameter, width: diameter, borderRadius: "100%" }}
+    />
+  );
+};
+
+Circle.propTypes = {
+  diameter: PropTypes.string.isRequired,
+  className: PropTypes.string,
+};
+Circle.defaultProps = { className: "" };
+
+export { Line, List, Paragraph, Photo, Circle };

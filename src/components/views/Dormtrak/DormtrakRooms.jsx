@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import PaginationButtons from "../../PaginationButtons";
+import { Line } from "../../Skeleton";
 
 // Additional imports
 import { capitalize } from "../../../lib/general";
@@ -10,10 +11,9 @@ const DormtrakRooms = ({ rooms }) => {
   const perPage = 15; // Number of results per page
 
   const [page, updatePage] = useState(0);
-  const displayRooms =
-    rooms.length - 1 > (page + 1) * perPage
-      ? rooms.slice(page * perPage, (page + 1) * perPage)
-      : rooms.slice(page * perPage, rooms.length - 1);
+  const displayRooms = rooms
+    ? rooms.slice(page * perPage, (page + 1) * perPage)
+    : null;
 
   // Returns Private bathroom descriptions
   const privateBathrooms = (room) => {
@@ -21,12 +21,12 @@ const DormtrakRooms = ({ rooms }) => {
     let bathroomDesc = "Yes. ";
     if (room.bathroomDesc) bathroomDesc += room.bathroomDesc;
     return (
-      <>
+      <div>
         <small>
           <strong>Private bathroom&nbsp;</strong>
         </small>
         {bathroomDesc}
-      </>
+      </div>
     );
   };
 
@@ -51,13 +51,12 @@ const DormtrakRooms = ({ rooms }) => {
       crDesc = "No. ";
     }
     return (
-      <>
+      <div>
         <small>
           <strong>Common room:&nbsp;</strong>
         </small>
         {crDesc}
-        <br />
-      </>
+      </div>
     );
   };
 
@@ -65,17 +64,29 @@ const DormtrakRooms = ({ rooms }) => {
   const adjustableBeds = (room) => {
     if (!room.bedAdjustable) return null;
     return (
-      <>
+      <div>
         <small>
           <strong>Adjustable bed:&nbsp;</strong>
         </small>
         {room.bedAdjustable ? "Yes" : "Unavailable"}
-        <br />
-      </>
+      </div>
     );
   };
 
-  return displayRooms ? (
+  if (!rooms)
+    return [...Array(perPage)].map((_, i) => (
+      // eslint-disable-next-line react/no-array-index-key
+      <div key={i}>
+        {["15%", "12%", "25%", "13%", "30%"].map((width) => (
+          <div key={width}>
+            <Line width={width} />
+          </div>
+        ))}
+        <br />
+      </div>
+    ));
+
+  return (
     <>
       <PaginationButtons
         clickHandler={clickHandler}
@@ -83,45 +94,44 @@ const DormtrakRooms = ({ rooms }) => {
         total={rooms.length}
         perPage={perPage}
       />
-      {displayRooms.map((room) => {
-        return (
-          <React.Fragment key={room.number}>
-            <strong>{`${room.number} (${room.roomType})`}</strong>
-            <br />
-            <div id={room.number}>
-              <small>
-                <strong>Floor:&nbsp;</strong>
-              </small>
-              {room.floorNumber === 0 ? "Basement" : room.floorNumber}
-              <br />
-              <small>
-                <strong>Area:&nbsp;</strong>
-              </small>
-              {`${room.area} sq. ft.`}
-              <br />
-              {["faces", "noise", "closet", "flooring"].map((attr) => {
-                if (room[attr] !== undefined && room[attr] !== null) {
-                  return (
-                    <React.Fragment key={attr}>
-                      <small>
-                        <strong>{`${capitalize(attr)}: `}</strong>
-                      </small>
-                      {room[attr]}
-                      <br />
-                    </React.Fragment>
-                  );
-                }
+      {rooms.length > 0
+        ? displayRooms.map((room) => {
+            return (
+              <div key={room.number}>
+                <strong>{`${room.number} (${room.roomType})`}</strong>
+                <br />
+                <small>
+                  <strong>Floor:&nbsp;</strong>
+                </small>
+                {room.floorNumber === 0 ? "Basement" : room.floorNumber}
+                <br />
+                <small>
+                  <strong>Area:&nbsp;</strong>
+                </small>
+                {`${room.area} sq. ft.`}
+                <br />
+                {["faces", "noise", "closet", "flooring"].map((attr) => {
+                  if (room[attr] !== undefined && room[attr] !== null) {
+                    return (
+                      <div key={attr}>
+                        <small>
+                          <strong>{`${capitalize(attr)}: `}</strong>
+                        </small>
+                        {room[attr]}
+                      </div>
+                    );
+                  }
 
-                return null;
-              })}
-              {adjustableBeds(room)}
-              {commonRooms(room)}
-              {privateBathrooms(room)}
-            </div>
-            <br />
-          </React.Fragment>
-        );
-      })}
+                  return null;
+                })}
+                {adjustableBeds(room)}
+                {commonRooms(room)}
+                {privateBathrooms(room)}
+                <br />
+              </div>
+            );
+          })
+        : "No room-level information yet!"}
       <PaginationButtons
         clickHandler={clickHandler}
         page={page}
@@ -129,13 +139,14 @@ const DormtrakRooms = ({ rooms }) => {
         perPage={perPage}
       />
     </>
-  ) : (
-    "No room-level information yet!"
   );
 };
 
 DormtrakRooms.propTypes = {
-  rooms: PropTypes.arrayOf(PropTypes.object).isRequired,
+  rooms: PropTypes.arrayOf(PropTypes.object),
+};
+DormtrakRooms.defaultProps = {
+  rooms: null,
 };
 
 export default DormtrakRooms;
