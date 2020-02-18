@@ -84,19 +84,36 @@ Paragraph.propTypes = {
 };
 Paragraph.defaultProps = { center: false, className: "", numRows: 5 };
 
-const Circle = ({ diameter, className }) => {
+const Circle = ({ diameter, className, children }) => {
   return (
     <div
       className={`skeleton ${className}`}
       style={{ height: diameter, width: diameter, borderRadius: "100%" }}
-    />
+    >
+      {children}
+    </div>
   );
 };
 
 Circle.propTypes = {
   diameter: PropTypes.string.isRequired,
   className: PropTypes.string,
+  children: PropTypes.object,
 };
-Circle.defaultProps = { className: "" };
+Circle.defaultProps = { className: "", children: null };
 
-export { Line, List, Paragraph, Photo, Circle };
+const CircularLoader = ({ diameter, className }) => {
+  return (
+    <div
+      className={`spinner ${className}`}
+      style={{ width: diameter, height: diameter }}
+    />
+  );
+};
+CircularLoader.propTypes = {
+  diameter: PropTypes.string.isRequired,
+  className: PropTypes.string,
+};
+CircularLoader.defaultProps = { className: "" };
+
+export { Line, List, Paragraph, Photo, Circle, CircularLoader };

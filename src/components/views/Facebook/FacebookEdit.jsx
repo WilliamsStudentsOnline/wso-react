@@ -2,6 +2,7 @@
 import React, { useState, useEffect, createRef } from "react";
 import PropTypes from "prop-types";
 import Errors from "../../Errors";
+import { CircularLoader } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
@@ -24,6 +25,7 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
   const [offCycle, setOffCycle] = useState(currUser.offCycle);
 
   const [errors, updateErrors] = useState([]);
+  const [submitting, updateSubmitting] = useState(false);
 
   const fileRef = createRef();
 
@@ -46,6 +48,7 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
     event.preventDefault();
 
     const newErrors = [];
+    updateSubmitting(true);
 
     // Update Photos
     if (fileRef.current && fileRef.current.files[0]) {
@@ -73,6 +76,8 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
     if (!checkAndHandleError(updateResponse)) {
       newErrors.push(updateResponse.data.error.message);
     }
+
+    updateSubmitting(false);
 
     if (newErrors.length > 0) {
       updateErrors(newErrors);
@@ -191,11 +196,11 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
             />
             <br />
             <br />
-            <input
-              type="submit"
-              value="Save changes"
-              data-disable-with="Save changes"
-            />
+            {submitting ? (
+              <CircularLoader diameter="40px" />
+            ) : (
+              <input type="submit" value="Save changes" />
+            )}
           </div>
         </form>
       </section>
