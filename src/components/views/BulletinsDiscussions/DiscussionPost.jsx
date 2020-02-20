@@ -1,6 +1,7 @@
 // React imports
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { Line, Paragraph } from "../../Skeleton";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -103,6 +104,7 @@ const DiscussionPost = ({ post, currUser, token }) => {
 
     if (deleted) return null;
 
+    // Editing comment.
     return (
       <form onSubmit={submitHandler}>
         <textarea
@@ -135,9 +137,22 @@ DiscussionPost.propTypes = {
 
 DiscussionPost.defaultProps = {};
 
+const DiscussionPostSkeleton = () => (
+  <div className="comment">
+    <div className="comment-content">
+      <Line width="20%" />
+      &nbsp;
+      <Line width="20%" />
+      <br />
+      <Paragraph numRows={5} />
+    </div>
+  </div>
+);
+
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
   token: getToken(state),
 });
 
 export default connect(mapStateToProps)(DiscussionPost);
+export { DiscussionPostSkeleton };

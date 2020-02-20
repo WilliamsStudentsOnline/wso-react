@@ -52,3 +52,6 @@ rules:
     - off
   react-hooks/exhaustive-deps:
     - off
+  react/jsx-props-no-spreading:
+    - error
+    - html: "ignore"

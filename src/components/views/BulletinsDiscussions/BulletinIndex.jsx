@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import PaginationButtons from "../../PaginationButtons";
+import { Line } from "../../Skeleton";
 
 // Redux and routing imports
 import { getToken, getCurrUser } from "../../../selectors/auth";
@@ -19,7 +20,7 @@ import { Link } from "react-router5";
 import { bulletinTypeRide } from "../../../constants/general";
 
 const BulletinIndex = ({ type, token, currUser }) => {
-  const [bulletins, updateBulletins] = useState([]);
+  const [bulletins, updateBulletins] = useState(null);
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
   const perPage = 20;
@@ -188,9 +189,23 @@ const BulletinIndex = ({ type, token, currUser }) => {
     );
   };
 
+  const bulletinSkeleton = (key) => (
+    <tr key={key}>
+      <td className="col-60">
+        <Line width="70%" />
+      </td>
+      <td className="col-20">
+        <Line width="80%" />
+      </td>
+      <td className="col-20">
+        <Line width="80%" />
+      </td>
+    </tr>
+  );
+
   // Generate Bulletin Table
   const generateBulletinTable = () => {
-    if (bulletins.length === 0) {
+    if (bulletins && bulletins.length === 0) {
       return <h1 className="no-posts">No Posts</h1>;
     }
     return (
@@ -202,7 +217,11 @@ const BulletinIndex = ({ type, token, currUser }) => {
             <th className="col-20">Date</th>
           </tr>
         </thead>
-        <tbody>{bulletins.map((bulletin) => generateBulletin(bulletin))}</tbody>
+        <tbody>
+          {bulletins
+            ? bulletins.map((bulletin) => generateBulletin(bulletin))
+            : [...Array(20)].map((_, i) => bulletinSkeleton(i))}
+        </tbody>
       </table>
     );
   };

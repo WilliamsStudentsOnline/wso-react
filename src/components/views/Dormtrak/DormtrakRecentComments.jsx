@@ -1,6 +1,7 @@
 // React imports
 import React from "react";
 import PropTypes from "prop-types";
+import { Paragraph, Line, Photo } from "../../Skeleton";
 
 // Additional imports
 import { Link } from "react-router5";
@@ -84,17 +85,60 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
 
   // Render comment
   const renderComment = (review) => {
-    if (abridged) {
-      return renderAbridgedComment(review);
-    }
+    if (abridged) return renderAbridgedComment(review);
 
     return renderFullComment(review);
   };
+
+  const fullCommentSkeleton = (key) => {
+    return (
+      <div className="comment" key={key}>
+        <Paragraph numRows={4} />
+        <br />
+        <div className="comment-detail">
+          <Line width="30%" />
+        </div>
+      </div>
+    );
+  };
+
+  const abridgedCommentSkeleton = (key) => {
+    return (
+      <div className="comment" key={key}>
+        <div className="comment-image">
+          <Photo width="6em" height="2em" />
+        </div>
+
+        <div className="comment-content">
+          <h1>
+            <Line width="25%" />
+          </h1>
+
+          <Paragraph numRows={1} />
+          <Line width="28%" />
+        </div>
+      </div>
+    );
+  };
+
+  const renderCommentList = () => {
+    if (!reviews) {
+      if (abridged)
+        return [...Array(15)].map((_, i) => abridgedCommentSkeleton(i));
+      return [...Array(15)].map((_, i) => fullCommentSkeleton(i));
+    }
+
+    if (reviews.length > 0)
+      return reviews.map((review) => renderComment(review));
+
+    return "None Yet.";
+  };
+
   return (
     <>
       <h3>Recent Comments</h3>
       <br />
-      {reviews.map((review) => renderComment(review))}
+      {renderCommentList()}
     </>
   );
 };
@@ -106,7 +150,7 @@ DormtrakRecentComments.propTypes = {
 };
 
 DormtrakRecentComments.defaultProps = {
-  reviews: [],
+  reviews: null,
 };
 
 export default DormtrakRecentComments;

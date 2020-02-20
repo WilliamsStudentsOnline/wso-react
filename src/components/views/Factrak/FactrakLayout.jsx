@@ -20,7 +20,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
   useEffect(() => {
     const loadQuery = () => {
       if (route.params.q) setQuery(route.params.q);
-      else setQuery("");
+      else setQuery(""); // Needed to reset if user clears the box.
     };
     loadQuery();
     setShowSuggestions(false);
@@ -106,13 +106,13 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
       <div className="autocomplete">
         <table id="suggestions">
           <tbody>
-            {suggestions.length > 0 && showSuggestions
-              ? suggestions.map((suggestion) => (
-                  <tr key={suggestion.value}>
-                    <td>{suggestionRow(suggestion)}</td>
-                  </tr>
-                ))
-              : null}
+            {suggestions.length > 0 &&
+              showSuggestions &&
+              suggestions.map((suggestion) => (
+                <tr key={suggestion.value}>
+                  <td>{suggestionRow(suggestion)}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -142,11 +142,11 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
               <li>
                 <Link routeName="factrak.surveys">Your Reviews</Link>
               </li>
-              {currUser.factrakAdmin ? (
+              {currUser.factrakAdmin && (
                 <li>
                   <Link routeName="factrak.moderate">Moderate</Link>
                 </li>
-              ) : null}
+              )}
             </ul>
           </div>
           <form
@@ -205,7 +205,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FactrakLayout);
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakLayout);

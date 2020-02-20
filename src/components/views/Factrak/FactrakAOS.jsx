@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { Line } from "../../Skeleton";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
@@ -17,8 +18,8 @@ import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 
 const FactrakAOS = ({ route, token }) => {
-  const [courses, updateCourses] = useState([]);
-  const [profs, updateProfs] = useState([]);
+  const [courses, updateCourses] = useState(null);
+  const [profs, updateProfs] = useState(null);
   const [area, updateArea] = useState({});
 
   // Equivalent to ComponentDidMount
@@ -78,14 +79,37 @@ const FactrakAOS = ({ route, token }) => {
     );
   };
 
+  // Generate a skeleton of prof information
+  const profSkeleton = (key) => (
+    <tr key={key}>
+      <td>
+        <Line width="30%" />
+      </td>
+      <td>
+        <Line width="80%" />
+      </td>
+      <td>
+        <Line width="30%" />
+      </td>
+    </tr>
+  );
+
   // Generates the component which holds the list of professors in the area of study
   const generateProfs = () => {
     // If no profs were found, return null. Should not happen for Area of Study unless it's new.
-    if (profs.length === 0) return null;
+    if (profs && profs.length === 0) return null;
     return (
       <>
         <br />
-        <h4>{`Professors in ${area && area.name ? area.name : ""}`}</h4>
+        <h4>
+          {area && area.name ? (
+            `Professors in ${area.name}`
+          ) : (
+            <>
+              Professors in <Line width="20%" />
+            </>
+          )}
+        </h4>
         <table>
           <thead>
             <tr>
@@ -94,7 +118,11 @@ const FactrakAOS = ({ route, token }) => {
               <th className="unix-column">Unix</th>
             </tr>
           </thead>
-          <tbody>{profs.map((prof) => generateProfRow(prof))}</tbody>
+          <tbody>
+            {profs
+              ? profs.map((prof) => generateProfRow(prof))
+              : [...Array(5)].map((_, i) => profSkeleton(i))}
+          </tbody>
         </table>
       </>
     );
@@ -141,10 +169,22 @@ const FactrakAOS = ({ route, token }) => {
     );
   };
 
+  // Generates a skeleton for the course
+  const courseSkeleton = (key) => (
+    <tr key={key}>
+      <td className="col-20">
+        <Line width="30%" />
+      </td>
+      <td className="col-80">
+        <Line width="50%" />
+      </td>
+    </tr>
+  );
+
   // Generates the component which holds the list of courses in the area of study
   const generateCourses = () => {
-    // If no profs were found, return null. Should not happen for Area of Study unless it's new.
-    if (courses.length === 0) return null;
+    // If no courses were found, return null. Should not happen for Area of Study unless it's new.
+    if (courses && courses.length === 0) return null;
     return (
       <>
         <h4>Courses</h4>
@@ -155,7 +195,11 @@ const FactrakAOS = ({ route, token }) => {
               <th className="col-80">Professors</th>
             </tr>
           </thead>
-          <tbody>{courses.map((course) => generateCourseRow(course))}</tbody>
+          <tbody>
+            {courses
+              ? courses.map((course) => generateCourseRow(course))
+              : [...Array(5)].map((_, i) => courseSkeleton(i))}
+          </tbody>
         </table>
       </>
     );
@@ -164,7 +208,7 @@ const FactrakAOS = ({ route, token }) => {
   return (
     <article className="factrak-home">
       <section className="margin-vertical-small">
-        <h3>{area && area.name ? area.name : ""}</h3>
+        <h3>{area && area.name ? area.name : <Line width="30%" />}</h3>
         {generateProfs()}
       </section>
 
@@ -192,7 +236,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FactrakAOS);
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakAOS);

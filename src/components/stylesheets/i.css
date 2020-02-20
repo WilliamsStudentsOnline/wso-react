@@ -2232,14 +2232,14 @@ section:after {
   }
 }
 
-.ephcatch-select-link {
+.ephmatch-select-link {
   cursor: pointer;
   box-shadow: 0 6px 10px #888;
   width: 100%;
   border-radius: 10px;
 }
 
-.ephcatch-selected {
+.ephmatch-selected {
   box-shadow: 0 6px 30px #6f4993;
   background: #e5dcfb;
 }
@@ -3425,7 +3425,7 @@ footer section small a {
   color: white;
   border-bottom: 1px solid rgba(252, 252, 252, 0.12);
 }
-.ephcatch-badge {
+.ephmatch-badge {
   background-color: #6f4993;
   border-radius: 20px;
   border: 2px;
@@ -3621,6 +3621,12 @@ header .login .toggles input[type="submit"]:last-child {
   width: 50%;
   margin: 30px auto;
   min-width: 320px;
+}
+
+#dormtrak-piechart {
+  height: 160px;
+  text-align: center;
+  padding: 15px;
 }
 
 /*# sourceMappingURL=i.css.map */

@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { Line } from "../../Skeleton";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -35,19 +36,10 @@ const HoodTableRow = ({ dorm, token }) => {
       <td>{dorm.numberSingles}</td>
       <td>{dorm.numberDoubles}</td>
       <td>{dorm.numberFlex}</td>
-      {dormInfo ? (
-        <>
-          <td>{dormInfo.seniorCount}</td>
-          <td>{dormInfo.juniorCount}</td>
-          <td>{dormInfo.sophomoreCount}</td>
-        </>
-      ) : (
-        <>
-          <td>N/A</td>
-          <td>N/A</td>
-          <td>N/A</td>
-        </>
-      )}
+
+      <td>{dormInfo && dormInfo.seniorCount}</td>
+      <td>{dormInfo && dormInfo.juniorCount}</td>
+      <td>{dormInfo && dormInfo.sophomoreCount}</td>
     </tr>
   );
 };
@@ -57,8 +49,37 @@ HoodTableRow.propTypes = {
   token: PropTypes.string.isRequired,
 };
 
+const HoodTableRowSkeleton = () => {
+  return (
+    <tr>
+      <td>
+        <Line width="50%" />
+      </td>
+      <td>
+        <Line width="15%" />
+      </td>
+      <td>
+        <Line width="15%" />
+      </td>
+      <td>
+        <Line width="15%" />
+      </td>
+      <td>
+        <Line width="15%" />
+      </td>
+      <td>
+        <Line width="15%" />
+      </td>
+      <td>
+        <Line width="15%" />
+      </td>
+    </tr>
+  );
+};
+
 const mapStateToProps = (state) => ({
   token: getToken(state),
 });
 
 export default connect(mapStateToProps)(HoodTableRow);
+export { HoodTableRowSkeleton };

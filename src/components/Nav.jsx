@@ -12,12 +12,10 @@ import { Link, ConnectedLink } from "react-router5";
 import { checkAndHandleError, containsScopes, scopes } from "../lib/general";
 import { getUserThumbPhoto } from "../api/users";
 import { createRouteNodeSelector } from "redux-router5";
-// import { getEphcatchMatches } from "../api/ephcatch";
 
 const Nav = ({ currUser, token }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
-  // const [ephcatches, updateEphcatches] = useState(null);
 
   useEffect(() => {
     const loadPhoto = async () => {
@@ -27,21 +25,8 @@ const Nav = ({ currUser, token }) => {
       }
     };
 
-    // const loadEphcatches = async () => {
-    //   if (currUser && token && containsScopes(token, [scopes.ScopeEphcatch])) {
-    //     const ephcatchResponse = await getEphcatchMatches(token);
-
-    //     if (checkAndHandleError(ephcatchResponse)) {
-    //       updateEphcatches(ephcatchResponse.data.data);
-    //     }
-    //   }
-
-    //   return null;
-    // };
-
     if (currUser && token && token !== "") loadPhoto();
     updateMenuVisibility(false);
-    // loadEphcatches();
   }, [currUser, token]);
 
   return (
@@ -71,18 +56,6 @@ const Nav = ({ currUser, token }) => {
             <li>
               <Link routeName="facebook">Facebook</Link>
             </li>
-            {/* {currUser && containsScopes(token, [scopes.ScopeEphcatch]) ? (
-              <li>
-                <Link routeName="ephcatch">Ephcatch</Link>
-                {ephcatches.length > 0 ? (
-                  <span className="ephcatch-badge">
-                    <Link routeName="ephcatch.matches" title="New matches!">
-                      {ephcatches.length}
-                    </Link>
-                  </span>
-                ) : null}
-              </li>
-            ) : null} */}
             <li>
               <Link routeName="factrak">Factrak</Link>
             </li>
@@ -105,6 +78,13 @@ const Nav = ({ currUser, token }) => {
               <li>
                 <Link className="ephmatch-link" routeName="ephmatch">
                   Ephmatch
+                </Link>
+              </li>
+            )}
+            {currUser && containsScopes(token, [scopes.ScopeEphcatch]) && (
+              <li>
+                <Link className="ephmatch-link" routeName="ephcatch">
+                  Ephcatch
                 </Link>
               </li>
             )}

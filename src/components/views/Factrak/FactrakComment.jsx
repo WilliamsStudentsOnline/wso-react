@@ -1,6 +1,8 @@
 // React imports
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { Paragraph, Line } from "../../Skeleton";
+import Button from "../../Components";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
@@ -43,8 +45,8 @@ const FactrakComment = ({
   };
 
   const deleteHandler = async () => {
-    // eslint-disable-next-line no-restricted-globals
-    const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
 
     const response = await deleteSurvey(token, survey.id);
@@ -80,32 +82,15 @@ const FactrakComment = ({
   // Generates the agree count
   const agreeCount = () => {
     if (abridged) return null;
-    if (survey.lorem) {
-      return (
-        <h1>
-          <span style={{ color: "transparent" }}>0</span>
-          &nbsp;agree&emsp;
-          <span style={{ color: "transparent" }}>0</span>
-          &nbsp;disagree
-        </h1>
-      );
-    }
+
     return (
       <h1>
-        <span id={`${survey.id}agree-count`}>
-          {survey.totalAgree ? survey.totalAgree : 0}
-        </span>
+        <span>{survey.totalAgree ? survey.totalAgree : 0}</span>
         &nbsp;agree&emsp;
-        <span id={`${survey.id}disagree-count`}>
-          {survey.totalDisagree ? survey.totalDisagree : 0}
-        </span>
+        <span>{survey.totalDisagree ? survey.totalDisagree : 0}</span>
         &nbsp;disagree
-        <span
-          id={`${survey.id}flagged`}
-          className="factrak-flag"
-          title="Flagged for moderator attention"
-        >
-          {survey.flagged ? <>&#10071;</> : null}
+        <span className="factrak-flag" title="Flagged for moderator attention">
+          {survey.flagged && <>&#10071;</>}
         </span>
       </h1>
     );
@@ -117,8 +102,7 @@ const FactrakComment = ({
     if (currUser.id === survey.userID) {
       return (
         <p className="survey-detail">
-          <button
-            type="button"
+          <Button
             onClick={() =>
               navigateTo("factrak.editSurvey", {
                 surveyID: survey.id,
@@ -127,23 +111,11 @@ const FactrakComment = ({
             className="inline-button"
           >
             Edit
-          </button>
+          </Button>
 
-          <button
-            type="button"
-            onClick={deleteHandler}
-            className="inline-button"
-          >
+          <Button onClick={deleteHandler} className="inline-button">
             Delete
-          </button>
-        </p>
-      );
-    }
-
-    if (survey.lorem) {
-      return (
-        <p className="comment-detail">
-          posted about <span className="blurred">1793</span>
+          </Button>
         </p>
       );
     }
@@ -205,8 +177,7 @@ const FactrakComment = ({
 
     return (
       <>
-        <button
-          type="button"
+        <Button
           className={
             survey.clientAgreement !== undefined && survey.clientAgreement
               ? "inline-button-inverted"
@@ -215,10 +186,9 @@ const FactrakComment = ({
           onClick={() => agreeHandler(true)}
         >
           Agree
-        </button>
+        </Button>
         &ensp;
-        <button
-          type="button"
+        <Button
           className={
             survey.clientAgreement !== undefined && !survey.clientAgreement
               ? "inline-button-inverted"
@@ -227,32 +197,25 @@ const FactrakComment = ({
           onClick={() => agreeHandler(false)}
         >
           Disagree
-        </button>
-        {!abridged && !survey.flagged ? (
-          <span id="flag<%= survey.id %>">
-            <button
-              type="button"
-              className="inline-button"
-              onClick={flagHandler}
-            >
+        </Button>
+        {!abridged && !survey.flagged && (
+          <span>
+            <Button className="inline-button" onClick={flagHandler}>
               Flag for moderator attention
-            </button>
+            </Button>
           </span>
-        ) : null}
+        )}
       </>
     );
   };
 
   // Generate the survey text.
   const surveyText = () => {
-    let truncatedsurvey = survey.comment;
-    if (survey.comment.length > 145)
-      truncatedsurvey = survey.comment.substring(0, 145);
     if (abridged) {
-      return (
-        <div className="survey-text">
-          {`${truncatedsurvey}...`}
-          {survey.comment.length > 145 ? (
+      if (survey.comment.length > 145) {
+        return (
+          <div className="survey-text">
+            {`${survey.comment.substring(0, 145)}...`}
             <div>
               <Link
                 routeName="factrak.professors"
@@ -261,10 +224,13 @@ const FactrakComment = ({
                 See More
               </Link>
             </div>
-          ) : null}
-        </div>
-      );
+          </div>
+        );
+      }
+
+      return <div className="survey-text">{survey.comment}</div>;
     }
+
     return (
       <div className="survey-text">
         {survey.comment}
@@ -280,13 +246,6 @@ const FactrakComment = ({
   // Generate Professor link
   const profName = () => {
     if (showProf) {
-      if (survey.lorem) {
-        return (
-          <Link routeName="factrak" style={{ color: "transparent" }}>
-            Ephraiem Williams
-          </Link>
-        );
-      }
       return (
         <Link
           routeName="factrak.professors"
@@ -323,11 +282,25 @@ const FactrakComment = ({
     return (
       <div className="comment">
         <div className="comment-content blurred">
-          <h1>{profName()}</h1>
+          <h1>
+            {showProf && (
+              <Link routeName="factrak" style={{ color: "transparent" }}>
+                Ephraiem Williams
+              </Link>
+            )}
+          </h1>
 
-          {agreeCount()}
+          <h1>
+            <span style={{ color: "transparent" }}>0</span>
+            &nbsp;agree&emsp;
+            <span style={{ color: "transparent" }}>0</span>
+            &nbsp;disagree
+          </h1>
+
           {surveyText()}
-          {surveyDetail()}
+          <p className="comment-detail">
+            posted about <span className="blurred">1793</span>
+          </p>
         </div>
       </div>
     );
@@ -368,8 +341,19 @@ FactrakComment.defaultProps = {
     wouldRecommendCourse: true,
     wouldTakeAnother: false,
     userID: -1,
+    Button,
   },
 };
+
+const FactrakCommentSkeleton = () => (
+  <div className="comment">
+    <Line width="30%" />
+    <Paragraph numRows={3} />
+    <Line width="25%" />
+    <br />
+    <Line width="30%" />
+  </div>
+);
 
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
@@ -382,7 +366,5 @@ const mapDispatchToProps = (dispatch) => ({
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FactrakComment);
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakComment);
+export { FactrakCommentSkeleton };

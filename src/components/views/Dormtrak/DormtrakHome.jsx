@@ -14,7 +14,7 @@ import { getDormtrakDormReviews } from "../../../api/dormtrak";
 import { Link } from "react-router5";
 
 const DormtrakHome = ({ currUser, token }) => {
-  const [reviews, updateReviews] = useState([]);
+  const [reviews, updateReviews] = useState(null);
 
   useEffect(() => {
     const loadReviews = async () => {

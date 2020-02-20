@@ -68,8 +68,8 @@ const Ephmatcher = ({
       key={ephmatcherProfile.id}
       className={
         ephmatcherProfile.liked
-          ? "ephcatch-selected ephcatch-select-link"
-          : "ephcatch-select-link"
+          ? "ephmatch-selected ephmatch-select-link"
+          : "ephmatch-select-link"
       }
       onClick={
         selectEphmatcher ? (event) => selectEphmatcher(event, index) : null

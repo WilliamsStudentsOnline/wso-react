@@ -1,7 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import HoodTableRow from "./HoodTableRow";
+import HoodTableRow, { HoodTableRowSkeleton } from "./HoodTableRow";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
@@ -48,7 +48,10 @@ const DormtrakNeighborhood = ({ route, token }) => {
               ? neighborhood.dorms.map((dorm) => (
                   <HoodTableRow dorm={dorm} key={dorm.id} />
                 ))
-              : null}
+              : [...Array(5)].map((_, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <HoodTableRowSkeleton key={i} />
+                ))}
           </tbody>
         </table>
       </section>

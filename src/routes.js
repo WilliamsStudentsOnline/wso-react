@@ -66,6 +66,7 @@ export default [
     children: [
       { name: "optOut", path: "/opt-out" },
       { name: "matches", path: "/matches" },
+      { name: "profile", path: "/profile" },
     ],
   },
   {

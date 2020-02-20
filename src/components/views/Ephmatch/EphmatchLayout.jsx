@@ -30,7 +30,7 @@ const EphmatchLayout = ({ children, ephmatchEndDate, matches }) => {
               <>
                 <li>
                   <Link routeName="ephmatch.matches">Matches</Link>
-                  <span className="ephcatch-badge" title="Matches!">
+                  <span className="ephmatch-badge" title="Matches!">
                     {matches.length}
                   </span>
                 </li>

@@ -1,7 +1,8 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import DiscussionPost from "./DiscussionPost";
+import DiscussionPost, { DiscussionPostSkeleton } from "./DiscussionPost";
+import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
@@ -16,7 +17,7 @@ const DiscussionShow = ({ token, route }) => {
   // const perPage = 20;
   // const [page, updatePage] = useState(0);
   // const [total, updateTotal] = useState(0);
-  const [posts, updatePosts] = useState([]);
+  const [posts, updatePosts] = useState(null);
   const [reply, updateReply] = useState("");
   const [discussion, updateDiscussion] = useState(null);
 
@@ -59,6 +60,11 @@ const DiscussionShow = ({ token, route }) => {
   };
 
   const renderPosts = () => {
+    if (!posts)
+      return [...Array(5)].map((_, index) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <DiscussionPostSkeleton key={index} />
+      ));
     if (posts.length === 0) return null;
 
     return posts.map((post) => (
@@ -66,19 +72,8 @@ const DiscussionShow = ({ token, route }) => {
     ));
   };
 
-  if (!discussion) return null;
-
-  return (
-    <section className="discussion-thread">
-      <h5>
-        <b>{discussion.title}</b>
-        <br />
-        <br />
-        <br />
-      </h5>
-
-      {renderPosts()}
-
+  const replyArea = () => {
+    return (
       <div className="reply">
         <form onSubmit={submitHandler}>
           <strong>Reply</strong>
@@ -88,14 +83,14 @@ const DiscussionShow = ({ token, route }) => {
             onChange={(event) => updateReply(event.target.value)}
           />
 
-          {errors && errors.length > 0 ? (
+          {errors && errors.length > 0 && (
             <div id="errors">
               <b>Please correct the following error(s):</b>
               {errors.map((msg) => (
                 <p key={msg}>{msg}</p>
               ))}
             </div>
-          ) : null}
+          )}
 
           <input
             type="submit"
@@ -105,6 +100,20 @@ const DiscussionShow = ({ token, route }) => {
           />
         </form>
       </div>
+    );
+  };
+
+  return (
+    <section className="discussion-thread">
+      <h5>
+        <b>{discussion ? discussion.title : <Line width="50%" />}</b>
+        <br />
+        <br />
+        <br />
+      </h5>
+
+      {renderPosts()}
+      {replyArea()}
     </section>
   );
 };

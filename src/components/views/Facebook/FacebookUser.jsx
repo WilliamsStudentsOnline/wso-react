@@ -1,6 +1,7 @@
 // React Imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { Line, Photo } from "../../Skeleton";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
@@ -15,7 +16,7 @@ import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 
 const FacebookUser = ({ currUser, token, route, navigateTo }) => {
   const [viewPerson, updateTarget] = useState(null);
-  const [userPhoto, updateUserPhoto] = useState(null);
+  const [userPhoto, updateUserPhoto] = useState(undefined);
 
   useEffect(() => {
     const loadTarget = async () => {
@@ -34,6 +35,8 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
         );
         if (checkAndHandleError(photoResponse)) {
           updateUserPhoto(URL.createObjectURL(photoResponse.data));
+        } else {
+          updateUserPhoto(null);
         }
       } else {
         navigateTo("404");
@@ -45,6 +48,19 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
 
   // Returns the room/ office information of the user.
   const userRoom = () => {
+    if (!viewPerson) {
+      return (
+        <>
+          <h5>
+            <Line width="10%" />
+          </h5>
+          <h4>
+            <Line width="25%" />
+          </h4>
+          <br />
+        </>
+      );
+    }
     if (
       viewPerson.type === userTypeStudent &&
       viewPerson.dormVisible &&
@@ -73,19 +89,19 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
     return null;
   };
 
-  if (!viewPerson) return null;
-
   // Generates user's title
   const userTitle = () => {
+    if (!viewPerson) return <Line width="10%" />;
+
     if (viewPerson.type === userTypeStudent) {
       return <h5>Student</h5>;
     }
     if (viewPerson.title) {
       return (
         <h5>
-          {viewPerson.title ? viewPerson.title : null}
+          {viewPerson.title}
           <br />
-          {viewPerson.department.name}
+          {viewPerson.department && viewPerson.department.name}
         </h5>
       );
     }
@@ -95,6 +111,14 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
 
   // Generates user's pronouns
   const userPronouns = () => {
+    if (!viewPerson) {
+      return (
+        <h5>
+          <Line width="30%" />
+        </h5>
+      );
+    }
+
     if (viewPerson.pronoun) {
       return <h5>{`Pronouns: ${viewPerson.pronoun}`}</h5>;
     }
@@ -103,6 +127,20 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
 
   // Generate user's unix
   const userUnix = () => {
+    if (!viewPerson) {
+      return (
+        <>
+          <h5>
+            <Line width="10%" />
+          </h5>
+          <h4>
+            <Line width="10%" />
+          </h4>
+          <br />
+        </>
+      );
+    }
+
     if (viewPerson.unixID) {
       return (
         <>
@@ -117,6 +155,20 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
 
   // Generate user's tags
   const userTags = () => {
+    if (!viewPerson) {
+      return (
+        <>
+          <h5>
+            <Line width="10%" />
+          </h5>
+          <h4>
+            <Line width="30%" />
+          </h4>
+          <br />
+        </>
+      );
+    }
+
     if (
       (viewPerson.type === userTypeStudent ||
         viewPerson.type === userTypeAlumni) &&
@@ -149,6 +201,19 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
 
   // Generate user's su box
   const userSUBox = () => {
+    if (!viewPerson) {
+      return (
+        <>
+          <h5>
+            <Line width="10%" />
+          </h5>
+          <h4>
+            <Line width="25%" />
+          </h4>
+          <br />
+        </>
+      );
+    }
     if (viewPerson.type === userTypeStudent) {
       return (
         <>
@@ -163,6 +228,19 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
 
   // Generate user's hometown
   const userHometown = () => {
+    if (!viewPerson) {
+      return (
+        <>
+          <h5>
+            <Line width="20%" />
+          </h5>
+          <h4>
+            <Line width="45%" />
+          </h4>
+          <br />
+        </>
+      );
+    }
     if (
       viewPerson.homeVisible &&
       viewPerson.homeTown &&
@@ -192,19 +270,31 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
     return `'${viewPerson.classYear % 100}`;
   };
 
+  const picture = () => {
+    if (userPhoto === undefined) return <Photo />;
+
+    return <img src={userPhoto} alt="avatar" />;
+  };
+
+  const nameAndYear = () => {
+    if (viewPerson) {
+      return `${viewPerson.name} ${classYear()}`;
+    }
+
+    return <Line width="40%" />;
+  };
+
   return (
     <article className="facebook-profile">
       <section>
-        <aside className="picture">
-          <img src={userPhoto} alt="avatar" />
-        </aside>
+        <aside className="picture">{picture()}</aside>
 
         <aside className="info">
           <h3>
-            {viewPerson.name}&nbsp;{classYear()}
-            {currUser && currUser.id === viewPerson.id ? (
+            {nameAndYear()}
+            {currUser && viewPerson && currUser.id === viewPerson.id && (
               <span>&nbsp;(me)</span>
-            ) : null}
+            )}
           </h3>
           {userTitle()}
           {userPronouns()}

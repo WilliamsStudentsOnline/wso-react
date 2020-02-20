@@ -1,7 +1,9 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import FactrakComment from "./FactrakComment";
+import FactrakComment, { FactrakCommentSkeleton } from "./FactrakComment";
+import { List } from "../../Skeleton";
+import FactrakDeficitMessage from "./FactrakUtils";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -17,8 +19,8 @@ import {
 import { Link } from "react-router5";
 
 const FactrakHome = ({ token, currUser }) => {
-  const [areas, updateAreas] = useState([]);
-  const [surveys, updateSurveys] = useState([]);
+  const [areas, updateAreas] = useState(null);
+  const [surveys, updateSurveys] = useState(null);
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
@@ -45,45 +47,11 @@ const FactrakHome = ({ token, currUser }) => {
     if (containsScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys();
     } else {
-      updateSurveys([
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
-        { id: 9 },
-        { id: 10 },
-      ]);
+      updateSurveys([...Array(10)].map((_, id) => ({ id })));
     }
 
     loadAreas();
   }, [token]);
-
-  // Generates the factrak survey deficit message if necessary
-  const factrakSurveyDeficitMessage = () => {
-    if (currUser.factrakSurveyDeficit > 0) {
-      return (
-        <>
-          <strong>
-            {`Write just ${currUser.factrakSurveyDeficit} reviews to
-        make the blur go away!`}
-          </strong>
-          <br />
-          To write a review, just search a prof&apos;s name directly above, or
-          click a department on the left to see a list of profs in that
-          department. Then click the link on the prof&apos;s page to write a
-          review!
-          <br />
-          <br />
-        </>
-      );
-    }
-
-    return null;
-  };
 
   return (
     <article className="dormtrak">
@@ -92,16 +60,20 @@ const FactrakHome = ({ token, currUser }) => {
           <article className="home">
             <h3>Departments</h3>
             <ul id="dept_list">
-              {areas.map((area) => (
-                <li key={area.name}>
-                  <Link
-                    routeName="factrak.areasOfStudy"
-                    routeParams={{ area: area.id }}
-                  >
-                    {area.name}
-                  </Link>
-                </li>
-              ))}
+              {areas ? (
+                areas.map((area) => (
+                  <li key={area.name}>
+                    <Link
+                      routeName="factrak.areasOfStudy"
+                      routeParams={{ area: area.id }}
+                    >
+                      {area.name}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <List height="80%" center numRows={46} />
+              )}
             </ul>
           </article>
         </aside>
@@ -110,21 +82,28 @@ const FactrakHome = ({ token, currUser }) => {
           <section className="lead">
             <h3>Recent Comments</h3>
             <br />
-            {factrakSurveyDeficitMessage()}
+            <FactrakDeficitMessage currUser={currUser} />
 
-            {surveys.map((survey) => {
-              if (containsScopes(token, [scopes.ScopeFactrakFull])) {
-                return (
-                  <FactrakComment
-                    comment={survey}
-                    showProf
-                    abridged
-                    key={survey.id}
-                  />
-                );
-              }
-              return <FactrakComment showProf abridged key={survey.id} />;
-            })}
+            {surveys
+              ? surveys.map((survey) => {
+                  if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+                    return (
+                      <FactrakComment
+                        comment={survey}
+                        showProf
+                        abridged
+                        key={survey.id}
+                      />
+                    );
+                  }
+                  return <FactrakComment showProf abridged key={survey.id} />;
+                })
+              : [...Array(10)].map((_, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <div key={i}>
+                    <FactrakCommentSkeleton />
+                  </div>
+                ))}
           </section>
         </article>
       </div>

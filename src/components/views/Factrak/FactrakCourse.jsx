@@ -1,7 +1,10 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import FactrakComment from "./FactrakComment";
+import FactrakComment, { FactrakCommentSkeleton } from "./FactrakComment";
+import FactrakDeficitMessage from "./FactrakUtils";
+import FactrakRatings, { FactrakRatingsSkeleton } from "./FactrakRatings";
+import { Line } from "../../Skeleton";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
@@ -21,11 +24,10 @@ import {
   containsScopes,
 } from "../../../lib/general";
 import { Link } from "react-router5";
-import FactrakRatings from "./FactrakRatings";
 
 const FactrakCourse = ({ route, token, currUser }) => {
-  const [course, updateCourse] = useState({});
-  const [courseSurveys, updateSurveys] = useState([]);
+  const [course, updateCourse] = useState(null);
+  const [courseSurveys, updateSurveys] = useState(null);
   const [courseProfs, updateProfs] = useState([]);
   const [ratings, updateRatings] = useState(null);
 
@@ -46,10 +48,8 @@ const FactrakCourse = ({ route, token, currUser }) => {
         courseID,
         populateAgreements: true,
         populateClientAgreement: true,
+        professorID: profID > 0 ? profID : null,
       };
-      if (profID > 0) {
-        queryParams.professorID = profID;
-      }
       const surveyResponse = await getSurveys(token, queryParams);
       if (checkAndHandleError(surveyResponse)) {
         updateSurveys(surveyResponse.data.data);
@@ -76,18 +76,7 @@ const FactrakCourse = ({ route, token, currUser }) => {
     if (containsScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys();
     } else {
-      updateSurveys([
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-        { id: 5 },
-        { id: 6 },
-        { id: 7 },
-        { id: 8 },
-        { id: 9 },
-        { id: 10 },
-      ]);
+      updateSurveys([...Array(10)].map((_, id) => ({ id })));
     }
 
     loadProfs();
@@ -100,28 +89,39 @@ const FactrakCourse = ({ route, token, currUser }) => {
       <div>
         View comments only for:
         <br />
-        {course && course.id
-          ? courseProfs.map((prof) => (
-              <React.Fragment key={prof.name}>
-                <Link
-                  routeName="factrak.courses.singleProf"
-                  routeParams={{
-                    courseID: course.id,
-                    profID: prof.id,
-                  }}
-                >
-                  {prof.name}
-                </Link>
-                &emsp;
-              </React.Fragment>
-            ))
-          : null}
+        {course && course.id ? (
+          courseProfs.map((prof) => (
+            <React.Fragment key={prof.name}>
+              <Link
+                routeName="factrak.courses.singleProf"
+                routeParams={{
+                  courseID: course.id,
+                  profID: prof.id,
+                }}
+              >
+                {prof.name}
+              </Link>
+              &emsp;
+            </React.Fragment>
+          ))
+        ) : (
+          <Line width="50%" />
+        )}
       </div>
     );
   };
 
   // Generates the factrak survey comments of the course
   const commentList = () => {
+    if (!courseSurveys) {
+      return [...Array(5)].map((_, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <div key={i}>
+          <FactrakCommentSkeleton />
+        </div>
+      ));
+    }
+
     return (
       <div className="factrak-prof-comments">
         {courseSurveys.length === 0
@@ -146,31 +146,8 @@ const FactrakCourse = ({ route, token, currUser }) => {
     );
   };
 
-  // Generates the factrak survey deficit message if necessary
-  const factrakSurveyDeficitMessage = () => {
-    if (currUser.factrakSurveyDeficit > 0) {
-      return (
-        <>
-          <strong>
-            {`Write just ${currUser.factrakSurveyDeficit} reviews to
-          make the blur go away!`}
-          </strong>
-          <br />
-          To write a review, just search a prof&apos;s name directly above, or
-          click a department on the left to see a list of profs in that
-          department. Then click the link on the prof&apos;s page to write a
-          review!
-          <br />
-          <br />
-        </>
-      );
-    }
-
-    return null;
-  };
-
   const selectedProf = () => {
-    if (route.params.profID === null && route.params.profID === -1) return null;
+    if (route.params.profID === null || route.params.profID === -1) return null;
 
     const prof = courseProfs.find(
       (courseProf) => courseProf.id === route.params.profID
@@ -180,43 +157,51 @@ const FactrakCourse = ({ route, token, currUser }) => {
       return (
         <>
           <br />
-          {containsScopes(token, [scopes.ScopeFactrakFull]) ? (
+          {containsScopes(token, [scopes.ScopeFactrakFull]) && (
             <h4>
               <u>Average Course Ratings</u>
             </h4>
-          ) : null}
+          )}
           <br />
-          <FactrakRatings ratings={ratings} general />
+          {ratings ? (
+            <FactrakRatings ratings={ratings} general />
+          ) : (
+            <FactrakRatingsSkeleton />
+          )}
         </>
       );
     }
     return (
       <>
         <br />
-        {containsScopes(token, [scopes.ScopeFactrakFull]) ? (
+        {containsScopes(token, [scopes.ScopeFactrakFull]) && (
           <h4>
             <u>Ratings for {prof.name} in this course</u>
           </h4>
-        ) : null}
+        )}
         <br />
         <FactrakRatings ratings={ratings} />
       </>
     );
   };
 
+  const courseTitle = () => {
+    if (!course) return <Line width="20%" />;
+
+    return `${course.areaOfStudy ? course.areaOfStudy.abbreviation : ""} ${
+      course.number
+    }`;
+  };
+
   return (
     <article className="facebook-profile">
       <section className="info">
-        <h3>
-          {`${course.areaOfStudy ? course.areaOfStudy.abbreviation : ""} ${
-            course.number
-          }`}
-        </h3>
+        <h3>{courseTitle()}</h3>
         <br />
         {professorList()}
         {selectedProf()}
         <br />
-        {factrakSurveyDeficitMessage()}
+        <FactrakDeficitMessage currUser={currUser} />
         {commentList()}
       </section>
     </article>
@@ -246,7 +231,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FactrakCourse);
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakCourse);

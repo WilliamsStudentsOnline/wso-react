@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "../../stylesheets/BulletinBox.css";
+import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
@@ -23,7 +24,7 @@ import {
 } from "../../../constants/general";
 
 const BulletinBox = ({ token, typeWord }) => {
-  const [threads, updateThreads] = useState([]);
+  const [threads, updateThreads] = useState(null);
 
   // Converts the typeWord to the type of bulletin/discussion to be obtained.
   const linkMap = new Map([
@@ -39,10 +40,9 @@ const BulletinBox = ({ token, typeWord }) => {
 
   // Load the appropriate discussionns/bulletins
   useEffect(() => {
+    let loadParams = { limit: 5 };
+
     const loadDiscussions = async () => {
-      const loadParams = {
-        limit: 5,
-      };
       const discussionsResponse = await getDiscussions(token, loadParams);
       if (checkAndHandleError(discussionsResponse)) {
         updateThreads(discussionsResponse.data.data);
@@ -50,9 +50,6 @@ const BulletinBox = ({ token, typeWord }) => {
     };
 
     const loadRides = async () => {
-      const loadParams = {
-        limit: 5,
-      };
       const ridesResponse = await getRides(token, loadParams);
       if (checkAndHandleError(ridesResponse)) {
         updateThreads(ridesResponse.data.data);
@@ -60,7 +57,7 @@ const BulletinBox = ({ token, typeWord }) => {
     };
 
     const loadBulletins = async () => {
-      const loadParams = {
+      loadParams = {
         limit: 5,
         type,
       };
@@ -132,41 +129,55 @@ const BulletinBox = ({ token, typeWord }) => {
     );
   };
 
+  const bulletinSkeleton = () =>
+    [...Array(5)].map((_, i) => (
+      // eslint-disable-next-line react/no-array-index-key
+      <div className="bulletin-children" key={i}>
+        <Line width="90%" center />
+
+        <span className="list-date">
+          <Line width="90%" center />
+        </span>
+      </div>
+    ));
+
   const bulletinThreads = () => {
     return (
       <div className="bulletin-children-container">
-        {threads.map((thread) => {
-          return (
-            <div className="bulletin-children" key={thread.id}>
-              {type === discussionType ? (
-                <Link
-                  className="thread-link"
-                  routeName="discussions.show"
-                  routeParams={{
-                    discussionID: thread.id,
-                  }}
-                >
-                  {threadTitle(thread)}
-                </Link>
-              ) : (
-                <Link
-                  className="thread-link"
-                  routeName="bulletins.show"
-                  routeParams={{
-                    type,
-                    bulletinID: thread.id,
-                  }}
-                >
-                  {threadTitle(thread)}
-                </Link>
-              )}
+        {threads
+          ? threads.map((thread) => {
+              return (
+                <div className="bulletin-children" key={thread.id}>
+                  {type === discussionType ? (
+                    <Link
+                      className="thread-link"
+                      routeName="discussions.show"
+                      routeParams={{
+                        discussionID: thread.id,
+                      }}
+                    >
+                      {threadTitle(thread)}
+                    </Link>
+                  ) : (
+                    <Link
+                      className="thread-link"
+                      routeName="bulletins.show"
+                      routeParams={{
+                        type,
+                        bulletinID: thread.id,
+                      }}
+                    >
+                      {threadTitle(thread)}
+                    </Link>
+                  )}
 
-              <span className="list-date">
-                {formatDate(threadDate(thread))}
-              </span>
-            </div>
-          );
-        })}
+                  <span className="list-date">
+                    {formatDate(threadDate(thread))}
+                  </span>
+                </div>
+              );
+            })
+          : bulletinSkeleton()}
       </div>
     );
   };
