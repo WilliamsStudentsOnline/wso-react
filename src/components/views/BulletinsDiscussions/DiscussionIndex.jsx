@@ -51,6 +51,12 @@ const DiscussionIndex = ({ currUser, token }) => {
     }
   };
 
+  // Handles selection of page
+  const selectionHandler = (newPage) => {
+    updatePage(newPage);
+    loadThreads(newPage);
+  };
+
   // Gets the username of the last commenter.
   const lastCommenter = (thread) => {
     if (!thread.posts) return "";
@@ -89,6 +95,7 @@ const DiscussionIndex = ({ currUser, token }) => {
 
   // Generates post information
   const postInfo = (thread) => {
+    if (!thread.posts) return null;
     return (
       <div className="small-font">
         <span>
@@ -161,15 +168,25 @@ const DiscussionIndex = ({ currUser, token }) => {
 
   return (
     <section className="margin-vertical-small">
+      <PaginationButtons
+        selectionHandler={selectionHandler}
+        clickHandler={clickHandler}
+        page={page}
+        total={total}
+        perPage={perPage}
+        showPages
+      />
       {threads
         ? threads.map((thread) => discussion(thread))
         : [...Array(20)].map((_, i) => discussionSkeleton(i))}
 
       <PaginationButtons
+        selectionHandler={selectionHandler}
         clickHandler={clickHandler}
         page={page}
         total={total}
         perPage={perPage}
+        showPages
       />
       <br />
     </section>

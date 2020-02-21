@@ -72,6 +72,12 @@ const BulletinIndex = ({ type, token, currUser }) => {
     }
   };
 
+  // Handles selection of page
+  const selectionHandler = (newPage) => {
+    updatePage(newPage);
+    loadNext(newPage);
+  };
+
   useEffect(() => {
     loadNext(0);
     // eslint-disable-next-line
@@ -229,13 +235,23 @@ const BulletinIndex = ({ type, token, currUser }) => {
   return (
     <article className="main-table">
       <section>
-        {generateBulletinTable()}
-
         <PaginationButtons
+          selectionHandler={selectionHandler}
           clickHandler={clickHandler}
           page={page}
           total={total}
           perPage={perPage}
+          showPages
+        />
+        {generateBulletinTable()}
+
+        <PaginationButtons
+          selectionHandler={selectionHandler}
+          clickHandler={clickHandler}
+          page={page}
+          total={total}
+          perPage={perPage}
+          showPages
         />
       </section>
     </article>
