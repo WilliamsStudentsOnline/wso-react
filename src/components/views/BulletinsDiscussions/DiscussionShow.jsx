@@ -34,7 +34,7 @@ const DiscussionShow = ({ token, route }) => {
 
       if (checkAndHandleError(discussionResponse)) {
         updateDiscussion(discussionResponse.data.data);
-        updatePosts(discussionResponse.data.data.posts);
+        updatePosts(discussionResponse.data.data.posts || []);
         // updateTotal(discussionResponse.data.paginationTotal);
       } else if (discussionResponse.error.errors) {
         updateErrors(discussionResponse.error.errors);
