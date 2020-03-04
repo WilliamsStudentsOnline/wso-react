@@ -13,7 +13,12 @@ We would love to hear from you and discuss them. File an issue [here](https://gi
 
 ## Contributing
 
-TBD
+1. Open an issue and discuss your planned change with the repository administrators. This is important to avoid any wasted effort if you choose an approach  that is not encouraged by the admins.
+1. Once the admins have approved your intended change, create a branch in the repository from `master`.
+1. Make your modifications in the branch.
+1. When you are ready, make a pull request and request for review from a admin.
+1. Once the pull request has been approved, squash and merge it.
+1. Congratulations! You're done!
 
 ## Getting Started
 
@@ -97,34 +102,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## yarn analyze
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Analyzes the bundle size of the build - useful to understand how the bundle size changed after
+your modifications.
