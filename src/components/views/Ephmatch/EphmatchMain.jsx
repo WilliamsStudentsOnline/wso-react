@@ -28,7 +28,7 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
   const [ephmatchProfile, updateEphmatchProfile] = useState(profile);
   const [hasQueriedProfile, updateHasQueriedProfile] = useState(false);
   const [matches, updateMatches] = useState([]);
-  const ephmatchEndDate = new Date(2020, 3, 17, 23, 59, 59, 99);
+  const ephmatchEndDate = new Date(2020, 2, 17, 23, 59, 59, 99);
 
   useEffect(() => {
     let isMounted = true;
