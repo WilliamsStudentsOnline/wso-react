@@ -32,7 +32,7 @@ const EphmatchHome = ({ token }) => {
       const params = {
         limit: perPage,
         offset: newPage * perPage,
-        preload: ["tags"],
+        preload: ["tags", "liked", "matched"],
         sort,
       };
       const EphmatchersResponse = await getEphmatchProfiles(token, params);

@@ -6,15 +6,15 @@ import PropTypes from "prop-types";
 import { Link } from "react-router5";
 
 import { format } from "timeago.js";
+import { containsScopes, scopes } from "../../../lib/general";
 
-const EphmatchLayout = ({ children, ephmatchEndDate, matches }) => {
-  const isOpen = new Date() < ephmatchEndDate;
+const EphmatchLayout = ({ children, token, availability, matches }) => {
   return (
     <>
       <header>
-        {isOpen && (
+        {availability && availability.available && availability.closingTime && (
           <section className="notice">
-            Ephmatch closes {format(ephmatchEndDate)}
+            Ephmatch closes {format(availability.closingTime)}
           </section>
         )}
 
@@ -26,7 +26,10 @@ const EphmatchLayout = ({ children, ephmatchEndDate, matches }) => {
             <li>
               <Link routeName="ephmatch">Home</Link>
             </li>
-            {isOpen && (
+            {containsScopes(token, [
+              scopes.ScopeEphmatchMatches,
+              scopes.ScopeEphmatchProfiles,
+            ]) && (
               <>
                 <li>
                   <Link routeName="ephmatch.matches">Matches</Link>
@@ -51,8 +54,9 @@ const EphmatchLayout = ({ children, ephmatchEndDate, matches }) => {
 };
 
 EphmatchLayout.propTypes = {
+  token: PropTypes.string.isRequired,
   children: PropTypes.object,
-  ephmatchEndDate: PropTypes.object.isRequired,
+  availability: PropTypes.object.isRequired,
   matches: PropTypes.arrayOf(PropTypes.object),
 };
 

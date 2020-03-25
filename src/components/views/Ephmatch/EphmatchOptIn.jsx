@@ -11,7 +11,10 @@ import { actions } from "redux-router5";
 
 // Additional imports
 import { checkAndHandleError } from "../../../lib/general";
-import { createEphmatchProfile } from "../../../api/ephmatch";
+import {
+  createEphmatchProfile,
+  getSelfEphmatchProfile,
+} from "../../../api/ephmatch";
 import { getUser } from "../../../api/users";
 
 // Page created to handle both opting in and out.
@@ -29,6 +32,15 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
       const ownProfile = await getUser(token);
       if (checkAndHandleError(ownProfile) && isMounted) {
         updateUserInfo(ownProfile.data.data);
+      }
+
+      // Load ephmatch profile to see if one exists
+      const ownEphmatchProfile = await getSelfEphmatchProfile(token);
+      if (checkAndHandleError(ownEphmatchProfile) && isMounted) {
+        const ephmatchProfile = ownEphmatchProfile.data.data;
+
+        updateDescription(ephmatchProfile.description);
+        updateMatchMessage(ephmatchProfile.matchMessage);
       }
     };
 

@@ -1,5 +1,19 @@
 import axios from "axios";
 
+// Gets Ephmatch availability
+const getEphmatchAvailability = async (token) => {
+  const response = await axios({
+    url: "/api/v2/ephmatch/availability",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
 // :ists all Ephmatch-eligible students that user has matched with
 const getEphmatchMatches = async (token) => {
   const response = await axios({
@@ -135,6 +149,7 @@ const unlikeEphmatcher = async (token, profileUserID) => {
 };
 
 export {
+  getEphmatchAvailability,
   getEphmatchMatches,
   getEphmatchProfile,
   getEphmatchProfiles,
