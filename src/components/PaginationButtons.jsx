@@ -46,7 +46,20 @@ const PaginationButtons = ({
 
   return (
     <div style={{ textAlign: "center" }}>
+      {/* APRIL FOOL'S */}
       <button
+        type="button"
+        onClick={() => clickHandler(-1)}
+        disabled={page === 0}
+        style={{
+          background: "ffffff",
+          color: "#4b2771",
+          minWidth: 0,
+          lineHeight: "normal",
+        }}
+      >
+        {/* STANDARD */}
+        {/* <button
         type="button"
         onClick={() => clickHandler(-1)}
         disabled={page === 0}
@@ -56,7 +69,7 @@ const PaginationButtons = ({
           minWidth: 0,
           lineHeight: "normal",
         }}
-      >
+      > */}
         <i className="material-icons">keyboard_arrow_left</i>
       </button>
       {pages()}
