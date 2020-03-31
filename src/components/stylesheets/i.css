@@ -540,7 +540,7 @@ input[type="submit"]:active,
 .search-toggle label:active,
 .list-creation .category + label:active {
   /*APRIL FOOL'S*/
-  background: linear-gradient(
+  /* background: linear-gradient(
     to left,
     #fea3aa,
     #f8b88b,
@@ -548,9 +548,9 @@ input[type="submit"]:active,
     #baed91,
     #b2cefe,
     #f2a2e8
-  );
+  ); */
   /*STANDARD*/
-  /*background: #553871;*/
+  background: #553871;
 }
 button:disabled,
 input[type="submit"]:disabled,
@@ -1269,7 +1269,10 @@ dl dd {
 .rides header .page-head ul li a,
 .account header .page-head ul li a,
 .login header .page-head ul li a {
-  color: #6f4993;
+  /*APRIL FOOL'S*/
+  color: #20012e;
+  /*STANDARD*/
+  /*color: #6f4993;*/
 }
 .facebook .grid-wrap aside h5,
 .factrak .grid-wrap aside h5,
@@ -1903,14 +1906,21 @@ section:after {
 .facebook header .page-head a,
 .factrak header .page-head a,
 .dormtrak header .page-head a {
-  color: #6f4993;
+  /*APRIL FOOL'S*/
+  color: #20012e;
+  /*STANDARD*/
+  /*color: #6f4993;*/
 }
 .facebook header h1,
 .factrak header h1,
 .dormtrak header h1 {
   font-weight: lighter;
-  color: #6f4993;
   margin-bottom: 1rem;
+  /*APRIL FOOL'S*/
+
+  color: #20012e;
+  /*STANDARD*/
+  /*color: #6f4993;*/
 }
 .facebook .facebook-search,
 .facebook .factrak-search,
@@ -2866,8 +2876,11 @@ ul#tag-list .tag-input {
 .jobs h1,
 .rides h1 {
   font-weight: lighter;
-  color: #6f4993;
   margin-bottom: 1rem;
+  /*APRIL FOOL'S*/
+  color: #20012e;
+  /*STANDARD*/
+  /*color: #6f4993;*/
 }
 .lost-found h1 a,
 .announcement h1 a,

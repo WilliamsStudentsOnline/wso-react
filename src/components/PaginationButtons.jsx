@@ -51,7 +51,7 @@ const PaginationButtons = ({
         onClick={() => clickHandler(-1)}
         disabled={page === 0}
         style={{
-          background: "none",
+          background: "ffffff",
           color: "#4b2771",
           minWidth: 0,
           lineHeight: "normal",
