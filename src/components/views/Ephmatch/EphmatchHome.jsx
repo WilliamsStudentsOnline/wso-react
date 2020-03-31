@@ -23,7 +23,7 @@ const EphmatchHome = ({ token }) => {
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
   const [ephmatchers, updateEphmatchers] = useState([]);
-  const [sort, updateSort] = useState("alphabetical");
+  const [sort, updateSort] = useState("new"); // TODO(CORONA): was "alphabetical" but changing to create surge of craziness for classes cancelled
 
   useEffect(() => {
     let isMounted = true;
