@@ -35,8 +35,14 @@ const Homepage = ({ navigateTo }) => {
         </div>
 
         <header>
-          <h2 align="center">WSO</h2>
-          <h4 align="center">By Students, For Students!</h4>
+          <div className="logo">
+            <h2 align="center" id="logotype">
+              WSO
+            </h2>
+            <h4 align="center" id="tagline">
+              By Students, For Students!
+            </h4>
+          </div>
           <br />
           <form onSubmit={submitHandler}>
             <input
@@ -76,7 +82,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Homepage);
+export default connect(null, mapDispatchToProps)(Homepage);

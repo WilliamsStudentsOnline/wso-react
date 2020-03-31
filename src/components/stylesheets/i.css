@@ -511,9 +511,21 @@ button,
 input[type="submit"],
 .search-toggle label,
 .list-creation .category + label {
-  background: #6f4993;
+  /*APRIL FOOL'S*/
+  background: linear-gradient(
+    to left,
+    #fea3aa,
+    #f8b88b,
+    #faf884,
+    #baed91,
+    #b2cefe,
+    #f2a2e8
+  );
+  color: #20012e;
+  /*STANDARD*/
+  /*background: #6f4993;
+  color: #fff;*/
   border-radius: 2px;
-  color: #fff;
   display: inline-block;
   font-size: inherit;
   letter-spacing: 1px;
@@ -527,13 +539,35 @@ button:active,
 input[type="submit"]:active,
 .search-toggle label:active,
 .list-creation .category + label:active {
-  background: #553871;
+  /*APRIL FOOL'S*/
+  background: linear-gradient(
+    to left,
+    #fea3aa,
+    #f8b88b,
+    #faf884,
+    #baed91,
+    #b2cefe,
+    #f2a2e8
+  );
+  /*STANDARD*/
+  /*background: #553871;*/
 }
 button:disabled,
 input[type="submit"]:disabled,
 .search-toggle label:disabled,
 .list-creation .category + label:disabled {
-  background: #6e6e6e;
+  /*APRIL FOOL'S*/
+  background: linear-gradient(
+    to left,
+    #fea3aa,
+    #f8b88b,
+    #faf884,
+    #baed91,
+    #b2cefe,
+    #f2a2e8
+  );
+  /*STANDARD*/
+  /*background: #6e6e6e;*/
   cursor: pointer;
 }
 button:disabled,
@@ -547,9 +581,10 @@ input[type="submit"]:disabled,
 body {
   color: #444;
   /*APRIL FOOL'S*/
+  font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+  /*STANDARD*/
   /*font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
     "Arial", sans-serif;*/
-  font-family: "Comic Sans MS", sans-serif;
   font-size: 1em;
 
   -webkit-font-smoothing: antialiased;
@@ -562,10 +597,11 @@ h4,
 h5,
 h6 {
   /*APRIL FOOL'S*/
+  font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+  color: #fff000;
+  /*STANDARD*/
   /*font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
     "Arial", sans-serif;*/
-  font-family: "Comic Sans MS",sans-serif;
-  color: #fff000;
   line-height: 1.25em;
   text-rendering: optimizeLegibility;
 }
@@ -746,8 +782,11 @@ input,
 label,
 select {
   display: block;
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
-    "Arial", sans-serif;
+  /*APRIL FOOL'S*/
+  font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+  /*STANDARD*/
+  /*font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
+    "Arial", sans-serif;*/
   font-size: 1em;
   resize: none;
 }
@@ -786,8 +825,11 @@ select {
   background-color: white;
   border-radius: 0.1875em;
   border: 2px solid rgba(17, 17, 17, 0.15);
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
-    "Arial", sans-serif;
+  /*APRIL FOOL'S*/
+  font-family: "Comic Sans MS", "Comic Sans", cursive, sans-setif;
+  /*STANDARD*/
+  /*font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
+    "Arial", sans-serif;*/
   font-size: 1em;
   margin-bottom: 0.75em;
   padding: 0.75em 0.75em;
@@ -1517,6 +1559,29 @@ section:after {
   text-align: center;
   background-color: #fff6bf;
 }
+/*APRIL FOOL'S*/
+.logo {
+  text-align: center;
+}
+#logotype {
+  display: inline-block;
+  position: relative;
+  background: linear-gradient(
+    to left,
+    #fea3aa,
+    #f8b88b,
+    #faf884,
+    #baed91,
+    #b2cefe,
+    #f2a2e8
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+#tagline {
+  color: #20012e;
+}
+/*STANDARD*/
 .article .about-header {
   position: absolute;
   bottom: 0.25em;
@@ -3266,7 +3331,18 @@ header .submit:last-child {
 nav {
   width: 100%;
   *zoom: 1;
-  background: #282e42;
+  /*APRIL FOOL'S*/
+  background: linear-gradient(
+    to left,
+    #fea3aa,
+    #f8b88b,
+    #faf884,
+    #baed91,
+    #b2cefe,
+    #f2a2e8
+  );
+  /*STANDARD*/
+  /*background: #282e42;*/
   padding: 0;
 }
 nav:before,
@@ -3306,7 +3382,10 @@ nav li:last-child {
   margin-right: 0;
 }
 nav a {
-  color: #fcfcfc;
+  /*APRIL FOOL'S*/
+  color: #20012e;
+  /*STANDARD*/
+  /*color: #fcfcfc;*/
   font-weight: 600;
   letter-spacing: 1px;
   font-size: 0.75em;
@@ -3315,13 +3394,19 @@ nav a {
   border-bottom: none;
 }
 nav a:visited {
-  color: #fcfcfc;
+  /*APRIL FOOL'S*/
+  color: #20012e;
+  /*STANDARD*/
+  /*color: #fcfcfc;*/
 }
 nav a:active,
 nav a:visited,
 nav a:focus {
   opacity: 0.6;
-  color: #fcfcfc;
+  /*APRIL FOOL'S*/
+  color: #20012e;
+  /*STANDARD*/
+  /*color: #fcfcfc;*/
 }
 nav .nav-left-container {
   float: left;
@@ -3357,7 +3442,18 @@ nav #nav-menu-button {
   }
 }
 footer {
-  background: #282e42;
+  /*APRIL FOOL'S*/
+  background: linear-gradient(
+    to left,
+    #fea3aa,
+    #f8b88b,
+    #faf884,
+    #baed91,
+    #b2cefe,
+    #f2a2e8
+  );
+  /*STANDARD*/
+  /*background: #282e42;*/
   color: #fcfcfc;
   height: 6rem;
   position: absolute;
@@ -3388,7 +3484,10 @@ footer section small {
   -ms-user-select: none;
   user-select: none;
   text-align: center;
-  color: white;
+  /*APRIL FOOL'S*/
+  color: #20012e;
+  /*STANDARD*/
+  /*color: white;*/
   float: left;
   display: block;
   margin-right: 2.3576515979%;

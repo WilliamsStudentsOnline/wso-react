@@ -26,9 +26,21 @@
 }
 
 .floating-button-link {
-  background: #6f4399;
+  /*APRIL FOOL'S*/
+  background: linear-gradient(
+    to left,
+    #fea3aa,
+    #f8b88b,
+    #faf884,
+    #baed91,
+    #b2cefe,
+    #f2a2e8
+  );
+  color: #20012e;
+  /*STANDARD*/
+  /*background: #6f4399;
+  color: #fff;*/
   padding: 0.5rem 2rem;
-  color: #fff;
   position: fixed;
   width: 70px;
   height: 70px;
