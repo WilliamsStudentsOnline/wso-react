@@ -33,7 +33,6 @@ const Homepage = ({ navigateTo }) => {
         <div id="join-header">
           <a href="https://forms.gle/RYeBrHvi776F24sE9">Join us today!</a>
         </div>
-
         <header>
           <div className="logo">
             <h2 align="center" id="logotype">

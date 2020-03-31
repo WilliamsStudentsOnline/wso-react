@@ -1,18 +1,44 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
 .inline-button {
-  background: none;
   padding: 0.5rem 2rem;
-  color: #6f4399;
-  border: 1px solid #6f4399;
+  /*APRIL FOOLS*/
+  background: linear-gradient(
+    to left,
+    #fea3aa,
+    #f8b88b,
+    #faf884,
+    #baed91,
+    #b2cefe,
+    #f2a2e8
+  );
+  color: #20012e;
+  border: 1px solid #20012e;
+  /*STANDARD*/
+  /*background: none;
+  color: #6f4993;
+  border: 1px solid #6f4399;*/
   margin: 0.5rem;
 }
 
 .inline-button-inverted {
-  background: #6f4399;
-  padding: 0.5rem 2rem;
+  /*APRIL FOOLS*/
+  background: linear-gradient(
+    to left,
+    #fea3aa,
+    #f8b88b,
+    #faf884,
+    #baed91,
+    #b2cefe,
+    #f2a2e8
+  );
+  color: #20012e;
+  border: 1px solid #20012e;
+  /*STANDARD*/
+  /* background: #6f4399;
   color: #fff;
-  border: 1px solid #fff;
+  border: 1px solid #fff; */
+  padding: 0.5rem 2rem;
   margin: 0.5rem;
 }
 
@@ -54,5 +80,8 @@
 .floating-button-link:visited,
 .floating-button-link:hover,
 .floating-button-link:active {
-  color: #fff;
+  /*APRIL FOOLS*/
+  color: #20012e;
+  /*STANDARD*/
+  /* color: #fff; */
 }
