@@ -543,11 +543,15 @@ input[type="submit"]:disabled,
   opacity: 0.5;
   cursor: not-allowed;
 }
+
 body {
   color: #444;
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
-    "Arial", sans-serif;
+  /*APRIL FOOL'S*/
+  /*font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
+    "Arial", sans-serif;*/
+  font-family: "Comic Sans MS", sans-serif;
   font-size: 1em;
+
   -webkit-font-smoothing: antialiased;
   line-height: 1.5em;
 }
@@ -557,8 +561,11 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
-    "Arial", sans-serif;
+  /*APRIL FOOL'S*/
+  /*font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
+    "Arial", sans-serif;*/
+  font-family: "Comic Sans MS",sans-serif;
+  color: #fff000;
   line-height: 1.25em;
   text-rendering: optimizeLegibility;
 }
