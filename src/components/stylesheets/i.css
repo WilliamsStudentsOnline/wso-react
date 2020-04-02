@@ -540,7 +540,7 @@ input[type="submit"]:active,
 .search-toggle label:active,
 .list-creation .category + label:active {
   /*APRIL FOOL'S*/
-  background: linear-gradient(
+  /*   background: linear-gradient(
     to left,
     #fea3aa,
     #f8b88b,
@@ -548,9 +548,9 @@ input[type="submit"]:active,
     #baed91,
     #b2cefe,
     #f2a2e8
-  );
+  ); */
   /*STANDARD*/
-  /*   background: #553871; */
+  background: #553871;
 }
 button:disabled,
 input[type="submit"]:disabled,
@@ -1296,9 +1296,9 @@ dl dd {
   color: white;
   font-weight: bold;
   /*APRIL FOOLS*/
-  background: #20012e;
+  /*   background: #20012e; */
   /*STANDARD*/
-  /*   background: #6f4993; */
+  background: #6f4993;
   text-align: center;
   padding: 1rem 0.5rem;
   border-bottom: 2px solid #d9d9d9;
@@ -1950,7 +1950,6 @@ section:after {
   font-weight: lighter;
   margin-bottom: 1rem;
   /*APRIL FOOL'S*/
-
   /*   color: #20012e; */
   /*STANDARD*/
   color: #6f4993;
