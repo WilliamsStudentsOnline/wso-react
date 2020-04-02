@@ -32,18 +32,18 @@
   margin-top: 20px;
   text-align: center;
   /*APRIL FOOL'S*/
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #4b2771;*/
+  color: #4b2771;
   vertical-align: middle;
 }
 
 .timetable-header button {
   background-color: #fff;
   /*APRIL FOOL'S*/
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #4b2771;*/
+  color: #4b2771;
   display: inline-block;
 }
 
@@ -118,7 +118,7 @@
 
 .change-semester-button:disabled {
   /*APRIL FOOL'S*/
-  background: linear-gradient(
+  /*   background: linear-gradient(
     to left,
     #fea3aa,
     #f8b88b,
@@ -126,7 +126,7 @@
     #baed91,
     #b2cefe,
     #f2a2e8
-  );
+  ); */
   /*STANDARD*/
-  /*background: none;*/
+  background: none;
 }

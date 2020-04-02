@@ -1,7 +1,7 @@
 .bulletin-title {
   text-align: center;
   /*APRIL FOOL'S*/
-  background: linear-gradient(
+  /*   background: linear-gradient(
     to left,
     #fea3aa,
     #f8b88b,
@@ -9,9 +9,9 @@
     #baed91,
     #b2cefe,
     #f2a2e8
-  );
+  ); */
   /*STANDARD*/
-  /*background: #6f4993;*/
+  background: #6f4993;
   padding: 1rem 0.5rem;
   border-bottom: 2px solid #d9d9d9;
   border-top-left-radius: 2px;
@@ -20,9 +20,9 @@
 
 .bulletin-link {
   /*APRIL FOOL'S*/
-  color: #20012e;
+  /* color: #20012e; */
   /*STANDARD*/
-  /*color: white;*/
+  color: white;
   font-weight: bold;
   font-size: 1.25em;
 }
@@ -48,9 +48,9 @@
   font-weight: bold;
   color: #666;
   /*APRIL FOOL'S*/
-  font-size: 0.8em;
+  /*   font-size: 0.8em; */
   /*STANDARD*/
-  /*font-size: 0.9em;*/
+  font-size: 0.9em;
   text-align: center;
 }
 
