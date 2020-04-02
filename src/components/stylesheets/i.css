@@ -512,7 +512,7 @@ input[type="submit"],
 .search-toggle label,
 .list-creation .category + label {
   /*APRIL FOOL'S*/
-  background: linear-gradient(
+  /*   background: linear-gradient(
     to left,
     #fea3aa,
     #f8b88b,
@@ -521,10 +521,10 @@ input[type="submit"],
     #b2cefe,
     #f2a2e8
   );
-  color: #20012e;
+  color: #20012e; */
   /*STANDARD*/
-  /*background: #6f4993;
-  color: #fff;*/
+  background: #6f4993;
+  color: #fff;
   border-radius: 2px;
   display: inline-block;
   font-size: inherit;
@@ -540,23 +540,6 @@ input[type="submit"]:active,
 .search-toggle label:active,
 .list-creation .category + label:active {
   /*APRIL FOOL'S*/
-  /* background: linear-gradient(
-    to left,
-    #fea3aa,
-    #f8b88b,
-    #faf884,
-    #baed91,
-    #b2cefe,
-    #f2a2e8
-  ); */
-  /*STANDARD*/
-  background: #553871;
-}
-button:disabled,
-input[type="submit"]:disabled,
-.search-toggle label:disabled,
-.list-creation .category + label:disabled {
-  /*APRIL FOOL'S*/
   background: linear-gradient(
     to left,
     #fea3aa,
@@ -567,7 +550,24 @@ input[type="submit"]:disabled,
     #f2a2e8
   );
   /*STANDARD*/
-  /*background: #6e6e6e;*/
+  /*   background: #553871; */
+}
+button:disabled,
+input[type="submit"]:disabled,
+.search-toggle label:disabled,
+.list-creation .category + label:disabled {
+  /*APRIL FOOL'S*/
+  /*   background: linear-gradient(
+    to left,
+    #fea3aa,
+    #f8b88b,
+    #faf884,
+    #baed91,
+    #b2cefe,
+    #f2a2e8
+  ); */
+  /*STANDARD*/
+  background: #6e6e6e;
   cursor: pointer;
 }
 button:disabled,
@@ -581,10 +581,9 @@ input[type="submit"]:disabled,
 body {
   color: #444;
   /*APRIL FOOL'S*/
-  font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+  /*   font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif; */
   /*STANDARD*/
-  /*font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
-    "Arial", sans-serif;*/
+  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1em;
 
   -webkit-font-smoothing: antialiased;
@@ -597,11 +596,10 @@ h4,
 h5,
 h6 {
   /*APRIL FOOL'S*/
-  font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
-  color: #20012e;
+  /*   font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+  color: #20012e; */
   /*STANDARD*/
-  /*font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
-    "Arial", sans-serif;*/
+  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.25em;
   text-rendering: optimizeLegibility;
 }
@@ -720,9 +718,9 @@ a:focus {
 article a {
   text-decoration: none;
   /*APRIL FOOLS*/
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 article a:hover {
   opacity: 0.6;
@@ -786,10 +784,9 @@ label,
 select {
   display: block;
   /*APRIL FOOL'S*/
-  font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+  /*   font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif; */
   /*STANDARD*/
-  /*font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
-    "Arial", sans-serif;*/
+  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1em;
   resize: none;
 }
@@ -829,10 +826,9 @@ select {
   border-radius: 0.1875em;
   border: 2px solid rgba(17, 17, 17, 0.15);
   /*APRIL FOOL'S*/
-  font-family: "Comic Sans MS", "Comic Sans", cursive, sans-setif;
+  /*   font-family: "Comic Sans MS", "Comic Sans", cursive, sans-setif; */
   /*STANDARD*/
-  /*font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif,
-    "Arial", sans-serif;*/
+  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1em;
   margin-bottom: 0.75em;
   padding: 0.75em 0.75em;
@@ -941,9 +937,9 @@ input[type="month"]:focus,
 input[type="time"]:focus,
 input[type="week"]:focus {
   /*APRIL FOOL'S*/
-  border-color: #20012e;
+  /*   border-color: #20012e; */
   /*STANDARD*/
-  /* border-color: #6f4993; */
+  border-color: #6f4993;
   outline: none;
 }
 input[type="search"] {
@@ -1019,9 +1015,9 @@ input[type="submit"] {
   border-radius: 2px;
   text-align: center;
   /*APRIL FOOLS*/
-  color: #20012e;
+  /*  color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
   font-size: 0.75em;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1050,9 +1046,9 @@ input[type="submit"] {
 }
 .search-toggle input[type="radio"]:checked ~ label {
   /*APRIL FOOLS*/
-  background: #20012e;
+  /*   background: #20012e; */
   /*STANDARD*/
-  /*background: #6f4993;*/
+  background: #6f4993;
   color: white;
 }
 .account form,
@@ -1161,11 +1157,11 @@ thead tr th {
   padding: 0.75em 1.5em;
   text-align: left;
   /*APRIL FOOLS*/
-  background: #20012e;
-  font-size: 0.7em;
+  /*   background: #20012e;
+  font-size: 0.7em; */
   /*STANDARD*/
-  /*background: #6f4993;
-  font-size: 0.75em;*/
+  background: #6f4993;
+  font-size: 0.75em;
   color: white;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1184,9 +1180,9 @@ tbody tr:nth-child(even) td {
 }
 tbody a {
   /*APRIL FOOLS*/
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 tbody td:first-child {
   border-left-style: none;
@@ -1289,9 +1285,9 @@ dl dd {
 .account header .page-head ul li a,
 .login header .page-head ul li a {
   /*APRIL FOOL'S*/
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 .facebook .grid-wrap aside h5,
 .factrak .grid-wrap aside h5,
@@ -1302,7 +1298,7 @@ dl dd {
   /*APRIL FOOLS*/
   background: #20012e;
   /*STANDARD*/
-  /*background: #6f4993;*/
+  /*   background: #6f4993; */
   text-align: center;
   padding: 1rem 0.5rem;
   border-bottom: 2px solid #d9d9d9;
@@ -1346,9 +1342,9 @@ dl dd {
 .dormtrak .grid-wrap aside ul li a,
 .home article aside ul li a {
   /*APRIL FOOL'S*/
-  color: #20012e;
+  /*  color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 .facebook .grid-wrap aside ul li:nth-child(even),
 .factrak .grid-wrap aside ul li:nth-child(even),
@@ -1456,9 +1452,9 @@ h2,
 h3,
 h4 {
   /*APRIL FOOL'S*/
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 .liga {
   font-style: italic;
@@ -1591,7 +1587,7 @@ section:after {
   background-color: #fff6bf;
 }
 /*APRIL FOOL'S*/
-.logo {
+/* .logo {
   text-align: center;
 }
 #logotype {
@@ -1611,7 +1607,7 @@ section:after {
 }
 #tagline {
   color: #20012e;
-}
+} */
 /*STANDARD*/
 .article .about-header {
   position: absolute;
@@ -1692,9 +1688,9 @@ section:after {
     margin-left: 0%;
     *zoom: 1;
     /*APRIL FOOL'S*/
-    color: #20012e;
+    /*     color: #20012e; */
     /*STANDARD*/
-    /*color: #6f4993;*/
+    color: #6f4993;
   }
   .article .about-header h1:last-child,
   .article .about-header h5:last-child {
@@ -1791,9 +1787,9 @@ section:after {
 .article h3,
 .article h4 {
   /*APRIL FOOLS*/
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
   font-style: normal;
 }
 .article .intro-paragraph {
@@ -1804,9 +1800,9 @@ section:after {
   text-decoration: none;
   border-bottom: 1px dotted #d4d4e4;
   /*APRIL FOOLS*/
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 .article a:visited {
   border-bottom: none;
@@ -1944,9 +1940,9 @@ section:after {
 .factrak header .page-head a,
 .dormtrak header .page-head a {
   /*APRIL FOOL'S*/
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 .facebook header h1,
 .factrak header h1,
@@ -1955,9 +1951,9 @@ section:after {
   margin-bottom: 1rem;
   /*APRIL FOOL'S*/
 
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 .facebook .facebook-search,
 .facebook .factrak-search,
@@ -2417,9 +2413,9 @@ section:after {
 .facebook-profile .picture a,
 .facebook-edit .picture a {
   /*APRIL FOOLS*/
-  background: #20012e;
+  /*   background: #20012e; */
   /*STANDARD*/
-  /*background: #6f4993;*/
+  background: #6f4993;
   border-radius: 2px;
   color: #fff;
   display: inline-block;
@@ -2486,9 +2482,9 @@ section:after {
 .facebook-profile .info a,
 .facebook-edit .info a {
   /*APRIL FOOLS*/
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 .facebook-profile .info h3,
 .facebook-edit .info h3 {
@@ -2518,9 +2514,9 @@ section:after {
 .facebook-profile .info .save,
 .facebook-edit .info .save {
   /*APRIL FOOLS*/
-  background: #20012e;
+  /*   background: #20012e; */
   /*STANDARD*/
-  /*background: #6f4993;*/
+  background: #6f4993;
   border-radius: 2px;
   color: #fff;
   display: inline-block;
@@ -2552,9 +2548,9 @@ section:after {
 .fb-tag {
   position: relative;
   /*APRIL FOOL'S*/
-  border: solid 2px #20012e;
+  /*   border: solid 2px #20012e; */
   /*STANDARD*/
-  /*border: solid 2px #6f4993;*/
+  border: solid 2px #6f4993;
   border-radius: 5px;
   padding: 5px;
   margin: 5px;
@@ -2578,9 +2574,9 @@ section:after {
   position: absolute;
   margin-top: 5px;
   /*APRIL FOOLS*/
-  color: #20012e;
+  /* color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
   cursor: pointer;
   width: 90%;
   border-right: 2px solid #d9d9d9;
@@ -2635,9 +2631,9 @@ ul#tag-list .tag-input {
 }
 .factrak .factrak-home section h3 {
   /*APRIL FOOLS*/
-  color: #20012e;
+  /* color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 .factrak #factrak-comments-section {
   margin-bottom: 4em;
@@ -2742,9 +2738,9 @@ ul#tag-list .tag-input {
 .factrak #open-survey {
   cursor: pointer;
   /*APRIL FOOLS*/
-  color: #20012e;
+  /* color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 .factrak #open-survey:hover {
   cursor: pointer;
@@ -2816,9 +2812,9 @@ ul#tag-list .tag-input {
 }
 .dormtrak .sidebar .building-rooms a {
   /*APRIL FOOLS*/
-  color: #20012e;
+  /*  color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 .dormtrak .main {
   float: left;
@@ -2939,9 +2935,9 @@ ul#tag-list .tag-input {
   font-weight: lighter;
   margin-bottom: 1rem;
   /*APRIL FOOL'S*/
-  color: #20012e;
+  /*  color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 .lost-found h1 a,
 .announcement h1 a,
@@ -2949,9 +2945,9 @@ ul#tag-list .tag-input {
 .rides h1 a {
   font-weight: lighter;
   /*APRIL FOOLS*/
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
   margin-bottom: 1rem;
 }
 .list-creation section {
@@ -2995,9 +2991,9 @@ ul#tag-list .tag-input {
 }
 .list-creation section h3 {
   /*APRIL FOOLS*/
-  color: #20012e;
+  /*   color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
 }
 @media screen and (max-width: 43.75em) {
   .list-creation section {
@@ -3010,9 +3006,9 @@ ul#tag-list .tag-input {
 }
 .list-creation .category:checked ~ label {
   /*APRIL FOOLS*/
-  background: #20012e;
+  /* background: #20012e; */
   /*STANDARD*/
-  /*background: #6f4993;*/
+  background: #6f4993;
   color: white;
 }
 .list-creation .category + label {
@@ -3027,9 +3023,9 @@ ul#tag-list .tag-input {
   border-radius: 2px;
   text-align: center;
   /*APRIL FOOLS*/
-  color: #20012e;
+  /* color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
   letter-spacing: 1px;
   font-weight: bold;
   display: inline-block;
@@ -3044,9 +3040,9 @@ ul#tag-list .tag-input {
 }
 .list-creation .submit {
   /*APRIL FOOLS*/
-  background: #20012e;
+  /* background: #20012e; */
   /*STANDARD*/
-  /*background: #6f4993;*/
+  background: #6f4993;
   border-radius: 2px;
   color: #fff;
   display: inline-block;
@@ -3137,9 +3133,9 @@ ul#tag-list .tag-input {
   text-align: center;
   margin-bottom: 3rem;
   /*APRIL FOOLS*/
-  color: #20012e;
+  /* color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
   font-size: 4em;
 }
 @media screen and (max-width: 43.75em) {
@@ -3424,7 +3420,7 @@ nav {
   width: 100%;
   *zoom: 1;
   /*APRIL FOOL'S*/
-  background: linear-gradient(
+  /* background: linear-gradient(
     to left,
     #fea3aa,
     #f8b88b,
@@ -3432,9 +3428,9 @@ nav {
     #baed91,
     #b2cefe,
     #f2a2e8
-  );
+  ); */
   /*STANDARD*/
-  /*background: #282e42;*/
+  background: #282e42;
   padding: 0;
 }
 nav:before,
@@ -3475,9 +3471,9 @@ nav li:last-child {
 }
 nav a {
   /*APRIL FOOL'S*/
-  color: #20012e;
+  /*  color: #20012e; */
   /*STANDARD*/
-  /*color: #fcfcfc;*/
+  color: #fcfcfc;
   font-weight: 600;
   letter-spacing: 1px;
   font-size: 0.75em;
@@ -3487,18 +3483,18 @@ nav a {
 }
 nav a:visited {
   /*APRIL FOOL'S*/
-  color: #20012e;
+  /* color: #20012e; */
   /*STANDARD*/
-  /*color: #fcfcfc;*/
+  color: #fcfcfc;
 }
 nav a:active,
 nav a:visited,
 nav a:focus {
   opacity: 0.6;
   /*APRIL FOOL'S*/
-  color: #20012e;
+  /* color: #20012e; */
   /*STANDARD*/
-  /*color: #fcfcfc;*/
+  color: #fcfcfc;
 }
 nav .nav-left-container {
   float: left;
@@ -3535,7 +3531,7 @@ nav #nav-menu-button {
 }
 footer {
   /*APRIL FOOL'S*/
-  background: linear-gradient(
+  /*   background: linear-gradient(
     to left,
     #fea3aa,
     #f8b88b,
@@ -3543,9 +3539,9 @@ footer {
     #baed91,
     #b2cefe,
     #f2a2e8
-  );
+  ); */
   /*STANDARD*/
-  /*background: #282e42;*/
+  background: #282e42;
   color: #fcfcfc;
   height: 6rem;
   position: absolute;
@@ -3577,9 +3573,9 @@ footer section small {
   user-select: none;
   text-align: center;
   /*APRIL FOOL'S*/
-  color: #20012e;
+  /* color: #20012e; */
   /*STANDARD*/
-  /*color: white;*/
+  color: white;
   float: left;
   display: block;
   margin-right: 2.3576515979%;
@@ -3697,9 +3693,9 @@ footer section small a {
 .login header h1 {
   font-weight: lighter;
   /*APRIL FOOLS*/
-  color: #20012e;
+  /* color: #20012e; */
   /*STANDARD*/
-  /*color: #6f4993;*/
+  color: #6f4993;
   margin-bottom: 1rem;
 }
 .account form,
