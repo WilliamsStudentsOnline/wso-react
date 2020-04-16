@@ -23,7 +23,7 @@ const EphmatchHome = ({ token }) => {
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
   const [ephmatchers, updateEphmatchers] = useState([]);
-  const [sort, updateSort] = useState("new"); // TODO(CORONA): was "alphabetical" but changing to create surge of craziness for classes cancelled
+  const [sort, updateSort] = useState("recommended");
 
   useEffect(() => {
     let isMounted = true;
@@ -83,6 +83,7 @@ const EphmatchHome = ({ token }) => {
     } else if (number === 1 && total - (page + 1) * perPage > 0) {
       updatePage(page + 1);
     }
+    window.scrollTo(0, 0);
   };
 
   // Handles selection of page
@@ -114,9 +115,14 @@ const EphmatchHome = ({ token }) => {
                   onChange={(event) => {
                     updateSort(event.target.value);
                   }}
-                  options={["Newest First", "Alphabetical (A-Z)"]}
+                  options={[
+                    "Recommended",
+                    "Most Active",
+                    "Newest",
+                    "Alphabetical (A-Z)",
+                  ]}
                   value={sort}
-                  valueList={["new", "alphabetical"]}
+                  valueList={["recommended", "updated", "new", "alphabetical"]}
                   style={{
                     display: "inline",
                     margin: "5px 0px 5px 20px",
