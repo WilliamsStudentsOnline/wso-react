@@ -4,16 +4,19 @@ import PropTypes from "prop-types";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { doUpdateToken, doUpdateUser, doUpdateRemember } from "../actions/auth";
+import {
+  doUpdateToken,
+  doUpdateUser,
+  doUpdateRemember,
+  doUpdateAPI,
+} from "../actions/auth";
 import { actions } from "redux-router5";
 
 // External imports
-import { getToken } from "../api/auth";
-import { getUser } from "../api/users";
-import { checkAndHandleError } from "../lib/general";
-import jwtDecode from "jwt-decode";
+import { SimpleAuthentication } from "wso-api-client";
+import { getAPI } from "../selectors/auth";
 
-const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
+const Login = ({ navigateTo, updateUser, updateRemember, api, updateAPI }) => {
   const [unixID, setUnix] = useState("");
   const [password, setPassword] = useState("");
   const [errors, updateErrors] = useState([]);
@@ -33,26 +36,22 @@ const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
       return;
     }
 
-    const response = await getToken(unixID, password);
-
-    if (checkAndHandleError(response)) {
-      const newToken = response.data.data.token;
-      const decoded = jwtDecode(newToken);
-      const userResponse = await getUser(newToken, decoded.id);
-      if (checkAndHandleError(userResponse)) {
-        // Only update if both requests pass.
-        updateUser(userResponse.data.data);
-        updateToken(response.data.data);
-        updateRemember(remember);
-        navigateTo("home");
-      }
-    } else if (response.data.error.errors) {
-      updateErrors(response.data.error.errors);
-    } else {
-      updateErrors([response.data.error.message]);
+    try {
+      const token = await api.authService.loginV1({
+        unixID,
+        password,
+      });
+      const updatedAuth = new SimpleAuthentication(token.token);
+      const updatedAPI = api.updateAuth(updatedAuth);
+      const userResponse = await updatedAPI.userService.getUser("me");
+      updateUser(userResponse.data);
+      updateRemember(remember);
+      updateAPI(updatedAPI);
+      navigateTo("home");
+    } catch (error) {
+      // TODO
     }
   };
-
   return (
     <header>
       <div className="page-head">
@@ -68,7 +67,7 @@ const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
 
       <form onSubmit={submitHandler}>
         <div id="errors">
-          {errors ? errors.map((msg) => <p key={msg}>{msg}</p>) : null}
+          {errors && errors.map((msg) => <p key={msg}>{msg}</p>)}
         </div>
         <br />
         <input
@@ -106,17 +105,24 @@ const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
 };
 
 Login.propTypes = {
-  updateToken: PropTypes.func.isRequired,
+  api: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  updateUser: PropTypes.func.isRequired,
+  updateAPI: PropTypes.func.isRequired,
   updateRemember: PropTypes.func.isRequired,
+  updateUser: PropTypes.func.isRequired,
 };
 
+const mapStateToProps = () => {
+  return (state) => ({
+    api: getAPI(state),
+  });
+};
 const mapDispatchToProps = (dispatch) => ({
   updateToken: (response) => dispatch(doUpdateToken(response)),
   updateUser: (unixID) => dispatch(doUpdateUser(unixID)),
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
   updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
+  updateAPI: (api) => dispatch(doUpdateAPI(api)),
 });
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

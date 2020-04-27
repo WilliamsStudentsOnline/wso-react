@@ -1,5 +1,5 @@
 // React imports
-import React, { Suspense, lazy, useState } from "react";
+import React, { Suspense, lazy, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // Component Imports
@@ -10,14 +10,20 @@ import Homepage from "./Homepage";
 // Redux/routing
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getToken, getExpiry, getCurrUser } from "../selectors/auth";
-import { doRemoveCreds, doUpdateToken, doUpdateUser } from "../actions/auth";
+import { getToken, getExpiry, getCurrUser, getAPI } from "../selectors/auth";
+import {
+  doRemoveCreds,
+  doUpdateToken,
+  doUpdateUser,
+  doUpdateAPI,
+} from "../actions/auth";
 
 // Additional Imports
-import { updateTokenAPI, getCampusToken } from "../api/auth";
+import { updateTokenAPI } from "../api/auth";
 import { getUser } from "../api/users";
 import { getRandomWSO } from "../api/misc";
 import { checkAndHandleError } from "../lib/general";
+import { HandledAuthentication } from "wso-api-client";
 
 // More component imports
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
@@ -39,27 +45,69 @@ const DiscussionMain = lazy(() =>
 );
 
 const App = ({
-  route,
+  api,
+  currUser,
   navigateTo,
   removeCreds,
-  updateToken,
+  route,
   token,
-  currUser,
+  updateAPI,
+  updateToken,
   updateUser,
 }) => {
   const [didGetToken, updateDidGetToken] = useState(false);
 
-  const randomWSO = async () => {
-    if (document.title === "WSO: Williams Students Online") {
-      const wsoResponse = await getRandomWSO();
-
-      if (checkAndHandleError(wsoResponse)) {
-        document.title = `WSO: ${wsoResponse.data.data}`;
-      }
-      // Return default if there is an error in the response.
-      else document.title = "WSO: Williams Students Online";
-    }
+  // returns API based on IP address
+  const getIPAPI = async () => {
+    try {
+      const auth = await HandledAuthentication.createAuth(api.authService, {
+        useIP: true,
+      });
+      updateAPI(api.updateAuth(auth));
+      // eslint-disable-next-line no-empty
+    } catch {}
   };
+
+  useEffect(() => {
+    const randomWSO = async () => {
+      if (document.title === "WSO: Williams Students Online") {
+        const wsoResponse = await getRandomWSO();
+
+        if (checkAndHandleError(wsoResponse)) {
+          document.title = `WSO: ${wsoResponse.data.data}`;
+        }
+        // Return default if there is an error in the response.
+        else document.title = "WSO: Williams Students Online";
+      }
+    };
+
+    // TODO update the case where there is a token
+    // Refreshes the token
+    const initialize = async () => {
+      if (token && didGetToken) return;
+
+      if (token && !didGetToken) {
+        const updatedTokenResponse = await updateTokenAPI(token);
+        updateDidGetToken(true);
+        if (checkAndHandleError(updatedTokenResponse)) {
+          updateToken(updatedTokenResponse.data.data);
+          const updatedUserResponse = await getUser(
+            updatedTokenResponse.data.data.token
+          );
+          if (checkAndHandleError(updatedUserResponse)) {
+            updateUser(updatedUserResponse.data.data);
+          }
+        }
+        return;
+      }
+
+      // If we're here, it must mean that the user is not authenticated.
+      await getIPAPI();
+    };
+
+    initialize();
+    randomWSO();
+  }, []);
 
   const mainBody = () => {
     const topRouteName = route.name.split(".")[0];
@@ -98,6 +146,7 @@ const App = ({
         // Remove credentials from localStorage, since after logging out the edits will be done in
         // sessionStorage instead.
         localStorage.removeItem("state");
+        getIPAPI();
         navigateTo("home");
         return null;
       case "403":
@@ -106,37 +155,6 @@ const App = ({
         return <FourOhFour />;
     }
   };
-
-  // Refreshes the token
-  const initialize = async () => {
-    if (token && didGetToken) return;
-
-    if (token && !didGetToken) {
-      const updatedTokenResponse = await updateTokenAPI(token);
-      updateDidGetToken(true);
-      if (checkAndHandleError(updatedTokenResponse)) {
-        updateToken(updatedTokenResponse.data.data);
-        const updatedUserResponse = await getUser(
-          updatedTokenResponse.data.data.token
-        );
-        if (checkAndHandleError(updatedUserResponse)) {
-          updateUser(updatedUserResponse.data.data);
-        }
-      }
-      return;
-    }
-
-    // If the token does not exist, get a token based on whether user is on campus.
-    const campusResponse = await getCampusToken();
-
-    if (checkAndHandleError(campusResponse)) {
-      updateToken(campusResponse.data.data);
-      updateUser(null);
-    }
-  };
-
-  initialize();
-  randomWSO();
 
   return (
     <Layout>
@@ -152,11 +170,14 @@ App.propTypes = {
   updateToken: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
   currUser: PropTypes.object,
+  api: PropTypes.object,
+  updateAPI: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
 };
 
 App.defaultProps = {
   currUser: null,
+  api: null,
 };
 
 const mapStateToProps = () => {
@@ -166,6 +187,7 @@ const mapStateToProps = () => {
     token: getToken(state),
     expiry: getExpiry(state),
     currUser: getCurrUser(state),
+    api: getAPI(state),
     ...routeNodeSelector(state),
   });
 };
@@ -175,6 +197,7 @@ const mapDispatchToProps = (dispatch) => ({
   removeCreds: () => dispatch(doRemoveCreds()),
   updateToken: (token) => dispatch(doUpdateToken(token)),
   updateUser: (user) => dispatch(doUpdateUser(user)),
+  updateAPI: (api) => dispatch(doUpdateAPI(api)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

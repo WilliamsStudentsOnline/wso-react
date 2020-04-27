@@ -25,7 +25,8 @@
     "router5-plugin-browser": "^7.0.2",
     "serialize-javascript": "2.1.1",
     "timeago.js": "^4.0.0-beta.2",
-    "typeface-source-sans-pro": "^0.0.75"
+    "typeface-source-sans-pro": "^0.0.75",
+    "wso-api-client": "ssh://git@github.com:WilliamsStudentsOnline/wso-api-client.git#cd83c01cdb980a0d5c8938bbe8592ecfa3986ed5"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",

@@ -38,12 +38,10 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-const persistedAuthState = loadState("state");
+// TODO look at this
+// const persistedAuthState = loadState("state");
 const persistedSchedulerOptions = loadState("schedulerOptions");
-const store = configureStore(
-  router,
-  Object.assign(persistedAuthState || {}, persistedSchedulerOptions)
-);
+const store = configureStore(router, { ...persistedSchedulerOptions });
 
 store.subscribe(
   throttle(() => {

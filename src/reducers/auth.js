@@ -3,9 +3,16 @@ import {
   UPDATE_USER,
   REMOVE_CREDS,
   UPDATE_REMEMBER,
+  UPDATE_API,
 } from "../constants/actionTypes";
+import { WSO, API, NoAuthentication } from "wso-api-client";
 
 import jwtDecode from "jwt-decode";
+
+// TODO edit this for prod
+const API_CLIENT = new WSO(
+  new API("http://localhost:8080", new NoAuthentication())
+);
 
 const INITIAL_STATE = {
   scope: [],
@@ -14,6 +21,7 @@ const INITIAL_STATE = {
   currUser: null, // Stores the user object.
   remember: false,
   tokenLevel: 0,
+  api: API_CLIENT,
 };
 
 // Method to get scopes.
@@ -51,6 +59,11 @@ const updateRemember = (state, action) => {
   return { ...state, remember: action.remember };
 };
 
+// Updates the API object used for API calls
+const updateAPI = (state, action) => {
+  return { ...state, api: action.api };
+};
+
 // Remove authentication credentials from storage
 const removeCreds = () => {
   return INITIAL_STATE;
@@ -66,6 +79,8 @@ function authReducer(state = INITIAL_STATE, action) {
       return removeCreds();
     case UPDATE_REMEMBER:
       return updateRemember(state, action);
+    case UPDATE_API:
+      return updateAPI(state, action);
     default:
       return state;
   }

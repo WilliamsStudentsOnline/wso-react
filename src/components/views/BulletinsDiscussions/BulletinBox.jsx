@@ -6,10 +6,7 @@ import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
-
-// API imports
-import { getBulletins, getDiscussions, getRides } from "../../../api/bulletins";
+import { getAPI } from "../../../selectors/auth";
 
 // Additional imports
 import { checkAndHandleError } from "../../../lib/general";
@@ -23,7 +20,7 @@ import {
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
 
-const BulletinBox = ({ token, typeWord }) => {
+const BulletinBox = ({ api, typeWord }) => {
   const [threads, updateThreads] = useState(null);
 
   // Converts the typeWord to the type of bulletin/discussion to be obtained.
@@ -43,36 +40,47 @@ const BulletinBox = ({ token, typeWord }) => {
     let loadParams = { limit: 5 };
 
     const loadDiscussions = async () => {
-      const discussionsResponse = await getDiscussions(token, loadParams);
+      const discussionsResponse = await api.bulletinService.listDiscussions(
+        loadParams
+      );
       if (checkAndHandleError(discussionsResponse)) {
-        updateThreads(discussionsResponse.data.data);
+        updateThreads(discussionsResponse.data);
       } else updateThreads([]);
     };
 
     const loadRides = async () => {
-      const ridesResponse = await getRides(token, loadParams);
+      const ridesResponse = await api.bulletinService.listRides(loadParams);
       if (checkAndHandleError(ridesResponse)) {
-        updateThreads(ridesResponse.data.data);
+        updateThreads(ridesResponse.data);
       } else updateThreads([]);
     };
 
     const loadBulletins = async () => {
-      loadParams = {
-        limit: 5,
-        type,
-      };
-      const bulletinsResponse = await getBulletins(token, loadParams);
-      if (checkAndHandleError(bulletinsResponse)) {
-        updateThreads(bulletinsResponse.data.data);
-      } else updateThreads([]);
+      try {
+        loadParams = {
+          limit: 5,
+          type,
+        };
+        const bulletinsResponse = await api.bulletinService.listBulletins(
+          loadParams
+        );
+        if (checkAndHandleError(bulletinsResponse)) {
+          updateThreads(bulletinsResponse.data);
+        } else updateThreads([]);
+
+        // eslint-disable-next-line no-empty
+      } catch (e) {}
     };
 
-    if (token !== "") {
-      if (type === discussionType) loadDiscussions();
-      else if (type === bulletinTypeRide) loadRides();
-      else loadBulletins();
-    }
-  }, [token, type]);
+    try {
+      if (api.isAuthenticated()) {
+        if (type === discussionType) loadDiscussions();
+        else if (type === bulletinTypeRide) loadRides();
+        else loadBulletins();
+      }
+      // eslint-disable-next-line no-empty
+    } catch (e) {}
+  }, [api, type]);
 
   const formatDate = (showDate) => {
     const options = {
@@ -191,14 +199,14 @@ const BulletinBox = ({ token, typeWord }) => {
 };
 
 BulletinBox.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   typeWord: PropTypes.string.isRequired,
 };
 
 BulletinBox.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
 });
 
 export default connect(mapStateToProps)(BulletinBox);
