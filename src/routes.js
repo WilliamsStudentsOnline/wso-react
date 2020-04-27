@@ -61,15 +61,6 @@ export default [
     ],
   },
   {
-    name: "ephcatch",
-    path: "/ephcatch",
-    children: [
-      { name: "optOut", path: "/opt-out" },
-      { name: "matches", path: "/matches" },
-      { name: "profile", path: "/profile" },
-    ],
-  },
-  {
     name: "ephmatch",
     path: "/ephmatch",
     children: [
