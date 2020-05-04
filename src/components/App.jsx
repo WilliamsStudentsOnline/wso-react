@@ -19,11 +19,7 @@ import {
 } from "../actions/auth";
 
 // Additional Imports
-import { updateTokenAPI } from "../api/auth";
-import { getUser } from "../api/users";
-import { getRandomWSO } from "../api/misc";
-import { checkAndHandleError } from "../lib/general";
-import { HandledAuthentication } from "wso-api-client";
+import { SimpleAuthentication } from "wso-api-client";
 
 // More component imports
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
@@ -59,10 +55,12 @@ const App = ({
   // returns API based on IP address
   const getIPAPI = async () => {
     try {
-      const auth = await HandledAuthentication.createAuth(api.authService, {
-        useIP: true,
-      });
-      updateAPI(api.updateAuth(auth));
+      const tokenResponse = await api.authService.loginV1({ useIP: true });
+      const newToken = tokenResponse.data;
+      const updatedAuth = new SimpleAuthentication(newToken);
+
+      updateAPI(api.updateAuth(updatedAuth));
+      updateToken(newToken);
       // eslint-disable-next-line no-empty
     } catch {}
   };
@@ -70,13 +68,12 @@ const App = ({
   useEffect(() => {
     const randomWSO = async () => {
       if (document.title === "WSO: Williams Students Online") {
-        const wsoResponse = await getRandomWSO();
-
-        if (checkAndHandleError(wsoResponse)) {
-          document.title = `WSO: ${wsoResponse.data.data}`;
+        try {
+          const wsoResponse = await api.miscService.getWords();
+          document.title = `WSO: ${wsoResponse.data}`;
+        } catch {
+          // eslint-disable-next-line no-empty
         }
-        // Return default if there is an error in the response.
-        else document.title = "WSO: Williams Students Online";
       }
     };
 
@@ -86,16 +83,20 @@ const App = ({
       if (token && didGetToken) return;
 
       if (token && !didGetToken) {
-        const updatedTokenResponse = await updateTokenAPI(token);
-        updateDidGetToken(true);
-        if (checkAndHandleError(updatedTokenResponse)) {
-          updateToken(updatedTokenResponse.data.data);
-          const updatedUserResponse = await getUser(
-            updatedTokenResponse.data.data.token
+        try {
+          const updatedTokenResponse = await api.authService.updateTokenAPI(
+            token
           );
-          if (checkAndHandleError(updatedUserResponse)) {
-            updateUser(updatedUserResponse.data.data);
-          }
+
+          updateDidGetToken(true);
+          updateToken(updatedTokenResponse.data);
+          const updatedUserResponse = await api.userService.getUser(
+            updatedTokenResponse.data.token
+          );
+
+          updateUser(updatedUserResponse.data);
+        } catch {
+          // eslint-disable-next-line no-empty
         }
         return;
       }
@@ -161,20 +162,19 @@ const App = ({
 };
 
 App.propTypes = {
-  route: PropTypes.object.isRequired,
+  api: PropTypes.object.isRequired,
+  currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
   removeCreds: PropTypes.func.isRequired,
-  updateToken: PropTypes.func.isRequired,
+  route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
-  currUser: PropTypes.object,
-  api: PropTypes.object,
   updateAPI: PropTypes.func.isRequired,
+  updateToken: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
 };
 
 App.defaultProps = {
   currUser: null,
-  api: null,
 };
 
 const mapStateToProps = () => {
