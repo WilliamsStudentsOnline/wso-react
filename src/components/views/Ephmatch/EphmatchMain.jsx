@@ -27,7 +27,7 @@ const EphmatchMain = ({ api, route, token, navigateTo, profile }) => {
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
       try {
-        const ownProfile = await api.ephmatchService.getSelfEphmatchProfile();
+        const ownProfile = await api.ephmatchService.getSelfProfile();
         if (isMounted) {
           updateEphmatchProfile(ownProfile.data);
         }
@@ -38,9 +38,7 @@ const EphmatchMain = ({ api, route, token, navigateTo, profile }) => {
     };
     const loadMatches = async () => {
       try {
-        const ephmatchersResponse = await api.ephmatchService.listEphmatchMatches(
-          token
-        );
+        const ephmatchersResponse = await api.ephmatchService.listMatches();
         updateMatches(ephmatchersResponse.data);
       } catch {
         // eslint-disable-next-line no-empty

@@ -64,7 +64,7 @@ const FactrakSurvey = ({ api, route, navigateTo }) => {
 
     try {
       if (edit) {
-        await api.factrakService.updateSurvey(surveyParams, survey.id);
+        await api.factrakService.updateSurvey(survey.id, surveyParams);
       } else {
         await api.factrakService.createSurvey(surveyParams);
       }

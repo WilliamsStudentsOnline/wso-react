@@ -15,7 +15,7 @@ const EphmatchMatch = ({ api }) => {
   useEffect(() => {
     const loadMatches = async () => {
       try {
-        const ephmatchersResponse = await api.ephmatchService.listEphmatchMatches();
+        const ephmatchersResponse = await api.ephmatchService.listMatches();
         updateMatches(ephmatchersResponse.data);
       } catch {
         // eslint-disable-next-line no-empty

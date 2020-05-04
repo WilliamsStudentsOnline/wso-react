@@ -17,7 +17,7 @@ const EphmatchOptOut = ({ api, navigateTo }) => {
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
       try {
-        const ownProfile = await api.ephmatchService.getSelfEphmatchProfile();
+        const ownProfile = await api.ephmatchService.getSelfProfile();
         if (isMounted) {
           updateOptOut(ownProfile.deleted);
         }
@@ -37,7 +37,7 @@ const EphmatchOptOut = ({ api, navigateTo }) => {
     event.preventDefault();
 
     try {
-      const response = await api.ephmatchService.deleteEphmatchProfile();
+      const response = await api.ephmatchService.deleteSelfProfile();
       // Update succeeded -> redirect them to main ephmatch page.
       navigateTo("ephmatch", { profile: response.data }, { reload: true });
     } catch {

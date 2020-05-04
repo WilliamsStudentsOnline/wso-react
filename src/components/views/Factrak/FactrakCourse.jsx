@@ -57,8 +57,8 @@ const FactrakCourse = ({ api, currUser, route, token }) => {
     const loadRatings = async () => {
       try {
         const ratingsResponse = await api.factrakService.getCourseRatings(
-          profID,
-          courseID
+          courseID,
+          profID
         );
         updateRatings(ratingsResponse.data);
       } catch {

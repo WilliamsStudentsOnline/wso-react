@@ -16,7 +16,7 @@ const DormtrakNeighborhood = ({ api, route }) => {
       const neighborhoodID = route.params.neighborhoodID;
 
       try {
-        const hoodResponse = await api.dormtrakService.getDormtrakNeighborhood(
+        const hoodResponse = await api.dormtrakService.getNeighborhood(
           neighborhoodID
         );
         updateHoodInfo(hoodResponse.data);

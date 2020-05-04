@@ -16,7 +16,7 @@ const DormtrakRanking = ({ api }) => {
   useEffect(() => {
     const loadRankings = async () => {
       try {
-        const rankingsResponse = await api.dormtrakService.getDormtrakRankings();
+        const rankingsResponse = await api.dormtrakService.getRankings();
         updateDormsInfo(rankingsResponse.data);
       } catch {
         // eslint-disable-next-line no-empty

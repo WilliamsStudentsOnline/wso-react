@@ -22,7 +22,7 @@ const DormtrakHome = ({ api, currUser }) => {
         commented: true,
       };
       try {
-        const dormReviewResponse = await api.dormtrakService.listDormtrakDormReviews(
+        const dormReviewResponse = await api.dormtrakService.listReviews(
           queryParams
         );
         updateReviews(dormReviewResponse.data);

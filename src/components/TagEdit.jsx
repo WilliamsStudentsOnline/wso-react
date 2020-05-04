@@ -19,13 +19,11 @@ const TagEdit = ({ api, tags, updateTags, updateErrors }) => {
   const tagAutocomplete = async (event) => {
     updateNewTag(event.target.value);
     try {
-      const tagResponse = await api.autocompleteService.autocompleteTags(
-        event.target.value
+      const tagResponse = await api.autocompleteService.autocompleteTag(
+        event.target.value,
+        5
       );
-      let newSuggestions = tagResponse.data;
-      if (newSuggestions.length > 5) {
-        newSuggestions = newSuggestions.slice(0, 5);
-      }
+      const newSuggestions = tagResponse.data;
       setSuggestions(newSuggestions);
     } catch {
       // eslint-disable-next-line no-empty

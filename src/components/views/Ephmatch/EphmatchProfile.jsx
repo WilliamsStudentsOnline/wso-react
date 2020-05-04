@@ -25,7 +25,7 @@ const EphmatchProfile = ({ api, navigateTo }) => {
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
       try {
-        const ownProfile = await api.ephmatchService.getSelfEphmatchProfile();
+        const ownProfile = await api.ephmatchService.getSelfProfile();
 
         if (isMounted) {
           const ephmatchProfile = ownProfile.data;
@@ -55,11 +55,11 @@ const EphmatchProfile = ({ api, navigateTo }) => {
 
     try {
       // Update the profile.
-      await api.ephmatchService.updateEphmatchProfile(params);
+      await api.ephmatchService.updateSelfProfile(params);
 
       // Update Photos
       if (photo) {
-        await api.userService.putCurrUserPhoto(photo);
+        await api.userService.updateUserPhoto("me", photo);
       }
       // Update succeeded -> redirect them to main ephmatch page.
       navigateTo("ephmatch");

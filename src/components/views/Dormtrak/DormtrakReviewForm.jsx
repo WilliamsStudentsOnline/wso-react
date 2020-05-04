@@ -54,12 +54,9 @@ const DormtrakReviewForm = ({ api, route, navigateTo, currUser }) => {
 
     try {
       if (edit) {
-        await api.dormtrakService.patchDormtrakDormReview(
-          reviewParams,
-          review.id
-        );
+        await api.dormtrakService.updateReview(review.id, reviewParams);
       } else {
-        await api.dormtrakService.postDormtrakDormReview(reviewParams);
+        await api.dormtrakService.createReview(reviewParams);
       }
       navigateTo("dormtrak");
     } catch (error) {
@@ -72,11 +69,9 @@ const DormtrakReviewForm = ({ api, route, navigateTo, currUser }) => {
   useEffect(() => {
     const loadReview = async (reviewID) => {
       try {
-        const reviewResponse = await api.dormtrakService.getDormtrakDormReview(
-          reviewID
-        );
+        const reviewResponse = await api.dormtrakService.getReview(reviewID);
 
-        const reviewData = reviewResponse.data.data;
+        const reviewData = reviewResponse.data;
 
         updateComment(reviewData.comment);
         updateRoom(reviewData.dormRoom);

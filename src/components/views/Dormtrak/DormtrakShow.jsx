@@ -25,7 +25,7 @@ const DormtrakShow = ({ api, route, currUser }) => {
 
     const loadDorm = async () => {
       try {
-        const dormResponse = await api.dormtrakService.getDormtrakDorm(dormID);
+        const dormResponse = await api.dormtrakService.getDorm(dormID);
         updateDorm(dormResponse.data);
       } catch {
         // eslint-disable-next-line no-empty
@@ -35,7 +35,7 @@ const DormtrakShow = ({ api, route, currUser }) => {
     const loadDormReviews = async () => {
       const queryParams = { dormID, commented: true };
       try {
-        const dormReviewResponse = await api.dormtrakService.getDormtrakDormReviews(
+        const dormReviewResponse = await api.dormtrakService.listReviews(
           queryParams
         );
         updateReviews(dormReviewResponse.data);

@@ -1,7 +1,5 @@
 // import { actions } from "redux-router5";
-import { doUpdateToken, doUpdateUser } from "../actions/auth";
-import { updateTokenAPI } from "../api/auth";
-import { getUser } from "../api/users";
+// import { doUpdateToken, doUpdateUser } from "../actions/auth";
 import jwtDecode from "jwt-decode";
 
 // The current scopes
@@ -40,21 +38,21 @@ export const scopes = {
 };
 
 // Assumes a valid and error-free response
-export const checkAndUpdateUser = async (response) => {
-  if (response.data.updateToken) {
-    const token = window.store.getState().authState.token;
-    if (token === "") return;
-    const updateResponse = await updateTokenAPI(token);
-    if (updateResponse.status === 200) {
-      window.store.dispatch(doUpdateToken(updateResponse.data.data));
-      const decoded = jwtDecode(token);
-      const userResponse = await getUser(token, decoded.id);
-      if (userResponse.status === 200) {
-        window.store.dispatch(doUpdateUser(userResponse.data.data));
-      }
-    }
-  }
-};
+// export const checkAndUpdateUser = async (response) => {
+//   if (response.data.updateToken) {
+//     const token = window.store.getState().authState.token;
+//     if (token === "") return;
+//     const updateResponse = await updateTokenAPI(token);
+//     if (updateResponse.status === 200) {
+//       window.store.dispatch(doUpdateToken(updateResponse.data.data));
+//       const decoded = jwtDecode(token);
+//       const userResponse = await getUser(token, decoded.id);
+//       if (userResponse.status === 200) {
+//         window.store.dispatch(doUpdateUser(userResponse.data.data));
+//       }
+//     }
+//   }
+// };
 
 // Checks if a given token contains scopes
 export const containsScopes = (token, scopesToCheck) => {
@@ -87,22 +85,22 @@ export const getTokenLevel = (token) => {
 };
 
 // Returns true if there is no error and the status is OK
-export const checkAndHandleError = (response, token = "") => {
-  if (response && response.status) {
-    switch (response.status) {
-      case 200: // GET request succeded
-      case 201: // PATCH request updated
-        checkAndUpdateUser(response, token);
-        return true;
-      case 500:
-        return false; // return store.dispatch(actions.navigateTo("500"));
-      default:
-        return false;
-    }
-  }
-  // handle error
-  return false;
-};
+// export const checkAndHandleError = (response, token = "") => {
+//   if (response && response.status) {
+//     switch (response.status) {
+//       case 200: // GET request succeded
+//       case 201: // PATCH request updated
+//         checkAndUpdateUser(response, token);
+//         return true;
+//       case 500:
+//         return false; // return store.dispatch(actions.navigateTo("500"));
+//       default:
+//         return false;
+//     }
+//   }
+//   // handle error
+//   return false;
+// };
 
 // Capitalize the first letter of the string.
 export const capitalize = (string) => {

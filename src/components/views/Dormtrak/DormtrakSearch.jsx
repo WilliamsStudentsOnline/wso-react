@@ -21,10 +21,8 @@ const DormtrakSearch = ({ api, route }) => {
       };
 
       try {
-        const dormsResponse = await api.dormtrakService.listDormtrakDorms(
-          queryParams
-        );
-        updateDorms(dormsResponse.data.data.sort((a, b) => a.name > b.name));
+        const dormsResponse = await api.dormtrakService.listDorms(queryParams);
+        updateDorms(dormsResponse.data.sort((a, b) => a.name > b.name));
       } catch {
         updateDorms([]);
       }

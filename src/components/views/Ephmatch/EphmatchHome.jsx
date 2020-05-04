@@ -30,7 +30,7 @@ const EphmatchHome = ({ api }) => {
       };
 
       try {
-        const ephmatchersResponse = await api.ephmatchService.getEphmatchProfiles(
+        const ephmatchersResponse = await api.ephmatchService.listProfiles(
           params
         );
 
@@ -58,13 +58,13 @@ const EphmatchHome = ({ api }) => {
 
     try {
       if (ephmatcher.liked) {
-        await api.ephmatchService.unlikeEphmatcher(ephmatcher.userID);
+        await api.ephmatchService.unlikeProfile(ephmatcher.userID);
         target.className = "ephmatch-select-link";
       } else {
-        await api.ephmatchService.likeEphmatcher(ephmatcher.userID);
+        await api.ephmatchService.likeProfile(ephmatcher.userID);
         target.className = "ephmatch-select-link ephmatch-selected";
       }
-      const updatedEphmatcher = await api.ephmatchService.getEphmatchProfile(
+      const updatedEphmatcher = await api.ephmatchService.getProfile(
         ephmatcher.userID
       );
 

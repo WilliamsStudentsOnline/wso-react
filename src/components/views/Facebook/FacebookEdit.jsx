@@ -31,7 +31,7 @@ const FacebookEdit = ({ api, currUser, navigateTo, updateUser }) => {
     // We need to load tags because tag updating happens with each "Add Tag" button press.
     const loadTags = async () => {
       try {
-        const userResponse = await api.userService.getUser();
+        const userResponse = await api.userService.getUser("me");
         const currTags = userResponse.data.tags;
         updateTags(currTags.map((tag) => tag.name));
       } catch (error) {

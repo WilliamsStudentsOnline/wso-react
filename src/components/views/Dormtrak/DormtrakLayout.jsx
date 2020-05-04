@@ -17,7 +17,7 @@ const DormtrakLayout = ({ api, children, currUser, navigateTo }) => {
   useEffect(() => {
     const loadRankings = async () => {
       try {
-        const neighborhoodsResponse = await api.dormtrakService.getDormtrakNeighborhoods();
+        const neighborhoodsResponse = await api.dormtrakService.listNeighborhoods();
         updateNeighborhoods(neighborhoodsResponse.data);
       } catch {
         // eslint-disable-next-line no-empty

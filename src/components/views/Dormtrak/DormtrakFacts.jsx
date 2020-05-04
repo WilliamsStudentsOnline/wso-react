@@ -12,9 +12,7 @@ const DormtrakFacts = ({ api, dorm }) => {
   useEffect(() => {
     const loadFacts = async () => {
       try {
-        const factResponse = await api.dormtrakService.listDormtrakDormFacts(
-          dorm.id
-        );
+        const factResponse = await api.dormtrakService.getDormFacts(dorm.id);
 
         updateFacts(factResponse.data);
       } catch {

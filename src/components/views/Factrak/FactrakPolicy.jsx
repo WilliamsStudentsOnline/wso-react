@@ -25,7 +25,7 @@ const FactrakPolicy = ({ api, currUser, navigateTo, updateUser }) => {
     };
 
     try {
-      const response = await api.userService.patchCurrUser(updateParams);
+      const response = await api.userService.updateUser("me", updateParams);
       updateUser(response.data);
       navigateTo("factrak");
     } catch {

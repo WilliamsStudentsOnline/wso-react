@@ -84,15 +84,13 @@ const App = ({
 
       if (token && !didGetToken) {
         try {
-          const updatedTokenResponse = await api.authService.updateTokenAPI(
+          const updatedTokenResponse = await api.authService.updateTokenV1(
             token
           );
 
           updateDidGetToken(true);
           updateToken(updatedTokenResponse.data);
-          const updatedUserResponse = await api.userService.getUser(
-            updatedTokenResponse.data.token
-          );
+          const updatedUserResponse = await api.userService.getUser("me");
 
           updateUser(updatedUserResponse.data);
         } catch {

@@ -4,20 +4,13 @@ import PropTypes from "prop-types";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser, getToken } from "../../../selectors/auth";
+import { getAPI, getCurrUser } from "../../../selectors/auth";
 import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
 
-const FactrakLayout = ({
-  api,
-  children,
-  currUser,
-  navigateTo,
-  token,
-  route,
-}) => {
+const FactrakLayout = ({ api, children, currUser, navigateTo, route }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -38,7 +31,6 @@ const FactrakLayout = ({
 
     try {
       const factrakResponse = await api.autocompleteService.autocompleteFactrak(
-        token,
         query
       );
 
@@ -197,7 +189,6 @@ FactrakLayout.propTypes = {
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
 };
 
 FactrakLayout.defaultProps = {};
@@ -208,7 +199,6 @@ const mapStateToProps = () => {
   return (state) => ({
     api: getAPI(state),
     currUser: getCurrUser(state),
-    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };
