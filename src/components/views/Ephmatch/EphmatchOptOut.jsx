@@ -4,18 +4,11 @@ import PropTypes from "prop-types";
 
 // Redux/routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
-// Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import {
-  getSelfEphmatchProfile,
-  deleteEphmatchProfile,
-} from "../../../api/ephmatch";
-
 // Page created to handle both opting in and out.
-const EphmatchOptOut = ({ token, navigateTo }) => {
+const EphmatchOptOut = ({ api, navigateTo }) => {
   // Note that this is different from Ephcatch
   const [optOut, updateOptOut] = useState(false);
 
@@ -23,9 +16,13 @@ const EphmatchOptOut = ({ token, navigateTo }) => {
     let isMounted = true;
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
-      const ownProfile = await getSelfEphmatchProfile(token);
-      if (checkAndHandleError(ownProfile) && isMounted) {
-        updateOptOut(ownProfile.data.deleted);
+      try {
+        const ownProfile = await api.ephmatchService.getSelfEphmatchProfile();
+        if (isMounted) {
+          updateOptOut(ownProfile.deleted);
+        }
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
@@ -34,16 +31,17 @@ const EphmatchOptOut = ({ token, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [token]);
+  }, [api]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    const response = await deleteEphmatchProfile(token);
-
-    // Update succeeded -> redirect them to main ephmatch page.
-    if (checkAndHandleError(response)) {
-      navigateTo("ephmatch", { profile: response.data.data }, { reload: true });
+    try {
+      const response = await api.ephmatchService.deleteEphmatchProfile();
+      // Update succeeded -> redirect them to main ephmatch page.
+      navigateTo("ephmatch", { profile: response.data }, { reload: true });
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
@@ -89,14 +87,14 @@ const EphmatchOptOut = ({ token, navigateTo }) => {
 };
 
 EphmatchOptOut.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
 EphmatchOptOut.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

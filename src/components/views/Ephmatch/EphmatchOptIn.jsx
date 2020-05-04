@@ -6,16 +6,13 @@ import EphmatchForm from "./EphmatchForm";
 
 // Redux/routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
 // Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import { createEphmatchProfile } from "../../../api/ephmatch";
-import { getUser } from "../../../api/users";
 
 // Page created to handle both opting in and out.
-const EphmatchOptIn = ({ token, navigateTo }) => {
+const EphmatchOptIn = ({ api, navigateTo }) => {
   // Note that this is different from Ephcatch
   const [optIn, updateOptIn] = useState(null);
   const [description, updateDescription] = useState("");
@@ -26,9 +23,13 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
     let isMounted = true;
 
     const loadUserInfo = async () => {
-      const ownProfile = await getUser(token);
-      if (checkAndHandleError(ownProfile) && isMounted) {
-        updateUserInfo(ownProfile.data.data);
+      try {
+        const ownProfile = await api.userService.getUser("me");
+        if (isMounted) {
+          updateUserInfo(ownProfile.data);
+        }
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
@@ -37,17 +38,20 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [token]);
+  }, [api]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
 
     const params = { description, matchMessage, gender: "" };
-    const response = await createEphmatchProfile(token, params);
 
-    // Update succeeded -> redirect them to main ephmatch page.
-    if (checkAndHandleError(response)) {
+    try {
+      await api.ephmatchService.createEphmatchProfile(params);
+
+      // Update succeeded -> redirect them to main ephmatch page.
       navigateTo("ephmatch", null, { reload: true });
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
@@ -80,9 +84,9 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
             <h3>Create your Ephmatch Profile</h3>
             <div className="ephmatch-sample-profile">
               <Ephmatcher
+                api={api}
                 ephmatcherProfile={dummyEphmatchProfile}
                 ephmatcher={userInfo}
-                token={token}
               />
             </div>
             <p>
@@ -102,14 +106,14 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
 };
 
 EphmatchOptIn.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
 EphmatchOptIn.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

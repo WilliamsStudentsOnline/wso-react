@@ -2,11 +2,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-// External imports
-import { autocompleteTags } from "../api/autocomplete";
-import { putCurrUserTags } from "../api/users";
-import { checkAndHandleError } from "../lib/general";
-
 const TagRemove = ({ onClick }) => {
   return (
     <button type="button" onClick={onClick} className="tag-remove">
@@ -17,19 +12,23 @@ const TagRemove = ({ onClick }) => {
 
 TagRemove.propTypes = { onClick: PropTypes.func.isRequired };
 
-const TagEdit = ({ token, tags, updateTags, updateErrors }) => {
+const TagEdit = ({ api, tags, updateTags, updateErrors }) => {
   const [newTag, updateNewTag] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   const tagAutocomplete = async (event) => {
     updateNewTag(event.target.value);
-    const tagResponse = await autocompleteTags(token, event.target.value);
-    if (checkAndHandleError(tagResponse)) {
-      let newSuggestions = tagResponse.data.data;
+    try {
+      const tagResponse = await api.autocompleteService.autocompleteTags(
+        event.target.value
+      );
+      let newSuggestions = tagResponse.data;
       if (newSuggestions.length > 5) {
         newSuggestions = newSuggestions.slice(0, 5);
       }
       setSuggestions(newSuggestions);
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
@@ -39,14 +38,13 @@ const TagEdit = ({ token, tags, updateTags, updateErrors }) => {
       tags: updatedTags,
     };
 
-    const tagResponse = await putCurrUserTags(token, params);
-
-    if (checkAndHandleError(tagResponse)) {
+    try {
+      await api.userService.updateCurrUserTags(params);
       updateTags(updatedTags);
       updateNewTag("");
       updateErrors([]);
-    } else {
-      updateErrors([tagResponse.data.error.message]);
+    } catch (error) {
+      updateErrors(error.message);
     }
   };
 
@@ -130,7 +128,7 @@ const TagEdit = ({ token, tags, updateTags, updateErrors }) => {
 };
 
 TagEdit.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string),
   updateTags: PropTypes.func.isRequired,
   updateErrors: PropTypes.func.isRequired,

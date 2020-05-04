@@ -8,19 +8,11 @@ import EphmatchForm from "./EphmatchForm";
 
 // Redux/routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 import { actions } from "redux-router5";
 
-// Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import {
-  getSelfEphmatchProfile,
-  updateEphmatchProfile,
-} from "../../../api/ephmatch";
-import { putCurrUserPhoto } from "../../../api/users";
-
-const EphmatchProfile = ({ token, navigateTo }) => {
+const EphmatchProfile = ({ api, navigateTo }) => {
   const [profile, updateProfile] = useState(null);
   const [description, updateDescription] = useState("");
   const [matchMessage, updateMatchMessage] = useState("");
@@ -32,14 +24,19 @@ const EphmatchProfile = ({ token, navigateTo }) => {
     let isMounted = true;
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
-      const ownProfile = await getSelfEphmatchProfile(token);
-      if (checkAndHandleError(ownProfile) && isMounted) {
-        const ephmatchProfile = ownProfile.data.data;
+      try {
+        const ownProfile = await api.ephmatchService.getSelfEphmatchProfile();
 
-        updateProfile(ephmatchProfile);
-        updateDescription(ephmatchProfile.description);
-        updateTags(ephmatchProfile.user.tags.map((tag) => tag.name));
-        updateMatchMessage(ephmatchProfile.matchMessage);
+        if (isMounted) {
+          const ephmatchProfile = ownProfile.data;
+
+          updateProfile(ephmatchProfile);
+          updateDescription(ephmatchProfile.description);
+          updateTags(ephmatchProfile.user.tags.map((tag) => tag.name));
+          updateMatchMessage(ephmatchProfile.matchMessage);
+        }
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
@@ -48,35 +45,28 @@ const EphmatchProfile = ({ token, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [token]);
+  }, [api]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
 
     const newErrors = [];
-
     const params = { description, matchMessage };
 
-    // Update the profile.
-    const response = await updateEphmatchProfile(token, params);
+    try {
+      // Update the profile.
+      await api.ephmatchService.updateEphmatchProfile(params);
 
-    // Update Photos
-    if (photo) {
-      const fileResponse = await putCurrUserPhoto(token, photo);
-
-      if (!checkAndHandleError(fileResponse)) {
-        newErrors.push(fileResponse.data.error.message);
+      // Update Photos
+      if (photo) {
+        await api.userService.putCurrUserPhoto(photo);
       }
-    }
-
-    // Update succeeded -> redirect them to main ephmatch page.
-    if (checkAndHandleError(response)) {
+      // Update succeeded -> redirect them to main ephmatch page.
       navigateTo("ephmatch");
-    } else {
-      newErrors.push(response.data.error.message);
+    } catch (error) {
+      newErrors.push(error.message);
+      updateErrors(newErrors);
     }
-
-    updateErrors(newErrors);
   };
 
   const handlePhotoUpload = (event) => {
@@ -112,9 +102,9 @@ const EphmatchProfile = ({ token, navigateTo }) => {
             {profile && (
               <div className="ephmatch-sample-profile">
                 <Ephmatcher
+                  api={api}
                   ephmatcherProfile={dummyEphmatchProfile}
                   ephmatcher={dummyEphmatcher}
-                  token={token}
                   photo={photo && URL.createObjectURL(photo)}
                 />
               </div>
@@ -131,7 +121,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
               group? Contact us at wso-dev@wso.williams.edu
             </p>
             <TagEdit
-              token={token}
+              api={api}
               tags={tags}
               updateTags={updateTags}
               updateErrors={updateErrors}
@@ -145,14 +135,14 @@ const EphmatchProfile = ({ token, navigateTo }) => {
 };
 
 EphmatchProfile.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
 EphmatchProfile.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

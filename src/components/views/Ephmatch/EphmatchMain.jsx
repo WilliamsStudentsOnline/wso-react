@@ -10,21 +10,13 @@ import EphmatchOptIn from "./EphmatchOptIn";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { createRouteNodeSelector, actions } from "redux-router5";
-import { getToken } from "../../../selectors/auth";
+import { actions, createRouteNodeSelector } from "redux-router5";
+import { getAPI, getToken } from "../../../selectors/auth";
 
 // Additional Imports
-import {
-  scopes,
-  containsScopes,
-  checkAndHandleError,
-} from "../../../lib/general";
-import {
-  getSelfEphmatchProfile,
-  getEphmatchMatches,
-} from "../../../api/ephmatch";
+import { scopes, containsScopes } from "../../../lib/general";
 
-const EphmatchMain = ({ route, token, navigateTo, profile }) => {
+const EphmatchMain = ({ api, route, token, navigateTo, profile }) => {
   const [ephmatchProfile, updateEphmatchProfile] = useState(profile);
   const [hasQueriedProfile, updateHasQueriedProfile] = useState(false);
   const [matches, updateMatches] = useState([]);
@@ -34,16 +26,24 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
     let isMounted = true;
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
-      const ownProfile = await getSelfEphmatchProfile(token);
-      if (checkAndHandleError(ownProfile) && isMounted) {
-        updateEphmatchProfile(ownProfile.data.data);
+      try {
+        const ownProfile = await api.ephmatchService.getSelfEphmatchProfile();
+        if (isMounted) {
+          updateEphmatchProfile(ownProfile.data);
+        }
+      } catch {
+        // eslint-disable-next-line no-empty
       }
       updateHasQueriedProfile(true);
     };
     const loadMatches = async () => {
-      const ephmatchersResponse = await getEphmatchMatches(token);
-      if (checkAndHandleError(ephmatchersResponse)) {
-        updateMatches(ephmatchersResponse.data.data);
+      try {
+        const ephmatchersResponse = await api.ephmatchService.listEphmatchMatches(
+          token
+        );
+        updateMatches(ephmatchersResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
@@ -54,7 +54,7 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
     return () => {
       isMounted = false;
     };
-  }, [token, route]);
+  }, [api, route]);
 
   const hasValidEphmatchProfile = () => {
     return ephmatchProfile && !ephmatchProfile.deleted;
@@ -105,10 +105,11 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
 };
 
 EphmatchMain.propTypes = {
-  route: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   profile: PropTypes.object,
+  route: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
 EphmatchMain.defaultProps = { profile: null };
@@ -117,6 +118,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("ephmatch");
 
   return (state) => ({
+    api: getAPI(state),
     token: getToken(state),
     ...routeNodeSelector(state),
   });

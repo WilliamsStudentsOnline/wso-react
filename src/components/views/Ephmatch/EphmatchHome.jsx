@@ -6,19 +6,12 @@ import Select from "../../Select";
 
 // Redux/ routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 
 // Additional imports
-import {
-  getEphmatchProfiles,
-  likeEphmatcher,
-  unlikeEphmatcher,
-  getEphmatchProfile,
-} from "../../../api/ephmatch";
-import { checkAndHandleError } from "../../../lib/general";
 import Ephmatcher from "./Ephmatcher";
 
-const EphmatchHome = ({ token }) => {
+const EphmatchHome = ({ api }) => {
   const perPage = 20; // Number of results per page
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -35,44 +28,49 @@ const EphmatchHome = ({ token }) => {
         preload: ["tags"],
         sort,
       };
-      const EphmatchersResponse = await getEphmatchProfiles(token, params);
 
-      if (checkAndHandleError(EphmatchersResponse) && isMounted) {
-        updateEphmatchers(EphmatchersResponse.data.data);
-        updateTotal(EphmatchersResponse.data.paginationTotal);
+      try {
+        const ephmatchersResponse = await api.ephmatchService.getEphmatchProfiles(
+          params
+        );
+
+        if (isMounted) {
+          updateEphmatchers(ephmatchersResponse.data);
+          updateTotal(ephmatchersResponse.paginationTotal);
+        }
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
+
     loadNextEphmatchers(page);
 
     return () => {
       isMounted = false;
     };
-  }, [page, token, sort]);
+  }, [api, page, sort]);
 
   const selectEphmatcher = async (event, index) => {
     // Alternatively, use the classname to determine the method to be called.
-    // That way works but is more hacky, and very prone to user editing the code.
+    // That way works but is more hacky.
     const ephmatcher = ephmatchers[index];
     const target = event.currentTarget;
-    let ephmatchersResponse;
 
-    if (ephmatcher.liked) {
-      ephmatchersResponse = await unlikeEphmatcher(token, ephmatcher.userID);
-      target.className = "ephmatch-select-link";
-    } else {
-      ephmatchersResponse = await likeEphmatcher(token, ephmatcher.userID);
-      target.className = "ephmatch-select-link ephmatch-selected";
-    }
-
-    if (checkAndHandleError(ephmatchersResponse)) {
-      const updatedEphmatcher = await getEphmatchProfile(
-        token,
+    try {
+      if (ephmatcher.liked) {
+        await api.ephmatchService.unlikeEphmatcher(ephmatcher.userID);
+        target.className = "ephmatch-select-link";
+      } else {
+        await api.ephmatchService.likeEphmatcher(ephmatcher.userID);
+        target.className = "ephmatch-select-link ephmatch-selected";
+      }
+      const updatedEphmatcher = await api.ephmatchService.getEphmatchProfile(
         ephmatcher.userID
       );
 
-      if (checkAndHandleError(updatedEphmatcher)) {
-        ephmatchers.splice(index, 1, updatedEphmatcher.data.data);
-      }
+      ephmatchers.splice(index, 1, updatedEphmatcher.data);
+    } catch {
+      // eslint-disable-next-line
     }
   };
 
@@ -137,11 +135,11 @@ const EphmatchHome = ({ token }) => {
                   (ephmatcher, index) =>
                     ephmatcher.user && (
                       <Ephmatcher
+                        api={api}
                         ephmatcher={ephmatcher.user}
                         ephmatcherProfile={ephmatcher}
                         selectEphmatcher={selectEphmatcher}
                         index={index}
-                        token={token}
                         key={ephmatcher.id}
                       />
                     )
@@ -169,13 +167,13 @@ const EphmatchHome = ({ token }) => {
 };
 
 EphmatchHome.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
 };
 
 EphmatchHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
 });
 
 export default connect(mapStateToProps)(EphmatchHome);

@@ -4,26 +4,26 @@ import PropTypes from "prop-types";
 
 // Redux/routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 
 // Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import { getEphmatchMatches } from "../../../api/ephmatch";
 import Ephmatcher from "./Ephmatcher";
 
-const EphmatchMatch = ({ token }) => {
+const EphmatchMatch = ({ api }) => {
   const [matches, updateMatches] = useState([]);
 
   useEffect(() => {
     const loadMatches = async () => {
-      const ephmatchersResponse = await getEphmatchMatches(token);
-      if (checkAndHandleError(ephmatchersResponse)) {
-        updateMatches(ephmatchersResponse.data.data);
+      try {
+        const ephmatchersResponse = await api.ephmatchService.listEphmatchMatches();
+        updateMatches(ephmatchersResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     loadMatches();
-  }, [token]);
+  }, [api]);
 
   const renderMatches = () => {
     if (matches.length === 0)
@@ -37,9 +37,9 @@ const EphmatchMatch = ({ token }) => {
         <div className="ephmatch-results">
           {matches.map((match) => (
             <Ephmatcher
+              api={getAPI}
               ephmatcher={match.other}
               ephmatcherProfile={match.other.ephmatchProfile}
-              token={token}
               key={match.id}
             />
           ))}
@@ -51,12 +51,12 @@ const EphmatchMatch = ({ token }) => {
   return <article className="facebook-results">{renderMatches()}</article>;
 };
 
-EphmatchMatch.propTypes = { token: PropTypes.string.isRequired };
+EphmatchMatch.propTypes = { api: PropTypes.object.isRequired };
 
 EphmatchMatch.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
 });
 
 export default connect(mapStateToProps)(EphmatchMatch);

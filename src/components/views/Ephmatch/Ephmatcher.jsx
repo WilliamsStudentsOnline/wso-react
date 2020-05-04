@@ -3,15 +3,13 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // External imports
-import { checkAndHandleError } from "../../../lib/general";
-import { getUserLargePhoto } from "../../../api/users";
 import { ConnectedLink } from "react-router5";
 
 const Ephmatcher = ({
+  api,
   ephmatcher,
   selectEphmatcher,
   index,
-  token,
   ephmatcherProfile,
   photo,
 }) => {
@@ -19,9 +17,13 @@ const Ephmatcher = ({
 
   useEffect(() => {
     const loadPhoto = async () => {
-      const photoResponse = await getUserLargePhoto(token, ephmatcher.unixID);
-      if (checkAndHandleError(photoResponse)) {
+      try {
+        const photoResponse = await api.userService.getUserLargePhoto(
+          ephmatcher.unixID
+        );
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
@@ -30,7 +32,7 @@ const Ephmatcher = ({
       updateUserPhoto(photo);
     }
     // eslint-disable-next-line
-  }, [token, ephmatcher, photo]);
+  }, [api, ephmatcher, photo]);
 
   // Generates the user's class year
   const classYear = (year, offCycle) => {
@@ -115,11 +117,11 @@ const Ephmatcher = ({
 };
 
 Ephmatcher.propTypes = {
+  api: PropTypes.object.isRequired,
   ephmatcher: PropTypes.object,
   ephmatcherProfile: PropTypes.object.isRequired,
   selectEphmatcher: PropTypes.func,
   index: PropTypes.number,
-  token: PropTypes.string.isRequired,
   photo: PropTypes.string,
 };
 

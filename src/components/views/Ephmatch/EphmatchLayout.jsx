@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 
 // Additional imports
 import { Link } from "react-router5";
-
 import { format } from "timeago.js";
 
 const EphmatchLayout = ({ children, ephmatchEndDate, matches }) => {

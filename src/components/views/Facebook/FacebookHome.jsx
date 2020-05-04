@@ -4,18 +4,16 @@ import PropTypes from "prop-types";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 import { Link } from "react-router5";
 
 // Additional Imports
-import { getAllUsers } from "../../../api/users";
-import { checkAndHandleError } from "../../../lib/general";
 import { userTypeStudent } from "../../../constants/general";
 import PaginationButtons from "../../PaginationButtons";
 import FacebookGridUser from "./FacebookGridUser";
 
-const FacebookHome = ({ token, route, navigateTo }) => {
+const FacebookHome = ({ api, route, navigateTo }) => {
   const [results, updateResults] = useState(null);
   const perPage = 20;
   const [page, updatePage] = useState(0);
@@ -35,11 +33,12 @@ const FacebookHome = ({ token, route, navigateTo }) => {
       offset: perPage * newPage,
       preload: ["dorm", "office"],
     };
-    const resultsResponse = await getAllUsers(token, queryParams);
-    if (checkAndHandleError(resultsResponse)) {
-      updateResults(resultsResponse.data.data);
-      updateTotal(resultsResponse.data.paginationTotal || 0);
-    } else {
+    try {
+      const resultsResponse = await api.userService.listUsers(queryParams);
+
+      updateResults(resultsResponse.data);
+      updateTotal(resultsResponse.paginationTotal || 0);
+    } catch {
       updateResults([]);
       updateTotal(0);
     }
@@ -50,7 +49,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
     loadUsers(0);
     updatePage(0);
     // eslint-disable-next-line
-  }, [token, route.params.q]);
+  }, [api, route.params.q]);
 
   // Handles clicking of the next/previous page
   const clickHandler = (number) => {
@@ -129,10 +128,10 @@ const FacebookHome = ({ token, route, navigateTo }) => {
       <div className="grid-wrap">
         {results.map((user) => (
           <FacebookGridUser
-            key={user.id}
+            api={api}
             gridUser={user}
-            token={token}
             gridUserClassYear={classYear(user)}
+            key={user.id}
           />
         ))}
       </div>
@@ -177,7 +176,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
 };
 
 FacebookHome.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
@@ -188,7 +187,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("facebook");
 
   return (state) => ({
-    token: getToken(state),
+    api: getAPI(state),
     ...routeNodeSelector(state),
   });
 };

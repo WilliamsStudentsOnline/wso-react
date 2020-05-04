@@ -44,7 +44,7 @@ const FactrakComment = ({
     try {
       await api.factrakService.deleteSurvey(survey.id);
       updateDeleted(true);
-      const userResponse = await api.userService.getUser("me");
+      const userResponse = await api.userService.getUser();
       updateUser(userResponse.data);
     } catch {
       // eslint-disable-next-line no-empty
