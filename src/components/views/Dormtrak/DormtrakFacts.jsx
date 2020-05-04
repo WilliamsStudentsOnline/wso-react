@@ -6,23 +6,24 @@ import { Circle } from "../../Skeleton";
 // External Imports
 import { Chart } from "react-google-charts";
 
-// Additional imports
-import { getDormtrakDormFacts } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
-
-const DormtrakFacts = ({ dorm, token }) => {
+const DormtrakFacts = ({ api, dorm }) => {
   const [facts, updateFacts] = useState(null);
 
   useEffect(() => {
     const loadFacts = async () => {
-      const factResponse = await getDormtrakDormFacts(token, dorm.id);
-      if (checkAndHandleError(factResponse)) {
-        updateFacts(factResponse.data.data);
+      try {
+        const factResponse = await api.dormtrakService.listDormtrakDormFacts(
+          dorm.id
+        );
+
+        updateFacts(factResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     if (dorm && dorm.id) loadFacts();
-  }, [token, dorm]);
+  }, [api, dorm]);
 
   const classBreakdown = () => {
     if (!dorm || !facts) {
@@ -174,16 +175,14 @@ const DormtrakFacts = ({ dorm, token }) => {
           </div>
           <div>
             <strong>Biggest Double</strong>
-            {facts && facts.biggestDouble
-              ? `: ${facts.biggestDouble.number}`
-              : null}
+            {facts && facts.biggestDouble && `: ${facts.biggestDouble.number}`}
             <br />
           </div>
           <div>
             <strong>Smallest Double</strong>
-            {facts && facts.smallestDouble
-              ? `: ${facts.smallestDouble.number}`
-              : null}
+            {facts &&
+              facts.smallestDouble &&
+              `: ${facts.smallestDouble.number}`}
             <br />
           </div>
         </>
@@ -218,8 +217,8 @@ const DormtrakFacts = ({ dorm, token }) => {
 };
 
 DormtrakFacts.propTypes = {
+  api: PropTypes.object.isRequired,
   dorm: PropTypes.object,
-  token: PropTypes.string.isRequired,
 };
 
 DormtrakFacts.defaultProps = {

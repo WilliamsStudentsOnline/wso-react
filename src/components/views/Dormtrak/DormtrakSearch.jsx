@@ -4,15 +4,13 @@ import PropTypes from "prop-types";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 import { createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
-import { getDormtrakDorms } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const DormtrakSearch = ({ token, route }) => {
+const DormtrakSearch = ({ api, route }) => {
   const [dorms, updateDorms] = useState(null);
 
   useEffect(() => {
@@ -21,15 +19,19 @@ const DormtrakSearch = ({ token, route }) => {
         q: route.params.q ? route.params.q : undefined,
         preload: ["neighborhood"],
       };
-      const dormsResponse = await getDormtrakDorms(token, queryParams);
 
-      if (checkAndHandleError(dormsResponse)) {
+      try {
+        const dormsResponse = await api.dormtrakService.listDormtrakDorms(
+          queryParams
+        );
         updateDorms(dormsResponse.data.data.sort((a, b) => a.name > b.name));
-      } else updateDorms([]);
+      } catch {
+        updateDorms([]);
+      }
     };
 
     loadDorms();
-  }, [token, route.params.q]);
+  }, [api, route.params.q]);
 
   return (
     <article className="facebook-results">
@@ -78,7 +80,7 @@ const DormtrakSearch = ({ token, route }) => {
 };
 
 DormtrakSearch.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
 };
 
@@ -88,7 +90,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak.search");
 
   return (state) => ({
-    token: getToken(state),
+    api: getAPI(state),
     ...routeNodeSelector(state),
   });
 };

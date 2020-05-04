@@ -4,29 +4,28 @@ import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getAPI, getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
 // Additional imports
-import { getDormtrakNeighborhoods } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const DormtrakLayout = ({ children, token, currUser, navigateTo }) => {
+const DormtrakLayout = ({ api, children, currUser, navigateTo }) => {
   const [neighborhoods, updateNeighborhoods] = useState([]);
   const [query, updateQuery] = useState("");
 
   useEffect(() => {
     const loadRankings = async () => {
-      const neighborhoodsResponse = await getDormtrakNeighborhoods(token);
-
-      if (checkAndHandleError(neighborhoodsResponse)) {
-        updateNeighborhoods(neighborhoodsResponse.data.data);
+      try {
+        const neighborhoodsResponse = await api.dormtrakService.getDormtrakNeighborhoods();
+        updateNeighborhoods(neighborhoodsResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     loadRankings();
-  }, [token]);
+  }, [api]);
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -102,16 +101,16 @@ const DormtrakLayout = ({ children, token, currUser, navigateTo }) => {
 };
 
 DormtrakLayout.propTypes = {
+  api: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
 DormtrakLayout.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
   currUser: getCurrUser(state),
 });
 
@@ -120,7 +119,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DormtrakLayout);
+export default connect(mapStateToProps, mapDispatchToProps)(DormtrakLayout);

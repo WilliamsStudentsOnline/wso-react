@@ -5,27 +5,28 @@ import HoodTableRow, { HoodTableRowSkeleton } from "./HoodTableRow";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 import { createRouteNodeSelector } from "redux-router5";
 
-// Additional imports
-import { getDormtrakNeighborhood } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
-
-const DormtrakNeighborhood = ({ route, token }) => {
+const DormtrakNeighborhood = ({ api, route }) => {
   const [neighborhood, updateHoodInfo] = useState(null);
 
   useEffect(() => {
     const loadNeighborhood = async () => {
       const neighborhoodID = route.params.neighborhoodID;
-      const hoodResponse = await getDormtrakNeighborhood(token, neighborhoodID);
-      if (checkAndHandleError(hoodResponse)) {
-        updateHoodInfo(hoodResponse.data.data);
+
+      try {
+        const hoodResponse = await api.dormtrakService.getDormtrakNeighborhood(
+          neighborhoodID
+        );
+        updateHoodInfo(hoodResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     loadNeighborhood();
-  }, [token, route.params.neighborhoodID]);
+  }, [api, route.params.neighborhoodID]);
 
   return (
     <article className="facebook-results">
@@ -60,7 +61,7 @@ const DormtrakNeighborhood = ({ route, token }) => {
 };
 
 DormtrakNeighborhood.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
 };
 
@@ -70,7 +71,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak.neighborhoods");
 
   return (state) => ({
-    token: getToken(state),
+    api: getAPI(state),
     ...routeNodeSelector(state),
   });
 };

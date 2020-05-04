@@ -6,14 +6,12 @@ import DormtrakRecentComments from "./DormtrakRecentComments";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getAPI, getCurrUser } from "../../../selectors/auth";
 
 // Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import { getDormtrakDormReviews } from "../../../api/dormtrak";
 import { Link } from "react-router5";
 
-const DormtrakHome = ({ currUser, token }) => {
+const DormtrakHome = ({ api, currUser }) => {
   const [reviews, updateReviews] = useState(null);
 
   useEffect(() => {
@@ -23,18 +21,18 @@ const DormtrakHome = ({ currUser, token }) => {
         preload: ["dormRoom", "dorm"],
         commented: true,
       };
-      const dormReviewResponse = await getDormtrakDormReviews(
-        token,
-        queryParams
-      );
-
-      if (checkAndHandleError(dormReviewResponse)) {
-        updateReviews(dormReviewResponse.data.data);
+      try {
+        const dormReviewResponse = await api.dormtrakService.listDormtrakDormReviews(
+          queryParams
+        );
+        updateReviews(dormReviewResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     loadReviews();
-  }, [token]);
+  }, [api]);
 
   // Link to survey.
   const surveyLink = () => {
@@ -85,14 +83,14 @@ const DormtrakHome = ({ currUser, token }) => {
 };
 
 DormtrakHome.propTypes = {
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
 };
 
 DormtrakHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
   currUser: getCurrUser(state),
 });
 

@@ -9,22 +9,24 @@ import { getToken } from "../../../selectors/auth";
 
 // Additional imports
 import { Link } from "react-router5";
-import { getDormtrakDormFacts } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
 
-const HoodTableRow = ({ dorm, token }) => {
+const HoodTableRow = ({ api, dorm }) => {
   const [dormInfo, updateDormInfo] = useState(null);
 
   useEffect(() => {
     const loadDormInfo = async () => {
-      const dormResponse = await getDormtrakDormFacts(token, dorm.id);
-      if (checkAndHandleError(dormResponse)) {
-        updateDormInfo(dormResponse.data.data);
+      try {
+        const dormResponse = await api.dormtrakService.getDormtrakDormFacts(
+          dorm.id
+        );
+        updateDormInfo(dormResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     loadDormInfo();
-  }, [token, dorm]);
+  }, [api, dorm]);
 
   return (
     <tr key={dorm.id}>
@@ -45,8 +47,8 @@ const HoodTableRow = ({ dorm, token }) => {
 };
 
 HoodTableRow.propTypes = {
+  api: PropTypes.object.isRequired,
   dorm: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
 };
 
 const HoodTableRowSkeleton = () => {

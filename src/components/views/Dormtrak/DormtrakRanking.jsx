@@ -5,27 +5,26 @@ import { Line } from "../../Skeleton";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 
 // Additional imports
-import { getDormtrakRankings } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const DormtrakRanking = ({ token }) => {
+const DormtrakRanking = ({ api }) => {
   const [dormInfo, updateDormsInfo] = useState(null);
 
   useEffect(() => {
     const loadRankings = async () => {
-      const rankingsResponse = await getDormtrakRankings(token);
-
-      if (checkAndHandleError(rankingsResponse)) {
-        updateDormsInfo(rankingsResponse.data.data);
+      try {
+        const rankingsResponse = await api.dormtrakService.getDormtrakRankings();
+        updateDormsInfo(rankingsResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     loadRankings();
-  }, [token]);
+  }, [api]);
 
   const times = [0, 0, 0];
 
@@ -242,13 +241,13 @@ const DormtrakRanking = ({ token }) => {
 };
 
 DormtrakRanking.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
 };
 
 DormtrakRanking.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
 });
 
 export default connect(mapStateToProps)(DormtrakRanking);

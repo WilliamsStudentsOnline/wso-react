@@ -4,15 +4,11 @@ import PropTypes from "prop-types";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getCurrUser, getToken } from "../../../selectors/auth";
+import { getAPI, getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 import { doUpdateUser } from "../../../actions/auth";
 
-// Additional  imports
-import { patchCurrUser } from "../../../api/users";
-import { checkAndHandleError } from "../../../lib/general";
-
-const DormtrakPolicy = ({ currUser, token, navigateTo, updateUser }) => {
+const DormtrakPolicy = ({ api, currUser, navigateTo, updateUser }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
   const [didUpdateUser, toggleDidUpdateUser] = useState(false);
 
@@ -30,12 +26,12 @@ const DormtrakPolicy = ({ currUser, token, navigateTo, updateUser }) => {
     const updateParams = {
       hasAcceptedDormtrakPolicy: acceptPolicy,
     };
-    const response = await patchCurrUser(token, updateParams);
-
-    // PATCH succeeded, update user
-    if (checkAndHandleError(response)) {
-      updateUser(response.data.data);
+    try {
+      const response = await api.userService.updateUser("me", updateParams);
+      updateUser(response.data);
       toggleDidUpdateUser(true);
+    } catch {
+      // eslint-disable-next-line no-empty
     }
 
     return acceptPolicy;
@@ -46,7 +42,7 @@ const DormtrakPolicy = ({ currUser, token, navigateTo, updateUser }) => {
       <section>
         <article>
           <h3>Policy</h3>
-          {currUser.hasAcceptedDormtrakPolicy ? null : (
+          {!currUser.hasAcceptedDormtrakPolicy && (
             <p className="intro-paragraph">
               To proceed, read the policy below, then click Agree
             </p>
@@ -117,15 +113,15 @@ const DormtrakPolicy = ({ currUser, token, navigateTo, updateUser }) => {
 };
 
 DormtrakPolicy.propTypes = {
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired,
   updateUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
+  api: getAPI(state),
   currUser: getCurrUser(state),
-  token: getToken(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -133,7 +129,4 @@ const mapDispatchToProps = (dispatch) => ({
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DormtrakPolicy);
+export default connect(mapStateToProps, mapDispatchToProps)(DormtrakPolicy);

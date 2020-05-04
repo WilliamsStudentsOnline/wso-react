@@ -7,18 +7,16 @@ import DormtrakRecentComments from "./DormtrakRecentComments";
 import { Line, Photo, Paragraph } from "../../Skeleton";
 
 // Redux/ Routing imports
-import { getCurrUser, getToken } from "../../../selectors/auth";
+import { getAPI, getCurrUser } from "../../../selectors/auth";
 import { connect } from "react-redux";
 import { createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
-import { getDormtrakDorm, getDormtrakDormReviews } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
 import { bannerHelper } from "../../../lib/imageHelper";
 import { Link } from "react-router5";
 import { userTypeStudent } from "../../../constants/general";
 
-const DormtrakShow = ({ route, currUser, token }) => {
+const DormtrakShow = ({ api, route, currUser }) => {
   const [reviews, updateReviews] = useState(null);
   const [dorm, updateDorm] = useState(null);
 
@@ -26,26 +24,29 @@ const DormtrakShow = ({ route, currUser, token }) => {
     const dormID = route.params.dormID;
 
     const loadDorm = async () => {
-      const dormResponse = await getDormtrakDorm(token, dormID);
-      if (checkAndHandleError(dormResponse)) {
-        updateDorm(dormResponse.data.data);
+      try {
+        const dormResponse = await api.dormtrakService.getDormtrakDorm(dormID);
+        updateDorm(dormResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     const loadDormReviews = async () => {
       const queryParams = { dormID, commented: true };
-      const dormReviewResponse = await getDormtrakDormReviews(
-        token,
-        queryParams
-      );
-      if (checkAndHandleError(dormReviewResponse)) {
-        updateReviews(dormReviewResponse.data.data);
+      try {
+        const dormReviewResponse = await api.dormtrakService.getDormtrakDormReviews(
+          queryParams
+        );
+        updateReviews(dormReviewResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     loadDorm();
     loadDormReviews();
-  }, [token, route.params.dormID]);
+  }, [api, route.params.dormID]);
 
   const checkUserCommentRights = () => {
     if (!currUser || !currUser.dorm) return false;
@@ -88,7 +89,7 @@ const DormtrakShow = ({ route, currUser, token }) => {
   return (
     <div className="container">
       <aside className="sidebar">
-        <DormtrakFacts dorm={dorm || undefined} token={token} />
+        <DormtrakFacts dorm={dorm || undefined} api={api} />
         <hr />
 
         <section className="building-rooms">
@@ -120,8 +121,8 @@ const DormtrakShow = ({ route, currUser, token }) => {
 };
 
 DormtrakShow.propTypes = {
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
 };
 
@@ -131,8 +132,8 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak.dorms");
 
   return (state) => ({
+    api: getAPI(state),
     currUser: getCurrUser(state),
-    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };
