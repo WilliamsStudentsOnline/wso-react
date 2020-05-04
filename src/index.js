@@ -16,6 +16,7 @@ import { loadState, saveState } from "./loadState";
 // Router imports
 import { RouterProvider } from "react-router5";
 import configureRouter from "./create-router";
+import setUpRouterPermissions from "./router-permissions";
 
 // Serviceworker import
 import * as serviceWorker from "./serviceWorker";
@@ -61,6 +62,8 @@ store.subscribe(
     );
   }, 1000)
 );
+
+setUpRouterPermissions(router, store);
 
 const wrappedApp = (
   <Provider store={store}>

@@ -3,31 +3,34 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // React/Redux imports
-import { getCurrUser, getToken } from "../selectors/auth";
+import { getCurrUser, getToken, getAPI } from "../selectors/auth";
 import { connect } from "react-redux";
 
 // External imports
 // Connected Link is the same as link, except it re-renders on route changes
 import { Link, ConnectedLink } from "react-router5";
-import { checkAndHandleError, containsScopes, scopes } from "../lib/general";
-import { getUserThumbPhoto } from "../api/users";
 import { createRouteNodeSelector } from "redux-router5";
+import { containsScopes, scopes } from "../lib/general";
 
-const Nav = ({ currUser, token }) => {
+const Nav = ({ api, currUser, token }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
 
   useEffect(() => {
     const loadPhoto = async () => {
-      const photoResponse = await getUserThumbPhoto(token, currUser.unixID);
-      if (checkAndHandleError(photoResponse)) {
+      try {
+        const photoResponse = await api.userService.getUserThumbPhoto(
+          currUser.unixID
+        );
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
-    if (currUser && token && token !== "") loadPhoto();
+    if (currUser) loadPhoto();
     updateMenuVisibility(false);
-  }, [currUser, token]);
+  }, [api, currUser]);
 
   return (
     <nav>
@@ -120,6 +123,7 @@ const Nav = ({ currUser, token }) => {
 };
 
 Nav.propTypes = {
+  api: PropTypes.object.isRequired,
   // No isRequired because it must work for non-authenticated users too
   currUser: PropTypes.object,
   token: PropTypes.string,
@@ -131,6 +135,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
+    api: getAPI(state),
     currUser: getCurrUser(state),
     token: getToken(state),
     ...routeNodeSelector(state),

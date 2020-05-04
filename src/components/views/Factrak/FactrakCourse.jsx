@@ -86,7 +86,13 @@ const FactrakCourse = ({ api, currUser, route, token }) => {
     }
 
     loadProfs();
-  }, [token, route.params.course, route.params.profID, route.params.courseID]);
+  }, [
+    api,
+    token,
+    route.params.course,
+    route.params.profID,
+    route.params.courseID,
+  ]);
 
   // Generates the list of professors who teach the course
   const professorList = () => {

@@ -76,7 +76,7 @@ const FactrakProfessor = ({ api, currUser, route, token }) => {
     } else {
       updateSurveys([...Array(10)].map((_, id) => ({ id })));
     }
-  }, [route.params.professor, token, route.params.profID]);
+  }, [api, route.params.professor, route.params.profID, token]);
 
   if (!professor)
     return (

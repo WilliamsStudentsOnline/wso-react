@@ -10,7 +10,7 @@ import Homepage from "./Homepage";
 // Redux/routing
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getToken, getExpiry, getCurrUser, getAPI } from "../selectors/auth";
+import { getAPI, getExpiry, getToken } from "../selectors/auth";
 import {
   doRemoveCreds,
   doUpdateToken,
@@ -41,7 +41,6 @@ const DiscussionMain = lazy(() =>
 
 const App = ({
   api,
-  currUser,
   navigateTo,
   removeCreds,
   route,
@@ -56,13 +55,13 @@ const App = ({
   const getIPAPI = async () => {
     try {
       const tokenResponse = await api.authService.loginV1({ useIP: true });
-      const newToken = tokenResponse.data;
+      const newToken = tokenResponse.token;
       const updatedAuth = new SimpleAuthentication(newToken);
 
       updateAPI(api.updateAuth(updatedAuth));
       updateToken(newToken);
       // eslint-disable-next-line no-empty
-    } catch {}
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -105,6 +104,7 @@ const App = ({
 
     initialize();
     randomWSO();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const mainBody = () => {
@@ -126,11 +126,7 @@ const App = ({
       case "faq":
         return <FAQ />;
       case "login":
-        if (!currUser) {
-          return <Login />;
-        }
-        navigateTo("home");
-        return null;
+        return <Login />;
       case "ephmatch":
         return <EphmatchMain />;
       case "bulletins":
@@ -161,7 +157,6 @@ const App = ({
 
 App.propTypes = {
   api: PropTypes.object.isRequired,
-  currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
   removeCreds: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
@@ -171,18 +166,13 @@ App.propTypes = {
   updateUser: PropTypes.func.isRequired,
 };
 
-App.defaultProps = {
-  currUser: null,
-};
-
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
-    token: getToken(state),
-    expiry: getExpiry(state),
-    currUser: getCurrUser(state),
     api: getAPI(state),
+    expiry: getExpiry(state),
+    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };

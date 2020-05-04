@@ -53,7 +53,7 @@ const FactrakHome = ({ api, currUser, token }) => {
     }
 
     loadAreas();
-  }, [token]);
+  }, [api, token]);
 
   return (
     <article className="dormtrak">

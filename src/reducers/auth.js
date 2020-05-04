@@ -37,13 +37,13 @@ const parseToken = (token) => {
 // Updates the token in the store. Checking of a error-free response should be done before this
 // function call.
 const updateToken = (state, action) => {
-  const response = action.response;
-  const decoded = parseToken(response.token);
+  const token = action.token;
+  const decoded = parseToken(token);
 
   return {
     ...state,
     scope: decoded.scope,
-    token: response.token,
+    token,
     expiry: decoded.exp * 1000,
     tokenLevel: decoded.tokenLevel,
   };

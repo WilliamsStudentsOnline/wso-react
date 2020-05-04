@@ -26,7 +26,7 @@
     "serialize-javascript": "2.1.1",
     "timeago.js": "^4.0.0-beta.2",
     "typeface-source-sans-pro": "^0.0.75",
-    "wso-api-client": "ssh://git@github.com:WilliamsStudentsOnline/wso-api-client.git#cd83c01cdb980a0d5c8938bbe8592ecfa3986ed5"
+    "wso-api-client": "ssh://git@github.com:WilliamsStudentsOnline/wso-api-client.git#8c9e2b0d7f7a5387ac19e83352aaaff22e9713fc"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
@@ -53,7 +53,6 @@
     "react-test-renderer": "^16.8.6",
     "redux-logger": "^3.0.6",
     "typescript": "^3.7.2",
-    "webpack": "4.41.2",
     "webpack-bundle-analyzer": "^3.3.2"
   },
   "scripts": {

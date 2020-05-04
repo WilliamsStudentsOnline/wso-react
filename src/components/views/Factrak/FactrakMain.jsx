@@ -20,9 +20,9 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 import { getToken } from "../../../selectors/auth";
 
 // Additional Imports
-import { scopes, containsScopes, getTokenLevel } from "../../../lib/general";
+import { scopes, containsScopes } from "../../../lib/general";
 
-const FactrakMain = ({ route, token, navigateTo }) => {
+const FactrakMain = ({ route, token }) => {
   const factrakBody = () => {
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <FactrakHome />;
@@ -53,17 +53,12 @@ const FactrakMain = ({ route, token, navigateTo }) => {
 
   // Returns body only if the user has the respective scopes
   if (
-    containsScopes(token, [
+    !containsScopes(token, [
       scopes.ScopeFactrakFull,
       scopes.ScopeFactrakAdmin,
       scopes.ScopeFactrakLimited,
     ])
   ) {
-    return <FactrakLayout>{factrakBody()}</FactrakLayout>;
-  }
-
-  // Token level of 3 corresponds to an authenticated user.
-  if (getTokenLevel(token) > 2) {
     return (
       <FactrakLayout>
         <FactrakPolicy />
@@ -71,14 +66,12 @@ const FactrakMain = ({ route, token, navigateTo }) => {
     );
   }
 
-  navigateTo("login");
-  return null;
+  return <FactrakLayout>{factrakBody()}</FactrakLayout>;
 };
 
 FactrakMain.propTypes = {
   route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
-  navigateTo: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = () => {
@@ -94,7 +87,4 @@ const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FactrakMain);
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakMain);

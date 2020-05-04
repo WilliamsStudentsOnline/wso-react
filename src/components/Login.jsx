@@ -44,11 +44,12 @@ const Login = ({
     }
 
     try {
-      const token = await api.authService.loginV1({
+      const tokenResponse = await api.authService.loginV1({
         unixID,
         password,
       });
-      const updatedAuth = new SimpleAuthentication(token.token);
+      const token = tokenResponse.token;
+      const updatedAuth = new SimpleAuthentication(token);
       const updatedAPI = api.updateAuth(updatedAuth);
       const userResponse = await updatedAPI.userService.getUser("me");
       updateUser(userResponse.data);

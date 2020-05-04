@@ -34,28 +34,37 @@ const BulletinBox = ({ api, typeWord }) => {
 
   const type = linkMap.get(typeWord);
 
-  // Load the appropriate discussionns/bulletins
-  useEffect(async () => {
+  // Load the appropriate discussions/bulletins
+  useEffect(() => {
+    let isMounted = true;
     const loadParams = { limit: 5, type };
+
+    const getThreads = async () => {
+      let response;
+      if (type === discussionType) {
+        response = await api.bulletinService.listDiscussions(loadParams);
+      } else if (type === bulletinTypeRide) {
+        response = await api.bulletinService.listRides(loadParams);
+      } else {
+        response = await api.bulletinService.listBulletins(loadParams);
+      }
+      if (isMounted) {
+        updateThreads(response.data);
+      }
+    };
 
     try {
       if (api.isAuthenticated()) {
-        let response;
-
-        if (type === discussionType) {
-          response = await api.bulletinService.listDiscussions(loadParams);
-        } else if (type === bulletinTypeRide) {
-          response = await api.bulletinService.listRides(loadParams);
-        } else {
-          response = await api.bulletinService.listBulletins(loadParams);
-        }
-
-        updateThreads(response.data);
+        getThreads();
       }
     } catch (e) {
       // We aren't really expecting any errors here, unless the token is empty for some reason.
       updateThreads([]);
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [api, type]);
 
   const formatDate = (showDate) => {

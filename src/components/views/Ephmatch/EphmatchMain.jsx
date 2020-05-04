@@ -11,12 +11,9 @@ import EphmatchOptIn from "./EphmatchOptIn";
 // Redux/Routing imports
 import { connect } from "react-redux";
 import { actions, createRouteNodeSelector } from "redux-router5";
-import { getAPI, getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 
-// Additional Imports
-import { scopes, containsScopes } from "../../../lib/general";
-
-const EphmatchMain = ({ api, route, token, navigateTo, profile }) => {
+const EphmatchMain = ({ api, route, navigateTo, profile }) => {
   const [ephmatchProfile, updateEphmatchProfile] = useState(profile);
   const [hasQueriedProfile, updateHasQueriedProfile] = useState(false);
   const [matches, updateMatches] = useState([]);
@@ -90,16 +87,11 @@ const EphmatchMain = ({ api, route, token, navigateTo, profile }) => {
     }
   };
 
-  if (containsScopes(token, [scopes.ScopeEphmatch])) {
-    return (
-      <EphmatchLayout matches={matches} ephmatchEndDate={ephmatchEndDate}>
-        {EphmatchBody()}
-      </EphmatchLayout>
-    );
-  }
-
-  navigateTo("login");
-  return null;
+  return (
+    <EphmatchLayout matches={matches} ephmatchEndDate={ephmatchEndDate}>
+      {EphmatchBody()}
+    </EphmatchLayout>
+  );
 };
 
 EphmatchMain.propTypes = {
@@ -107,7 +99,6 @@ EphmatchMain.propTypes = {
   navigateTo: PropTypes.func.isRequired,
   profile: PropTypes.object,
   route: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
 };
 
 EphmatchMain.defaultProps = { profile: null };
@@ -117,7 +108,6 @@ const mapStateToProps = () => {
 
   return (state) => ({
     api: getAPI(state),
-    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };

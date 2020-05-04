@@ -11,13 +11,13 @@ import DormtrakReviewForm from "./DormtrakReviewForm";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { createRouteNodeSelector, actions } from "redux-router5";
+import { createRouteNodeSelector } from "redux-router5";
 import { getToken } from "../../../selectors/auth";
 
 // Additional Imports
-import { containsScopes, scopes, getTokenLevel } from "../../../lib/general";
+import { containsScopes, scopes } from "../../../lib/general";
 
-const DormtrakMain = ({ route, token, navigateTo }) => {
+const DormtrakMain = ({ route, token }) => {
   const dormtrakBody = () => {
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <DormtrakHome />;
@@ -41,31 +41,24 @@ const DormtrakMain = ({ route, token, navigateTo }) => {
   };
 
   if (
-    containsScopes(token, [
+    !containsScopes(token, [
       scopes.ScopeDormtrak,
       scopes.ScopeDormtrakWrite,
       scopes.ScopeAdminAll,
     ])
   ) {
-    return <DormtrakLayout>{dormtrakBody()}</DormtrakLayout>;
-  }
-
-  if (getTokenLevel(token) > 2) {
     return (
       <DormtrakLayout>
         <DormtrakPolicy />
       </DormtrakLayout>
     );
   }
-
-  navigateTo("login");
-  return null;
+  return <DormtrakLayout>{dormtrakBody()}</DormtrakLayout>;
 };
 
 DormtrakMain.propTypes = {
   route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
-  navigateTo: PropTypes.func.isRequired,
 };
 
 DormtrakMain.defaultProps = {};
@@ -79,11 +72,4 @@ const mapStateToProps = () => {
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DormtrakMain);
+export default connect(mapStateToProps)(DormtrakMain);

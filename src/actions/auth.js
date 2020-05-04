@@ -6,9 +6,9 @@ import {
   UPDATE_API,
 } from "../constants/actionTypes";
 
-const doUpdateToken = (response) => ({
+const doUpdateToken = (token) => ({
   type: UPDATE_TOKEN,
-  response,
+  token,
 });
 
 const doUpdateUser = (newUser) => ({
