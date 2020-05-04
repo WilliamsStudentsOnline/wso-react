@@ -5,14 +5,10 @@ import PropTypes from "prop-types";
 // Redux imports
 import { actions } from "redux-router5";
 import { connect } from "react-redux";
-import { getCurrUser, getToken } from "../../../selectors/auth";
+import { getCurrUser, getAPI } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 
-// Additional imports
-import { patchCurrUser } from "../../../api/users";
-import { checkAndHandleError } from "../../../lib/general";
-
-const FactrakPolicy = ({ currUser, navigateTo, token, updateUser }) => {
+const FactrakPolicy = ({ api, currUser, navigateTo, updateUser }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
 
   // Handles clicking of the accept policy checkbox
@@ -27,12 +23,13 @@ const FactrakPolicy = ({ currUser, navigateTo, token, updateUser }) => {
     const updateParams = {
       hasAcceptedFactrakPolicy: acceptPolicy,
     };
-    const response = await patchCurrUser(token, updateParams);
 
-    // PATCH succeeded, update user
-    if (checkAndHandleError(response)) {
-      updateUser(response.data.data);
+    try {
+      const response = await api.userService.patchCurrUser(updateParams);
+      updateUser(response.data);
       navigateTo("factrak");
+    } catch {
+      // eslint-disable-next-line no-empty
     }
 
     return acceptPolicy;
@@ -128,15 +125,15 @@ const FactrakPolicy = ({ currUser, navigateTo, token, updateUser }) => {
 };
 
 FactrakPolicy.propTypes = {
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired,
   updateUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
+  api: getAPI(state),
   currUser: getCurrUser(state),
-  token: getToken(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -144,7 +141,4 @@ const mapDispatchToProps = (dispatch) => ({
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FactrakPolicy);
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakPolicy);

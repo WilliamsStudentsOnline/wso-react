@@ -5,26 +5,17 @@ import "../../stylesheets/DatePicker.css";
 
 // Redux and routing imports
 import { connect } from "react-redux";
-import { getCurrUser, getToken } from "../../../selectors/auth";
+import { getCurrUser, getAPI } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
-import {
-  getBulletin,
-  patchBulletin,
-  postBulletin,
-  patchRide,
-  postRide,
-  getRide,
-} from "../../../api/bulletins";
-import { checkAndHandleError } from "../../../lib/general";
 import DatePicker from "react-date-picker";
 import {
   bulletinTypeRide,
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
 
-const BulletinForm = ({ token, currUser, route, navigateTo }) => {
+const BulletinForm = ({ api, currUser, navigateTo, route }) => {
   // For non-rides bulletins
   const [title, updateTitle] = useState("");
 
@@ -44,33 +35,35 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
     const loadBulletin = async () => {
       let bulletinResponse;
 
-      if (route.params.type === bulletinTypeRide) {
-        bulletinResponse = await getRide(token, route.params.bulletinID);
-      } else {
-        bulletinResponse = await getBulletin(token, route.params.bulletinID);
-      }
-
-      if (checkAndHandleError(bulletinResponse)) {
-        const bulletinData = bulletinResponse.data.data;
-
-        if (bulletinData.userID === currUser.id) {
-          updateBody(bulletinData.body);
-          if (route.params.type === bulletinTypeRide) {
-            updateSource(bulletinData.source);
-            updateDestination(bulletinData.destination);
-            updateOffer(bulletinData.offer);
-            updateStartDate(bulletinData.date);
-          } else {
-            updateTitle(bulletinData.title);
-            updateStartDate(bulletinData.startDate);
-          }
+      try {
+        if (route.params.type === bulletinTypeRide) {
+          bulletinResponse = await api.bulletinService.getRide(
+            route.params.bulletinID
+          );
         } else {
-          // User came to this page but is not original author of the post - must be
-          // a malicious attempt.
+          bulletinResponse = await api.bulletinService.getBulletin(
+            route.params.bulletinID
+          );
+        }
+
+        const bulletinData = bulletinResponse.data;
+
+        updateBody(bulletinData.body);
+        if (route.params.type === bulletinTypeRide) {
+          updateSource(bulletinData.source);
+          updateDestination(bulletinData.destination);
+          updateOffer(bulletinData.offer);
+          updateStartDate(bulletinData.date);
+        } else {
+          updateTitle(bulletinData.title);
+          updateStartDate(bulletinData.startDate);
+        }
+      } catch (error) {
+        // We're only expecting 403 errors here
+        if (error.errorCode === 403) {
           navigateTo("403");
         }
-      } else {
-        navigateTo("404");
+        // In any other error, the skeleton will just continue displaying.
       }
     };
 
@@ -89,7 +82,7 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
       updateType(bulletinTypeRide);
     }
   }, [
-    token,
+    api,
     currUser.id,
     navigateTo,
     route.name,
@@ -124,35 +117,39 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
       return;
     }
 
-    let response;
+    try {
+      let response;
 
-    if (type === bulletinTypeRide) {
-      const rideParams = {
-        type,
-        source,
-        offer,
-        destination,
-        body,
-        date: startDate,
-      };
-      response =
-        route.name === "bulletins.edit"
-          ? await patchRide(token, route.params.bulletinID, rideParams)
-          : await postRide(token, rideParams);
-    } else {
-      const bulletinParams = { type, title, body, startDate };
-      response =
-        route.name === "bulletins.edit"
-          ? await patchBulletin(token, route.params.bulletinID, bulletinParams)
-          : await postBulletin(token, bulletinParams);
-    }
+      if (type === bulletinTypeRide) {
+        const rideParams = {
+          type,
+          source,
+          offer,
+          destination,
+          body,
+          date: startDate,
+        };
+        response =
+          route.name === "bulletins.edit"
+            ? await api.bulletinService.updateRide(
+                route.params.bulletinID,
+                rideParams
+              )
+            : await api.bulletinService.createRide(rideParams);
+      } else {
+        const bulletinParams = { type, title, body, startDate };
+        response =
+          route.name === "bulletins.edit"
+            ? await api.bulletinService.updateBulletin(
+                route.params.bulletinID,
+                bulletinParams
+              )
+            : await api.bulletinService.createBulletin(bulletinParams);
+      }
 
-    if (checkAndHandleError(response)) {
-      navigateTo("bulletins.show", { type, bulletinID: response.data.data.id });
-    } else if (response.data.error.errors) {
-      updateErrors(response.data.error.errors);
-    } else {
-      updateErrors([response.data.error.message]);
+      navigateTo("bulletins.show", { type, bulletinID: response.data.id });
+    } catch (error) {
+      updateErrors(error.errors);
     }
   };
 
@@ -261,10 +258,10 @@ const BulletinForm = ({ token, currUser, route, navigateTo }) => {
 };
 
 BulletinForm.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
-  route: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  route: PropTypes.object.isRequired,
 };
 
 BulletinForm.defaultProps = {};
@@ -273,7 +270,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("bulletins");
 
   return (state) => ({
-    token: getToken(state),
+    api: getAPI(state),
     currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });
@@ -284,7 +281,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BulletinForm);
+export default connect(mapStateToProps, mapDispatchToProps)(BulletinForm);

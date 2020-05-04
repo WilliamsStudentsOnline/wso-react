@@ -9,36 +9,29 @@ import { Line } from "../../Skeleton";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getAPI, getCurrUser, getToken } from "../../../selectors/auth";
 
 // Additional imports
-import {
-  getCourse,
-  getSurveys,
-  getProfessors,
-  getCourseRatings,
-} from "../../../api/factrak";
-import {
-  checkAndHandleError,
-  scopes,
-  containsScopes,
-} from "../../../lib/general";
+import { containsScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakCourse = ({ route, token, currUser }) => {
+const FactrakCourse = ({ api, currUser, route, token }) => {
   const [course, updateCourse] = useState(null);
   const [courseSurveys, updateSurveys] = useState(null);
   const [courseProfs, updateProfs] = useState([]);
   const [ratings, updateRatings] = useState(null);
 
+  // TODO examine profID being -1
   useEffect(() => {
     const courseID = route.params.courseID;
     const profID = route.params.profID ? route.params.profID : -1;
 
     const loadCourse = async () => {
-      const courseResponse = await getCourse(token, courseID);
-      if (checkAndHandleError(courseResponse)) {
-        updateCourse(courseResponse.data.data);
+      try {
+        const courseResponse = await api.factrakService.getCourse(courseID);
+        updateCourse(courseResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
@@ -50,24 +43,37 @@ const FactrakCourse = ({ route, token, currUser }) => {
         populateClientAgreement: true,
         professorID: profID > 0 ? profID : null,
       };
-      const surveyResponse = await getSurveys(token, queryParams);
-      if (checkAndHandleError(surveyResponse)) {
-        updateSurveys(surveyResponse.data.data);
+
+      try {
+        const surveyResponse = await api.factrakService.listSurveys(
+          queryParams
+        );
+        updateSurveys(surveyResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     const loadRatings = async () => {
-      const ratingsResponse = await getCourseRatings(token, profID, courseID);
-      if (checkAndHandleError(ratingsResponse)) {
-        updateRatings(ratingsResponse.data.data);
+      try {
+        const ratingsResponse = await api.factrakService.getCourseRatings(
+          profID,
+          courseID
+        );
+        updateRatings(ratingsResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     const loadProfs = async () => {
       const params = { courseID };
-      const profResponse = await getProfessors(token, params);
-      if (checkAndHandleError(profResponse)) {
-        updateProfs(profResponse.data.data);
+
+      try {
+        const profResponse = await api.factrakService.listProfessors(params);
+        updateProfs(profResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
@@ -209,9 +215,10 @@ const FactrakCourse = ({ route, token, currUser }) => {
 };
 
 FactrakCourse.propTypes = {
-  token: PropTypes.string.isRequired,
-  route: PropTypes.object.isRequired,
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
 FactrakCourse.defaultProps = {};
@@ -220,8 +227,9 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.courses");
 
   return (state) => ({
-    token: getToken(state),
+    api: getAPI(state),
     currUser: getCurrUser(state),
+    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };

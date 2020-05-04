@@ -4,36 +4,41 @@ import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 
 // Additional imports
-import { getFlagged, unflagSurvey, deleteSurvey } from "../../../api/factrak";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakModerate = ({ token }) => {
+const FactrakModerate = ({ api }) => {
   const [flagged, updateFlagged] = useState([]);
 
   // Loads all the flagged courses on mount.
   useEffect(() => {
     const loadFlagged = async () => {
-      const flaggedResponse = await getFlagged(token, {
-        preload: ["professor", "course"],
-        populateAgreements: true,
-      });
-      if (checkAndHandleError(flaggedResponse)) {
-        updateFlagged(flaggedResponse.data.data);
+      try {
+        const flaggedResponse = await api.factrakService.listFlaggedSurveysAdmin(
+          {
+            preload: ["professor", "course"],
+            populateAgreements: true,
+          }
+        );
+
+        updateFlagged(flaggedResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     loadFlagged();
-  }, [token]);
+  }, [api]);
 
   // Unflag the survey
   const unflag = async (surveyID) => {
-    const response = await unflagSurvey(token, surveyID);
-    if (checkAndHandleError(response)) {
+    try {
+      await api.factrakService.unflagSurveyAdmin(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
@@ -43,9 +48,11 @@ const FactrakModerate = ({ token }) => {
     const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
     if (!confirmDelete) return;
 
-    const response = await deleteSurvey(token, surveyID);
-    if (checkAndHandleError(response)) {
+    try {
+      await api.factrakService.deleteSurvey(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
@@ -107,10 +114,10 @@ const FactrakModerate = ({ token }) => {
 };
 
 FactrakModerate.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
 });
 export default connect(mapStateToProps)(FactrakModerate);

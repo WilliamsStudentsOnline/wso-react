@@ -5,19 +5,13 @@ import { Line } from "../../Skeleton";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
-import {
-  getProfessors,
-  getCourses,
-  getAreaOfStudy,
-} from "../../../api/factrak";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakAOS = ({ route, token }) => {
+const FactrakAOS = ({ api, route }) => {
   const [courses, updateCourses] = useState(null);
   const [profs, updateProfs] = useState(null);
   const [area, updateArea] = useState({});
@@ -29,34 +23,45 @@ const FactrakAOS = ({ route, token }) => {
     // Loads professors of the Area of Study
     const loadProfs = async (areaOfStudyID) => {
       const params = { areaOfStudyID };
-      const profsResponse = await getProfessors(token, params);
-      if (checkAndHandleError(profsResponse)) {
-        updateProfs(profsResponse.data.data);
+
+      try {
+        const profsResponse = await api.factrakService.listProfessors(params);
+        updateProfs(profsResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     // Loads courses of the Area of Study
     const loadCourses = async (areaOfStudyID) => {
       const params = { areaOfStudyID, preload: ["professors"] };
-      const coursesResponse = await getCourses(token, params);
-      if (checkAndHandleError(coursesResponse)) {
-        const coursesData = coursesResponse.data.data;
+
+      try {
+        const coursesResponse = await api.factrakService.listCourses(params);
+        const coursesData = coursesResponse.data;
         updateCourses(coursesData.sort((a, b) => a.number > b.number));
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     // Loads additional information regarding the area of study
     const loadAOS = async (areaID) => {
-      const areaOfStudyResponse = await getAreaOfStudy(token, areaID);
-      if (checkAndHandleError(areaOfStudyResponse)) {
-        updateArea(areaOfStudyResponse.data.data);
+      try {
+        const areaOfStudyResponse = await api.factrakService.getAreaOfStudy(
+          areaID
+        );
+
+        updateArea(areaOfStudyResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     loadProfs(areaParam);
     loadCourses(areaParam);
     loadAOS(areaParam);
-  }, [route.params.area, token]);
+  }, [api, route.params.area]);
 
   // Generates a row containing the prof information.
   const generateProfRow = (prof) => {
@@ -218,15 +223,15 @@ const FactrakAOS = ({ route, token }) => {
 };
 
 FactrakAOS.propTypes = {
+  api: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.areasOfStudy");
 
   return (state) => ({
-    token: getToken(state),
+    api: getAPI(state),
     ...routeNodeSelector(state),
   });
 };

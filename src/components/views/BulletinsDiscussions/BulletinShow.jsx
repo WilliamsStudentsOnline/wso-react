@@ -5,21 +5,14 @@ import { Line, Paragraph } from "../../Skeleton";
 
 // Redux and Routing imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getAPI, getCurrUser } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
-import {
-  getBulletin,
-  getRide,
-  deleteBulletin,
-  deleteRide,
-} from "../../../api/bulletins";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import { bulletinTypeRide } from "../../../constants/general";
 
-const BulletinShow = ({ currUser, token, route, navigateTo }) => {
+const BulletinShow = ({ api, currUser, route, navigateTo }) => {
   const [bulletin, updateBulletin] = useState(null);
 
   const deleteHandler = async () => {
@@ -27,18 +20,17 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
     const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
 
-    let response;
-
-    if (bulletin.type) {
-      response = await deleteBulletin(token, bulletin.id);
-    } else {
-      response = await deleteRide(token, bulletin.id);
-    }
-
-    if (checkAndHandleError(response)) {
+    try {
+      if (bulletin.type) {
+        await api.bulletinService.deleteBulletin(bulletin.id);
+      } else {
+        await api.bulletinService.deleteRide(bulletin.id);
+      }
       navigateTo("bulletins", {
         type: bulletin.type || bulletinTypeRide,
       });
+    } catch {
+      // eslint-diable-next-line no-empty
     }
   };
 
@@ -46,21 +38,26 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
     const loadBulletin = async () => {
       if (!route.params.bulletinID) return;
 
-      let bulletinResponse;
+      try {
+        let bulletinResponse;
+        if (route.params.type === bulletinTypeRide) {
+          bulletinResponse = await api.bulletinService.getRide(
+            route.params.bulletinID
+          );
+        } else {
+          bulletinResponse = await api.bulletinService.getBulletin(
+            route.params.bulletinID
+          );
+        }
 
-      if (route.params.type === bulletinTypeRide) {
-        bulletinResponse = await getRide(token, route.params.bulletinID);
-      } else {
-        bulletinResponse = await getBulletin(token, route.params.bulletinID);
-      }
-
-      if (checkAndHandleError(bulletinResponse)) {
-        updateBulletin(bulletinResponse.data.data);
+        updateBulletin(bulletinResponse.data);
+      } catch {
+        // eslint-diable-next-line no-empty
       }
     };
 
     loadBulletin();
-  }, [token, route.params.bulletinID, route.params.type]);
+  }, [api, route.params.bulletinID, route.params.type]);
 
   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
 
@@ -197,7 +194,7 @@ const BulletinShow = ({ currUser, token, route, navigateTo }) => {
 };
 
 BulletinShow.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
@@ -209,7 +206,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("bulletins.show");
 
   return (state) => ({
-    token: getToken(state),
+    api: getAPI(state),
     currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });

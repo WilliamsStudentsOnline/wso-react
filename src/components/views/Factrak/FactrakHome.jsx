@@ -7,18 +7,13 @@ import FactrakDeficitMessage from "./FactrakUtils";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getAPI, getCurrUser, getToken } from "../../../selectors/auth";
 
 // Additional imports
-import { getSurveys, getAreasOfStudy } from "../../../api/factrak";
-import {
-  checkAndHandleError,
-  containsScopes,
-  scopes,
-} from "../../../lib/general";
+import { containsScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakHome = ({ token, currUser }) => {
+const FactrakHome = ({ api, currUser, token }) => {
   const [areas, updateAreas] = useState(null);
   const [surveys, updateSurveys] = useState(null);
 
@@ -30,18 +25,25 @@ const FactrakHome = ({ token, currUser }) => {
         limit: 10,
         start: new Date(),
       };
-      const surveysResponse = await getSurveys(token, queryParams);
 
-      if (checkAndHandleError(surveysResponse)) {
-        updateSurveys(surveysResponse.data.data);
+      try {
+        const surveysResponse = await api.factrakService.listSurveys(
+          queryParams
+        );
+        updateSurveys(surveysResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     const loadAreas = async () => {
-      const areasOfStudyResponse = await getAreasOfStudy(token);
-      if (checkAndHandleError(areasOfStudyResponse)) {
-        const areasOfStudy = areasOfStudyResponse.data.data;
+      try {
+        const areasOfStudyResponse = await api.factrakService.listAreasOfStudy();
+
+        const areasOfStudy = areasOfStudyResponse.data;
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
     if (containsScopes(token, [scopes.ScopeFactrakFull])) {
@@ -112,15 +114,17 @@ const FactrakHome = ({ token, currUser }) => {
 };
 
 FactrakHome.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
 FactrakHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
   currUser: getCurrUser(state),
+  token: getToken(state),
 });
 
 export default connect(mapStateToProps)(FactrakHome);

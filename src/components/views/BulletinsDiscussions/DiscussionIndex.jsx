@@ -5,16 +5,14 @@ import PaginationButtons from "../../PaginationButtons";
 import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getAPI, getCurrUser } from "../../../selectors/auth";
 import { connect } from "react-redux";
 
 // Additional Imports
-import { getDiscussions, deleteDiscussion } from "../../../api/bulletins";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import { format } from "timeago.js";
 
-const DiscussionIndex = ({ currUser, token }) => {
+const DiscussionIndex = ({ api, currUser }) => {
   const perPage = 20;
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -28,17 +26,22 @@ const DiscussionIndex = ({ currUser, token }) => {
       start: new Date(),
       preload: ["user", "postsUsers"],
     };
-    const discussionsResponse = await getDiscussions(token, params);
-    if (checkAndHandleError(discussionsResponse)) {
-      updateThreads(discussionsResponse.data.data);
-      updateTotal(discussionsResponse.data.paginationTotal);
+    try {
+      const discussionsResponse = await api.bulletinService.listDiscussions(
+        params
+      );
+
+      updateThreads(discussionsResponse.data);
+      updateTotal(discussionsResponse.paginationTotal);
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
   useEffect(() => {
     loadThreads(0);
     // eslint-disable-next-line
-  }, [token]);
+  }, [api]);
 
   // Handles clicking of the next/previous page
   const clickHandler = (number) => {
@@ -114,10 +117,12 @@ const DiscussionIndex = ({ currUser, token }) => {
     const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
     if (!confirmDelete) return;
 
-    const response = await deleteDiscussion(token, threadID);
+    try {
+      await api.bulletinService.deleteDiscussion(threadID);
 
-    if (checkAndHandleError(response)) {
       loadThreads(page);
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
@@ -194,14 +199,14 @@ const DiscussionIndex = ({ currUser, token }) => {
 };
 
 DiscussionIndex.propTypes = {
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
 };
 
 DiscussionIndex.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
   currUser: getCurrUser(state),
 });
 

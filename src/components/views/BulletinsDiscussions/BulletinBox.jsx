@@ -9,7 +9,6 @@ import { connect } from "react-redux";
 import { getAPI } from "../../../selectors/auth";
 
 // Additional imports
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import {
   bulletinTypeRide,
@@ -36,50 +35,27 @@ const BulletinBox = ({ api, typeWord }) => {
   const type = linkMap.get(typeWord);
 
   // Load the appropriate discussionns/bulletins
-  useEffect(() => {
-    let loadParams = { limit: 5 };
-
-    const loadDiscussions = async () => {
-      const discussionsResponse = await api.bulletinService.listDiscussions(
-        loadParams
-      );
-      if (checkAndHandleError(discussionsResponse)) {
-        updateThreads(discussionsResponse.data);
-      } else updateThreads([]);
-    };
-
-    const loadRides = async () => {
-      const ridesResponse = await api.bulletinService.listRides(loadParams);
-      if (checkAndHandleError(ridesResponse)) {
-        updateThreads(ridesResponse.data);
-      } else updateThreads([]);
-    };
-
-    const loadBulletins = async () => {
-      try {
-        loadParams = {
-          limit: 5,
-          type,
-        };
-        const bulletinsResponse = await api.bulletinService.listBulletins(
-          loadParams
-        );
-        if (checkAndHandleError(bulletinsResponse)) {
-          updateThreads(bulletinsResponse.data);
-        } else updateThreads([]);
-
-        // eslint-disable-next-line no-empty
-      } catch (e) {}
-    };
+  useEffect(async () => {
+    const loadParams = { limit: 5, type };
 
     try {
       if (api.isAuthenticated()) {
-        if (type === discussionType) loadDiscussions();
-        else if (type === bulletinTypeRide) loadRides();
-        else loadBulletins();
+        let response;
+
+        if (type === discussionType) {
+          response = await api.bulletinService.listDiscussions(loadParams);
+        } else if (type === bulletinTypeRide) {
+          response = await api.bulletinService.listRides(loadParams);
+        } else {
+          response = await api.bulletinService.listBulletins(loadParams);
+        }
+
+        updateThreads(response.data);
       }
-      // eslint-disable-next-line no-empty
-    } catch (e) {}
+    } catch (e) {
+      // We aren't really expecting any errors here, unless the token is empty for some reason.
+      updateThreads([]);
+    }
   }, [api, type]);
 
   const formatDate = (showDate) => {

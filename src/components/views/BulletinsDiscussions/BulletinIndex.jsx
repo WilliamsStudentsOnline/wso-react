@@ -1,25 +1,18 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import PaginationButtons from "../../PaginationButtons";
 import { Line } from "../../Skeleton";
 
 // Redux and routing imports
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getAPI, getCurrUser } from "../../../selectors/auth";
 import { connect } from "react-redux";
 
 // Additional imports
-import {
-  getBulletins,
-  getRides,
-  deleteBulletin,
-  deleteRide,
-} from "../../../api/bulletins";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import { bulletinTypeRide } from "../../../constants/general";
 
-const BulletinIndex = ({ type, token, currUser }) => {
+const BulletinIndex = ({ api, type, currUser }) => {
   const [bulletins, updateBulletins] = useState(null);
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -32,10 +25,12 @@ const BulletinIndex = ({ type, token, currUser }) => {
       offset: perPage * newPage,
       start: new Date(),
     };
-    const bulletinsResponse = await getBulletins(token, params);
-    if (checkAndHandleError(bulletinsResponse)) {
-      updateBulletins(bulletinsResponse.data.data);
-      updateTotal(bulletinsResponse.data.paginationTotal);
+    try {
+      const bulletinsResponse = await api.bulletinService.listBulletins(params);
+      updateBulletins(bulletinsResponse.data);
+      updateTotal(bulletinsResponse.paginationTotal);
+    } catch {
+      // eslint-diable-next-line no-empty
     }
   };
 
@@ -47,10 +42,12 @@ const BulletinIndex = ({ type, token, currUser }) => {
       // We don't generally need to add start as a param because the backend automatically
       // filters for only future rides.
     };
-    const ridesResponse = await getRides(token, params);
-    if (checkAndHandleError(ridesResponse)) {
-      updateBulletins(ridesResponse.data.data);
-      updateTotal(ridesResponse.data.paginationTotal);
+    try {
+      const ridesResponse = await api.bulletinService.listRides(params);
+      updateBulletins(ridesResponse.data);
+      updateTotal(ridesResponse.paginationTotal);
+    } catch {
+      // eslint-diable-next-line no-empty
     }
   };
 
@@ -80,28 +77,27 @@ const BulletinIndex = ({ type, token, currUser }) => {
 
   useEffect(() => {
     loadNext(0);
-    // eslint-disable-next-line
-  }, [token, type]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api, type]);
 
   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
 
   // Handles deletion
   const deleteHandler = async (event, bulletinID) => {
     event.preventDefault();
-    // eslint-disable-next-line no-restricted-globals
-    const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
 
-    let response;
-
-    if (type === bulletinTypeRide) {
-      response = await deleteRide(token, bulletinID);
-    } else {
-      response = await deleteBulletin(token, bulletinID);
-    }
-
-    if (checkAndHandleError(response)) {
+    try {
+      if (type === bulletinTypeRide) {
+        await api.bulletinService.deleteRide(bulletinID);
+      } else {
+        await api.bulletinService.deleteBulletin(bulletinID);
+      }
       loadNext(page);
+    } catch {
+      // eslint-diable-next-line no-empty
     }
   };
 
@@ -259,15 +255,15 @@ const BulletinIndex = ({ type, token, currUser }) => {
 };
 
 BulletinIndex.propTypes = {
-  type: PropTypes.string.isRequired,
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 BulletinIndex.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
   currUser: getCurrUser(state),
 });
 

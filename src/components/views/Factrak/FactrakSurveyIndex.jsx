@@ -5,13 +5,9 @@ import FactrakComment from "./FactrakComment";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getAPI, getCurrUser } from "../../../selectors/auth";
 
-// Additional imports
-import { getSurveys } from "../../../api/factrak";
-import { checkAndHandleError } from "../../../lib/general";
-
-const FactrakSurveyIndex = ({ token, currUser }) => {
+const FactrakSurveyIndex = ({ api, currUser }) => {
   const [surveys, updateSurveys] = useState([]);
 
   useEffect(() => {
@@ -21,14 +17,18 @@ const FactrakSurveyIndex = ({ token, currUser }) => {
         preload: ["professor", "course"],
         populateAgreements: true,
       };
-      const userSurveyResponse = await getSurveys(token, params);
-      if (checkAndHandleError(userSurveyResponse)) {
-        updateSurveys(userSurveyResponse.data.data);
+
+      try {
+        const userSurveyResponse = await api.factrakService.listSurveys(params);
+
+        updateSurveys(userSurveyResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     loadUserSurveys();
-  }, [token, currUser.id]);
+  }, [api, currUser.id]);
 
   return (
     <div className="article">
@@ -58,14 +58,14 @@ const FactrakSurveyIndex = ({ token, currUser }) => {
 };
 
 FactrakSurveyIndex.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
 };
 
 FactrakSurveyIndex.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  api: getAPI(state),
   currUser: getCurrUser(state),
 });
 

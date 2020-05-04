@@ -4,16 +4,14 @@ import PropTypes from "prop-types";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 import { createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import { getProfessors, getCourses } from "../../../api/factrak";
 import { Link } from "react-router5";
 
 // FactrakSearch refers to the search result page
-const FactrakSearch = ({ token, route }) => {
+const FactrakSearch = ({ api, route }) => {
   const [profs, updateProfs] = useState(null);
   const [courses, updateCourses] = useState(null);
 
@@ -23,11 +21,16 @@ const FactrakSearch = ({ token, route }) => {
         q: route.params.q ? route.params.q : undefined,
         preload: ["office"],
       };
-      const profsResponse = await getProfessors(token, queryParams);
 
-      if (checkAndHandleError(profsResponse)) {
-        updateProfs(profsResponse.data.data.sort((a, b) => a.name > b.name));
-      } else updateProfs([]);
+      try {
+        const profsResponse = await api.factrakService.listProfessors(
+          queryParams
+        );
+
+        updateProfs(profsResponse.data.sort((a, b) => a.name > b.name));
+      } catch {
+        // eslint-disable-next-line no-empty
+      }
     };
 
     const loadCourses = async () => {
@@ -35,21 +38,27 @@ const FactrakSearch = ({ token, route }) => {
         q: route.params.q ? route.params.q : undefined,
         preload: ["areaOfStudy", "professors"],
       };
-      const coursesResponse = await getCourses(token, queryParams);
-      if (checkAndHandleError(coursesResponse)) {
+
+      try {
+        const coursesResponse = await api.factrakService.listCourses(
+          queryParams
+        );
+
         updateCourses(
-          coursesResponse.data.data.sort(
+          coursesResponse.data.sort(
             (a, b) =>
               a.areaOfStudy.abbreviation + a.number >
               b.areaOfStudy.abbreviation + b.number
           )
         );
-      } else updateCourses([]);
+      } catch {
+        // eslint-disable-next-line no-empty
+      }
     };
 
     loadProfs();
     loadCourses();
-  }, [token, route.params.q]);
+  }, [api, route.params.q]);
 
   // Generates the row for one of the professor results.
   const professorRow = (prof) => {
@@ -172,7 +181,7 @@ const FactrakSearch = ({ token, route }) => {
 };
 
 FactrakSearch.propTypes = {
-  token: PropTypes.string.isRequired,
+  api: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
 };
 
@@ -182,7 +191,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.search");
 
   return (state) => ({
-    token: getToken(state),
+    api: getAPI(state),
     ...routeNodeSelector(state),
   });
 };

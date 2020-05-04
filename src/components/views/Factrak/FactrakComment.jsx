@@ -6,21 +6,11 @@ import Button from "../../Components";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getCurrUser, getToken } from "../../../selectors/auth";
+import { getCurrUser, getAPI } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 import { actions } from "redux-router5";
 
 // Additional Imports
-import {
-  postSurveyAgreement,
-  patchSurveyAgreement,
-  deleteSurveyAgreement,
-  getSurvey,
-  flagSurvey,
-  deleteSurvey,
-} from "../../../api/factrak";
-import { getUser } from "../../../api/users";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import { format } from "timeago.js";
 
@@ -29,18 +19,20 @@ const FactrakComment = ({
   showProf,
   abridged,
   currUser,
-  token,
   navigateTo,
   updateUser,
+  api,
 }) => {
   const [survey, updateSurvey] = useState(comment);
   const [isDeleted, updateDeleted] = useState(false);
 
   // Get the survey and update it after editing.
   const getAndUpdateSurvey = async () => {
-    const surveyResponse = await getSurvey(token, survey.id);
-    if (checkAndHandleError(surveyResponse)) {
-      updateSurvey(surveyResponse.data.data);
+    try {
+      const surveyResponse = await api.factrakService.getSurvey(survey.id);
+      updateSurvey(surveyResponse.data);
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
@@ -49,33 +41,37 @@ const FactrakComment = ({
     const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
 
-    const response = await deleteSurvey(token, survey.id);
-
-    if (checkAndHandleError(response)) {
+    try {
+      await api.factrakService.deleteSurvey(survey.id);
       updateDeleted(true);
-      const userResponse = await getUser("me", token);
-      if (checkAndHandleError(userResponse)) {
-        updateUser(userResponse.data.data);
-      }
+      const userResponse = await api.userService.getUser("me");
+      updateUser(userResponse.data);
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
   // Handles survey agreement
   const agreeHandler = async (agree) => {
     const agreeParams = { agree };
-    let response;
-    if (survey && survey.clientAgreement !== undefined) {
-      if (survey.clientAgreement === agree) {
-        response = await deleteSurveyAgreement(token, survey.id, agreeParams);
-      } else {
-        response = await patchSurveyAgreement(token, survey.id, agreeParams);
-      }
-    } else {
-      response = await postSurveyAgreement(token, survey.id, agreeParams);
-    }
 
-    if (checkAndHandleError(response)) {
+    try {
+      if (survey && survey.clientAgreement !== undefined) {
+        if (survey.clientAgreement === agree) {
+          await api.factrakService.deleteSurveyAgreement(survey.id);
+        } else {
+          await api.factrakService.updateSurveyAgreement(
+            survey.id,
+            agreeParams
+          );
+        }
+      } else {
+        await api.factrakService.createSurveyAgreement(survey.id, agreeParams);
+      }
+
       getAndUpdateSurvey();
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
@@ -129,9 +125,12 @@ const FactrakComment = ({
 
   // Handling flagging
   const flagHandler = async () => {
-    const response = await flagSurvey(token, survey.id);
-    if (checkAndHandleError(response)) {
+    try {
+      await api.factrakService.flagSurvey(survey.id);
+
       getAndUpdateSurvey();
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
@@ -322,12 +321,12 @@ const FactrakComment = ({
 };
 
 FactrakComment.propTypes = {
-  showProf: PropTypes.bool.isRequired,
   abridged: PropTypes.bool.isRequired,
+  api: PropTypes.object.isRequired,
   comment: PropTypes.object,
   currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  showProf: PropTypes.bool.isRequired,
   updateUser: PropTypes.func.isRequired,
 };
 
@@ -356,8 +355,8 @@ const FactrakCommentSkeleton = () => (
 );
 
 const mapStateToProps = (state) => ({
+  api: getAPI(state),
   currUser: getCurrUser(state),
-  token: getToken(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

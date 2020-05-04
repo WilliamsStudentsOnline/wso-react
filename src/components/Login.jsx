@@ -16,7 +16,14 @@ import { actions } from "redux-router5";
 import { SimpleAuthentication } from "wso-api-client";
 import { getAPI } from "../selectors/auth";
 
-const Login = ({ navigateTo, updateUser, updateRemember, api, updateAPI }) => {
+const Login = ({
+  api,
+  navigateTo,
+  updateAPI,
+  updateRemember,
+  updateToken,
+  updateUser,
+}) => {
   const [unixID, setUnix] = useState("");
   const [password, setPassword] = useState("");
   const [errors, updateErrors] = useState([]);
@@ -47,9 +54,12 @@ const Login = ({ navigateTo, updateUser, updateRemember, api, updateAPI }) => {
       updateUser(userResponse.data);
       updateRemember(remember);
       updateAPI(updatedAPI);
+      updateToken(token);
       navigateTo("home");
     } catch (error) {
-      // TODO
+      if (error.errors) {
+        updateErrors(error.errors);
+      }
     }
   };
   return (
@@ -110,6 +120,7 @@ Login.propTypes = {
   updateAPI: PropTypes.func.isRequired,
   updateRemember: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
+  updateToken: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = () => {
@@ -118,11 +129,11 @@ const mapStateToProps = () => {
   });
 };
 const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  updateAPI: (api) => dispatch(doUpdateAPI(api)),
+  updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
   updateToken: (response) => dispatch(doUpdateToken(response)),
   updateUser: (unixID) => dispatch(doUpdateUser(unixID)),
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
-  updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
-  updateAPI: (api) => dispatch(doUpdateAPI(api)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

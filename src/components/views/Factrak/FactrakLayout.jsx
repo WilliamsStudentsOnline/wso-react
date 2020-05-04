@@ -4,15 +4,20 @@ import PropTypes from "prop-types";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getCurrUser, getToken } from "../../../selectors/auth";
+import { getAPI, getCurrUser, getToken } from "../../../selectors/auth";
 import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
-import { autocompleteFactrak } from "../../../api/autocomplete";
-import { checkAndHandleError } from "../../../lib/general";
 
-const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
+const FactrakLayout = ({
+  api,
+  children,
+  currUser,
+  navigateTo,
+  token,
+  route,
+}) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -29,11 +34,17 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
   // Initiates new autocomplete
   const factrakAutocomplete = async (event) => {
     setQuery(event.target.value);
-    const factrakResponse = await autocompleteFactrak(token, query);
-
     let suggestData = [];
-    if (checkAndHandleError(factrakResponse)) {
-      suggestData = factrakResponse.data.data;
+
+    try {
+      const factrakResponse = await api.autocompleteService.autocompleteFactrak(
+        token,
+        query
+      );
+
+      suggestData = factrakResponse.data;
+    } catch {
+      // eslint-disable-next-line no-empty
     }
 
     // Limit the number of factrak suggestions to 5.
@@ -181,11 +192,12 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
 };
 
 FactrakLayout.propTypes = {
+  api: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
 FactrakLayout.defaultProps = {};
@@ -194,6 +206,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
+    api: getAPI(state),
     currUser: getCurrUser(state),
     token: getToken(state),
     ...routeNodeSelector(state),

@@ -5,20 +5,10 @@ import "../../stylesheets/FactrakSurvey.css";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPI } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
-// External Imports
-import {
-  getProfessor,
-  postSurvey,
-  patchSurvey,
-  getSurvey,
-  getAreasOfStudy,
-} from "../../../api/factrak";
-import { checkAndHandleError } from "../../../lib/general";
-
-const FactrakSurvey = ({ token, route, navigateTo }) => {
+const FactrakSurvey = ({ api, route, navigateTo }) => {
   const [survey, updateSurvey] = useState(null);
   const [prof, updateProf] = useState(null);
 
@@ -72,29 +62,32 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
       outsideHelpfulness: parseInt(helpful, 10),
     };
 
-    const response = edit
-      ? await patchSurvey(token, surveyParams, survey.id)
-      : await postSurvey(token, surveyParams);
-
-    if (checkAndHandleError(response)) {
+    try {
+      if (edit) {
+        await api.factrakService.updateSurvey(surveyParams, survey.id);
+      } else {
+        await api.factrakService.createSurvey(surveyParams);
+      }
       navigateTo("factrak.surveys");
-    } else {
-      updateErrors([response.data.error.message]);
+    } catch (error) {
+      updateErrors([error.message]);
     }
   };
 
   useEffect(() => {
     const loadProf = async (professorID) => {
-      const profResponse = await getProfessor(token, professorID);
-      if (checkAndHandleError(profResponse)) {
-        updateProf(profResponse.data.data);
+      try {
+        const profResponse = await api.factrakService.getProfessor(professorID);
+        updateProf(profResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     const loadSurvey = async (surveyID) => {
-      const surveyResponse = await getSurvey(token, surveyID);
-      if (checkAndHandleError(surveyResponse)) {
-        const surveyData = surveyResponse.data.data;
+      try {
+        const surveyResponse = await api.factrakService.getSurvey(surveyID);
+        const surveyData = surveyResponse.data;
 
         // Could use a defaultSurvey and update that object, but will hardly save any lines.
         updateSurvey(surveyData);
@@ -109,20 +102,24 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
         updateRecommend(surveyData.wouldRecommendCourse);
         updateTakeAnother(surveyData.wouldTakeAnother);
         updateComment(surveyData.comment);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     const loadAreasOfStudy = async () => {
-      const areasOfStudyResponse = await getAreasOfStudy(token);
-      if (checkAndHandleError(areasOfStudyResponse)) {
-        updateAreasOfStudy(areasOfStudyResponse.data.data);
+      try {
+        const areasOfStudyResponse = await api.factrakService.listAreasOfStudy();
+        updateAreasOfStudy(areasOfStudyResponse.data);
+      } catch {
+        // eslint-disable-next-line no-empty
       }
     };
 
     if (surveyParam) loadSurvey(surveyParam);
     if (professorParam) loadProf(professorParam);
     loadAreasOfStudy();
-  }, [token, professorParam, surveyParam]);
+  }, [api, professorParam, surveyParam]);
 
   // Generates the dropdown for the department
   const deptDropdown = () => {
@@ -351,9 +348,9 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
 };
 
 FactrakSurvey.propTypes = {
-  token: PropTypes.string.isRequired,
-  route: PropTypes.object.isRequired,
+  api: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  route: PropTypes.object.isRequired,
 };
 
 FactrakSurvey.defaultProps = {};
@@ -362,7 +359,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.surveys");
 
   return (state) => ({
-    token: getToken(state),
+    api: getAPI(state),
     ...routeNodeSelector(state),
   });
 };
@@ -371,7 +368,4 @@ const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FactrakSurvey);
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakSurvey);

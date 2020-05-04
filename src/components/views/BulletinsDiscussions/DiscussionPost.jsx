@@ -5,14 +5,12 @@ import { Line, Paragraph } from "../../Skeleton";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getCurrUser, getToken } from "../../../selectors/auth";
+import { getCurrUser, getAPI } from "../../../selectors/auth";
 
 // Additional imports
 import { Link } from "react-router5";
-import { checkAndHandleError } from "../../../lib/general";
-import { patchPost, deletePost } from "../../../api/bulletins";
 
-const DiscussionPost = ({ post, currUser, token }) => {
+const DiscussionPost = ({ api, post, currUser }) => {
   const [deleted, updateDeleted] = useState(false);
   const [edit, setEdit] = useState(false);
   const [reply, updateReply] = useState(post.content);
@@ -25,24 +23,26 @@ const DiscussionPost = ({ post, currUser, token }) => {
     if (reply === "") return;
     const params = { content: reply };
 
-    const response = await patchPost(token, post.id, params);
-
-    if (checkAndHandleError(response)) {
+    try {
+      const response = await api.bulletinService.updatePost(post.id, params);
       setEdit(false);
-      updateCurrPost(response.data.data);
+      updateCurrPost(response.data);
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
   // Handles deletion of discussion post
   const deleteHandler = async () => {
-    // eslint-disable-next-line no-restricted-globals
-    const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
 
-    const response = await deletePost(token, post.id);
-
-    if (checkAndHandleError(response)) {
+    try {
+      await api.bulletinService.deletePost(post.id);
       updateDeleted(true);
+    } catch {
+      // eslint-disable-next-line no-empty
     }
   };
 
@@ -130,9 +130,9 @@ const DiscussionPost = ({ post, currUser, token }) => {
 };
 
 DiscussionPost.propTypes = {
-  post: PropTypes.object.isRequired,
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
+  post: PropTypes.object.isRequired,
 };
 
 DiscussionPost.defaultProps = {};
@@ -150,8 +150,8 @@ const DiscussionPostSkeleton = () => (
 );
 
 const mapStateToProps = (state) => ({
+  api: getAPI(state),
   currUser: getCurrUser(state),
-  token: getToken(state),
 });
 
 export default connect(mapStateToProps)(DiscussionPost);
