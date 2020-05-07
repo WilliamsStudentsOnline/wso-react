@@ -18,6 +18,7 @@ const FacebookHome = ({ api, route, navigateTo }) => {
   const perPage = 20;
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
+  const [isResultsLoading, updateResultLoadStatus] = useState(true);
 
   // loads the next set of users
   const loadUsers = async (newPage) => {
@@ -42,9 +43,12 @@ const FacebookHome = ({ api, route, navigateTo }) => {
       updateResults([]);
       updateTotal(0);
     }
+
+    updateResultLoadStatus(false);
   };
 
   useEffect(() => {
+    updateResultLoadStatus(true);
     updateTotal(0);
     loadUsers(0);
     updatePage(0);
@@ -140,6 +144,15 @@ const FacebookHome = ({ api, route, navigateTo }) => {
 
   // Returns the results of the search
   const FacebookResults = () => {
+    if (isResultsLoading) {
+      return (
+        <>
+          <br />
+          <h1 className="no-matches-found">Loading...</h1>
+        </>
+      );
+    }
+
     if (total === 0 && route.params.q)
       return (
         <>
