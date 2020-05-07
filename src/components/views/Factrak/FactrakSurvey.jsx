@@ -31,49 +31,6 @@ const FactrakSurvey = ({ api, route, navigateTo }) => {
   const surveyParam = route.params.surveyID;
   const [areasOfStudy, updateAreasOfStudy] = useState([]);
 
-  const submitHandler = async (event) => {
-    event.preventDefault();
-
-    // Some error checking
-    if (courseAOS === "") {
-      updateErrors(["Please choose a Course Prefix!"]);
-      return;
-    }
-
-    if (courseNumber === "") {
-      updateErrors(["Please enter a valid Course Number"]);
-      return;
-    }
-
-    // Parse integers here rather than below to minimize the expensive operation
-    const surveyParams = {
-      areaOfStudyAbbreviation: courseAOS,
-      professorID: prof.id,
-      courseNumber,
-      comment,
-      wouldRecommendCourse,
-      wouldTakeAnother,
-      // Parse ints should work without errors here since users do not have access to these
-      // variables
-      courseWorkload: parseInt(workload, 10),
-      approachability: parseInt(approachability, 10),
-      leadLecture: parseInt(lecture, 10),
-      promoteDiscussion: parseInt(discussion, 10),
-      outsideHelpfulness: parseInt(helpful, 10),
-    };
-
-    try {
-      if (edit) {
-        await api.factrakService.updateSurvey(survey.id, surveyParams);
-      } else {
-        await api.factrakService.createSurvey(surveyParams);
-      }
-      navigateTo("factrak.surveys");
-    } catch (error) {
-      updateErrors([error.message]);
-    }
-  };
-
   useEffect(() => {
     const loadProf = async (professorID) => {
       try {
@@ -121,6 +78,49 @@ const FactrakSurvey = ({ api, route, navigateTo }) => {
     loadAreasOfStudy();
   }, [api, professorParam, surveyParam]);
 
+  const submitHandler = async (event) => {
+    event.preventDefault();
+
+    // Some error checking
+    if (courseAOS === "") {
+      updateErrors(["Please choose a Course Prefix!"]);
+      return;
+    }
+
+    if (courseNumber === "") {
+      updateErrors(["Please enter a valid Course Number"]);
+      return;
+    }
+
+    // Parse integers here rather than below to minimize the expensive operation
+    const surveyParams = {
+      areaOfStudyAbbreviation: courseAOS,
+      professorID: prof.id,
+      courseNumber,
+      comment,
+      wouldRecommendCourse,
+      wouldTakeAnother,
+      // Parse ints should work without errors here since users do not have access to these
+      // variables
+      courseWorkload: parseInt(workload, 10),
+      approachability: parseInt(approachability, 10),
+      leadLecture: parseInt(lecture, 10),
+      promoteDiscussion: parseInt(discussion, 10),
+      outsideHelpfulness: parseInt(helpful, 10),
+    };
+
+    try {
+      if (edit) {
+        await api.factrakService.updateSurvey(survey.id, surveyParams);
+      } else {
+        await api.factrakService.createSurvey(surveyParams);
+      }
+      navigateTo("factrak.surveys");
+    } catch (error) {
+      updateErrors([error.message]);
+    }
+  };
+
   // Generates the dropdown for the department
   const deptDropdown = () => {
     if (areasOfStudy.length === 0)
@@ -133,6 +133,7 @@ const FactrakSurvey = ({ api, route, navigateTo }) => {
       <select
         className="select-dept"
         onChange={(event) => updateCourseAOS(event.target.value)}
+        value={courseAOS}
       >
         <option value="" selected disabled hidden>
           Select Prefix
@@ -230,7 +231,7 @@ const FactrakSurvey = ({ api, route, navigateTo }) => {
                     Yes&nbsp;
                     <input
                       type="radio"
-                      checked={wouldRecommendCourse}
+                      checked={wouldRecommendCourse || false}
                       onChange={() => updateRecommend(true)}
                     />
                     No&nbsp;
@@ -255,7 +256,7 @@ const FactrakSurvey = ({ api, route, navigateTo }) => {
                     Yes&nbsp;
                     <input
                       type="radio"
-                      checked={wouldTakeAnother}
+                      checked={wouldTakeAnother || false}
                       onChange={() => updateTakeAnother(true)}
                     />
                     No&nbsp;

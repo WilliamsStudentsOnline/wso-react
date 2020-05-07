@@ -258,8 +258,7 @@ const FacebookUser = ({ api, currUser, route, navigateTo }) => {
 
   // Generates the user's class year
   const classYear = () => {
-    if (!viewPerson.classYear || viewPerson.type !== userTypeStudent)
-      return null;
+    if (!viewPerson.classYear || viewPerson.type !== userTypeStudent) return "";
     if (viewPerson.offCycle) return `'${(viewPerson.classYear - 1) % 100}.5`;
 
     return `'${viewPerson.classYear % 100}`;
