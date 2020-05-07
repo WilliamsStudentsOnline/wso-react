@@ -9,10 +9,8 @@ import "./components/stylesheets/i.css";
 import "typeface-source-sans-pro";
 
 // Redux/store imports
-import configureStore from "./store";
 import { Provider } from "react-redux";
-import { loadState, saveState } from "./loadState";
-
+import { loadWSOState, saveState } from "./loadState";
 // Router imports
 import { RouterProvider } from "react-router5";
 import configureRouter from "./create-router";
@@ -39,16 +37,13 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// TODO look at this
-// const persistedAuthState = loadState("state");
-const persistedSchedulerOptions = loadState("schedulerOptions");
-const store = configureStore(router, { ...persistedSchedulerOptions });
+const store = loadWSOState(router);
 
 store.subscribe(
   throttle(() => {
     const authState = store.getState().authState;
     const schedulerUtilState = store.getState().schedulerUtilState;
-    saveState("state", { authState }, authState.remember);
+    saveState("token", authState.token, authState.remember);
     saveState(
       "schedulerOptions",
       {

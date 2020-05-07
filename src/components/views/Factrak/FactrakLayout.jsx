@@ -186,12 +186,12 @@ const FactrakLayout = ({ api, children, currUser, navigateTo, route }) => {
 FactrakLayout.propTypes = {
   api: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired,
-  currUser: PropTypes.object.isRequired,
+  currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
 };
 
-FactrakLayout.defaultProps = {};
+FactrakLayout.defaultProps = { currUser: {} };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
