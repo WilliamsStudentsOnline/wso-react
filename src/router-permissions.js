@@ -47,7 +47,16 @@ export default (router, store) => {
       ) {
         return true;
       }
-      return done({ redirect: { name: "login" } });
+      return done({
+        redirect: {
+          name: "login",
+          params: {
+            previousRoute: toState,
+            requiredScopes: routePermissions[key].scopes || [],
+            requiredLevel: routePermissions[key].tokenLevel || -1,
+          },
+        },
+      });
     });
   });
   router.canActivate("login", () => (toState, fromState, done) => {

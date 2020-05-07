@@ -23,7 +23,6 @@ const BulletinIndex = ({ api, type, currUser }) => {
       preload: ["user"],
       limit: 20,
       offset: perPage * newPage,
-      start: new Date(),
     };
     try {
       const bulletinsResponse = await api.bulletinService.listBulletins(params);

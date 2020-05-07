@@ -18,12 +18,10 @@ const DiscussionShow = ({ api, route }) => {
 
   useEffect(() => {
     const loadDiscussion = async () => {
-      const params = { preload: ["posts", "postsUsers"] };
-
       try {
         const discussionResponse = await api.bulletinService.getDiscussion(
           route.params.discussionID,
-          params
+          ["posts", "postsUsers"]
         );
 
         updateDiscussion(discussionResponse.data);
@@ -50,6 +48,7 @@ const DiscussionShow = ({ api, route }) => {
     try {
       const response = await api.bulletinService.createPost(params);
       updatePosts(posts.concat([response.data]));
+      updateReply("");
     } catch (error) {
       // eslint-disable-next-line no-empty
     }

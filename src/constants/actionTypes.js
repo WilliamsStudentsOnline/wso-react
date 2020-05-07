@@ -28,6 +28,7 @@ export const CHANGE_ORIENTATION = 'CHANGE_ORIENTATION';
 export const RESET_FILTERS = 'RESET_FILTERS';
 export const REMOVE_SEMESTER_COURSES = 'REMOVE_SEMESTER_COURSES';
 export const TOGGLE_TYPE = 'TOGGLE_TYPE';
+export const UPDATE_STATE = 'UPDATE_STATE';
 
 // Authentication Reducer
 export const UPDATE_TOKEN = 'UPDATE_TOKEN';

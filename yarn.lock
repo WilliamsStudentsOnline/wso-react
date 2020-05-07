@@ -11664,9 +11664,9 @@ ws@^6.0.0, ws@^6.1.2, ws@^6.2.1:
   dependencies:
     async-limiter "~1.0.0"
 
-"wso-api-client@ssh://git@github.com:WilliamsStudentsOnline/wso-api-client.git#8c9e2b0d7f7a5387ac19e83352aaaff22e9713fc":
+"wso-api-client@ssh://git@github.com:WilliamsStudentsOnline/wso-api-client.git#de8b0659587cba432575ebd9fb5891ff3826f343":
   version "1.0.0"
-  resolved "ssh://git@github.com:WilliamsStudentsOnline/wso-api-client.git#8c9e2b0d7f7a5387ac19e83352aaaff22e9713fc"
+  resolved "ssh://git@github.com:WilliamsStudentsOnline/wso-api-client.git#de8b0659587cba432575ebd9fb5891ff3826f343"
   dependencies:
     axios "^0.19.2"
     jwt-decode latest

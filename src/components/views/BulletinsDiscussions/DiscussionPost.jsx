@@ -78,7 +78,7 @@ const DiscussionPost = ({ api, post, currUser }) => {
 
   // Generates comment contents
   const commentContent = () => {
-    if (!deleted && !edit) {
+    if (!edit) {
       return (
         <div className="comment-content">
           <b>
@@ -102,8 +102,6 @@ const DiscussionPost = ({ api, post, currUser }) => {
       );
     }
 
-    if (deleted) return null;
-
     // Editing comment.
     return (
       <form onSubmit={submitHandler}>
@@ -126,6 +124,7 @@ const DiscussionPost = ({ api, post, currUser }) => {
     );
   };
 
+  if (deleted) return null;
   return <div className="comment">{commentContent()}</div>;
 };
 

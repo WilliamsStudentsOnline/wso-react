@@ -96,7 +96,7 @@ const Nav = ({ api, currUser, token }) => {
 
         <span className="nav-right-container">
           <ul className="nav-right">
-            {currUser ? (
+            {currUser && currUser.id ? (
               <>
                 <li className="avatar">
                   <Link

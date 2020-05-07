@@ -10,7 +10,9 @@ import "typeface-source-sans-pro";
 
 // Redux/store imports
 import { Provider } from "react-redux";
-import { loadWSOState, saveState } from "./loadState";
+import { saveState } from "./loadState";
+import configureStore from "./store";
+
 // Router imports
 import { RouterProvider } from "react-router5";
 import configureRouter from "./create-router";
@@ -37,13 +39,13 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-const store = loadWSOState(router);
+const store = configureStore(router);
 
 store.subscribe(
   throttle(() => {
     const authState = store.getState().authState;
     const schedulerUtilState = store.getState().schedulerUtilState;
-    saveState("token", authState.token, authState.remember);
+    saveState("state", { authState }, authState.remember);
     saveState(
       "schedulerOptions",
       {

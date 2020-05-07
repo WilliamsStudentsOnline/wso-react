@@ -23,7 +23,6 @@ const DiscussionIndex = ({ api, currUser }) => {
     const params = {
       limit: 20,
       offset: newPage * perPage,
-      start: new Date(),
       preload: ["user", "postsUsers"],
     };
     try {

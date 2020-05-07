@@ -1,5 +1,5 @@
 // React imports
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // Redux/Routing imports
@@ -10,15 +10,18 @@ import {
   doUpdateRemember,
   doUpdateAPI,
 } from "../actions/auth";
-import { actions } from "redux-router5";
+import { actions, createRouteNodeSelector } from "redux-router5";
 
 // External imports
 import { SimpleAuthentication } from "wso-api-client";
-import { getAPI } from "../selectors/auth";
+import { getAPI, getScopes, getTokenLevel } from "../selectors/auth";
 
 const Login = ({
   api,
   navigateTo,
+  route,
+  scopes,
+  tokenLevel,
   updateAPI,
   updateRemember,
   updateToken,
@@ -28,6 +31,30 @@ const Login = ({
   const [password, setPassword] = useState("");
   const [errors, updateErrors] = useState([]);
   const [remember, setRemember] = useState(true);
+
+  useEffect(() => {
+    if (route.params.previousRoute) {
+      if (route.params.requiredLevel) {
+        if (tokenLevel < route.params.requiredLevel) {
+          return;
+        }
+      }
+
+      if (route.params.requiredScopes) {
+        for (const scope of route.params.requiredScopes) {
+          if (!scopes.indexOf(scope)) {
+            return;
+          }
+        }
+      }
+
+      const { name, params } = route.params.previousRoute;
+
+      navigateTo(name, params);
+    }
+    // Assumes API, tokenLevel, and scopes are simultaneously updated
+    // when token changes.
+  }, [api, tokenLevel, scopes, navigateTo, route.params]);
 
   const unixHandler = (event) => {
     const splitValue = event.target.value.split("@");
@@ -118,15 +145,27 @@ const Login = ({
 Login.propTypes = {
   api: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  route: PropTypes.object.isRequired,
+  scopes: PropTypes.arrayOf(PropTypes.string),
+  tokenLevel: PropTypes.number,
   updateAPI: PropTypes.func.isRequired,
   updateRemember: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
   updateToken: PropTypes.func.isRequired,
 };
 
+Login.defaultProps = {
+  scopes: [],
+  tokenLevel: 0,
+};
+
 const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("login");
   return (state) => ({
     api: getAPI(state),
+    scopes: getScopes(state),
+    tokenLevel: getTokenLevel(state),
+    ...routeNodeSelector(state),
   });
 };
 const mapDispatchToProps = (dispatch) => ({

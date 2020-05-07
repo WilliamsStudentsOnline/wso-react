@@ -51,7 +51,29 @@ const updateToken = (state, action) => {
 
 // Updates the user
 const updateUser = (state, action) => {
-  return { ...state, currUser: action.newUser };
+  const newUser = action.newUser;
+
+  // Extract only certain fields
+  const currUser = {
+    id: newUser.id,
+    admin: newUser.admin,
+    unixID: newUser.unixID,
+    dormRoomID: newUser.dormRoomID,
+    hasAcceptedDormtrakPolicy: newUser.hasAcceptedDormtrakPolicy,
+    type: newUser.type,
+    dormRoom: newUser.dormRoom,
+    dorm: newUser.dorm,
+    pronoun: newUser.pronoun,
+    visible: newUser.visible,
+    homeVisible: newUser.homeVisible,
+    dormVisible: newUser.dormVisible,
+    offCycle: newUser.offCycle,
+    factrakAdmin: newUser.factrakAdmin,
+    hasAcceptedFactrakPolicy: newUser.hasAcceptedFactrakPolicy,
+    factrakSurveyDeficit: newUser.factrakSurveyDeficit,
+  };
+
+  return { ...state, currUser };
 };
 
 // Updates the boolean indicating if user info should be stored
