@@ -18,7 +18,7 @@ const FacebookHome = ({ api, route, navigateTo }) => {
   const perPage = 20;
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
-  const [isResultsLoading, updateResultLoadStatus] = useState(true);
+  const [isResultsLoading, updateResultLoadStatus] = useState(false);
 
   // loads the next set of users
   const loadUsers = async (newPage) => {
@@ -48,7 +48,9 @@ const FacebookHome = ({ api, route, navigateTo }) => {
   };
 
   useEffect(() => {
-    updateResultLoadStatus(true);
+    if (route.params.q) {
+      updateResultLoadStatus(true);
+    }
     updateTotal(0);
     loadUsers(0);
     updatePage(0);

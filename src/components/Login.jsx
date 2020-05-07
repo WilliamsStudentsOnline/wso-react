@@ -169,7 +169,8 @@ const mapStateToProps = () => {
   });
 };
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
   updateAPI: (api) => dispatch(doUpdateAPI(api)),
   updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
   updateToken: (response) => dispatch(doUpdateToken(response)),
