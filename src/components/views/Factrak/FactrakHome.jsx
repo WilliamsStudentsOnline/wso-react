@@ -7,13 +7,13 @@ import FactrakDeficitMessage from "./FactrakUtils";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser, getAPIToken } from "../../../selectors/auth";
+import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
 
 // Additional imports
 import { containsScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakHome = ({ api, currUser, token }) => {
+const FactrakHome = ({ wso, currUser, token }) => {
   const [areas, updateAreas] = useState(null);
   const [surveys, updateSurveys] = useState(null);
 
@@ -27,7 +27,7 @@ const FactrakHome = ({ api, currUser, token }) => {
       };
 
       try {
-        const surveysResponse = await api.factrakService.listSurveys(
+        const surveysResponse = await wso.factrakService.listSurveys(
           queryParams
         );
         updateSurveys(surveysResponse.data);
@@ -38,7 +38,7 @@ const FactrakHome = ({ api, currUser, token }) => {
 
     const loadAreas = async () => {
       try {
-        const areasOfStudyResponse = await api.factrakService.listAreasOfStudy();
+        const areasOfStudyResponse = await wso.factrakService.listAreasOfStudy();
 
         const areasOfStudy = areasOfStudyResponse.data;
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
@@ -53,7 +53,7 @@ const FactrakHome = ({ api, currUser, token }) => {
     }
 
     loadAreas();
-  }, [api, token]);
+  }, [wso, token]);
 
   return (
     <article className="dormtrak">
@@ -114,7 +114,7 @@ const FactrakHome = ({ api, currUser, token }) => {
 };
 
 FactrakHome.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
 };
@@ -122,7 +122,7 @@ FactrakHome.propTypes = {
 FactrakHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
   currUser: getCurrUser(state),
   token: getAPIToken(state),
 });

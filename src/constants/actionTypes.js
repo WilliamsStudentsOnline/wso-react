@@ -31,12 +31,12 @@ export const TOGGLE_TYPE = 'TOGGLE_TYPE';
 export const UPDATE_STATE = 'UPDATE_STATE';
 
 // Authentication Reducer
-export const UPDATE_IDEN_TOKEN = 'UPDATE_TOKEN';
 export const UPDATE_API_TOKEN = 'UPDATE_API_TOKEN;'
-export const UPDATE_USER = 'UPDATE_USER';
 export const REMOVE_CREDS = 'REMOVE_CREDS';
+export const UPDATE_IDEN_TOKEN = 'UPDATE_TOKEN';
 export const UPDATE_REMEMBER = 'UPDATE_REMEMBER';
-export const UPDATE_API = 'UPDATE_API';
+export const UPDATE_USER = 'UPDATE_USER';
+export const UPDATE_WSO = 'UPDATE_WSO';
 
 // Util Reducer
 export const UPDATE_WARNING = 'UPDATE_WARNING';

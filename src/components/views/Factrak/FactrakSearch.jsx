@@ -4,14 +4,14 @@ import PropTypes from "prop-types";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
 
 // FactrakSearch refers to the search result page
-const FactrakSearch = ({ api, route }) => {
+const FactrakSearch = ({ wso, route }) => {
   const [profs, updateProfs] = useState(null);
   const [courses, updateCourses] = useState(null);
 
@@ -23,7 +23,7 @@ const FactrakSearch = ({ api, route }) => {
       };
 
       try {
-        const profsResponse = await api.factrakService.listProfessors(
+        const profsResponse = await wso.factrakService.listProfessors(
           queryParams
         );
 
@@ -40,7 +40,7 @@ const FactrakSearch = ({ api, route }) => {
       };
 
       try {
-        const coursesResponse = await api.factrakService.listCourses(
+        const coursesResponse = await wso.factrakService.listCourses(
           queryParams
         );
 
@@ -58,7 +58,7 @@ const FactrakSearch = ({ api, route }) => {
 
     loadProfs();
     loadCourses();
-  }, [api, route.params.q]);
+  }, [wso, route.params.q]);
 
   // Generates the row for one of the professor results.
   const professorRow = (prof) => {
@@ -181,7 +181,7 @@ const FactrakSearch = ({ api, route }) => {
 };
 
 FactrakSearch.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
 };
 
@@ -191,7 +191,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.search");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };

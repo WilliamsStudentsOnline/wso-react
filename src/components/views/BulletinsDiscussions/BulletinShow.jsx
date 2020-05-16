@@ -5,14 +5,14 @@ import { Line, Paragraph } from "../../Skeleton";
 
 // Redux and Routing imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
 import { Link } from "react-router5";
 import { bulletinTypeRide } from "../../../constants/general";
 
-const BulletinShow = ({ api, currUser, route, navigateTo }) => {
+const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
   const [bulletin, updateBulletin] = useState(null);
 
   const deleteHandler = async () => {
@@ -22,9 +22,9 @@ const BulletinShow = ({ api, currUser, route, navigateTo }) => {
 
     try {
       if (bulletin.type) {
-        await api.bulletinService.deleteBulletin(bulletin.id);
+        await wso.bulletinService.deleteBulletin(bulletin.id);
       } else {
-        await api.bulletinService.deleteRide(bulletin.id);
+        await wso.bulletinService.deleteRide(bulletin.id);
       }
       navigateTo("bulletins", {
         type: bulletin.type || bulletinTypeRide,
@@ -41,23 +41,23 @@ const BulletinShow = ({ api, currUser, route, navigateTo }) => {
       try {
         let bulletinResponse;
         if (route.params.type === bulletinTypeRide) {
-          bulletinResponse = await api.bulletinService.getRide(
+          bulletinResponse = await wso.bulletinService.getRide(
             route.params.bulletinID
           );
         } else {
-          bulletinResponse = await api.bulletinService.getBulletin(
+          bulletinResponse = await wso.bulletinService.getBulletin(
             route.params.bulletinID
           );
         }
 
         updateBulletin(bulletinResponse.data);
-      } catch {
-        // eslint-diable-next-line no-empty
+      } catch (error) {
+        if (error.errorCode === 404) navigateTo("404");
       }
     };
 
     loadBulletin();
-  }, [api, route.params.bulletinID, route.params.type]);
+  }, [navigateTo, route.params.bulletinID, route.params.type, wso]);
 
   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
 
@@ -146,8 +146,6 @@ const BulletinShow = ({ api, currUser, route, navigateTo }) => {
     return null;
   };
 
-  // Assumes that the bulletin will always work
-  // TODO: Check what happens when we try to access invalid bulletin link
   if (!bulletin)
     return (
       <article className="list-creation">
@@ -194,10 +192,10 @@ const BulletinShow = ({ api, currUser, route, navigateTo }) => {
 };
 
 BulletinShow.propTypes = {
-  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 BulletinShow.defaultProps = {};
@@ -206,7 +204,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("bulletins.show");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });

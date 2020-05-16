@@ -5,14 +5,14 @@ import PaginationButtons from "../../PaginationButtons";
 import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { connect } from "react-redux";
 
 // Additional Imports
 import { Link } from "react-router5";
 import { format } from "timeago.js";
 
-const DiscussionIndex = ({ api, currUser }) => {
+const DiscussionIndex = ({ wso, currUser }) => {
   const perPage = 20;
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -26,7 +26,7 @@ const DiscussionIndex = ({ api, currUser }) => {
       preload: ["user", "postsUsers"],
     };
     try {
-      const discussionsResponse = await api.bulletinService.listDiscussions(
+      const discussionsResponse = await wso.bulletinService.listDiscussions(
         params
       );
 
@@ -40,7 +40,7 @@ const DiscussionIndex = ({ api, currUser }) => {
   useEffect(() => {
     loadThreads(0);
     // eslint-disable-next-line
-  }, [api]);
+  }, [wso]);
 
   // Handles clicking of the next/previous page
   const clickHandler = (number) => {
@@ -117,7 +117,7 @@ const DiscussionIndex = ({ api, currUser }) => {
     if (!confirmDelete) return;
 
     try {
-      await api.bulletinService.deleteDiscussion(threadID);
+      await wso.bulletinService.deleteDiscussion(threadID);
 
       loadThreads(page);
     } catch {
@@ -198,14 +198,14 @@ const DiscussionIndex = ({ api, currUser }) => {
 };
 
 DiscussionIndex.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
 };
 
 DiscussionIndex.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
   currUser: getCurrUser(state),
 });
 

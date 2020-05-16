@@ -1,17 +1,19 @@
 import {
   UPDATE_API_TOKEN,
-  UPDATE_IDEN_TOKEN,
-  UPDATE_USER,
   REMOVE_CREDS,
+  UPDATE_IDEN_TOKEN,
   UPDATE_REMEMBER,
-  UPDATE_API,
+  UPDATE_USER,
+  UPDATE_WSO,
 } from "../constants/actionTypes";
-import { WSO, API, NoAuthentication } from "wso-api-client";
+import { API, NoAuthentication, WSO } from "wso-api-client";
 
 import jwtDecode from "jwt-decode";
 
-const API_CLIENT = new WSO(
-  new API("http://localhost:8080", new NoAuthentication())
+const API_ADDRESS = "http://localhost:8080";
+
+const DEFAULT_API_CLIENT = new WSO(
+  new API(API_ADDRESS, new NoAuthentication())
 );
 
 const INITIAL_STATE = {
@@ -22,7 +24,7 @@ const INITIAL_STATE = {
   currUser: null, // Stores the user object.
   remember: false,
   tokenLevel: 0,
-  api: API_CLIENT,
+  wso: DEFAULT_API_CLIENT,
 };
 
 // Method to get scopes.
@@ -36,7 +38,6 @@ const parseToken = (token) => {
 };
 
 // Updates the identity token
-// TODO is it the identity token or api token that has scopes?
 const updateIdenToken = (state, action) => {
   const token = action.token;
 
@@ -93,9 +94,9 @@ const updateRemember = (state, action) => {
   return { ...state, remember: action.remember };
 };
 
-// Updates the API object used for API calls
-const updateAPI = (state, action) => {
-  return { ...state, api: action.api };
+// Updates the WSO object used for wso calls
+const updateWSO = (state, action) => {
+  return { ...state, wso: action.wso };
 };
 
 // Remove authentication credentials from storage
@@ -115,8 +116,8 @@ function authReducer(state = INITIAL_STATE, action) {
       return removeCreds();
     case UPDATE_REMEMBER:
       return updateRemember(state, action);
-    case UPDATE_API:
-      return updateAPI(state, action);
+    case UPDATE_WSO:
+      return updateWSO(state, action);
     default:
       return state;
   }

@@ -6,7 +6,7 @@ import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
 import { Link } from "react-router5";
@@ -19,7 +19,7 @@ import {
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
 
-const BulletinBox = ({ api, typeWord }) => {
+const BulletinBox = ({ wso, typeWord }) => {
   const [threads, updateThreads] = useState(null);
 
   // Converts the typeWord to the type of bulletin/discussion to be obtained.
@@ -42,11 +42,11 @@ const BulletinBox = ({ api, typeWord }) => {
     const getThreads = async () => {
       let response;
       if (type === discussionType) {
-        response = await api.bulletinService.listDiscussions(loadParams);
+        response = await wso.bulletinService.listDiscussions(loadParams);
       } else if (type === bulletinTypeRide) {
-        response = await api.bulletinService.listRides(loadParams);
+        response = await wso.bulletinService.listRides(loadParams);
       } else {
-        response = await api.bulletinService.listBulletins(loadParams);
+        response = await wso.bulletinService.listBulletins(loadParams);
       }
       if (isMounted) {
         updateThreads(response.data);
@@ -54,7 +54,7 @@ const BulletinBox = ({ api, typeWord }) => {
     };
 
     try {
-      if (api.isAuthenticated()) {
+      if (wso.isAuthenticated()) {
         getThreads();
       }
     } catch (e) {
@@ -65,7 +65,7 @@ const BulletinBox = ({ api, typeWord }) => {
     return () => {
       isMounted = false;
     };
-  }, [api, type]);
+  }, [wso, type]);
 
   const formatDate = (showDate) => {
     const options = {
@@ -184,14 +184,14 @@ const BulletinBox = ({ api, typeWord }) => {
 };
 
 BulletinBox.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   typeWord: PropTypes.string.isRequired,
 };
 
 BulletinBox.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
 });
 
 export default connect(mapStateToProps)(BulletinBox);

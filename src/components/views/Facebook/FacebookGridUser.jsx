@@ -8,13 +8,13 @@ import { Link } from "react-router5";
 // Additional Imports
 import { userTypeStudent } from "../../../constants/general";
 
-const FacebookGridUser = ({ api, gridUser, gridUserClassYear }) => {
+const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
   const [userPhoto, updateUserPhoto] = useState(null);
 
   useEffect(() => {
     const loadPhoto = async () => {
       try {
-        const photoResponse = await api.userService.getUserLargePhoto(
+        const photoResponse = await wso.userService.getUserLargePhoto(
           gridUser.unixID
         );
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
@@ -24,7 +24,7 @@ const FacebookGridUser = ({ api, gridUser, gridUserClassYear }) => {
     };
 
     loadPhoto();
-  }, [api, gridUser.unixID]);
+  }, [wso, gridUser.unixID]);
 
   // Generates the unix id field in grid view
   const gridUnixID = (user) => {
@@ -93,7 +93,7 @@ const FacebookGridUser = ({ api, gridUser, gridUserClassYear }) => {
 };
 
 FacebookGridUser.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   gridUser: PropTypes.object.isRequired,
   gridUserClassYear: PropTypes.string,
 };

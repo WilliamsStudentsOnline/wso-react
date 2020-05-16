@@ -5,10 +5,10 @@ import PropTypes from "prop-types";
 // Redux imports
 import { actions } from "redux-router5";
 import { connect } from "react-redux";
-import { getCurrUser, getAPI } from "../../../selectors/auth";
+import { getCurrUser, getWSO } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 
-const FactrakPolicy = ({ api, currUser, navigateTo, updateUser }) => {
+const FactrakPolicy = ({ wso, currUser, navigateTo, updateUser }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
 
   // Handles clicking of the accept policy checkbox
@@ -25,7 +25,7 @@ const FactrakPolicy = ({ api, currUser, navigateTo, updateUser }) => {
     };
 
     try {
-      const response = await api.userService.updateUser("me", updateParams);
+      const response = await wso.userService.updateUser("me", updateParams);
       updateUser(response.data);
       navigateTo("factrak");
     } catch {
@@ -125,14 +125,14 @@ const FactrakPolicy = ({ api, currUser, navigateTo, updateUser }) => {
 };
 
 FactrakPolicy.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
   currUser: getCurrUser(state),
 });
 

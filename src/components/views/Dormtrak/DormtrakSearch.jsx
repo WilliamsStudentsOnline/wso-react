@@ -4,13 +4,13 @@ import PropTypes from "prop-types";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
 
-const DormtrakSearch = ({ api, route }) => {
+const DormtrakSearch = ({ wso, route }) => {
   const [dorms, updateDorms] = useState(null);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const DormtrakSearch = ({ api, route }) => {
       };
 
       try {
-        const dormsResponse = await api.dormtrakService.listDorms(queryParams);
+        const dormsResponse = await wso.dormtrakService.listDorms(queryParams);
         updateDorms(dormsResponse.data.sort((a, b) => a.name > b.name));
       } catch {
         updateDorms([]);
@@ -29,7 +29,7 @@ const DormtrakSearch = ({ api, route }) => {
     };
 
     loadDorms();
-  }, [api, route.params.q]);
+  }, [wso, route.params.q]);
 
   return (
     <article className="facebook-results">
@@ -78,7 +78,7 @@ const DormtrakSearch = ({ api, route }) => {
 };
 
 DormtrakSearch.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
 };
 
@@ -88,7 +88,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak.search");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };

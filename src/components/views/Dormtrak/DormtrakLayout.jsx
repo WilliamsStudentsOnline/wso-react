@@ -4,20 +4,20 @@ import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
 
-const DormtrakLayout = ({ api, children, currUser, navigateTo }) => {
+const DormtrakLayout = ({ wso, children, currUser, navigateTo }) => {
   const [neighborhoods, updateNeighborhoods] = useState([]);
   const [query, updateQuery] = useState("");
 
   useEffect(() => {
     const loadRankings = async () => {
       try {
-        const neighborhoodsResponse = await api.dormtrakService.listNeighborhoods();
+        const neighborhoodsResponse = await wso.dormtrakService.listNeighborhoods();
         updateNeighborhoods(neighborhoodsResponse.data);
       } catch {
         // eslint-disable-next-line no-empty
@@ -25,7 +25,7 @@ const DormtrakLayout = ({ api, children, currUser, navigateTo }) => {
     };
 
     loadRankings();
-  }, [api]);
+  }, [wso]);
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -101,7 +101,7 @@ const DormtrakLayout = ({ api, children, currUser, navigateTo }) => {
 };
 
 DormtrakLayout.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
@@ -110,7 +110,7 @@ DormtrakLayout.propTypes = {
 DormtrakLayout.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
   currUser: getCurrUser(state),
 });
 

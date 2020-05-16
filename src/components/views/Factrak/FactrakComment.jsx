@@ -6,7 +6,7 @@ import Button from "../../Components";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 import { actions } from "redux-router5";
 
@@ -16,7 +16,7 @@ import { format } from "timeago.js";
 
 const FactrakComment = ({
   abridged,
-  api,
+  wso,
   comment,
   currUser,
   navigateTo,
@@ -29,7 +29,7 @@ const FactrakComment = ({
   // Get the survey and update it after editing.
   const getAndUpdateSurvey = async () => {
     try {
-      const surveyResponse = await api.factrakService.getSurvey(survey.id);
+      const surveyResponse = await wso.factrakService.getSurvey(survey.id);
       updateSurvey(surveyResponse.data);
     } catch {
       // eslint-disable-next-line no-empty
@@ -42,9 +42,9 @@ const FactrakComment = ({
     if (!confirmDelete) return;
 
     try {
-      await api.factrakService.deleteSurvey(survey.id);
+      await wso.factrakService.deleteSurvey(survey.id);
       updateDeleted(true);
-      const userResponse = await api.userService.getUser();
+      const userResponse = await wso.userService.getUser();
       updateUser(userResponse.data);
     } catch {
       // eslint-disable-next-line no-empty
@@ -58,15 +58,15 @@ const FactrakComment = ({
     try {
       if (survey && survey.clientAgreement !== undefined) {
         if (survey.clientAgreement === agree) {
-          await api.factrakService.deleteSurveyAgreement(survey.id);
+          await wso.factrakService.deleteSurveyAgreement(survey.id);
         } else {
-          await api.factrakService.updateSurveyAgreement(
+          await wso.factrakService.updateSurveyAgreement(
             survey.id,
             agreeParams
           );
         }
       } else {
-        await api.factrakService.createSurveyAgreement(survey.id, agreeParams);
+        await wso.factrakService.createSurveyAgreement(survey.id, agreeParams);
       }
 
       getAndUpdateSurvey();
@@ -126,7 +126,7 @@ const FactrakComment = ({
   // Handling flagging
   const flagHandler = async () => {
     try {
-      await api.factrakService.flagSurvey(survey.id);
+      await wso.factrakService.flagSurvey(survey.id);
 
       getAndUpdateSurvey();
     } catch {
@@ -322,7 +322,7 @@ const FactrakComment = ({
 
 FactrakComment.propTypes = {
   abridged: PropTypes.bool.isRequired,
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   comment: PropTypes.object,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
@@ -355,7 +355,7 @@ const FactrakCommentSkeleton = () => (
 );
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
   currUser: getCurrUser(state),
 });
 

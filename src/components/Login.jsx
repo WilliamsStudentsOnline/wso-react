@@ -5,29 +5,30 @@ import PropTypes from "prop-types";
 // Redux/Routing imports
 import { connect } from "react-redux";
 import {
-  doUpdateAPI,
   doUpdateAPIToken,
   doUpdateIdentityToken,
   doUpdateRemember,
   doUpdateUser,
+  doUpdateWSO,
 } from "../actions/auth";
 import { actions, createRouteNodeSelector } from "redux-router5";
 
 // External imports
 import { SimpleAuthentication } from "wso-api-client";
-import { getAPI, getScopes, getTokenLevel } from "../selectors/auth";
+import { getWSO, getScopes, getTokenLevel } from "../selectors/auth";
+import configureInterceptors from "../lib/auth";
 
 const Login = ({
-  api,
+  wso,
   navigateTo,
   route,
   scopes,
   tokenLevel,
-  updateAPI,
   updateAPIToken,
   updateIdenToken,
   updateRemember,
   updateUser,
+  updateWSO,
 }) => {
   const [unixID, setUnix] = useState("");
   const [password, setPassword] = useState("");
@@ -53,9 +54,9 @@ const Login = ({
       const { name, params } = route.params.previousRoute;
       navigateTo(name, params);
     }
-    // Assumes API, tokenLevel, and scopes are simultaneously updated
+    // Assumes wso, tokenLevel, and scopes are simultaneously updated
     // when token changes.
-  }, [api, tokenLevel, scopes, navigateTo, route.params]);
+  }, [wso, tokenLevel, scopes, navigateTo, route.params]);
 
   // TODO: this shouldn't be coded this way. - it's better to do the splitting in the sign in.
   const unixHandler = (event) => {
@@ -73,22 +74,24 @@ const Login = ({
     }
 
     try {
-      const tokenResponse = await api.authService.getIdentityToken({
+      const tokenResponse = await wso.authService.getIdentityToken({
         unixID,
         password,
       });
       const identityToken = tokenResponse.token;
 
-      const apiTokenResponse = await api.authService.getAPIToken(identityToken);
+      const apiTokenResponse = await wso.authService.getAPIToken(identityToken);
       const apiToken = apiTokenResponse.token;
 
       const updatedAuth = new SimpleAuthentication(apiToken);
-      const updatedAPI = api.updateAuth(updatedAuth);
+      const updatedWSO = wso.updateAuth(updatedAuth);
+      configureInterceptors(updatedWSO);
 
-      const userResponse = await updatedAPI.userService.getUser("me");
+      const userResponse = await updatedWSO.userService.getUser("me");
+
       updateUser(userResponse.data);
       updateRemember(remember);
-      updateAPI(updatedAPI);
+      updateWSO(updatedWSO);
       updateIdenToken(identityToken);
       updateAPIToken(apiToken);
       navigateTo("home");
@@ -151,16 +154,16 @@ const Login = ({
 };
 
 Login.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
   scopes: PropTypes.arrayOf(PropTypes.string),
   tokenLevel: PropTypes.number,
-  updateAPI: PropTypes.func.isRequired,
   updateAPIToken: PropTypes.func.isRequired,
   updateIdenToken: PropTypes.func.isRequired,
   updateRemember: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
+  updateWSO: PropTypes.func.isRequired,
 };
 
 Login.defaultProps = {
@@ -171,7 +174,7 @@ Login.defaultProps = {
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("login");
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     scopes: getScopes(state),
     tokenLevel: getTokenLevel(state),
     ...routeNodeSelector(state),
@@ -180,11 +183,11 @@ const mapStateToProps = () => {
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location, params, opts) =>
     dispatch(actions.navigateTo(location, params, opts)),
-  updateAPI: (api) => dispatch(doUpdateAPI(api)),
   updateAPIToken: (token) => dispatch(doUpdateAPIToken(token)),
   updateIdenToken: (token) => dispatch(doUpdateIdentityToken(token)),
   updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
   updateUser: (unixID) => dispatch(doUpdateUser(unixID)),
+  updateWSO: (wso) => dispatch(doUpdateWSO(wso)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 
 // Redux / Routing imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
-const DormtrakReviewForm = ({ api, route, navigateTo, currUser }) => {
+const DormtrakReviewForm = ({ wso, route, navigateTo, currUser }) => {
   const [review, updateReview] = useState(null);
 
   const edit = route.name.split(".")[1] === "editReview";
@@ -54,13 +54,13 @@ const DormtrakReviewForm = ({ api, route, navigateTo, currUser }) => {
 
     try {
       if (edit) {
-        await api.dormtrakService.updateReview(review.id, reviewParams);
+        await wso.dormtrakService.updateReview(review.id, reviewParams);
       } else {
-        await api.dormtrakService.createReview(reviewParams);
+        await wso.dormtrakService.createReview(reviewParams);
       }
       navigateTo("dormtrak");
     } catch (error) {
-      updateErrors(error.message);
+      updateErrors([error.message]);
     }
   };
 
@@ -69,7 +69,7 @@ const DormtrakReviewForm = ({ api, route, navigateTo, currUser }) => {
   useEffect(() => {
     const loadReview = async (reviewID) => {
       try {
-        const reviewResponse = await api.dormtrakService.getReview(reviewID);
+        const reviewResponse = await wso.dormtrakService.getReview(reviewID);
 
         const reviewData = reviewResponse.data;
 
@@ -96,7 +96,7 @@ const DormtrakReviewForm = ({ api, route, navigateTo, currUser }) => {
     };
 
     if (reviewParam) loadReview(reviewParam);
-  }, [api, reviewParam]);
+  }, [wso, reviewParam]);
 
   // Generator for the various MCQ options
   const optionBuilder = (options, labels, type, changeHandler) => {
@@ -368,7 +368,7 @@ const DormtrakReviewForm = ({ api, route, navigateTo, currUser }) => {
 };
 
 DormtrakReviewForm.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
@@ -378,7 +378,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak.reviews");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });

@@ -7,7 +7,7 @@ import DormtrakRecentComments from "./DormtrakRecentComments";
 import { Line, Photo, Paragraph } from "../../Skeleton";
 
 // Redux/ Routing imports
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { connect } from "react-redux";
 import { createRouteNodeSelector } from "redux-router5";
 
@@ -16,7 +16,7 @@ import { bannerHelper } from "../../../lib/imageHelper";
 import { Link } from "react-router5";
 import { userTypeStudent } from "../../../constants/general";
 
-const DormtrakShow = ({ api, route, currUser }) => {
+const DormtrakShow = ({ wso, route, currUser }) => {
   const [reviews, updateReviews] = useState(null);
   const [dorm, updateDorm] = useState(null);
 
@@ -25,7 +25,7 @@ const DormtrakShow = ({ api, route, currUser }) => {
 
     const loadDorm = async () => {
       try {
-        const dormResponse = await api.dormtrakService.getDorm(dormID);
+        const dormResponse = await wso.dormtrakService.getDorm(dormID);
         updateDorm(dormResponse.data);
       } catch {
         // eslint-disable-next-line no-empty
@@ -35,7 +35,7 @@ const DormtrakShow = ({ api, route, currUser }) => {
     const loadDormReviews = async () => {
       const queryParams = { dormID, commented: true };
       try {
-        const dormReviewResponse = await api.dormtrakService.listReviews(
+        const dormReviewResponse = await wso.dormtrakService.listReviews(
           queryParams
         );
         updateReviews(dormReviewResponse.data);
@@ -46,7 +46,7 @@ const DormtrakShow = ({ api, route, currUser }) => {
 
     loadDorm();
     loadDormReviews();
-  }, [api, route.params.dormID]);
+  }, [wso, route.params.dormID]);
 
   const checkUserCommentRights = () => {
     if (!currUser || !currUser.dorm) return false;
@@ -89,7 +89,7 @@ const DormtrakShow = ({ api, route, currUser }) => {
   return (
     <div className="container">
       <aside className="sidebar">
-        <DormtrakFacts dorm={dorm || undefined} api={api} />
+        <DormtrakFacts dorm={dorm || undefined} wso={wso} />
         <hr />
 
         <section className="building-rooms">
@@ -121,7 +121,7 @@ const DormtrakShow = ({ api, route, currUser }) => {
 };
 
 DormtrakShow.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
 };
@@ -132,7 +132,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak.dorms");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });

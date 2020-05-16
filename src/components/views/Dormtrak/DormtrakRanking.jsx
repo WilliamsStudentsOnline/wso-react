@@ -5,18 +5,18 @@ import { Line } from "../../Skeleton";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
 import { Link } from "react-router5";
 
-const DormtrakRanking = ({ api }) => {
+const DormtrakRanking = ({ wso }) => {
   const [dormInfo, updateDormsInfo] = useState(null);
 
   useEffect(() => {
     const loadRankings = async () => {
       try {
-        const rankingsResponse = await api.dormtrakService.getRankings();
+        const rankingsResponse = await wso.dormtrakService.getRankings();
         updateDormsInfo(rankingsResponse.data);
       } catch {
         // eslint-disable-next-line no-empty
@@ -24,7 +24,7 @@ const DormtrakRanking = ({ api }) => {
     };
 
     loadRankings();
-  }, [api]);
+  }, [wso]);
 
   const times = [0, 0, 0];
 
@@ -241,13 +241,13 @@ const DormtrakRanking = ({ api }) => {
 };
 
 DormtrakRanking.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DormtrakRanking.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
 });
 
 export default connect(mapStateToProps)(DormtrakRanking);

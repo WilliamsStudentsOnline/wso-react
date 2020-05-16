@@ -4,11 +4,11 @@ import PropTypes from "prop-types";
 
 // Redux/routing imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
 // Page created to handle both opting in and out.
-const EphmatchOptOut = ({ api, navigateTo }) => {
+const EphmatchOptOut = ({ wso, navigateTo }) => {
   // Note that this is different from Ephcatch
   const [optOut, updateOptOut] = useState(false);
 
@@ -17,7 +17,7 @@ const EphmatchOptOut = ({ api, navigateTo }) => {
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
       try {
-        const ownProfile = await api.ephmatchService.getSelfProfile();
+        const ownProfile = await wso.ephmatchService.getSelfProfile();
         if (isMounted) {
           updateOptOut(ownProfile.deleted);
         }
@@ -31,13 +31,13 @@ const EphmatchOptOut = ({ api, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [api]);
+  }, [wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await api.ephmatchService.deleteSelfProfile();
+      const response = await wso.ephmatchService.deleteSelfProfile();
       // Update succeeded -> redirect them to main ephmatch page.
       navigateTo("ephmatch", { profile: response.data }, { reload: true });
     } catch {
@@ -87,14 +87,14 @@ const EphmatchOptOut = ({ api, navigateTo }) => {
 };
 
 EphmatchOptOut.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
 EphmatchOptOut.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

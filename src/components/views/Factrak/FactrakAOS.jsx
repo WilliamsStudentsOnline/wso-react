@@ -5,13 +5,13 @@ import { Line } from "../../Skeleton";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
 import { Link } from "react-router5";
 
-const FactrakAOS = ({ api, route }) => {
+const FactrakAOS = ({ wso, route }) => {
   const [courses, updateCourses] = useState(null);
   const [profs, updateProfs] = useState(null);
   const [area, updateArea] = useState({});
@@ -25,7 +25,7 @@ const FactrakAOS = ({ api, route }) => {
       const params = { areaOfStudyID };
 
       try {
-        const profsResponse = await api.factrakService.listProfessors(params);
+        const profsResponse = await wso.factrakService.listProfessors(params);
         updateProfs(profsResponse.data);
       } catch {
         // eslint-disable-next-line no-empty
@@ -37,7 +37,7 @@ const FactrakAOS = ({ api, route }) => {
       const params = { areaOfStudyID, preload: ["professors"] };
 
       try {
-        const coursesResponse = await api.factrakService.listCourses(params);
+        const coursesResponse = await wso.factrakService.listCourses(params);
         const coursesData = coursesResponse.data;
         updateCourses(coursesData.sort((a, b) => a.number > b.number));
       } catch {
@@ -48,7 +48,7 @@ const FactrakAOS = ({ api, route }) => {
     // Loads additional information regarding the area of study
     const loadAOS = async (areaID) => {
       try {
-        const areaOfStudyResponse = await api.factrakService.getAreaOfStudy(
+        const areaOfStudyResponse = await wso.factrakService.getAreaOfStudy(
           areaID
         );
 
@@ -61,7 +61,7 @@ const FactrakAOS = ({ api, route }) => {
     loadProfs(areaParam);
     loadCourses(areaParam);
     loadAOS(areaParam);
-  }, [api, route.params.area]);
+  }, [wso, route.params.area]);
 
   // Generates a row containing the prof information.
   const generateProfRow = (prof) => {
@@ -223,7 +223,7 @@ const FactrakAOS = ({ api, route }) => {
 };
 
 FactrakAOS.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
 };
 
@@ -231,7 +231,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.areasOfStudy");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };

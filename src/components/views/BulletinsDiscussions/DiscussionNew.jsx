@@ -5,9 +5,9 @@ import PropTypes from "prop-types";
 // Redux/Routing imports
 import { connect } from "react-redux";
 import { actions } from "redux-router5";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 
-const DiscussionsNew = ({ api, navigateTo }) => {
+const DiscussionsNew = ({ wso, navigateTo }) => {
   const [errors, updateErrors] = useState([]);
 
   // Discussion parameters
@@ -49,13 +49,13 @@ const DiscussionsNew = ({ api, navigateTo }) => {
     const params = { title, content };
 
     try {
-      const response = await api.bulletinService.createDiscussion(params);
+      const response = await wso.bulletinService.createDiscussion(params);
       navigateTo("discussions.show", { discussionID: response.data.id });
     } catch (error) {
       if (error.errors) {
         updateErrors(error.errors);
       } else {
-        updateErrors(error.message);
+        updateErrors([error.message]);
       }
     }
   };
@@ -92,14 +92,14 @@ const DiscussionsNew = ({ api, navigateTo }) => {
 };
 
 DiscussionsNew.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
 DiscussionsNew.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

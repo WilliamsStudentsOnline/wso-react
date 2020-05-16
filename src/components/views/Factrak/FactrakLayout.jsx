@@ -4,13 +4,13 @@ import PropTypes from "prop-types";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
 
-const FactrakLayout = ({ api, children, currUser, navigateTo, route }) => {
+const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -30,7 +30,7 @@ const FactrakLayout = ({ api, children, currUser, navigateTo, route }) => {
     let suggestData = [];
 
     try {
-      const factrakResponse = await api.autocompleteService.autocompleteFactrak(
+      const factrakResponse = await wso.autocompleteService.autocompleteFactrak(
         query
       );
 
@@ -184,7 +184,7 @@ const FactrakLayout = ({ api, children, currUser, navigateTo, route }) => {
 };
 
 FactrakLayout.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired,
   currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
@@ -197,7 +197,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });

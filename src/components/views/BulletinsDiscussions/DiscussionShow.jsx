@@ -6,10 +6,10 @@ import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { createRouteNodeSelector } from "redux-router5";
-import { getAPI } from "../../../selectors/auth";
+import { actions, createRouteNodeSelector } from "redux-router5";
+import { getWSO } from "../../../selectors/auth";
 
-const DiscussionShow = ({ api, route }) => {
+const DiscussionShow = ({ navigateTo, route, wso }) => {
   const [posts, updatePosts] = useState(null);
   const [reply, updateReply] = useState("");
   const [discussion, updateDiscussion] = useState(null);
@@ -19,7 +19,7 @@ const DiscussionShow = ({ api, route }) => {
   useEffect(() => {
     const loadDiscussion = async () => {
       try {
-        const discussionResponse = await api.bulletinService.getDiscussion(
+        const discussionResponse = await wso.bulletinService.getDiscussion(
           route.params.discussionID,
           ["posts", "postsUsers"]
         );
@@ -27,16 +27,12 @@ const DiscussionShow = ({ api, route }) => {
         updateDiscussion(discussionResponse.data);
         updatePosts(discussionResponse.data.posts || []);
       } catch (error) {
-        if (error.errors) {
-          updateErrors(error.errors);
-        } else {
-          updateErrors(error.message);
-        }
+        if (error.errorCode === 404) navigateTo("404");
       }
     };
 
     loadDiscussion();
-  }, [api, route.params.discussionID]);
+  }, [navigateTo, route.params.discussionID, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -46,11 +42,15 @@ const DiscussionShow = ({ api, route }) => {
     const params = { content: reply, discussionID: discussion.id };
 
     try {
-      const response = await api.bulletinService.createPost(params);
+      const response = await wso.bulletinService.createPost(params);
       updatePosts(posts.concat([response.data]));
       updateReply("");
     } catch (error) {
-      // eslint-disable-next-line no-empty
+      if (error.message) {
+        updateErrors([error.message]);
+      } else if (error.errors) {
+        updateErrors(error.errors);
+      }
     }
   };
 
@@ -75,7 +75,6 @@ const DiscussionShow = ({ api, route }) => {
             value={reply}
             onChange={(event) => updateReply(event.target.value)}
           />
-
           {errors && errors.length > 0 && (
             <div id="errors">
               <b>Please correct the following error(s):</b>
@@ -112,8 +111,9 @@ const DiscussionShow = ({ api, route }) => {
 };
 
 DiscussionShow.propTypes = {
-  api: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DiscussionShow.defaultProps = {};
@@ -122,9 +122,14 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("discussions");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
 
-export default connect(mapStateToProps)(DiscussionShow);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DiscussionShow);

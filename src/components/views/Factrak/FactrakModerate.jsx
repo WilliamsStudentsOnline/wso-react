@@ -4,19 +4,19 @@ import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
 import { Link } from "react-router5";
 
-const FactrakModerate = ({ api }) => {
+const FactrakModerate = ({ wso }) => {
   const [flagged, updateFlagged] = useState([]);
 
   // Loads all the flagged courses on mount.
   useEffect(() => {
     const loadFlagged = async () => {
       try {
-        const flaggedResponse = await api.factrakService.listFlaggedSurveysAdmin(
+        const flaggedResponse = await wso.factrakService.listFlaggedSurveysAdmin(
           {
             preload: ["professor", "course"],
             populateAgreements: true,
@@ -30,12 +30,12 @@ const FactrakModerate = ({ api }) => {
     };
 
     loadFlagged();
-  }, [api]);
+  }, [wso]);
 
   // Unflag the survey
   const unflag = async (surveyID) => {
     try {
-      await api.factrakService.unflagSurveyAdmin(surveyID);
+      await wso.factrakService.unflagSurveyAdmin(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
     } catch {
       // eslint-disable-next-line no-empty
@@ -49,7 +49,7 @@ const FactrakModerate = ({ api }) => {
     if (!confirmDelete) return;
 
     try {
-      await api.factrakService.deleteSurvey(surveyID);
+      await wso.factrakService.deleteSurvey(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
     } catch {
       // eslint-disable-next-line no-empty
@@ -114,10 +114,10 @@ const FactrakModerate = ({ api }) => {
 };
 
 FactrakModerate.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
 });
 export default connect(mapStateToProps)(FactrakModerate);

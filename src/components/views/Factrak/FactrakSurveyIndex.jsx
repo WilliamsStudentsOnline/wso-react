@@ -5,9 +5,9 @@ import FactrakComment from "./FactrakComment";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 
-const FactrakSurveyIndex = ({ api, currUser }) => {
+const FactrakSurveyIndex = ({ wso, currUser }) => {
   const [surveys, updateSurveys] = useState([]);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const FactrakSurveyIndex = ({ api, currUser }) => {
       };
 
       try {
-        const userSurveyResponse = await api.factrakService.listSurveys(params);
+        const userSurveyResponse = await wso.factrakService.listSurveys(params);
 
         updateSurveys(userSurveyResponse.data);
       } catch {
@@ -28,7 +28,7 @@ const FactrakSurveyIndex = ({ api, currUser }) => {
     };
 
     loadUserSurveys();
-  }, [api, currUser.id]);
+  }, [wso, currUser.id]);
 
   return (
     <div className="article">
@@ -58,14 +58,14 @@ const FactrakSurveyIndex = ({ api, currUser }) => {
 };
 
 FactrakSurveyIndex.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
 };
 
 FactrakSurveyIndex.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
   currUser: getCurrUser(state),
 });
 

@@ -11,9 +11,9 @@ import EphmatchOptIn from "./EphmatchOptIn";
 // Redux/Routing imports
 import { connect } from "react-redux";
 import { actions, createRouteNodeSelector } from "redux-router5";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 
-const EphmatchMain = ({ api, route, navigateTo, profile }) => {
+const EphmatchMain = ({ wso, route, navigateTo, profile }) => {
   const [ephmatchProfile, updateEphmatchProfile] = useState(profile);
   const [hasQueriedProfile, updateHasQueriedProfile] = useState(false);
   const [matches, updateMatches] = useState([]);
@@ -24,7 +24,7 @@ const EphmatchMain = ({ api, route, navigateTo, profile }) => {
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
       try {
-        const ownProfile = await api.ephmatchService.getSelfProfile();
+        const ownProfile = await wso.ephmatchService.getSelfProfile();
         if (isMounted) {
           updateEphmatchProfile(ownProfile.data);
         }
@@ -35,7 +35,7 @@ const EphmatchMain = ({ api, route, navigateTo, profile }) => {
     };
     const loadMatches = async () => {
       try {
-        const ephmatchersResponse = await api.ephmatchService.listMatches();
+        const ephmatchersResponse = await wso.ephmatchService.listMatches();
         updateMatches(ephmatchersResponse.data);
       } catch {
         // eslint-disable-next-line no-empty
@@ -49,7 +49,7 @@ const EphmatchMain = ({ api, route, navigateTo, profile }) => {
     return () => {
       isMounted = false;
     };
-  }, [api, route]);
+  }, [wso, route]);
 
   const hasValidEphmatchProfile = () => {
     return ephmatchProfile && !ephmatchProfile.deleted;
@@ -95,7 +95,7 @@ const EphmatchMain = ({ api, route, navigateTo, profile }) => {
 };
 
 EphmatchMain.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   profile: PropTypes.object,
   route: PropTypes.object.isRequired,
@@ -107,7 +107,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("ephmatch");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };

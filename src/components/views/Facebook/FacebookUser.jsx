@@ -5,14 +5,14 @@ import { Line, Photo } from "../../Skeleton";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
 import { ConnectedLink } from "react-router5";
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 
-const FacebookUser = ({ api, currUser, route, navigateTo }) => {
+const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
   const [viewPerson, updateTarget] = useState(null);
   const [userPhoto, updateUserPhoto] = useState(undefined);
 
@@ -24,11 +24,11 @@ const FacebookUser = ({ api, currUser, route, navigateTo }) => {
       }
 
       try {
-        const targetResponse = await api.userService.getUser(
+        const targetResponse = await wso.userService.getUser(
           route.params.userID
         );
         updateTarget(targetResponse.data);
-        const photoResponse = await api.userService.getUserLargePhoto(
+        const photoResponse = await wso.userService.getUserLargePhoto(
           targetResponse.data.unixID
         );
 
@@ -39,7 +39,7 @@ const FacebookUser = ({ api, currUser, route, navigateTo }) => {
     };
 
     loadTarget();
-  }, [api, route.params.userID, navigateTo]);
+  }, [wso, route.params.userID, navigateTo]);
 
   // Returns the room/ office information of the user.
   const userRoom = () => {
@@ -305,7 +305,7 @@ const FacebookUser = ({ api, currUser, route, navigateTo }) => {
 };
 
 FacebookUser.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
@@ -317,7 +317,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("facebook.users");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });

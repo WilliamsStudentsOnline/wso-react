@@ -1,10 +1,10 @@
 import {
-  UPDATE_IDEN_TOKEN,
   UPDATE_API_TOKEN,
-  UPDATE_USER,
   REMOVE_CREDS,
+  UPDATE_IDEN_TOKEN,
   UPDATE_REMEMBER,
-  UPDATE_API,
+  UPDATE_USER,
+  UPDATE_WSO,
 } from "../constants/actionTypes";
 
 const doUpdateIdentityToken = (token) => ({
@@ -31,9 +31,9 @@ const doUpdateRemember = (remember) => ({
   remember,
 });
 
-const doUpdateAPI = (api) => ({
-  type: UPDATE_API,
-  api,
+const doUpdateWSO = (wso) => ({
+  type: UPDATE_WSO,
+  wso,
 });
 
 export {
@@ -42,5 +42,5 @@ export {
   doUpdateUser,
   doRemoveCreds,
   doUpdateRemember,
-  doUpdateAPI,
+  doUpdateWSO,
 };

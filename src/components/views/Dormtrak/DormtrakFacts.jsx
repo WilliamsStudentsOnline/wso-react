@@ -6,13 +6,13 @@ import { Circle } from "../../Skeleton";
 // External Imports
 import { Chart } from "react-google-charts";
 
-const DormtrakFacts = ({ api, dorm }) => {
+const DormtrakFacts = ({ wso, dorm }) => {
   const [facts, updateFacts] = useState(null);
 
   useEffect(() => {
     const loadFacts = async () => {
       try {
-        const factResponse = await api.dormtrakService.getDormFacts(dorm.id);
+        const factResponse = await wso.dormtrakService.getDormFacts(dorm.id);
 
         updateFacts(factResponse.data);
       } catch {
@@ -21,7 +21,7 @@ const DormtrakFacts = ({ api, dorm }) => {
     };
 
     if (dorm && dorm.id) loadFacts();
-  }, [api, dorm]);
+  }, [wso, dorm]);
 
   const classBreakdown = () => {
     if (!dorm || !facts) {
@@ -215,7 +215,7 @@ const DormtrakFacts = ({ api, dorm }) => {
 };
 
 DormtrakFacts.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   dorm: PropTypes.object,
 };
 

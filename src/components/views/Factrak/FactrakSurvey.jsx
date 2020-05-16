@@ -5,10 +5,10 @@ import "../../stylesheets/FactrakSurvey.css";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
-const FactrakSurvey = ({ api, route, navigateTo }) => {
+const FactrakSurvey = ({ wso, route, navigateTo }) => {
   const [survey, updateSurvey] = useState(null);
   const [prof, updateProf] = useState(null);
 
@@ -34,7 +34,7 @@ const FactrakSurvey = ({ api, route, navigateTo }) => {
   useEffect(() => {
     const loadProf = async (professorID) => {
       try {
-        const profResponse = await api.factrakService.getProfessor(professorID);
+        const profResponse = await wso.factrakService.getProfessor(professorID);
         updateProf(profResponse.data);
       } catch {
         // eslint-disable-next-line no-empty
@@ -43,7 +43,7 @@ const FactrakSurvey = ({ api, route, navigateTo }) => {
 
     const loadSurvey = async (surveyID) => {
       try {
-        const surveyResponse = await api.factrakService.getSurvey(surveyID);
+        const surveyResponse = await wso.factrakService.getSurvey(surveyID);
         const surveyData = surveyResponse.data;
 
         // Could use a defaultSurvey and update that object, but will hardly save any lines.
@@ -66,7 +66,7 @@ const FactrakSurvey = ({ api, route, navigateTo }) => {
 
     const loadAreasOfStudy = async () => {
       try {
-        const areasOfStudyResponse = await api.factrakService.listAreasOfStudy();
+        const areasOfStudyResponse = await wso.factrakService.listAreasOfStudy();
         updateAreasOfStudy(areasOfStudyResponse.data);
       } catch {
         // eslint-disable-next-line no-empty
@@ -76,7 +76,7 @@ const FactrakSurvey = ({ api, route, navigateTo }) => {
     if (surveyParam) loadSurvey(surveyParam);
     if (professorParam) loadProf(professorParam);
     loadAreasOfStudy();
-  }, [api, professorParam, surveyParam]);
+  }, [wso, professorParam, surveyParam]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -111,9 +111,9 @@ const FactrakSurvey = ({ api, route, navigateTo }) => {
 
     try {
       if (edit) {
-        await api.factrakService.updateSurvey(survey.id, surveyParams);
+        await wso.factrakService.updateSurvey(survey.id, surveyParams);
       } else {
-        await api.factrakService.createSurvey(surveyParams);
+        await wso.factrakService.createSurvey(surveyParams);
       }
       navigateTo("factrak.surveys");
     } catch (error) {
@@ -349,7 +349,7 @@ const FactrakSurvey = ({ api, route, navigateTo }) => {
 };
 
 FactrakSurvey.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
 };
@@ -360,7 +360,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.surveys");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };

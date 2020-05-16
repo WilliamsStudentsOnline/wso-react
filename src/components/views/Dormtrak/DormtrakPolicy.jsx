@@ -4,11 +4,11 @@ import PropTypes from "prop-types";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 import { doUpdateUser } from "../../../actions/auth";
 
-const DormtrakPolicy = ({ api, currUser, navigateTo, updateUser }) => {
+const DormtrakPolicy = ({ wso, currUser, navigateTo, updateUser }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
   const [didUpdateUser, toggleDidUpdateUser] = useState(false);
 
@@ -27,7 +27,7 @@ const DormtrakPolicy = ({ api, currUser, navigateTo, updateUser }) => {
       hasAcceptedDormtrakPolicy: acceptPolicy,
     };
     try {
-      const response = await api.userService.updateUser("me", updateParams);
+      const response = await wso.userService.updateUser("me", updateParams);
       updateUser(response.data);
       toggleDidUpdateUser(true);
     } catch {
@@ -113,14 +113,14 @@ const DormtrakPolicy = ({ api, currUser, navigateTo, updateUser }) => {
 };
 
 DormtrakPolicy.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
   currUser: getCurrUser(state),
 });
 

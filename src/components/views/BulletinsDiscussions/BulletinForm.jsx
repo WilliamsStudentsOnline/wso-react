@@ -5,7 +5,7 @@ import "../../stylesheets/DatePicker.css";
 
 // Redux and routing imports
 import { connect } from "react-redux";
-import { getCurrUser, getAPI } from "../../../selectors/auth";
+import { getCurrUser, getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
@@ -15,7 +15,7 @@ import {
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
 
-const BulletinForm = ({ api, currUser, navigateTo, route }) => {
+const BulletinForm = ({ wso, currUser, navigateTo, route }) => {
   // For non-rides bulletins
   const [title, updateTitle] = useState("");
 
@@ -37,11 +37,11 @@ const BulletinForm = ({ api, currUser, navigateTo, route }) => {
 
       try {
         if (route.params.type === bulletinTypeRide) {
-          bulletinResponse = await api.bulletinService.getRide(
+          bulletinResponse = await wso.bulletinService.getRide(
             route.params.bulletinID
           );
         } else {
-          bulletinResponse = await api.bulletinService.getBulletin(
+          bulletinResponse = await wso.bulletinService.getBulletin(
             route.params.bulletinID
           );
         }
@@ -82,7 +82,7 @@ const BulletinForm = ({ api, currUser, navigateTo, route }) => {
       updateType(bulletinTypeRide);
     }
   }, [
-    api,
+    wso,
     currUser.id,
     navigateTo,
     route.name,
@@ -131,20 +131,20 @@ const BulletinForm = ({ api, currUser, navigateTo, route }) => {
         };
         response =
           route.name === "bulletins.edit"
-            ? await api.bulletinService.updateRide(
+            ? await wso.bulletinService.updateRide(
                 route.params.bulletinID,
                 rideParams
               )
-            : await api.bulletinService.createRide(rideParams);
+            : await wso.bulletinService.createRide(rideParams);
       } else {
         const bulletinParams = { type, title, body, startDate };
         response =
           route.name === "bulletins.edit"
-            ? await api.bulletinService.updateBulletin(
+            ? await wso.bulletinService.updateBulletin(
                 route.params.bulletinID,
                 bulletinParams
               )
-            : await api.bulletinService.createBulletin(bulletinParams);
+            : await wso.bulletinService.createBulletin(bulletinParams);
       }
 
       navigateTo("bulletins.show", { type, bulletinID: response.data.id });
@@ -258,7 +258,7 @@ const BulletinForm = ({ api, currUser, navigateTo, route }) => {
 };
 
 BulletinForm.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
@@ -270,7 +270,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("bulletins");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });

@@ -5,14 +5,14 @@ import PaginationButtons from "../../PaginationButtons";
 import { Line } from "../../Skeleton";
 
 // Redux and routing imports
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { connect } from "react-redux";
 
 // Additional imports
 import { Link } from "react-router5";
 import { bulletinTypeRide } from "../../../constants/general";
 
-const BulletinIndex = ({ api, type, currUser }) => {
+const BulletinIndex = ({ wso, type, currUser }) => {
   const [bulletins, updateBulletins] = useState(null);
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -25,7 +25,7 @@ const BulletinIndex = ({ api, type, currUser }) => {
       offset: perPage * newPage,
     };
     try {
-      const bulletinsResponse = await api.bulletinService.listBulletins(params);
+      const bulletinsResponse = await wso.bulletinService.listBulletins(params);
       updateBulletins(bulletinsResponse.data);
       updateTotal(bulletinsResponse.paginationTotal);
     } catch {
@@ -42,7 +42,7 @@ const BulletinIndex = ({ api, type, currUser }) => {
       // filters for only future rides.
     };
     try {
-      const ridesResponse = await api.bulletinService.listRides(params);
+      const ridesResponse = await wso.bulletinService.listRides(params);
       updateBulletins(ridesResponse.data);
       updateTotal(ridesResponse.paginationTotal);
     } catch {
@@ -52,7 +52,7 @@ const BulletinIndex = ({ api, type, currUser }) => {
 
   // Loads the next page appropriately
   const loadNext = (newPage) => {
-    // Different because the api endpoints are different
+    // Different because the wso endpoints are different
     if (type === bulletinTypeRide) loadRides(newPage);
     else loadBulletins(newPage);
   };
@@ -77,7 +77,7 @@ const BulletinIndex = ({ api, type, currUser }) => {
   useEffect(() => {
     loadNext(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [api, type]);
+  }, [wso, type]);
 
   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
 
@@ -90,9 +90,9 @@ const BulletinIndex = ({ api, type, currUser }) => {
 
     try {
       if (type === bulletinTypeRide) {
-        await api.bulletinService.deleteRide(bulletinID);
+        await wso.bulletinService.deleteRide(bulletinID);
       } else {
-        await api.bulletinService.deleteBulletin(bulletinID);
+        await wso.bulletinService.deleteBulletin(bulletinID);
       }
       loadNext(page);
     } catch {
@@ -254,7 +254,7 @@ const BulletinIndex = ({ api, type, currUser }) => {
 };
 
 BulletinIndex.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
 };
@@ -262,7 +262,7 @@ BulletinIndex.propTypes = {
 BulletinIndex.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
   currUser: getCurrUser(state),
 });
 

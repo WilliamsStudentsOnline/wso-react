@@ -10,19 +10,20 @@ import Homepage from "./Homepage";
 // Redux/routing
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getAPI, getExpiry } from "../selectors/auth";
+import { getWSO, getExpiry } from "../selectors/auth";
 import {
   doRemoveCreds,
-  doUpdateAPI,
   doUpdateAPIToken,
   doUpdateIdentityToken,
   doUpdateUser,
+  doUpdateWSO,
 } from "../actions/auth";
 import { doUpdateSchedulerState } from "../actions/schedulerUtils";
 
 // Additional Imports
 import { SimpleAuthentication } from "wso-api-client";
 import { loadState, removeStateFromStorage } from "../stateStorage";
+import configureInterceptors from "../lib/auth";
 
 // More component imports
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
@@ -43,32 +44,34 @@ const DiscussionMain = lazy(() =>
 );
 
 const App = ({
-  api,
+  wso,
   navigateTo,
   removeCreds,
   route,
-  updateAPI,
   updateAPIToken,
   updateIdenToken,
   updateSchedulerState,
   updateUser,
+  updateWSO,
 }) => {
-  // returns API based on IP address
+  // returns wso based on IP address
   const loadIPAPI = async () => {
     try {
-      const tokenResponse = await api.authService.getIdentityToken({
+      const tokenResponse = await wso.authService.getIdentityToken({
         useIP: true,
       });
       const newIdenToken = tokenResponse.token;
 
-      const apiTokenResponse = await api.authService.getAPIToken(newIdenToken);
+      const apiTokenResponse = await wso.authService.getAPIToken(newIdenToken);
       const newAPIToken = apiTokenResponse.token;
 
       const updatedAuth = new SimpleAuthentication(newAPIToken);
+      const updatedWSO = wso.updateAuth(updatedAuth);
+      configureInterceptors(updatedWSO);
 
       updateIdenToken(newIdenToken);
       updateAPIToken(newAPIToken);
-      updateAPI(api.updateAuth(updatedAuth));
+      updateWSO(updateWSO);
       // eslint-disable-next-line no-empty
     } catch (error) {}
   };
@@ -84,18 +87,19 @@ const App = ({
   const loadUserInfo = async (identityToken) => {
     // Only update the token and user if we are able to get the user response;
     try {
-      // update default WSO API with the persisted token,
+      // update default WSO wso with the persisted token,
       // and update the persisted token to extend expiry
-      const apiTokenResponse = await api.authService.getAPIToken(identityToken);
+      const apiTokenResponse = await wso.authService.getAPIToken(identityToken);
       const newAPIToken = apiTokenResponse.token;
 
       const auth = new SimpleAuthentication(newAPIToken);
-      const updatedAPI = api.updateAuth(auth);
+      const updatedWSO = wso.updateAuth(auth);
+      configureInterceptors(updatedWSO);
 
-      const userResponse = await updatedAPI.userService.getUser("me");
+      const userResponse = await updatedWSO.userService.getUser("me");
       updateUser(userResponse.data);
-      updateAPI(updatedAPI);
       updateAPIToken(newAPIToken);
+      updateWSO(updatedWSO);
     } catch (error) {
       // do nothing
     }
@@ -105,7 +109,7 @@ const App = ({
     const randomWSO = async () => {
       if (document.title === "WSO: Williams Students Online") {
         try {
-          const wsoResponse = await api.miscService.getWords();
+          const wsoResponse = await wso.miscService.getWords();
           document.title = `WSO: ${wsoResponse.data}`;
         } catch {
           // do nothing
@@ -170,6 +174,8 @@ const App = ({
         return null;
       case "403":
         return <FourOhThree />;
+      case "404":
+        return <FourOhFour />;
       default:
         return <FourOhFour />;
     }
@@ -183,22 +189,22 @@ const App = ({
 };
 
 App.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   removeCreds: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
-  updateAPI: PropTypes.func.isRequired,
   updateAPIToken: PropTypes.func.isRequired,
   updateIdenToken: PropTypes.func.isRequired,
   updateSchedulerState: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
+  updateWSO: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     expiry: getExpiry(state),
     ...routeNodeSelector(state),
   });
@@ -207,12 +213,12 @@ const mapStateToProps = () => {
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
   removeCreds: () => dispatch(doRemoveCreds()),
-  updateAPI: (api) => dispatch(doUpdateAPI(api)),
   updateAPIToken: (token) => dispatch(doUpdateAPIToken(token)),
   updateSchedulerState: (newState) =>
     dispatch(doUpdateSchedulerState(newState)),
   updateIdenToken: (token) => dispatch(doUpdateIdentityToken(token)),
   updateUser: (newUser) => dispatch(doUpdateUser(newUser)),
+  updateWSO: (wso) => dispatch(doUpdateWSO(wso)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

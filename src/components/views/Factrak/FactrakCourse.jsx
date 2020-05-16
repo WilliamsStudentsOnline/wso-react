@@ -9,26 +9,25 @@ import { Line } from "../../Skeleton";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getAPI, getCurrUser, getAPIToken } from "../../../selectors/auth";
+import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
 
 // Additional imports
 import { containsScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakCourse = ({ api, currUser, route, token }) => {
+const FactrakCourse = ({ wso, currUser, route, token }) => {
   const [course, updateCourse] = useState(null);
   const [courseSurveys, updateSurveys] = useState(null);
   const [courseProfs, updateProfs] = useState([]);
   const [ratings, updateRatings] = useState(null);
 
-  // TODO examine profID being -1
   useEffect(() => {
     const courseID = route.params.courseID;
     const profID = route.params.profID ? route.params.profID : -1;
 
     const loadCourse = async () => {
       try {
-        const courseResponse = await api.factrakService.getCourse(courseID);
+        const courseResponse = await wso.factrakService.getCourse(courseID);
         updateCourse(courseResponse.data);
       } catch {
         // eslint-disable-next-line no-empty
@@ -45,7 +44,7 @@ const FactrakCourse = ({ api, currUser, route, token }) => {
       };
 
       try {
-        const surveyResponse = await api.factrakService.listSurveys(
+        const surveyResponse = await wso.factrakService.listSurveys(
           queryParams
         );
         updateSurveys(surveyResponse.data);
@@ -56,7 +55,7 @@ const FactrakCourse = ({ api, currUser, route, token }) => {
 
     const loadRatings = async () => {
       try {
-        const ratingsResponse = await api.factrakService.getCourseRatings(
+        const ratingsResponse = await wso.factrakService.getCourseRatings(
           courseID,
           profID
         );
@@ -70,7 +69,7 @@ const FactrakCourse = ({ api, currUser, route, token }) => {
       const params = { courseID };
 
       try {
-        const profResponse = await api.factrakService.listProfessors(params);
+        const profResponse = await wso.factrakService.listProfessors(params);
         updateProfs(profResponse.data);
       } catch {
         // eslint-disable-next-line no-empty
@@ -87,7 +86,7 @@ const FactrakCourse = ({ api, currUser, route, token }) => {
 
     loadProfs();
   }, [
-    api,
+    wso,
     token,
     route.params.course,
     route.params.profID,
@@ -221,7 +220,7 @@ const FactrakCourse = ({ api, currUser, route, token }) => {
 };
 
 FactrakCourse.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
@@ -233,7 +232,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.courses");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     currUser: getCurrUser(state),
     token: getAPIToken(state),
     ...routeNodeSelector(state),

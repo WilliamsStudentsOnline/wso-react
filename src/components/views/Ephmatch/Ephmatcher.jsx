@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { ConnectedLink } from "react-router5";
 
 const Ephmatcher = ({
-  api,
+  wso,
   ephmatcher,
   selectEphmatcher,
   index,
@@ -18,7 +18,7 @@ const Ephmatcher = ({
   useEffect(() => {
     const loadPhoto = async () => {
       try {
-        const photoResponse = await api.userService.getUserLargePhoto(
+        const photoResponse = await wso.userService.getUserLargePhoto(
           ephmatcher.unixID
         );
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
@@ -32,7 +32,7 @@ const Ephmatcher = ({
       updateUserPhoto(photo);
     }
     // eslint-disable-next-line
-  }, [api, ephmatcher, photo]);
+  }, [wso, ephmatcher, photo]);
 
   // Generates the user's class year
   const classYear = (year, offCycle) => {
@@ -117,7 +117,7 @@ const Ephmatcher = ({
 };
 
 Ephmatcher.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   ephmatcher: PropTypes.object,
   ephmatcherProfile: PropTypes.object.isRequired,
   selectEphmatcher: PropTypes.func,

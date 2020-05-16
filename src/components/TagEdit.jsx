@@ -12,14 +12,14 @@ const TagRemove = ({ onClick }) => {
 
 TagRemove.propTypes = { onClick: PropTypes.func.isRequired };
 
-const TagEdit = ({ api, tags, updateTags, updateErrors }) => {
+const TagEdit = ({ wso, tags, updateTags, updateErrors }) => {
   const [newTag, updateNewTag] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   const tagAutocomplete = async (event) => {
     updateNewTag(event.target.value);
     try {
-      const tagResponse = await api.autocompleteService.autocompleteTag(
+      const tagResponse = await wso.autocompleteService.autocompleteTag(
         event.target.value,
         5
       );
@@ -37,12 +37,12 @@ const TagEdit = ({ api, tags, updateTags, updateErrors }) => {
     };
 
     try {
-      await api.userService.updateCurrUserTags(params);
+      await wso.userService.updateCurrUserTags(params);
       updateTags(updatedTags);
       updateNewTag("");
       updateErrors([]);
     } catch (error) {
-      updateErrors(error.message);
+      updateErrors([error.message]);
     }
   };
 
@@ -126,7 +126,7 @@ const TagEdit = ({ api, tags, updateTags, updateErrors }) => {
 };
 
 TagEdit.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string),
   updateTags: PropTypes.func.isRequired,
   updateErrors: PropTypes.func.isRequired,

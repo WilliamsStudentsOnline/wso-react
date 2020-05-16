@@ -25,9 +25,7 @@ import * as serviceWorker from "./serviceWorker";
 import throttle from "lodash/throttle";
 import ReactGA from "react-ga";
 
-const router = configureRouter();
-
-if (process.env.NODE_ENV === "production") {
+const initializeGoogleAnalytics = (router) => {
   ReactGA.initialize("UA-150865220-1");
   router.usePlugin(() => {
     return {
@@ -37,33 +35,35 @@ if (process.env.NODE_ENV === "production") {
       },
     };
   });
-}
+};
+
+const saveUserData = (store) => {
+  const authState = store.getState().authState;
+  const schedulerUtilState = store.getState().schedulerUtilState;
+  // Using this to override people's current authState
+  if (authState.remember) {
+    saveState("state", {
+      authState: { identityToken: authState.identityToken },
+    });
+  }
+  saveState(
+    "schedulerOptions",
+    {
+      schedulerUtilState: {
+        ...schedulerUtilState,
+        gapi: null,
+        notifications: [],
+      },
+    },
+    true
+  );
+};
+
+const router = configureRouter();
+initializeGoogleAnalytics(router);
 
 const store = configureStore(router);
-
-store.subscribe(
-  throttle(() => {
-    const authState = store.getState().authState;
-    const schedulerUtilState = store.getState().schedulerUtilState;
-    // Using this to override people's current authState
-    if (authState.remember) {
-      saveState("state", {
-        authState: { identityToken: authState.identityToken },
-      });
-    }
-    saveState(
-      "schedulerOptions",
-      {
-        schedulerUtilState: {
-          ...schedulerUtilState,
-          gapi: null,
-          notifications: [],
-        },
-      },
-      true
-    );
-  }, 1000)
-);
+store.subscribe(throttle(() => saveUserData(store), 1000));
 
 setUpRouterPermissions(router, store);
 

@@ -6,13 +6,13 @@ import EphmatchForm from "./EphmatchForm";
 
 // Redux/routing imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
 // Additional imports
 
 // Page created to handle both opting in and out.
-const EphmatchOptIn = ({ api, navigateTo }) => {
+const EphmatchOptIn = ({ wso, navigateTo }) => {
   // Note that this is different from Ephcatch
   const [optIn, updateOptIn] = useState(null);
   const [description, updateDescription] = useState("");
@@ -24,7 +24,7 @@ const EphmatchOptIn = ({ api, navigateTo }) => {
 
     const loadUserInfo = async () => {
       try {
-        const ownProfile = await api.userService.getUser("me");
+        const ownProfile = await wso.userService.getUser("me");
         if (isMounted) {
           updateUserInfo(ownProfile.data);
         }
@@ -38,7 +38,7 @@ const EphmatchOptIn = ({ api, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [api]);
+  }, [wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -46,7 +46,7 @@ const EphmatchOptIn = ({ api, navigateTo }) => {
     const params = { description, matchMessage, gender: "" };
 
     try {
-      await api.ephmatchService.createEphmatchProfile(params);
+      await wso.ephmatchService.createEphmatchProfile(params);
 
       // Update succeeded -> redirect them to main ephmatch page.
       navigateTo("ephmatch", null, { reload: true });
@@ -84,9 +84,9 @@ const EphmatchOptIn = ({ api, navigateTo }) => {
             <h3>Create your Ephmatch Profile</h3>
             <div className="ephmatch-sample-profile">
               <Ephmatcher
-                api={api}
                 ephmatcherProfile={dummyEphmatchProfile}
                 ephmatcher={userInfo}
+                wso={wso}
               />
             </div>
             <p>
@@ -106,14 +106,14 @@ const EphmatchOptIn = ({ api, navigateTo }) => {
 };
 
 EphmatchOptIn.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
 EphmatchOptIn.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

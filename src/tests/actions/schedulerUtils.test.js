@@ -30,7 +30,7 @@ describe("util action", () => {
     expect(action).toEqual(expectedAction);
   });
 
-  it("updates Google API status", () => {
+  it("updates Google wso status", () => {
     const gapi = { loaded_0: null, loaded_1: null };
 
     const expectedAction = {

@@ -6,7 +6,7 @@ import Button from "../../Components";
 
 // Additional imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { avatarHelper } from "../../../lib/imageHelper";
 import { userTypeStudent } from "../../../constants/general";
 import { Link } from "react-router5";
@@ -14,7 +14,7 @@ import { actions } from "redux-router5";
 import { format } from "timeago.js";
 
 const DormtrakRecentComments = ({
-  api,
+  wso,
   abridged,
   currUser,
   navigateTo,
@@ -32,7 +32,7 @@ const DormtrakRecentComments = ({
     if (!confirmDelete) return;
 
     try {
-      await api.dormtrakService.deleteReview(reviewID);
+      await wso.dormtrakService.deleteReview(reviewID);
       updateCurrReviews(currReviews.filter((review) => review.id !== reviewID));
     } catch (error) {
       // eslint-disable-next-line no-empty
@@ -171,7 +171,7 @@ const DormtrakRecentComments = ({
 
 DormtrakRecentComments.propTypes = {
   abridged: PropTypes.bool.isRequired,
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   reviews: PropTypes.arrayOf(PropTypes.object),
@@ -182,7 +182,7 @@ DormtrakRecentComments.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -5,10 +5,10 @@ import HoodTableRow, { HoodTableRowSkeleton } from "./HoodTableRow";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector } from "redux-router5";
 
-const DormtrakNeighborhood = ({ api, route }) => {
+const DormtrakNeighborhood = ({ wso, route }) => {
   const [neighborhood, updateHoodInfo] = useState(null);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ const DormtrakNeighborhood = ({ api, route }) => {
       const neighborhoodID = route.params.neighborhoodID;
 
       try {
-        const hoodResponse = await api.dormtrakService.getNeighborhood(
+        const hoodResponse = await wso.dormtrakService.getNeighborhood(
           neighborhoodID
         );
         updateHoodInfo(hoodResponse.data);
@@ -26,7 +26,7 @@ const DormtrakNeighborhood = ({ api, route }) => {
     };
 
     loadNeighborhood();
-  }, [api, route.params.neighborhoodID]);
+  }, [wso, route.params.neighborhoodID]);
 
   return (
     <article className="facebook-results">
@@ -47,7 +47,7 @@ const DormtrakNeighborhood = ({ api, route }) => {
           <tbody>
             {neighborhood
               ? neighborhood.dorms.map((dorm) => (
-                  <HoodTableRow api={api} dorm={dorm} key={dorm.id} />
+                  <HoodTableRow wso={wso} dorm={dorm} key={dorm.id} />
                 ))
               : [...Array(5)].map((_, i) => (
                   // eslint-disable-next-line react/no-array-index-key
@@ -61,7 +61,7 @@ const DormtrakNeighborhood = ({ api, route }) => {
 };
 
 DormtrakNeighborhood.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
 };
 
@@ -71,7 +71,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak.neighborhoods");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };

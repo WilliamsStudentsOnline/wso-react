@@ -6,12 +6,12 @@ import DormtrakRecentComments from "./DormtrakRecentComments";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 
 // Additional imports
 import { Link } from "react-router5";
 
-const DormtrakHome = ({ api, currUser }) => {
+const DormtrakHome = ({ wso, currUser }) => {
   const [reviews, updateReviews] = useState(null);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const DormtrakHome = ({ api, currUser }) => {
         commented: true,
       };
       try {
-        const dormReviewResponse = await api.dormtrakService.listReviews(
+        const dormReviewResponse = await wso.dormtrakService.listReviews(
           queryParams
         );
         updateReviews(dormReviewResponse.data);
@@ -32,7 +32,7 @@ const DormtrakHome = ({ api, currUser }) => {
     };
 
     loadReviews();
-  }, [api]);
+  }, [wso]);
 
   // Link to survey.
   const surveyLink = () => {
@@ -83,14 +83,14 @@ const DormtrakHome = ({ api, currUser }) => {
 };
 
 DormtrakHome.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
 };
 
 DormtrakHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
   currUser: getCurrUser(state),
 });
 

@@ -8,11 +8,11 @@ import EphmatchForm from "./EphmatchForm";
 
 // Redux/routing imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 import { actions } from "redux-router5";
 
-const EphmatchProfile = ({ api, navigateTo }) => {
+const EphmatchProfile = ({ wso, navigateTo }) => {
   const [profile, updateProfile] = useState(null);
   const [description, updateDescription] = useState("");
   const [matchMessage, updateMatchMessage] = useState("");
@@ -25,7 +25,7 @@ const EphmatchProfile = ({ api, navigateTo }) => {
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
       try {
-        const ownProfile = await api.ephmatchService.getSelfProfile();
+        const ownProfile = await wso.ephmatchService.getSelfProfile();
 
         if (isMounted) {
           const ephmatchProfile = ownProfile.data;
@@ -45,7 +45,7 @@ const EphmatchProfile = ({ api, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [api]);
+  }, [wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -55,11 +55,11 @@ const EphmatchProfile = ({ api, navigateTo }) => {
 
     try {
       // Update the profile.
-      await api.ephmatchService.updateSelfProfile(params);
+      await wso.ephmatchService.updateSelfProfile(params);
 
       // Update Photos
       if (photo) {
-        await api.userService.updateUserPhoto("me", photo);
+        await wso.userService.updateUserPhoto("me", photo);
       }
       // Update succeeded -> redirect them to main ephmatch page.
       navigateTo("ephmatch");
@@ -102,10 +102,10 @@ const EphmatchProfile = ({ api, navigateTo }) => {
             {profile && (
               <div className="ephmatch-sample-profile">
                 <Ephmatcher
-                  api={api}
                   ephmatcherProfile={dummyEphmatchProfile}
                   ephmatcher={dummyEphmatcher}
                   photo={photo && URL.createObjectURL(photo)}
+                  wso={wso}
                 />
               </div>
             )}
@@ -121,10 +121,10 @@ const EphmatchProfile = ({ api, navigateTo }) => {
               group? Contact us at wso-dev@wso.williams.edu
             </p>
             <TagEdit
-              api={api}
               tags={tags}
               updateTags={updateTags}
               updateErrors={updateErrors}
+              wso={wso}
             />
             <br />
           </EphmatchForm>
@@ -135,14 +135,14 @@ const EphmatchProfile = ({ api, navigateTo }) => {
 };
 
 EphmatchProfile.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
 EphmatchProfile.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

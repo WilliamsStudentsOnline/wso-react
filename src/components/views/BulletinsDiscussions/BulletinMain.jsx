@@ -59,7 +59,6 @@ const BulletinMain = ({ route }) => {
     }
   }
 
-  // TODO handle this better
   return null;
 };
 

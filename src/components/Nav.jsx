@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // React/Redux imports
-import { getAPI, getAPIToken, getCurrUser } from "../selectors/auth";
+import { getWSO, getAPIToken, getCurrUser } from "../selectors/auth";
 import { connect } from "react-redux";
 
 // External imports
@@ -12,14 +12,14 @@ import { Link, ConnectedLink } from "react-router5";
 import { createRouteNodeSelector } from "redux-router5";
 import { containsScopes, scopes } from "../lib/general";
 
-const Nav = ({ api, currUser, token }) => {
+const Nav = ({ wso, currUser, token }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
 
   useEffect(() => {
     const loadPhoto = async () => {
       try {
-        const photoResponse = await api.userService.getUserThumbPhoto(
+        const photoResponse = await wso.userService.getUserThumbPhoto(
           currUser.unixID
         );
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
@@ -30,7 +30,7 @@ const Nav = ({ api, currUser, token }) => {
 
     if (currUser) loadPhoto();
     updateMenuVisibility(false);
-  }, [api, currUser]);
+  }, [wso, currUser]);
 
   return (
     <nav>
@@ -123,7 +123,7 @@ const Nav = ({ api, currUser, token }) => {
 };
 
 Nav.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   // No isRequired because it must work for non-authenticated users too
   currUser: PropTypes.object,
   token: PropTypes.string,
@@ -135,7 +135,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     currUser: getCurrUser(state),
     token: getAPIToken(state),
     ...routeNodeSelector(state),

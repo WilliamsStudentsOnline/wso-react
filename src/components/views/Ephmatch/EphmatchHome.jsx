@@ -6,17 +6,17 @@ import Select from "../../Select";
 
 // Redux/ routing imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
 import Ephmatcher from "./Ephmatcher";
 
-const EphmatchHome = ({ api }) => {
+const EphmatchHome = ({ wso }) => {
   const perPage = 20; // Number of results per page
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
   const [ephmatchers, updateEphmatchers] = useState([]);
-  const [sort, updateSort] = useState("new"); // TODO(CORONA): was "alphabetical" but changing to create surge of craziness for classes cancelled
+  const [sort, updateSort] = useState("new");
 
   useEffect(() => {
     let isMounted = true;
@@ -30,7 +30,7 @@ const EphmatchHome = ({ api }) => {
       };
 
       try {
-        const ephmatchersResponse = await api.ephmatchService.listProfiles(
+        const ephmatchersResponse = await wso.ephmatchService.listProfiles(
           params
         );
 
@@ -48,7 +48,7 @@ const EphmatchHome = ({ api }) => {
     return () => {
       isMounted = false;
     };
-  }, [api, page, sort]);
+  }, [wso, page, sort]);
 
   const selectEphmatcher = async (event, index) => {
     // Alternatively, use the classname to determine the method to be called.
@@ -58,13 +58,13 @@ const EphmatchHome = ({ api }) => {
 
     try {
       if (ephmatcher.liked) {
-        await api.ephmatchService.unlikeProfile(ephmatcher.userID);
+        await wso.ephmatchService.unlikeProfile(ephmatcher.userID);
         target.className = "ephmatch-select-link";
       } else {
-        await api.ephmatchService.likeProfile(ephmatcher.userID);
+        await wso.ephmatchService.likeProfile(ephmatcher.userID);
         target.className = "ephmatch-select-link ephmatch-selected";
       }
-      const updatedEphmatcher = await api.ephmatchService.getProfile(
+      const updatedEphmatcher = await wso.ephmatchService.getProfile(
         ephmatcher.userID
       );
 
@@ -135,7 +135,7 @@ const EphmatchHome = ({ api }) => {
                   (ephmatcher, index) =>
                     ephmatcher.user && (
                       <Ephmatcher
-                        api={api}
+                        wso={wso}
                         ephmatcher={ephmatcher.user}
                         ephmatcherProfile={ephmatcher}
                         selectEphmatcher={selectEphmatcher}
@@ -167,13 +167,13 @@ const EphmatchHome = ({ api }) => {
 };
 
 EphmatchHome.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 EphmatchHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
 });
 
 export default connect(mapStateToProps)(EphmatchHome);

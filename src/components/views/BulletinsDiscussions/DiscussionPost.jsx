@@ -5,12 +5,12 @@ import { Line, Paragraph } from "../../Skeleton";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getCurrUser, getAPI } from "../../../selectors/auth";
+import { getCurrUser, getWSO } from "../../../selectors/auth";
 
 // Additional imports
 import { Link } from "react-router5";
 
-const DiscussionPost = ({ api, post, currUser }) => {
+const DiscussionPost = ({ wso, post, currUser }) => {
   const [deleted, updateDeleted] = useState(false);
   const [edit, setEdit] = useState(false);
   const [reply, updateReply] = useState(post.content);
@@ -24,7 +24,7 @@ const DiscussionPost = ({ api, post, currUser }) => {
     const params = { content: reply };
 
     try {
-      const response = await api.bulletinService.updatePost(post.id, params);
+      const response = await wso.bulletinService.updatePost(post.id, params);
       setEdit(false);
       updateCurrPost(response.data);
     } catch {
@@ -39,7 +39,7 @@ const DiscussionPost = ({ api, post, currUser }) => {
     if (!confirmDelete) return;
 
     try {
-      await api.bulletinService.deletePost(post.id);
+      await wso.bulletinService.deletePost(post.id);
       updateDeleted(true);
     } catch {
       // eslint-disable-next-line no-empty
@@ -129,7 +129,7 @@ const DiscussionPost = ({ api, post, currUser }) => {
 };
 
 DiscussionPost.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   post: PropTypes.object.isRequired,
 };
@@ -149,7 +149,7 @@ const DiscussionPostSkeleton = () => (
 );
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
   currUser: getCurrUser(state),
 });
 

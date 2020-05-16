@@ -6,7 +6,7 @@ import { CircularLoader } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 import { doUpdateUser } from "../../../actions/auth";
 
@@ -14,7 +14,7 @@ import { doUpdateUser } from "../../../actions/auth";
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 import TagEdit from "../../TagEdit";
 
-const FacebookEdit = ({ api, currUser, navigateTo, updateUser }) => {
+const FacebookEdit = ({ wso, currUser, navigateTo, updateUser }) => {
   const [tags, updateTags] = useState([]);
   const [pronoun, setPronoun] = useState(currUser.pronoun);
   const [visible, setVisible] = useState(currUser.visible);
@@ -31,7 +31,7 @@ const FacebookEdit = ({ api, currUser, navigateTo, updateUser }) => {
     // We need to load tags because tag updating happens with each "Add Tag" button press.
     const loadTags = async () => {
       try {
-        const userResponse = await api.userService.getUser("me");
+        const userResponse = await wso.userService.getUser("me");
         const currTags = userResponse.data.tags;
         updateTags(currTags.map((tag) => tag.name));
       } catch (error) {
@@ -40,7 +40,7 @@ const FacebookEdit = ({ api, currUser, navigateTo, updateUser }) => {
     };
 
     loadTags();
-  }, [api, currUser]);
+  }, [wso, currUser]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -48,41 +48,33 @@ const FacebookEdit = ({ api, currUser, navigateTo, updateUser }) => {
     const newErrors = [];
     updateSubmitting(true);
 
-    // Update Photos
-    if (fileRef.current && fileRef.current.files[0]) {
-      try {
-        await api.userService.updateUserPhoto("me", fileRef.current.files[0]);
-      } catch (error) {
-        newErrors.push(error.message);
-      }
-    }
-
-    // Update User
-    const updatedUser = {
-      dormVisible,
-      homeVisible,
-      offCycle,
-      pronoun,
-      visible,
-    };
-
-    // TODO re-examine API logic
-    let updateResponse;
-
     try {
-      updateResponse = await api.userService.updateUser("me", updatedUser);
-    } catch (error) {
-      newErrors.push(error.message);
-    }
+      // Update Photos
+      if (fileRef.current && fileRef.current.files[0]) {
+        await wso.userService.updateUserPhoto("me", fileRef.current.files[0]);
+      }
 
-    updateSubmitting(false);
+      // Update User
+      const updatedUser = {
+        dormVisible,
+        homeVisible,
+        offCycle,
+        pronoun,
+        visible,
+      };
 
-    if (newErrors.length > 0) {
-      updateErrors(newErrors);
-    } else {
-      // If there are no errors, it means that patchCurrUser must have gone smoothly
+      const updateResponse = await wso.userService.updateUser(
+        "me",
+        updatedUser
+      );
+
       updateUser(updateResponse.data);
       navigateTo("facebook.users", { userID: currUser.id }, { reload: true });
+    } catch (error) {
+      newErrors.push(error.message);
+      updateErrors(newErrors);
+    } finally {
+      updateSubmitting(false);
     }
   };
   return (
@@ -112,10 +104,10 @@ const FacebookEdit = ({ api, currUser, navigateTo, updateUser }) => {
                   see your group? Contact us at wso-dev@wso.williams.edu
                 </p>
                 <TagEdit
-                  api={api}
                   tags={tags}
                   updateTags={updateTags}
                   updateErrors={updateErrors}
+                  wso={wso}
                 />
                 <br />
                 <br />
@@ -207,7 +199,7 @@ const FacebookEdit = ({ api, currUser, navigateTo, updateUser }) => {
 };
 
 FacebookEdit.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
@@ -216,7 +208,7 @@ FacebookEdit.propTypes = {
 FacebookEdit.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  api: getAPI(state),
+  wso: getWSO(state),
   currUser: getCurrUser(state),
 });
 

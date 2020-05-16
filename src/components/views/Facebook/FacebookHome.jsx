@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getAPI } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 import { Link } from "react-router5";
 
@@ -13,7 +13,7 @@ import { userTypeStudent } from "../../../constants/general";
 import PaginationButtons from "../../PaginationButtons";
 import FacebookGridUser from "./FacebookGridUser";
 
-const FacebookHome = ({ api, route, navigateTo }) => {
+const FacebookHome = ({ wso, route, navigateTo }) => {
   const [results, updateResults] = useState(null);
   const perPage = 20;
   const [page, updatePage] = useState(0);
@@ -35,7 +35,7 @@ const FacebookHome = ({ api, route, navigateTo }) => {
       preload: ["dorm", "office"],
     };
     try {
-      const resultsResponse = await api.userService.listUsers(queryParams);
+      const resultsResponse = await wso.userService.listUsers(queryParams);
 
       updateResults(resultsResponse.data);
       updateTotal(resultsResponse.paginationTotal || 0);
@@ -55,7 +55,7 @@ const FacebookHome = ({ api, route, navigateTo }) => {
     loadUsers(0);
     updatePage(0);
     // eslint-disable-next-line
-  }, [api, route.params.q]);
+  }, [wso, route.params.q]);
 
   // Handles clicking of the next/previous page
   const clickHandler = (number) => {
@@ -134,10 +134,10 @@ const FacebookHome = ({ api, route, navigateTo }) => {
       <div className="grid-wrap">
         {results.map((user) => (
           <FacebookGridUser
-            api={api}
             gridUser={user}
             gridUserClassYear={classYear(user)}
             key={user.id}
+            wso={wso}
           />
         ))}
       </div>
@@ -191,7 +191,7 @@ const FacebookHome = ({ api, route, navigateTo }) => {
 };
 
 FacebookHome.propTypes = {
-  api: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
@@ -202,7 +202,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("facebook");
 
   return (state) => ({
-    api: getAPI(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
