@@ -1,33 +1,34 @@
 import deepFreeze from "deep-freeze";
-import utilReducer from "../../reducers/auth";
+import utilReducer, { DEFAULT_API_CLIENT } from "../../reducers/auth";
 import {
-  UPDATE_TOKEN,
-  UPDATE_USER,
   REMOVE_CREDS,
+  UPDATE_API_TOKEN,
+  UPDATE_IDEN_TOKEN,
+  UPDATE_USER,
   UPDATE_REMEMBER,
+  UPDATE_WSO,
 } from "../../constants/actionTypes";
 
 describe("Authentication reducer", () => {
-  it("updates token", () => {
+  it("updates api token, scope, expiry, and token level", () => {
     const token =
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NzUxMzk2MTQsImlkIjoyLCJvcmlnX2lhdCI6MTU3NDUzNDgxNCwic2NvcGUiOlsic2VydmljZTpidWxsZXRpbiIsInNlcnZpY2U6dXNlcnMiLCJzZXJ2aWNlOm90aGVyIiwid3JpdGU6c2VsZiIsInNlcnZpY2U6ZmFjdHJhazpmdWxsIiwic2VydmljZTpkb3JtdHJhayIsInNlcnZpY2U6ZG9ybXRyYWs6d3JpdGUiLCJhZG1pbjphbGwiLCJzZXJ2aWNlOmZhY3RyYWs6YWRtaW4iXSwidG9rZW5MZXZlbCI6M30.Yahci9wBOYSzSVYP5An3RQwQkuBPaE-MhiowNG539v4";
 
     const action = {
-      type: UPDATE_TOKEN,
-      response: {
-        token,
-      },
+      type: UPDATE_API_TOKEN,
+      token,
     };
 
     const previousState = {
       scope: [],
-      token: "",
+      identityToken: "identityToken",
       expiry: 0,
       tokenLevel: 0,
     };
 
     const expectedNewState = {
-      token,
+      apiToken: token,
+      identityToken: "identityToken",
       tokenLevel: 3,
       expiry: 1575139614000,
       scope: [
@@ -56,13 +57,40 @@ describe("Authentication reducer", () => {
       remember,
     };
 
-    const previousState = {
-      remember: false,
+    const previousState = { remember: false };
+    const expectedNewState = { remember: true };
+
+    deepFreeze(previousState);
+    const changedState = utilReducer(previousState, action);
+
+    expect(changedState).toEqual(expectedNewState);
+  });
+
+  it("updates wso client", () => {
+    const newWSO = DEFAULT_API_CLIENT;
+    const action = {
+      type: UPDATE_WSO,
+      wso: newWSO,
     };
 
-    const expectedNewState = {
-      remember: true,
+    const previousState = { wso: null };
+    const expectedNewState = { wso: DEFAULT_API_CLIENT };
+
+    deepFreeze(previousState);
+    const changedState = utilReducer(previousState, action);
+
+    expect(changedState).toEqual(expectedNewState);
+  });
+
+  it("updates identityToken", () => {
+    const newIdentityToken = "newIdentityToken";
+    const action = {
+      type: UPDATE_IDEN_TOKEN,
+      token: newIdentityToken,
     };
+
+    const previousState = { identityToken: "oldIdentityToken" };
+    const expectedNewState = { identityToken: newIdentityToken };
 
     deepFreeze(previousState);
     const changedState = utilReducer(previousState, action);
@@ -76,21 +104,26 @@ describe("Authentication reducer", () => {
     };
 
     const previousState = {
-      scope: ["service:bulletin", "service:users", "service:other"],
-      token: "",
+      apiToken: "apiToken",
+      currUser: { name: "hi" },
       expiry: 123812930,
-      currUser: { name: "hi" }, // Stores the user object.
+      identityToken: "identityToken",
       remember: false,
+      scope: ["service:bulletin", "service:users", "service:other"],
+
       tokenLevel: 3,
+      wso: DEFAULT_API_CLIENT,
     };
 
     const expectedNewState = {
-      scope: [],
-      token: "",
+      apiToken: "",
+      currUser: null,
       expiry: 0,
-      currUser: null, // Stores the user object.
+      identityToken: "",
       remember: false,
+      scope: [],
       tokenLevel: 0,
+      wso: DEFAULT_API_CLIENT,
     };
 
     deepFreeze(previousState);
@@ -100,7 +133,31 @@ describe("Authentication reducer", () => {
   });
 
   it("updates user", () => {
-    const user = { name: "name" };
+    const user = {
+      admin: false,
+      dorm: {
+        id: 5,
+        name: "Parsons",
+        neighborhoodID: 15,
+      },
+      dormRoom: {
+        number: "101",
+        id: 10,
+      },
+      dormRoomID: 12,
+      dormVisible: true,
+      factrakAdmin: false,
+      factrakSurveyDeficit: 2,
+      hasAcceptedDormtrakPolicy: true,
+      hasAcceptedFactrakPolicy: true,
+      homeVisible: false,
+      id: 2,
+      offCycle: false,
+      pronoun: "",
+      type: "student",
+      unixID: "admin",
+      visible: true,
+    };
     const action = {
       type: UPDATE_USER,
       newUser: user,

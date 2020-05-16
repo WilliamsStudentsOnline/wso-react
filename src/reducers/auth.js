@@ -12,7 +12,7 @@ import jwtDecode from "jwt-decode";
 
 const API_ADDRESS = "http://localhost:8080";
 
-const DEFAULT_API_CLIENT = new WSO(
+export const DEFAULT_API_CLIENT = new WSO(
   new API(API_ADDRESS, new NoAuthentication())
 );
 
@@ -106,14 +106,14 @@ const removeCreds = () => {
 
 function authReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case UPDATE_IDEN_TOKEN:
-      return updateIdenToken(state, action);
-    case UPDATE_API_TOKEN:
-      return updateAPIToken(state, action);
-    case UPDATE_USER:
-      return updateUser(state, action);
     case REMOVE_CREDS:
       return removeCreds();
+    case UPDATE_API_TOKEN:
+      return updateAPIToken(state, action);
+    case UPDATE_IDEN_TOKEN:
+      return updateIdenToken(state, action);
+    case UPDATE_USER:
+      return updateUser(state, action);
     case UPDATE_REMEMBER:
       return updateRemember(state, action);
     case UPDATE_WSO:
