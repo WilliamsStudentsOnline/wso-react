@@ -47,7 +47,7 @@ const DormtrakNeighborhood = ({ api, route }) => {
           <tbody>
             {neighborhood
               ? neighborhood.dorms.map((dorm) => (
-                  <HoodTableRow dorm={dorm} key={dorm.id} />
+                  <HoodTableRow api={api} dorm={dorm} key={dorm.id} />
                 ))
               : [...Array(5)].map((_, i) => (
                   // eslint-disable-next-line react/no-array-index-key

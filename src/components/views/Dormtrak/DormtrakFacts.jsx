@@ -72,7 +72,7 @@ const DormtrakFacts = ({ api, dorm }) => {
       (attr) => facts[`average${attr}`]
     );
 
-    if (ratingScores.filter((e) => e !== 0).length === 0) return null;
+    if (ratingScores.filter((e) => e).length === 0) return null;
 
     return (
       <>

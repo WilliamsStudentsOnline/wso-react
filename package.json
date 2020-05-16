@@ -101,7 +101,6 @@
       "git add"
     ]
   },
-  "proxy": "http://localhost:8080",
   "resolutions": {
     "**/**/minimist": "^1.2.2",
     "**/**/kind-of": "^6.0.3"

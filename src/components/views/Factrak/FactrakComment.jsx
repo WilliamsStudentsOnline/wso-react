@@ -6,7 +6,7 @@ import Button from "../../Components";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getCurrUser, getAPI } from "../../../selectors/auth";
+import { getAPI, getCurrUser } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 import { actions } from "redux-router5";
 
@@ -15,13 +15,13 @@ import { Link } from "react-router5";
 import { format } from "timeago.js";
 
 const FactrakComment = ({
-  comment,
-  showProf,
   abridged,
+  api,
+  comment,
   currUser,
   navigateTo,
+  showProf,
   updateUser,
-  api,
 }) => {
   const [survey, updateSurvey] = useState(comment);
   const [isDeleted, updateDeleted] = useState(false);

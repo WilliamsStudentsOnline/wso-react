@@ -1,38 +1,65 @@
 // React imports
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Paragraph, Line, Photo } from "../../Skeleton";
+import { Line, Paragraph, Photo } from "../../Skeleton";
+import Button from "../../Components";
 
 // Additional imports
-import { Link } from "react-router5";
+import { connect } from "react-redux";
+import { getAPI } from "../../../selectors/auth";
 import { avatarHelper } from "../../../lib/imageHelper";
-import { format } from "timeago.js";
 import { userTypeStudent } from "../../../constants/general";
+import { Link } from "react-router5";
+import { actions } from "redux-router5";
+import { format } from "timeago.js";
 
-const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
-  // Renders the Edit/Delete buttons
+const DormtrakRecentComments = ({
+  api,
+  abridged,
+  currUser,
+  navigateTo,
+  reviews,
+}) => {
+  const [currReviews, updateCurrReviews] = useState(null);
+
+  useEffect(() => {
+    updateCurrReviews(reviews);
+  }, [reviews]);
+
+  const deleteHandler = async (reviewID) => {
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    const confirmDelete = confirm("Are you sure?");
+    if (!confirmDelete) return;
+
+    try {
+      await api.dormtrakService.deleteReview(reviewID);
+      updateCurrReviews(currReviews.filter((review) => review.id !== reviewID));
+    } catch (error) {
+      // eslint-disable-next-line no-empty
+    }
+  };
+
   const editDeleteButtons = (review) => {
-    if (
-      currUser.type === userTypeStudent &&
-      (currUser.id === review.userID || currUser.admin)
-    ) {
+    if (currUser.type === userTypeStudent && currUser.id === review.userID) {
       return (
         <p className="comment-detail">
-          <Link
-            routeName="dormtrak.editReview"
-            routeParams={{ reviewID: review.id }}
+          <Button
+            onClick={() =>
+              navigateTo("dormtrak.editReview", {
+                reviewID: review.id,
+              })
+            }
+            className="inline-button"
           >
-            edit
-          </Link>
-          &nbsp;|&nbsp;
-          <a
-            data-confirm="Are you sure you want to delete your review?"
-            rel="nofollow"
-            data-method="delete"
-            href={`/dormtrak/reviews/${review.id}`}
+            Edit
+          </Button>
+
+          <Button
+            onClick={() => deleteHandler(review.id)}
+            className="inline-button"
           >
-            delete
-          </a>
+            Delete
+          </Button>
         </p>
       );
     }
@@ -83,7 +110,6 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
     );
   };
 
-  // Render comment
   const renderComment = (review) => {
     if (abridged) return renderAbridgedComment(review);
 
@@ -122,14 +148,14 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
   };
 
   const renderCommentList = () => {
-    if (!reviews) {
+    if (!currReviews) {
       if (abridged)
         return [...Array(15)].map((_, i) => abridgedCommentSkeleton(i));
       return [...Array(15)].map((_, i) => fullCommentSkeleton(i));
     }
 
-    if (reviews.length > 0)
-      return reviews.map((review) => renderComment(review));
+    if (currReviews.length > 0)
+      return currReviews.map((review) => renderComment(review));
 
     return "None Yet.";
   };
@@ -144,13 +170,27 @@ const DormtrakRecentComments = ({ reviews, abridged, currUser }) => {
 };
 
 DormtrakRecentComments.propTypes = {
-  reviews: PropTypes.arrayOf(PropTypes.object),
   abridged: PropTypes.bool.isRequired,
+  api: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  reviews: PropTypes.arrayOf(PropTypes.object),
 };
 
 DormtrakRecentComments.defaultProps = {
   reviews: null,
 };
 
-export default DormtrakRecentComments;
+const mapStateToProps = (state) => ({
+  api: getAPI(state),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DormtrakRecentComments);
