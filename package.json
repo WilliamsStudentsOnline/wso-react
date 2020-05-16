@@ -26,7 +26,7 @@
     "serialize-javascript": "2.1.1",
     "timeago.js": "^4.0.0-beta.2",
     "typeface-source-sans-pro": "^0.0.75",
-    "wso-api-client": "ssh://git@github.com:WilliamsStudentsOnline/wso-api-client.git#de8b0659587cba432575ebd9fb5891ff3826f343"
+    "wso-api-client": "ssh://git@github.com:WilliamsStudentsOnline/wso-api-client.git#12477543e4b7cbfb33297539c2f8b3e03aa5d605"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // React/Redux imports
-import { getCurrUser, getToken, getAPI } from "../selectors/auth";
+import { getAPI, getAPIToken, getCurrUser } from "../selectors/auth";
 import { connect } from "react-redux";
 
 // External imports
@@ -137,7 +137,7 @@ const mapStateToProps = () => {
   return (state) => ({
     api: getAPI(state),
     currUser: getCurrUser(state),
-    token: getToken(state),
+    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };

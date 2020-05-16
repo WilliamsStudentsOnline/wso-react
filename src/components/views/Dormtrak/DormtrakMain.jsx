@@ -12,7 +12,7 @@ import DormtrakReviewForm from "./DormtrakReviewForm";
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { createRouteNodeSelector } from "redux-router5";
-import { getToken } from "../../../selectors/auth";
+import { getAPIToken } from "../../../selectors/auth";
 
 // Additional Imports
 import { containsScopes, scopes } from "../../../lib/general";
@@ -67,7 +67,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak");
 
   return (state) => ({
-    token: getToken(state),
+    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };

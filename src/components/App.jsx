@@ -14,14 +14,15 @@ import { getAPI, getExpiry } from "../selectors/auth";
 import {
   doRemoveCreds,
   doUpdateAPI,
-  doUpdateToken,
+  doUpdateAPIToken,
+  doUpdateIdentityToken,
   doUpdateUser,
 } from "../actions/auth";
 import { doUpdateSchedulerState } from "../actions/schedulerUtils";
 
 // Additional Imports
 import { SimpleAuthentication } from "wso-api-client";
-import { loadState } from "../loadState";
+import { loadState, removeStateFromStorage } from "../stateStorage";
 
 // More component imports
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
@@ -47,19 +48,27 @@ const App = ({
   removeCreds,
   route,
   updateAPI,
+  updateAPIToken,
+  updateIdenToken,
   updateSchedulerState,
-  updateToken,
   updateUser,
 }) => {
   // returns API based on IP address
   const loadIPAPI = async () => {
     try {
-      const tokenResponse = await api.authService.loginV1({ useIP: true });
-      const newToken = tokenResponse.token;
-      const updatedAuth = new SimpleAuthentication(newToken);
+      const tokenResponse = await api.authService.getIdentityToken({
+        useIP: true,
+      });
+      const newIdenToken = tokenResponse.token;
 
+      const apiTokenResponse = await api.authService.getAPIToken(newIdenToken);
+      const newAPIToken = apiTokenResponse.token;
+
+      const updatedAuth = new SimpleAuthentication(newAPIToken);
+
+      updateIdenToken(newIdenToken);
+      updateAPIToken(newAPIToken);
       updateAPI(api.updateAuth(updatedAuth));
-      updateToken(newToken);
       // eslint-disable-next-line no-empty
     } catch (error) {}
   };
@@ -70,26 +79,23 @@ const App = ({
    * and will be abandoned otherwise.
    * This is made into an async function to be a non-blocking operation for the rest
    * of the screen rendering.
-   * @param {string} token user token
+   * @param {string} identityToken user identity token
    */
-  const loadUserInfo = async (token) => {
+  const loadUserInfo = async (identityToken) => {
     // Only update the token and user if we are able to get the user response;
     try {
       // update default WSO API with the persisted token,
       // and update the persisted token to extend expiry
-      const auth = new SimpleAuthentication(token);
-      const currAPI = api.updateAuth(auth);
-      const updatedTokenResponse = await currAPI.authService.updateTokenV1(
-        token
-      );
-      const updatedToken = updatedTokenResponse.token;
+      const apiTokenResponse = await api.authService.getAPIToken(identityToken);
+      const newAPIToken = apiTokenResponse.token;
 
-      const updatedAuth = new SimpleAuthentication(updatedToken);
-      const updatedAPI = currAPI.updateAuth(updatedAuth);
+      const auth = new SimpleAuthentication(newAPIToken);
+      const updatedAPI = api.updateAuth(auth);
+
       const userResponse = await updatedAPI.userService.getUser("me");
       updateUser(userResponse.data);
       updateAPI(updatedAPI);
-      updateToken(updatedToken);
+      updateAPIToken(newAPIToken);
     } catch (error) {
       // do nothing
     }
@@ -111,7 +117,7 @@ const App = ({
       const persistedSchedulerOptions = loadState("schedulerOptions");
       updateSchedulerState(persistedSchedulerOptions);
 
-      const persistedToken = loadState("token");
+      const persistedToken = loadState("state").authState.identityToken;
       if (persistedToken) {
         await loadUserInfo(persistedToken);
       } else {
@@ -125,6 +131,10 @@ const App = ({
   }, []);
 
   const mainBody = () => {
+    if (!route) {
+      return null;
+    }
+
     const topRouteName = route.name.split(".")[0];
 
     switch (topRouteName) {
@@ -154,7 +164,7 @@ const App = ({
         removeCreds();
         // Remove credentials from localStorage, since after logging out the edits will be done in
         // sessionStorage instead.
-        localStorage.removeItem("state");
+        removeStateFromStorage("state");
         loadIPAPI();
         navigateTo("home");
         return null;
@@ -167,7 +177,7 @@ const App = ({
 
   return (
     <Layout>
-      <Suspense fallback={<div>&nbsp;</div>}>{mainBody()}</Suspense>
+      <Suspense fallback={null}>{mainBody()}</Suspense>
     </Layout>
   );
 };
@@ -178,7 +188,8 @@ App.propTypes = {
   removeCreds: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
   updateAPI: PropTypes.func.isRequired,
-  updateToken: PropTypes.func.isRequired,
+  updateAPIToken: PropTypes.func.isRequired,
+  updateIdenToken: PropTypes.func.isRequired,
   updateSchedulerState: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
 };
@@ -197,9 +208,10 @@ const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location) => dispatch(actions.navigateTo(location)),
   removeCreds: () => dispatch(doRemoveCreds()),
   updateAPI: (api) => dispatch(doUpdateAPI(api)),
+  updateAPIToken: (token) => dispatch(doUpdateAPIToken(token)),
   updateSchedulerState: (newState) =>
     dispatch(doUpdateSchedulerState(newState)),
-  updateToken: (token) => dispatch(doUpdateToken(token)),
+  updateIdenToken: (token) => dispatch(doUpdateIdentityToken(token)),
   updateUser: (newUser) => dispatch(doUpdateUser(newUser)),
 });
 

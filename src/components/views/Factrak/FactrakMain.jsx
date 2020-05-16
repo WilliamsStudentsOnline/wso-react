@@ -17,7 +17,7 @@ import FactrakSearch from "./FactrakSearch";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getToken } from "../../../selectors/auth";
+import { getAPIToken } from "../../../selectors/auth";
 
 // Additional Imports
 import { scopes, containsScopes } from "../../../lib/general";
@@ -78,7 +78,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak");
 
   return (state) => ({
-    token: getToken(state),
+    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };

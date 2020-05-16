@@ -1,5 +1,6 @@
 import {
-  UPDATE_TOKEN,
+  UPDATE_API_TOKEN,
+  UPDATE_IDEN_TOKEN,
   UPDATE_USER,
   REMOVE_CREDS,
   UPDATE_REMEMBER,
@@ -9,14 +10,14 @@ import { WSO, API, NoAuthentication } from "wso-api-client";
 
 import jwtDecode from "jwt-decode";
 
-// TODO edit this for prod
 const API_CLIENT = new WSO(
   new API("http://localhost:8080", new NoAuthentication())
 );
 
 const INITIAL_STATE = {
   scope: [],
-  token: "",
+  identityToken: "",
+  apiToken: "",
   expiry: 0,
   currUser: null, // Stores the user object.
   remember: false,
@@ -34,16 +35,27 @@ const parseToken = (token) => {
   }
 };
 
+// Updates the identity token
+// TODO is it the identity token or api token that has scopes?
+const updateIdenToken = (state, action) => {
+  const token = action.token;
+
+  return {
+    ...state,
+    identityToken: token,
+  };
+};
+
 // Updates the token in the store. Checking of a error-free response should be done before this
 // function call.
-const updateToken = (state, action) => {
+const updateAPIToken = (state, action) => {
   const token = action.token;
   const decoded = parseToken(token);
 
   return {
     ...state,
     scope: decoded.scope,
-    token,
+    apiToken: token,
     expiry: decoded.exp * 1000,
     tokenLevel: decoded.tokenLevel,
   };
@@ -93,8 +105,10 @@ const removeCreds = () => {
 
 function authReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
-    case UPDATE_TOKEN:
-      return updateToken(state, action);
+    case UPDATE_IDEN_TOKEN:
+      return updateIdenToken(state, action);
+    case UPDATE_API_TOKEN:
+      return updateAPIToken(state, action);
     case UPDATE_USER:
       return updateUser(state, action);
     case REMOVE_CREDS:

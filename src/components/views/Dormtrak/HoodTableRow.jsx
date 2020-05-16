@@ -5,7 +5,7 @@ import { Line } from "../../Skeleton";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPIToken } from "../../../selectors/auth";
 
 // Additional imports
 import { Link } from "react-router5";
@@ -78,7 +78,7 @@ const HoodTableRowSkeleton = () => {
 };
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  token: getAPIToken(state),
 });
 
 export default connect(mapStateToProps)(HoodTableRow);

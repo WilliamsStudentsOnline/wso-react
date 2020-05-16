@@ -9,7 +9,7 @@ import { Line } from "../../Skeleton";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getAPI, getCurrUser, getToken } from "../../../selectors/auth";
+import { getAPI, getCurrUser, getAPIToken } from "../../../selectors/auth";
 
 // Additional imports
 import { containsScopes, scopes } from "../../../lib/general";
@@ -235,7 +235,7 @@ const mapStateToProps = () => {
   return (state) => ({
     api: getAPI(state),
     currUser: getCurrUser(state),
-    token: getToken(state),
+    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };

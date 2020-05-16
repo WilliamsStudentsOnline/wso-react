@@ -1,7 +1,7 @@
 import {
   getCurrUser,
   getExpiry,
-  getToken,
+  getAPIToken,
   getScopes,
   getTokenLevel,
 } from "../../selectors/auth";
@@ -38,7 +38,7 @@ describe("Authentication Selector", () => {
 
   it("retrieves token", () => {
     const expectedToken = "token";
-    const token = getToken(INITIAL_STATE);
+    const token = getAPIToken(INITIAL_STATE);
     expect(token).toEqual(expectedToken);
   });
 

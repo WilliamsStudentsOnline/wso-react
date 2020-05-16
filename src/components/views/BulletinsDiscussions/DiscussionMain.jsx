@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 import { createRouteNodeSelector } from "redux-router5";
 
 // External Imports
-import { getToken } from "../../../selectors/auth";
+import { getAPIToken } from "../../../selectors/auth";
 
 const DiscussionMain = ({ route }) => {
   const DiscussionBody = () => {
@@ -53,7 +53,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("discussions");
 
   return (state) => ({
-    token: getToken(state),
+    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };

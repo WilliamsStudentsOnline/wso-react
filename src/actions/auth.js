@@ -1,13 +1,19 @@
 import {
-  UPDATE_TOKEN,
+  UPDATE_IDEN_TOKEN,
+  UPDATE_API_TOKEN,
   UPDATE_USER,
   REMOVE_CREDS,
   UPDATE_REMEMBER,
   UPDATE_API,
 } from "../constants/actionTypes";
 
-const doUpdateToken = (token) => ({
-  type: UPDATE_TOKEN,
+const doUpdateIdentityToken = (token) => ({
+  type: UPDATE_IDEN_TOKEN,
+  token,
+});
+
+const doUpdateAPIToken = (token) => ({
+  type: UPDATE_API_TOKEN,
   token,
 });
 
@@ -31,7 +37,8 @@ const doUpdateAPI = (api) => ({
 });
 
 export {
-  doUpdateToken,
+  doUpdateIdentityToken,
+  doUpdateAPIToken,
   doUpdateUser,
   doRemoveCreds,
   doUpdateRemember,

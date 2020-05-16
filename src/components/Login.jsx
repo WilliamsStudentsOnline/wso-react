@@ -5,10 +5,11 @@ import PropTypes from "prop-types";
 // Redux/Routing imports
 import { connect } from "react-redux";
 import {
-  doUpdateToken,
-  doUpdateUser,
-  doUpdateRemember,
   doUpdateAPI,
+  doUpdateAPIToken,
+  doUpdateIdentityToken,
+  doUpdateRemember,
+  doUpdateUser,
 } from "../actions/auth";
 import { actions, createRouteNodeSelector } from "redux-router5";
 
@@ -23,8 +24,9 @@ const Login = ({
   scopes,
   tokenLevel,
   updateAPI,
+  updateAPIToken,
+  updateIdenToken,
   updateRemember,
-  updateToken,
   updateUser,
 }) => {
   const [unixID, setUnix] = useState("");
@@ -42,20 +44,20 @@ const Login = ({
 
       if (route.params.requiredScopes) {
         for (const scope of route.params.requiredScopes) {
-          if (!scopes.indexOf(scope)) {
+          if (!scopes.includes(scope)) {
             return;
           }
         }
       }
 
       const { name, params } = route.params.previousRoute;
-
       navigateTo(name, params);
     }
     // Assumes API, tokenLevel, and scopes are simultaneously updated
     // when token changes.
   }, [api, tokenLevel, scopes, navigateTo, route.params]);
 
+  // TODO: this shouldn't be coded this way. - it's better to do the splitting in the sign in.
   const unixHandler = (event) => {
     const splitValue = event.target.value.split("@");
     setUnix(splitValue[0]);
@@ -71,18 +73,24 @@ const Login = ({
     }
 
     try {
-      const tokenResponse = await api.authService.loginV1({
+      const tokenResponse = await api.authService.getIdentityToken({
         unixID,
         password,
       });
-      const token = tokenResponse.token;
-      const updatedAuth = new SimpleAuthentication(token);
+      const identityToken = tokenResponse.token;
+
+      const apiTokenResponse = await api.authService.getAPIToken(identityToken);
+      const apiToken = apiTokenResponse.token;
+
+      const updatedAuth = new SimpleAuthentication(apiToken);
       const updatedAPI = api.updateAuth(updatedAuth);
+
       const userResponse = await updatedAPI.userService.getUser("me");
       updateUser(userResponse.data);
       updateRemember(remember);
       updateAPI(updatedAPI);
-      updateToken(token);
+      updateIdenToken(identityToken);
+      updateAPIToken(apiToken);
       navigateTo("home");
     } catch (error) {
       if (error.errors) {
@@ -149,9 +157,10 @@ Login.propTypes = {
   scopes: PropTypes.arrayOf(PropTypes.string),
   tokenLevel: PropTypes.number,
   updateAPI: PropTypes.func.isRequired,
+  updateAPIToken: PropTypes.func.isRequired,
+  updateIdenToken: PropTypes.func.isRequired,
   updateRemember: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
-  updateToken: PropTypes.func.isRequired,
 };
 
 Login.defaultProps = {
@@ -172,8 +181,9 @@ const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location, params, opts) =>
     dispatch(actions.navigateTo(location, params, opts)),
   updateAPI: (api) => dispatch(doUpdateAPI(api)),
+  updateAPIToken: (token) => dispatch(doUpdateAPIToken(token)),
+  updateIdenToken: (token) => dispatch(doUpdateIdentityToken(token)),
   updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
-  updateToken: (response) => dispatch(doUpdateToken(response)),
   updateUser: (unixID) => dispatch(doUpdateUser(unixID)),
 });
 

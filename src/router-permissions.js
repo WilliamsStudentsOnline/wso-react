@@ -39,7 +39,7 @@ const hasNecessaryTokenLevel = (token, key) => {
 export default (router, store) => {
   Object.keys(routePermissions).forEach((key) => {
     router.canActivate(key, () => (toState, fromState, done) => {
-      const token = store.getState().authState.token;
+      const token = store.getState().authState.apiToken;
 
       if (
         hasNecessaryScopes(token, key) &&
@@ -47,6 +47,7 @@ export default (router, store) => {
       ) {
         return true;
       }
+
       return done({
         redirect: {
           name: "login",

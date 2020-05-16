@@ -18,7 +18,7 @@ import {
   bulletinTypeExchange,
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
-import { getToken } from "../../../selectors/auth";
+import { getAPIToken } from "../../../selectors/auth";
 
 const BulletinMain = ({ route }) => {
   const BulletinBody = (bulletinType) => {
@@ -73,7 +73,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("bulletins");
 
   return (state) => ({
-    token: getToken(state),
+    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };

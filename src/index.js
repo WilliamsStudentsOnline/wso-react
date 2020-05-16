@@ -10,7 +10,7 @@ import "typeface-source-sans-pro";
 
 // Redux/store imports
 import { Provider } from "react-redux";
-import { saveState } from "./loadState";
+import { saveState } from "./stateStorage";
 import configureStore from "./store";
 
 // Router imports
@@ -45,7 +45,12 @@ store.subscribe(
   throttle(() => {
     const authState = store.getState().authState;
     const schedulerUtilState = store.getState().schedulerUtilState;
-    saveState("state", { authState }, authState.remember);
+    // Using this to override people's current authState
+    if (authState.remember) {
+      saveState("state", {
+        authState: { identityToken: authState.identityToken },
+      });
+    }
     saveState(
       "schedulerOptions",
       {

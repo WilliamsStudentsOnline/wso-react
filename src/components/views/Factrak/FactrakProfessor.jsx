@@ -8,7 +8,7 @@ import { Line } from "../../Skeleton";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getAPI, getCurrUser, getToken } from "../../../selectors/auth";
+import { getAPI, getCurrUser, getAPIToken } from "../../../selectors/auth";
 import { createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
@@ -183,7 +183,7 @@ const mapStateToProps = () => {
   return (state) => ({
     api: getAPI(state),
     currUser: getCurrUser(state),
-    token: getToken(state),
+    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };
