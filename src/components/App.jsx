@@ -46,6 +46,7 @@ const App = ({
   token,
   currUser,
   updateUser,
+  expiry,
 }) => {
   const [didGetToken, updateDidGetToken] = useState(false);
 
@@ -111,7 +112,7 @@ const App = ({
   const initialize = async () => {
     if (token && didGetToken) return;
 
-    if (token && !didGetToken) {
+    if (token && !didGetToken && expiry > new Date().getTime()) {
       const updatedTokenResponse = await updateTokenAPI(token);
       updateDidGetToken(true);
       if (checkAndHandleError(updatedTokenResponse)) {
@@ -126,7 +127,7 @@ const App = ({
       return;
     }
 
-    // If the token does not exist, get a token based on whether user is on campus.
+    // If the token does not exist or is expired, get a token based on whether user is on campus.
     const campusResponse = await getCampusToken();
 
     if (checkAndHandleError(campusResponse)) {
@@ -153,10 +154,12 @@ App.propTypes = {
   token: PropTypes.string.isRequired,
   currUser: PropTypes.object,
   updateUser: PropTypes.func.isRequired,
+  expiry: PropTypes.number,
 };
 
 App.defaultProps = {
   currUser: null,
+  expiry: 0,
 };
 
 const mapStateToProps = () => {
