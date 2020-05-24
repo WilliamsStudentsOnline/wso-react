@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { checkAndHandleError } from "../../../lib/general";
 import { getUserLargePhoto } from "../../../api/users";
 import { ConnectedLink } from "react-router5";
+import { IoMdPin } from "react-icons/io";
 
 const Ephmatcher = ({
   ephmatcher,
@@ -63,6 +64,18 @@ const Ephmatcher = ({
     return null;
   };
 
+  const formatLocation = () => {
+    let locEnding;
+    if (ephmatcherProfile.locationCountry === "United States") {
+      locEnding = ephmatcherProfile.locationState;
+    } else if (ephmatcherProfile.locationState) {
+      locEnding = `${ephmatcherProfile.locationState}, ${ephmatcherProfile.locationCountry}`;
+    } else {
+      locEnding = ephmatcherProfile.locationCountry;
+    }
+    return `${ephmatcherProfile.locationTown}, ${locEnding}`;
+  };
+
   return (
     <aside
       key={ephmatcherProfile.id}
@@ -100,6 +113,11 @@ const Ephmatcher = ({
             <span className="list-headers">{ephmatcher.unixID}</span>
           )}
           {userTags()}
+          {ephmatcherProfile.locationVisible && (
+            <div style={{ color: "#aaa" }}>
+              <IoMdPin /> {formatLocation()}
+            </div>
+          )}
           {ephmatcherProfile.description && (
             <div>{ephmatcherProfile.description}</div>
           )}

@@ -24,6 +24,10 @@ const EphmatchProfile = ({ token, navigateTo }) => {
   const [profile, updateProfile] = useState(null);
   const [description, updateDescription] = useState("");
   const [matchMessage, updateMatchMessage] = useState("");
+  const [locationVisible, updateLocationVisible] = useState(true);
+  const [locationTown, updateLocationTown] = useState("");
+  const [locationState, updateLocationState] = useState("");
+  const [locationCountry, updateLocationCountry] = useState("");
   const [photo, updatePhoto] = useState(null);
   const [errors, updateErrors] = useState([]);
   const [tags, updateTags] = useState([]);
@@ -40,6 +44,10 @@ const EphmatchProfile = ({ token, navigateTo }) => {
         updateDescription(ephmatchProfile.description);
         updateTags(ephmatchProfile.user.tags.map((tag) => tag.name));
         updateMatchMessage(ephmatchProfile.matchMessage);
+        updateLocationVisible(ephmatchProfile.locationVisible);
+        updateLocationTown(ephmatchProfile.locationTown);
+        updateLocationState(ephmatchProfile.locationState);
+        updateLocationCountry(ephmatchProfile.locationCountry);
       }
     };
 
@@ -55,7 +63,14 @@ const EphmatchProfile = ({ token, navigateTo }) => {
 
     const newErrors = [];
 
-    const params = { description, matchMessage };
+    const params = {
+      description,
+      matchMessage,
+      locationVisible,
+      locationTown,
+      locationState,
+      locationCountry,
+    };
 
     // Update the profile.
     const response = await updateEphmatchProfile(token, params);
@@ -87,6 +102,10 @@ const EphmatchProfile = ({ token, navigateTo }) => {
     ...profile,
     description,
     matchMessage,
+    locationVisible,
+    locationTown,
+    locationState,
+    locationCountry,
   };
 
   const dummyEphmatcher = profile && {
@@ -104,8 +123,16 @@ const EphmatchProfile = ({ token, navigateTo }) => {
             submitHandler={submitHandler}
             description={description}
             matchMessage={matchMessage}
+            locationVisible={locationVisible}
+            locationTown={locationTown}
+            locationState={locationState}
+            locationCountry={locationCountry}
             updateDescription={updateDescription}
             updateMatchMessage={updateMatchMessage}
+            updateLocationVisible={updateLocationVisible}
+            updateLocationTown={updateLocationTown}
+            updateLocationState={updateLocationState}
+            updateLocationCountry={updateLocationCountry}
           >
             <Errors errors={errors} />
             <h3>Profile</h3>
