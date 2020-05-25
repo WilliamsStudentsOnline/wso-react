@@ -56,10 +56,14 @@ const EphmatchLayout = ({ children, token, availability, matches }) => {
 EphmatchLayout.propTypes = {
   token: PropTypes.string.isRequired,
   children: PropTypes.object,
-  availability: PropTypes.object.isRequired,
+  availability: PropTypes.object,
   matches: PropTypes.arrayOf(PropTypes.object),
 };
 
-EphmatchLayout.defaultProps = { children: null, matches: [] };
+EphmatchLayout.defaultProps = {
+  children: null,
+  matches: [],
+  availability: null,
+};
 
 export default EphmatchLayout;

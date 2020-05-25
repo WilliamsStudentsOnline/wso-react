@@ -148,6 +148,7 @@ const EphmatchHome = ({ token }) => {
                         selectEphmatcher={selectEphmatcher}
                         index={index}
                         token={token}
+                        matched={ephmatcher.matched}
                         key={ephmatcher.id}
                       />
                     )

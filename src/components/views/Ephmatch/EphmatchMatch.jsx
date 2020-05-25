@@ -40,6 +40,7 @@ const EphmatchMatch = ({ token }) => {
               ephmatcher={match.matchedUser}
               ephmatcherProfile={match.matchedUser.ephmatchProfile}
               token={token}
+              matched
               key={match.id}
             />
           ))}

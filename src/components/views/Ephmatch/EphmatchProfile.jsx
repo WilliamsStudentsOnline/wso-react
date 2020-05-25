@@ -28,6 +28,9 @@ const EphmatchProfile = ({ token, navigateTo }) => {
   const [locationTown, updateLocationTown] = useState("");
   const [locationState, updateLocationState] = useState("");
   const [locationCountry, updateLocationCountry] = useState("");
+  const [messagingPlatform, updateMessagingPlatform] = useState("NONE");
+  const [messagingUsername, updateMessagingUsername] = useState("");
+  const [unixID, updateUnixID] = useState("");
   const [photo, updatePhoto] = useState(null);
   const [errors, updateErrors] = useState([]);
   const [tags, updateTags] = useState([]);
@@ -48,6 +51,13 @@ const EphmatchProfile = ({ token, navigateTo }) => {
         updateLocationTown(ephmatchProfile.locationTown);
         updateLocationState(ephmatchProfile.locationState);
         updateLocationCountry(ephmatchProfile.locationCountry);
+        updateMessagingPlatform(
+          ephmatchProfile.messagingPlatform
+            ? ephmatchProfile.messagingPlatform
+            : "NONE"
+        );
+        updateMessagingUsername(ephmatchProfile.messagingUsername);
+        updateUnixID(ephmatchProfile.user.unixID);
       }
     };
 
@@ -70,6 +80,9 @@ const EphmatchProfile = ({ token, navigateTo }) => {
       locationTown,
       locationState,
       locationCountry,
+      messagingPlatform,
+      messagingUsername:
+        messagingUsername === "NONE" ? null : messagingUsername,
     };
 
     // Update the profile.
@@ -106,6 +119,8 @@ const EphmatchProfile = ({ token, navigateTo }) => {
     locationTown,
     locationState,
     locationCountry,
+    messagingPlatform,
+    messagingUsername,
   };
 
   const dummyEphmatcher = profile && {
@@ -127,12 +142,17 @@ const EphmatchProfile = ({ token, navigateTo }) => {
             locationTown={locationTown}
             locationState={locationState}
             locationCountry={locationCountry}
+            messagingPlatform={messagingPlatform}
+            messagingUsername={messagingUsername}
             updateDescription={updateDescription}
             updateMatchMessage={updateMatchMessage}
             updateLocationVisible={updateLocationVisible}
             updateLocationTown={updateLocationTown}
             updateLocationState={updateLocationState}
             updateLocationCountry={updateLocationCountry}
+            updateMessagingPlatform={updateMessagingPlatform}
+            updateMessagingUsername={updateMessagingUsername}
+            unix={unixID}
           >
             <Errors errors={errors} />
             <h3>Profile</h3>
@@ -142,6 +162,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
                   ephmatcherProfile={dummyEphmatchProfile}
                   ephmatcher={dummyEphmatcher}
                   token={token}
+                  matched
                   photo={photo && URL.createObjectURL(photo)}
                 />
               </div>

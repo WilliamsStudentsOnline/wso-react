@@ -24,6 +24,13 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
   const [description, updateDescription] = useState("");
   const [userInfo, updateUserInfo] = useState(null);
   const [matchMessage, updateMatchMessage] = useState("");
+  const [locationVisible, updateLocationVisible] = useState(true);
+  const [locationTown, updateLocationTown] = useState("");
+  const [locationState, updateLocationState] = useState("");
+  const [locationCountry, updateLocationCountry] = useState("");
+  const [messagingPlatform, updateMessagingPlatform] = useState("NONE");
+  const [messagingUsername, updateMessagingUsername] = useState("");
+  const [unixID, updateUnixID] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -32,6 +39,10 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
       const ownProfile = await getUser(token);
       if (checkAndHandleError(ownProfile) && isMounted) {
         updateUserInfo(ownProfile.data.data);
+        updateUnixID(ownProfile.data.data.unixID);
+        updateLocationTown(ownProfile.data.data.homeTown);
+        updateLocationState(ownProfile.data.data.homeState);
+        updateLocationCountry(ownProfile.data.data.homeCountry);
       }
 
       // Load ephmatch profile to see if one exists
@@ -41,6 +52,17 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
 
         updateDescription(ephmatchProfile.description);
         updateMatchMessage(ephmatchProfile.matchMessage);
+        updateLocationVisible(ephmatchProfile.locationVisible);
+        updateLocationTown(ephmatchProfile.locationTown);
+        updateLocationState(ephmatchProfile.locationState);
+        updateLocationCountry(ephmatchProfile.locationCountry);
+        updateMessagingPlatform(
+          ephmatchProfile.messagingPlatform
+            ? ephmatchProfile.messagingPlatform
+            : "NONE"
+        );
+        updateMessagingUsername(ephmatchProfile.messagingUsername);
+        updateUnixID(ephmatchProfile.user.unixID);
       }
     };
 
@@ -54,7 +76,17 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    const params = { description, matchMessage, gender: "" };
+    const params = {
+      description,
+      matchMessage,
+      locationVisible,
+      locationTown,
+      locationState,
+      locationCountry,
+      messagingPlatform,
+      messagingUsername:
+        messagingUsername === "NONE" ? null : messagingUsername,
+    };
     const response = await createEphmatchProfile(token, params);
 
     // Update succeeded -> redirect them to main ephmatch page.
@@ -67,6 +99,12 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
     id: 0,
     description,
     matchMessage,
+    locationVisible,
+    locationTown,
+    locationState,
+    locationCountry,
+    messagingPlatform,
+    messagingUsername,
   };
 
   return (
@@ -86,14 +124,28 @@ const EphmatchOptIn = ({ token, navigateTo }) => {
             submitHandler={submitHandler}
             description={description}
             matchMessage={matchMessage}
+            locationVisible={locationVisible}
+            locationTown={locationTown}
+            locationState={locationState}
+            locationCountry={locationCountry}
+            messagingPlatform={messagingPlatform}
+            messagingUsername={messagingUsername}
             updateDescription={updateDescription}
             updateMatchMessage={updateMatchMessage}
+            updateLocationVisible={updateLocationVisible}
+            updateLocationTown={updateLocationTown}
+            updateLocationState={updateLocationState}
+            updateLocationCountry={updateLocationCountry}
+            updateMessagingPlatform={updateMessagingPlatform}
+            updateMessagingUsername={updateMessagingUsername}
+            unix={unixID}
           >
             <h3>Create your Ephmatch Profile</h3>
             <div className="ephmatch-sample-profile">
               <Ephmatcher
                 ephmatcherProfile={dummyEphmatchProfile}
                 ephmatcher={userInfo}
+                matched
                 token={token}
               />
             </div>
