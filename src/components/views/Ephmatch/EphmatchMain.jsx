@@ -22,16 +22,15 @@ import {
   checkAndHandleError,
 } from "../../../lib/general";
 import {
-  // getSelfEphmatchProfile,
   getEphmatchMatches,
   getEphmatchAvailability,
+  getEphmatchMatchesCount,
 } from "../../../api/ephmatch";
 
 const EphmatchMain = ({ route, token, navigateTo }) => {
-  // const [ephmatchProfile, updateEphmatchProfile] = useState(profile);
-  // const [hasQueriedProfile, updateHasQueriedProfile] = useState(false);
   const [availability, updateAvailability] = useState(null);
   const [matches, updateMatches] = useState([]);
+  const [matchesTotalCount, updateMatchesTotalCount] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
@@ -43,16 +42,6 @@ const EphmatchMain = ({ route, token, navigateTo }) => {
       }
     };
 
-    // Check if there is an ephmatch profile for the user
-    /*
-    const loadEphmatchProfile = async () => {
-      const ownProfile = await getSelfEphmatchProfile(token);
-      if (checkAndHandleError(ownProfile) && isMounted) {
-        updateEphmatchProfile(ownProfile.data.data);
-      }
-      updateHasQueriedProfile(true);
-    };
-    */
     const loadMatches = async () => {
       const ephmatchersResponse = await getEphmatchMatches(token);
       if (checkAndHandleError(ephmatchersResponse)) {
@@ -60,25 +49,25 @@ const EphmatchMain = ({ route, token, navigateTo }) => {
       }
     };
 
+    const loadMatchesCount = async () => {
+      const ephmatchersCountResponse = await getEphmatchMatchesCount(token);
+      if (checkAndHandleError(ephmatchersCountResponse)) {
+        updateMatchesTotalCount(ephmatchersCountResponse.data.data.total);
+      }
+    };
+
     loadAvailability();
 
-    loadMatches();
+    loadMatchesCount();
 
-    // loadEphmatchProfile();
+    loadMatches();
 
     return () => {
       isMounted = false;
     };
   }, [token, route]);
 
-  /*
-  const hasValidEphmatchProfile = () => {
-    return ephmatchProfile && !ephmatchProfile.deleted;
-  };
-  */
-
   const EphmatchBody = () => {
-    // if (hasQueriedProfile && !hasValidEphmatchProfile()) {
     // If token doesnt have access to matches or profiles, must mean they need to create a new account
     if (
       !containsScopes(token, [
@@ -138,7 +127,7 @@ const EphmatchMain = ({ route, token, navigateTo }) => {
     return (
       <EphmatchLayout
         token={token}
-        matches={matches}
+        matchesTotalCount={matchesTotalCount}
         availability={availability}
       >
         {EphmatchBody()}

@@ -8,7 +8,12 @@ import { Link } from "react-router5";
 import { format } from "timeago.js";
 import { containsScopes, scopes } from "../../../lib/general";
 
-const EphmatchLayout = ({ children, token, availability, matches }) => {
+const EphmatchLayout = ({
+  children,
+  token,
+  availability,
+  matchesTotalCount,
+}) => {
   return (
     <>
       <header>
@@ -34,7 +39,7 @@ const EphmatchLayout = ({ children, token, availability, matches }) => {
                 <li>
                   <Link routeName="ephmatch.matches">Matches</Link>
                   <span className="ephmatch-badge" title="Matches!">
-                    {matches.length}
+                    {matchesTotalCount}
                   </span>
                 </li>
                 <li>
@@ -57,13 +62,13 @@ EphmatchLayout.propTypes = {
   token: PropTypes.string.isRequired,
   children: PropTypes.object,
   availability: PropTypes.object,
-  matches: PropTypes.arrayOf(PropTypes.object),
+  matchesTotalCount: PropTypes.number,
 };
 
 EphmatchLayout.defaultProps = {
   children: null,
-  matches: [],
   availability: null,
+  matchesTotalCount: 0,
 };
 
 export default EphmatchLayout;

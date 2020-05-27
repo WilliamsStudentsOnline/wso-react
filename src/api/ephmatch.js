@@ -14,10 +14,24 @@ const getEphmatchAvailability = async (token) => {
   return response;
 };
 
-// :ists all Ephmatch-eligible students that user has matched with
+// Lists all Ephmatch-eligible students that user has matched with
 const getEphmatchMatches = async (token) => {
   const response = await axios({
     url: "/api/v2/ephmatch/matches",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).catch((error) => {
+    return error.response;
+  });
+
+  return response;
+};
+
+// Counts number of matches
+const getEphmatchMatchesCount = async (token) => {
+  const response = await axios({
+    url: "/api/v2/ephmatch/matches-count",
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -159,4 +173,5 @@ export {
   updateEphmatchProfile,
   deleteEphmatchProfile,
   createEphmatchProfile,
+  getEphmatchMatchesCount,
 };
