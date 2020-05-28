@@ -13,6 +13,8 @@ import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
 import { getToken } from "../../../selectors/auth";
 
+import { format } from "timeago.js";
+
 // Additional Imports
 import {
   scopes,
@@ -20,26 +22,26 @@ import {
   checkAndHandleError,
 } from "../../../lib/general";
 import {
-  getSelfEphmatchProfile,
   getEphmatchMatches,
+  getEphmatchAvailability,
+  getEphmatchMatchesCount,
 } from "../../../api/ephmatch";
 
-const EphmatchMain = ({ route, token, navigateTo, profile }) => {
-  const [ephmatchProfile, updateEphmatchProfile] = useState(profile);
-  const [hasQueriedProfile, updateHasQueriedProfile] = useState(false);
+const EphmatchMain = ({ route, token, navigateTo }) => {
+  const [availability, updateAvailability] = useState(null);
   const [matches, updateMatches] = useState([]);
-  const ephmatchEndDate = new Date(2020, 2, 17, 23, 59, 59, 99);
+  const [matchesTotalCount, updateMatchesTotalCount] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
-    // Check if there is an ephmatch profile for the user
-    const loadEphmatchProfile = async () => {
-      const ownProfile = await getSelfEphmatchProfile(token);
-      if (checkAndHandleError(ownProfile) && isMounted) {
-        updateEphmatchProfile(ownProfile.data.data);
+
+    const loadAvailability = async () => {
+      const availabilityResp = await getEphmatchAvailability(token);
+      if (checkAndHandleError(availabilityResp) && isMounted) {
+        updateAvailability(availabilityResp.data.data);
       }
-      updateHasQueriedProfile(true);
     };
+
     const loadMatches = async () => {
       const ephmatchersResponse = await getEphmatchMatches(token);
       if (checkAndHandleError(ephmatchersResponse)) {
@@ -47,34 +49,59 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
       }
     };
 
-    loadMatches();
+    const loadMatchesCount = async () => {
+      const ephmatchersCountResponse = await getEphmatchMatchesCount(token);
+      if (checkAndHandleError(ephmatchersCountResponse)) {
+        updateMatchesTotalCount(ephmatchersCountResponse.data.data.total);
+      }
+    };
 
-    loadEphmatchProfile();
+    loadAvailability();
+
+    loadMatchesCount();
+
+    loadMatches();
 
     return () => {
       isMounted = false;
     };
   }, [token, route]);
 
-  const hasValidEphmatchProfile = () => {
-    return ephmatchProfile && !ephmatchProfile.deleted;
-  };
-
   const EphmatchBody = () => {
-    if (hasQueriedProfile && !hasValidEphmatchProfile()) {
+    // If token doesnt have access to matches or profiles, must mean they need to create a new account
+    if (
+      !containsScopes(token, [
+        scopes.ScopeEphmatchMatches,
+        scopes.ScopeEphmatchProfiles,
+      ])
+    ) {
       navigateTo("ephmatch", null, { replace: true });
       return <EphmatchOptIn />;
     }
 
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) {
-      if (new Date() < ephmatchEndDate) {
+      // If token doesnt have access to profiles, must mean that ephmatch is closed for the year
+      //  || new Date() < ephmatchEndDate
+      if (
+        containsScopes(token, [scopes.ScopeEphmatchProfiles]) &&
+        availability?.available
+      ) {
         return <EphmatchHome />;
       }
 
       return (
         <h1 className="no-matches-found">
-          Ephmatch has officially closed for this year.
+          {availability &&
+            (availability.nextOpenTime ? (
+              <>
+                Ephmatch has officially closed.
+                <br />
+                Will open again {format(availability.nextOpenTime)}.
+              </>
+            ) : (
+              <>Ephmatch has officially closed for this year.</>
+            ))}
         </h1>
       );
     }
@@ -94,7 +121,12 @@ const EphmatchMain = ({ route, token, navigateTo, profile }) => {
 
   if (containsScopes(token, [scopes.ScopeEphmatch])) {
     return (
-      <EphmatchLayout matches={matches} ephmatchEndDate={ephmatchEndDate}>
+      <EphmatchLayout
+        token={token}
+        matchesTotalCount={matchesTotalCount}
+        available={availability?.available}
+        closingTime={availability?.closingTime}
+      >
         {EphmatchBody()}
       </EphmatchLayout>
     );
@@ -108,10 +140,9 @@ EphmatchMain.propTypes = {
   route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  profile: PropTypes.object,
 };
 
-EphmatchMain.defaultProps = { profile: null };
+// EphmatchMain.defaultProps = { profile: null };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("ephmatch");

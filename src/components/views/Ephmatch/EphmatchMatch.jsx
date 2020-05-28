@@ -37,9 +37,10 @@ const EphmatchMatch = ({ token }) => {
         <div className="ephmatch-results">
           {matches.map((match) => (
             <Ephmatcher
-              ephmatcher={match.other}
-              ephmatcherProfile={match.other.ephmatchProfile}
+              ephmatcher={match.matchedUser}
+              ephmatcherProfile={match.matchedUser.ephmatchProfile}
               token={token}
+              matched
               key={match.id}
             />
           ))}
