@@ -34,11 +34,13 @@ const EphmatchForm = ({
         placeholder="Add a short description to your profile to help others know you
       better!"
       />
+      <strong>Seen Only by Your Matches:</strong>
+      <br />
       <div className="match-message">
         <strong>Messaging Info:</strong>
         <br />
-        Only shown to your matches - consider adding a phone number, Snapchat or
-        Instagram handle for your matches to see!
+        Consider adding a phone number, Snapchat or Instagram handle for your
+        matches to see!
         <label
           style={{ display: "flex", flexDirection: "row" }}
           htmlFor="messagingPlatform"
@@ -70,10 +72,10 @@ const EphmatchForm = ({
             messagingPlatform === "Phone" ? "phone number" : "username"
           } for matches to message you!`}
         />
+        <br />
         <strong>Match Message:</strong>
         <br />
-        Also only seen by your matches - use this to tell your matches
-        something!
+        Use this to tell your matches something!
         <input
           type="text"
           value={matchMessage || ""}
@@ -81,6 +83,7 @@ const EphmatchForm = ({
           placeholder="Say something to your matches!"
         />
       </div>
+      <br />
       <div>
         <strong>Current Location:</strong>
         <input

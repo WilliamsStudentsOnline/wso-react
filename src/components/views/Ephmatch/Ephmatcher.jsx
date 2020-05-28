@@ -9,6 +9,7 @@ import { ConnectedLink } from "react-router5";
 import { IoMdPin, IoMdText } from "react-icons/io";
 import { FaSnapchatGhost, FaInstagram } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import "../../stylesheets/Ephmatch.css";
 
 const Ephmatcher = ({
   ephmatcher,
@@ -84,7 +85,7 @@ const Ephmatcher = ({
     let link;
     switch (ephmatcherProfile.messagingPlatform) {
       case "Phone":
-        icon = <IoMdText style={{ color: "#aaa", verticalAlign: "middle" }} />;
+        icon = <IoMdText className="message-icon" />;
         link = (
           <a href={`sms:${ephmatcherProfile.messagingUsername}`}>
             {ephmatcherProfile.messagingUsername}
@@ -92,9 +93,7 @@ const Ephmatcher = ({
         );
         break;
       case "Snapchat":
-        icon = (
-          <FaSnapchatGhost style={{ color: "#aaa", verticalAlign: "middle" }} />
-        );
+        icon = <FaSnapchatGhost className="message-icon" />;
         link = (
           <a
             href={`https://www.snapchat.com/add/${ephmatcherProfile.messagingUsername}`}
@@ -104,9 +103,7 @@ const Ephmatcher = ({
         );
         break;
       case "Instagram":
-        icon = (
-          <FaInstagram style={{ color: "#aaa", verticalAlign: "middle" }} />
-        );
+        icon = <FaInstagram className="message-icon" />;
         link = (
           <a
             href={`https://www.instagram.com/${ephmatcherProfile.messagingUsername}`}
@@ -125,7 +122,7 @@ const Ephmatcher = ({
       !ephmatcherProfile.messagingUsername ||
       !link
     ) {
-      icon = <MdEmail style={{ color: "#aaa", verticalAlign: "middle" }} />;
+      icon = <MdEmail className="message-icon" />;
       link = (
         <a href={`mailto:${ephmatcher.unixID}@williams.edu`}>
           {ephmatcher.unixID}@williams.edu
@@ -178,8 +175,8 @@ const Ephmatcher = ({
           )}
           {userTags()}
           {ephmatcherProfile.locationVisible && (
-            <div style={{ color: "#aaa" }}>
-              <IoMdPin style={{ verticalAlign: "middle" }} /> {formatLocation()}
+            <div className="message-icon">
+              <IoMdPin /> {formatLocation()}
             </div>
           )}
           {matched && createMessageField()}

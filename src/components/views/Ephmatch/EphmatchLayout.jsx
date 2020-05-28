@@ -11,15 +11,16 @@ import { containsScopes, scopes } from "../../../lib/general";
 const EphmatchLayout = ({
   children,
   token,
-  availability,
+  available,
+  closingTime,
   matchesTotalCount,
 }) => {
   return (
     <>
       <header>
-        {availability && availability.available && availability.closingTime && (
+        {available && closingTime && (
           <section className="notice">
-            Ephmatch closes {format(availability.closingTime)}
+            Ephmatch closes {format(closingTime)}
           </section>
         )}
 
@@ -61,13 +62,15 @@ const EphmatchLayout = ({
 EphmatchLayout.propTypes = {
   token: PropTypes.string.isRequired,
   children: PropTypes.object,
-  availability: PropTypes.object,
+  available: PropTypes.bool,
+  closingTime: PropTypes.object,
   matchesTotalCount: PropTypes.number,
 };
 
 EphmatchLayout.defaultProps = {
   children: null,
-  availability: null,
+  available: false,
+  closingTime: null,
   matchesTotalCount: 0,
 };
 

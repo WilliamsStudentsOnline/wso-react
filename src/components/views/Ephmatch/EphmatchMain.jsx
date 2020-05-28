@@ -85,27 +85,23 @@ const EphmatchMain = ({ route, token, navigateTo }) => {
       //  || new Date() < ephmatchEndDate
       if (
         containsScopes(token, [scopes.ScopeEphmatchProfiles]) &&
-        availability &&
-        availability.available
+        availability?.available
       ) {
         return <EphmatchHome />;
       }
 
       return (
         <h1 className="no-matches-found">
-          {availability && !availability.available && (
-            <>
-              {availability.nextOpenTime ? (
-                <>
-                  Ephmatch has officially closed.
-                  <br />
-                  Will open again {format(availability.nextOpenTime)}.
-                </>
-              ) : (
-                <>Ephmatch has officially closed for this year.</>
-              )}
-            </>
-          )}
+          {availability &&
+            (availability.nextOpenTime ? (
+              <>
+                Ephmatch has officially closed.
+                <br />
+                Will open again {format(availability.nextOpenTime)}.
+              </>
+            ) : (
+              <>Ephmatch has officially closed for this year.</>
+            ))}
         </h1>
       );
     }
@@ -128,7 +124,8 @@ const EphmatchMain = ({ route, token, navigateTo }) => {
       <EphmatchLayout
         token={token}
         matchesTotalCount={matchesTotalCount}
-        availability={availability}
+        available={availability?.available}
+        closingTime={availability?.closingTime}
       >
         {EphmatchBody()}
       </EphmatchLayout>
