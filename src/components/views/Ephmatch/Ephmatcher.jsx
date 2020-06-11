@@ -4,6 +4,10 @@ import PropTypes from "prop-types";
 
 // External imports
 import { ConnectedLink } from "react-router5";
+import { IoMdPin, IoMdText } from "react-icons/io";
+import { FaSnapchatGhost, FaInstagram } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
+import "../../stylesheets/Ephmatch.css";
 
 const Ephmatcher = ({
   wso,
@@ -12,6 +16,7 @@ const Ephmatcher = ({
   index,
   ephmatcherProfile,
   photo,
+  matched,
 }) => {
   const [userPhoto, updateUserPhoto] = useState(photo);
 
@@ -65,6 +70,86 @@ const Ephmatcher = ({
     return null;
   };
 
+  const formatLocation = () => {
+    const { locationCountry, locationState, locationTown } = ephmatcherProfile;
+
+    let locations;
+    if (locationCountry === "United States") {
+      locations = [locationTown, locationState];
+    } else {
+      locations = [locationTown, locationState, locationCountry];
+    }
+
+    locations = locations.filter((loc) => loc);
+
+    if (locations.length > 0) {
+      return (
+        <div className="message-icon">
+          <IoMdPin /> {locations.join(", ")}
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const createMessageField = () => {
+    let icon;
+    let link;
+    switch (ephmatcherProfile.messagingPlatform) {
+      case "Phone":
+        icon = <IoMdText className="message-icon" />;
+        link = (
+          <a href={`sms:${ephmatcherProfile.messagingUsername}`}>
+            {ephmatcherProfile.messagingUsername}
+          </a>
+        );
+        break;
+      case "Snapchat":
+        icon = <FaSnapchatGhost className="message-icon" />;
+        link = (
+          <a
+            href={`https://www.snapchat.com/add/${ephmatcherProfile.messagingUsername}`}
+          >
+            {ephmatcherProfile.messagingUsername}
+          </a>
+        );
+        break;
+      case "Instagram":
+        icon = <FaInstagram className="message-icon" />;
+        link = (
+          <a
+            href={`https://www.instagram.com/${ephmatcherProfile.messagingUsername}`}
+          >
+            {ephmatcherProfile.messagingUsername}
+          </a>
+        );
+        break;
+      default:
+        icon = "";
+        link = "";
+    }
+
+    if (
+      !ephmatcherProfile.messagingPlatform ||
+      !ephmatcherProfile.messagingUsername ||
+      !link
+    ) {
+      icon = <MdEmail className="message-icon" />;
+      link = (
+        <a href={`mailto:${ephmatcher.unixID}@williams.edu`}>
+          {ephmatcher.unixID}@williams.edu
+        </a>
+      );
+    }
+
+    return (
+      <div>
+        {icon} {link}
+      </div>
+    );
+  };
+
   return (
     <aside
       key={ephmatcherProfile.id}
@@ -102,10 +187,12 @@ const Ephmatcher = ({
             <span className="list-headers">{ephmatcher.unixID}</span>
           )}
           {userTags()}
+          {ephmatcherProfile.locationVisible && formatLocation()}
+          {matched && createMessageField()}
           {ephmatcherProfile.description && (
             <div>{ephmatcherProfile.description}</div>
           )}
-          {ephmatcherProfile.matchMessage && (
+          {matched && ephmatcherProfile.matchMessage && (
             <div className="match-message">
               {ephmatcherProfile.matchMessage}
             </div>
@@ -123,6 +210,7 @@ Ephmatcher.propTypes = {
   selectEphmatcher: PropTypes.func,
   index: PropTypes.number,
   photo: PropTypes.string,
+  matched: PropTypes.bool,
 };
 
 Ephmatcher.defaultProps = {
@@ -132,6 +220,7 @@ Ephmatcher.defaultProps = {
     unixID: "Loading...",
   },
   photo: null,
+  matched: false,
 };
 
 export default Ephmatcher;

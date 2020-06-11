@@ -37,8 +37,9 @@ const EphmatchMatch = ({ wso }) => {
         <div className="ephmatch-results">
           {matches.map((match) => (
             <Ephmatcher
-              ephmatcher={match.other}
-              ephmatcherProfile={match.other.ephmatchProfile}
+              ephmatcher={match.matchedUser}
+              ephmatcherProfile={match.matchedUser.ephmatchProfile}
+              matched
               key={match.id}
               wso={wso}
             />

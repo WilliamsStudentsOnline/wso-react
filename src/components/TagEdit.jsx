@@ -37,7 +37,7 @@ const TagEdit = ({ wso, tags, updateTags, updateErrors }) => {
     };
 
     try {
-      await wso.userService.updateCurrUserTags(params);
+      await wso.userService.updateUserTags("me", params);
       updateTags(updatedTags);
       updateNewTag("");
       updateErrors([]);

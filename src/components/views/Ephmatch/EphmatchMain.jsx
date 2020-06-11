@@ -11,28 +11,27 @@ import EphmatchOptIn from "./EphmatchOptIn";
 // Redux/Routing imports
 import { connect } from "react-redux";
 import { actions, createRouteNodeSelector } from "redux-router5";
-import { getWSO } from "../../../selectors/auth";
+import { getAPIToken, getWSO } from "../../../selectors/auth";
+import { containsScopes, scopes } from "../../../lib/general";
 
-const EphmatchMain = ({ wso, route, navigateTo, profile }) => {
-  const [ephmatchProfile, updateEphmatchProfile] = useState(profile);
-  const [hasQueriedProfile, updateHasQueriedProfile] = useState(false);
+import { format } from "timeago.js";
+
+const EphmatchMain = ({ navigateTo, route, token, wso }) => {
+  // const [availability, updateAvailability] = useState(null);
+  const availability = { available: true };
   const [matches, updateMatches] = useState([]);
-  const ephmatchEndDate = new Date(2020, 2, 17, 23, 59, 59, 99);
+  const [matchesTotalCount, updateMatchesTotalCount] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
-    // Check if there is an ephmatch profile for the user
-    const loadEphmatchProfile = async () => {
-      try {
-        const ownProfile = await wso.ephmatchService.getSelfProfile();
-        if (isMounted) {
-          updateEphmatchProfile(ownProfile.data);
-        }
-      } catch {
-        // eslint-disable-next-line no-empty
-      }
-      updateHasQueriedProfile(true);
-    };
+
+    // const loadAvailability = async () => {
+    //   const availabilityResp = await wso.ephmatchService.getEphmatchAvailability();
+    //   if (isMounted) {
+    //     updateAvailability(availabilityResp.data);
+    //   }
+    // };
+
     const loadMatches = async () => {
       try {
         const ephmatchersResponse = await wso.ephmatchService.listMatches();
@@ -42,35 +41,61 @@ const EphmatchMain = ({ wso, route, navigateTo, profile }) => {
       }
     };
 
-    loadMatches();
+    const loadMatchesCount = async () => {
+      const ephmatchersCountResponse = await wso.ephmatchService.countMatches();
+      if (isMounted) {
+        updateMatchesTotalCount(ephmatchersCountResponse.data.total);
+      }
+    };
 
-    loadEphmatchProfile();
+    // loadAvailability();
+    loadMatchesCount();
+    loadMatches();
 
     return () => {
       isMounted = false;
     };
   }, [wso, route]);
 
-  const hasValidEphmatchProfile = () => {
-    return ephmatchProfile && !ephmatchProfile.deleted;
-  };
-
   const EphmatchBody = () => {
-    if (hasQueriedProfile && !hasValidEphmatchProfile()) {
+    // If token doesnt have access to matches or profiles, must mean they need to create a new account
+    if (
+      !containsScopes(token, [
+        scopes.ScopeEphmatchMatches,
+        scopes.ScopeEphmatchProfiles,
+      ])
+    ) {
       navigateTo("ephmatch", null, { replace: true });
       return <EphmatchOptIn />;
     }
 
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) {
-      if (new Date() < ephmatchEndDate) {
+      // If token doesnt have access to profiles, must mean that ephmatch is closed for the year
+      //  || new Date() < ephmatchEndDate
+      if (
+        containsScopes(token, [scopes.ScopeEphmatchProfiles]) &&
+        availability?.available
+      ) {
         return <EphmatchHome />;
       }
 
       return (
-        <h1 className="no-matches-found">
-          Ephmatch has officially closed for this year.
-        </h1>
+        <article className="facebook-results">
+          <section>
+            <h1 className="no-matches-found">
+              {availability?.nextOpenTime ? (
+                <>
+                  Ephmatch has officially closed.
+                  <br />
+                  Will open again {format(availability.nextOpenTime)}.
+                </>
+              ) : (
+                <>Ephmatch has officially closed for this year.</>
+              )}
+            </h1>
+          </section>
+        </article>
       );
     }
 
@@ -88,7 +113,12 @@ const EphmatchMain = ({ wso, route, navigateTo, profile }) => {
   };
 
   return (
-    <EphmatchLayout matches={matches} ephmatchEndDate={ephmatchEndDate}>
+    <EphmatchLayout
+      matchesTotalCount={matchesTotalCount}
+      available={availability?.available}
+      closingTime={availability?.closingTime}
+      token={token}
+    >
       {EphmatchBody()}
     </EphmatchLayout>
   );
@@ -97,16 +127,17 @@ const EphmatchMain = ({ wso, route, navigateTo, profile }) => {
 EphmatchMain.propTypes = {
   wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  profile: PropTypes.object,
   route: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
-EphmatchMain.defaultProps = { profile: null };
+// EphmatchMain.defaultProps = { profile: null };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("ephmatch");
 
   return (state) => ({
+    token: getAPIToken(state),
     wso: getWSO(state),
     ...routeNodeSelector(state),
   });

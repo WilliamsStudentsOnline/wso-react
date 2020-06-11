@@ -5,15 +5,21 @@ import PropTypes from "prop-types";
 // Additional imports
 import { Link } from "react-router5";
 import { format } from "timeago.js";
+import { containsScopes, scopes } from "../../../lib/general";
 
-const EphmatchLayout = ({ children, ephmatchEndDate, matches }) => {
-  const isOpen = new Date() < ephmatchEndDate;
+const EphmatchLayout = ({
+  children,
+  token,
+  available,
+  closingTime,
+  matchesTotalCount,
+}) => {
   return (
     <>
       <header>
-        {isOpen && (
+        {available && closingTime && (
           <section className="notice">
-            Ephmatch closes {format(ephmatchEndDate)}
+            Ephmatch closes {format(closingTime)}
           </section>
         )}
 
@@ -25,12 +31,15 @@ const EphmatchLayout = ({ children, ephmatchEndDate, matches }) => {
             <li>
               <Link routeName="ephmatch">Home</Link>
             </li>
-            {isOpen && (
+            {containsScopes(token, [
+              scopes.ScopeEphmatchMatches,
+              scopes.ScopeEphmatchProfiles,
+            ]) && (
               <>
                 <li>
                   <Link routeName="ephmatch.matches">Matches</Link>
                   <span className="ephmatch-badge" title="Matches!">
-                    {matches.length}
+                    {matchesTotalCount}
                   </span>
                 </li>
                 <li>
@@ -50,11 +59,18 @@ const EphmatchLayout = ({ children, ephmatchEndDate, matches }) => {
 };
 
 EphmatchLayout.propTypes = {
+  token: PropTypes.string.isRequired,
   children: PropTypes.object,
-  ephmatchEndDate: PropTypes.object.isRequired,
-  matches: PropTypes.arrayOf(PropTypes.object),
+  available: PropTypes.bool,
+  closingTime: PropTypes.object,
+  matchesTotalCount: PropTypes.number,
 };
 
-EphmatchLayout.defaultProps = { children: null, matches: [] };
+EphmatchLayout.defaultProps = {
+  children: null,
+  available: false,
+  closingTime: null,
+  matchesTotalCount: 0,
+};
 
 export default EphmatchLayout;

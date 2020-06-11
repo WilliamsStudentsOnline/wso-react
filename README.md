@@ -2,8 +2,8 @@
 
 This repository contains all the front-end code to the Williams Student Online web-app. Core technologies include [React](https://reactjs.org/) (bootstrapped with [Create React App)](https://github.com/facebook/create-react-app), [Redux](https://redux.js.org/basics/usage-with-react), and [Router5](https://router5.js.org/).
 
-* Production Build: https://wso.williams.edu/
-* Development Build: https://wso-dev.williams.edu/
+- Production Build: https://wso.williams.edu/
+- Development Build: https://wso-dev.williams.edu/
 
 Interested in the back-end instead? Head over to our backend [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/).
 
@@ -13,7 +13,7 @@ We would love to hear from you and discuss them. File an issue [here](https://gi
 
 ## Contributing
 
-1. Open an issue and discuss your planned change with the repository administrators. This is important to avoid any wasted effort if you choose an approach  that is not encouraged by the admins.
+1. Open an issue and discuss your planned change with the repository administrators. This is important to avoid any wasted effort if you choose an approach that is not encouraged by the admins.
 1. Once the admins have approved your intended change, create a branch in the repository from `master`.
 1. Make your modifications in the branch.
 1. When you are ready, make a pull request and request for review from a admin.
@@ -23,19 +23,23 @@ We would love to hear from you and discuss them. File an issue [here](https://gi
 ## Getting Started
 
 **1) Check for your Node version**
+
 ```
 $ node -v
 ```
+
 If the above command results in an error, download the latest Node version [here](https://nodejs.org/en/).
 
-
 **2) Check for your Yarn version**
+
 ```
 $ yarn -v
 ```
+
 If the above command results in an error, download the latest Yarn version [here](https://yarnpkg.com/en/).
 
 **3) Clone the repo into your working directory**
+
 ```
 $ git clone https://github.com/WilliamsStudentsOnline/wso-react.git
 
@@ -43,34 +47,42 @@ or
 
 $ git clone git@github.com:WilliamsStudentsOnline/wso-react.git
 ```
+
 **4) Install the necessary dependencies**
+
 ```
 $ yarn
 ```
-You should be all set! To get started, run 
+
+You should be all set! To get started, run
+
 ```
 $ yarn start
-``` 
+```
+
 to launch a development build, which includes Hot Module Reload(HMR), where changes you make will be instantly reflected without having to restart the server. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ## Development
 
 **Optional Installations:**
 To aid in your development process, we also suggest installing the following:
-* React Developer Tools ([Chrome](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi), [Firefox](https://addons.mozilla.org/firefox/addon/react-devtools/))
-* [Redux DevTools](http://extension.remotedev.io/#installation)
-* Configuring [Prettier](https://prettier.io/) to work with your editor. We have a pre-commit hook which automatically formats your code before commit so that the repo will have consistent formatting, but it is helpful to know how to configure Prettier to format your code on save so it looks nice as you're typing it up!
-* Configuring [ES-Lint](https://eslint.org/) to work with your editor. Like Prettier, we have a pre-commit hook to ensure that your code fits our standards, but unlike the Prettier hook, the commit will fail if there are errors, so it will help your development loop if it is configured with your editor.
+
+- React Developer Tools ([Chrome](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi), [Firefox](https://addons.mozilla.org/firefox/addon/react-devtools/))
+- [Redux DevTools](http://extension.remotedev.io/#installation)
+- Configuring [Prettier](https://prettier.io/) to work with your editor. We have a pre-commit hook which automatically formats your code before commit so that the repo will have consistent formatting, but it is helpful to know how to configure Prettier to format your code on save so it looks nice as you're typing it up!
+- Configuring [ES-Lint](https://eslint.org/) to work with your editor. Like Prettier, we have a pre-commit hook to ensure that your code fits our standards, but unlike the Prettier hook, the commit will fail if there are errors, so it will help your development loop if it is configured with your editor.
 
 **Styling**
 Styling is currently done via vanilla CSS, although we will likely be moving to a React component library soon (see [issue #2](https://github.com/WilliamsStudentsOnline/wso-react/issues/2)).
 
 **Where to begin:**
-* Start by reading the section on contributing to find out the ways you can contribute to this repository. Contrary to popular belief, contributions need not come in the form of code. Fixing typos, creating issues for bugs, adding comments, suggesting tutorials, and helping out the community are valued ways of contributing.
-* If you're interested in learning more about React and Redux, we recommend [this tutorial](https://www.robinwieruch.de/react-redux-tutorial/#react-redux-and-x-tutorial).
-* Look out for issues labelled as 'good first issue' [here](https://github.com/WilliamsStudentsOnline/wso-react/labels/good%20first%20issue). These issues are usually what we have deemed to be great places to get your feet wet. 
+
+- Start by reading the section on contributing to find out the ways you can contribute to this repository. Contrary to popular belief, contributions need not come in the form of code. Fixing typos, creating issues for bugs, adding comments, suggesting tutorials, and helping out the community are valued ways of contributing.
+- If you're interested in learning more about React and Redux, we recommend [this tutorial](https://www.robinwieruch.de/react-redux-tutorial/#react-redux-and-x-tutorial).
+- Look out for issues labelled as 'good first issue' [here](https://github.com/WilliamsStudentsOnline/wso-react/labels/good%20first%20issue). These issues are usually what we have deemed to be great places to get your feet wet.
 
 **Communicating with the Backend**
+
 1. Set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/).
 2. Run the `wso-go` server.
 3. Run the React development sever via `yarn start`.
@@ -94,15 +106,7 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.<br>
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `yarn run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## yarn analyze
+## `yarn analyze`
 
 Analyzes the bundle size of the build - useful to understand how the bundle size changed after
 your modifications.

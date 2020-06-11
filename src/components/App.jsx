@@ -44,7 +44,6 @@ const DiscussionMain = lazy(() =>
 );
 
 const App = ({
-  wso,
   navigateTo,
   removeCreds,
   route,
@@ -53,6 +52,7 @@ const App = ({
   updateSchedulerState,
   updateUser,
   updateWSO,
+  wso,
 }) => {
   // returns wso based on IP address
   const loadIPAPI = async () => {
@@ -71,7 +71,7 @@ const App = ({
 
       updateIdenToken(newIdenToken);
       updateAPIToken(newAPIToken);
-      updateWSO(updateWSO);
+      updateWSO(updatedWSO);
       // eslint-disable-next-line no-empty
     } catch (error) {}
   };
@@ -120,8 +120,8 @@ const App = ({
     const initialize = async () => {
       const persistedSchedulerOptions = loadState("schedulerOptions");
       updateSchedulerState(persistedSchedulerOptions);
+      const persistedToken = loadState("state")?.authState?.identityToken;
 
-      const persistedToken = loadState("state").authState.identityToken;
       if (persistedToken) {
         await loadUserInfo(persistedToken);
       } else {
@@ -204,8 +204,8 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
-    wso: getWSO(state),
     expiry: getExpiry(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
