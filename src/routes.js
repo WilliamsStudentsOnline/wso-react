@@ -70,7 +70,6 @@ export default [
     ],
   },
   { name: "login", path: "/account/login" },
-  { name: "logout", path: "/account/logout" },
   { name: "faq", path: "/faq" },
   { name: "403", path: "/403" },
   { name: "404", path: "/404" },

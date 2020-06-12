@@ -27,7 +27,7 @@ import { doUpdateSchedulerState } from "../actions/schedulerUtils";
 
 // Additional Imports
 import { SimpleAuthentication } from "wso-api-client";
-import { loadState, removeStateFromStorage } from "../stateStorage";
+import { loadState } from "../stateStorage";
 import configureInterceptors from "../lib/auth";
 import jwtDecode from "jwt-decode";
 
@@ -54,7 +54,6 @@ const App = ({
   apiToken,
   identityToken,
   navigateTo,
-  removeCreds,
   route,
   updateAPIToken,
   updateIdenToken,
@@ -63,19 +62,6 @@ const App = ({
   updateWSO,
   wso,
 }) => {
-  const loadIPIdenToken = async () => {
-    try {
-      const tokenResponse = await wso.authService.getIdentityToken({
-        useIP: true,
-      });
-      const newIdenToken = tokenResponse.token;
-
-      updateIdenToken(newIdenToken);
-    } catch (error) {
-      navigateTo("500");
-    }
-  };
-
   useEffect(() => {
     const randomWSO = async () => {
       if (document.title === "WSO: Williams Students Online") {
@@ -95,7 +81,16 @@ const App = ({
       if (persistedToken) {
         updateIdenToken(persistedToken);
       } else {
-        loadIPIdenToken();
+        try {
+          const tokenResponse = await wso.authService.getIdentityToken({
+            useIP: true,
+          });
+          const newIdenToken = tokenResponse.token;
+
+          updateIdenToken(newIdenToken);
+        } catch (error) {
+          navigateTo("500");
+        }
       }
     };
 
@@ -109,6 +104,7 @@ const App = ({
    * authentication that we use.
    */
   useEffect(() => {
+    let isMounted = true;
     const updateAPI = async () => {
       if (identityToken !== "") {
         try {
@@ -121,8 +117,10 @@ const App = ({
           const updatedWSO = wso.updateAuth(auth);
           configureInterceptors(updatedWSO);
 
-          updateAPIToken(newAPIToken);
-          updateWSO(updatedWSO);
+          if (isMounted) {
+            updateAPIToken(newAPIToken);
+            updateWSO(updatedWSO);
+          }
         } catch (error) {
           navigateTo("500");
         }
@@ -130,6 +128,11 @@ const App = ({
     };
 
     updateAPI();
+
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [identityToken]);
 
   /**
@@ -137,13 +140,16 @@ const App = ({
    * user information.
    */
   useEffect(() => {
+    let isMounted = true;
     const updateUserInfo = async () => {
       if (apiToken !== "") {
         try {
           const decoded = jwtDecode(apiToken);
           if (decoded?.tokenLevel === 3) {
             const userResponse = await wso.userService.getUser("me");
-            updateUser(userResponse.data);
+            if (isMounted) {
+              updateUser(userResponse.data);
+            }
           }
         } catch (error) {
           navigateTo("500");
@@ -152,14 +158,15 @@ const App = ({
     };
 
     updateUserInfo();
+
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wso]);
 
   const mainBody = () => {
-    if (!route) {
-      return null;
-    }
-
-    const topRouteName = route.name.split(".")[0];
+    const topRouteName = route?.name?.split(".")[0];
 
     switch (topRouteName) {
       case "home":
@@ -184,14 +191,6 @@ const App = ({
         return <BulletinMain />;
       case "discussions":
         return <DiscussionMain />;
-      case "logout":
-        removeCreds();
-        // Remove credentials from localStorage, since after logging out the edits will be done in
-        // sessionStorage instead.
-        removeStateFromStorage("state");
-        loadIPIdenToken();
-        navigateTo("home");
-        return null;
       case "403":
         return <FourOhThree />;
       case "404":
@@ -214,7 +213,6 @@ App.propTypes = {
   apiToken: PropTypes.string.isRequired,
   identityToken: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  removeCreds: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
   updateAPIToken: PropTypes.func.isRequired,
   updateIdenToken: PropTypes.func.isRequired,

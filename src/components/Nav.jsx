@@ -2,16 +2,19 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-// React/Redux imports
+// Redux imports
 import { getCurrUser, getWSO } from "../selectors/auth";
 import { connect } from "react-redux";
+import { doRemoveCreds } from "../actions/auth";
 
 // External imports
 // Connected Link is the same as link, except it re-renders on route changes
 import { Link, ConnectedLink } from "react-router5";
 import { createRouteNodeSelector } from "redux-router5";
 
-const Nav = ({ wso, currUser }) => {
+import { removeStateFromStorage } from "../stateStorage";
+
+const Nav = ({ currUser, removeCreds, wso }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
   const [ephmatchVisibility, updateEphmatchVisibility] = useState(false);
@@ -49,6 +52,13 @@ const Nav = ({ wso, currUser }) => {
 
     updateMenuVisibility(false);
   }, [wso, currUser]);
+
+  const logout = () => {
+    removeCreds();
+    // Remove credentials from localStorage, since after logging out the edits will be done in
+    // sessionStorage instead.
+    removeStateFromStorage("state");
+  };
 
   return (
     <nav>
@@ -107,7 +117,7 @@ const Nav = ({ wso, currUser }) => {
 
         <span className="nav-right-container">
           <ul className="nav-right">
-            {currUser && currUser.id ? (
+            {currUser?.id ? (
               <>
                 <li className="avatar">
                   <Link
@@ -118,7 +128,9 @@ const Nav = ({ wso, currUser }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link routeName="logout">Logout</Link>
+                  <Link onClick={() => logout()} routeName="home">
+                    Logout
+                  </Link>
                 </li>
               </>
             ) : (
@@ -136,6 +148,7 @@ const Nav = ({ wso, currUser }) => {
 Nav.propTypes = {
   // No isRequired because it must work for non-authenticated users too
   currUser: PropTypes.object,
+  removeCreds: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -151,4 +164,8 @@ const mapStateToProps = () => {
   });
 };
 
-export default connect(mapStateToProps)(Nav);
+const mapDispatchToProps = (dispatch) => ({
+  removeCreds: () => dispatch(doRemoveCreds()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Nav);
