@@ -10,7 +10,12 @@ import Homepage from "./Homepage";
 // Redux/routing
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getWSO, getExpiry } from "../selectors/auth";
+import {
+  getWSO,
+  getExpiry,
+  getIdentityToken,
+  getAPIToken,
+} from "../selectors/auth";
 import {
   doRemoveCreds,
   doUpdateAPIToken,
@@ -24,6 +29,7 @@ import { doUpdateSchedulerState } from "../actions/schedulerUtils";
 import { SimpleAuthentication } from "wso-api-client";
 import { loadState, removeStateFromStorage } from "../stateStorage";
 import configureInterceptors from "../lib/auth";
+import jwtDecode from "jwt-decode";
 
 // More component imports
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
@@ -45,6 +51,8 @@ const DiscussionMain = lazy(() =>
 );
 
 const App = ({
+  apiToken,
+  identityToken,
   navigateTo,
   removeCreds,
   route,
@@ -55,54 +63,14 @@ const App = ({
   updateWSO,
   wso,
 }) => {
-  // returns wso based on IP address
-  const loadIPAPI = async () => {
+  const loadIPIdenToken = async () => {
     try {
       const tokenResponse = await wso.authService.getIdentityToken({
         useIP: true,
       });
       const newIdenToken = tokenResponse.token;
 
-      const apiTokenResponse = await wso.authService.getAPIToken(newIdenToken);
-      const newAPIToken = apiTokenResponse.token;
-
-      const updatedAuth = new SimpleAuthentication(newAPIToken);
-      const updatedWSO = wso.updateAuth(updatedAuth);
-      configureInterceptors(updatedWSO);
-
       updateIdenToken(newIdenToken);
-      updateAPIToken(newAPIToken);
-      updateWSO(updatedWSO);
-      // eslint-disable-next-line no-empty
-    } catch (error) {
-      navigateTo("500");
-    }
-  };
-
-  /**
-   * Loads the user information into the store based on the token. The
-   * loading process will only be complete if we are able to get the user information,
-   * and will be abandoned otherwise.
-   * This is made into an async function to be a non-blocking operation for the rest
-   * of the screen rendering.
-   * @param {string} identityToken user identity token
-   */
-  const loadUserInfo = async (identityToken) => {
-    // Only update the token and user if we are able to get the user response;
-    try {
-      // update default WSO wso with the persisted token,
-      // and update the persisted token to extend expiry
-      const apiTokenResponse = await wso.authService.getAPIToken(identityToken);
-      const newAPIToken = apiTokenResponse.token;
-
-      const auth = new SimpleAuthentication(newAPIToken);
-      const updatedWSO = wso.updateAuth(auth);
-      configureInterceptors(updatedWSO);
-
-      const userResponse = await updatedWSO.userService.getUser("me");
-      updateUser(userResponse.data);
-      updateAPIToken(newAPIToken);
-      updateWSO(updatedWSO);
     } catch (error) {
       navigateTo("500");
     }
@@ -125,9 +93,9 @@ const App = ({
       updateSchedulerState(persistedSchedulerOptions);
       const persistedToken = loadState("state")?.authState?.identityToken;
       if (persistedToken) {
-        await loadUserInfo(persistedToken);
+        updateIdenToken(persistedToken);
       } else {
-        await loadIPAPI();
+        loadIPIdenToken();
       }
     };
 
@@ -135,6 +103,56 @@ const App = ({
     randomWSO();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /**
+   * Each time identityToken is updated, we query for the new API token, update the API and
+   * authentication that we use.
+   */
+  useEffect(() => {
+    const updateAPI = async () => {
+      if (identityToken !== "") {
+        try {
+          const apiTokenResponse = await wso.authService.getAPIToken(
+            identityToken
+          );
+          const newAPIToken = apiTokenResponse.token;
+
+          const auth = new SimpleAuthentication(newAPIToken);
+          const updatedWSO = wso.updateAuth(auth);
+          configureInterceptors(updatedWSO);
+
+          updateAPIToken(newAPIToken);
+          updateWSO(updatedWSO);
+        } catch (error) {
+          navigateTo("500");
+        }
+      }
+    };
+
+    updateAPI();
+  }, [identityToken]);
+
+  /**
+   * Each time the authentication mechanism/ API is updated, see if we need to update the current
+   * user information.
+   */
+  useEffect(() => {
+    const updateUserInfo = async () => {
+      if (apiToken !== "") {
+        try {
+          const decoded = jwtDecode(apiToken);
+          if (decoded?.tokenLevel === 3) {
+            const userResponse = await wso.userService.getUser("me");
+            updateUser(userResponse.data);
+          }
+        } catch (error) {
+          navigateTo("500");
+        }
+      }
+    };
+
+    updateUserInfo();
+  }, [wso]);
 
   const mainBody = () => {
     if (!route) {
@@ -171,7 +189,7 @@ const App = ({
         // Remove credentials from localStorage, since after logging out the edits will be done in
         // sessionStorage instead.
         removeStateFromStorage("state");
-        loadIPAPI();
+        loadIPIdenToken();
         navigateTo("home");
         return null;
       case "403":
@@ -193,7 +211,8 @@ const App = ({
 };
 
 App.propTypes = {
-  wso: PropTypes.object.isRequired,
+  apiToken: PropTypes.string.isRequired,
+  identityToken: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
   removeCreds: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
@@ -202,13 +221,16 @@ App.propTypes = {
   updateSchedulerState: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
   updateWSO: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
+    apiToken: getAPIToken(state),
     expiry: getExpiry(state),
+    identityToken: getIdentityToken(state),
     wso: getWSO(state),
     ...routeNodeSelector(state),
   });

@@ -4,31 +4,20 @@ import PropTypes from "prop-types";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import {
-  doUpdateAPIToken,
-  doUpdateIdentityToken,
-  doUpdateRemember,
-  doUpdateUser,
-  doUpdateWSO,
-} from "../actions/auth";
+import { doUpdateIdentityToken, doUpdateRemember } from "../actions/auth";
 import { actions, createRouteNodeSelector } from "redux-router5";
 
 // External imports
-import { SimpleAuthentication } from "wso-api-client";
 import { getWSO, getScopes, getTokenLevel } from "../selectors/auth";
-import configureInterceptors from "../lib/auth";
 
 const Login = ({
-  wso,
   navigateTo,
   route,
   scopes,
   tokenLevel,
-  updateAPIToken,
   updateIdenToken,
   updateRemember,
-  updateUser,
-  updateWSO,
+  wso,
 }) => {
   const [unixID, setUnix] = useState("");
   const [password, setPassword] = useState("");
@@ -80,20 +69,8 @@ const Login = ({
       });
       const identityToken = tokenResponse.token;
 
-      const apiTokenResponse = await wso.authService.getAPIToken(identityToken);
-      const apiToken = apiTokenResponse.token;
-
-      const updatedAuth = new SimpleAuthentication(apiToken);
-      const updatedWSO = wso.updateAuth(updatedAuth);
-      configureInterceptors(updatedWSO);
-
-      const userResponse = await updatedWSO.userService.getUser("me");
-
-      updateUser(userResponse.data);
       updateRemember(remember);
-      updateWSO(updatedWSO);
       updateIdenToken(identityToken);
-      updateAPIToken(apiToken);
       navigateTo("home");
     } catch (error) {
       if (error.errors) {
@@ -159,11 +136,8 @@ Login.propTypes = {
   route: PropTypes.object.isRequired,
   scopes: PropTypes.arrayOf(PropTypes.string),
   tokenLevel: PropTypes.number,
-  updateAPIToken: PropTypes.func.isRequired,
   updateIdenToken: PropTypes.func.isRequired,
   updateRemember: PropTypes.func.isRequired,
-  updateUser: PropTypes.func.isRequired,
-  updateWSO: PropTypes.func.isRequired,
 };
 
 Login.defaultProps = {
@@ -183,11 +157,8 @@ const mapStateToProps = () => {
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location, params, opts) =>
     dispatch(actions.navigateTo(location, params, opts)),
-  updateAPIToken: (token) => dispatch(doUpdateAPIToken(token)),
   updateIdenToken: (token) => dispatch(doUpdateIdentityToken(token)),
   updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
-  updateUser: (unixID) => dispatch(doUpdateUser(unixID)),
-  updateWSO: (wso) => dispatch(doUpdateWSO(wso)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

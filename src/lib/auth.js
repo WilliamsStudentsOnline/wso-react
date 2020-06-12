@@ -1,4 +1,5 @@
 import { doUpdateAPIToken } from "../actions/auth";
+import jwtDecode from "jwt-decode";
 
 /**
  * Checks whether the request is made with a token header. We claim that this is
@@ -32,11 +33,23 @@ const updateAPIToken = async () => {
 
 /**
  * Checks if the current API token is expired. Returns true if the token is
- * expired, false otherwise.
+ * expired, false otherwise. We require the token that is being used, rather
+ * than checking the token in store because the authState might not be updated
+ * (e.g. when initializing). Returns true if there is no token
+ *
+ * @param {String} token - JWT Token
  */
-const tokenIsExpired = () => {
-  const authState = window.store.getState().authState;
-  return new Date().getTime() > authState.expiry;
+const tokenIsExpired = (token) => {
+  try {
+    const decoded = jwtDecode(token);
+    if (decoded?.exp) {
+      return new Date().getTime() > decoded.exp * 1000;
+    }
+  } catch (err) {
+    return true;
+  }
+
+  return true;
 };
 
 /**
@@ -48,12 +61,15 @@ const tokenIsExpired = () => {
  */
 const configureRequestInterceptors = (api) => {
   api.interceptors.request.use(async (config) => {
-    if (
-      hasTokenHeader(config) &&
-      !config.url.includes("auth") &&
-      tokenIsExpired()
-    ) {
-      await updateAPIToken();
+    if (hasTokenHeader(config) && !config.url.includes("auth")) {
+      const token = config.headers.Authorization.substring(7);
+
+      if (tokenIsExpired(token)) {
+        const newToken = await updateAPIToken();
+        const updatedConfig = { ...config };
+        updatedConfig.headers.Authorization = `Bearer ${newToken}`;
+        return updatedConfig;
+      }
     }
 
     return config;
