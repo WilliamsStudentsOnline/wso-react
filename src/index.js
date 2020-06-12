@@ -25,18 +25,26 @@ import * as serviceWorker from "./serviceWorker";
 import throttle from "lodash/throttle";
 import ReactGA from "react-ga";
 
-const initializeGoogleAnalytics = (router) => {
-  ReactGA.initialize("UA-150865220-1");
-  router.usePlugin(() => {
-    return {
-      onTransitionSuccess: (toState) => {
-        ReactGA.set({ page: toState.path });
-        ReactGA.pageview(toState.path);
-      },
-    };
-  });
+const initializeAnalytics = (router) => {
+  // Only set up analytics if we are in production to avoid data contamination
+  if (process.env.NODE_ENV === "production") {
+    ReactGA.initialize("UA-150865220-1");
+    router.usePlugin(() => {
+      return {
+        onTransitionSuccess: (toState) => {
+          ReactGA.set({ page: toState.path });
+          ReactGA.pageview(toState.path);
+        },
+      };
+    });
+  }
 };
 
+/**
+ * Saves the user data in the appropriate storage depending on user's preferences.
+ *
+ * @param store - The redux store that holds our state.
+ */
 const saveUserData = (store) => {
   const authState = store.getState().authState;
   const schedulerUtilState = store.getState().schedulerUtilState;
@@ -59,8 +67,9 @@ const saveUserData = (store) => {
   );
 };
 
+/* Router and Store setup */
 const router = configureRouter();
-initializeGoogleAnalytics(router);
+initializeAnalytics(router);
 
 const store = configureStore(router);
 store.subscribe(throttle(() => saveUserData(store), 1000));

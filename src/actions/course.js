@@ -20,21 +20,41 @@ import {
   LOAD_CATALOG,
 } from "../constants/actionTypes";
 
+/**
+ * Action to add a course to the user's schedule.
+ *
+ * @param course - Course to be added.
+ */
 const doAddCourse = (course) => ({
   type: COURSE_ADD,
   course,
 });
 
+/**
+ * Action to remove a course from the user's schedule.
+ *
+ * @param course - Course to be removed.
+ */
 const doRemoveCourse = (course) => ({
   type: COURSE_REMOVE,
   course,
 });
 
+/**
+ * Action to set a course as hidden in the schedule.
+ *
+ * @param course - Course to be hidden.
+ */
 const doHideCourse = (course) => ({
   type: COURSE_HIDE,
   course,
 });
 
+/**
+ * Action to set a course as not hidden in the schedule.
+ *
+ * @param course - Course to be unhidden.
+ */
 const doUnhideCourse = (course) => ({
   type: COURSE_UNHIDE,
   course,

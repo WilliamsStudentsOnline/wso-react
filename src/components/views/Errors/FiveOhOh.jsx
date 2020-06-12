@@ -5,15 +5,24 @@ import PropTypes from "prop-types";
 const FiveOhOh = ({ error }) => {
   return (
     <header>
-      <h1>Whoops! Page not found!</h1>
+      <h1>Whoops! Something Bad Happened!</h1>
       Error Code #500.
-      {error.message}
+      <br />
+      {error?.message}
+      <br />
+      Try waiting for a few minutes and trying what you did again to see if your
+      issue is resolved! Otherwise, contact us at{" "}
+      <a href="mailto:wso-dev@williams.edu">wso-dev@williams.edu</a>
     </header>
   );
 };
 
 FiveOhOh.propTypes = {
-  error: PropTypes.object.isRequired,
+  error: PropTypes.object,
+};
+
+FiveOhOh.defaultProps = {
+  error: null,
 };
 
 export default FiveOhOh;

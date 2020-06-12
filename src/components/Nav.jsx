@@ -3,18 +3,18 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // React/Redux imports
-import { getWSO, getAPIToken, getCurrUser } from "../selectors/auth";
+import { getCurrUser, getWSO } from "../selectors/auth";
 import { connect } from "react-redux";
 
 // External imports
 // Connected Link is the same as link, except it re-renders on route changes
 import { Link, ConnectedLink } from "react-router5";
 import { createRouteNodeSelector } from "redux-router5";
-import { containsScopes, scopes } from "../lib/general";
 
-const Nav = ({ wso, currUser, token }) => {
+const Nav = ({ wso, currUser }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
+  const [ephmatchVisibility, updateEphmatchVisibility] = useState(false);
 
   useEffect(() => {
     const loadPhoto = async () => {
@@ -28,7 +28,25 @@ const Nav = ({ wso, currUser, token }) => {
       }
     };
 
-    if (currUser) loadPhoto();
+    const checkEphmatchVisibility = async () => {
+      try {
+        const ephmatchAvailabilityResp = await wso.ephmatchService.getAvailability();
+
+        if (ephmatchAvailabilityResp?.data?.available) {
+          updateEphmatchVisibility(true);
+        }
+      } catch {
+        // eslint-disable-next-line no-empty
+      }
+    };
+
+    if (currUser) {
+      loadPhoto();
+      checkEphmatchVisibility();
+    } else {
+      updateEphmatchVisibility(false);
+    }
+
     updateMenuVisibility(false);
   }, [wso, currUser]);
 
@@ -77,17 +95,10 @@ const Nav = ({ wso, currUser, token }) => {
             <li>
               <Link routeName="scheduler">Course Scheduler</Link>
             </li>
-            {currUser && containsScopes(token, [scopes.ScopeEphmatch]) && (
+            {ephmatchVisibility && (
               <li>
                 <Link className="ephmatch-link" routeName="ephmatch">
                   Ephmatch
-                </Link>
-              </li>
-            )}
-            {currUser && containsScopes(token, [scopes.ScopeEphcatch]) && (
-              <li>
-                <Link className="ephmatch-link" routeName="ephcatch">
-                  Ephcatch
                 </Link>
               </li>
             )}
@@ -123,13 +134,12 @@ const Nav = ({ wso, currUser, token }) => {
 };
 
 Nav.propTypes = {
-  wso: PropTypes.object.isRequired,
   // No isRequired because it must work for non-authenticated users too
   currUser: PropTypes.object,
-  token: PropTypes.string,
+  wso: PropTypes.object.isRequired,
 };
 
-Nav.defaultProps = { currUser: {}, token: "" };
+Nav.defaultProps = { currUser: {} };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
@@ -137,7 +147,6 @@ const mapStateToProps = () => {
   return (state) => ({
     wso: getWSO(state),
     currUser: getCurrUser(state),
-    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };

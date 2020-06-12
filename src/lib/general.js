@@ -1,5 +1,3 @@
-// import { actions } from "redux-router5";
-// import { doUpdateToken, doUpdateUser } from "../actions/auth";
 import jwtDecode from "jwt-decode";
 
 // The current scopes
@@ -43,24 +41,12 @@ export const scopes = {
   ScopeEphmatchProfiles: "service:ephmatch:profiles",
 };
 
-// Assumes a valid and error-free response
-// export const checkAndUpdateUser = async (response) => {
-//   if (response.data.updateToken) {
-//     const token = window.store.getState().authState.token;
-//     if (token === "") return;
-//     const updateResponse = await updateTokenAPI(token);
-//     if (updateResponse.status === 200) {
-//       window.store.dispatch(doUpdateToken(updateResponse.data.data));
-//       const decoded = jwtDecode(token);
-//       const userResponse = await getUser(token, decoded.id);
-//       if (userResponse.status === 200) {
-//         window.store.dispatch(doUpdateUser(userResponse.data.data));
-//       }
-//     }
-//   }
-// };
-
-// Checks if a given token contains scopes
+/**
+ * Checks if token contains the given scopes.
+ *
+ * @param {String} token - API token string.
+ * @param {String[]} scopesToCheck - scopes to be checked against.
+ */
 export const containsScopes = (token, scopesToCheck) => {
   try {
     const decoded = jwtDecode(token);
@@ -76,7 +62,15 @@ export const containsScopes = (token, scopesToCheck) => {
   return false;
 };
 
-// Gets the token level of a given token
+/**
+ * Retrieves the token level of a given token.
+ *
+ * 0 - Unauthenticated User out of Williams IP address
+ * 1 - Unauthenticated User in Williams IP address
+ * 3 - Authenticated User
+ *
+ * @param {String} token - API token string.
+ */
 export const getTokenLevel = (token) => {
   try {
     const decoded = jwtDecode(token);
@@ -90,30 +84,22 @@ export const getTokenLevel = (token) => {
   return -1;
 };
 
-// Returns true if there is no error and the status is OK
-// export const checkAndHandleError = (response, token = "") => {
-//   if (response && response.status) {
-//     switch (response.status) {
-//       case 200: // GET request succeded
-//       case 201: // PATCH request updated
-//         checkAndUpdateUser(response, token);
-//         return true;
-//       case 500:
-//         return false; // return store.dispatch(actions.navigateTo("500"));
-//       default:
-//         return false;
-//     }
-//   }
-//   // handle error
-//   return false;
-// };
-
-// Capitalize the first letter of the string.
+/**
+ * Capitalizes the first letter of the string.
+ *
+ * @param {String} string - String to be capitalized.
+ */
 export const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-// Adds or remove days from a date (String).
+/**
+ * Adds days to the date. date must be in a format that is convertible
+ * by `new Date(date)`.
+ *
+ * @param {*} date - Date to be converted.
+ * @param {number} days - number of days to be added.
+ */
 export const addDays = (date, days) => {
   const result = new Date(date);
   result.setDate(result.getDate() + days);

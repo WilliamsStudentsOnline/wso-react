@@ -1,3 +1,12 @@
+/**
+ * This file stores the necessary logic to load and save items from the storage.
+ */
+
+/**
+ * Loads the specified state from localStorage.
+ *
+ * @param stateName - Name of State to be retrieved.
+ */
 export const loadState = (stateName) => {
   try {
     const serializedState = localStorage.getItem(stateName);
@@ -7,6 +16,12 @@ export const loadState = (stateName) => {
   }
 };
 
+/**
+ * Saves the specific state into localStorage at stateName.
+ *
+ * @param stateName - Name of State to be saved.
+ * @param state - The state to be saved.
+ */
 export const saveState = (stateName, state) => {
   try {
     const serializedState = JSON.stringify(state);
@@ -16,6 +31,11 @@ export const saveState = (stateName, state) => {
   }
 };
 
+/**
+ * Removes the specified state from localStorage.
+ *
+ * @param stateName - Name of State to be removed.
+ */
 export const removeStateFromStorage = (stateName) => {
   localStorage.removeItem(stateName);
   sessionStorage.removeItem(stateName);

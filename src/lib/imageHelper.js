@@ -70,6 +70,11 @@ import WestBanner from "../assets/images/banners/West.jpg";
 import WoodBanner from "../assets/images/banners/Wood.jpg";
 import WoodbridgeBanner from "../assets/images/banners/Woodbridge.jpg";
 
+/**
+ * We create these maps so that the assets need only be loaded once rather than multiple
+ * times as the user navigates (e.g. dormtrak). Might look into coordinating with the
+ * backend to see how these images can be delivered with a cache policy.
+ */
 const avatarMap = new Map([
   ["Agard", AgardAvatar],
   ["Brooks", BrooksAvatar],
@@ -144,10 +149,20 @@ const bannerMap = new Map([
   ["Woodbridge", WoodbridgeBanner],
 ]);
 
+/**
+ * Returns the avatar (smaller) photo of the given dormitory building.
+ *
+ * @param {String} name - Name of dormitory whose avatar photo we wish to obtain.
+ */
 export const avatarHelper = (name) => {
   return avatarMap.get(name);
 };
 
+/**
+ * Returns the banner (larger) photo of the given dormitory building.
+ *
+ * @param {String} name - Name of dormitory whose banner photo we wish to obtain.
+ */
 export const bannerHelper = (name) => {
   return bannerMap.get(name);
 };

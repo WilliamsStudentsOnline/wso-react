@@ -36,6 +36,7 @@ const EphmatchMain = lazy(() => import("./views/Ephmatch/EphmatchMain"));
 const FourOhFour = lazy(() => import("./views/Errors/FourOhFour"));
 const Login = lazy(() => import("./Login"));
 const FourOhThree = lazy(() => import("./views/Errors/FourOhThree"));
+const FiveOhOh = lazy(() => import("./views/Errors/FiveOhOh"));
 const BulletinMain = lazy(() =>
   import("./views/BulletinsDiscussions/BulletinMain")
 );
@@ -73,7 +74,9 @@ const App = ({
       updateAPIToken(newAPIToken);
       updateWSO(updatedWSO);
       // eslint-disable-next-line no-empty
-    } catch (error) {}
+    } catch (error) {
+      navigateTo("500");
+    }
   };
 
   /**
@@ -101,7 +104,7 @@ const App = ({
       updateAPIToken(newAPIToken);
       updateWSO(updatedWSO);
     } catch (error) {
-      // do nothing
+      navigateTo("500");
     }
   };
 
@@ -121,7 +124,6 @@ const App = ({
       const persistedSchedulerOptions = loadState("schedulerOptions");
       updateSchedulerState(persistedSchedulerOptions);
       const persistedToken = loadState("state")?.authState?.identityToken;
-
       if (persistedToken) {
         await loadUserInfo(persistedToken);
       } else {
@@ -176,6 +178,8 @@ const App = ({
         return <FourOhThree />;
       case "404":
         return <FourOhFour />;
+      case "500":
+        return <FiveOhOh />;
       default:
         return <FourOhFour />;
     }

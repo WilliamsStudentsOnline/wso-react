@@ -17,38 +17,47 @@ import { containsScopes, scopes } from "../../../lib/general";
 import { format } from "timeago.js";
 
 const EphmatchMain = ({ navigateTo, route, token, wso }) => {
-  // const [availability, updateAvailability] = useState(null);
-  const availability = { available: true };
+  const [availability, updateAvailability] = useState(null);
   const [matches, updateMatches] = useState([]);
   const [matchesTotalCount, updateMatchesTotalCount] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
 
-    // const loadAvailability = async () => {
-    //   const availabilityResp = await wso.ephmatchService.getEphmatchAvailability();
-    //   if (isMounted) {
-    //     updateAvailability(availabilityResp.data);
-    //   }
-    // };
+    const loadAvailability = async () => {
+      try {
+        const availabilityResp = await wso.ephmatchService.getAvailability();
+        if (isMounted) {
+          updateAvailability(availabilityResp.data);
+        }
+      } catch {
+        // eslint-disable-line no-empty
+      }
+    };
 
     const loadMatches = async () => {
       try {
         const ephmatchersResponse = await wso.ephmatchService.listMatches();
-        updateMatches(ephmatchersResponse.data);
+        if (isMounted) {
+          updateMatches(ephmatchersResponse.data);
+        }
       } catch {
-        // eslint-disable-next-line no-empty
+        // eslint-disable-line no-empty
       }
     };
 
     const loadMatchesCount = async () => {
-      const ephmatchersCountResponse = await wso.ephmatchService.countMatches();
-      if (isMounted) {
-        updateMatchesTotalCount(ephmatchersCountResponse.data.total);
+      try {
+        const ephmatchersCountResponse = await wso.ephmatchService.countMatches();
+        if (isMounted) {
+          updateMatchesTotalCount(ephmatchersCountResponse.data.total);
+        }
+      } catch {
+        // eslint-disable-line no-empty
       }
     };
 
-    // loadAvailability();
+    loadAvailability();
     loadMatchesCount();
     loadMatches();
 

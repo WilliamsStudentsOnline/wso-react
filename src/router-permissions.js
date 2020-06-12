@@ -1,5 +1,11 @@
 import { containsScopes, getTokenLevel, scopes } from "./lib/general";
 
+/**
+ * This file contains the necessary information to determine route permissions
+ * based on user scopes and token level that will be checked with each state
+ * transition.
+ */
+
 // ! It is very important to update this with every new policy change
 const routePermissions = {
   bulletins: { scopes: [scopes.ScopeBulletin, scopes.ScopeUsers] },
@@ -22,20 +28,39 @@ const routePermissions = {
   factrak: { tokenLevel: 3 },
 };
 
-const hasNecessaryScopes = (token, key) => {
+/**
+ * Checks if the token has the necessary scopes to access a route.
+ *
+ * @param {String} token - User API Token.
+ * @param {String} routeName - Route Name.
+ */
+const hasNecessaryScopes = (token, routeName) => {
   return (
-    !routePermissions[key].scopes ||
-    containsScopes(token, routePermissions[key].scopes)
+    !routePermissions[routeName].scopes ||
+    containsScopes(token, routePermissions[routeName].scopes)
   );
 };
 
-const hasNecessaryTokenLevel = (token, key) => {
+/**
+ * Checks if the token has the necessary token level to access a route.
+ *
+ * @param {String} token - User API Token.
+ * @param {String} routeName - Route Name.
+ */
+const hasNecessaryTokenLevel = (token, routeName) => {
   return (
-    !routePermissions[key].tokenLevel ||
-    getTokenLevel(token) >= routePermissions[key].tokenLevel
+    !routePermissions[routeName].tokenLevel ||
+    getTokenLevel(token) >= routePermissions[routeName].tokenLevel
   );
 };
 
+/**
+ * Default export that configures the router and the store to enable
+ * the checking of user permissions.
+ *
+ * @param router - The main router controlling the route transitions
+ * @param store - The main Redux store.
+ */
 export default (router, store) => {
   Object.keys(routePermissions).forEach((key) => {
     router.canActivate(key, () => (toState, fromState, done) => {
@@ -60,6 +85,7 @@ export default (router, store) => {
       });
     });
   });
+
   router.canActivate("login", () => (toState, fromState, done) => {
     const token = store.getState().authState.token;
 
