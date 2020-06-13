@@ -10,9 +10,10 @@ import { connect } from "react-redux";
 
 // Additional imports
 import { Link } from "react-router5";
+import { actions } from "redux-router5";
 import { bulletinTypeRide } from "../../../constants/general";
 
-const BulletinIndex = ({ wso, type, currUser }) => {
+const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
   const [bulletins, updateBulletins] = useState(null);
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -29,7 +30,7 @@ const BulletinIndex = ({ wso, type, currUser }) => {
       updateBulletins(bulletinsResponse.data);
       updateTotal(bulletinsResponse.paginationTotal);
     } catch {
-      // eslint-diable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -46,7 +47,7 @@ const BulletinIndex = ({ wso, type, currUser }) => {
       updateBulletins(ridesResponse.data);
       updateTotal(ridesResponse.paginationTotal);
     } catch {
-      // eslint-diable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -77,7 +78,7 @@ const BulletinIndex = ({ wso, type, currUser }) => {
   useEffect(() => {
     loadNext(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wso, type]);
+  }, [type, wso]);
 
   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
 
@@ -96,7 +97,7 @@ const BulletinIndex = ({ wso, type, currUser }) => {
       }
       loadNext(page);
     } catch {
-      // eslint-diable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -254,16 +255,22 @@ const BulletinIndex = ({ wso, type, currUser }) => {
 };
 
 BulletinIndex.propTypes = {
-  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 BulletinIndex.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  wso: getWSO(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(BulletinIndex);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(BulletinIndex);

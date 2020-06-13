@@ -8,9 +8,15 @@ import { doUpdateIdentityToken, doUpdateRemember } from "../actions/auth";
 import { actions, createRouteNodeSelector } from "redux-router5";
 
 // External imports
-import { getWSO, getScopes, getTokenLevel } from "../selectors/auth";
+import {
+  getCurrUser,
+  getScopes,
+  getTokenLevel,
+  getWSO,
+} from "../selectors/auth";
 
 const Login = ({
+  currUser,
   navigateTo,
   route,
   scopes,
@@ -27,7 +33,10 @@ const Login = ({
   useEffect(() => {
     if (route.params.previousRoute) {
       if (route.params.requiredLevel) {
-        if (tokenLevel < route.params.requiredLevel) {
+        if (
+          tokenLevel < route.params.requiredLevel ||
+          (route.params.requiredLevel > 2 && !currUser)
+        ) {
           return;
         }
       }
@@ -45,7 +54,7 @@ const Login = ({
     }
     // Assumes wso, tokenLevel, and scopes are simultaneously updated
     // when token changes.
-  }, [wso, tokenLevel, scopes, navigateTo, route.params]);
+  }, [currUser, navigateTo, scopes, tokenLevel, route.params, wso]);
 
   // TODO: this shouldn't be coded this way. - it's better to do the splitting in the sign in.
   const unixHandler = (event) => {
@@ -93,7 +102,9 @@ const Login = ({
 
       <form onSubmit={submitHandler}>
         <div id="errors">
-          {errors && errors.map((msg) => <p key={msg}>{msg}</p>)}
+          {errors?.map((msg) => (
+            <p key={msg}>{msg}</p>
+          ))}
         </div>
         <br />
         <input
@@ -131,16 +142,18 @@ const Login = ({
 };
 
 Login.propTypes = {
-  wso: PropTypes.object.isRequired,
+  currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
   scopes: PropTypes.arrayOf(PropTypes.string),
   tokenLevel: PropTypes.number,
   updateIdenToken: PropTypes.func.isRequired,
   updateRemember: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 Login.defaultProps = {
+  currUser: null,
   scopes: [],
   tokenLevel: 0,
 };
@@ -148,9 +161,10 @@ Login.defaultProps = {
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("login");
   return (state) => ({
-    wso: getWSO(state),
+    currUser: getCurrUser(state),
     scopes: getScopes(state),
     tokenLevel: getTokenLevel(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };

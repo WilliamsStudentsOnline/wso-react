@@ -171,10 +171,10 @@ const DormtrakRecentComments = ({
 
 DormtrakRecentComments.propTypes = {
   abridged: PropTypes.bool.isRequired,
-  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   reviews: PropTypes.arrayOf(PropTypes.object),
+  wso: PropTypes.object.isRequired,
 };
 
 DormtrakRecentComments.defaultProps = {

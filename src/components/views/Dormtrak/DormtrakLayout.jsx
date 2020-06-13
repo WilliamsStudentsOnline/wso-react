@@ -20,7 +20,7 @@ const DormtrakLayout = ({ wso, children, currUser, navigateTo }) => {
         const neighborhoodsResponse = await wso.dormtrakService.listNeighborhoods();
         updateNeighborhoods(neighborhoodsResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        // It's alright to handle this gracefully without showing them.
       }
     };
 

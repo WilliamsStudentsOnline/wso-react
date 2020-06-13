@@ -5,11 +5,12 @@ import PropTypes from "prop-types";
 // Redux/routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
+import { actions } from "redux-router5";
 
 // Additional imports
 import Ephmatcher from "./Ephmatcher";
 
-const EphmatchMatch = ({ wso }) => {
+const EphmatchMatch = ({ navigateTo, wso }) => {
   const [matches, updateMatches] = useState([]);
 
   useEffect(() => {
@@ -18,12 +19,12 @@ const EphmatchMatch = ({ wso }) => {
         const ephmatchersResponse = await wso.ephmatchService.listMatches();
         updateMatches(ephmatchersResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
     loadMatches();
-  }, [wso]);
+  }, [navigateTo, wso]);
 
   const renderMatches = () => {
     if (matches.length === 0)
@@ -52,7 +53,10 @@ const EphmatchMatch = ({ wso }) => {
   return <article className="facebook-results">{renderMatches()}</article>;
 };
 
-EphmatchMatch.propTypes = { wso: PropTypes.object.isRequired };
+EphmatchMatch.propTypes = {
+  navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
+};
 
 EphmatchMatch.defaultProps = {};
 
@@ -60,4 +64,9 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(EphmatchMatch);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EphmatchMatch);

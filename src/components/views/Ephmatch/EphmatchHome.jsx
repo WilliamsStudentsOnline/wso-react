@@ -7,11 +7,12 @@ import Select from "../../Select";
 // Redux/ routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
+import { actions } from "redux-router5";
 
 // Additional imports
 import Ephmatcher from "./Ephmatcher";
 
-const EphmatchHome = ({ wso }) => {
+const EphmatchHome = ({ navigateTo, wso }) => {
   const perPage = 20; // Number of results per page
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -39,7 +40,7 @@ const EphmatchHome = ({ wso }) => {
           updateTotal(ephmatchersResponse.paginationTotal);
         }
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -48,7 +49,7 @@ const EphmatchHome = ({ wso }) => {
     return () => {
       isMounted = false;
     };
-  }, [wso, page, sort]);
+  }, [navigateTo, page, sort, wso]);
 
   const selectEphmatcher = async (event, index) => {
     // Alternatively, use the classname to determine the method to be called.
@@ -70,7 +71,7 @@ const EphmatchHome = ({ wso }) => {
 
       ephmatchers.splice(index, 1, updatedEphmatcher.data);
     } catch {
-      // eslint-disable-next-line
+      navigateTo("500");
     }
   };
 
@@ -174,6 +175,7 @@ const EphmatchHome = ({ wso }) => {
 };
 
 EphmatchHome.propTypes = {
+  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -183,4 +185,9 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(EphmatchHome);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EphmatchHome);

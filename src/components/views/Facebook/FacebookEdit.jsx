@@ -14,13 +14,13 @@ import { doUpdateUser } from "../../../actions/auth";
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 import TagEdit from "../../TagEdit";
 
-const FacebookEdit = ({ wso, currUser, navigateTo, updateUser }) => {
+const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
   const [tags, updateTags] = useState([]);
-  const [pronoun, setPronoun] = useState(currUser.pronoun);
-  const [visible, setVisible] = useState(currUser.visible);
-  const [homeVisible, setHomeVisible] = useState(currUser.homeVisible);
-  const [dormVisible, setDormVisible] = useState(currUser.dormVisible);
-  const [offCycle, setOffCycle] = useState(currUser.offCycle);
+  const [pronoun, setPronoun] = useState(currUser?.pronoun);
+  const [visible, setVisible] = useState(currUser?.visible);
+  const [homeVisible, setHomeVisible] = useState(currUser?.homeVisible);
+  const [dormVisible, setDormVisible] = useState(currUser?.dormVisible);
+  const [offCycle, setOffCycle] = useState(currUser?.offCycle);
 
   const [errors, updateErrors] = useState([]);
   const [submitting, updateSubmitting] = useState(false);
@@ -39,8 +39,13 @@ const FacebookEdit = ({ wso, currUser, navigateTo, updateUser }) => {
       }
     };
 
+    // Necessary because the user might refresh into this page, and currUser might not have
+    // been initialized.
+    const loadUserInfo = async () => {};
+
     loadTags();
-  }, [wso, currUser]);
+    loadUserInfo();
+  }, [currUser, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -50,7 +55,7 @@ const FacebookEdit = ({ wso, currUser, navigateTo, updateUser }) => {
 
     try {
       // Update Photos
-      if (fileRef.current && fileRef.current.files[0]) {
+      if (fileRef.current?.files[0]) {
         await wso.userService.updateUserPhoto("me", fileRef.current.files[0]);
       }
 
@@ -93,8 +98,8 @@ const FacebookEdit = ({ wso, currUser, navigateTo, updateUser }) => {
           <br />
 
           <div className="field">
-            {(currUser.type === userTypeAlumni ||
-              currUser.type === userTypeStudent) && (
+            {(currUser?.type === userTypeAlumni ||
+              currUser?.type === userTypeStudent) && (
               <>
                 <h3>Tags</h3>
                 <p>
@@ -149,7 +154,7 @@ const FacebookEdit = ({ wso, currUser, navigateTo, updateUser }) => {
             />
             <br />
             <br />
-            {currUser.type === userTypeStudent ? (
+            {currUser?.type === userTypeStudent ? (
               <>
                 <strong>Dorm Address:</strong>
                 <br />
@@ -199,17 +204,19 @@ const FacebookEdit = ({ wso, currUser, navigateTo, updateUser }) => {
 };
 
 FacebookEdit.propTypes = {
-  wso: PropTypes.object.isRequired,
-  currUser: PropTypes.object.isRequired,
+  currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
-FacebookEdit.defaultProps = {};
+FacebookEdit.defaultProps = {
+  currUser: null,
+};
 
 const mapStateToProps = (state) => ({
-  wso: getWSO(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -27,7 +27,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
         );
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
       } catch {
-        // eslint-disable-next-line no-empty
+        // Do nothing - it's okay to gracefully handle this.
       }
     };
 
@@ -39,7 +39,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
           updateEphmatchVisibility(true);
         }
       } catch {
-        // eslint-disable-next-line no-empty
+        // Do nothing - it's okay to gracefully handle this.
       }
     };
 
@@ -158,8 +158,8 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
-    wso: getWSO(state),
     currUser: getCurrUser(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };

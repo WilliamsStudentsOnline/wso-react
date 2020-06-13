@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
-const DormtrakReviewForm = ({ wso, route, navigateTo, currUser }) => {
+const DormtrakReviewForm = ({ currUser, navigateTo, route, wso }) => {
   const [review, updateReview] = useState(null);
 
   const edit = route.name.split(".")[1] === "editReview";
@@ -91,12 +91,12 @@ const DormtrakReviewForm = ({ wso, route, navigateTo, currUser }) => {
         updateThermostat(reviewData.thermostatAccess);
         updateWifi(reviewData.wifi);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
     if (reviewParam) loadReview(reviewParam);
-  }, [wso, reviewParam]);
+  }, [navigateTo, reviewParam, wso]);
 
   // Generator for the various MCQ options
   const optionBuilder = (options, labels, type, changeHandler) => {
@@ -368,24 +368,25 @@ const DormtrakReviewForm = ({ wso, route, navigateTo, currUser }) => {
 };
 
 DormtrakReviewForm.propTypes = {
-  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak.reviews");
 
   return (state) => ({
-    wso: getWSO(state),
     currUser: getCurrUser(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DormtrakReviewForm);

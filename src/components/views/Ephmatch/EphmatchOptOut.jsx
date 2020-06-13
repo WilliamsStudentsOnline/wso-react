@@ -8,7 +8,7 @@ import { getWSO } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
 // Page created to handle both opting in and out.
-const EphmatchOptOut = ({ wso, navigateTo }) => {
+const EphmatchOptOut = ({ navigateTo, wso }) => {
   // Note that this is different from Ephcatch
   const [optOut, updateOptOut] = useState(false);
 
@@ -22,7 +22,8 @@ const EphmatchOptOut = ({ wso, navigateTo }) => {
           updateOptOut(ownProfile.deleted);
         }
       } catch {
-        // eslint-disable-next-line no-empty
+        // There shouldn't be any reason for the submission to be rejected.
+        navigateTo("500");
       }
     };
 
@@ -31,7 +32,7 @@ const EphmatchOptOut = ({ wso, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [wso]);
+  }, [navigateTo, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -41,7 +42,8 @@ const EphmatchOptOut = ({ wso, navigateTo }) => {
       // Update succeeded -> redirect them to main ephmatch page.
       navigateTo("ephmatch", { profile: response.data }, { reload: true });
     } catch {
-      // eslint-disable-next-line no-empty
+      // There shouldn't be any reason for the submission to be rejected.
+      navigateTo("500");
     }
   };
 

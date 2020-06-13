@@ -9,13 +9,13 @@ import { Line } from "../../Skeleton";
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
-import { createRouteNodeSelector } from "redux-router5";
+import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { containsScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakProfessor = ({ wso, currUser, route, token }) => {
+const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
   const [professor, updateProfessor] = useState(null);
   const [department, updateDepartment] = useState(null);
   const [ratings, updateRatings] = useState(null);
@@ -38,7 +38,7 @@ const FactrakProfessor = ({ wso, currUser, route, token }) => {
         );
         updateDepartment(departmentResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -49,7 +49,7 @@ const FactrakProfessor = ({ wso, currUser, route, token }) => {
         );
         updateRatings(ratingsResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -64,7 +64,7 @@ const FactrakProfessor = ({ wso, currUser, route, token }) => {
         const surveysResponse = await wso.factrakService.listSurveys(params);
         updateSurveys(surveysResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -76,7 +76,7 @@ const FactrakProfessor = ({ wso, currUser, route, token }) => {
     } else {
       updateSurveys([...Array(10)].map((_, id) => ({ id })));
     }
-  }, [wso, route.params.professor, route.params.profID, token]);
+  }, [navigateTo, route.params.professor, route.params.profID, token, wso]);
 
   if (!professor)
     return (
@@ -117,9 +117,9 @@ const FactrakProfessor = ({ wso, currUser, route, token }) => {
         <h3>{professor.name}</h3>
 
         <h5>
-          {department ? department.name : ""}
+          {department?.name}
           <br />
-          {professor && professor.title && <span>{professor.title}</span>}
+          <span>{professor?.title}</span>
         </h5>
         <br />
 
@@ -169,10 +169,11 @@ const FactrakProfessor = ({ wso, currUser, route, token }) => {
 };
 
 FactrakProfessor.propTypes = {
-  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 FactrakProfessor.defaultProps = {};
@@ -181,11 +182,16 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.professors");
 
   return (state) => ({
-    wso: getWSO(state),
     currUser: getCurrUser(state),
     token: getAPIToken(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
 
-export default connect(mapStateToProps)(FactrakProfessor);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakProfessor);

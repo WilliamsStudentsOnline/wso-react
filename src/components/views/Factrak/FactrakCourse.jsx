@@ -15,7 +15,7 @@ import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
 import { containsScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakCourse = ({ wso, currUser, route, token }) => {
+const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
   const [course, updateCourse] = useState(null);
   const [courseSurveys, updateSurveys] = useState(null);
   const [courseProfs, updateProfs] = useState([]);
@@ -30,7 +30,7 @@ const FactrakCourse = ({ wso, currUser, route, token }) => {
         const courseResponse = await wso.factrakService.getCourse(courseID);
         updateCourse(courseResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -49,7 +49,7 @@ const FactrakCourse = ({ wso, currUser, route, token }) => {
         );
         updateSurveys(surveyResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -61,7 +61,7 @@ const FactrakCourse = ({ wso, currUser, route, token }) => {
         );
         updateRatings(ratingsResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -72,7 +72,7 @@ const FactrakCourse = ({ wso, currUser, route, token }) => {
         const profResponse = await wso.factrakService.listProfessors(params);
         updateProfs(profResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -86,11 +86,12 @@ const FactrakCourse = ({ wso, currUser, route, token }) => {
 
     loadProfs();
   }, [
-    wso,
+    navigateTo,
     token,
     route.params.course,
     route.params.profID,
     route.params.courseID,
+    wso,
   ]);
 
   // Generates the list of professors who teach the course
@@ -100,7 +101,7 @@ const FactrakCourse = ({ wso, currUser, route, token }) => {
       <div>
         View comments only for:
         <br />
-        {course && course.id ? (
+        {course?.id ? (
           courseProfs.map((prof) => (
             <React.Fragment key={prof.name}>
               <Link
@@ -220,10 +221,11 @@ const FactrakCourse = ({ wso, currUser, route, token }) => {
 };
 
 FactrakCourse.propTypes = {
-  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 FactrakCourse.defaultProps = {};

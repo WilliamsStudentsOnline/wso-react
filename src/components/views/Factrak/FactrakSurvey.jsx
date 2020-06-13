@@ -37,7 +37,7 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         const profResponse = await wso.factrakService.getProfessor(professorID);
         updateProf(profResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -60,7 +60,7 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         updateTakeAnother(surveyData.wouldTakeAnother);
         updateComment(surveyData.comment);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -69,14 +69,14 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         const areasOfStudyResponse = await wso.factrakService.listAreasOfStudy();
         updateAreasOfStudy(areasOfStudyResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
     if (surveyParam) loadSurvey(surveyParam);
     if (professorParam) loadProf(professorParam);
     loadAreasOfStudy();
-  }, [wso, professorParam, surveyParam]);
+  }, [navigateTo, professorParam, surveyParam, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -366,7 +366,8 @@ const mapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FactrakSurvey);

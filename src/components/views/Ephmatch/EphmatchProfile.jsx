@@ -53,7 +53,8 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
           updateUnixID(ephmatchProfile.user.unixID);
         }
       } catch {
-        // eslint-disable-next-line no-empty
+        // There shouldn't be any reason for the submission to be rejected.
+        navigateTo("500");
       }
     };
 
@@ -62,7 +63,7 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [wso]);
+  }, [navigateTo, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -183,8 +184,8 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
 };
 
 EphmatchProfile.propTypes = {
-  wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 EphmatchProfile.defaultProps = {};
@@ -194,7 +195,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 

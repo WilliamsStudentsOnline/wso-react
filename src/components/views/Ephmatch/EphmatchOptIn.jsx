@@ -54,7 +54,7 @@ const EphmatchOptIn = ({ wso, navigateTo }) => {
         updateMessagingUsername(ownEphmatchProfile.messagingUsername);
         updateUnixID(ownEphmatchProfile.user.unixID);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -63,7 +63,7 @@ const EphmatchOptIn = ({ wso, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [wso]);
+  }, [navigateTo, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -86,7 +86,8 @@ const EphmatchOptIn = ({ wso, navigateTo }) => {
       // Update succeeded -> redirect them to main ephmatch page.
       navigateTo("ephmatch", null, { reload: true });
     } catch {
-      // eslint-disable-next-line no-empty
+      // There shouldn't be any reason for the submission to be rejected.
+      navigateTo("500");
     }
   };
 

@@ -32,7 +32,7 @@ const FactrakComment = ({
       const surveyResponse = await wso.factrakService.getSurvey(survey.id);
       updateSurvey(surveyResponse.data);
     } catch {
-      // eslint-disable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -47,7 +47,7 @@ const FactrakComment = ({
       const userResponse = await wso.userService.getUser();
       updateUser(userResponse.data);
     } catch {
-      // eslint-disable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -71,7 +71,7 @@ const FactrakComment = ({
 
       getAndUpdateSurvey();
     } catch {
-      // eslint-disable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -130,13 +130,15 @@ const FactrakComment = ({
 
       getAndUpdateSurvey();
     } catch {
-      // eslint-disable-next-line no-empty
+      navigateTo("500");
     }
   };
 
   // Generates the would take another sentence.
   const wouldTakeAnother = () => {
     if (survey.wouldTakeAnother === null) return null;
+
+    // True versus false check.
     if (survey.wouldTakeAnother)
       return (
         <>

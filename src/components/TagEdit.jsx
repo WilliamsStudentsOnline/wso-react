@@ -12,7 +12,7 @@ const TagRemove = ({ onClick }) => {
 
 TagRemove.propTypes = { onClick: PropTypes.func.isRequired };
 
-const TagEdit = ({ wso, tags, updateTags, updateErrors }) => {
+const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
   const [newTag, updateNewTag] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
@@ -26,7 +26,7 @@ const TagEdit = ({ wso, tags, updateTags, updateErrors }) => {
       const newSuggestions = tagResponse.data;
       setSuggestions(newSuggestions);
     } catch {
-      // eslint-disable-next-line no-empty
+      // Do nothing - it's okay to not have autocomplete.
     }
   };
 
@@ -126,10 +126,10 @@ const TagEdit = ({ wso, tags, updateTags, updateErrors }) => {
 };
 
 TagEdit.propTypes = {
-  wso: PropTypes.object.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string),
   updateTags: PropTypes.func.isRequired,
   updateErrors: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 TagEdit.defaultProps = {

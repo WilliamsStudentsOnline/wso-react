@@ -30,7 +30,7 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
         type: bulletin.type || bulletinTypeRide,
       });
     } catch {
-      // eslint-diable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -204,8 +204,8 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("bulletins.show");
 
   return (state) => ({
-    wso: getWSO(state),
     currUser: getCurrUser(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };

@@ -8,7 +8,7 @@ import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 import { doUpdateUser } from "../../../actions/auth";
 
-const DormtrakPolicy = ({ wso, currUser, navigateTo, updateUser }) => {
+const DormtrakPolicy = ({ currUser, navigateTo, updateUser, wso }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
   const [didUpdateUser, toggleDidUpdateUser] = useState(false);
 
@@ -31,7 +31,7 @@ const DormtrakPolicy = ({ wso, currUser, navigateTo, updateUser }) => {
       updateUser(response.data);
       toggleDidUpdateUser(true);
     } catch {
-      // eslint-disable-next-line no-empty
+      navigateTo("500");
     }
 
     return acceptPolicy;
@@ -113,19 +113,20 @@ const DormtrakPolicy = ({ wso, currUser, navigateTo, updateUser }) => {
 };
 
 DormtrakPolicy.propTypes = {
-  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  wso: getWSO(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 

@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { Photo } from "../../Skeleton";
 
 // External imports
 import { ConnectedLink } from "react-router5";
@@ -28,7 +29,7 @@ const Ephmatcher = ({
         );
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
       } catch {
-        // eslint-disable-next-line no-empty
+        // Handle it via the skeleton
       }
     };
 
@@ -37,7 +38,7 @@ const Ephmatcher = ({
       updateUserPhoto(photo);
     }
     // eslint-disable-next-line
-  }, [wso, ephmatcher, photo]);
+  }, [ephmatcher, photo, wso]);
 
   // Generates the user's class year
   const classYear = (year, offCycle) => {
@@ -94,34 +95,28 @@ const Ephmatcher = ({
   };
 
   const createMessageField = () => {
+    const { messagingPlatform, messagingUsername, unixID } = ephmatcherProfile;
+
     let icon;
     let link;
-    switch (ephmatcherProfile.messagingPlatform) {
+    switch (messagingPlatform) {
       case "Phone":
         icon = <IoMdText className="message-icon" />;
-        link = (
-          <a href={`sms:${ephmatcherProfile.messagingUsername}`}>
-            {ephmatcherProfile.messagingUsername}
-          </a>
-        );
+        link = <a href={`sms:${messagingUsername}`}>{messagingUsername}</a>;
         break;
       case "Snapchat":
         icon = <FaSnapchatGhost className="message-icon" />;
         link = (
-          <a
-            href={`https://www.snapchat.com/add/${ephmatcherProfile.messagingUsername}`}
-          >
-            {ephmatcherProfile.messagingUsername}
+          <a href={`https://www.snapchat.com/add/${messagingUsername}`}>
+            {messagingUsername}
           </a>
         );
         break;
       case "Instagram":
         icon = <FaInstagram className="message-icon" />;
         link = (
-          <a
-            href={`https://www.instagram.com/${ephmatcherProfile.messagingUsername}`}
-          >
-            {ephmatcherProfile.messagingUsername}
+          <a href={`https://www.instagram.com/${messagingUsername}`}>
+            {messagingUsername}
           </a>
         );
         break;
@@ -130,16 +125,10 @@ const Ephmatcher = ({
         link = "";
     }
 
-    if (
-      !ephmatcherProfile.messagingPlatform ||
-      !ephmatcherProfile.messagingUsername ||
-      !link
-    ) {
+    if (!messagingPlatform || !messagingUsername || !link) {
       icon = <MdEmail className="message-icon" />;
       link = (
-        <a href={`mailto:${ephmatcher.unixID}@williams.edu`}>
-          {ephmatcher.unixID}@williams.edu
-        </a>
+        <a href={`mailto:${unixID}@williams.edu`}>{unixID}@williams.edu</a>
       );
     }
 
@@ -150,20 +139,9 @@ const Ephmatcher = ({
     );
   };
 
-  return (
-    <aside
-      key={ephmatcherProfile.id}
-      className={
-        ephmatcherProfile.liked
-          ? "ephmatch-selected ephmatch-select-link"
-          : "ephmatch-select-link"
-      }
-      onClick={
-        selectEphmatcher ? (event) => selectEphmatcher(event, index) : null
-      }
-      role="presentation"
-    >
-      {userPhoto && (
+  const renderPhoto = () => {
+    if (userPhoto)
+      return (
         <div style={{ width: "100%" }}>
           <img
             src={userPhoto}
@@ -176,7 +154,33 @@ const Ephmatcher = ({
             alt="profile"
           />
         </div>
-      )}
+      );
+
+    return <Photo height="300px" width="100%" />;
+  };
+
+  const {
+    description,
+    id,
+    liked,
+    locationVisible,
+    matchMessage,
+  } = ephmatcherProfile;
+
+  return (
+    <aside
+      key={id}
+      className={
+        liked
+          ? "ephmatch-selected ephmatch-select-link"
+          : "ephmatch-select-link"
+      }
+      onClick={
+        selectEphmatcher ? (event) => selectEphmatcher(event, index) : null
+      }
+      role="presentation"
+    >
+      {renderPhoto()}
       {ephmatcher && (
         <div style={{ flex: 2, padding: "10px", textAlign: "left" }}>
           <h4>{`${ephmatcher.name} ${classYear(
@@ -187,15 +191,11 @@ const Ephmatcher = ({
             <span className="list-headers">{ephmatcher.unixID}</span>
           )}
           {userTags()}
-          {ephmatcherProfile.locationVisible && formatLocation()}
+          {locationVisible && formatLocation()}
           {matched && createMessageField()}
-          {ephmatcherProfile.description && (
-            <div>{ephmatcherProfile.description}</div>
-          )}
-          {matched && ephmatcherProfile.matchMessage && (
-            <div className="match-message">
-              {ephmatcherProfile.matchMessage}
-            </div>
+          {description && <div>{description}</div>}
+          {matched && matchMessage && (
+            <div className="match-message">{matchMessage}</div>
           )}
         </div>
       )}
@@ -204,13 +204,13 @@ const Ephmatcher = ({
 };
 
 Ephmatcher.propTypes = {
-  wso: PropTypes.object.isRequired,
   ephmatcher: PropTypes.object,
   ephmatcherProfile: PropTypes.object.isRequired,
   selectEphmatcher: PropTypes.func,
   index: PropTypes.number,
   photo: PropTypes.string,
   matched: PropTypes.bool,
+  wso: PropTypes.object.isRequired,
 };
 
 Ephmatcher.defaultProps = {

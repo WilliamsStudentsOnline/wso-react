@@ -1,13 +1,14 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import FactrakComment from "./FactrakComment";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getWSO, getCurrUser } from "../../../selectors/auth";
+import { getCurrUser, getWSO } from "../../../selectors/auth";
+import { actions } from "redux-router5";
 
-const FactrakSurveyIndex = ({ wso, currUser }) => {
+const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
   const [surveys, updateSurveys] = useState([]);
 
   useEffect(() => {
@@ -23,12 +24,12 @@ const FactrakSurveyIndex = ({ wso, currUser }) => {
 
         updateSurveys(userSurveyResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
     loadUserSurveys();
-  }, [wso, currUser.id]);
+  }, [navigateTo, currUser.id, wso]);
 
   return (
     <div className="article">
@@ -58,15 +59,21 @@ const FactrakSurveyIndex = ({ wso, currUser }) => {
 };
 
 FactrakSurveyIndex.propTypes = {
-  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 FactrakSurveyIndex.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  wso: getWSO(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(FactrakSurveyIndex);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakSurveyIndex);

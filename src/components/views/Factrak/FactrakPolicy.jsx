@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { getCurrUser, getWSO } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 
-const FactrakPolicy = ({ wso, currUser, navigateTo, updateUser }) => {
+const FactrakPolicy = ({ currUser, navigateTo, updateUser, wso }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
 
   // Handles clicking of the accept policy checkbox
@@ -29,7 +29,7 @@ const FactrakPolicy = ({ wso, currUser, navigateTo, updateUser }) => {
       updateUser(response.data);
       navigateTo("factrak");
     } catch {
-      // eslint-disable-next-line no-empty
+      navigateTo("500");
     }
 
     return acceptPolicy;
@@ -137,7 +137,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 

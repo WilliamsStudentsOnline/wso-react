@@ -6,11 +6,12 @@ import { Line, Paragraph } from "../../Skeleton";
 // Redux imports
 import { connect } from "react-redux";
 import { getCurrUser, getWSO } from "../../../selectors/auth";
+import { actions } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
 
-const DiscussionPost = ({ wso, post, currUser }) => {
+const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
   const [deleted, updateDeleted] = useState(false);
   const [edit, setEdit] = useState(false);
   const [reply, updateReply] = useState(post.content);
@@ -28,7 +29,7 @@ const DiscussionPost = ({ wso, post, currUser }) => {
       setEdit(false);
       updateCurrPost(response.data);
     } catch {
-      // eslint-disable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -42,7 +43,7 @@ const DiscussionPost = ({ wso, post, currUser }) => {
       await wso.bulletinService.deletePost(post.id);
       updateDeleted(true);
     } catch {
-      // eslint-disable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -129,9 +130,10 @@ const DiscussionPost = ({ wso, post, currUser }) => {
 };
 
 DiscussionPost.propTypes = {
-  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
   post: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DiscussionPost.defaultProps = {};
@@ -149,9 +151,14 @@ const DiscussionPostSkeleton = () => (
 );
 
 const mapStateToProps = (state) => ({
-  wso: getWSO(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(DiscussionPost);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DiscussionPost);
 export { DiscussionPostSkeleton };

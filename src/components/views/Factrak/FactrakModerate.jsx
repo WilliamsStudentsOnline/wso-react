@@ -8,8 +8,9 @@ import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
 import { Link } from "react-router5";
+import { actions } from "redux-router5";
 
-const FactrakModerate = ({ wso }) => {
+const FactrakModerate = ({ navigateTo, wso }) => {
   const [flagged, updateFlagged] = useState([]);
 
   // Loads all the flagged courses on mount.
@@ -25,12 +26,12 @@ const FactrakModerate = ({ wso }) => {
 
         updateFlagged(flaggedResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
     loadFlagged();
-  }, [wso]);
+  }, [navigateTo, wso]);
 
   // Unflag the survey
   const unflag = async (surveyID) => {
@@ -38,7 +39,7 @@ const FactrakModerate = ({ wso }) => {
       await wso.factrakService.unflagSurveyAdmin(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
     } catch {
-      // eslint-disable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -52,7 +53,7 @@ const FactrakModerate = ({ wso }) => {
       await wso.factrakService.deleteSurvey(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
     } catch {
-      // eslint-disable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -114,10 +115,17 @@ const FactrakModerate = ({ wso }) => {
 };
 
 FactrakModerate.propTypes = {
+  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
-export default connect(mapStateToProps)(FactrakModerate);
+
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakModerate);

@@ -19,12 +19,12 @@ const HoodTableRow = ({ dorm, wso }) => {
         const dormResponse = await wso.dormtrakService.getFacts(dorm.id);
         updateDormInfo(dormResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        // Let this be handled by the loading state for now
       }
     };
 
     loadDormInfo();
-  }, [wso, dorm]);
+  }, [dorm, wso]);
 
   return (
     <tr key={dorm.id}>
@@ -37,9 +37,9 @@ const HoodTableRow = ({ dorm, wso }) => {
       <td>{dorm.numberDoubles}</td>
       <td>{dorm.numberFlex}</td>
 
-      <td>{dormInfo && dormInfo.seniorCount}</td>
-      <td>{dormInfo && dormInfo.juniorCount}</td>
-      <td>{dormInfo && dormInfo.sophomoreCount}</td>
+      <td>{dormInfo?.seniorCount}</td>
+      <td>{dormInfo?.juniorCount}</td>
+      <td>{dormInfo?.sophomoreCount}</td>
     </tr>
   );
 };
@@ -82,4 +82,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(HoodTableRow);
+
 export { HoodTableRowSkeleton };

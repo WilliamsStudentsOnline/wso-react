@@ -11,7 +11,7 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 // Additional Imports
 import { Link } from "react-router5";
 
-const FactrakAOS = ({ wso, route }) => {
+const FactrakAOS = ({ navigateTo, route, wso }) => {
   const [courses, updateCourses] = useState(null);
   const [profs, updateProfs] = useState(null);
   const [area, updateArea] = useState({});
@@ -28,7 +28,7 @@ const FactrakAOS = ({ wso, route }) => {
         const profsResponse = await wso.factrakService.listProfessors(params);
         updateProfs(profsResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -41,7 +41,7 @@ const FactrakAOS = ({ wso, route }) => {
         const coursesData = coursesResponse.data;
         updateCourses(coursesData.sort((a, b) => a.number > b.number));
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -54,14 +54,14 @@ const FactrakAOS = ({ wso, route }) => {
 
         updateArea(areaOfStudyResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
     loadProfs(areaParam);
     loadCourses(areaParam);
     loadAOS(areaParam);
-  }, [wso, route.params.area]);
+  }, [navigateTo, route.params.area, wso]);
 
   // Generates a row containing the prof information.
   const generateProfRow = (prof) => {
@@ -102,12 +102,12 @@ const FactrakAOS = ({ wso, route }) => {
   // Generates the component which holds the list of professors in the area of study
   const generateProfs = () => {
     // If no profs were found, return null. Should not happen for Area of Study unless it's new.
-    if (profs && profs.length === 0) return null;
+    if (profs?.length === 0) return null;
     return (
       <>
         <br />
         <h4>
-          {area && area.name ? (
+          {area?.name ? (
             `Professors in ${area.name}`
           ) : (
             <>
@@ -223,8 +223,9 @@ const FactrakAOS = ({ wso, route }) => {
 };
 
 FactrakAOS.propTypes = {
-  wso: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = () => {

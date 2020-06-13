@@ -36,7 +36,7 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
 
       suggestData = factrakResponse.data;
     } catch {
-      // eslint-disable-next-line no-empty
+      // No need to do anything - it's alright if we don't have autocomplete.
     }
 
     // Limit the number of factrak suggestions to 5.

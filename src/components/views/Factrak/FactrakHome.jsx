@@ -8,12 +8,13 @@ import FactrakDeficitMessage from "./FactrakUtils";
 // Redux imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
+import { actions } from "redux-router5";
 
 // Additional imports
 import { containsScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakHome = ({ wso, currUser, token }) => {
+const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
   const [areas, updateAreas] = useState(null);
   const [surveys, updateSurveys] = useState(null);
 
@@ -32,7 +33,7 @@ const FactrakHome = ({ wso, currUser, token }) => {
         );
         updateSurveys(surveysResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -43,7 +44,7 @@ const FactrakHome = ({ wso, currUser, token }) => {
         const areasOfStudy = areasOfStudyResponse.data;
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
     if (containsScopes(token, [scopes.ScopeFactrakFull])) {
@@ -53,7 +54,7 @@ const FactrakHome = ({ wso, currUser, token }) => {
     }
 
     loadAreas();
-  }, [wso, token]);
+  }, [navigateTo, token, wso]);
 
   return (
     <article className="dormtrak">
@@ -114,17 +115,23 @@ const FactrakHome = ({ wso, currUser, token }) => {
 };
 
 FactrakHome.propTypes = {
-  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 FactrakHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  wso: getWSO(state),
   currUser: getCurrUser(state),
   token: getAPIToken(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(FactrakHome);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakHome);

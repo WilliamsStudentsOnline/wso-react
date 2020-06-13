@@ -19,7 +19,7 @@ const DormtrakRanking = ({ wso }) => {
         const rankingsResponse = await wso.dormtrakService.getRankings();
         updateDormsInfo(rankingsResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        // Handle it by not doing anything for now;
       }
     };
 

@@ -5,13 +5,13 @@ import PropTypes from "prop-types";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { createRouteNodeSelector } from "redux-router5";
+import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
 
 // FactrakSearch refers to the search result page
-const FactrakSearch = ({ wso, route }) => {
+const FactrakSearch = ({ route, navigateTo, wso }) => {
   const [profs, updateProfs] = useState(null);
   const [courses, updateCourses] = useState(null);
 
@@ -29,7 +29,7 @@ const FactrakSearch = ({ wso, route }) => {
 
         updateProfs(profsResponse.data.sort((a, b) => a.name > b.name));
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -52,13 +52,13 @@ const FactrakSearch = ({ wso, route }) => {
           )
         );
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
     loadProfs();
     loadCourses();
-  }, [wso, route.params.q]);
+  }, [navigateTo, route.params.q, wso]);
 
   // Generates the row for one of the professor results.
   const professorRow = (prof) => {
@@ -73,8 +73,8 @@ const FactrakSearch = ({ wso, route }) => {
             {prof.name}
           </Link>
         </td>
-        <td>{prof.unixID || ""}</td>
-        <td>{prof.office ? prof.office.number : ""}</td>
+        <td>{prof?.unixID}</td>
+        <td>{prof?.office?.number}</td>
       </tr>
     );
   };
@@ -181,8 +181,9 @@ const FactrakSearch = ({ wso, route }) => {
 };
 
 FactrakSearch.propTypes = {
-  wso: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 FactrakSearch.defaultProps = {};
@@ -196,4 +197,9 @@ const mapStateToProps = () => {
   });
 };
 
-export default connect(mapStateToProps)(FactrakSearch);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakSearch);

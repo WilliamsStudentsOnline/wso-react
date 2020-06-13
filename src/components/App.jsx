@@ -69,7 +69,7 @@ const App = ({
           const wsoResponse = await wso.miscService.getWords();
           document.title = `WSO: ${wsoResponse.data}`;
         } catch {
-          // do nothing
+          // Do nothing - it's fine to gracefully handle this with the default title
         }
       }
     };
@@ -235,7 +235,8 @@ const mapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
   removeCreds: () => dispatch(doRemoveCreds()),
   updateAPIToken: (token) => dispatch(doUpdateAPIToken(token)),
   updateSchedulerState: (newState) =>

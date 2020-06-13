@@ -11,8 +11,9 @@ import { connect } from "react-redux";
 // Additional Imports
 import { Link } from "react-router5";
 import { format } from "timeago.js";
+import { actions } from "redux-router5";
 
-const DiscussionIndex = ({ wso, currUser }) => {
+const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
   const perPage = 20;
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -33,7 +34,7 @@ const DiscussionIndex = ({ wso, currUser }) => {
       updateThreads(discussionsResponse.data);
       updateTotal(discussionsResponse.paginationTotal);
     } catch {
-      // eslint-disable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -121,7 +122,7 @@ const DiscussionIndex = ({ wso, currUser }) => {
 
       loadThreads(page);
     } catch {
-      // eslint-disable-next-line no-empty
+      navigateTo("500");
     }
   };
 
@@ -198,15 +199,21 @@ const DiscussionIndex = ({ wso, currUser }) => {
 };
 
 DiscussionIndex.propTypes = {
-  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DiscussionIndex.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  wso: getWSO(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(DiscussionIndex);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DiscussionIndex);

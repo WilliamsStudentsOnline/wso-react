@@ -31,7 +31,7 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
           updateAvailability(availabilityResp.data);
         }
       } catch {
-        // eslint-disable-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -42,7 +42,7 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
           updateMatches(ephmatchersResponse.data);
         }
       } catch {
-        // eslint-disable-line no-empty
+        navigateTo("500");
       }
     };
 
@@ -53,7 +53,7 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
           updateMatchesTotalCount(ephmatchersCountResponse.data.total);
         }
       } catch {
-        // eslint-disable-line no-empty
+        // Handle it by not doing anything - users can decide to refresh or not.
       }
     };
 
@@ -64,7 +64,7 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
     return () => {
       isMounted = false;
     };
-  }, [wso, route]);
+  }, [navigateTo, route, wso]);
 
   const EphmatchBody = () => {
     // If token doesnt have access to matches or profiles, must mean they need to create a new account

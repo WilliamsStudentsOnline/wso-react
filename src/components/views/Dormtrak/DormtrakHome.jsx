@@ -7,11 +7,12 @@ import DormtrakRecentComments from "./DormtrakRecentComments";
 // Redux imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
+import { actions } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
 
-const DormtrakHome = ({ wso, currUser }) => {
+const DormtrakHome = ({ currUser, navigateTo, wso }) => {
   const [reviews, updateReviews] = useState(null);
 
   useEffect(() => {
@@ -27,12 +28,12 @@ const DormtrakHome = ({ wso, currUser }) => {
         );
         updateReviews(dormReviewResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
     loadReviews();
-  }, [wso]);
+  }, [navigateTo, wso]);
 
   // Link to survey.
   const surveyLink = () => {
@@ -83,15 +84,21 @@ const DormtrakHome = ({ wso, currUser }) => {
 };
 
 DormtrakHome.propTypes = {
-  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DormtrakHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  wso: getWSO(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(DormtrakHome);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DormtrakHome);

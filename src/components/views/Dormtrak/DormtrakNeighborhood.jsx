@@ -6,9 +6,9 @@ import HoodTableRow, { HoodTableRowSkeleton } from "./HoodTableRow";
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { createRouteNodeSelector } from "redux-router5";
+import { createRouteNodeSelector, actions } from "redux-router5";
 
-const DormtrakNeighborhood = ({ wso, route }) => {
+const DormtrakNeighborhood = ({ navigateTo, route, wso }) => {
   const [neighborhood, updateHoodInfo] = useState(null);
 
   useEffect(() => {
@@ -21,12 +21,12 @@ const DormtrakNeighborhood = ({ wso, route }) => {
         );
         updateHoodInfo(hoodResponse.data);
       } catch {
-        // eslint-disable-next-line no-empty
+        navigateTo("500");
       }
     };
 
     loadNeighborhood();
-  }, [wso, route.params.neighborhoodID]);
+  }, [navigateTo, route.params.neighborhoodID, wso]);
 
   return (
     <article className="facebook-results">
@@ -61,8 +61,9 @@ const DormtrakNeighborhood = ({ wso, route }) => {
 };
 
 DormtrakNeighborhood.propTypes = {
-  wso: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DormtrakNeighborhood.defaultProps = {};
@@ -76,4 +77,12 @@ const mapStateToProps = () => {
   });
 };
 
-export default connect(mapStateToProps)(DormtrakNeighborhood);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DormtrakNeighborhood);
