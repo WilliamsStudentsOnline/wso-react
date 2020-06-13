@@ -10,11 +10,9 @@ import { API, NoAuthentication, WSO } from "wso-api-client";
 
 import jwtDecode from "jwt-decode";
 
-const API_ADDRESS = "http://localhost:8080";
+// const API_ADDRESS = "http://localhost:8080";
 
-export const DEFAULT_API_CLIENT = new WSO(
-  new API(API_ADDRESS, new NoAuthentication())
-);
+export const DEFAULT_API_CLIENT = new WSO(new API("", new NoAuthentication()));
 
 const INITIAL_STATE = {
   scope: [],
