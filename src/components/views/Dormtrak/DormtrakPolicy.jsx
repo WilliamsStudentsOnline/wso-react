@@ -1,15 +1,15 @@
 // React imports
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getCurrUser, getWSO } from "../../../selectors/auth";
 import { actions } from "redux-router5";
-import { doUpdateUser } from "../../../actions/auth";
 
-const DormtrakPolicy = ({ currUser, navigateTo, updateUser, wso }) => {
+const DormtrakPolicy = ({ currUser, navigateTo, wso }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
+  const [updated, setUpdated] = useState(false);
 
   const clickHandler = (event) => {
     updateAcceptPolicy(event.target.checked);
@@ -22,15 +22,24 @@ const DormtrakPolicy = ({ currUser, navigateTo, updateUser, wso }) => {
       hasAcceptedDormtrakPolicy: acceptPolicy,
     };
     try {
-      const response = await wso.userService.updateUser("me", updateParams);
-      updateUser(response.data);
-      navigateTo("dormtrak", {}, { reload: true });
+      await wso.userService.updateUser("me", updateParams);
+      setUpdated(true);
     } catch {
       navigateTo("500");
     }
-
-    return acceptPolicy;
   };
+
+  // Wait until the api handler is updated before navigating!
+  useEffect(() => {
+    let isMounted = true;
+    if (updated && isMounted) {
+      navigateTo("dormtrak", {}, { reload: true });
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [navigateTo, updated, wso]);
 
   return (
     <div className="article">
@@ -110,7 +119,6 @@ const DormtrakPolicy = ({ currUser, navigateTo, updateUser, wso }) => {
 DormtrakPolicy.propTypes = {
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  updateUser: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -122,7 +130,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location, params, opts) =>
     dispatch(actions.navigateTo(location, params, opts)),
-  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DormtrakPolicy);

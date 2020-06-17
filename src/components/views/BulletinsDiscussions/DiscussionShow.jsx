@@ -7,13 +7,12 @@ import { Line } from "../../Skeleton";
 // Redux/Routing imports
 import { connect } from "react-redux";
 import { actions, createRouteNodeSelector } from "redux-router5";
-import { getWSO } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 
-const DiscussionShow = ({ navigateTo, route, wso }) => {
+const DiscussionShow = ({ currUser, navigateTo, route, wso }) => {
   const [posts, updatePosts] = useState(null);
   const [reply, updateReply] = useState("");
   const [discussion, updateDiscussion] = useState(null);
-
   const [errors, updateErrors] = useState([]);
 
   useEffect(() => {
@@ -66,6 +65,8 @@ const DiscussionShow = ({ navigateTo, route, wso }) => {
   };
 
   const replyArea = () => {
+    if (!currUser) return null;
+
     return (
       <div className="reply">
         <form onSubmit={submitHandler}>
@@ -75,7 +76,7 @@ const DiscussionShow = ({ navigateTo, route, wso }) => {
             value={reply}
             onChange={(event) => updateReply(event.target.value)}
           />
-          {errors && errors.length > 0 && (
+          {errors?.length > 0 && (
             <div id="errors">
               <b>Please correct the following error(s):</b>
               {errors.map((msg) => (
@@ -111,17 +112,21 @@ const DiscussionShow = ({ navigateTo, route, wso }) => {
 };
 
 DiscussionShow.propTypes = {
+  currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
-DiscussionShow.defaultProps = {};
+DiscussionShow.defaultProps = {
+  currUser: null,
+};
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("discussions");
 
   return (state) => ({
+    currUser: getCurrUser(state),
     wso: getWSO(state),
     ...routeNodeSelector(state),
   });

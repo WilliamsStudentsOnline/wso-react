@@ -12,9 +12,10 @@ import EphmatchOptIn from "./EphmatchOptIn";
 import { connect } from "react-redux";
 import { actions, createRouteNodeSelector } from "redux-router5";
 import { getAPIToken, getWSO } from "../../../selectors/auth";
-import { containsScopes, scopes } from "../../../lib/general";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
 
 import { format } from "timeago.js";
+import Redirect from "../../Redirect";
 
 const EphmatchMain = ({ navigateTo, route, token, wso }) => {
   const [availability, updateAvailability] = useState(null);
@@ -57,19 +58,27 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       }
     };
 
-    loadAvailability();
-    loadMatchesCount();
-    loadMatches();
+    if (
+      containsOneOfScopes(token, [
+        scopes.ScopeEphmatch,
+        scopes.ScopeEphmatchMatches,
+        scopes.ScopeEphmatchProfiles,
+      ])
+    ) {
+      loadAvailability();
+      loadMatchesCount();
+      loadMatches();
+    }
 
     return () => {
       isMounted = false;
     };
-  }, [navigateTo, route, wso]);
+  }, [navigateTo, route, token, wso]);
 
   const EphmatchBody = () => {
     // If token doesnt have access to matches or profiles, must mean they need to create a new account
     if (
-      !containsScopes(token, [
+      !containsOneOfScopes(token, [
         scopes.ScopeEphmatchMatches,
         scopes.ScopeEphmatchProfiles,
       ])
@@ -83,7 +92,7 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       // If token doesnt have access to profiles, must mean that ephmatch is closed for the year
       //  || new Date() < ephmatchEndDate
       if (
-        containsScopes(token, [scopes.ScopeEphmatchProfiles]) &&
+        containsOneOfScopes(token, [scopes.ScopeEphmatchProfiles]) &&
         availability?.available
       ) {
         return <EphmatchHome />;
@@ -121,6 +130,16 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
     }
   };
 
+  if (
+    !containsOneOfScopes(token, [
+      scopes.ScopeEphmatch,
+      scopes.ScopeEphmatchMatches,
+      scopes.ScopeEphmatchProfiles,
+    ])
+  ) {
+    return <Redirect to="403" />;
+  }
+
   return (
     <EphmatchLayout
       matchesTotalCount={matchesTotalCount}
@@ -134,10 +153,10 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
 };
 
 EphmatchMain.propTypes = {
-  wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 // EphmatchMain.defaultProps = { profile: null };

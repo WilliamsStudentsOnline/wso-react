@@ -8,17 +8,29 @@ import DormtrakShow from "./DormtrakShow";
 import DormtrakSearch from "./DormtrakSearch";
 import DormtrakNeighborhood from "./DormtrakNeighborhood";
 import DormtrakReviewForm from "./DormtrakReviewForm";
+import Redirect from "../../Redirect";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { createRouteNodeSelector } from "redux-router5";
-import { getAPIToken } from "../../../selectors/auth";
+import { getAPIToken, getCurrUser } from "../../../selectors/auth";
 
 // Additional Imports
-import { containsScopes, scopes } from "../../../lib/general";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
+import { userTypeStudent } from "../../../constants/general";
 
-const DormtrakMain = ({ route, token }) => {
+const DormtrakMain = ({ currUser, route, token }) => {
   const dormtrakBody = () => {
+    if (
+      route.name !== "dormtrak.policy" &&
+      !containsOneOfScopes(token, [
+        scopes.ScopeDormtrak,
+        scopes.ScopeDormtrakWrite,
+      ])
+    ) {
+      return <Redirect to="dormtrak.policy" />;
+    }
+
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <DormtrakHome />;
 
@@ -40,19 +52,16 @@ const DormtrakMain = ({ route, token }) => {
     }
   };
 
-  if (
-    !containsScopes(token, [scopes.ScopeDormtrak, scopes.ScopeDormtrakWrite])
-  ) {
-    return (
-      <DormtrakLayout>
-        <DormtrakPolicy />
-      </DormtrakLayout>
-    );
+  // If the user is not a student - navigate to 403
+  if (currUser?.type !== userTypeStudent) {
+    return <Redirect to="403" />;
   }
+
   return <DormtrakLayout>{dormtrakBody()}</DormtrakLayout>;
 };
 
 DormtrakMain.propTypes = {
+  currUser: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
 };
@@ -63,6 +72,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak");
 
   return (state) => ({
+    currUser: getCurrUser(state),
     token: getAPIToken(state),
     ...routeNodeSelector(state),
   });

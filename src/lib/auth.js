@@ -1,4 +1,4 @@
-import { doUpdateAPIToken, doUpdateWSO } from "../actions/auth";
+import { doUpdateAPIToken, doUpdateUser, doUpdateWSO } from "../actions/auth";
 import jwtDecode from "jwt-decode";
 import { SimpleAuthentication } from "wso-api-client";
 
@@ -31,8 +31,13 @@ const updateAPIToken = async () => {
     const auth = new SimpleAuthentication(token);
     const updatedWSO = wso.updateAuth(auth);
     configureInterceptors(updatedWSO);
+
+    const userResponse = await updatedWSO.userService.getUser("me");
+    const user = userResponse.data;
+
     window.store.dispatch(doUpdateAPIToken(token));
     window.store.dispatch(doUpdateWSO(updatedWSO));
+    window.store.dispatch(doUpdateUser(user));
   } catch (error) {
     // eslint-disable no-empty
   }

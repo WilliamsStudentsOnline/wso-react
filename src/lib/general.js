@@ -47,7 +47,7 @@ export const scopes = {
  * @param {String} token - API token string.
  * @param {String[]} scopesToCheck - scopes to be checked against.
  */
-export const containsScopes = (token, scopesToCheck) => {
+export const containsOneOfScopes = (token, scopesToCheck) => {
   try {
     const decoded = jwtDecode(token);
     if (decoded.scope) {

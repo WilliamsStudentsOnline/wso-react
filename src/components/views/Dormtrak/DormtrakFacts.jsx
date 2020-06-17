@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Circle } from "../../Skeleton";
 
@@ -10,17 +10,25 @@ const DormtrakFacts = ({ dorm, wso }) => {
   const [facts, updateFacts] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadFacts = async () => {
       try {
         const factResponse = await wso.dormtrakService.getDormFacts(dorm.id);
 
-        updateFacts(factResponse.data);
+        if (isMounted) {
+          updateFacts(factResponse.data);
+        }
       } catch {
         // It's okay to not have a response here because there is a loading state
       }
     };
 
-    if (dorm && dorm.id) loadFacts();
+    if (dorm?.id) loadFacts();
+
+    return () => {
+      isMounted = false;
+    };
   }, [dorm, wso]);
 
   const classBreakdown = () => {
@@ -209,8 +217,8 @@ const DormtrakFacts = ({ dorm, wso }) => {
 };
 
 DormtrakFacts.propTypes = {
-  wso: PropTypes.object.isRequired,
   dorm: PropTypes.object,
+  wso: PropTypes.object.isRequired,
 };
 
 DormtrakFacts.defaultProps = {

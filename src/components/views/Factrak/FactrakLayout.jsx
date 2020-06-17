@@ -16,12 +16,21 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadQuery = () => {
       if (route.params.q) setQuery(route.params.q);
       else setQuery(""); // Needed to reset if user clears the box.
     };
-    loadQuery();
-    setShowSuggestions(false);
+
+    if (isMounted) {
+      loadQuery();
+      setShowSuggestions(false);
+    }
+
+    return () => {
+      isMounted = false;
+    };
   }, [route.params.q, route.path]);
 
   // Initiates new autocomplete

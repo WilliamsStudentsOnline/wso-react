@@ -140,7 +140,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
 
   // Link to edit bulletin
   const editLink = (bulletin) => {
-    if (currUser && currUser.id === bulletin.user.id) {
+    if (currUser?.id === bulletin.user.id) {
       return (
         <>
           <Link
@@ -158,7 +158,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
 
   // Edit/Delete Links
   const editDeleteLinks = (bulletin) => {
-    if (currUser && (currUser.id === bulletin.user.id || currUser.admin)) {
+    if (currUser?.id === bulletin.user.id || currUser?.admin) {
       return (
         <>
           &nbsp;[&nbsp;
@@ -255,13 +255,15 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
 };
 
 BulletinIndex.propTypes = {
-  currUser: PropTypes.object.isRequired,
+  currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
-BulletinIndex.defaultProps = {};
+BulletinIndex.defaultProps = {
+  currUser: null,
+};
 
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),

@@ -1,4 +1,4 @@
-import { containsScopes, getTokenLevel, scopes } from "./lib/general";
+import { containsOneOfScopes, getTokenLevel, scopes } from "./lib/general";
 
 /**
  * This file contains the necessary information to determine route permissions
@@ -23,7 +23,7 @@ const routePermissions = {
     scopes: [scopes.ScopeBulletin, scopes.ScopeUsers],
   },
   dormtrak: { tokenLevel: 3 },
-  ephmatch: { scopes: [scopes.ScopeEphmatch] },
+  ephmatch: { tokenLevel: 3 },
   facebook: { scopes: [scopes.ScopeUsers] },
   factrak: { tokenLevel: 3 },
 };
@@ -37,7 +37,7 @@ const routePermissions = {
 const hasNecessaryScopes = (token, routeName) => {
   return (
     !routePermissions[routeName].scopes ||
-    containsScopes(token, routePermissions[routeName].scopes)
+    containsOneOfScopes(token, routePermissions[routeName].scopes)
   );
 };
 

@@ -1,5 +1,5 @@
 // React Imports
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
@@ -9,10 +9,11 @@ import { doRemoveCreds } from "../actions/auth";
 
 // External imports
 // Connected Link is the same as link, except it re-renders on route changes
-import { Link, ConnectedLink } from "react-router5";
+import { ConnectedLink, Link } from "react-router5";
 import { createRouteNodeSelector } from "redux-router5";
 
 import { removeStateFromStorage } from "../stateStorage";
+import { userTypeStudent } from "../constants/general";
 
 const Nav = ({ currUser, removeCreds, wso }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
@@ -87,12 +88,17 @@ const Nav = ({ currUser, removeCreds, wso }) => {
             <li>
               <Link routeName="facebook">Facebook</Link>
             </li>
-            <li>
-              <Link routeName="factrak">Factrak</Link>
-            </li>
-            <li>
-              <Link routeName="dormtrak">Dormtrak</Link>
-            </li>
+            {currUser?.type === userTypeStudent && (
+              <>
+                <li>
+                  <Link routeName="factrak">Factrak</Link>
+                </li>
+                <li>
+                  <Link routeName="dormtrak">Dormtrak</Link>
+                </li>
+              </>
+            )}
+
             <li>
               <Link routeName="faq">FAQ</Link>
             </li>

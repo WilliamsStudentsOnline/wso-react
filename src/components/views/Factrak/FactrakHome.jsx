@@ -11,7 +11,7 @@ import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
 // Additional imports
-import { containsScopes, scopes } from "../../../lib/general";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
 const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
@@ -47,7 +47,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
         navigateTo("500");
       }
     };
-    if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+    if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys();
     } else {
       updateSurveys([...Array(10)].map((_, id) => ({ id })));
@@ -89,7 +89,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
 
             {surveys
               ? surveys.map((survey) => {
-                  if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+                  if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
                     return (
                       <FactrakComment
                         comment={survey}

@@ -16,6 +16,8 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
   const [reviews, updateReviews] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadReviews = async () => {
       const queryParams = {
         limit: 10,
@@ -26,13 +28,19 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
         const dormReviewResponse = await wso.dormtrakService.listReviews(
           queryParams
         );
-        updateReviews(dormReviewResponse.data);
+        if (isMounted) {
+          updateReviews(dormReviewResponse.data);
+        }
       } catch {
         navigateTo("500");
       }
     };
 
     loadReviews();
+
+    return () => {
+      isMounted = false;
+    };
   }, [navigateTo, wso]);
 
   // Link to survey.

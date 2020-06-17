@@ -14,16 +14,24 @@ const DormtrakRanking = ({ wso }) => {
   const [dormInfo, updateDormsInfo] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadRankings = async () => {
       try {
         const rankingsResponse = await wso.dormtrakService.getRankings();
-        updateDormsInfo(rankingsResponse.data);
+        if (isMounted) {
+          updateDormsInfo(rankingsResponse.data);
+        }
       } catch {
         // Handle it by not doing anything for now;
       }
     };
 
     loadRankings();
+
+    return () => {
+      isMounted = false;
+    };
   }, [wso]);
 
   const times = [0, 0, 0];

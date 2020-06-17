@@ -9,22 +9,30 @@ import { actions } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
+import Redirect from "../../Redirect";
 
-const DormtrakLayout = ({ wso, children, currUser, navigateTo }) => {
+const DormtrakLayout = ({ children, currUser, navigateTo, wso }) => {
   const [neighborhoods, updateNeighborhoods] = useState([]);
   const [query, updateQuery] = useState("");
 
   useEffect(() => {
-    const loadRankings = async () => {
+    let isMounted = true;
+    const loadNeighborhoods = async () => {
       try {
         const neighborhoodsResponse = await wso.dormtrakService.listNeighborhoods();
-        updateNeighborhoods(neighborhoodsResponse.data);
+        if (isMounted) {
+          updateNeighborhoods(neighborhoodsResponse.data);
+        }
       } catch {
         // It's alright to handle this gracefully without showing them.
       }
     };
 
-    loadRankings();
+    loadNeighborhoods();
+
+    return () => {
+      isMounted = false;
+    };
   }, [wso]);
 
   const submitHandler = (event) => {
@@ -34,9 +42,6 @@ const DormtrakLayout = ({ wso, children, currUser, navigateTo }) => {
   };
 
   if (currUser) {
-    if (!currUser.hasAcceptedDormtrakPolicy) {
-      navigateTo("dormtrak.policy");
-    }
     return (
       <>
         <header>
@@ -97,21 +102,21 @@ const DormtrakLayout = ({ wso, children, currUser, navigateTo }) => {
     );
   }
 
-  return null;
+  return <Redirect to="login" />;
 };
 
 DormtrakLayout.propTypes = {
-  wso: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DormtrakLayout.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  wso: getWSO(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

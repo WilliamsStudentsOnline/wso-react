@@ -12,7 +12,7 @@ import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
 import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
-import { containsScopes, scopes } from "../../../lib/general";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
 const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
@@ -71,7 +71,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
     loadProfs(professorParam);
     loadRatings(professorParam);
     loadSurveys(professorParam);
-    if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+    if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys(professorParam);
     } else {
       updateSurveys([...Array(10)].map((_, id) => ({ id })));
@@ -142,7 +142,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
         <div id="factrak-comments-section">
           {surveys && surveys.length > 0
             ? surveys.map((survey) => {
-                if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+                if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
                   return (
                     <FactrakComment
                       comment={survey}

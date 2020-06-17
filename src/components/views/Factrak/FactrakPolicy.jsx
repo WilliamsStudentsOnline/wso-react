@@ -1,15 +1,15 @@
 // React imports
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
 import { actions } from "redux-router5";
 import { connect } from "react-redux";
 import { getCurrUser, getWSO } from "../../../selectors/auth";
-import { doUpdateUser } from "../../../actions/auth";
 
-const FactrakPolicy = ({ currUser, navigateTo, updateUser, wso }) => {
+const FactrakPolicy = ({ currUser, navigateTo, wso }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
+  const [updated, setUpdated] = useState(false);
 
   // Handles clicking of the accept policy checkbox
   const clickHandler = (event) => {
@@ -25,15 +25,24 @@ const FactrakPolicy = ({ currUser, navigateTo, updateUser, wso }) => {
     };
 
     try {
-      const response = await wso.userService.updateUser("me", updateParams);
-      updateUser(response.data);
-      navigateTo("factrak", {}, { reload: true });
+      await wso.userService.updateUser("me", updateParams);
+      setUpdated(true);
     } catch {
       navigateTo("500");
     }
-
-    return acceptPolicy;
   };
+
+  // Wait until the api handler is updated before navigating!
+  useEffect(() => {
+    let isMounted = true;
+    if (updated && isMounted) {
+      navigateTo("factrak", {}, { reload: true });
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [navigateTo, updated, wso]);
 
   return (
     <div className="article">
@@ -127,7 +136,6 @@ const FactrakPolicy = ({ currUser, navigateTo, updateUser, wso }) => {
 FactrakPolicy.propTypes = {
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  updateUser: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -139,7 +147,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location, params, opts) =>
     dispatch(actions.navigateTo(location, params, opts)),
-  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FactrakPolicy);

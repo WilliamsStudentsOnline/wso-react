@@ -1,5 +1,5 @@
 // React imports
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Component Imports
@@ -62,6 +62,8 @@ const App = ({
   updateWSO,
   wso,
 }) => {
+  const [initialized, setInitialized] = useState(false);
+
   const getIPIdentityToken = async () => {
     try {
       const tokenResponse = await wso.authService.getIdentityToken({
@@ -96,6 +98,8 @@ const App = ({
       } else {
         getIPIdentityToken();
       }
+
+      setInitialized(true);
     };
 
     initialize();
@@ -133,7 +137,9 @@ const App = ({
       }
     };
 
-    updateAPI();
+    if (initialized) {
+      updateAPI();
+    }
 
     return () => {
       isMounted = false;

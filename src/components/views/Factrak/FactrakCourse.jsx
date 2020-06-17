@@ -12,7 +12,7 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
 
 // Additional imports
-import { containsScopes, scopes } from "../../../lib/general";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
 const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
@@ -78,7 +78,7 @@ const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
 
     loadCourse();
     loadRatings(profID);
-    if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+    if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys();
     } else {
       updateSurveys([...Array(10)].map((_, id) => ({ id })));
@@ -139,7 +139,7 @@ const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
         {courseSurveys.length === 0
           ? "None yet."
           : courseSurveys.map((comment) => {
-              if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+              if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
                 return (
                   <FactrakComment
                     comment={comment}
@@ -169,7 +169,7 @@ const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
       return (
         <>
           <br />
-          {containsScopes(token, [scopes.ScopeFactrakFull]) && (
+          {containsOneOfScopes(token, [scopes.ScopeFactrakFull]) && (
             <h4>
               <u>Average Course Ratings</u>
             </h4>
@@ -186,7 +186,7 @@ const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
     return (
       <>
         <br />
-        {containsScopes(token, [scopes.ScopeFactrakFull]) && (
+        {containsOneOfScopes(token, [scopes.ScopeFactrakFull]) && (
           <h4>
             <u>Ratings for {prof.name} in this course</u>
           </h4>
