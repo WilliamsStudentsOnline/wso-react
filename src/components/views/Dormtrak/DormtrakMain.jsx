@@ -41,11 +41,7 @@ const DormtrakMain = ({ route, token }) => {
   };
 
   if (
-    !containsScopes(token, [
-      scopes.ScopeDormtrak,
-      scopes.ScopeDormtrakWrite,
-      scopes.ScopeAdminAll,
-    ])
+    !containsScopes(token, [scopes.ScopeDormtrak, scopes.ScopeDormtrakWrite])
   ) {
     return (
       <DormtrakLayout>

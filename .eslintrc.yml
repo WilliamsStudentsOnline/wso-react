@@ -56,3 +56,6 @@ rules:
   react/jsx-props-no-spreading:
     - error
     - html: "ignore"
+  no-use-before-define:
+    - error
+    - functions: false

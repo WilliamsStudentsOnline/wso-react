@@ -27,7 +27,7 @@ const FactrakPolicy = ({ currUser, navigateTo, updateUser, wso }) => {
     try {
       const response = await wso.userService.updateUser("me", updateParams);
       updateUser(response.data);
-      navigateTo("factrak");
+      navigateTo("factrak", {}, { reload: true });
     } catch {
       navigateTo("500");
     }
@@ -125,15 +125,15 @@ const FactrakPolicy = ({ currUser, navigateTo, updateUser, wso }) => {
 };
 
 FactrakPolicy.propTypes = {
-  wso: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  wso: getWSO(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

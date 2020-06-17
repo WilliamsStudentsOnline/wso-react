@@ -62,6 +62,19 @@ const App = ({
   updateWSO,
   wso,
 }) => {
+  const getIPIdentityToken = async () => {
+    try {
+      const tokenResponse = await wso.authService.getIdentityToken({
+        useIP: true,
+      });
+      const newIdenToken = tokenResponse.token;
+
+      updateIdenToken(newIdenToken);
+    } catch (error) {
+      navigateTo("500");
+    }
+  };
+
   useEffect(() => {
     const randomWSO = async () => {
       if (document.title === "WSO: Williams Students Online") {
@@ -81,16 +94,7 @@ const App = ({
       if (persistedToken) {
         updateIdenToken(persistedToken);
       } else {
-        try {
-          const tokenResponse = await wso.authService.getIdentityToken({
-            useIP: true,
-          });
-          const newIdenToken = tokenResponse.token;
-
-          updateIdenToken(newIdenToken);
-        } catch (error) {
-          navigateTo("500");
-        }
+        getIPIdentityToken();
       }
     };
 
@@ -124,6 +128,8 @@ const App = ({
         } catch (error) {
           navigateTo("500");
         }
+      } else {
+        getIPIdentityToken();
       }
     };
 

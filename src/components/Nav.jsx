@@ -51,7 +51,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
     }
 
     updateMenuVisibility(false);
-  }, [wso, currUser]);
+  }, [currUser, wso]);
 
   const logout = () => {
     removeCreds();

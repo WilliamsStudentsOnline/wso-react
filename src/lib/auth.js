@@ -1,5 +1,6 @@
-import { doUpdateAPIToken } from "../actions/auth";
+import { doUpdateAPIToken, doUpdateWSO } from "../actions/auth";
 import jwtDecode from "jwt-decode";
+import { SimpleAuthentication } from "wso-api-client";
 
 /**
  * Checks whether the request is made with a token header. We claim that this is
@@ -18,13 +19,20 @@ const hasTokenHeader = (config) => {
  */
 const updateAPIToken = async () => {
   const authState = window.store.getState().authState;
+
   let token;
   try {
     const tokenResponse = await authState.wso.authService.refreshAPIToken(
       authState.apiToken
     );
     token = tokenResponse.token;
+    const wso = authState.wso;
+
+    const auth = new SimpleAuthentication(token);
+    const updatedWSO = wso.updateAuth(auth);
+    configureInterceptors(updatedWSO);
     window.store.dispatch(doUpdateAPIToken(token));
+    window.store.dispatch(doUpdateWSO(updatedWSO));
   } catch (error) {
     // eslint-disable no-empty
   }
@@ -84,16 +92,17 @@ const configureRequestInterceptors = (api) => {
  */
 const configureResponseInterceptors = (api) => {
   api.interceptors.response.use(async (response) => {
-    if (response.updateToken) updateAPIToken();
+    if (response.data.updateToken) await updateAPIToken();
 
     return response;
   });
 };
 
-const configureInterceptors = (wso) => {
+// Declared in this manner to let it be hoisted
+function configureInterceptors(wso) {
   const api = wso.api.api;
   configureRequestInterceptors(api);
   configureResponseInterceptors(api);
-};
+}
 
 export default configureInterceptors;

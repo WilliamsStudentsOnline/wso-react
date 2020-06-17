@@ -4,17 +4,12 @@ import PropTypes from "prop-types";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getWSO, getCurrUser } from "../../../selectors/auth";
+import { getCurrUser, getWSO } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 import { doUpdateUser } from "../../../actions/auth";
 
 const DormtrakPolicy = ({ currUser, navigateTo, updateUser, wso }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
-  const [didUpdateUser, toggleDidUpdateUser] = useState(false);
-
-  if (didUpdateUser === true) {
-    navigateTo("dormtrak");
-  }
 
   const clickHandler = (event) => {
     updateAcceptPolicy(event.target.checked);
@@ -29,7 +24,7 @@ const DormtrakPolicy = ({ currUser, navigateTo, updateUser, wso }) => {
     try {
       const response = await wso.userService.updateUser("me", updateParams);
       updateUser(response.data);
-      toggleDidUpdateUser(true);
+      navigateTo("dormtrak", {}, { reload: true });
     } catch {
       navigateTo("500");
     }

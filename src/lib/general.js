@@ -42,7 +42,7 @@ export const scopes = {
 };
 
 /**
- * Checks if token contains the given scopes.
+ * Checks if token contains any of the given scopes.
  *
  * @param {String} token - API token string.
  * @param {String[]} scopesToCheck - scopes to be checked against.
