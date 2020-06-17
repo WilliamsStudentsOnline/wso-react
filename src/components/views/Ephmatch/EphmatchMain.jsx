@@ -73,7 +73,8 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
     return () => {
       isMounted = false;
     };
-  }, [navigateTo, route, token, wso]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigateTo, route, wso]);
 
   const EphmatchBody = () => {
     // If token doesnt have access to matches or profiles, must mean they need to create a new account
@@ -83,7 +84,6 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
         scopes.ScopeEphmatchProfiles,
       ])
     ) {
-      navigateTo("ephmatch", null, { replace: true });
       return <EphmatchOptIn />;
     }
 

@@ -38,9 +38,9 @@ const EphmatchOptOut = ({ navigateTo, wso }) => {
     event.preventDefault();
 
     try {
-      const response = await wso.ephmatchService.deleteSelfProfile();
+      await wso.ephmatchService.deleteSelfProfile();
       // Update succeeded -> redirect them to main ephmatch page.
-      navigateTo("ephmatch", { profile: response.data }, { reload: true });
+      navigateTo("ephmatch", null, { reload: true });
     } catch {
       // There shouldn't be any reason for the submission to be rejected.
       navigateTo("500");

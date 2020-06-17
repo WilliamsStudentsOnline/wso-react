@@ -10,7 +10,7 @@ import { getWSO } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
 // Page created to handle both opting in and out.
-const EphmatchOptIn = ({ wso, navigateTo }) => {
+const EphmatchOptIn = ({ navigateTo, wso }) => {
   // Note that this is different from Ephcatch
   const [optIn, updateOptIn] = useState(null);
   const [description, updateDescription] = useState("");
@@ -24,12 +24,15 @@ const EphmatchOptIn = ({ wso, navigateTo }) => {
   const [messagingUsername, updateMessagingUsername] = useState("");
   const [unixID, updateUnixID] = useState("");
 
+  const [updated, setUpdated] = useState(false);
+
   useEffect(() => {
     let isMounted = true;
 
     const loadUserInfo = async () => {
       try {
         const ownProfile = await wso.userService.getUser("me");
+
         if (isMounted) {
           updateUserInfo(ownProfile.data);
           updateUnixID(ownProfile.data.unixID);
@@ -37,9 +40,12 @@ const EphmatchOptIn = ({ wso, navigateTo }) => {
           updateLocationState(ownProfile.data.homeState);
           updateLocationCountry(ownProfile.data.homeCountry);
         }
+      } catch {
+        navigateTo("500");
+      }
 
+      try {
         const ownEphmatchProfile = await wso.ephmatchService.getSelfProfile();
-
         updateDescription(ownEphmatchProfile.description);
         updateMatchMessage(ownEphmatchProfile.matchMessage);
         updateLocationVisible(ownEphmatchProfile.locationVisible);
@@ -52,9 +58,12 @@ const EphmatchOptIn = ({ wso, navigateTo }) => {
             : "NONE"
         );
         updateMessagingUsername(ownEphmatchProfile.messagingUsername);
-        updateUnixID(ownEphmatchProfile.user.unixID);
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        if (error.errorCode === 404) {
+          // This is expected if the user has no profile
+        } else {
+          navigateTo("500");
+        }
       }
     };
 
@@ -63,7 +72,21 @@ const EphmatchOptIn = ({ wso, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [navigateTo, wso]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Wait until the api handler is updated before navigating!
+  useEffect(() => {
+    let isMounted = true;
+    if (updated && isMounted) {
+      // Update succeeded -> redirect them to main ephmatch page.
+      navigateTo("ephmatch", null, { reload: true });
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [navigateTo, updated, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -81,10 +104,8 @@ const EphmatchOptIn = ({ wso, navigateTo }) => {
     };
 
     try {
-      await wso.ephmatchService.createEphmatchProfile(params);
-
-      // Update succeeded -> redirect them to main ephmatch page.
-      navigateTo("ephmatch", null, { reload: true });
+      await wso.ephmatchService.createSelfProfile(params);
+      setUpdated(true);
     } catch {
       // There shouldn't be any reason for the submission to be rejected.
       navigateTo("500");

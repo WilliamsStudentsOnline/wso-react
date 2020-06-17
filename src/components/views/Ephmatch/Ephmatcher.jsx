@@ -11,13 +11,13 @@ import { MdEmail } from "react-icons/md";
 import "../../stylesheets/Ephmatch.css";
 
 const Ephmatcher = ({
-  wso,
   ephmatcher,
-  selectEphmatcher,
-  index,
   ephmatcherProfile,
-  photo,
+  index,
   matched,
+  photo,
+  selectEphmatcher,
+  wso,
 }) => {
   const [userPhoto, updateUserPhoto] = useState(photo);
 
