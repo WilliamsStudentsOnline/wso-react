@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 // Component imports
-import "./stylesheets/Homepage.css";
-import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
+import "./Homepage.css";
+import BulletinBox from "./Bulletins/BulletinBox";
 
 // Redux Imports
 import { connect } from "react-redux";

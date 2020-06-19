@@ -1,12 +1,13 @@
 // React imports
 import React from "react";
 import ReactDOM from "react-dom";
+import App from "./components/App";
 
 // Component/Stylesheet imports
-import App from "./components/App";
-import "./index.css";
-import "./components/stylesheets/i.css";
+import "typeface-nunito";
 import "typeface-source-sans-pro";
+import "./index.css";
+import "./components/i.css";
 
 // Redux/store imports
 import { Provider } from "react-redux";
