@@ -62,7 +62,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
   };
 
   return (
-    <nav>
+    <nav className="gray-background">
       <div className="nav-container">
         <span className="nav-left-container">
           <a

@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
+.allButFooter {
+  min-height: calc(100vh - 6rem);
+}
+
 .floatingButtonLink {
   background: #6f4399;
   color: #fff;

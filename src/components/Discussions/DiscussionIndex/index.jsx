@@ -132,7 +132,7 @@ const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
       return (
         <div>
           <button
-            className="inline-button"
+            className="inlineButton"
             type="button"
             onClick={() => deleteHandler(thread.id)}
           >

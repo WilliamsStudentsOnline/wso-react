@@ -25,7 +25,6 @@
     "react-scripts": "^3.3.0",
     "redux": "^4.0.1",
     "redux-router5": "^7.0.2",
-    "redux-saga": "^1.0.5",
     "router5": "^7.0.2",
     "router5-plugin-browser": "^7.0.2",
     "serialize-javascript": "2.1.1",

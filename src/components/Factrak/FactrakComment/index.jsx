@@ -104,12 +104,12 @@ const FactrakComment = ({
                 surveyID: survey.id,
               })
             }
-            className="inline-button"
+            className="inlineButton"
           >
             Edit
           </Button>
 
-          <Button onClick={deleteHandler} className="inline-button">
+          <Button onClick={deleteHandler} className="inlineButton">
             Delete
           </Button>
         </p>
@@ -181,8 +181,8 @@ const FactrakComment = ({
         <Button
           className={
             survey.clientAgreement !== undefined && survey.clientAgreement
-              ? "inline-button-inverted"
-              : "inline-button"
+              ? "inlineButtonInverted"
+              : "inlineButton"
           }
           onClick={() => agreeHandler(true)}
         >
@@ -192,8 +192,8 @@ const FactrakComment = ({
         <Button
           className={
             survey.clientAgreement !== undefined && !survey.clientAgreement
-              ? "inline-button-inverted"
-              : "inline-button"
+              ? "inlineButtonInverted"
+              : "inlineButton"
           }
           onClick={() => agreeHandler(false)}
         >
@@ -201,7 +201,7 @@ const FactrakComment = ({
         </Button>
         {!abridged && !survey.flagged && (
           <span>
-            <Button className="inline-button" onClick={flagHandler}>
+            <Button className="inlineButton" onClick={flagHandler}>
               Flag for moderator attention
             </Button>
           </span>

@@ -116,7 +116,7 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
               type: route.params.type,
             })
           }
-          className="inline-button"
+          className="inlineButton"
         >
           Edit
         </button>
@@ -136,7 +136,7 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
           <button
             type="button"
             onClick={deleteHandler}
-            className="inline-button"
+            className="inlineButton"
           >
             Delete
           </button>

@@ -80,7 +80,7 @@ const FactrakModerate = ({ navigateTo, wso }) => {
           </span>
           <p>{f.comment}</p>
           <button
-            className="inline-button"
+            className="inlineButton"
             type="button"
             onClick={() => unflag(f.id)}
           >
@@ -88,7 +88,7 @@ const FactrakModerate = ({ navigateTo, wso }) => {
           </button>
           &ensp;
           <button
-            className="inline-button"
+            className="inlineButton"
             onClick={() => deleteHandler(f.id)}
             type="button"
           >

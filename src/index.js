@@ -6,7 +6,8 @@ import App from "./components/App";
 // Component/Stylesheet imports
 import "typeface-nunito";
 import "typeface-source-sans-pro";
-import "./index.module.scss";
+import "@elastic/eui/dist/eui_theme_light.css";
+// import "./index.scss";
 import "./components/i.scss";
 
 // Redux/store imports

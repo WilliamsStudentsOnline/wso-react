@@ -55,7 +55,7 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
         <div>
           {post.userID === currUser.id && (
             <button
-              className="inline-button"
+              className="inlineButton"
               type="button"
               onClick={() => setEdit(true)}
             >
@@ -64,7 +64,7 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
           )}
 
           <button
-            className="inline-button"
+            className="inlineButton"
             type="button"
             onClick={deleteHandler}
           >

@@ -49,14 +49,14 @@ const DormtrakRecentComments = ({
                 reviewID: review.id,
               })
             }
-            className="inline-button"
+            className="inlineButton"
           >
             Edit
           </Button>
 
           <Button
             onClick={() => deleteHandler(review.id)}
-            className="inline-button"
+            className="inlineButton"
           >
             Delete
           </Button>

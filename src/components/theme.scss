@@ -1,0 +1,161 @@
+/* COLORS */
+$primary-0: #efdfff;
+$primary-1: #e5d5ff;
+$primary-2: #d1c1f2;
+$primary-3: #b3a3d4;
+$primary-4: #856fb3;
+$primary-5: #644a98;
+$primary-6: #4b3081;
+$primary-7: #341a68;
+
+$secondary-0: #fffcf5;
+$secondary-1: #ffd5dd;
+$secondary-2: #ffeec4;
+$secondary-3: #ffe5a8;
+$secondary-4: #eccc80;
+$secondary-5: #cfab56;
+$secondary-6: #7a5601;
+
+$blue-0: #dce0ef;
+$blue-1: #c6cbe1;
+$blue-2: #a3abcd;
+$blue-3: #8089b6;
+$blue-4: #606ca1;
+$blue-5: #45528d;
+
+$warning-0: #fffaf0;
+$warning-1: #faf0d2;
+$warning-2: #ffe1a0;
+$warning-3: #f0c864;
+$warning-4: #cdab3c;
+$warning-5: #8e6e23;
+$warning-6: #5a4b15;
+
+$bad-0: #fae6e6;
+$bad-1: #f0aaaa;
+$bad-2: #e66464;
+$bad-3: #dc3c32;
+$bad-4: #b43128;
+$bad-5: #8c1f19;
+$bad-6: #5a1414;
+
+$good-0: #e6faf0;
+$good-1: #aadca0;
+$good-2: #78dca0;
+$good-3: #64c86e;
+$good-4: #50a05a;
+$good-5: #3d7846;
+$good-6: #25543c;
+
+$new-0: #aaf0e7;
+$new-1: #6ed9d1;
+$new-2: #6fd5d5;
+$new-3: #54b0a1;
+$new-4: #46948a;
+$new-5: #2d6760;
+$new-6: #1c4544;
+
+$warm-gray-0: #faf9f9;
+$warm-gray-1: #f4f4f4;
+$warm-gray-2: #e4e4e4;
+$warm-gray-3: #d4d4d4;
+$warm-gray-4: #b8b8b8;
+$warm-gray-5: #9c9c9c;
+$warm-gray-6: #7f7f7f;
+$warm-gray-7: #636363;
+$warm-gray-8: #474747;
+$warm-gray-9: #2b2b2b;
+$warm-gray-10: #0f0f0f;
+
+$cool-gray-0: #fbfbfb;
+$cool-gray-1: #f6f6f6;
+$cool-gray-2: #eaeaea;
+$cool-gray-3: #dadedf;
+$cool-gray-4: #c1c7c9;
+$cool-gray-5: #a7afb2;
+$cool-gray-6: #8c979a;
+$cool-gray-7: #6f7c80;
+$cool-gray-8: #555f61;
+$cool-gray-9: #373d3f;
+$cool-gray-10: #131516;
+
+/* FONT SIZES */
+$f-0: 12px;
+$f-1: 14px;
+$f-2: 18px;
+$f-3: 20px;
+$f-4: 24px;
+$f-5: 30px;
+$f-6: 36px;
+$f-7: 48px;
+$f-8: 60px;
+$f-9: 72px;
+
+/* PIXEL SPACING */
+$px-0: 1px;
+$px-1: 2px;
+$px-2: 4px;
+$px-3: 8px;
+$px-4: 12px;
+$px-5: 16px;
+$px-6: 24px;
+$px-7: 32px;
+$px-8: 48px;
+$px-9: 64px;
+$px-10: 128px;
+$px-11: 192px;
+$px-12: 256px;
+$px-13: 348px;
+$px-14: 512px;
+$px-15: 640px;
+$px-16: 768px;
+
+/* BREAKPOINTS */
+$sm: 640px;
+$md: 768px;
+$lg: 1024px;
+$xl: 1280px;
+
+/* RESPONSIVE */
+@mixin mq($point) {
+  @if $point == ($sm) {
+    @media only screen and (min-width: $sm) {
+      @content;
+    }
+  }
+
+  @if $point == ($md) {
+    @media only screen and (min-width: $md) {
+      @content;
+    }
+  }
+
+  @if $point == ($lg) {
+    @media only screen and (min-width: $lg) {
+      @content;
+    }
+  }
+
+  @if $point == ($xl) {
+    @media only screen and (min-width: $xl) {
+      @content;
+    }
+  }
+}
+
+/* To quickly center block element */
+@mixin push--auto {
+  margin: {
+    left: auto;
+    right: auto;
+  }
+}
+
+/* Vertically Align Magic */
+@mixin vertical-align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}

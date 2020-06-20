@@ -7,6 +7,8 @@ import EphmatchMatch from "./EphmatchMatch";
 import EphmatchProfile from "./EphmatchProfile";
 import EphmatchOptOut from "./EphmatchOptOut";
 import EphmatchOptIn from "./EphmatchOptIn";
+import Redirect from "../common/Redirect";
+import "./Ephmatch.scss";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
@@ -15,7 +17,6 @@ import { getAPIToken, getWSO } from "../../selectors/auth";
 import { containsOneOfScopes, scopes } from "../../lib/general";
 
 import { format } from "timeago.js";
-import Redirect from "../common/Redirect";
 
 const EphmatchMain = ({ navigateTo, route, token, wso }) => {
   const [availability, updateAvailability] = useState(null);

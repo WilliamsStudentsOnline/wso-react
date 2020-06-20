@@ -3529,21 +3529,9 @@ nav #nav-menu-button {
   }
 }
 footer {
-  /*APRIL FOOL'S*/
-  /*   background: linear-gradient(
-    to left,
-    #fea3aa,
-    #f8b88b,
-    #faf884,
-    #baed91,
-    #b2cefe,
-    #f2a2e8
-  ); */
-  /*STANDARD*/
   background: #282e42;
   color: #fcfcfc;
   height: 6rem;
-  position: absolute;
   left: 0;
   bottom: 0;
 }
@@ -3753,14 +3741,6 @@ header .login .toggles input[type="submit"]:last-child {
   font-variant: normal;
 }
 
-.ephmatch-results {
-  text-align: center;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 0.5fr));
-  grid-gap: 10px;
-  display: grid;
-  justify-content: center;
-}
-
 .tag-remove {
   display: inline;
   padding: 0px 0px 0px 12px;
@@ -3768,55 +3748,6 @@ header .login .toggles input[type="submit"]:last-child {
   background: rgb(255, 255, 255);
   color: rgb(111, 73, 51);
   min-width: 0px;
-}
-
-@-webkit-keyframes ephmatch {
-  0% {
-    color: #fff;
-  }
-  50% {
-    color: #111;
-  }
-  100% {
-    color: #fff;
-  }
-}
-
-@keyframes ephmatch {
-  0% {
-    color: #fff;
-  }
-  50% {
-    color: #111;
-  }
-  100% {
-    color: #fff;
-  }
-}
-
-.ephmatch-link {
-  animation: ephmatch 2s;
-  animation-iteration-count: 3;
-  -webkit-animation: ephmatch 2s;
-  -webkit-animation-iteration-count: 3;
-}
-
-.match-message {
-  padding: 10px;
-  border: 2px dashed purple;
-  background: papayawhip;
-  margin-top: 10px;
-}
-
-.ephmatch-form {
-  padding: 20px;
-  box-shadow: 0 6px 10px #888;
-}
-
-.ephmatch-sample-profile {
-  width: 50%;
-  margin: 30px auto;
-  min-width: 320px;
 }
 
 #dormtrak-piechart {
