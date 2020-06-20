@@ -9,6 +9,10 @@
   li {
     text-align: justify;
   }
+
+  ul {
+    padding: 0 10%;
+  }
 }
 
 .square {
@@ -20,4 +24,8 @@
 .departmentCard {
   border: 2px solid #d4d4d4;
   padding: 0;
+}
+
+.factrakComment {
+  margin: 10px;
 }

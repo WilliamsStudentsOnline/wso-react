@@ -112,27 +112,33 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
             <h3>Recent Reviews</h3>
             <br />
             <FactrakDeficitMessage currUser={currUser} />
-
-            {surveys
-              ? surveys.map((survey) => {
-                  if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
-                    return (
-                      <FactrakComment
-                        comment={survey}
-                        showProf
-                        abridged
-                        key={survey.id}
-                      />
-                    );
-                  }
-                  return <FactrakComment showProf abridged key={survey.id} />;
-                })
-              : [...Array(10)].map((_, i) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <div key={i}>
-                    <FactrakCommentSkeleton />
-                  </div>
-                ))}
+            <EuiFlexGroup direction="column">
+              {surveys
+                ? surveys.map((survey) => {
+                    if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
+                      return (
+                        <EuiFlexItem>
+                          <hr />
+                          <br />
+                          <FactrakComment
+                            className={styles.factrakComment}
+                            comment={survey}
+                            showProf
+                            abridged
+                            key={survey.id}
+                          />
+                        </EuiFlexItem>
+                      );
+                    }
+                    return <FactrakComment showProf abridged key={survey.id} />;
+                  })
+                : [...Array(10)].map((_, i) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <div key={i}>
+                      <FactrakCommentSkeleton />
+                    </div>
+                  ))}
+            </EuiFlexGroup>
           </section>
         </EuiFlexItem>
       </EuiFlexGroup>
