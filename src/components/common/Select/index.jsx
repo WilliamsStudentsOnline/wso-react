@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // Component imports
-import "./Select.css";
+import { select } from "./Select.module.scss";
 
 const Select = ({
   onChange,
@@ -15,7 +15,7 @@ const Select = ({
   style,
 }) => {
   return (
-    <select className="select" style={style} onChange={onChange} value={value}>
+    <select className={select} style={style} onChange={onChange} value={value}>
       {fillerOption ? (
         <option value={fillerValue}>{fillerOption}</option>
       ) : null}

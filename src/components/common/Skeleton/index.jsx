@@ -1,7 +1,12 @@
 // React imports
 import React from "react";
 import PropTypes from "prop-types";
-import "./Skeleton.css";
+import {
+  skeleton,
+  skeletonPhoto,
+  spinner,
+  skeletonContainer,
+} from "./Skeleton.module.scss";
 
 const commonPropTypes = {
   width: PropTypes.string,
@@ -20,7 +25,7 @@ const commonDefaultProps = {
 const Line = ({ width, height, center, className }) => {
   return (
     <div
-      className={`skeleton ${className}`}
+      className={`${skeleton} ${className}`}
       style={{ height, width, margin: center ? "auto" : "" }}
     />
   );
@@ -30,7 +35,7 @@ Line.propTypes = commonPropTypes;
 Line.defaultProps = commonDefaultProps;
 
 const Photo = ({ height, width }) => {
-  return <div className="skeleton-photo" style={{ height, width }} />;
+  return <div className={skeletonPhoto} style={{ height, width }} />;
 };
 
 Photo.propTypes = { height: PropTypes.string, width: PropTypes.string };
@@ -43,7 +48,7 @@ const randPercentBetween = (min, max) => {
 
 const List = React.memo(({ width, height, center, className, numRows }) => {
   return (
-    <div className="skeleton-container">
+    <div className={skeletonContainer}>
       {[...Array(numRows)].map((_, i) => (
         // eslint-disable-next-line react/no-array-index-key
         <div key={i}>
@@ -64,7 +69,7 @@ List.defaultProps = { ...commonDefaultProps, numRows: 5 };
 
 const Paragraph = ({ center, className, numRows }) => {
   return (
-    <div className="skeleton-container">
+    <div className={skeletonContainer}>
       {[...Array(numRows)].map((_, i) => (
         // eslint-disable-next-line react/no-array-index-key
         <div key={i}>
@@ -87,7 +92,7 @@ Paragraph.defaultProps = { center: false, className: "", numRows: 5 };
 const Circle = ({ diameter, className, children }) => {
   return (
     <div
-      className={`skeleton ${className}`}
+      className={`${skeleton} ${className}`}
       style={{ height: diameter, width: diameter, borderRadius: "100%" }}
     >
       {children}
@@ -105,7 +110,7 @@ Circle.defaultProps = { className: "", children: null };
 const CircularLoader = ({ diameter, className }) => {
   return (
     <div
-      className={`spinner ${className}`}
+      className={`${spinner} ${className}`}
       style={{ width: diameter, height: diameter }}
     />
   );

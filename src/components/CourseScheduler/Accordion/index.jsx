@@ -1,21 +1,25 @@
 // React imports
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import "./Accordion.css";
+import {
+  accordionHeader,
+  accordionArrow,
+  accordionChildren,
+} from "./Accordion.module.scss";
 
 // Simple component that takes in a header and children, with the ability to show or hide children.
 const Accordion = ({ header, children }) => {
   const [hidden, setHidden] = useState(true);
 
   return (
-    <div className="accordion">
+    <div>
       <div
-        className="accordion-header"
+        className={accordionHeader}
         onClick={() => setHidden(!hidden)}
         role="presentation"
       >
         {header}
-        <span className="accordion-arrow">
+        <span className={accordionArrow}>
           {hidden ? (
             <i className="material-icons">expand_more</i>
           ) : (
@@ -23,7 +27,7 @@ const Accordion = ({ header, children }) => {
           )}
         </span>
       </div>
-      <div className="accordion-children" hidden={hidden}>
+      <div className={accordionChildren} hidden={hidden}>
         {children}
       </div>
     </div>

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 // Component imports
-import "./Homepage.css";
+import { bulletinList } from "./Homepage.module.scss";
 import BulletinBox from "./Bulletins/BulletinBox";
 
 // Redux Imports
@@ -63,7 +63,7 @@ const Homepage = ({ navigateTo }) => {
         </header>
         <article>
           <section>
-            <div className="bulletin-list">
+            <div className={bulletinList}>
               {bulletinTypeWords.map((bulletin) => {
                 return <BulletinBox typeWord={bulletin} key={bulletin} />;
               })}

@@ -2,9 +2,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-// Component imports
-import "./Checkbox.css";
-
 // Simple checkbox component.
 const Checkbox = ({ onClick, checked }) => {
   return (

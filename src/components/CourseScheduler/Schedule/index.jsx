@@ -4,7 +4,31 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 // Component imports
-import "./Schedule.css";
+import {
+  dayHorizontal,
+  dayVertical,
+  hourTitleHorizontal,
+  hourTitleVertical,
+  hourLabelsHorizontal,
+  hourLabelsVertical,
+  scheduleHorizontal,
+  scheduleVertical,
+  dayTitleHorizontal,
+  dayTitleVertical,
+  courseSlot,
+  courseSlotTitle,
+  courseContainersHorizontal,
+  courseDayHorizontal,
+  courseDayVertical,
+  bufferHorizontal,
+  bufferVertical,
+  daysContainerVertical,
+  dayContainerVertical,
+  hourInDaysHorizontal,
+  hourInDaysHorizontalOdd,
+  hourInDaysVertical,
+  hourInDaysVerticalOdd,
+} from "./Schedule.module.scss";
 
 // Redux (Selector, Reducer, Actions) imports
 import { getUnhiddenCourses, getAddedCourses } from "../../../selectors/course";
@@ -85,13 +109,13 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
     if (horizontal) {
       if (twelveHour) {
         return (
-          <div className="hour-title-horizontal" key={index}>
+          <div className={hourTitleHorizontal} key={index}>
             {hour % 12 === 0 ? 12 : hour % 12} {hour >= 12 ? "PM" : "AM"}
           </div>
         );
       }
       return (
-        <div className="hour-title-horizontal" key={index}>
+        <div className={hourTitleHorizontal} key={index}>
           {`${padZero(hour, 2)}00`}
         </div>
       );
@@ -99,13 +123,13 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
 
     if (twelveHour) {
       return (
-        <div className="hour-title-vertical" key={index}>
+        <div className={hourTitleVertical} key={index}>
           {hour % 12 === 0 ? 12 : hour % 12} {hour >= 12 ? "PM" : "AM"}
         </div>
       );
     }
     return (
-      <div className="hour-title-vertical" key={index}>
+      <div className={hourTitleVertical} key={index}>
         {`${padZero(hour, 2)}00`}
       </div>
     );
@@ -122,7 +146,7 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
       const dimension = `${(end * 80) / 60}px`;
       return (
         <div
-          className="course-slot"
+          className={courseSlot}
           style={{
             left: offset,
             width: dimension,
@@ -132,7 +156,9 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
           }}
           key={i}
         >
-          <div className="course-slot-title">{`${course.department} ${course.number}`}</div>
+          <div
+            className={courseSlotTitle}
+          >{`${course.department} ${course.number}`}</div>
           <div>{course.classType}</div>
           <div>{`${stringTime(meeting)} ${meeting.facility}`}</div>
         </div>
@@ -144,7 +170,7 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
 
     return (
       <div
-        className="course-slot"
+        className={courseSlot}
         style={{
           top: offset,
           height: dimension,
@@ -154,7 +180,9 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
         }}
         key={i}
       >
-        <div className="course-slot-title">{`${course.department} ${course.number}`}</div>
+        <div
+          className={courseSlotTitle}
+        >{`${course.department} ${course.number}`}</div>
         <div>{course.classType}</div>
         <div>{`${stringTime(meeting)} ${meeting.facil || ""}`}</div>
       </div>
@@ -164,14 +192,14 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
   const DayCourseComponent = (row, index) => {
     if (horizontal) {
       return (
-        <div className="course-containers-horizontal row" key={index}>
+        <div className={`${courseContainersHorizontal} row`} key={index}>
           {[...Array(endHour - startHour)].map((hour, ind) => {
             return (
               <div
                 className={
                   ind % 2 === 0
-                    ? "hour-in-days-horizontal"
-                    : "hour-in-days-horizontal-odd"
+                    ? { hourInDaysHorizontal }
+                    : { hourInDaysHorizontalOdd }
                 }
                 key={ind} // eslint-disable-line react/no-array-index-key
               />
@@ -184,14 +212,12 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
       );
     }
     return (
-      <div className="course-containers column" key={index}>
+      <div className="column" key={index}>
         {[...Array(endHour - startHour)].map((hour, ind) => {
           return (
             <div
               className={
-                ind % 2 === 0
-                  ? "hour-in-days-vertical"
-                  : "hour-in-days-vertical-odd"
+                ind % 2 === 0 ? hourInDaysVertical : hourInDaysVerticalOdd
               }
               key={ind} // eslint-disable-line react/no-array-index-key
             />
@@ -208,14 +234,14 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
     if (horizontal) {
       return (
         <li
-          className="day-horizontal row"
+          className={`${dayHorizontal} row`}
           key={index}
           style={{ width: rowWidth }}
         >
-          <div className="day-title-horizontal">
+          <div className={dayTitleHorizontal}>
             <span>{day}</span>
           </div>
-          <div className="column course-day-horizontal">
+          <div className={`column ${courseDayHorizontal}`}>
             {(courseDay[day] || []).map((row, rowIndex) =>
               DayCourseComponent(row, rowIndex)
             )}
@@ -225,11 +251,11 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
     }
 
     return (
-      <div className="day-vertical column" key={index}>
-        <div className="day-title-vertical">
+      <div className={`${dayVertical} column`} key={index}>
+        <div className={dayTitleVertical}>
           <span>{day}</span>
         </div>
-        <div className="row course-day-vertical">
+        <div className={`row ${courseDayVertical}`}>
           {(courseDay[day] || []).map((row, rowIndex) =>
             DayCourseComponent(row, rowIndex)
           )}
@@ -336,26 +362,24 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
 
   if (horizontal) {
     return (
-      <div className="schedule-horizontal">
-        <div className="hour-labels-horizontal" style={{ width: rowWidth }}>
-          <div className="buffer-horizontal">&nbsp;</div>
+      <div className={scheduleHorizontal}>
+        <div className={hourLabelsHorizontal} style={{ width: rowWidth }}>
+          <div className={bufferHorizontal}>&nbsp;</div>
           {hours.map((hour, index) => HourTitles(hour, index))}
         </div>
-        <div className="days-container-horizontal">
-          {days.map((day, index) => DayComponent(day, index))}
-        </div>
+        <div>{days.map((day, index) => DayComponent(day, index))}</div>
       </div>
     );
   }
 
   return (
-    <div className="schedule-vertical row">
-      <div className="column hour-labels-vertical">
-        <div className="buffer-vertical">&nbsp;</div>
+    <div className={`${scheduleVertical} row`}>
+      <div className={`column ${hourLabelsVertical}`}>
+        <div className={bufferVertical}>&nbsp;</div>
         {hours.map((hour, index) => HourTitles(hour, index))}
       </div>
-      <div className="column days-container-vertical">
-        <div className="row day-container-vertical">
+      <div className={`column ${daysContainerVertical}`}>
+        <div className={`row ${dayContainerVertical}`}>
           {days.map((day, index) => DayComponent(day, index))}
         </div>
       </div>

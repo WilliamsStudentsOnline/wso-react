@@ -1,7 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import "./FactrakSurvey.css";
+import { selectDept } from "./FactrakSurvey.module.scss";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
@@ -125,13 +125,13 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
   const deptDropdown = () => {
     if (areasOfStudy.length === 0)
       return (
-        <select className="select-dept">
+        <select className={selectDept}>
           <option>Loading...</option>
         </select>
       );
     return (
       <select
-        className="select-dept"
+        className={selectDept}
         onChange={(event) => updateCourseAOS(event.target.value)}
         value={courseAOS}
       >

@@ -4,7 +4,15 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 // Component imports
-import "./AdditionalOptions.css";
+import {
+  additionalOptions,
+  additionalOptionsContainer,
+  numFoundSpan,
+  ulHeader,
+  refine,
+  resetFiltersDiv,
+  lastUpdate,
+} from "./AdditionalOptions.module.scss";
 import Checkbox from "../Checkbox";
 import Select from "../../common/Select";
 import Accordion from "../Accordion";
@@ -61,14 +69,14 @@ const AdditionalOptions = ({
   // Generates a description of how many courses were found.
   const numFound = (length) => {
     if (length === 1) {
-      return <span className="num-found">1 course found</span>;
+      return <span className={numFoundSpan}>1 course found</span>;
     }
-    return <span className="num-found">{`${length} courses found`}</span>;
+    return <span className={numFoundSpan}>{`${length} courses found`}</span>;
   };
 
   // Handles the clicking
   const clickLoader = (funct, param) => {
-    if (param && param.target) {
+    if (param?.target) {
       funct(param.target.value);
     } else funct(param);
     onSearch();
@@ -79,10 +87,10 @@ const AdditionalOptions = ({
   const endTimes = twelveHour ? END_TIMES12 : END_TIMES;
 
   return (
-    <div className="additional-options-container">
-      <div className="additional-options">
+    <div className={additionalOptionsContainer}>
+      <div className={additionalOptions}>
         {numFound(catalog.length)}
-        <span className="refine">Refine by</span>
+        <span className={refine}>Refine by</span>
         <Accordion header="Semester">
           <ul className="semester">
             <li>
@@ -275,7 +283,7 @@ const AdditionalOptions = ({
         <Accordion header="Time">
           <div className="row">
             <div className="column">
-              <span className="ul-header">Start Time</span>
+              <span className={ulHeader}>Start Time</span>
               {/* We pass in the 24 hour values for comparison so we don't have to write
                     methods to parse them in the reducer. */}
               <Select
@@ -294,7 +302,7 @@ const AdditionalOptions = ({
               />
             </div>
             <div className="column">
-              <span className="ul-header">End Time</span>
+              <span className={ulHeader}>End Time</span>
               <Select
                 onChange={(event) => clickLoader(endChange, event)}
                 options={endTimes.filter((time, index) => {
@@ -313,13 +321,13 @@ const AdditionalOptions = ({
           </div>
         </Accordion>
 
-        <div className="reset-filters">
+        <div className={resetFiltersDiv}>
           <button type="button" onClick={() => clickLoader(resetFilters)}>
             Reset Filters
           </button>
         </div>
-        <span className="last-update">
-          {updateTime ? `Catalog last updated on ${updateTime}` : ""}
+        <span className={lastUpdate}>
+          {updateTime && `Catalog last updated on ${updateTime}`}
         </span>
       </div>
     </div>

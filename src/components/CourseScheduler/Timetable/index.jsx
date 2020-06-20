@@ -10,7 +10,18 @@ import domtoimage from "dom-to-image";
 import Schedule from "../Schedule";
 import Select from "../../common/Select";
 import Course from "../Course";
-import "./Timetable.css";
+import {
+  addedCourses,
+  addedSort,
+  helpHeader,
+  timetableHeader,
+  unselectable,
+  exportOptions,
+  timetable,
+  courseWarningsDiv,
+  courseWarningsHeader,
+  changeSemesterButton,
+} from "./Timetable.module.scss";
 
 // Redux (Selector, Reducer, Actions) imports
 import { getAddedCourses, getHiddenCourses } from "../../../selectors/course";
@@ -19,7 +30,6 @@ import {
   getSemester,
   getTimeFormat,
   getOrientation,
-  // getSignInStatus,
 } from "../../../selectors/schedulerUtils";
 import { doRemoveSemesterCourses } from "../../../actions/course";
 import {
@@ -263,9 +273,9 @@ const Timetable = ({
   const addedComponent = () => {
     return (
       <div className="added">
-        <div className="added-courses">
+        <div className={addedCourses}>
           <span>Added Courses:</span>
-          <div className="added-sort">
+          <div className={addedSort}>
             Sort By:
             <Select
               onChange={(event) => {
@@ -323,8 +333,8 @@ const Timetable = ({
     if (errorCourses.length < 1) return null;
 
     return (
-      <div className="course-warnings">
-        <div className="course-warnings-header">JUST A NOTE!</div>
+      <div className={courseWarningsDiv}>
+        <div className={courseWarningsHeader}>JUST A NOTE!</div>
         Remember to include the following:
         <ol>
           {errorCourses.map((error) => (
@@ -338,7 +348,7 @@ const Timetable = ({
   const helpMessage = () => {
     return (
       <div className="help-message">
-        <div className="help-header">No courses added!</div>
+        <div className={helpHeader}>No courses added!</div>
         <div className="help-body">
           Add courses to your timetable by heading to the Catalog and searching
           for them!
@@ -354,14 +364,14 @@ const Timetable = ({
   };
 
   return (
-    <div className="timetable">
-      <div className="timetable-header row">
+    <div className={timetable}>
+      <div className={`${timetableHeader} row`}>
         <div className="column">
           <span>
             <button
               onClick={() => semChange(currSem - 1)}
               disabled={currSem <= 0}
-              className="change-semester-button"
+              className={changeSemesterButton}
               type="button"
             >
               <i className="material-icons">keyboard_arrow_left</i>
@@ -370,7 +380,7 @@ const Timetable = ({
             <button
               onClick={() => semChange(currSem + 1)}
               disabled={currSem >= 2}
-              className="change-semester-button"
+              className={changeSemesterButton}
               type="button"
             >
               <i className="material-icons">keyboard_arrow_right</i>
@@ -379,13 +389,13 @@ const Timetable = ({
         </div>
       </div>
       <Schedule />
-      <div className="export-options">
+      <div className={exportOptions}>
         <button onClick={exportImage} type="button">
           <i className="material-icons">photo</i>
           <span>Export to .png</span>
         </button>
         <button
-          className={gapi ? "" : "unselectable"}
+          className={gapi ? "" : unselectable}
           onClick={exportCalendar}
           disabled={!gapi}
           type="button"

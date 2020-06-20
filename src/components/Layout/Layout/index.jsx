@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Footer from "../Footer";
 import Nav from "../Nav";
-import "./Layout.css";
+import { floatingButtonLink } from "./Layout.module.scss";
 
 const Layout = ({ children, notice, warning }) => {
   return (
@@ -20,7 +20,7 @@ const Layout = ({ children, notice, warning }) => {
       {children}
       <a
         href="https://forms.gle/NqYdAAbZKPQmPq866"
-        className="floating-button-link"
+        className={floatingButtonLink}
         title="Provide Feedback!"
       >
         <i

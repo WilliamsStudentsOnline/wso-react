@@ -9,42 +9,46 @@
   background-color: #ffffff;
   box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
   max-width: 850px;
+
+  button {
+    background-color: lavender;
+    color: indigo;
+    border-radius: 10px;
+    width: 20%;
+    min-width: 200px;
+    padding: 5px 10px;
+    border: none;
+    display: inline-flex;
+    line-height: 24px;
+    vertical-align: middle;
+    justify-content: center;
+    margin-right: 20px;
+  }
+
+  &:hover {
+    box-shadow: 0px 0px 10px indigo;
+
+    .click-expand-message i {
+      display: inline-block;
+    }
+  }
+
+  .column .row {
+    line-height: 25px;
+  }
 }
 
-.course:hover {
-  box-shadow: 0px 0px 10px indigo;
-}
-
-.course:hover .click-expand-message i {
-  display: inline-block;
-}
-
-.course-buttons span {
-  padding-left: 15px;
-}
-
-.course button {
-  background-color: lavender;
-  color: indigo;
-  border-radius: 10px;
-  width: 20%;
-  min-width: 200px;
-  padding: 5px 10px;
-  border: none;
-  display: inline-flex;
-  line-height: 24px;
-  vertical-align: middle;
-  justify-content: center;
-  margin-right: 20px;
-}
-
-.course-buttons {
+.courseButtonsDiv {
   padding: 0 30px 20px 30px;
   text-align: right;
   margin-right: 0;
+
+  span {
+    padding-left: 15px;
+  }
 }
 
-.course-title {
+.courseTitle {
   font-size: 24px;
   font-weight: 600;
   flex: 9.2;
@@ -60,57 +64,38 @@
   text-align: right;
 }
 
-.header-info {
+.headerInfo {
   color: #626268;
   font-size: 16px;
   text-transform: capitalize;
 }
 
-.course-title:hover {
-  box-shadow: none;
-}
-
-.course-summary {
+.courseSummary {
   padding: 10px 0px 15px 0px;
   box-sizing: border-box;
 }
 
-.course-body {
+.courseBody {
   padding: 0 30px 30px 30px;
+
+  .course a {
+    color: black;
+  }
 }
 
-.course-header {
+.courseHeader {
   padding: 0 30px;
 }
 
-.course-body:hover {
-  box-shadow: none;
-}
-
-.course a {
-  color: black;
-}
-
-.added-course {
+.addedCourse {
   background-color: paleturquoise;
 }
 
-.d1 {
+.division {
   background-color: rgb(99, 131, 133);
 }
-.d2 {
-  background-color: rgb(99, 131, 133);
-}
-.d3 {
-  background-color: rgb(99, 131, 133);
-}
-.wi {
-  background-color: rgb(143, 149, 100);
-}
-.qfr {
-  background-color: rgb(143, 149, 100);
-}
-.dpe {
+
+.req {
   background-color: rgb(143, 149, 100);
 }
 
@@ -128,35 +113,31 @@
   margin: 0 2px 0 2px;
 }
 
-.dis-icons {
+.disIcons {
   text-align: left;
 }
 
-.course .column .row {
-  line-height: 25px;
-}
-
-.click-expand-message {
+.clickExpandMessage {
   text-align: center;
   margin: 2px auto;
   line-height: 24px;
   height: 24px;
   font-size: 24px;
+
+  i {
+    display: none;
+  }
+
+  span {
+    line-height: 24px;
+  }
 }
 
-.click-expand-message i {
-  display: none;
-}
-
-.click-expand-message span {
-  line-height: 24px;
-}
-
-.no-url {
+.noUrl {
   cursor: default;
-}
 
-.no-url:hover {
-  transition: none;
-  opacity: 1;
+  :hover {
+    transition: none;
+    opacity: 1;
+  }
 }

@@ -3,7 +3,12 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // Component imports
-import "./Notification.css";
+import {
+  notificationDiv,
+  notificationTitle,
+  notificationBody,
+  notificationAck,
+} from "./Notification.module.scss";
 
 // Redux (Selector, Reducer, Actions) imports
 import { connect } from "react-redux";
@@ -29,10 +34,10 @@ const Notification = ({ notifType, title, body, removeNotification }) => {
   };
 
   return (
-    <div className="notification" style={getStyle()}>
-      <div className="row notification-title">{title}</div>
-      <div className="row notification-body">{body}</div>
-      <div className="row notification-ack">
+    <div className={notificationDiv} style={getStyle()}>
+      <div className={`row ${notificationTitle}`}>{title}</div>
+      <div className={`row ${notificationBody}`}>{body}</div>
+      <div className={`row ${notificationAck}`}>
         <button onClick={handler} type="button">
           Close
         </button>

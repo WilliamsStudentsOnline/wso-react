@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 // Component imports
-import "./Scheduler.css";
+import "./Scheduler.scss";
 import AdditionalOptions from "./AdditionalOptions";
 import Catalog from "./Catalog";
 import NotificationList from "./NotificationList";
@@ -14,12 +14,7 @@ import Timetable from "./Timetable";
 
 // Redux (Selector, Reducer, Actions) imports
 import { getCurrSubMenu } from "../../selectors/schedulerUtils";
-import {
-  updateGAPI,
-  // updateSignIn,
-  addNotif,
-  changeSem,
-} from "../../actions/schedulerUtils";
+import { updateGAPI, addNotif, changeSem } from "../../actions/schedulerUtils";
 import { FAILURE } from "../../constants/actionTypes";
 import { doLoadCatalog } from "../../actions/course";
 import { addDays } from "../../lib/general";

@@ -1,4 +1,4 @@
-.notification {
+.notificationDiv {
   width: 600px;
   box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
   background-color: #fff;
@@ -7,28 +7,28 @@
   font-size: 18px;
   margin-left: auto;
   margin-right: auto;
+
+  .row {
+    margin: 10px auto;
+    padding: 5px 40px;
+  }
+
+  button {
+    background-color: inherit;
+    margin-right: 0;
+    color: #3c1f5a;
+    padding: 10px 0;
+  }
 }
 
-.notification .row {
-  margin: 10px auto;
-  padding: 5px 40px;
-}
-
-.notification-title {
+.notificationTitle {
   font-weight: 600;
 }
 
-.notification-ack {
+.notificationAck {
   border-top: 1px solid #c3c3d0;
   width: 100%;
   justify-content: flex-end;
   background-color: #f3f3f6;
   margin-top: 20px;
-}
-
-.notification button {
-  background-color: inherit;
-  margin-right: 0;
-  color: #3c1f5a;
-  padding: 10px 0;
 }

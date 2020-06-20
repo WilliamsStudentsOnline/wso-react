@@ -8,7 +8,7 @@ import { ConnectedLink } from "react-router5";
 import { IoMdPin, IoMdText } from "react-icons/io";
 import { FaSnapchatGhost, FaInstagram } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
-import "./Ephmatcher.css";
+import { messageIcon } from "./Ephmatcher.module.scss";
 
 const Ephmatcher = ({
   ephmatcher,
@@ -85,7 +85,7 @@ const Ephmatcher = ({
 
     if (locations.length > 0) {
       return (
-        <div className="message-icon">
+        <div className={messageIcon}>
           <IoMdPin /> {locations.join(", ")}
         </div>
       );
@@ -101,11 +101,11 @@ const Ephmatcher = ({
     let link;
     switch (messagingPlatform) {
       case "Phone":
-        icon = <IoMdText className="message-icon" />;
+        icon = <IoMdText className={messageIcon} />;
         link = <a href={`sms:${messagingUsername}`}>{messagingUsername}</a>;
         break;
       case "Snapchat":
-        icon = <FaSnapchatGhost className="message-icon" />;
+        icon = <FaSnapchatGhost className={messageIcon} />;
         link = (
           <a href={`https://www.snapchat.com/add/${messagingUsername}`}>
             {messagingUsername}
@@ -113,7 +113,7 @@ const Ephmatcher = ({
         );
         break;
       case "Instagram":
-        icon = <FaInstagram className="message-icon" />;
+        icon = <FaInstagram className={messageIcon} />;
         link = (
           <a href={`https://www.instagram.com/${messagingUsername}`}>
             {messagingUsername}
@@ -126,7 +126,7 @@ const Ephmatcher = ({
     }
 
     if (!messagingPlatform || !messagingUsername || !link) {
-      icon = <MdEmail className="message-icon" />;
+      icon = <MdEmail className={messageIcon} />;
       link = (
         <a href={`mailto:${unixID}@williams.edu`}>{unixID}@williams.edu</a>
       );

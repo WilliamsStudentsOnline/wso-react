@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 // Component imports
 import Course from "../Course";
-import "./Catalog.css";
+import { catalog } from "./Catalog.module.scss";
 
 // Redux (Selector, Reducer, Actions) imports
 import { doLoadCourses } from "../../../actions/course";
@@ -29,7 +29,7 @@ const Catalog = ({ onLoad, loaded }) => {
   }, [onLoad, loaded]);
 
   return (
-    <div className="catalog">
+    <div className={catalog}>
       {loaded.map((course) => (
         <Course
           key={`${course.department}${course.peoplesoftNumber}`}

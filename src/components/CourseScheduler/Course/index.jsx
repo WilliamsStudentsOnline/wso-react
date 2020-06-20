@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 // Component imports
-import "./Course.css";
+import styles from "./Course.module.scss";
 
 // Redux (Selector, Reducer, Actions) imports
 import {
@@ -51,7 +51,7 @@ const Course = ({
               <a
                 key={instructor.name}
                 href={instructor.url ? instructor.url : undefined}
-                className={instructor.url ? undefined : "no-url"}
+                className={instructor.url ? undefined : styles.noUrl}
               >
                 {index === 0 ? instructor.name : `, ${instructor.name}`}
               </a>
@@ -91,7 +91,7 @@ const Course = ({
   const courseButtons = () => {
     if (location === "timetable")
       return (
-        <div className="course-buttons">
+        <div className={styles.courseButtonsDiv}>
           <button
             onClick={(e) => {
               // Prevents the button from expanding or contracting the component.
@@ -120,7 +120,7 @@ const Course = ({
       );
 
     return (
-      <div className="course-buttons">
+      <div className={styles.courseButtonsDiv}>
         <button
           onClick={(e) => {
             // Prevents the button from expanding or contracting the component.
@@ -142,37 +142,37 @@ const Course = ({
     switch (attr) {
       case "div1":
         return (
-          <i className="dreq d1" key={attr}>
+          <i className={`${styles.dreq} ${styles.division}`} key={attr}>
             I
           </i>
         );
       case "div2":
         return (
-          <i className="dreq d2" key={attr}>
+          <i className={`${styles.dreq} ${styles.division}`} key={attr}>
             II
           </i>
         );
       case "div3":
         return (
-          <i className="dreq d3" key={attr}>
+          <i className={`${styles.dreq} ${styles.division}`} key={attr}>
             III
           </i>
         );
       case "wac":
         return (
-          <i className="dreq wi" key={attr}>
+          <i className={`${styles.dreq} ${styles.req}`} key={attr}>
             W
           </i>
         );
       case "dpe":
         return (
-          <i className="dreq dpe" key={attr}>
+          <i className={`${styles.dreq} ${styles.req}`} key={attr}>
             D
           </i>
         );
       case "qfr":
         return (
-          <i className="dreq qfr" key={attr}>
+          <i className={`${styles.dreq} ${styles.req}`} key={attr}>
             Q
           </i>
         );
@@ -187,7 +187,7 @@ const Course = ({
 
   const distributionIcons = () => {
     return (
-      <div className="dis-icons">
+      <div className={styles.disIcons}>
         {Object.keys(course.courseAttributes).map((attr) => {
           if (!course.courseAttributes[attr]) return null;
           return distributionIcon(attr);
@@ -228,7 +228,7 @@ const Course = ({
   const clickExpand = () => {
     // Addition of &nbsp; prevents div collapse.
     return (
-      <div className="click-expand-message">
+      <div className={styles.clickExpandMessage}>
         {bodyHidden ? (
           <i className="material-icons">expand_more</i>
         ) : (
@@ -252,7 +252,7 @@ const Course = ({
 
   return (
     <div
-      className="course"
+      className={styles.course}
       style={
         isAdded
           ? {
@@ -265,19 +265,19 @@ const Course = ({
       onClick={toggleBody}
       role="presentation"
     >
-      <div className="course-header">
-        <div className="row course-title">
-          <div className="row title">
+      <div className={styles.courseHeader}>
+        <div className={`row ${styles.courseTitle}`}>
+          <div className={`row ${styles.title}`}>
             {`${course.department} ${course.number} ${course.titleLong}`}
           </div>
-          <div className="row header-info">
+          <div className={`row ${styles.headerInfo}`}>
             <div className="column">{distributionIcons()}</div>
-            <div className="column ra">
+            <div className={`column ${styles.ra}`}>
               {`${course.semester}, ${course.classType}, Section ${course.section}`}
             </div>
           </div>
         </div>
-        <div className="row course-summary">
+        <div className={`row ${styles.courseSummary}`}>
           <div className="column">
             <div className="row">
               <span>{instructors()}</span>
@@ -296,7 +296,7 @@ const Course = ({
         </div>
       </div>
 
-      <div className="course-body" hidden={bodyHidden}>
+      <div className={styles.courseBody} hidden={bodyHidden}>
         {bookstoreLink()}
         <br />
         <br />

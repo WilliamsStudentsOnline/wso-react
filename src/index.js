@@ -6,8 +6,8 @@ import App from "./components/App";
 // Component/Stylesheet imports
 import "typeface-nunito";
 import "typeface-source-sans-pro";
-import "./index.css";
-import "./components/i.css";
+import "./index.module.scss";
+import "./components/i.scss";
 
 // Redux/store imports
 import { Provider } from "react-redux";

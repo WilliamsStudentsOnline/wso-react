@@ -1,34 +1,23 @@
-.submenu ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.submenu ul li:hover {
-  cursor: pointer;
-  background-color: #f4edfc;
-  color: #68379e;
-}
-
-.list-item img {
-  display: block;
-  margin: auto;
-}
-
-.list-item {
+.listItem {
   text-align: center;
   margin-bottom: 10px;
   border-right: 5px solid #68379e;
   background-color: #f3f3f9;
   color: #68379e;
-}
 
-.list-item div {
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
+  img {
+    display: block;
+    margin: auto;
+  }
 
-.list-item div div {
-  padding: 0;
+  div {
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    div {
+      padding: 0;
+    }
+  }
 }
 
 .submenu {
@@ -40,9 +29,20 @@
   box-shadow: 1px -1px 3px hsla(0, 0%, 0%, 0.2);
   background-color: #ffffff;
   width: 120px;
+
+  ul {
+    list-style: none;
+    padding-left: 0;
+
+    li:hover {
+      cursor: pointer;
+      background-color: #f4edfc;
+      color: #68379e;
+    }
+  }
 }
 
-.submenu-container {
+.submenuContainer {
   top: 0;
   position: -webkit-sticky;
   position: sticky;

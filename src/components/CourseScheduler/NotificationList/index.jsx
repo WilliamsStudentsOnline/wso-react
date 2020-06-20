@@ -5,14 +5,14 @@ import PropTypes from "prop-types";
 
 // Component imports
 import Notification from "../Notification";
-import "./NotificationList.css";
+import { notificationList } from "./NotificationList.module.scss";
 
 // Redux (Selector, Reducer, Actions) imports
 import { getNotifications } from "../../../selectors/schedulerUtils";
 
 const NotificationList = ({ notifications }) => {
   return (
-    <div className="notification-list">
+    <div className={notificationList}>
       {(notifications || []).map((notification) => (
         <Notification
           title={notification.title}

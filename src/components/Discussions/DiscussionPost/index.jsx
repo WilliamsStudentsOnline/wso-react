@@ -53,7 +53,7 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
     if (currUser && (post.userID === currUser.id || currUser.admin)) {
       return (
         <div>
-          {post.userID === currUser.id ? (
+          {post.userID === currUser.id && (
             <button
               className="inline-button"
               type="button"
@@ -61,7 +61,7 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
             >
               Edit
             </button>
-          ) : null}
+          )}
 
           <button
             className="inline-button"

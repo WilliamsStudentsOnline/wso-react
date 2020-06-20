@@ -11,9 +11,13 @@
   border-right: 2px solid #ccc;
   text-align: center;
   border-top: 2px solid #ccc;
+
+  i {
+    vertical-align: middle;
+  }
 }
 
-#course-search {
+#courseSearch {
   border: none;
   background-color: white;
   font-size: 24px;
@@ -26,10 +30,6 @@
   border-radius: 0;
 }
 
-.md-36 {
+.md36 {
   font-size: 36px;
-}
-
-.search i {
-  vertical-align: middle;
 }

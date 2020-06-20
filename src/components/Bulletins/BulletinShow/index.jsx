@@ -106,7 +106,7 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
 
   // Generate the edit button only if the current user is the bulletin starter
   const editButton = () => {
-    if (currUser && currUser.id === bulletin.user.id) {
+    if (currUser?.id === bulletin.user.id) {
       return (
         <button
           type="button"
@@ -128,7 +128,7 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
 
   // Generate the edit + delete buttons
   const editDeleteButtons = () => {
-    if (currUser && (currUser.id === bulletin.user.id || currUser.admin)) {
+    if (currUser?.id === bulletin.user.id || currUser?.admin) {
       return (
         <>
           <br />

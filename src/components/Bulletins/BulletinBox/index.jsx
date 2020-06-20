@@ -1,8 +1,16 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import "./BulletinBox.css";
 import { Line } from "../../common/Skeleton";
+import {
+  bulletinTitleDiv,
+  bulletinLink,
+  bulletinChildren,
+  threadLink,
+  listDate,
+  bulletin,
+  bulletinChildrenContainer,
+} from "./BulletinBox.module.scss";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
@@ -101,8 +109,8 @@ const BulletinBox = ({ wso, typeWord }) => {
   const bulletinTitle = () => {
     if (type === discussionType) {
       return (
-        <div className="bulletin-title">
-          <Link className="bulletin-link" routeName="discussions">
+        <div className={bulletinTitleDiv}>
+          <Link className={bulletinLink} routeName="discussions">
             {typeWord}
           </Link>
         </div>
@@ -110,9 +118,9 @@ const BulletinBox = ({ wso, typeWord }) => {
     }
 
     return (
-      <div className="bulletin-title">
+      <div className={bulletinTitleDiv}>
         <Link
-          className="bulletin-link"
+          className={bulletinLink}
           routeName="bulletins"
           routeParams={{ type }}
         >
@@ -125,10 +133,10 @@ const BulletinBox = ({ wso, typeWord }) => {
   const bulletinSkeleton = () =>
     [...Array(5)].map((_, i) => (
       // eslint-disable-next-line react/no-array-index-key
-      <div className="bulletin-children" key={i}>
+      <div className={bulletinChildren} key={i}>
         <Line width="90%" center />
 
-        <span className="list-date">
+        <span className={listDate}>
           <Line width="90%" center />
         </span>
       </div>
@@ -136,14 +144,14 @@ const BulletinBox = ({ wso, typeWord }) => {
 
   const bulletinThreads = () => {
     return (
-      <div className="bulletin-children-container">
+      <div className={bulletinChildrenContainer}>
         {threads
           ? threads.map((thread) => {
               return (
-                <div className="bulletin-children" key={thread.id}>
+                <div className={bulletinChildren} key={thread.id}>
                   {type === discussionType ? (
                     <Link
-                      className="thread-link"
+                      className={threadLink}
                       routeName="discussions.show"
                       routeParams={{
                         discussionID: thread.id,
@@ -153,7 +161,7 @@ const BulletinBox = ({ wso, typeWord }) => {
                     </Link>
                   ) : (
                     <Link
-                      className="thread-link"
+                      className={threadLink}
                       routeName="bulletins.show"
                       routeParams={{
                         type,
@@ -164,7 +172,7 @@ const BulletinBox = ({ wso, typeWord }) => {
                     </Link>
                   )}
 
-                  <span className="list-date">
+                  <span className={listDate}>
                     {formatDate(threadDate(thread))}
                   </span>
                 </div>
@@ -176,7 +184,7 @@ const BulletinBox = ({ wso, typeWord }) => {
   };
 
   return (
-    <div className="bulletin">
+    <div className={bulletin}>
       {bulletinTitle()}
       {bulletinThreads()}
     </div>

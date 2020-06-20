@@ -4,7 +4,12 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 // Component imports
-import "./SubMenu.css";
+import {
+  listItem,
+  submenu,
+  submenuContainer,
+  unselected,
+} from "./SubMenu.module.scss";
 
 // Redux (Selector, Reducer, Actions) imports
 import { doSubmenuChange } from "../../../actions/schedulerUtils";
@@ -12,11 +17,11 @@ import { getCurrSubMenu } from "../../../selectors/schedulerUtils";
 
 const SubMenu = ({ handler, active }) => {
   const checkSelected = (string) => {
-    return active === string ? "" : "unselected";
+    return active === string ? "" : unselected;
   };
 
   const ListItem = ({ image, text, className }) => {
-    const classes = `list-item ${className}`;
+    const classes = `${listItem} ${className}`;
     return (
       <li className={classes}>
         <div onClick={() => handler(text)} role="presentation">
@@ -34,8 +39,8 @@ const SubMenu = ({ handler, active }) => {
   };
 
   return (
-    <div className="submenu">
-      <div className="submenu-container">
+    <div className={submenu}>
+      <div className={submenuContainer}>
         <ul>
           <ListItem
             image="calendar_today"

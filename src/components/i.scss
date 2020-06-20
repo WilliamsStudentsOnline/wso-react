@@ -3825,4 +3825,29 @@ header .login .toggles input[type="submit"]:last-child {
   padding: 15px;
 }
 
+.inlineButton {
+  padding: 0.5rem 2rem;
+  background: none;
+  color: #6f4993;
+  border: 1px solid #6f4399;
+  margin: 0.5rem;
+}
+
+.inlineButtonInverted {
+  background: #6f4399;
+  color: #fff;
+  border: 1px solid #fff;
+  padding: 0.5rem 2rem;
+  margin: 0.5rem;
+}
+
+.autocompleteOption {
+  background: none;
+  color: #6f4399;
+  padding: 0;
+  min-width: 0;
+  white-space: normal;
+  text-align: left;
+}
+
 /*# sourceMappingURL=i.css.map */

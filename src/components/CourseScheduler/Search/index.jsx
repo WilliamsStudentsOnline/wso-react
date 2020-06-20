@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 // Component imports
-import "./Search.css";
+import { search, courseSearch, md36 } from "./Search.module.scss";
 
 // Redux (Selector, Reducer, Actions) imports
 import {
@@ -34,10 +34,10 @@ class Search extends Component {
 
   render() {
     return (
-      <form onSubmit={this.onSubmit} className="search">
-        <i className="material-icons md-36">search</i>
+      <form onSubmit={this.onSubmit} className={search}>
+        <i className={`material-icons ${md36}`}>search</i>
         <input
-          id="course-search"
+          id={courseSearch}
           type="text"
           placeholder="Search by course title, code, or instructors!"
           value={this.props.query}
