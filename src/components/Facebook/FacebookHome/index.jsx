@@ -164,7 +164,11 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
       );
 
     if (total === 1) {
-      navigateTo("facebook.users", { userID: results[0].id });
+      navigateTo(
+        "facebook.users",
+        { userID: results[0].id },
+        { replace: true }
+      );
     }
 
     if (total < 10) return GridView();
