@@ -4,22 +4,21 @@ import PropTypes from "prop-types";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 import { Link } from "react-router5";
 
 // Additional Imports
-import { getAllUsers } from "../../../api/users";
-import { checkAndHandleError } from "../../../lib/general";
 import { userTypeStudent } from "../../../constants/general";
 import PaginationButtons from "../../PaginationButtons";
 import FacebookGridUser from "./FacebookGridUser";
 
-const FacebookHome = ({ token, route, navigateTo }) => {
+const FacebookHome = ({ wso, route, navigateTo }) => {
   const [results, updateResults] = useState(null);
   const perPage = 20;
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
+  const [isResultsLoading, updateResultLoadStatus] = useState(false);
 
   // loads the next set of users
   const loadUsers = async (newPage) => {
@@ -35,22 +34,28 @@ const FacebookHome = ({ token, route, navigateTo }) => {
       offset: perPage * newPage,
       preload: ["dorm", "office"],
     };
-    const resultsResponse = await getAllUsers(token, queryParams);
-    if (checkAndHandleError(resultsResponse)) {
-      updateResults(resultsResponse.data.data);
-      updateTotal(resultsResponse.data.paginationTotal || 0);
-    } else {
+    try {
+      const resultsResponse = await wso.userService.listUsers(queryParams);
+
+      updateResults(resultsResponse.data);
+      updateTotal(resultsResponse.paginationTotal || 0);
+    } catch {
       updateResults([]);
       updateTotal(0);
     }
+
+    updateResultLoadStatus(false);
   };
 
   useEffect(() => {
+    if (route.params.q) {
+      updateResultLoadStatus(true);
+    }
     updateTotal(0);
     loadUsers(0);
     updatePage(0);
     // eslint-disable-next-line
-  }, [token, route.params.q]);
+  }, [wso, route.params.q]);
 
   // Handles clicking of the next/previous page
   const clickHandler = (number) => {
@@ -129,10 +134,10 @@ const FacebookHome = ({ token, route, navigateTo }) => {
       <div className="grid-wrap">
         {results.map((user) => (
           <FacebookGridUser
-            key={user.id}
             gridUser={user}
-            token={token}
             gridUserClassYear={classYear(user)}
+            key={user.id}
+            wso={wso}
           />
         ))}
       </div>
@@ -141,6 +146,15 @@ const FacebookHome = ({ token, route, navigateTo }) => {
 
   // Returns the results of the search
   const FacebookResults = () => {
+    if (isResultsLoading) {
+      return (
+        <>
+          <br />
+          <h1 className="no-matches-found">Loading...</h1>
+        </>
+      );
+    }
+
     if (total === 0 && route.params.q)
       return (
         <>
@@ -150,7 +164,11 @@ const FacebookHome = ({ token, route, navigateTo }) => {
       );
 
     if (total === 1) {
-      navigateTo("facebook.users", { userID: results[0].id });
+      navigateTo(
+        "facebook.users",
+        { userID: results[0].id },
+        { replace: true }
+      );
     }
 
     if (total < 10) return GridView();
@@ -177,7 +195,7 @@ const FacebookHome = ({ token, route, navigateTo }) => {
 };
 
 FacebookHome.propTypes = {
-  token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
@@ -188,7 +206,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("facebook");
 
   return (state) => ({
-    token: getToken(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };

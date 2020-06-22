@@ -4,36 +4,42 @@ import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
-import { getFlagged, unflagSurvey, deleteSurvey } from "../../../api/factrak";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
+import { actions } from "redux-router5";
 
-const FactrakModerate = ({ token }) => {
+const FactrakModerate = ({ navigateTo, wso }) => {
   const [flagged, updateFlagged] = useState([]);
 
   // Loads all the flagged courses on mount.
   useEffect(() => {
     const loadFlagged = async () => {
-      const flaggedResponse = await getFlagged(token, {
-        preload: ["professor", "course"],
-        populateAgreements: true,
-      });
-      if (checkAndHandleError(flaggedResponse)) {
-        updateFlagged(flaggedResponse.data.data);
+      try {
+        const flaggedResponse = await wso.factrakService.listFlaggedSurveysAdmin(
+          {
+            preload: ["professor", "course"],
+            populateAgreements: true,
+          }
+        );
+
+        updateFlagged(flaggedResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
     loadFlagged();
-  }, [token]);
+  }, [navigateTo, wso]);
 
   // Unflag the survey
   const unflag = async (surveyID) => {
-    const response = await unflagSurvey(token, surveyID);
-    if (checkAndHandleError(response)) {
+    try {
+      await wso.factrakService.unflagSurveyAdmin(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
+    } catch {
+      navigateTo("500");
     }
   };
 
@@ -43,9 +49,11 @@ const FactrakModerate = ({ token }) => {
     const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
     if (!confirmDelete) return;
 
-    const response = await deleteSurvey(token, surveyID);
-    if (checkAndHandleError(response)) {
+    try {
+      await wso.factrakService.deleteSurvey(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
+    } catch {
+      navigateTo("500");
     }
   };
 
@@ -107,10 +115,17 @@ const FactrakModerate = ({ token }) => {
 };
 
 FactrakModerate.propTypes = {
-  token: PropTypes.string.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  wso: getWSO(state),
 });
-export default connect(mapStateToProps)(FactrakModerate);
+
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakModerate);

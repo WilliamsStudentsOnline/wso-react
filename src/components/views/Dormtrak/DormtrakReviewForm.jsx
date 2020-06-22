@@ -4,18 +4,10 @@ import PropTypes from "prop-types";
 
 // Redux / Routing imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
-// Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import {
-  getDormtrakDormReview,
-  postDormtrakDormReview,
-  patchDormtrakDormReview,
-} from "../../../api/dormtrak";
-
-const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
+const DormtrakReviewForm = ({ currUser, navigateTo, route, wso }) => {
   const [review, updateReview] = useState(null);
 
   const edit = route.name.split(".")[1] === "editReview";
@@ -60,14 +52,15 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
       wifi,
     };
 
-    const response = edit
-      ? await patchDormtrakDormReview(token, reviewParams, review.id)
-      : await postDormtrakDormReview(token, reviewParams);
-
-    if (checkAndHandleError(response)) {
+    try {
+      if (edit) {
+        await wso.dormtrakService.updateReview(review.id, reviewParams);
+      } else {
+        await wso.dormtrakService.createReview(reviewParams);
+      }
       navigateTo("dormtrak");
-    } else {
-      updateErrors([response.data.error.message]);
+    } catch (error) {
+      updateErrors([error.message]);
     }
   };
 
@@ -75,11 +68,11 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
 
   useEffect(() => {
     const loadReview = async (reviewID) => {
-      const reviewResponse = await getDormtrakDormReview(token, reviewID);
+      try {
+        const reviewResponse = await wso.dormtrakService.getReview(reviewID);
 
-      if (checkAndHandleError(reviewResponse)) {
-        const reviewData = reviewResponse.data.data;
-        // Could use a defaultReview and update that object, but will hardly save any lines.
+        const reviewData = reviewResponse.data;
+
         updateComment(reviewData.comment);
         updateRoom(reviewData.dormRoom);
         updateReview(reviewData);
@@ -97,11 +90,13 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
         updateSatisfaction(reviewData.satisfaction);
         updateThermostat(reviewData.thermostatAccess);
         updateWifi(reviewData.wifi);
+      } catch {
+        navigateTo("500");
       }
     };
 
     if (reviewParam) loadReview(reviewParam);
-  }, [token, reviewParam]);
+  }, [navigateTo, reviewParam, wso]);
 
   // Generator for the various MCQ options
   const optionBuilder = (options, labels, type, changeHandler) => {
@@ -373,27 +368,25 @@ const DormtrakReviewForm = ({ token, route, navigateTo, currUser }) => {
 };
 
 DormtrakReviewForm.propTypes = {
-  token: PropTypes.string.isRequired,
-  route: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  route: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak.reviews");
 
   return (state) => ({
-    token: getToken(state),
     currUser: getCurrUser(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DormtrakReviewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(DormtrakReviewForm);

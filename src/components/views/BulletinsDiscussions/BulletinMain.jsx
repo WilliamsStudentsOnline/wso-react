@@ -10,7 +10,7 @@ import BulletinForm from "./BulletinForm";
 import { connect } from "react-redux";
 
 // External Imports
-import { createRouteNodeSelector, actions } from "redux-router5";
+import { createRouteNodeSelector } from "redux-router5";
 import {
   bulletinTypeLostAndFound,
   bulletinTypeJob,
@@ -18,10 +18,9 @@ import {
   bulletinTypeExchange,
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
-import { scopes, containsScopes, getTokenLevel } from "../../../lib/general";
-import { getToken } from "../../../selectors/auth";
+import { getAPIToken } from "../../../selectors/auth";
 
-const BulletinMain = ({ route, navigateTo, token }) => {
+const BulletinMain = ({ route }) => {
   const BulletinBody = (bulletinType) => {
     const splitRoute = route.name.split(".");
 
@@ -34,9 +33,7 @@ const BulletinMain = ({ route, navigateTo, token }) => {
         return <BulletinShow />;
       case "new":
       case "edit":
-        if (getTokenLevel(token) > 2) return <BulletinForm />;
-        navigateTo("home");
-        return null;
+        return <BulletinForm />;
       default:
         return <BulletinIndex type={bulletinType} />;
     }
@@ -53,11 +50,7 @@ const BulletinMain = ({ route, navigateTo, token }) => {
       bulletinTypeAnnouncement,
     ];
 
-    if (
-      containsScopes(token, [scopes.ScopeBulletin]) &&
-      containsScopes(token, [scopes.ScopeUsers]) &&
-      validBulletinTypes.indexOf(route.params.type) !== -1
-    ) {
+    if (validBulletinTypes.indexOf(route.params.type) !== -1) {
       return (
         <BulletinLayout type={route.params.type}>
           {BulletinBody(route.params.type)}
@@ -66,14 +59,11 @@ const BulletinMain = ({ route, navigateTo, token }) => {
     }
   }
 
-  navigateTo("login");
   return null;
 };
 
 BulletinMain.propTypes = {
   route: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired,
 };
 
 BulletinMain.defaultProps = {};
@@ -82,17 +72,9 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("bulletins");
 
   return (state) => ({
-    token: getToken(state),
+    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BulletinMain);
+export default connect(mapStateToProps)(BulletinMain);

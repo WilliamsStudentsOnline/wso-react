@@ -5,16 +5,15 @@ import PaginationButtons from "../../PaginationButtons";
 import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { connect } from "react-redux";
 
 // Additional Imports
-import { getDiscussions, deleteDiscussion } from "../../../api/bulletins";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import { format } from "timeago.js";
+import { actions } from "redux-router5";
 
-const DiscussionIndex = ({ currUser, token }) => {
+const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
   const perPage = 20;
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -25,20 +24,24 @@ const DiscussionIndex = ({ currUser, token }) => {
     const params = {
       limit: 20,
       offset: newPage * perPage,
-      start: new Date(),
       preload: ["user", "postsUsers"],
     };
-    const discussionsResponse = await getDiscussions(token, params);
-    if (checkAndHandleError(discussionsResponse)) {
-      updateThreads(discussionsResponse.data.data);
-      updateTotal(discussionsResponse.data.paginationTotal);
+    try {
+      const discussionsResponse = await wso.bulletinService.listDiscussions(
+        params
+      );
+
+      updateThreads(discussionsResponse.data);
+      updateTotal(discussionsResponse.paginationTotal);
+    } catch {
+      navigateTo("500");
     }
   };
 
   useEffect(() => {
     loadThreads(0);
     // eslint-disable-next-line
-  }, [token]);
+  }, [wso]);
 
   // Handles clicking of the next/previous page
   const clickHandler = (number) => {
@@ -114,10 +117,12 @@ const DiscussionIndex = ({ currUser, token }) => {
     const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
     if (!confirmDelete) return;
 
-    const response = await deleteDiscussion(token, threadID);
+    try {
+      await wso.bulletinService.deleteDiscussion(threadID);
 
-    if (checkAndHandleError(response)) {
       loadThreads(page);
+    } catch {
+      navigateTo("500");
     }
   };
 
@@ -195,14 +200,20 @@ const DiscussionIndex = ({ currUser, token }) => {
 
 DiscussionIndex.propTypes = {
   currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DiscussionIndex.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(DiscussionIndex);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DiscussionIndex);

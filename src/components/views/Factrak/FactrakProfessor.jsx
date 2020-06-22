@@ -8,24 +8,14 @@ import { Line } from "../../Skeleton";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../../../selectors/auth";
-import { createRouteNodeSelector } from "redux-router5";
+import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
+import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
-import {
-  getProfessor,
-  getDepartment,
-  getSurveys,
-  getProfessorRatings,
-} from "../../../api/factrak";
-import {
-  checkAndHandleError,
-  containsScopes,
-  scopes,
-} from "../../../lib/general";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakProfessor = ({ token, route, currUser }) => {
+const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
   const [professor, updateProfessor] = useState(null);
   const [department, updateDepartment] = useState(null);
   const [ratings, updateRatings] = useState(null);
@@ -36,24 +26,30 @@ const FactrakProfessor = ({ token, route, currUser }) => {
     const professorParam = route.params.profID;
 
     const loadProfs = async (professorID) => {
-      const professorResponse = await getProfessor(token, professorID);
-      if (checkAndHandleError(professorResponse)) {
-        const professorData = professorResponse.data.data;
+      try {
+        const professorResponse = await wso.factrakService.getProfessor(
+          professorID
+        );
+        const professorData = professorResponse.data;
+
         updateProfessor(professorData);
-        const departmentResponse = await getDepartment(
-          token,
+        const departmentResponse = await wso.factrakService.getDepartment(
           professorData.departmentID
         );
-        if (checkAndHandleError(departmentResponse)) {
-          updateDepartment(departmentResponse.data.data);
-        }
+        updateDepartment(departmentResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
     const loadRatings = async (professorID) => {
-      const ratingsResponse = await getProfessorRatings(token, professorID);
-      if (checkAndHandleError(ratingsResponse)) {
-        updateRatings(ratingsResponse.data.data);
+      try {
+        const ratingsResponse = await wso.factrakService.getProfessorRatings(
+          professorID
+        );
+        updateRatings(ratingsResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
@@ -64,21 +60,23 @@ const FactrakProfessor = ({ token, route, currUser }) => {
         populateAgreements: true,
         populateClientAgreement: true,
       };
-      const surveysResponse = await getSurveys(token, params);
-      if (checkAndHandleError(surveysResponse)) {
-        updateSurveys(surveysResponse.data.data);
+      try {
+        const surveysResponse = await wso.factrakService.listSurveys(params);
+        updateSurveys(surveysResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
     loadProfs(professorParam);
     loadRatings(professorParam);
     loadSurveys(professorParam);
-    if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+    if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys(professorParam);
     } else {
       updateSurveys([...Array(10)].map((_, id) => ({ id })));
     }
-  }, [route.params.professor, token, route.params.profID]);
+  }, [navigateTo, route.params.professor, route.params.profID, token, wso]);
 
   if (!professor)
     return (
@@ -119,9 +117,9 @@ const FactrakProfessor = ({ token, route, currUser }) => {
         <h3>{professor.name}</h3>
 
         <h5>
-          {department ? department.name : ""}
+          {department?.name}
           <br />
-          {professor && professor.title && <span>{professor.title}</span>}
+          <span>{professor?.title}</span>
         </h5>
         <br />
 
@@ -144,7 +142,7 @@ const FactrakProfessor = ({ token, route, currUser }) => {
         <div id="factrak-comments-section">
           {surveys && surveys.length > 0
             ? surveys.map((survey) => {
-                if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+                if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
                   return (
                     <FactrakComment
                       comment={survey}
@@ -171,9 +169,11 @@ const FactrakProfessor = ({ token, route, currUser }) => {
 };
 
 FactrakProfessor.propTypes = {
-  token: PropTypes.string.isRequired,
-  route: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  route: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 FactrakProfessor.defaultProps = {};
@@ -182,10 +182,16 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.professors");
 
   return (state) => ({
-    token: getToken(state),
     currUser: getCurrUser(state),
+    token: getAPIToken(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
 
-export default connect(mapStateToProps)(FactrakProfessor);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakProfessor);

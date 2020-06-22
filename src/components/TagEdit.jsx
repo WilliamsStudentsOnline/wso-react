@@ -2,11 +2,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-// External imports
-import { autocompleteTags } from "../api/autocomplete";
-import { putCurrUserTags } from "../api/users";
-import { checkAndHandleError } from "../lib/general";
-
 const TagRemove = ({ onClick }) => {
   return (
     <button type="button" onClick={onClick} className="tag-remove">
@@ -17,19 +12,21 @@ const TagRemove = ({ onClick }) => {
 
 TagRemove.propTypes = { onClick: PropTypes.func.isRequired };
 
-const TagEdit = ({ token, tags, updateTags, updateErrors }) => {
+const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
   const [newTag, updateNewTag] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   const tagAutocomplete = async (event) => {
     updateNewTag(event.target.value);
-    const tagResponse = await autocompleteTags(token, event.target.value);
-    if (checkAndHandleError(tagResponse)) {
-      let newSuggestions = tagResponse.data.data;
-      if (newSuggestions.length > 5) {
-        newSuggestions = newSuggestions.slice(0, 5);
-      }
+    try {
+      const tagResponse = await wso.autocompleteService.autocompleteTag(
+        event.target.value,
+        5
+      );
+      const newSuggestions = tagResponse.data;
       setSuggestions(newSuggestions);
+    } catch {
+      // Do nothing - it's okay to not have autocomplete.
     }
   };
 
@@ -39,14 +36,13 @@ const TagEdit = ({ token, tags, updateTags, updateErrors }) => {
       tags: updatedTags,
     };
 
-    const tagResponse = await putCurrUserTags(token, params);
-
-    if (checkAndHandleError(tagResponse)) {
+    try {
+      await wso.userService.updateUserTags("me", params);
       updateTags(updatedTags);
       updateNewTag("");
       updateErrors([]);
-    } else {
-      updateErrors([tagResponse.data.error.message]);
+    } catch (error) {
+      updateErrors([error.message]);
     }
   };
 
@@ -130,10 +126,10 @@ const TagEdit = ({ token, tags, updateTags, updateErrors }) => {
 };
 
 TagEdit.propTypes = {
-  token: PropTypes.string.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string),
   updateTags: PropTypes.func.isRequired,
   updateErrors: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 TagEdit.defaultProps = {

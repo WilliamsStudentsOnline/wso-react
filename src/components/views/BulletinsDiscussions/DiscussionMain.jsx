@@ -11,13 +11,12 @@ import DiscussionNew from "./DiscussionNew";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { createRouteNodeSelector, actions } from "redux-router5";
+import { createRouteNodeSelector } from "redux-router5";
 
 // External Imports
-import { getToken } from "../../../selectors/auth";
-import { scopes, containsScopes, getTokenLevel } from "../../../lib/general";
+import { getAPIToken } from "../../../selectors/auth";
 
-const DiscussionMain = ({ route, navigateTo, token }) => {
+const DiscussionMain = ({ route }) => {
   const DiscussionBody = () => {
     const splitRoute = route.name.split(".");
 
@@ -31,35 +30,21 @@ const DiscussionMain = ({ route, navigateTo, token }) => {
       case "posts":
         return <DiscussionPost />;
       case "new":
-        if (getTokenLevel(token) > 2) {
-          return <DiscussionNew />;
-        }
-        navigateTo("home");
-        return null;
+        return <DiscussionNew />;
       default:
         return <DiscussionIndex />;
     }
   };
 
-  if (
-    containsScopes(token, [scopes.ScopeBulletin]) &&
-    containsScopes(token, [scopes.ScopeUsers])
-  ) {
-    return (
-      <DiscussionLayout type={route.params.type}>
-        {DiscussionBody(route.params.type)}
-      </DiscussionLayout>
-    );
-  }
-
-  navigateTo("login");
-  return null;
+  return (
+    <DiscussionLayout type={route.params.type}>
+      {DiscussionBody(route.params.type)}
+    </DiscussionLayout>
+  );
 };
 
 DiscussionMain.propTypes = {
   route: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired,
 };
 
 DiscussionMain.defaultProps = {};
@@ -68,17 +53,9 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("discussions");
 
   return (state) => ({
-    token: getToken(state),
+    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionMain);
+export default connect(mapStateToProps)(DiscussionMain);

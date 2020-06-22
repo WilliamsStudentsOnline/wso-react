@@ -6,45 +6,32 @@ import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { createRouteNodeSelector } from "redux-router5";
-import { getToken } from "../../../selectors/auth";
+import { actions, createRouteNodeSelector } from "redux-router5";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 
-// Additional Imports
-import { checkAndHandleError } from "../../../lib/general";
-import { getDiscussion, postPost } from "../../../api/bulletins";
-
-const DiscussionShow = ({ token, route }) => {
-  // const perPage = 20;
-  // const [page, updatePage] = useState(0);
-  // const [total, updateTotal] = useState(0);
+const DiscussionShow = ({ currUser, navigateTo, route, wso }) => {
   const [posts, updatePosts] = useState(null);
   const [reply, updateReply] = useState("");
   const [discussion, updateDiscussion] = useState(null);
-
   const [errors, updateErrors] = useState([]);
 
   useEffect(() => {
     const loadDiscussion = async () => {
-      const params = { preload: ["posts", "postsUsers"] };
-      const discussionResponse = await getDiscussion(
-        token,
-        route.params.discussionID,
-        params
-      );
+      try {
+        const discussionResponse = await wso.bulletinService.getDiscussion(
+          route.params.discussionID,
+          ["posts", "postsUsers"]
+        );
 
-      if (checkAndHandleError(discussionResponse)) {
-        updateDiscussion(discussionResponse.data.data);
-        updatePosts(discussionResponse.data.data.posts || []);
-        // updateTotal(discussionResponse.data.paginationTotal);
-      } else if (discussionResponse.error.errors) {
-        updateErrors(discussionResponse.error.errors);
-      } else {
-        updateErrors(discussionResponse.error.message);
+        updateDiscussion(discussionResponse.data);
+        updatePosts(discussionResponse.data.posts || []);
+      } catch (error) {
+        if (error.errorCode === 404) navigateTo("404");
       }
     };
 
     loadDiscussion();
-  }, [token, route.params.discussionID]);
+  }, [navigateTo, route.params.discussionID, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -52,10 +39,17 @@ const DiscussionShow = ({ token, route }) => {
     if (!reply) return;
 
     const params = { content: reply, discussionID: discussion.id };
-    const response = await postPost(token, params);
 
-    if (checkAndHandleError(response)) {
-      updatePosts(posts.concat([response.data.data]));
+    try {
+      const response = await wso.bulletinService.createPost(params);
+      updatePosts(posts.concat([response.data]));
+      updateReply("");
+    } catch (error) {
+      if (error.message) {
+        updateErrors([error.message]);
+      } else if (error.errors) {
+        updateErrors(error.errors);
+      }
     }
   };
 
@@ -67,12 +61,12 @@ const DiscussionShow = ({ token, route }) => {
       ));
     if (posts.length === 0) return null;
 
-    return posts.map((post) => (
-      <DiscussionPost post={post} key={post.id} token={token} />
-    ));
+    return posts.map((post) => <DiscussionPost post={post} key={post.id} />);
   };
 
   const replyArea = () => {
+    if (!currUser) return null;
+
     return (
       <div className="reply">
         <form onSubmit={submitHandler}>
@@ -82,8 +76,7 @@ const DiscussionShow = ({ token, route }) => {
             value={reply}
             onChange={(event) => updateReply(event.target.value)}
           />
-
-          {errors && errors.length > 0 && (
+          {errors?.length > 0 && (
             <div id="errors">
               <b>Please correct the following error(s):</b>
               {errors.map((msg) => (
@@ -119,19 +112,29 @@ const DiscussionShow = ({ token, route }) => {
 };
 
 DiscussionShow.propTypes = {
-  token: PropTypes.string.isRequired,
+  currUser: PropTypes.object,
+  navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
-DiscussionShow.defaultProps = {};
+DiscussionShow.defaultProps = {
+  currUser: null,
+};
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("discussions");
 
   return (state) => ({
-    token: getToken(state),
+    currUser: getCurrUser(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
 
-export default connect(mapStateToProps)(DiscussionShow);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DiscussionShow);

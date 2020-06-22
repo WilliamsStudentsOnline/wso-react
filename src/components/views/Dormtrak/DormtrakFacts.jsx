@@ -1,28 +1,35 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Circle } from "../../Skeleton";
 
 // External Imports
 import { Chart } from "react-google-charts";
 
-// Additional imports
-import { getDormtrakDormFacts } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
-
-const DormtrakFacts = ({ dorm, token }) => {
+const DormtrakFacts = ({ dorm, wso }) => {
   const [facts, updateFacts] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadFacts = async () => {
-      const factResponse = await getDormtrakDormFacts(token, dorm.id);
-      if (checkAndHandleError(factResponse)) {
-        updateFacts(factResponse.data.data);
+      try {
+        const factResponse = await wso.dormtrakService.getDormFacts(dorm.id);
+
+        if (isMounted) {
+          updateFacts(factResponse.data);
+        }
+      } catch {
+        // It's okay to not have a response here because there is a loading state
       }
     };
 
-    if (dorm && dorm.id) loadFacts();
-  }, [token, dorm]);
+    if (dorm?.id) loadFacts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [dorm, wso]);
 
   const classBreakdown = () => {
     if (!dorm || !facts) {
@@ -35,7 +42,7 @@ const DormtrakFacts = ({ dorm, token }) => {
         </div>
       );
     }
-    if (dorm.neighborhood && dorm.neighborhood.name !== "First-year") {
+    if (dorm.neighborhood?.name !== "First-year") {
       return (
         <div>
           <strong>Class breakdown</strong>:
@@ -73,7 +80,7 @@ const DormtrakFacts = ({ dorm, token }) => {
       (attr) => facts[`average${attr}`]
     );
 
-    if (ratingScores.filter((e) => e !== 0).length === 0) return null;
+    if (ratingScores.filter((e) => e).length === 0) return null;
 
     return (
       <>
@@ -99,91 +106,83 @@ const DormtrakFacts = ({ dorm, token }) => {
 
       <div>
         <strong>Seniors</strong>
-        {facts && facts.seniorCount ? `: ${facts.seniorCount}` : ": N/A"}
+        {facts?.seniorCount ? `: ${facts.seniorCount}` : ": N/A"}
         <br />
       </div>
 
       <div>
         <strong>Juniors</strong>
-        {facts && facts.juniorCount ? `: ${facts.juniorCount}` : ": N/A"}
+        {facts?.juniorCount ? `: ${facts.juniorCount}` : ": N/A"}
         <br />
       </div>
 
       <div>
         <strong>Sophomores</strong>
-        {facts && facts.sophomoreCount ? `: ${facts.sophomoreCount}` : ": N/A"}
+        {facts?.sophomoreCount ? `: ${facts.sophomoreCount}` : ": N/A"}
         <br />
       </div>
       <div>
         <strong>Capacity</strong>
-        {`: ${dorm && dorm.capacity}`}
+        {`: ${dorm?.capacity}`}
         <br />
       </div>
 
       <div>
         <strong>Singles</strong>
-        {`: ${dorm && dorm.numberSingles}`}
+        {`: ${dorm?.numberSingles}`}
         <br />
       </div>
 
       <div>
         <strong>Mean Single Size</strong>
-        {`: ${dorm && dorm.averageSingleArea} sq. ft.`}
+        {`: ${dorm?.averageSingleArea} sq. ft.`}
         <br />
       </div>
 
       <div>
         <strong>Most Common Single Size</strong>
-        {`: ${dorm && dorm.modeSingleArea} sq. ft.`}
+        {`: ${dorm?.modeSingleArea} sq. ft.`}
         <br />
       </div>
 
       <div>
         <strong>Biggest Single</strong>
-        {facts && facts.biggestSingle
-          ? `: ${facts.biggestSingle.number}`
-          : "N/A"}
+        {facts?.biggestSingle ? `: ${facts.biggestSingle.number}` : "N/A"}
         <br />
       </div>
 
       <div>
         <strong>Smallest Single</strong>
-        {facts && facts.smallestSingle
-          ? `: ${facts.smallestSingle.number}`
-          : "N/A"}
+        {facts?.smallestSingle ? `: ${facts.smallestSingle.number}` : "N/A"}
         <br />
       </div>
 
       <div>
         <strong>Doubles</strong>
-        {`: ${dorm && dorm.numberDoubles}`}
+        {`: ${dorm?.numberDoubles}`}
         <br />
       </div>
 
-      {dorm && dorm.numberDoubles > 0 && (
+      {dorm?.numberDoubles > 0 && (
         <>
           <div>
             <strong>Mean Double Size</strong>
-            {`: ${dorm.averageDoubleArea} sq. ft.`}
+            {`: ${dorm?.averageDoubleArea} sq. ft.`}
             <br />
           </div>
           <div>
             <strong>Most Common Double Size</strong>
-            {`: ${dorm.modeDoubleArea} sq. ft.`}
+            {`: ${dorm?.modeDoubleArea} sq. ft.`}
             <br />
           </div>
           <div>
             <strong>Biggest Double</strong>
-            {facts && facts.biggestDouble
-              ? `: ${facts.biggestDouble.number}`
-              : null}
+            {facts?.biggestDouble && `: ${facts.biggestDouble.number}`}
             <br />
           </div>
           <div>
             <strong>Smallest Double</strong>
-            {facts && facts.smallestDouble
-              ? `: ${facts.smallestDouble.number}`
-              : null}
+            {facts?.smallestDouble && `: ${facts.smallestDouble.number}`}
             <br />
           </div>
         </>
@@ -191,13 +190,13 @@ const DormtrakFacts = ({ dorm, token }) => {
 
       <div>
         <strong>Flexes</strong>
-        {`: ${dorm && dorm.numberFlex}`}
+        {`: ${dorm?.numberFlex}`}
         <br />
       </div>
 
       <div>
         <strong>Student-bathroom ratio</strong>
-        {`: ${dorm && dorm.bathroomRatio.toPrecision(3)} : 1`}
+        {`: ${dorm?.bathroomRatio.toPrecision(3)} : 1`}
         <br />
       </div>
       <div>
@@ -209,17 +208,17 @@ const DormtrakFacts = ({ dorm, token }) => {
       </div>
       <div>
         <strong>Washers</strong>
-        {`: ${dorm && dorm.numberWashers}`}
+        {`: ${dorm?.numberWashers}`}
         <br />
       </div>
-      <div>{facts && ratings()}</div>
+      <div>{ratings()}</div>
     </article>
   );
 };
 
 DormtrakFacts.propTypes = {
   dorm: PropTypes.object,
-  token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DormtrakFacts.defaultProps = {

@@ -5,27 +5,34 @@ import { Line } from "../../Skeleton";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
-import { getDormtrakRankings } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const DormtrakRanking = ({ token }) => {
+const DormtrakRanking = ({ wso }) => {
   const [dormInfo, updateDormsInfo] = useState(null);
 
   useEffect(() => {
-    const loadRankings = async () => {
-      const rankingsResponse = await getDormtrakRankings(token);
+    let isMounted = true;
 
-      if (checkAndHandleError(rankingsResponse)) {
-        updateDormsInfo(rankingsResponse.data.data);
+    const loadRankings = async () => {
+      try {
+        const rankingsResponse = await wso.dormtrakService.getRankings();
+        if (isMounted) {
+          updateDormsInfo(rankingsResponse.data);
+        }
+      } catch {
+        // Handle it by not doing anything for now;
       }
     };
 
     loadRankings();
-  }, [token]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [wso]);
 
   const times = [0, 0, 0];
 
@@ -242,13 +249,13 @@ const DormtrakRanking = ({ token }) => {
 };
 
 DormtrakRanking.propTypes = {
-  token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DormtrakRanking.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  wso: getWSO(state),
 });
 
 export default connect(mapStateToProps)(DormtrakRanking);

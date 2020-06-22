@@ -61,15 +61,6 @@ export default [
     ],
   },
   {
-    name: "ephcatch",
-    path: "/ephcatch",
-    children: [
-      { name: "optOut", path: "/opt-out" },
-      { name: "matches", path: "/matches" },
-      { name: "profile", path: "/profile" },
-    ],
-  },
-  {
     name: "ephmatch",
     path: "/ephmatch",
     children: [
@@ -79,8 +70,8 @@ export default [
     ],
   },
   { name: "login", path: "/account/login" },
-  { name: "logout", path: "/account/logout" },
   { name: "faq", path: "/faq" },
   { name: "403", path: "/403" },
+  { name: "404", path: "/404" },
   { name: "500", path: "/500" },
 ];

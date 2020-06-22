@@ -5,27 +5,28 @@ import HoodTableRow, { HoodTableRowSkeleton } from "./HoodTableRow";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
-import { createRouteNodeSelector } from "redux-router5";
+import { getWSO } from "../../../selectors/auth";
+import { createRouteNodeSelector, actions } from "redux-router5";
 
-// Additional imports
-import { getDormtrakNeighborhood } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
-
-const DormtrakNeighborhood = ({ route, token }) => {
+const DormtrakNeighborhood = ({ navigateTo, route, wso }) => {
   const [neighborhood, updateHoodInfo] = useState(null);
 
   useEffect(() => {
     const loadNeighborhood = async () => {
       const neighborhoodID = route.params.neighborhoodID;
-      const hoodResponse = await getDormtrakNeighborhood(token, neighborhoodID);
-      if (checkAndHandleError(hoodResponse)) {
-        updateHoodInfo(hoodResponse.data.data);
+
+      try {
+        const hoodResponse = await wso.dormtrakService.getNeighborhood(
+          neighborhoodID
+        );
+        updateHoodInfo(hoodResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
     loadNeighborhood();
-  }, [token, route.params.neighborhoodID]);
+  }, [navigateTo, route.params.neighborhoodID, wso]);
 
   return (
     <article className="facebook-results">
@@ -46,7 +47,7 @@ const DormtrakNeighborhood = ({ route, token }) => {
           <tbody>
             {neighborhood
               ? neighborhood.dorms.map((dorm) => (
-                  <HoodTableRow dorm={dorm} key={dorm.id} />
+                  <HoodTableRow wso={wso} dorm={dorm} key={dorm.id} />
                 ))
               : [...Array(5)].map((_, i) => (
                   // eslint-disable-next-line react/no-array-index-key
@@ -60,8 +61,9 @@ const DormtrakNeighborhood = ({ route, token }) => {
 };
 
 DormtrakNeighborhood.propTypes = {
-  token: PropTypes.string.isRequired,
+  navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DormtrakNeighborhood.defaultProps = {};
@@ -70,9 +72,17 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak.neighborhoods");
 
   return (state) => ({
-    token: getToken(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
 
-export default connect(mapStateToProps)(DormtrakNeighborhood);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DormtrakNeighborhood);

@@ -5,16 +5,14 @@ import { Line, Photo } from "../../Skeleton";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
-import { getUser, getUserLargePhoto } from "../../../api/users";
-import { checkAndHandleError } from "../../../lib/general";
 import { ConnectedLink } from "react-router5";
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 
-const FacebookUser = ({ currUser, token, route, navigateTo }) => {
+const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
   const [viewPerson, updateTarget] = useState(null);
   const [userPhoto, updateUserPhoto] = useState(undefined);
 
@@ -25,26 +23,23 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
         return;
       }
 
-      const targetResponse = await getUser(token, route.params.userID);
-
-      if (checkAndHandleError(targetResponse)) {
-        updateTarget(targetResponse.data.data);
-        const photoResponse = await getUserLargePhoto(
-          token,
-          targetResponse.data.data.unixID
+      try {
+        const targetResponse = await wso.userService.getUser(
+          route.params.userID
         );
-        if (checkAndHandleError(photoResponse)) {
-          updateUserPhoto(URL.createObjectURL(photoResponse.data));
-        } else {
-          updateUserPhoto(null);
-        }
-      } else {
-        navigateTo("404");
+        updateTarget(targetResponse.data);
+        const photoResponse = await wso.userService.getUserLargePhoto(
+          targetResponse.data.unixID
+        );
+
+        updateUserPhoto(URL.createObjectURL(photoResponse.data));
+      } catch {
+        updateUserPhoto(null);
       }
     };
 
     loadTarget();
-  }, [token, route.params.userID, navigateTo]);
+  }, [wso, route.params.userID, navigateTo]);
 
   // Returns the room/ office information of the user.
   const userRoom = () => {
@@ -263,8 +258,7 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
 
   // Generates the user's class year
   const classYear = () => {
-    if (!viewPerson.classYear || viewPerson.type !== userTypeStudent)
-      return null;
+    if (!viewPerson.classYear || viewPerson.type !== userTypeStudent) return "";
     if (viewPerson.offCycle) return `'${(viewPerson.classYear - 1) % 100}.5`;
 
     return `'${viewPerson.classYear % 100}`;
@@ -311,7 +305,7 @@ const FacebookUser = ({ currUser, token, route, navigateTo }) => {
 };
 
 FacebookUser.propTypes = {
-  token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
@@ -323,7 +317,7 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("facebook.users");
 
   return (state) => ({
-    token: getToken(state),
+    wso: getWSO(state),
     currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });

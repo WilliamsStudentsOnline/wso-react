@@ -4,9 +4,8 @@ import PropTypes from "prop-types";
 
 // Additional imports
 import { Link } from "react-router5";
-
 import { format } from "timeago.js";
-import { containsScopes, scopes } from "../../../lib/general";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
 
 const EphmatchLayout = ({
   children,
@@ -32,7 +31,7 @@ const EphmatchLayout = ({
             <li>
               <Link routeName="ephmatch">Home</Link>
             </li>
-            {containsScopes(token, [
+            {containsOneOfScopes(token, [
               scopes.ScopeEphmatchMatches,
               scopes.ScopeEphmatchProfiles,
             ]) && (

@@ -1,7 +1,8 @@
 import {
+  getAPIToken,
   getCurrUser,
   getExpiry,
-  getToken,
+  getIdentityToken,
   getScopes,
   getTokenLevel,
 } from "../../selectors/auth";
@@ -9,11 +10,12 @@ import {
 describe("Authentication Selector", () => {
   const INITIAL_STATE = {
     authState: {
-      scope: ["a scope"],
-      token: "token",
-      expiry: 1230,
+      apiToken: "apiToken",
       currUser: { name: "success" },
+      expiry: 1230,
+      identityToken: "identityToken",
       remember: false,
+      scope: ["a scope"],
       tokenLevel: 3,
     },
   };
@@ -36,9 +38,15 @@ describe("Authentication Selector", () => {
     expect(tokenLevel).toEqual(expectedTokenLevel);
   });
 
-  it("retrieves token", () => {
-    const expectedToken = "token";
-    const token = getToken(INITIAL_STATE);
+  it("retrieves api token", () => {
+    const expectedToken = "apiToken";
+    const token = getAPIToken(INITIAL_STATE);
+    expect(token).toEqual(expectedToken);
+  });
+
+  it("retrieves identity token", () => {
+    const expectedToken = "identityToken";
+    const token = getIdentityToken(INITIAL_STATE);
     expect(token).toEqual(expectedToken);
   });
 

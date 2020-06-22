@@ -22,6 +22,7 @@ plugins:
   - react
   - jest
   - prettier
+  - react-hooks
 rules:
   react/forbid-prop-types:
     - warn
@@ -55,3 +56,6 @@ rules:
   react/jsx-props-no-spreading:
     - error
     - html: "ignore"
+  no-use-before-define:
+    - error
+    - functions: false

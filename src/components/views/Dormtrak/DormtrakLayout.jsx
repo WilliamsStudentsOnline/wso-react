@@ -4,29 +4,36 @@ import PropTypes from "prop-types";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
 // Additional imports
-import { getDormtrakNeighborhoods } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
+import Redirect from "../../Redirect";
 
-const DormtrakLayout = ({ children, token, currUser, navigateTo }) => {
+const DormtrakLayout = ({ children, currUser, navigateTo, wso }) => {
   const [neighborhoods, updateNeighborhoods] = useState([]);
   const [query, updateQuery] = useState("");
 
   useEffect(() => {
-    const loadRankings = async () => {
-      const neighborhoodsResponse = await getDormtrakNeighborhoods(token);
-
-      if (checkAndHandleError(neighborhoodsResponse)) {
-        updateNeighborhoods(neighborhoodsResponse.data.data);
+    let isMounted = true;
+    const loadNeighborhoods = async () => {
+      try {
+        const neighborhoodsResponse = await wso.dormtrakService.listNeighborhoods();
+        if (isMounted) {
+          updateNeighborhoods(neighborhoodsResponse.data);
+        }
+      } catch {
+        // It's alright to handle this gracefully without showing them.
       }
     };
 
-    loadRankings();
-  }, [token]);
+    loadNeighborhoods();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [wso]);
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -35,9 +42,6 @@ const DormtrakLayout = ({ children, token, currUser, navigateTo }) => {
   };
 
   if (currUser) {
-    if (!currUser.hasAcceptedDormtrakPolicy) {
-      navigateTo("dormtrak.policy");
-    }
     return (
       <>
         <header>
@@ -98,21 +102,21 @@ const DormtrakLayout = ({ children, token, currUser, navigateTo }) => {
     );
   }
 
-  return null;
+  return <Redirect to="login" />;
 };
 
 DormtrakLayout.propTypes = {
   children: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DormtrakLayout.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -120,7 +124,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DormtrakLayout);
+export default connect(mapStateToProps, mapDispatchToProps)(DormtrakLayout);

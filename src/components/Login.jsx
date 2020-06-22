@@ -1,24 +1,62 @@
 // React imports
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { doUpdateToken, doUpdateUser, doUpdateRemember } from "../actions/auth";
-import { actions } from "redux-router5";
+import { doUpdateIdentityToken, doUpdateRemember } from "../actions/auth";
+import { actions, createRouteNodeSelector } from "redux-router5";
 
 // External imports
-import { getToken } from "../api/auth";
-import { getUser } from "../api/users";
-import { checkAndHandleError } from "../lib/general";
-import jwtDecode from "jwt-decode";
+import {
+  getCurrUser,
+  getScopes,
+  getTokenLevel,
+  getWSO,
+} from "../selectors/auth";
 
-const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
+const Login = ({
+  currUser,
+  navigateTo,
+  route,
+  scopes,
+  tokenLevel,
+  updateIdenToken,
+  updateRemember,
+  wso,
+}) => {
   const [unixID, setUnix] = useState("");
   const [password, setPassword] = useState("");
   const [errors, updateErrors] = useState([]);
   const [remember, setRemember] = useState(true);
 
+  useEffect(() => {
+    if (route.params.previousRoute) {
+      if (route.params.requiredLevel) {
+        if (
+          tokenLevel < route.params.requiredLevel ||
+          (route.params.requiredLevel > 2 && !currUser)
+        ) {
+          return;
+        }
+      }
+
+      if (route.params.requiredScopes) {
+        for (const scope of route.params.requiredScopes) {
+          if (!scopes.includes(scope)) {
+            return;
+          }
+        }
+      }
+
+      const { name, params } = route.params.previousRoute;
+      navigateTo(name, params);
+    }
+    // Assumes wso, tokenLevel, and scopes are simultaneously updated
+    // when token changes.
+  }, [currUser, navigateTo, scopes, tokenLevel, route.params, wso]);
+
+  // TODO: this shouldn't be coded this way. - it's better to do the splitting in the sign in.
   const unixHandler = (event) => {
     const splitValue = event.target.value.split("@");
     setUnix(splitValue[0]);
@@ -33,26 +71,22 @@ const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
       return;
     }
 
-    const response = await getToken(unixID, password);
+    try {
+      const tokenResponse = await wso.authService.getIdentityToken({
+        unixID,
+        password,
+      });
+      const identityToken = tokenResponse.token;
 
-    if (checkAndHandleError(response)) {
-      const newToken = response.data.data.token;
-      const decoded = jwtDecode(newToken);
-      const userResponse = await getUser(newToken, decoded.id);
-      if (checkAndHandleError(userResponse)) {
-        // Only update if both requests pass.
-        updateUser(userResponse.data.data);
-        updateToken(response.data.data);
-        updateRemember(remember);
-        navigateTo("home");
+      updateRemember(remember);
+      updateIdenToken(identityToken);
+      navigateTo("home");
+    } catch (error) {
+      if (error.errors) {
+        updateErrors(error.errors);
       }
-    } else if (response.data.error.errors) {
-      updateErrors(response.data.error.errors);
-    } else {
-      updateErrors([response.data.error.message]);
     }
   };
-
   return (
     <header>
       <div className="page-head">
@@ -68,7 +102,9 @@ const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
 
       <form onSubmit={submitHandler}>
         <div id="errors">
-          {errors ? errors.map((msg) => <p key={msg}>{msg}</p>) : null}
+          {errors?.map((msg) => (
+            <p key={msg}>{msg}</p>
+          ))}
         </div>
         <br />
         <input
@@ -106,17 +142,37 @@ const Login = ({ navigateTo, updateToken, updateUser, updateRemember }) => {
 };
 
 Login.propTypes = {
-  updateToken: PropTypes.func.isRequired,
+  currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
-  updateUser: PropTypes.func.isRequired,
+  route: PropTypes.object.isRequired,
+  scopes: PropTypes.arrayOf(PropTypes.string),
+  tokenLevel: PropTypes.number,
+  updateIdenToken: PropTypes.func.isRequired,
   updateRemember: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
+Login.defaultProps = {
+  currUser: null,
+  scopes: [],
+  tokenLevel: 0,
+};
+
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("login");
+  return (state) => ({
+    currUser: getCurrUser(state),
+    scopes: getScopes(state),
+    tokenLevel: getTokenLevel(state),
+    wso: getWSO(state),
+    ...routeNodeSelector(state),
+  });
+};
 const mapDispatchToProps = (dispatch) => ({
-  updateToken: (response) => dispatch(doUpdateToken(response)),
-  updateUser: (unixID) => dispatch(doUpdateUser(unixID)),
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+  updateIdenToken: (token) => dispatch(doUpdateIdentityToken(token)),
   updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
 });
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

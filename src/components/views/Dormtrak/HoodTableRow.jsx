@@ -5,26 +5,26 @@ import { Line } from "../../Skeleton";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getAPIToken } from "../../../selectors/auth";
 
 // Additional imports
 import { Link } from "react-router5";
-import { getDormtrakDormFacts } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
 
-const HoodTableRow = ({ dorm, token }) => {
+const HoodTableRow = ({ dorm, wso }) => {
   const [dormInfo, updateDormInfo] = useState(null);
 
   useEffect(() => {
     const loadDormInfo = async () => {
-      const dormResponse = await getDormtrakDormFacts(token, dorm.id);
-      if (checkAndHandleError(dormResponse)) {
-        updateDormInfo(dormResponse.data.data);
+      try {
+        const dormResponse = await wso.dormtrakService.getFacts(dorm.id);
+        updateDormInfo(dormResponse.data);
+      } catch {
+        // Let this be handled by the loading state for now
       }
     };
 
     loadDormInfo();
-  }, [token, dorm]);
+  }, [dorm, wso]);
 
   return (
     <tr key={dorm.id}>
@@ -37,16 +37,16 @@ const HoodTableRow = ({ dorm, token }) => {
       <td>{dorm.numberDoubles}</td>
       <td>{dorm.numberFlex}</td>
 
-      <td>{dormInfo && dormInfo.seniorCount}</td>
-      <td>{dormInfo && dormInfo.juniorCount}</td>
-      <td>{dormInfo && dormInfo.sophomoreCount}</td>
+      <td>{dormInfo?.seniorCount}</td>
+      <td>{dormInfo?.juniorCount}</td>
+      <td>{dormInfo?.sophomoreCount}</td>
     </tr>
   );
 };
 
 HoodTableRow.propTypes = {
   dorm: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 const HoodTableRowSkeleton = () => {
@@ -78,8 +78,9 @@ const HoodTableRowSkeleton = () => {
 };
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  token: getAPIToken(state),
 });
 
 export default connect(mapStateToProps)(HoodTableRow);
+
 export { HoodTableRowSkeleton };

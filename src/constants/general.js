@@ -1,5 +1,4 @@
 // List of General constants. 
-// May be split up later 
 
 // Bulletin/Discussion Constants
 export const bulletinTypeAnnouncement = "announcement";

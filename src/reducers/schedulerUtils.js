@@ -6,6 +6,7 @@ import {
   CHANGE_SEMESTER,
   CHANGE_TIME_FORMAT,
   CHANGE_ORIENTATION,
+  UPDATE_STATE,
 } from "../constants/actionTypes";
 
 const INITIAL_STATE = {
@@ -56,6 +57,10 @@ const changeOrientation = (state, action) => {
   return { ...state, horizontal: action.horizontal };
 };
 
+const updateState = (state, action) => {
+  return { ...state, ...action.newState };
+};
+
 function schedulerUtilReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case UPDATE_GAPI:
@@ -72,6 +77,8 @@ function schedulerUtilReducer(state = INITIAL_STATE, action) {
       return changeTimeFormat(state, action);
     case CHANGE_ORIENTATION:
       return changeOrientation(state, action);
+    case UPDATE_STATE:
+      return updateState(state, action);
     default:
       return state;
   }

@@ -9,13 +9,14 @@ import "./components/stylesheets/i.css";
 import "typeface-source-sans-pro";
 
 // Redux/store imports
-import configureStore from "./store";
 import { Provider } from "react-redux";
-import { loadState, saveState } from "./loadState";
+import { saveState } from "./stateStorage";
+import configureStore from "./store";
 
 // Router imports
 import { RouterProvider } from "react-router5";
 import configureRouter from "./create-router";
+import setUpRouterPermissions from "./router-permissions";
 
 // Serviceworker import
 import * as serviceWorker from "./serviceWorker";
@@ -24,45 +25,56 @@ import * as serviceWorker from "./serviceWorker";
 import throttle from "lodash/throttle";
 import ReactGA from "react-ga";
 
-const router = configureRouter();
-
-if (process.env.NODE_ENV === "production") {
-  ReactGA.initialize("UA-150865220-1");
-  router.usePlugin(() => {
-    return {
-      onTransitionSuccess: (toState) => {
-        ReactGA.set({ page: toState.path });
-        ReactGA.pageview(toState.path);
-      },
-    };
-  });
-}
-
-const persistedAuthState = loadState("state");
-const persistedSchedulerOptions = loadState("schedulerOptions");
-const store = configureStore(
-  router,
-  Object.assign(persistedAuthState || {}, persistedSchedulerOptions)
-);
-
-store.subscribe(
-  throttle(() => {
-    const authState = store.getState().authState;
-    const schedulerUtilState = store.getState().schedulerUtilState;
-    saveState("state", { authState }, authState.remember);
-    saveState(
-      "schedulerOptions",
-      {
-        schedulerUtilState: {
-          ...schedulerUtilState,
-          gapi: null,
-          notifications: [],
+const initializeAnalytics = (router) => {
+  // Only set up analytics if we are in production to avoid data contamination
+  if (process.env.NODE_ENV === "production") {
+    ReactGA.initialize("UA-150865220-1");
+    router.usePlugin(() => {
+      return {
+        onTransitionSuccess: (toState) => {
+          ReactGA.set({ page: toState.path });
+          ReactGA.pageview(toState.path);
         },
+      };
+    });
+  }
+};
+
+/**
+ * Saves the user data in the appropriate storage depending on user's preferences.
+ *
+ * @param store - The redux store that holds our state.
+ */
+const saveUserData = (store) => {
+  const authState = store.getState().authState;
+  const schedulerUtilState = store.getState().schedulerUtilState;
+  // Using this to override people's current authState
+  if (authState.remember) {
+    saveState("state", {
+      authState: { identityToken: authState.identityToken },
+    });
+  }
+  saveState(
+    "schedulerOptions",
+    {
+      schedulerUtilState: {
+        ...schedulerUtilState,
+        gapi: null,
+        notifications: [],
       },
-      true
-    );
-  }, 1000)
-);
+    },
+    true
+  );
+};
+
+/* Router and Store setup */
+const router = configureRouter();
+initializeAnalytics(router);
+
+const store = configureStore(router);
+store.subscribe(throttle(() => saveUserData(store), 1000));
+
+setUpRouterPermissions(router, store);
 
 const wrappedApp = (
   <Provider store={store}>

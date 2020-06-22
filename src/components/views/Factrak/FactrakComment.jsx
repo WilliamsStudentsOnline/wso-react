@@ -6,31 +6,21 @@ import Button from "../../Components";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getCurrUser, getToken } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 import { actions } from "redux-router5";
 
 // Additional Imports
-import {
-  postSurveyAgreement,
-  patchSurveyAgreement,
-  deleteSurveyAgreement,
-  getSurvey,
-  flagSurvey,
-  deleteSurvey,
-} from "../../../api/factrak";
-import { getUser } from "../../../api/users";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import { format } from "timeago.js";
 
 const FactrakComment = ({
-  comment,
-  showProf,
   abridged,
+  wso,
+  comment,
   currUser,
-  token,
   navigateTo,
+  showProf,
   updateUser,
 }) => {
   const [survey, updateSurvey] = useState(comment);
@@ -38,9 +28,11 @@ const FactrakComment = ({
 
   // Get the survey and update it after editing.
   const getAndUpdateSurvey = async () => {
-    const surveyResponse = await getSurvey(token, survey.id);
-    if (checkAndHandleError(surveyResponse)) {
-      updateSurvey(surveyResponse.data.data);
+    try {
+      const surveyResponse = await wso.factrakService.getSurvey(survey.id);
+      updateSurvey(surveyResponse.data);
+    } catch {
+      navigateTo("500");
     }
   };
 
@@ -49,33 +41,37 @@ const FactrakComment = ({
     const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
 
-    const response = await deleteSurvey(token, survey.id);
-
-    if (checkAndHandleError(response)) {
+    try {
+      await wso.factrakService.deleteSurvey(survey.id);
       updateDeleted(true);
-      const userResponse = await getUser("me", token);
-      if (checkAndHandleError(userResponse)) {
-        updateUser(userResponse.data.data);
-      }
+      const userResponse = await wso.userService.getUser();
+      updateUser(userResponse.data);
+    } catch {
+      navigateTo("500");
     }
   };
 
   // Handles survey agreement
   const agreeHandler = async (agree) => {
     const agreeParams = { agree };
-    let response;
-    if (survey && survey.clientAgreement !== undefined) {
-      if (survey.clientAgreement === agree) {
-        response = await deleteSurveyAgreement(token, survey.id, agreeParams);
-      } else {
-        response = await patchSurveyAgreement(token, survey.id, agreeParams);
-      }
-    } else {
-      response = await postSurveyAgreement(token, survey.id, agreeParams);
-    }
 
-    if (checkAndHandleError(response)) {
+    try {
+      if (survey && survey.clientAgreement !== undefined) {
+        if (survey.clientAgreement === agree) {
+          await wso.factrakService.deleteSurveyAgreement(survey.id);
+        } else {
+          await wso.factrakService.updateSurveyAgreement(
+            survey.id,
+            agreeParams
+          );
+        }
+      } else {
+        await wso.factrakService.createSurveyAgreement(survey.id, agreeParams);
+      }
+
       getAndUpdateSurvey();
+    } catch {
+      navigateTo("500");
     }
   };
 
@@ -129,15 +125,20 @@ const FactrakComment = ({
 
   // Handling flagging
   const flagHandler = async () => {
-    const response = await flagSurvey(token, survey.id);
-    if (checkAndHandleError(response)) {
+    try {
+      await wso.factrakService.flagSurvey(survey.id);
+
       getAndUpdateSurvey();
+    } catch {
+      navigateTo("500");
     }
   };
 
   // Generates the would take another sentence.
   const wouldTakeAnother = () => {
     if (survey.wouldTakeAnother === null) return null;
+
+    // True versus false check.
     if (survey.wouldTakeAnother)
       return (
         <>
@@ -322,12 +323,12 @@ const FactrakComment = ({
 };
 
 FactrakComment.propTypes = {
-  showProf: PropTypes.bool.isRequired,
   abridged: PropTypes.bool.isRequired,
+  wso: PropTypes.object.isRequired,
   comment: PropTypes.object,
   currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  showProf: PropTypes.bool.isRequired,
   updateUser: PropTypes.func.isRequired,
 };
 
@@ -356,8 +357,8 @@ const FactrakCommentSkeleton = () => (
 );
 
 const mapStateToProps = (state) => ({
+  wso: getWSO(state),
   currUser: getCurrUser(state),
-  token: getToken(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -13,16 +13,18 @@ import FactrakAOS from "./FactrakAOS";
 import FactrakCourse from "./FactrakCourse";
 import FactrakProfessor from "./FactrakProfessor";
 import FactrakSearch from "./FactrakSearch";
+import Redirect from "../../Redirect";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { createRouteNodeSelector, actions } from "redux-router5";
-import { getToken } from "../../../selectors/auth";
+import { createRouteNodeSelector } from "redux-router5";
+import { getAPIToken, getCurrUser } from "../../../selectors/auth";
 
 // Additional Imports
-import { scopes, containsScopes, getTokenLevel } from "../../../lib/general";
+import { scopes, containsOneOfScopes } from "../../../lib/general";
+import { userTypeStudent } from "../../../constants/general";
 
-const FactrakMain = ({ route, token, navigateTo }) => {
+const FactrakMain = ({ currUser, route, token }) => {
   const factrakBody = () => {
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <FactrakHome />;
@@ -51,19 +53,13 @@ const FactrakMain = ({ route, token, navigateTo }) => {
     }
   };
 
-  // Returns body only if the user has the respective scopes
-  if (
-    containsScopes(token, [
-      scopes.ScopeFactrakFull,
-      scopes.ScopeFactrakAdmin,
-      scopes.ScopeFactrakLimited,
-    ])
-  ) {
-    return <FactrakLayout>{factrakBody()}</FactrakLayout>;
+  // If the user is not a student - navigate to 403
+  if (currUser?.type !== userTypeStudent) {
+    return <Redirect to="403" />;
   }
 
-  // Token level of 3 corresponds to an authenticated user.
-  if (getTokenLevel(token) > 2) {
+  // Returns body only if the user has the respective scopes
+  if (!containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
     return (
       <FactrakLayout>
         <FactrakPolicy />
@@ -71,30 +67,23 @@ const FactrakMain = ({ route, token, navigateTo }) => {
     );
   }
 
-  navigateTo("login");
-  return null;
+  return <FactrakLayout>{factrakBody()}</FactrakLayout>;
 };
 
 FactrakMain.propTypes = {
+  currUser: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
-  navigateTo: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak");
 
   return (state) => ({
-    token: getToken(state),
+    currUser: getCurrUser(state),
+    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FactrakMain);
+export default connect(mapStateToProps)(FactrakMain);

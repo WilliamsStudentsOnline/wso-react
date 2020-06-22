@@ -6,23 +6,21 @@ import { CircularLoader } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { getCurrUser, getToken } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 import { doUpdateUser } from "../../../actions/auth";
 
 // Additional Imports
-import { getUser, patchCurrUser, putCurrUserPhoto } from "../../../api/users";
-import { checkAndHandleError } from "../../../lib/general";
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 import TagEdit from "../../TagEdit";
 
-const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
+const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
   const [tags, updateTags] = useState([]);
-  const [pronoun, setPronoun] = useState(currUser.pronoun);
-  const [visible, setVisible] = useState(currUser.visible);
-  const [homeVisible, setHomeVisible] = useState(currUser.homeVisible);
-  const [dormVisible, setDormVisible] = useState(currUser.dormVisible);
-  const [offCycle, setOffCycle] = useState(currUser.offCycle);
+  const [pronoun, setPronoun] = useState(currUser?.pronoun);
+  const [visible, setVisible] = useState(currUser?.visible);
+  const [homeVisible, setHomeVisible] = useState(currUser?.homeVisible);
+  const [dormVisible, setDormVisible] = useState(currUser?.dormVisible);
+  const [offCycle, setOffCycle] = useState(currUser?.offCycle);
 
   const [errors, updateErrors] = useState([]);
   const [submitting, updateSubmitting] = useState(false);
@@ -32,17 +30,22 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
   useEffect(() => {
     // We need to load tags because tag updating happens with each "Add Tag" button press.
     const loadTags = async () => {
-      const userResponse = await getUser(token);
-      if (checkAndHandleError(userResponse)) {
-        const currTags = userResponse.data.data.tags;
+      try {
+        const userResponse = await wso.userService.getUser("me");
+        const currTags = userResponse.data.tags;
         updateTags(currTags.map((tag) => tag.name));
-      } else {
-        updateErrors([userResponse.data.error.message]);
+      } catch (error) {
+        updateErrors([error.message]);
       }
     };
 
+    // Necessary because the user might refresh into this page, and currUser might not have
+    // been initialized.
+    const loadUserInfo = async () => {};
+
     loadTags();
-  }, [token, currUser]);
+    loadUserInfo();
+  }, [currUser, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -50,41 +53,33 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
     const newErrors = [];
     updateSubmitting(true);
 
-    // Update Photos
-    if (fileRef.current && fileRef.current.files[0]) {
-      const fileResponse = await putCurrUserPhoto(
-        token,
-        fileRef.current.files[0]
+    try {
+      // Update Photos
+      if (fileRef.current?.files[0]) {
+        await wso.userService.updateUserPhoto("me", fileRef.current.files[0]);
+      }
+
+      // Update User
+      const updatedUser = {
+        dormVisible,
+        homeVisible,
+        offCycle,
+        pronoun,
+        visible,
+      };
+
+      const updateResponse = await wso.userService.updateUser(
+        "me",
+        updatedUser
       );
 
-      if (!checkAndHandleError(fileResponse)) {
-        newErrors.push(fileResponse.data.error.message);
-      }
-    }
-
-    // Update User
-    const updatedUser = {
-      dormVisible,
-      homeVisible,
-      offCycle,
-      pronoun,
-      visible,
-    };
-
-    const updateResponse = await patchCurrUser(token, updatedUser);
-
-    if (!checkAndHandleError(updateResponse)) {
-      newErrors.push(updateResponse.data.error.message);
-    }
-
-    updateSubmitting(false);
-
-    if (newErrors.length > 0) {
-      updateErrors(newErrors);
-    } else {
-      // If there are no errors, it means that patchCurrUser must have gone smoothly
-      updateUser(updateResponse.data.data);
+      updateUser(updateResponse.data);
       navigateTo("facebook.users", { userID: currUser.id }, { reload: true });
+    } catch (error) {
+      newErrors.push(error.message);
+      updateErrors(newErrors);
+    } finally {
+      updateSubmitting(false);
     }
   };
   return (
@@ -103,8 +98,8 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
           <br />
 
           <div className="field">
-            {(currUser.type === userTypeAlumni ||
-              currUser.type === userTypeStudent) && (
+            {(currUser?.type === userTypeAlumni ||
+              currUser?.type === userTypeStudent) && (
               <>
                 <h3>Tags</h3>
                 <p>
@@ -114,10 +109,10 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
                   see your group? Contact us at wso-dev@wso.williams.edu
                 </p>
                 <TagEdit
-                  token={token}
                   tags={tags}
                   updateTags={updateTags}
                   updateErrors={updateErrors}
+                  wso={wso}
                 />
                 <br />
                 <br />
@@ -159,7 +154,7 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
             />
             <br />
             <br />
-            {currUser.type === userTypeStudent ? (
+            {currUser?.type === userTypeStudent ? (
               <>
                 <strong>Dorm Address:</strong>
                 <br />
@@ -209,17 +204,19 @@ const FacebookEdit = ({ token, currUser, navigateTo, updateUser }) => {
 };
 
 FacebookEdit.propTypes = {
-  token: PropTypes.string.isRequired,
-  currUser: PropTypes.object.isRequired,
+  currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
-FacebookEdit.defaultProps = {};
+FacebookEdit.defaultProps = {
+  currUser: null,
+};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

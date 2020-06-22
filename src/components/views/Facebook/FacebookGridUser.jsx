@@ -7,22 +7,24 @@ import { Link } from "react-router5";
 
 // Additional Imports
 import { userTypeStudent } from "../../../constants/general";
-import { checkAndHandleError } from "../../../lib/general";
-import { getUserLargePhoto } from "../../../api/users";
 
-const FacebookGridUser = ({ gridUser, token, gridUserClassYear }) => {
+const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
   const [userPhoto, updateUserPhoto] = useState(null);
 
   useEffect(() => {
     const loadPhoto = async () => {
-      const photoResponse = await getUserLargePhoto(token, gridUser.unixID);
-      if (checkAndHandleError(photoResponse)) {
+      try {
+        const photoResponse = await wso.userService.getUserLargePhoto(
+          gridUser.unixID
+        );
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
+      } catch (error) {
+        // eslint-disable-next-line no-empty
       }
     };
 
-    if (token !== "") loadPhoto();
-  }, [token, gridUser.unixID]);
+    loadPhoto();
+  }, [wso, gridUser.unixID]);
 
   // Generates the unix id field in grid view
   const gridUnixID = (user) => {
@@ -91,8 +93,8 @@ const FacebookGridUser = ({ gridUser, token, gridUserClassYear }) => {
 };
 
 FacebookGridUser.propTypes = {
+  wso: PropTypes.object.isRequired,
   gridUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
   gridUserClassYear: PropTypes.string,
 };
 

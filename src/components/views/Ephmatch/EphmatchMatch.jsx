@@ -4,26 +4,27 @@ import PropTypes from "prop-types";
 
 // Redux/routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
+import { actions } from "redux-router5";
 
 // Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import { getEphmatchMatches } from "../../../api/ephmatch";
 import Ephmatcher from "./Ephmatcher";
 
-const EphmatchMatch = ({ token }) => {
+const EphmatchMatch = ({ navigateTo, wso }) => {
   const [matches, updateMatches] = useState([]);
 
   useEffect(() => {
     const loadMatches = async () => {
-      const ephmatchersResponse = await getEphmatchMatches(token);
-      if (checkAndHandleError(ephmatchersResponse)) {
-        updateMatches(ephmatchersResponse.data.data);
+      try {
+        const ephmatchersResponse = await wso.ephmatchService.listMatches();
+        updateMatches(ephmatchersResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
     loadMatches();
-  }, [token]);
+  }, [navigateTo, wso]);
 
   const renderMatches = () => {
     if (matches.length === 0)
@@ -39,9 +40,9 @@ const EphmatchMatch = ({ token }) => {
             <Ephmatcher
               ephmatcher={match.matchedUser}
               ephmatcherProfile={match.matchedUser.ephmatchProfile}
-              token={token}
               matched
               key={match.id}
+              wso={wso}
             />
           ))}
         </div>
@@ -52,12 +53,20 @@ const EphmatchMatch = ({ token }) => {
   return <article className="facebook-results">{renderMatches()}</article>;
 };
 
-EphmatchMatch.propTypes = { token: PropTypes.string.isRequired };
+EphmatchMatch.propTypes = {
+  navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
+};
 
 EphmatchMatch.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(EphmatchMatch);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EphmatchMatch);

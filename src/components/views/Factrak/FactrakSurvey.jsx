@@ -5,20 +5,10 @@ import "../../stylesheets/FactrakSurvey.css";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
-// External Imports
-import {
-  getProfessor,
-  postSurvey,
-  patchSurvey,
-  getSurvey,
-  getAreasOfStudy,
-} from "../../../api/factrak";
-import { checkAndHandleError } from "../../../lib/general";
-
-const FactrakSurvey = ({ token, route, navigateTo }) => {
+const FactrakSurvey = ({ wso, route, navigateTo }) => {
   const [survey, updateSurvey] = useState(null);
   const [prof, updateProf] = useState(null);
 
@@ -40,6 +30,53 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
   const professorParam = route.params.profID;
   const surveyParam = route.params.surveyID;
   const [areasOfStudy, updateAreasOfStudy] = useState([]);
+
+  useEffect(() => {
+    const loadProf = async (professorID) => {
+      try {
+        const profResponse = await wso.factrakService.getProfessor(professorID);
+        updateProf(profResponse.data);
+      } catch {
+        navigateTo("500");
+      }
+    };
+
+    const loadSurvey = async (surveyID) => {
+      try {
+        const surveyResponse = await wso.factrakService.getSurvey(surveyID);
+        const surveyData = surveyResponse.data;
+
+        // Could use a defaultSurvey and update that object, but will hardly save any lines.
+        updateSurvey(surveyData);
+        updateProf(surveyData.professor);
+        updateCourseAOS(surveyData.course.areaOfStudy.abbreviation);
+        updateRecommend(surveyData.wouldRecommendCourse);
+        updateWorkload(surveyData.courseWorkload);
+        updateApprochability(surveyData.approachability);
+        updateLecture(surveyData.leadLecture);
+        updateHelpful(surveyData.outsideHelpfulness);
+        updateDiscussion(surveyData.promoteDiscussion);
+        updateRecommend(surveyData.wouldRecommendCourse);
+        updateTakeAnother(surveyData.wouldTakeAnother);
+        updateComment(surveyData.comment);
+      } catch {
+        navigateTo("500");
+      }
+    };
+
+    const loadAreasOfStudy = async () => {
+      try {
+        const areasOfStudyResponse = await wso.factrakService.listAreasOfStudy();
+        updateAreasOfStudy(areasOfStudyResponse.data);
+      } catch {
+        navigateTo("500");
+      }
+    };
+
+    if (surveyParam) loadSurvey(surveyParam);
+    if (professorParam) loadProf(professorParam);
+    loadAreasOfStudy();
+  }, [navigateTo, professorParam, surveyParam, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -72,57 +109,17 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
       outsideHelpfulness: parseInt(helpful, 10),
     };
 
-    const response = edit
-      ? await patchSurvey(token, surveyParams, survey.id)
-      : await postSurvey(token, surveyParams);
-
-    if (checkAndHandleError(response)) {
+    try {
+      if (edit) {
+        await wso.factrakService.updateSurvey(survey.id, surveyParams);
+      } else {
+        await wso.factrakService.createSurvey(surveyParams);
+      }
       navigateTo("factrak.surveys");
-    } else {
-      updateErrors([response.data.error.message]);
+    } catch (error) {
+      updateErrors([error.message]);
     }
   };
-
-  useEffect(() => {
-    const loadProf = async (professorID) => {
-      const profResponse = await getProfessor(token, professorID);
-      if (checkAndHandleError(profResponse)) {
-        updateProf(profResponse.data.data);
-      }
-    };
-
-    const loadSurvey = async (surveyID) => {
-      const surveyResponse = await getSurvey(token, surveyID);
-      if (checkAndHandleError(surveyResponse)) {
-        const surveyData = surveyResponse.data.data;
-
-        // Could use a defaultSurvey and update that object, but will hardly save any lines.
-        updateSurvey(surveyData);
-        updateProf(surveyData.professor);
-        updateCourseAOS(surveyData.course.areaOfStudy.abbreviation);
-        updateRecommend(surveyData.wouldRecommendCourse);
-        updateWorkload(surveyData.courseWorkload);
-        updateApprochability(surveyData.approachability);
-        updateLecture(surveyData.leadLecture);
-        updateHelpful(surveyData.outsideHelpfulness);
-        updateDiscussion(surveyData.promoteDiscussion);
-        updateRecommend(surveyData.wouldRecommendCourse);
-        updateTakeAnother(surveyData.wouldTakeAnother);
-        updateComment(surveyData.comment);
-      }
-    };
-
-    const loadAreasOfStudy = async () => {
-      const areasOfStudyResponse = await getAreasOfStudy(token);
-      if (checkAndHandleError(areasOfStudyResponse)) {
-        updateAreasOfStudy(areasOfStudyResponse.data.data);
-      }
-    };
-
-    if (surveyParam) loadSurvey(surveyParam);
-    if (professorParam) loadProf(professorParam);
-    loadAreasOfStudy();
-  }, [token, professorParam, surveyParam]);
 
   // Generates the dropdown for the department
   const deptDropdown = () => {
@@ -136,6 +133,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
       <select
         className="select-dept"
         onChange={(event) => updateCourseAOS(event.target.value)}
+        value={courseAOS}
       >
         <option value="" selected disabled hidden>
           Select Prefix
@@ -233,7 +231,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                     Yes&nbsp;
                     <input
                       type="radio"
-                      checked={wouldRecommendCourse}
+                      checked={wouldRecommendCourse || false}
                       onChange={() => updateRecommend(true)}
                     />
                     No&nbsp;
@@ -258,7 +256,7 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
                     Yes&nbsp;
                     <input
                       type="radio"
-                      checked={wouldTakeAnother}
+                      checked={wouldTakeAnother || false}
                       onChange={() => updateTakeAnother(true)}
                     />
                     No&nbsp;
@@ -351,9 +349,9 @@ const FactrakSurvey = ({ token, route, navigateTo }) => {
 };
 
 FactrakSurvey.propTypes = {
-  token: PropTypes.string.isRequired,
-  route: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  route: PropTypes.object.isRequired,
 };
 
 FactrakSurvey.defaultProps = {};
@@ -362,16 +360,14 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.surveys");
 
   return (state) => ({
-    token: getToken(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FactrakSurvey);
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakSurvey);

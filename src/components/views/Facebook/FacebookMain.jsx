@@ -11,13 +11,11 @@ import FacebookUser from "./FacebookUser";
 
 // Redux Imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
 
 // External Imports
-import { createRouteNodeSelector, actions } from "redux-router5";
-import { scopes, containsScopes } from "../../../lib/general";
+import { createRouteNodeSelector } from "redux-router5";
 
-const FacebookMain = ({ route, navigateTo, token }) => {
+const FacebookMain = ({ route }) => {
   const facebookBody = () => {
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <FacebookHome />;
@@ -34,18 +32,11 @@ const FacebookMain = ({ route, navigateTo, token }) => {
     }
   };
 
-  if (containsScopes(token, [scopes.ScopeUsers])) {
-    return <FacebookLayout>{facebookBody()}</FacebookLayout>;
-  }
-
-  navigateTo("login");
-  return null;
+  return <FacebookLayout>{facebookBody()}</FacebookLayout>;
 };
 
 FacebookMain.propTypes = {
   route: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired,
 };
 
 FacebookMain.defaultProps = {};
@@ -54,16 +45,8 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("facebook");
 
   return (state) => ({
-    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FacebookMain);
+export default connect(mapStateToProps)(FacebookMain);

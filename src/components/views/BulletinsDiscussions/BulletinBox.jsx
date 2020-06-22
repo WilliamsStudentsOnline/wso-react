@@ -6,13 +6,9 @@ import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
-
-// API imports
-import { getBulletins, getDiscussions, getRides } from "../../../api/bulletins";
+import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
 import {
   bulletinTypeRide,
@@ -23,7 +19,7 @@ import {
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
 
-const BulletinBox = ({ token, typeWord }) => {
+const BulletinBox = ({ wso, typeWord }) => {
   const [threads, updateThreads] = useState(null);
 
   // Converts the typeWord to the type of bulletin/discussion to be obtained.
@@ -38,41 +34,38 @@ const BulletinBox = ({ token, typeWord }) => {
 
   const type = linkMap.get(typeWord);
 
-  // Load the appropriate discussionns/bulletins
+  // Load the appropriate discussions/bulletins
   useEffect(() => {
-    let loadParams = { limit: 5 };
+    let isMounted = true;
+    const loadParams = { limit: 5, type };
 
-    const loadDiscussions = async () => {
-      const discussionsResponse = await getDiscussions(token, loadParams);
-      if (checkAndHandleError(discussionsResponse)) {
-        updateThreads(discussionsResponse.data.data);
-      } else updateThreads([]);
+    const getThreads = async () => {
+      let response;
+      if (type === discussionType) {
+        response = await wso.bulletinService.listDiscussions(loadParams);
+      } else if (type === bulletinTypeRide) {
+        response = await wso.bulletinService.listRides(loadParams);
+      } else {
+        response = await wso.bulletinService.listBulletins(loadParams);
+      }
+      if (isMounted) {
+        updateThreads(response.data);
+      }
     };
 
-    const loadRides = async () => {
-      const ridesResponse = await getRides(token, loadParams);
-      if (checkAndHandleError(ridesResponse)) {
-        updateThreads(ridesResponse.data.data);
-      } else updateThreads([]);
-    };
-
-    const loadBulletins = async () => {
-      loadParams = {
-        limit: 5,
-        type,
-      };
-      const bulletinsResponse = await getBulletins(token, loadParams);
-      if (checkAndHandleError(bulletinsResponse)) {
-        updateThreads(bulletinsResponse.data.data);
-      } else updateThreads([]);
-    };
-
-    if (token !== "") {
-      if (type === discussionType) loadDiscussions();
-      else if (type === bulletinTypeRide) loadRides();
-      else loadBulletins();
+    try {
+      if (wso.isAuthenticated()) {
+        getThreads();
+      }
+    } catch (e) {
+      // We aren't really expecting any errors here, unless the token is empty for some reason.
+      updateThreads([]);
     }
-  }, [token, type]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [wso, type]);
 
   const formatDate = (showDate) => {
     const options = {
@@ -191,14 +184,14 @@ const BulletinBox = ({ token, typeWord }) => {
 };
 
 BulletinBox.propTypes = {
-  token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
   typeWord: PropTypes.string.isRequired,
 };
 
 BulletinBox.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  wso: getWSO(state),
 });
 
 export default connect(mapStateToProps)(BulletinBox);

@@ -34,6 +34,7 @@ const EphmatchForm = ({
         placeholder="Add a short description to your profile to help others know you
       better!"
       />
+      <br />
       <strong>Seen Only by Your Matches:</strong>
       <br />
       <div className="match-message">
@@ -83,7 +84,7 @@ const EphmatchForm = ({
           placeholder="Say something to your matches!"
         />
       </div>
-      <br />
+      <br /> <br />
       <div>
         <strong>Current Location:</strong>
         <input
@@ -104,8 +105,7 @@ const EphmatchForm = ({
           onChange={(event) => updateLocationCountry(event.target.value)}
           placeholder="Country"
         />
-        <strong>Show Current Location:</strong>
-        Show&nbsp;
+        <strong>Show Current Location:</strong>&nbsp; Show&nbsp;
         <input
           type="radio"
           name="locationVisible"

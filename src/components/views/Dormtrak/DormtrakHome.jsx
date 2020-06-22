@@ -6,35 +6,42 @@ import DormtrakRecentComments from "./DormtrakRecentComments";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
+import { actions } from "redux-router5";
 
 // Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import { getDormtrakDormReviews } from "../../../api/dormtrak";
 import { Link } from "react-router5";
 
-const DormtrakHome = ({ currUser, token }) => {
+const DormtrakHome = ({ currUser, navigateTo, wso }) => {
   const [reviews, updateReviews] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadReviews = async () => {
       const queryParams = {
         limit: 10,
         preload: ["dormRoom", "dorm"],
         commented: true,
       };
-      const dormReviewResponse = await getDormtrakDormReviews(
-        token,
-        queryParams
-      );
-
-      if (checkAndHandleError(dormReviewResponse)) {
-        updateReviews(dormReviewResponse.data.data);
+      try {
+        const dormReviewResponse = await wso.dormtrakService.listReviews(
+          queryParams
+        );
+        if (isMounted) {
+          updateReviews(dormReviewResponse.data);
+        }
+      } catch {
+        navigateTo("500");
       }
     };
 
     loadReviews();
-  }, [token]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [navigateTo, wso]);
 
   // Link to survey.
   const surveyLink = () => {
@@ -86,14 +93,20 @@ const DormtrakHome = ({ currUser, token }) => {
 
 DormtrakHome.propTypes = {
   currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DormtrakHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(DormtrakHome);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DormtrakHome);

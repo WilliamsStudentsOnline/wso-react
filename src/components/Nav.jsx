@@ -1,33 +1,65 @@
 // React Imports
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-// React/Redux imports
-import { getCurrUser, getToken } from "../selectors/auth";
+// Redux imports
+import { getCurrUser, getWSO } from "../selectors/auth";
 import { connect } from "react-redux";
+import { doRemoveCreds } from "../actions/auth";
 
 // External imports
 // Connected Link is the same as link, except it re-renders on route changes
-import { Link, ConnectedLink } from "react-router5";
-import { checkAndHandleError, containsScopes, scopes } from "../lib/general";
-import { getUserThumbPhoto } from "../api/users";
+import { ConnectedLink, Link } from "react-router5";
 import { createRouteNodeSelector } from "redux-router5";
 
-const Nav = ({ currUser, token }) => {
+import { removeStateFromStorage } from "../stateStorage";
+import { userTypeStudent } from "../constants/general";
+
+const Nav = ({ currUser, removeCreds, wso }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
+  const [ephmatchVisibility, updateEphmatchVisibility] = useState(false);
 
   useEffect(() => {
     const loadPhoto = async () => {
-      const photoResponse = await getUserThumbPhoto(token, currUser.unixID);
-      if (checkAndHandleError(photoResponse)) {
+      try {
+        const photoResponse = await wso.userService.getUserThumbPhoto(
+          currUser.unixID
+        );
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
+      } catch {
+        // Do nothing - it's okay to gracefully handle this.
       }
     };
 
-    if (currUser && token && token !== "") loadPhoto();
+    const checkEphmatchVisibility = async () => {
+      try {
+        const ephmatchAvailabilityResp = await wso.ephmatchService.getAvailability();
+
+        if (ephmatchAvailabilityResp?.data?.available) {
+          updateEphmatchVisibility(true);
+        }
+      } catch {
+        // Do nothing - it's okay to gracefully handle this.
+      }
+    };
+
+    if (currUser) {
+      loadPhoto();
+      checkEphmatchVisibility();
+    } else {
+      updateEphmatchVisibility(false);
+    }
+
     updateMenuVisibility(false);
-  }, [currUser, token]);
+  }, [currUser, wso]);
+
+  const logout = () => {
+    removeCreds();
+    // Remove credentials from localStorage, since after logging out the edits will be done in
+    // sessionStorage instead.
+    removeStateFromStorage("state");
+  };
 
   return (
     <nav>
@@ -56,12 +88,17 @@ const Nav = ({ currUser, token }) => {
             <li>
               <Link routeName="facebook">Facebook</Link>
             </li>
-            <li>
-              <Link routeName="factrak">Factrak</Link>
-            </li>
-            <li>
-              <Link routeName="dormtrak">Dormtrak</Link>
-            </li>
+            {currUser?.type === userTypeStudent && (
+              <>
+                <li>
+                  <Link routeName="factrak">Factrak</Link>
+                </li>
+                <li>
+                  <Link routeName="dormtrak">Dormtrak</Link>
+                </li>
+              </>
+            )}
+
             <li>
               <Link routeName="faq">FAQ</Link>
             </li>
@@ -74,17 +111,10 @@ const Nav = ({ currUser, token }) => {
             <li>
               <Link routeName="scheduler">Course Scheduler</Link>
             </li>
-            {currUser && containsScopes(token, [scopes.ScopeEphmatch]) && (
+            {ephmatchVisibility && (
               <li>
                 <Link className="ephmatch-link" routeName="ephmatch">
                   Ephmatch
-                </Link>
-              </li>
-            )}
-            {currUser && containsScopes(token, [scopes.ScopeEphcatch]) && (
-              <li>
-                <Link className="ephmatch-link" routeName="ephcatch">
-                  Ephcatch
                 </Link>
               </li>
             )}
@@ -93,7 +123,7 @@ const Nav = ({ currUser, token }) => {
 
         <span className="nav-right-container">
           <ul className="nav-right">
-            {currUser ? (
+            {currUser?.id ? (
               <>
                 <li className="avatar">
                   <Link
@@ -104,7 +134,9 @@ const Nav = ({ currUser, token }) => {
                   </Link>
                 </li>
                 <li>
-                  <Link routeName="logout">Logout</Link>
+                  <Link onClick={() => logout()} routeName="home">
+                    Logout
+                  </Link>
                 </li>
               </>
             ) : (
@@ -122,19 +154,24 @@ const Nav = ({ currUser, token }) => {
 Nav.propTypes = {
   // No isRequired because it must work for non-authenticated users too
   currUser: PropTypes.object,
-  token: PropTypes.string,
+  removeCreds: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
-Nav.defaultProps = { currUser: {}, token: "" };
+Nav.defaultProps = { currUser: {} };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
     currUser: getCurrUser(state),
-    token: getToken(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
 
-export default connect(mapStateToProps)(Nav);
+const mapDispatchToProps = (dispatch) => ({
+  removeCreds: () => dispatch(doRemoveCreds()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Nav);

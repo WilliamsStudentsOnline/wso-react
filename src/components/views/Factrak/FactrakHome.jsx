@@ -7,18 +7,14 @@ import FactrakDeficitMessage from "./FactrakUtils";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
+import { actions } from "redux-router5";
 
 // Additional imports
-import { getSurveys, getAreasOfStudy } from "../../../api/factrak";
-import {
-  checkAndHandleError,
-  containsScopes,
-  scopes,
-} from "../../../lib/general";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakHome = ({ token, currUser }) => {
+const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
   const [areas, updateAreas] = useState(null);
   const [surveys, updateSurveys] = useState(null);
 
@@ -30,28 +26,35 @@ const FactrakHome = ({ token, currUser }) => {
         limit: 10,
         start: new Date(),
       };
-      const surveysResponse = await getSurveys(token, queryParams);
 
-      if (checkAndHandleError(surveysResponse)) {
-        updateSurveys(surveysResponse.data.data);
+      try {
+        const surveysResponse = await wso.factrakService.listSurveys(
+          queryParams
+        );
+        updateSurveys(surveysResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
     const loadAreas = async () => {
-      const areasOfStudyResponse = await getAreasOfStudy(token);
-      if (checkAndHandleError(areasOfStudyResponse)) {
-        const areasOfStudy = areasOfStudyResponse.data.data;
+      try {
+        const areasOfStudyResponse = await wso.factrakService.listAreasOfStudy();
+
+        const areasOfStudy = areasOfStudyResponse.data;
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
+      } catch {
+        navigateTo("500");
       }
     };
-    if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+    if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys();
     } else {
       updateSurveys([...Array(10)].map((_, id) => ({ id })));
     }
 
     loadAreas();
-  }, [token]);
+  }, [navigateTo, token, wso]);
 
   return (
     <article className="dormtrak">
@@ -86,7 +89,7 @@ const FactrakHome = ({ token, currUser }) => {
 
             {surveys
               ? surveys.map((survey) => {
-                  if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+                  if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
                     return (
                       <FactrakComment
                         comment={survey}
@@ -112,15 +115,23 @@ const FactrakHome = ({ token, currUser }) => {
 };
 
 FactrakHome.propTypes = {
-  token: PropTypes.string.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 FactrakHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
   currUser: getCurrUser(state),
+  token: getAPIToken(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(FactrakHome);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakHome);

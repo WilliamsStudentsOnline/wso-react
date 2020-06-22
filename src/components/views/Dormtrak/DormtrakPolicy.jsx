@@ -1,24 +1,15 @@
 // React imports
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { getCurrUser, getToken } from "../../../selectors/auth";
+import { getCurrUser, getWSO } from "../../../selectors/auth";
 import { actions } from "redux-router5";
-import { doUpdateUser } from "../../../actions/auth";
 
-// Additional  imports
-import { patchCurrUser } from "../../../api/users";
-import { checkAndHandleError } from "../../../lib/general";
-
-const DormtrakPolicy = ({ currUser, token, navigateTo, updateUser }) => {
+const DormtrakPolicy = ({ currUser, navigateTo, wso }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
-  const [didUpdateUser, toggleDidUpdateUser] = useState(false);
-
-  if (didUpdateUser === true) {
-    navigateTo("dormtrak");
-  }
+  const [updated, setUpdated] = useState(false);
 
   const clickHandler = (event) => {
     updateAcceptPolicy(event.target.checked);
@@ -30,23 +21,32 @@ const DormtrakPolicy = ({ currUser, token, navigateTo, updateUser }) => {
     const updateParams = {
       hasAcceptedDormtrakPolicy: acceptPolicy,
     };
-    const response = await patchCurrUser(token, updateParams);
+    try {
+      await wso.userService.updateUser("me", updateParams);
+      setUpdated(true);
+    } catch {
+      navigateTo("500");
+    }
+  };
 
-    // PATCH succeeded, update user
-    if (checkAndHandleError(response)) {
-      updateUser(response.data.data);
-      toggleDidUpdateUser(true);
+  // Wait until the api handler is updated before navigating!
+  useEffect(() => {
+    let isMounted = true;
+    if (updated && isMounted) {
+      navigateTo("dormtrak", {}, { reload: true });
     }
 
-    return acceptPolicy;
-  };
+    return () => {
+      isMounted = false;
+    };
+  }, [navigateTo, updated, wso]);
 
   return (
     <div className="article">
       <section>
         <article>
           <h3>Policy</h3>
-          {currUser.hasAcceptedDormtrakPolicy ? null : (
+          {!currUser.hasAcceptedDormtrakPolicy && (
             <p className="intro-paragraph">
               To proceed, read the policy below, then click Agree
             </p>
@@ -119,21 +119,17 @@ const DormtrakPolicy = ({ currUser, token, navigateTo, updateUser }) => {
 DormtrakPolicy.propTypes = {
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired,
-  updateUser: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
-  token: getToken(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
-  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DormtrakPolicy);
+export default connect(mapStateToProps, mapDispatchToProps)(DormtrakPolicy);

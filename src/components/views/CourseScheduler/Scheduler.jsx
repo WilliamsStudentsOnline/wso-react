@@ -180,10 +180,10 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  doUpdateGAPI: (gapi) => dispatch(updateGAPI(gapi)),
   doAddNotification: (notification) => dispatch(addNotif(notification)),
-  loadCatalog: (catalog) => dispatch(doLoadCatalog(catalog)),
+  doUpdateGAPI: (gapi) => dispatch(updateGAPI(gapi)),
   doUpdateSemester: (semester) => dispatch(changeSem(semester)),
+  loadCatalog: (catalog) => dispatch(doLoadCatalog(catalog)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Scheduler);

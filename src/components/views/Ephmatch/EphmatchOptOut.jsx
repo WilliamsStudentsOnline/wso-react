@@ -4,18 +4,11 @@ import PropTypes from "prop-types";
 
 // Redux/routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
-// Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import {
-  getSelfEphmatchProfile,
-  deleteEphmatchProfile,
-} from "../../../api/ephmatch";
-
 // Page created to handle both opting in and out.
-const EphmatchOptOut = ({ token, navigateTo }) => {
+const EphmatchOptOut = ({ navigateTo, wso }) => {
   // Note that this is different from Ephcatch
   const [optOut, updateOptOut] = useState(false);
 
@@ -23,9 +16,14 @@ const EphmatchOptOut = ({ token, navigateTo }) => {
     let isMounted = true;
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
-      const ownProfile = await getSelfEphmatchProfile(token);
-      if (checkAndHandleError(ownProfile) && isMounted) {
-        updateOptOut(ownProfile.data.deleted);
+      try {
+        const ownProfile = await wso.ephmatchService.getSelfProfile();
+        if (isMounted) {
+          updateOptOut(ownProfile.deleted);
+        }
+      } catch {
+        // There shouldn't be any reason for the submission to be rejected.
+        navigateTo("500");
       }
     };
 
@@ -34,16 +32,18 @@ const EphmatchOptOut = ({ token, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [token]);
+  }, [navigateTo, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    const response = await deleteEphmatchProfile(token);
-
-    // Update succeeded -> redirect them to main ephmatch page.
-    if (checkAndHandleError(response)) {
-      navigateTo("ephmatch", { profile: response.data.data }, { reload: true });
+    try {
+      await wso.ephmatchService.deleteSelfProfile();
+      // Update succeeded -> redirect them to main ephmatch page.
+      navigateTo("ephmatch", null, { reload: true });
+    } catch {
+      // There shouldn't be any reason for the submission to be rejected.
+      navigateTo("500");
     }
   };
 
@@ -89,14 +89,14 @@ const EphmatchOptOut = ({ token, navigateTo }) => {
 };
 
 EphmatchOptOut.propTypes = {
-  token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
 };
 
 EphmatchOptOut.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

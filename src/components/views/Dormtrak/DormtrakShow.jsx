@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import DormtrakFacts from "./DormtrakFacts";
 import DormtrakRooms from "./DormtrakRooms";
@@ -7,18 +7,16 @@ import DormtrakRecentComments from "./DormtrakRecentComments";
 import { Line, Photo, Paragraph } from "../../Skeleton";
 
 // Redux/ Routing imports
-import { getCurrUser, getToken } from "../../../selectors/auth";
+import { getCurrUser, getWSO } from "../../../selectors/auth";
 import { connect } from "react-redux";
-import { createRouteNodeSelector } from "redux-router5";
+import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
-import { getDormtrakDorm, getDormtrakDormReviews } from "../../../api/dormtrak";
-import { checkAndHandleError } from "../../../lib/general";
 import { bannerHelper } from "../../../lib/imageHelper";
 import { Link } from "react-router5";
 import { userTypeStudent } from "../../../constants/general";
 
-const DormtrakShow = ({ route, currUser, token }) => {
+const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
   const [reviews, updateReviews] = useState(null);
   const [dorm, updateDorm] = useState(null);
 
@@ -26,26 +24,29 @@ const DormtrakShow = ({ route, currUser, token }) => {
     const dormID = route.params.dormID;
 
     const loadDorm = async () => {
-      const dormResponse = await getDormtrakDorm(token, dormID);
-      if (checkAndHandleError(dormResponse)) {
-        updateDorm(dormResponse.data.data);
+      try {
+        const dormResponse = await wso.dormtrakService.getDorm(dormID);
+        updateDorm(dormResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
     const loadDormReviews = async () => {
       const queryParams = { dormID, commented: true };
-      const dormReviewResponse = await getDormtrakDormReviews(
-        token,
-        queryParams
-      );
-      if (checkAndHandleError(dormReviewResponse)) {
-        updateReviews(dormReviewResponse.data.data);
+      try {
+        const dormReviewResponse = await wso.dormtrakService.listReviews(
+          queryParams
+        );
+        updateReviews(dormReviewResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
     loadDorm();
     loadDormReviews();
-  }, [token, route.params.dormID]);
+  }, [navigateTo, route.params.dormID, wso]);
 
   const checkUserCommentRights = () => {
     if (!currUser || !currUser.dorm) return false;
@@ -88,7 +89,7 @@ const DormtrakShow = ({ route, currUser, token }) => {
   return (
     <div className="container">
       <aside className="sidebar">
-        <DormtrakFacts dorm={dorm || undefined} token={token} />
+        <DormtrakFacts dorm={dorm || undefined} wso={wso} />
         <hr />
 
         <section className="building-rooms">
@@ -121,8 +122,9 @@ const DormtrakShow = ({ route, currUser, token }) => {
 
 DormtrakShow.propTypes = {
   currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
+  navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 DormtrakShow.defaultProps = {};
@@ -132,9 +134,14 @@ const mapStateToProps = () => {
 
   return (state) => ({
     currUser: getCurrUser(state),
-    token: getToken(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
 
-export default connect(mapStateToProps)(DormtrakShow);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DormtrakShow);

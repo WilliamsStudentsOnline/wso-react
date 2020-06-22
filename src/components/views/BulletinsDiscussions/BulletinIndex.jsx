@@ -1,25 +1,19 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import PaginationButtons from "../../PaginationButtons";
 import { Line } from "../../Skeleton";
 
 // Redux and routing imports
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { connect } from "react-redux";
 
 // Additional imports
-import {
-  getBulletins,
-  getRides,
-  deleteBulletin,
-  deleteRide,
-} from "../../../api/bulletins";
-import { checkAndHandleError } from "../../../lib/general";
 import { Link } from "react-router5";
+import { actions } from "redux-router5";
 import { bulletinTypeRide } from "../../../constants/general";
 
-const BulletinIndex = ({ type, token, currUser }) => {
+const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
   const [bulletins, updateBulletins] = useState(null);
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -30,12 +24,13 @@ const BulletinIndex = ({ type, token, currUser }) => {
       preload: ["user"],
       limit: 20,
       offset: perPage * newPage,
-      start: new Date(),
     };
-    const bulletinsResponse = await getBulletins(token, params);
-    if (checkAndHandleError(bulletinsResponse)) {
-      updateBulletins(bulletinsResponse.data.data);
-      updateTotal(bulletinsResponse.data.paginationTotal);
+    try {
+      const bulletinsResponse = await wso.bulletinService.listBulletins(params);
+      updateBulletins(bulletinsResponse.data);
+      updateTotal(bulletinsResponse.paginationTotal);
+    } catch {
+      navigateTo("500");
     }
   };
 
@@ -47,16 +42,18 @@ const BulletinIndex = ({ type, token, currUser }) => {
       // We don't generally need to add start as a param because the backend automatically
       // filters for only future rides.
     };
-    const ridesResponse = await getRides(token, params);
-    if (checkAndHandleError(ridesResponse)) {
-      updateBulletins(ridesResponse.data.data);
-      updateTotal(ridesResponse.data.paginationTotal);
+    try {
+      const ridesResponse = await wso.bulletinService.listRides(params);
+      updateBulletins(ridesResponse.data);
+      updateTotal(ridesResponse.paginationTotal);
+    } catch {
+      navigateTo("500");
     }
   };
 
   // Loads the next page appropriately
   const loadNext = (newPage) => {
-    // Different because the api endpoints are different
+    // Different because the wso endpoints are different
     if (type === bulletinTypeRide) loadRides(newPage);
     else loadBulletins(newPage);
   };
@@ -80,28 +77,27 @@ const BulletinIndex = ({ type, token, currUser }) => {
 
   useEffect(() => {
     loadNext(0);
-    // eslint-disable-next-line
-  }, [token, type]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type, wso]);
 
   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
 
   // Handles deletion
   const deleteHandler = async (event, bulletinID) => {
     event.preventDefault();
-    // eslint-disable-next-line no-restricted-globals
-    const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
 
-    let response;
-
-    if (type === bulletinTypeRide) {
-      response = await deleteRide(token, bulletinID);
-    } else {
-      response = await deleteBulletin(token, bulletinID);
-    }
-
-    if (checkAndHandleError(response)) {
+    try {
+      if (type === bulletinTypeRide) {
+        await wso.bulletinService.deleteRide(bulletinID);
+      } else {
+        await wso.bulletinService.deleteBulletin(bulletinID);
+      }
       loadNext(page);
+    } catch {
+      navigateTo("500");
     }
   };
 
@@ -144,7 +140,7 @@ const BulletinIndex = ({ type, token, currUser }) => {
 
   // Link to edit bulletin
   const editLink = (bulletin) => {
-    if (currUser && currUser.id === bulletin.user.id) {
+    if (currUser?.id === bulletin.user.id) {
       return (
         <>
           <Link
@@ -162,7 +158,7 @@ const BulletinIndex = ({ type, token, currUser }) => {
 
   // Edit/Delete Links
   const editDeleteLinks = (bulletin) => {
-    if (currUser && (currUser.id === bulletin.user.id || currUser.admin)) {
+    if (currUser?.id === bulletin.user.id || currUser?.admin) {
       return (
         <>
           &nbsp;[&nbsp;
@@ -259,16 +255,24 @@ const BulletinIndex = ({ type, token, currUser }) => {
 };
 
 BulletinIndex.propTypes = {
+  currUser: PropTypes.object,
+  navigateTo: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
-  token: PropTypes.string.isRequired,
-  currUser: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
-BulletinIndex.defaultProps = {};
+BulletinIndex.defaultProps = {
+  currUser: null,
+};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(BulletinIndex);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(BulletinIndex);

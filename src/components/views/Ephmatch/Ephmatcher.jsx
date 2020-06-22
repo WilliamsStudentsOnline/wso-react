@@ -1,10 +1,9 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { Photo } from "../../Skeleton";
 
 // External imports
-import { checkAndHandleError } from "../../../lib/general";
-import { getUserLargePhoto } from "../../../api/users";
 import { ConnectedLink } from "react-router5";
 import { IoMdPin, IoMdText } from "react-icons/io";
 import { FaSnapchatGhost, FaInstagram } from "react-icons/fa";
@@ -13,20 +12,24 @@ import "../../stylesheets/Ephmatch.css";
 
 const Ephmatcher = ({
   ephmatcher,
-  selectEphmatcher,
-  index,
-  token,
   ephmatcherProfile,
-  photo,
+  index,
   matched,
+  photo,
+  selectEphmatcher,
+  wso,
 }) => {
   const [userPhoto, updateUserPhoto] = useState(photo);
 
   useEffect(() => {
     const loadPhoto = async () => {
-      const photoResponse = await getUserLargePhoto(token, ephmatcher.unixID);
-      if (checkAndHandleError(photoResponse)) {
+      try {
+        const photoResponse = await wso.userService.getUserLargePhoto(
+          ephmatcher.unixID
+        );
         updateUserPhoto(URL.createObjectURL(photoResponse.data));
+      } catch {
+        // Handle it via the skeleton
       }
     };
 
@@ -35,7 +38,7 @@ const Ephmatcher = ({
       updateUserPhoto(photo);
     }
     // eslint-disable-next-line
-  }, [token, ephmatcher, photo]);
+  }, [ephmatcher, photo, wso]);
 
   // Generates the user's class year
   const classYear = (year, offCycle) => {
@@ -69,46 +72,51 @@ const Ephmatcher = ({
   };
 
   const formatLocation = () => {
-    let locEnding;
-    if (ephmatcherProfile.locationCountry === "United States") {
-      locEnding = ephmatcherProfile.locationState;
-    } else if (ephmatcherProfile.locationState) {
-      locEnding = `${ephmatcherProfile.locationState}, ${ephmatcherProfile.locationCountry}`;
+    const { locationCountry, locationState, locationTown } = ephmatcherProfile;
+
+    let locations;
+    if (locationCountry === "United States") {
+      locations = [locationTown, locationState];
     } else {
-      locEnding = ephmatcherProfile.locationCountry;
+      locations = [locationTown, locationState, locationCountry];
     }
-    return `${ephmatcherProfile.locationTown}, ${locEnding}`;
+
+    locations = locations.filter((loc) => loc);
+
+    if (locations.length > 0) {
+      return (
+        <div className="message-icon">
+          <IoMdPin /> {locations.join(", ")}
+        </div>
+      );
+    }
+
+    return null;
   };
 
   const createMessageField = () => {
+    const { messagingPlatform, messagingUsername, unixID } = ephmatcherProfile;
+
     let icon;
     let link;
-    switch (ephmatcherProfile.messagingPlatform) {
+    switch (messagingPlatform) {
       case "Phone":
         icon = <IoMdText className="message-icon" />;
-        link = (
-          <a href={`sms:${ephmatcherProfile.messagingUsername}`}>
-            {ephmatcherProfile.messagingUsername}
-          </a>
-        );
+        link = <a href={`sms:${messagingUsername}`}>{messagingUsername}</a>;
         break;
       case "Snapchat":
         icon = <FaSnapchatGhost className="message-icon" />;
         link = (
-          <a
-            href={`https://www.snapchat.com/add/${ephmatcherProfile.messagingUsername}`}
-          >
-            {ephmatcherProfile.messagingUsername}
+          <a href={`https://www.snapchat.com/add/${messagingUsername}`}>
+            {messagingUsername}
           </a>
         );
         break;
       case "Instagram":
         icon = <FaInstagram className="message-icon" />;
         link = (
-          <a
-            href={`https://www.instagram.com/${ephmatcherProfile.messagingUsername}`}
-          >
-            {ephmatcherProfile.messagingUsername}
+          <a href={`https://www.instagram.com/${messagingUsername}`}>
+            {messagingUsername}
           </a>
         );
         break;
@@ -117,16 +125,10 @@ const Ephmatcher = ({
         link = "";
     }
 
-    if (
-      !ephmatcherProfile.messagingPlatform ||
-      !ephmatcherProfile.messagingUsername ||
-      !link
-    ) {
+    if (!messagingPlatform || !messagingUsername || !link) {
       icon = <MdEmail className="message-icon" />;
       link = (
-        <a href={`mailto:${ephmatcher.unixID}@williams.edu`}>
-          {ephmatcher.unixID}@williams.edu
-        </a>
+        <a href={`mailto:${unixID}@williams.edu`}>{unixID}@williams.edu</a>
       );
     }
 
@@ -137,20 +139,9 @@ const Ephmatcher = ({
     );
   };
 
-  return (
-    <aside
-      key={ephmatcherProfile.id}
-      className={
-        ephmatcherProfile.liked
-          ? "ephmatch-selected ephmatch-select-link"
-          : "ephmatch-select-link"
-      }
-      onClick={
-        selectEphmatcher ? (event) => selectEphmatcher(event, index) : null
-      }
-      role="presentation"
-    >
-      {userPhoto && (
+  const renderPhoto = () => {
+    if (userPhoto)
+      return (
         <div style={{ width: "100%" }}>
           <img
             src={userPhoto}
@@ -163,7 +154,33 @@ const Ephmatcher = ({
             alt="profile"
           />
         </div>
-      )}
+      );
+
+    return <Photo height="300px" width="100%" />;
+  };
+
+  const {
+    description,
+    id,
+    liked,
+    locationVisible,
+    matchMessage,
+  } = ephmatcherProfile;
+
+  return (
+    <aside
+      key={id}
+      className={
+        liked
+          ? "ephmatch-selected ephmatch-select-link"
+          : "ephmatch-select-link"
+      }
+      onClick={
+        selectEphmatcher ? (event) => selectEphmatcher(event, index) : null
+      }
+      role="presentation"
+    >
+      {renderPhoto()}
       {ephmatcher && (
         <div style={{ flex: 2, padding: "10px", textAlign: "left" }}>
           <h4>{`${ephmatcher.name} ${classYear(
@@ -174,19 +191,11 @@ const Ephmatcher = ({
             <span className="list-headers">{ephmatcher.unixID}</span>
           )}
           {userTags()}
-          {ephmatcherProfile.locationVisible && (
-            <div className="message-icon">
-              <IoMdPin /> {formatLocation()}
-            </div>
-          )}
+          {locationVisible && formatLocation()}
           {matched && createMessageField()}
-          {ephmatcherProfile.description && (
-            <div>{ephmatcherProfile.description}</div>
-          )}
-          {matched && ephmatcherProfile.matchMessage && (
-            <div className="match-message">
-              {ephmatcherProfile.matchMessage}
-            </div>
+          {description && <div>{description}</div>}
+          {matched && matchMessage && (
+            <div className="match-message">{matchMessage}</div>
           )}
         </div>
       )}
@@ -199,9 +208,9 @@ Ephmatcher.propTypes = {
   ephmatcherProfile: PropTypes.object.isRequired,
   selectEphmatcher: PropTypes.func,
   index: PropTypes.number,
-  token: PropTypes.string.isRequired,
   photo: PropTypes.string,
   matched: PropTypes.bool,
+  wso: PropTypes.object.isRequired,
 };
 
 Ephmatcher.defaultProps = {

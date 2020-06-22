@@ -4,36 +4,48 @@ import PropTypes from "prop-types";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getCurrUser, getToken } from "../../../selectors/auth";
+import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
-import { autocompleteFactrak } from "../../../api/autocomplete";
-import { checkAndHandleError } from "../../../lib/general";
 
-const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
+const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadQuery = () => {
       if (route.params.q) setQuery(route.params.q);
       else setQuery(""); // Needed to reset if user clears the box.
     };
-    loadQuery();
-    setShowSuggestions(false);
+
+    if (isMounted) {
+      loadQuery();
+      setShowSuggestions(false);
+    }
+
+    return () => {
+      isMounted = false;
+    };
   }, [route.params.q, route.path]);
 
   // Initiates new autocomplete
   const factrakAutocomplete = async (event) => {
     setQuery(event.target.value);
-    const factrakResponse = await autocompleteFactrak(token, query);
-
     let suggestData = [];
-    if (checkAndHandleError(factrakResponse)) {
-      suggestData = factrakResponse.data.data;
+
+    try {
+      const factrakResponse = await wso.autocompleteService.autocompleteFactrak(
+        query
+      );
+
+      suggestData = factrakResponse.data;
+    } catch {
+      // No need to do anything - it's alright if we don't have autocomplete.
     }
 
     // Limit the number of factrak suggestions to 5.
@@ -181,21 +193,21 @@ const FactrakLayout = ({ children, currUser, navigateTo, token, route }) => {
 };
 
 FactrakLayout.propTypes = {
+  wso: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired,
-  currUser: PropTypes.object.isRequired,
+  currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
 };
 
-FactrakLayout.defaultProps = {};
+FactrakLayout.defaultProps = { currUser: {} };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
+    wso: getWSO(state),
     currUser: getCurrUser(state),
-    token: getToken(state),
     ...routeNodeSelector(state),
   });
 };

@@ -6,19 +6,13 @@ import Select from "../../Select";
 
 // Redux/ routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
+import { actions } from "redux-router5";
 
 // Additional imports
-import {
-  getEphmatchProfiles,
-  likeEphmatcher,
-  unlikeEphmatcher,
-  getEphmatchProfile,
-} from "../../../api/ephmatch";
-import { checkAndHandleError } from "../../../lib/general";
 import Ephmatcher from "./Ephmatcher";
 
-const EphmatchHome = ({ token }) => {
+const EphmatchHome = ({ navigateTo, wso }) => {
   const perPage = 20; // Number of results per page
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -35,44 +29,49 @@ const EphmatchHome = ({ token }) => {
         preload: ["tags", "liked", "matched"],
         sort,
       };
-      const EphmatchersResponse = await getEphmatchProfiles(token, params);
 
-      if (checkAndHandleError(EphmatchersResponse) && isMounted) {
-        updateEphmatchers(EphmatchersResponse.data.data);
-        updateTotal(EphmatchersResponse.data.paginationTotal);
+      try {
+        const ephmatchersResponse = await wso.ephmatchService.listProfiles(
+          params
+        );
+
+        if (isMounted) {
+          updateEphmatchers(ephmatchersResponse.data);
+          updateTotal(ephmatchersResponse.paginationTotal);
+        }
+      } catch {
+        navigateTo("500");
       }
     };
+
     loadNextEphmatchers(page);
 
     return () => {
       isMounted = false;
     };
-  }, [page, token, sort]);
+  }, [navigateTo, page, sort, wso]);
 
   const selectEphmatcher = async (event, index) => {
     // Alternatively, use the classname to determine the method to be called.
-    // That way works but is more hacky, and very prone to user editing the code.
+    // That way works but is more hacky.
     const ephmatcher = ephmatchers[index];
     const target = event.currentTarget;
-    let ephmatchersResponse;
 
-    if (ephmatcher.liked) {
-      ephmatchersResponse = await unlikeEphmatcher(token, ephmatcher.userID);
-      target.className = "ephmatch-select-link";
-    } else {
-      ephmatchersResponse = await likeEphmatcher(token, ephmatcher.userID);
-      target.className = "ephmatch-select-link ephmatch-selected";
-    }
-
-    if (checkAndHandleError(ephmatchersResponse)) {
-      const updatedEphmatcher = await getEphmatchProfile(
-        token,
+    try {
+      if (ephmatcher.liked) {
+        await wso.ephmatchService.unlikeProfile(ephmatcher.userID);
+        target.className = "ephmatch-select-link";
+      } else {
+        await wso.ephmatchService.likeProfile(ephmatcher.userID);
+        target.className = "ephmatch-select-link ephmatch-selected";
+      }
+      const updatedEphmatcher = await wso.ephmatchService.getProfile(
         ephmatcher.userID
       );
 
-      if (checkAndHandleError(updatedEphmatcher)) {
-        ephmatchers.splice(index, 1, updatedEphmatcher.data.data);
-      }
+      ephmatchers.splice(index, 1, updatedEphmatcher.data);
+    } catch {
+      navigateTo("500");
     }
   };
 
@@ -143,11 +142,11 @@ const EphmatchHome = ({ token }) => {
                   (ephmatcher, index) =>
                     ephmatcher.user && (
                       <Ephmatcher
+                        wso={wso}
                         ephmatcher={ephmatcher.user}
                         ephmatcherProfile={ephmatcher}
                         selectEphmatcher={selectEphmatcher}
                         index={index}
-                        token={token}
                         matched={ephmatcher.matched}
                         key={ephmatcher.id}
                       />
@@ -176,13 +175,19 @@ const EphmatchHome = ({ token }) => {
 };
 
 EphmatchHome.propTypes = {
-  token: PropTypes.string.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 EphmatchHome.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(EphmatchHome);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EphmatchHome);

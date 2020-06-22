@@ -6,6 +6,7 @@ import {
   CHANGE_SEMESTER,
   CHANGE_TIME_FORMAT,
   CHANGE_ORIENTATION,
+  UPDATE_STATE,
 } from "../constants/actionTypes";
 
 const doSubmenuChange = (newState) => ({
@@ -43,12 +44,18 @@ const changeOrientation = (horizontal) => ({
   horizontal,
 });
 
+const doUpdateSchedulerState = (newState) => ({
+  type: UPDATE_STATE,
+  newState,
+});
+
 export {
-  doSubmenuChange,
-  updateGAPI,
   addNotif,
-  removeNotif,
+  changeOrientation,
   changeSem,
   changeTimeFormat,
-  changeOrientation,
+  doSubmenuChange,
+  removeNotif,
+  updateGAPI,
+  doUpdateSchedulerState,
 };

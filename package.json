@@ -26,7 +26,8 @@
     "router5-plugin-browser": "^7.0.2",
     "serialize-javascript": "2.1.1",
     "timeago.js": "^4.0.0-beta.2",
-    "typeface-source-sans-pro": "^0.0.75"
+    "typeface-source-sans-pro": "^0.0.75",
+    "wso-api-client": "0.0.3"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
@@ -53,7 +54,6 @@
     "react-test-renderer": "^16.8.6",
     "redux-logger": "^3.0.6",
     "typescript": "^3.7.2",
-    "webpack": "4.41.2",
     "webpack-bundle-analyzer": "^3.3.2"
   },
   "scripts": {

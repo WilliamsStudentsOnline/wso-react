@@ -4,16 +4,14 @@ import PropTypes from "prop-types";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
-import { createRouteNodeSelector } from "redux-router5";
+import { getWSO } from "../../../selectors/auth";
+import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import { getProfessors, getCourses } from "../../../api/factrak";
 import { Link } from "react-router5";
 
 // FactrakSearch refers to the search result page
-const FactrakSearch = ({ token, route }) => {
+const FactrakSearch = ({ route, navigateTo, wso }) => {
   const [profs, updateProfs] = useState(null);
   const [courses, updateCourses] = useState(null);
 
@@ -23,11 +21,16 @@ const FactrakSearch = ({ token, route }) => {
         q: route.params.q ? route.params.q : undefined,
         preload: ["office"],
       };
-      const profsResponse = await getProfessors(token, queryParams);
 
-      if (checkAndHandleError(profsResponse)) {
-        updateProfs(profsResponse.data.data.sort((a, b) => a.name > b.name));
-      } else updateProfs([]);
+      try {
+        const profsResponse = await wso.factrakService.listProfessors(
+          queryParams
+        );
+
+        updateProfs(profsResponse.data.sort((a, b) => a.name > b.name));
+      } catch {
+        navigateTo("500");
+      }
     };
 
     const loadCourses = async () => {
@@ -35,21 +38,27 @@ const FactrakSearch = ({ token, route }) => {
         q: route.params.q ? route.params.q : undefined,
         preload: ["areaOfStudy", "professors"],
       };
-      const coursesResponse = await getCourses(token, queryParams);
-      if (checkAndHandleError(coursesResponse)) {
+
+      try {
+        const coursesResponse = await wso.factrakService.listCourses(
+          queryParams
+        );
+
         updateCourses(
-          coursesResponse.data.data.sort(
+          coursesResponse.data.sort(
             (a, b) =>
               a.areaOfStudy.abbreviation + a.number >
               b.areaOfStudy.abbreviation + b.number
           )
         );
-      } else updateCourses([]);
+      } catch {
+        navigateTo("500");
+      }
     };
 
     loadProfs();
     loadCourses();
-  }, [token, route.params.q]);
+  }, [navigateTo, route.params.q, wso]);
 
   // Generates the row for one of the professor results.
   const professorRow = (prof) => {
@@ -64,8 +73,8 @@ const FactrakSearch = ({ token, route }) => {
             {prof.name}
           </Link>
         </td>
-        <td>{prof.unixID || ""}</td>
-        <td>{prof.office ? prof.office.number : ""}</td>
+        <td>{prof?.unixID}</td>
+        <td>{prof?.office?.number}</td>
       </tr>
     );
   };
@@ -172,8 +181,9 @@ const FactrakSearch = ({ token, route }) => {
 };
 
 FactrakSearch.propTypes = {
-  token: PropTypes.string.isRequired,
+  navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 FactrakSearch.defaultProps = {};
@@ -182,9 +192,14 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.search");
 
   return (state) => ({
-    token: getToken(state),
+    wso: getWSO(state),
     ...routeNodeSelector(state),
   });
 };
 
-export default connect(mapStateToProps)(FactrakSearch);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakSearch);

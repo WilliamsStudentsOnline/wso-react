@@ -8,17 +8,29 @@ import DormtrakShow from "./DormtrakShow";
 import DormtrakSearch from "./DormtrakSearch";
 import DormtrakNeighborhood from "./DormtrakNeighborhood";
 import DormtrakReviewForm from "./DormtrakReviewForm";
+import Redirect from "../../Redirect";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { createRouteNodeSelector, actions } from "redux-router5";
-import { getToken } from "../../../selectors/auth";
+import { createRouteNodeSelector } from "redux-router5";
+import { getAPIToken, getCurrUser } from "../../../selectors/auth";
 
 // Additional Imports
-import { containsScopes, scopes, getTokenLevel } from "../../../lib/general";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
+import { userTypeStudent } from "../../../constants/general";
 
-const DormtrakMain = ({ route, token, navigateTo }) => {
+const DormtrakMain = ({ currUser, route, token }) => {
   const dormtrakBody = () => {
+    if (
+      route.name !== "dormtrak.policy" &&
+      !containsOneOfScopes(token, [
+        scopes.ScopeDormtrak,
+        scopes.ScopeDormtrakWrite,
+      ])
+    ) {
+      return <Redirect to="dormtrak.policy" />;
+    }
+
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <DormtrakHome />;
 
@@ -40,32 +52,18 @@ const DormtrakMain = ({ route, token, navigateTo }) => {
     }
   };
 
-  if (
-    containsScopes(token, [
-      scopes.ScopeDormtrak,
-      scopes.ScopeDormtrakWrite,
-      scopes.ScopeAdminAll,
-    ])
-  ) {
-    return <DormtrakLayout>{dormtrakBody()}</DormtrakLayout>;
+  // If the user is not a student - navigate to 403
+  if (currUser?.type !== userTypeStudent) {
+    return <Redirect to="403" />;
   }
 
-  if (getTokenLevel(token) > 2) {
-    return (
-      <DormtrakLayout>
-        <DormtrakPolicy />
-      </DormtrakLayout>
-    );
-  }
-
-  navigateTo("login");
-  return null;
+  return <DormtrakLayout>{dormtrakBody()}</DormtrakLayout>;
 };
 
 DormtrakMain.propTypes = {
+  currUser: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
-  navigateTo: PropTypes.func.isRequired,
 };
 
 DormtrakMain.defaultProps = {};
@@ -74,16 +72,10 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("dormtrak");
 
   return (state) => ({
-    token: getToken(state),
+    currUser: getCurrUser(state),
+    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DormtrakMain);
+export default connect(mapStateToProps)(DormtrakMain);

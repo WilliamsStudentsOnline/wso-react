@@ -8,19 +8,11 @@ import EphmatchForm from "./EphmatchForm";
 
 // Redux/routing imports
 import { connect } from "react-redux";
-import { getToken } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
 import { actions } from "redux-router5";
 
-// Additional imports
-import { checkAndHandleError } from "../../../lib/general";
-import {
-  getSelfEphmatchProfile,
-  updateEphmatchProfile,
-} from "../../../api/ephmatch";
-import { putCurrUserPhoto } from "../../../api/users";
-
-const EphmatchProfile = ({ token, navigateTo }) => {
+const EphmatchProfile = ({ wso, navigateTo }) => {
   const [profile, updateProfile] = useState(null);
   const [description, updateDescription] = useState("");
   const [matchMessage, updateMatchMessage] = useState("");
@@ -39,29 +31,30 @@ const EphmatchProfile = ({ token, navigateTo }) => {
     let isMounted = true;
     // Check if there is an ephmatch profile for the user
     const loadEphmatchProfile = async () => {
-      const ownProfile = await getSelfEphmatchProfile(token);
-      if (checkAndHandleError(ownProfile) && isMounted) {
-        const ephmatchProfile = ownProfile.data.data;
+      try {
+        const ownProfile = await wso.ephmatchService.getSelfProfile();
 
-        updateProfile(ephmatchProfile);
-        updateDescription(ephmatchProfile.description);
-        updateTags(
-          ephmatchProfile.user.tags
-            ? ephmatchProfile.user.tags.map((tag) => tag.name)
-            : []
-        );
-        updateMatchMessage(ephmatchProfile.matchMessage);
-        updateLocationVisible(ephmatchProfile.locationVisible);
-        updateLocationTown(ephmatchProfile.locationTown);
-        updateLocationState(ephmatchProfile.locationState);
-        updateLocationCountry(ephmatchProfile.locationCountry);
-        updateMessagingPlatform(
-          ephmatchProfile.messagingPlatform
-            ? ephmatchProfile.messagingPlatform
-            : "NONE"
-        );
-        updateMessagingUsername(ephmatchProfile.messagingUsername);
-        updateUnixID(ephmatchProfile.user.unixID);
+        if (isMounted) {
+          const ephmatchProfile = ownProfile.data;
+          updateProfile(ephmatchProfile);
+          updateDescription(ephmatchProfile.description);
+          updateTags(ephmatchProfile.user.tags.map((tag) => tag.name));
+          updateMatchMessage(ephmatchProfile.matchMessage);
+          updateLocationVisible(ephmatchProfile.locationVisible);
+          updateLocationTown(ephmatchProfile.locationTown);
+          updateLocationState(ephmatchProfile.locationState);
+          updateLocationCountry(ephmatchProfile.locationCountry);
+          updateMessagingPlatform(
+            ephmatchProfile.messagingPlatform
+              ? ephmatchProfile.messagingPlatform
+              : "NONE"
+          );
+          updateMessagingUsername(ephmatchProfile.messagingUsername);
+          updateUnixID(ephmatchProfile.user.unixID);
+        }
+      } catch {
+        // There shouldn't be any reason for the submission to be rejected.
+        navigateTo("500");
       }
     };
 
@@ -70,7 +63,7 @@ const EphmatchProfile = ({ token, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [token]);
+  }, [navigateTo, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -89,26 +82,20 @@ const EphmatchProfile = ({ token, navigateTo }) => {
         messagingUsername === "NONE" ? null : messagingUsername,
     };
 
-    // Update the profile.
-    const response = await updateEphmatchProfile(token, params);
+    try {
+      // Update the profile.
+      await wso.ephmatchService.updateSelfProfile(params);
 
-    // Update Photos
-    if (photo) {
-      const fileResponse = await putCurrUserPhoto(token, photo);
-
-      if (!checkAndHandleError(fileResponse)) {
-        newErrors.push(fileResponse.data.error.message);
+      // Update Photos
+      if (photo) {
+        await wso.userService.updateUserPhoto("me", photo);
       }
-    }
-
-    // Update succeeded -> redirect them to main ephmatch page.
-    if (checkAndHandleError(response)) {
+      // Update succeeded -> redirect them to main ephmatch page.
       navigateTo("ephmatch");
-    } else {
-      newErrors.push(response.data.error.message);
+    } catch (error) {
+      newErrors.push(error.message);
+      updateErrors(newErrors);
     }
-
-    updateErrors(newErrors);
   };
 
   const handlePhotoUpload = (event) => {
@@ -165,9 +152,9 @@ const EphmatchProfile = ({ token, navigateTo }) => {
                 <Ephmatcher
                   ephmatcherProfile={dummyEphmatchProfile}
                   ephmatcher={dummyEphmatcher}
-                  token={token}
                   matched
                   photo={photo && URL.createObjectURL(photo)}
+                  wso={wso}
                 />
               </div>
             )}
@@ -183,10 +170,10 @@ const EphmatchProfile = ({ token, navigateTo }) => {
               group? Contact us at wso-dev@wso.williams.edu
             </p>
             <TagEdit
-              token={token}
               tags={tags}
               updateTags={updateTags}
               updateErrors={updateErrors}
+              wso={wso}
             />
             <br />
           </EphmatchForm>
@@ -197,18 +184,19 @@ const EphmatchProfile = ({ token, navigateTo }) => {
 };
 
 EphmatchProfile.propTypes = {
-  token: PropTypes.string.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 EphmatchProfile.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 

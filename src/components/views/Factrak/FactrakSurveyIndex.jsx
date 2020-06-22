@@ -1,17 +1,14 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import FactrakComment from "./FactrakComment";
 
 // Redux imports
 import { connect } from "react-redux";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getCurrUser, getWSO } from "../../../selectors/auth";
+import { actions } from "redux-router5";
 
-// Additional imports
-import { getSurveys } from "../../../api/factrak";
-import { checkAndHandleError } from "../../../lib/general";
-
-const FactrakSurveyIndex = ({ token, currUser }) => {
+const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
   const [surveys, updateSurveys] = useState([]);
 
   useEffect(() => {
@@ -21,14 +18,18 @@ const FactrakSurveyIndex = ({ token, currUser }) => {
         preload: ["professor", "course"],
         populateAgreements: true,
       };
-      const userSurveyResponse = await getSurveys(token, params);
-      if (checkAndHandleError(userSurveyResponse)) {
-        updateSurveys(userSurveyResponse.data.data);
+
+      try {
+        const userSurveyResponse = await wso.factrakService.listSurveys(params);
+
+        updateSurveys(userSurveyResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
     loadUserSurveys();
-  }, [token, currUser.id]);
+  }, [navigateTo, currUser.id, wso]);
 
   return (
     <div className="article">
@@ -58,15 +59,21 @@ const FactrakSurveyIndex = ({ token, currUser }) => {
 };
 
 FactrakSurveyIndex.propTypes = {
-  token: PropTypes.string.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 FactrakSurveyIndex.defaultProps = {};
 
 const mapStateToProps = (state) => ({
-  token: getToken(state),
   currUser: getCurrUser(state),
+  wso: getWSO(state),
 });
 
-export default connect(mapStateToProps)(FactrakSurveyIndex);
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakSurveyIndex);

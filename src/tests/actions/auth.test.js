@@ -1,25 +1,39 @@
 import {
-  doUpdateToken,
-  doUpdateUser,
   doRemoveCreds,
+  doUpdateAPIToken,
+  doUpdateIdentityToken,
   doUpdateRemember,
+  doUpdateUser,
 } from "../../actions/auth";
 import {
-  UPDATE_TOKEN,
-  UPDATE_USER,
   REMOVE_CREDS,
+  UPDATE_API_TOKEN,
+  UPDATE_IDEN_TOKEN,
   UPDATE_REMEMBER,
+  UPDATE_USER,
 } from "../../constants/actionTypes";
 
 describe("Authentication actions", () => {
-  it("updates tokens", () => {
-    const response = "token";
+  it("updates api token", () => {
+    const apiToken = "token";
 
     const expectedAction = {
-      type: UPDATE_TOKEN,
-      response,
+      type: UPDATE_API_TOKEN,
+      token: apiToken,
     };
-    const action = doUpdateToken(response);
+    const action = doUpdateAPIToken(apiToken);
+
+    expect(action).toEqual(expectedAction);
+  });
+
+  it("updates identity token", () => {
+    const idenToken = "token";
+
+    const expectedAction = {
+      type: UPDATE_IDEN_TOKEN,
+      token: idenToken,
+    };
+    const action = doUpdateIdentityToken(idenToken);
 
     expect(action).toEqual(expectedAction);
   });

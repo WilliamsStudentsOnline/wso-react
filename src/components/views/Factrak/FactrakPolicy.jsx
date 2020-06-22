@@ -1,19 +1,15 @@
 // React imports
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
 import { actions } from "redux-router5";
 import { connect } from "react-redux";
-import { getCurrUser, getToken } from "../../../selectors/auth";
-import { doUpdateUser } from "../../../actions/auth";
+import { getCurrUser, getWSO } from "../../../selectors/auth";
 
-// Additional imports
-import { patchCurrUser } from "../../../api/users";
-import { checkAndHandleError } from "../../../lib/general";
-
-const FactrakPolicy = ({ currUser, navigateTo, token, updateUser }) => {
+const FactrakPolicy = ({ currUser, navigateTo, wso }) => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
+  const [updated, setUpdated] = useState(false);
 
   // Handles clicking of the accept policy checkbox
   const clickHandler = (event) => {
@@ -27,16 +23,26 @@ const FactrakPolicy = ({ currUser, navigateTo, token, updateUser }) => {
     const updateParams = {
       hasAcceptedFactrakPolicy: acceptPolicy,
     };
-    const response = await patchCurrUser(token, updateParams);
 
-    // PATCH succeeded, update user
-    if (checkAndHandleError(response)) {
-      updateUser(response.data.data);
-      navigateTo("factrak");
+    try {
+      await wso.userService.updateUser("me", updateParams);
+      setUpdated(true);
+    } catch {
+      navigateTo("500");
+    }
+  };
+
+  // Wait until the api handler is updated before navigating!
+  useEffect(() => {
+    let isMounted = true;
+    if (updated && isMounted) {
+      navigateTo("factrak", {}, { reload: true });
     }
 
-    return acceptPolicy;
-  };
+    return () => {
+      isMounted = false;
+    };
+  }, [navigateTo, updated, wso]);
 
   return (
     <div className="article">
@@ -130,21 +136,17 @@ const FactrakPolicy = ({ currUser, navigateTo, token, updateUser }) => {
 FactrakPolicy.propTypes = {
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
-  token: PropTypes.string.isRequired,
-  updateUser: PropTypes.func.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   currUser: getCurrUser(state),
-  token: getToken(state),
+  wso: getWSO(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location) => dispatch(actions.navigateTo(location)),
-  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FactrakPolicy);
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakPolicy);

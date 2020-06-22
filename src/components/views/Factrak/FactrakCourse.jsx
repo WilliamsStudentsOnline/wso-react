@@ -9,23 +9,13 @@ import { Line } from "../../Skeleton";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { getToken, getCurrUser } from "../../../selectors/auth";
+import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
 
 // Additional imports
-import {
-  getCourse,
-  getSurveys,
-  getProfessors,
-  getCourseRatings,
-} from "../../../api/factrak";
-import {
-  checkAndHandleError,
-  scopes,
-  containsScopes,
-} from "../../../lib/general";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakCourse = ({ route, token, currUser }) => {
+const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
   const [course, updateCourse] = useState(null);
   const [courseSurveys, updateSurveys] = useState(null);
   const [courseProfs, updateProfs] = useState([]);
@@ -36,9 +26,11 @@ const FactrakCourse = ({ route, token, currUser }) => {
     const profID = route.params.profID ? route.params.profID : -1;
 
     const loadCourse = async () => {
-      const courseResponse = await getCourse(token, courseID);
-      if (checkAndHandleError(courseResponse)) {
-        updateCourse(courseResponse.data.data);
+      try {
+        const courseResponse = await wso.factrakService.getCourse(courseID);
+        updateCourse(courseResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
@@ -50,37 +42,57 @@ const FactrakCourse = ({ route, token, currUser }) => {
         populateClientAgreement: true,
         professorID: profID > 0 ? profID : null,
       };
-      const surveyResponse = await getSurveys(token, queryParams);
-      if (checkAndHandleError(surveyResponse)) {
-        updateSurveys(surveyResponse.data.data);
+
+      try {
+        const surveyResponse = await wso.factrakService.listSurveys(
+          queryParams
+        );
+        updateSurveys(surveyResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
     const loadRatings = async () => {
-      const ratingsResponse = await getCourseRatings(token, profID, courseID);
-      if (checkAndHandleError(ratingsResponse)) {
-        updateRatings(ratingsResponse.data.data);
+      try {
+        const ratingsResponse = await wso.factrakService.getCourseRatings(
+          courseID,
+          profID
+        );
+        updateRatings(ratingsResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
     const loadProfs = async () => {
       const params = { courseID };
-      const profResponse = await getProfessors(token, params);
-      if (checkAndHandleError(profResponse)) {
-        updateProfs(profResponse.data.data);
+
+      try {
+        const profResponse = await wso.factrakService.listProfessors(params);
+        updateProfs(profResponse.data);
+      } catch {
+        navigateTo("500");
       }
     };
 
     loadCourse();
     loadRatings(profID);
-    if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+    if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
       loadSurveys();
     } else {
       updateSurveys([...Array(10)].map((_, id) => ({ id })));
     }
 
     loadProfs();
-  }, [token, route.params.course, route.params.profID, route.params.courseID]);
+  }, [
+    navigateTo,
+    token,
+    route.params.course,
+    route.params.profID,
+    route.params.courseID,
+    wso,
+  ]);
 
   // Generates the list of professors who teach the course
   const professorList = () => {
@@ -89,7 +101,7 @@ const FactrakCourse = ({ route, token, currUser }) => {
       <div>
         View comments only for:
         <br />
-        {course && course.id ? (
+        {course?.id ? (
           courseProfs.map((prof) => (
             <React.Fragment key={prof.name}>
               <Link
@@ -127,7 +139,7 @@ const FactrakCourse = ({ route, token, currUser }) => {
         {courseSurveys.length === 0
           ? "None yet."
           : courseSurveys.map((comment) => {
-              if (containsScopes(token, [scopes.ScopeFactrakFull])) {
+              if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
                 return (
                   <FactrakComment
                     comment={comment}
@@ -157,7 +169,7 @@ const FactrakCourse = ({ route, token, currUser }) => {
       return (
         <>
           <br />
-          {containsScopes(token, [scopes.ScopeFactrakFull]) && (
+          {containsOneOfScopes(token, [scopes.ScopeFactrakFull]) && (
             <h4>
               <u>Average Course Ratings</u>
             </h4>
@@ -174,7 +186,7 @@ const FactrakCourse = ({ route, token, currUser }) => {
     return (
       <>
         <br />
-        {containsScopes(token, [scopes.ScopeFactrakFull]) && (
+        {containsOneOfScopes(token, [scopes.ScopeFactrakFull]) && (
           <h4>
             <u>Ratings for {prof.name} in this course</u>
           </h4>
@@ -209,9 +221,11 @@ const FactrakCourse = ({ route, token, currUser }) => {
 };
 
 FactrakCourse.propTypes = {
-  token: PropTypes.string.isRequired,
-  route: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  route: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 FactrakCourse.defaultProps = {};
@@ -220,8 +234,9 @@ const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("factrak.courses");
 
   return (state) => ({
-    token: getToken(state),
+    wso: getWSO(state),
     currUser: getCurrUser(state),
+    token: getAPIToken(state),
     ...routeNodeSelector(state),
   });
 };
