@@ -13,6 +13,10 @@ import { actions } from "redux-router5";
 // Additional Imports
 import { Link } from "react-router5";
 import { format } from "timeago.js";
+// import styles from "./FactrakComment.module.scss";
+
+// Elastic Imports
+import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakComment = ({
   abridged,
@@ -98,20 +102,26 @@ const FactrakComment = ({
     if (currUser.id === survey.userID) {
       return (
         <p className="survey-detail">
-          <Button
-            onClick={() =>
-              navigateTo("factrak.editSurvey", {
-                surveyID: survey.id,
-              })
-            }
-            className="inlineButton"
-          >
-            Edit
-          </Button>
+          <EuiFlexGroup>
+            <EuiFlexItem>
+              <Button
+                onClick={() =>
+                  navigateTo("factrak.editSurvey", {
+                    surveyID: survey.id,
+                  })
+                }
+                className="inlineButton"
+              >
+                Edit
+              </Button>
+            </EuiFlexItem>
 
-          <Button onClick={deleteHandler} className="inlineButton">
-            Delete
-          </Button>
+            <EuiFlexItem>
+              <Button onClick={deleteHandler} className="inlineButton">
+                Delete
+              </Button>
+            </EuiFlexItem>
+          </EuiFlexGroup>
         </p>
       );
     }

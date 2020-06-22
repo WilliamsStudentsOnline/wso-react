@@ -1,13 +1,18 @@
 .factrak {
   margin: 0 15%;
+  font-family: "Nunito", sans-serif;
 
   h3 {
     text-align: justify;
     font-size: 1.5rem;
+    font-weight: 600;
+    margin: 5px;
+    color: #45528d;
   }
 
   li {
     text-align: justify;
+    color: #45528d;
   }
 
   ul {
@@ -24,8 +29,26 @@
 .departmentCard {
   border: 2px solid #d4d4d4;
   padding: 0;
+  border-radius: 5px;
 }
 
 .factrakComment {
   margin: 10px;
+}
+
+.factrakWriteReview {
+  background-color: #4b1083;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-bottom: 5%;
+}
+
+hr {
+  height: 2px;
 }

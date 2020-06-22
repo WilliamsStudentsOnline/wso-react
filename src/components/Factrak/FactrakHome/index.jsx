@@ -16,7 +16,7 @@ import { Link } from "react-router5";
 import styles from "./FactrakHome.module.scss";
 
 // Elastic imports
-import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
+import { EuiFlexGroup, EuiFlexItem, EuiAccordion } from "@elastic/eui";
 
 const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
   const [areas, updateAreas] = useState(null);
@@ -80,20 +80,22 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
               <EuiFlexItem className={styles.square} grow={false} />
             </EuiFlexGroup>
             <ul id="dept_list">
-              {areas ? (
-                areas.map((area) => (
-                  <li key={area.name}>
-                    <Link
-                      routeName="factrak.areasOfStudy"
-                      routeParams={{ area: area.id }}
-                    >
-                      {area.name}
-                    </Link>
-                  </li>
-                ))
-              ) : (
-                <List height="80%" center numRows={46} />
-              )}
+              <EuiAccordion id="A" arrowDisplay="none" buttonContent="A">
+                {areas ? (
+                  areas.map((area) => (
+                    <li key={area.name}>
+                      <Link
+                        routeName="factrak.areasOfStudy"
+                        routeParams={{ area: area.id }}
+                      >
+                        {area.name}
+                      </Link>
+                    </li>
+                  ))
+                ) : (
+                  <List height="80%" center numRows={46} />
+                )}
+              </EuiAccordion>
             </ul>
             <EuiFlexGroup
               className="squares"
@@ -118,7 +120,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
                     if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
                       return (
                         <EuiFlexItem>
-                          <hr />
+                          <hr style={{ background: "#d4d4d4" }} />
                           <br />
                           <FactrakComment
                             className={styles.factrakComment}

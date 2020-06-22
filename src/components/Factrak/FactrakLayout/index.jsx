@@ -9,6 +9,10 @@ import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
+import styles from "./FactrakLayout.module.scss";
+
+// Elastic Imports
+import { EuiFlexGroup, EuiFlexItem, EuiFieldSearch } from "@elastic/eui";
 
 const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
   const [query, setQuery] = useState("");
@@ -139,49 +143,51 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
     return (
       <>
         <header>
-          <div className="page-head">
-            <h1>
-              <Link routeName="factrak">Factrak</Link>
-            </h1>
-
-            <ul>
-              <li>
-                <Link routeName="factrak">Home</Link>
-              </li>
-              <li>
-                <Link routeName="factrak.policy">Policy</Link>
-              </li>
-              <li>
-                <Link routeName="factrak.surveys">Your Reviews</Link>
-              </li>
-              {currUser.factrakAdmin && (
-                <li>
-                  <Link routeName="factrak.moderate">Moderate</Link>
-                </li>
-              )}
-            </ul>
-          </div>
-          <form
-            onSubmit={submitHandler}
-            onFocus={focusHandler}
-            onBlur={blurHandler}
-          >
-            <input
-              type="search"
-              id="search"
-              placeholder="Search for a professor or course"
-              onChange={factrakAutocomplete}
-              style={{ marginBottom: "0px" }}
-              value={query}
-            />
-            <input
-              type="submit"
-              value="Search"
-              className="submit"
-              data-disable-with="Search"
-            />
-            {factrakSuggestions()}
-          </form>
+          <EuiFlexGroup className={styles.pageHead}>
+            <EuiFlexItem grow={1}>
+              <h1>
+                <Link routeName="factrak">Factrak</Link>
+              </h1>
+            </EuiFlexItem>
+            <EuiFlexItem grow={4}>
+              <EuiFlexGroup direction="column">
+                <EuiFlexItem>
+                  <form
+                    onSubmit={submitHandler}
+                    onFocus={focusHandler}
+                    onBlur={blurHandler}
+                    className={styles.searchBar}
+                  >
+                    <EuiFieldSearch
+                      className={styles.search}
+                      onChange={factrakAutocomplete}
+                      placeholder="Search for a professor or course"
+                      fullWidth
+                    />
+                    {factrakSuggestions()}
+                  </form>
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiFlexGroup direction="row" className={styles.factrakText}>
+                    <EuiFlexItem>
+                      <Link routeName="factrak.surveys">My Reviews</Link>
+                    </EuiFlexItem>
+                    <EuiFlexItem>
+                      <Link routeName="factrak.policy">Policy</Link>
+                    </EuiFlexItem>
+                    {currUser.factrakAdmin && (
+                      <EuiFlexItem>
+                        <Link routeName="factrak.moderate">Moderate</Link>
+                      </EuiFlexItem>
+                    )}
+                    <EuiFlexItem grow={5} />
+                  </EuiFlexGroup>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+            <EuiFlexItem grow={3} />
+          </EuiFlexGroup>
+          <hr style={{ marginBottom: "1%", borderTop: "2px solid #d4d4d4" }} />
         </header>
         {children}
       </>

@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+// import styles from "./FactrakSearch.module.scss";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
@@ -9,6 +10,7 @@ import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
+// import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 // FactrakSearch refers to the search result page
 const FactrakSearch = ({ route, navigateTo, wso }) => {
