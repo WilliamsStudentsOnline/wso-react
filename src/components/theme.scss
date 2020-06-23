@@ -79,17 +79,36 @@ $cool-gray-8: #555f61;
 $cool-gray-9: #373d3f;
 $cool-gray-10: #131516;
 
+/* FONT STYLES */
+$default-font: "Nunito", system-ui, -apple-system, BlinkMacSystemFont,
+  "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+
+$base-font-size: 16px;
+
 /* FONT SIZES */
-$f-0: 12px;
-$f-1: 14px;
-$f-2: 18px;
-$f-3: 20px;
-$f-4: 24px;
-$f-5: 30px;
-$f-6: 36px;
-$f-7: 48px;
-$f-8: 60px;
-$f-9: 72px;
+
+/* Calculates the rem */
+@function calculateRem($size) {
+  $remSize: $size / 16px;
+  @return #{$remSize}rem;
+}
+
+/* Mixin for usage */
+@mixin fontSize($size) {
+  font-size: $size; //Fallback in px
+  font-size: calculateRem($size);
+}
+
+$f-0: calcluateRem(12px);
+$f-1: calculateRem(14px);
+$f-2: calculateRem(18px);
+$f-3: calculateRem(20px);
+$f-4: calcualteRem(24px);
+$f-5: calcualteRem(30px);
+$f-6: calcualteRem(36px);
+$f-7: calcualteRem(48px);
+$f-8: calcualteRem(60px);
+$f-9: calcualteRem(72px);
 
 /* PIXEL SPACING */
 $px-0: 1px;
