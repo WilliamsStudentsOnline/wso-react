@@ -1,4 +1,4 @@
-.searchTable {
+.professorTables {
   font-family: "Nunito", sans-serif;
 
   thead tr {
@@ -28,17 +28,28 @@
   }
 }
 
+.factrakDepartments {
+  justify-content: center;
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 5px;
+    color: #45528d;
+  }
+}
+
 .tableRow {
-  text-align: center;
+  text-align: justify;
   margin-top: 10px;
 }
 
-.unix {
+.title {
   border-bottom: 2px solid #c1c7c9;
   border-left: 2px solid #c1c7c9;
   border-right: 2px solid #c1c7c9;
 }
 
-.course {
+.courseTitle {
   border-right: 2px solid #c1c7c9;
 }

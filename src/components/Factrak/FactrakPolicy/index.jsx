@@ -49,7 +49,7 @@ const FactrakPolicy = ({ currUser, navigateTo, wso }) => {
   }, [navigateTo, updated, wso]);
 
   return (
-    <div className="article">
+    <div>
       <section>
         <EuiFlexGroup
           direction="column"

@@ -36,7 +36,7 @@ const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
   }, [navigateTo, currUser.id, wso]);
 
   return (
-    <div className="article">
+    <div>
       <section>
         <EuiFlexGroup
           className={styles.reviewList}
@@ -59,7 +59,7 @@ const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
               ))}
             </>
           ) : (
-            <h1 className="no-matches-found">No reviews yet.</h1>
+            <h1>No reviews yet.</h1>
           )}
         </EuiFlexGroup>
       </section>

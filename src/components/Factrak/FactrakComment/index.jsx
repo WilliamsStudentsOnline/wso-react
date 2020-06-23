@@ -13,10 +13,10 @@ import { actions } from "redux-router5";
 // Additional Imports
 import { Link } from "react-router5";
 import { format } from "timeago.js";
-// import styles from "./FactrakComment.module.scss";
+import styles from "./FactrakComment.module.scss";
 
 // Elastic Imports
-import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
+import { EuiFlexGroup, EuiFlexItem, EuiBadge } from "@elastic/eui";
 
 const FactrakComment = ({
   abridged,
@@ -85,13 +85,32 @@ const FactrakComment = ({
 
     return (
       <h1>
-        <span>{survey.totalAgree ? survey.totalAgree : 0}</span>
-        &nbsp;agree&emsp;
-        <span>{survey.totalDisagree ? survey.totalDisagree : 0}</span>
-        &nbsp;disagree
-        <span className="factrak-flag" title="Flagged for moderator attention">
-          {survey.flagged && <>&#10071;</>}
-        </span>
+        <EuiFlexGroup>
+          <EuiFlexItem>
+            <EuiBadge
+              iconType="faceHappy"
+              color="#78dca0"
+              className={styles.agreeCount}
+            >
+              <span>{survey.totalAgree ? survey.totalAgree : 0}</span>
+            </EuiBadge>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiBadge
+              iconType="faceSad"
+              color="#dc3c32"
+              className={styles.agreeCount}
+            >
+              <span>{survey.totalDisagree ? survey.totalDisagree : 0}</span>
+            </EuiBadge>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <span title="Flagged for moderator attention">
+              {survey.flagged && <>&#10071;</>}
+            </span>
+          </EuiFlexItem>
+          <EuiFlexItem grow={7} />
+        </EuiFlexGroup>
       </h1>
     );
   };
@@ -101,7 +120,7 @@ const FactrakComment = ({
     // If the current user was the one who made the survey
     if (currUser.id === survey.userID) {
       return (
-        <p className="survey-detail">
+        <p>
           <EuiFlexGroup>
             <EuiFlexItem>
               <Button
@@ -110,16 +129,13 @@ const FactrakComment = ({
                     surveyID: survey.id,
                   })
                 }
-                className="inlineButton"
               >
                 Edit
               </Button>
             </EuiFlexItem>
 
             <EuiFlexItem>
-              <Button onClick={deleteHandler} className="inlineButton">
-                Delete
-              </Button>
+              <Button onClick={deleteHandler}>Delete</Button>
             </EuiFlexItem>
           </EuiFlexGroup>
         </p>
@@ -127,7 +143,7 @@ const FactrakComment = ({
     }
 
     return (
-      <p className="comment-detail">{`posted about ${format(
+      <p className={styles.commentDetail}>{`posted about ${format(
         new Date(survey.createdTime)
       )}`}</p>
     );
@@ -152,14 +168,13 @@ const FactrakComment = ({
     if (survey.wouldTakeAnother)
       return (
         <>
-          <br />I would take another course with this professor
+          <br />I <strong>would</strong> take another course with this professor
         </>
       );
     return (
       <>
-        <br />I would
-        <b>&nbsp;not&nbsp;</b>
-        take another course with this professor
+        <br />I <strong>would not</strong> take another course with this
+        professor
       </>
     );
   };
@@ -170,14 +185,12 @@ const FactrakComment = ({
     if (survey.wouldRecommendCourse)
       return (
         <>
-          <br />I would recommend this course to a friend
+          <br />I <strong>would</strong> recommend this course to a friend
         </>
       );
     return (
       <>
-        <br />I would
-        <b>&nbsp;not&nbsp;</b>
-        recommend this course to a friend
+        <br />I <strong>would not</strong> recommend this course to a friend
       </>
     );
   };
@@ -211,9 +224,7 @@ const FactrakComment = ({
         </Button>
         {!abridged && !survey.flagged && (
           <span>
-            <Button className="inlineButton" onClick={flagHandler}>
-              Flag for moderator attention
-            </Button>
+            <Button onClick={flagHandler}>Flag for moderator attention</Button>
           </span>
         )}
       </>
@@ -225,25 +236,25 @@ const FactrakComment = ({
     if (abridged) {
       if (survey.comment.length > 145) {
         return (
-          <div className="survey-text">
-            {`${survey.comment.substring(0, 145)}...`}
+          <div className={styles.surveyText}>
+            {`${survey.comment.substring(0, 145)}`}
             <div>
               <Link
                 routeName="factrak.professors"
                 routeParams={{ profID: survey.professorID }}
               >
-                See More
+                <p className={styles.seeMore}>See More...</p>
               </Link>
             </div>
           </div>
         );
       }
 
-      return <div className="survey-text">{survey.comment}</div>;
+      return <div className>{survey.comment}</div>;
     }
 
     return (
-      <div className="survey-text">
+      <div className>
         {survey.comment}
         <br />
         {wouldTakeAnother()}
@@ -291,8 +302,8 @@ const FactrakComment = ({
 
   if (survey.lorem)
     return (
-      <div className="comment">
-        <div className="comment-content blurred">
+      <div className>
+        <div className>
           <h1>
             {showProf && (
               <Link routeName="factrak" style={{ color: "transparent" }}>
@@ -309,7 +320,7 @@ const FactrakComment = ({
           </h1>
 
           {surveyText()}
-          <p className="comment-detail">
+          <p className={styles.commentDetail}>
             posted about <span className="blurred">1793</span>
           </p>
         </div>
@@ -318,8 +329,8 @@ const FactrakComment = ({
 
   return (
     <div className="comment">
-      <div className="comment-content">
-        <h1>
+      <div className={styles.commentContent}>
+        <h1 className={styles.commentHeader}>
           {profName()}
           {courseLink()}
         </h1>

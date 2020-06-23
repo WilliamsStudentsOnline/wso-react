@@ -60,7 +60,7 @@ const FactrakModerate = ({ navigateTo, wso }) => {
   // Generate a flagged survey.
   const generateFlaggedSurvey = (f) => {
     return (
-      <div className="comment" key={`comment${f.id}`} id={`comment${f.id}`}>
+      <div key={`comment${f.id}`} id={`comment${f.id}`}>
         <div>
           <span>
             <Link
@@ -79,19 +79,11 @@ const FactrakModerate = ({ navigateTo, wso }) => {
             (+{f.totalAgree}, -{f.totalDisagree})
           </span>
           <p>{f.comment}</p>
-          <button
-            className="inlineButton"
-            type="button"
-            onClick={() => unflag(f.id)}
-          >
+          <button type="button" onClick={() => unflag(f.id)}>
             Unflag
           </button>
           &ensp;
-          <button
-            className="inlineButton"
-            onClick={() => deleteHandler(f.id)}
-            type="button"
-          >
+          <button onClick={() => deleteHandler(f.id)} type="button">
             Delete
           </button>
         </div>
@@ -105,8 +97,8 @@ const FactrakModerate = ({ navigateTo, wso }) => {
   };
 
   return (
-    <article className="facebook-profile">
-      <section className="margin-vertical-small">
+    <article>
+      <section>
         <h3>Moderation</h3>
         {generateFlaggedSurveys()}
       </section>

@@ -62,19 +62,11 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
 
   return (
     <article className={styles.factrak}>
-      <EuiFlexGroup
-        className="container"
-        direction="rowReverse"
-        justifyContent="space-around"
-      >
+      <EuiFlexGroup direction="rowReverse" justifyContent="space-around">
         <EuiFlexItem className="sidebar" grow={2}>
           <h3>Departments</h3>
           <div className={styles.departmentCard} description="">
-            <EuiFlexGroup
-              className="squares"
-              direction="row"
-              justifyContent="space-between"
-            >
+            <EuiFlexGroup direction="row" justifyContent="space-between">
               <EuiFlexItem className={styles.square} grow={false} />
               <EuiFlexItem />
               <EuiFlexItem className={styles.square} grow={false} />
@@ -97,11 +89,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
                 )}
               </EuiAccordion>
             </ul>
-            <EuiFlexGroup
-              className="squares"
-              direction="row"
-              justifyContent="space-between"
-            >
+            <EuiFlexGroup direction="row" justifyContent="space-between">
               <EuiFlexItem className={styles.square} grow={false} />
               <EuiFlexItem />
               <EuiFlexItem className={styles.square} grow={false} />
@@ -109,8 +97,8 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
           </div>
         </EuiFlexItem>
 
-        <EuiFlexItem className="main" grow={3}>
-          <section className="lead">
+        <EuiFlexItem grow={3}>
+          <section>
             <h3>Recent Reviews</h3>
             <br />
             <FactrakDeficitMessage currUser={currUser} />

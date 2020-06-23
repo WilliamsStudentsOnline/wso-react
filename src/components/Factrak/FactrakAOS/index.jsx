@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Line } from "../../common/Skeleton";
+import styles from "./FactrakAOS.module.scss";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
@@ -10,6 +11,7 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
 import { Link } from "react-router5";
+import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakAOS = ({ navigateTo, route, wso }) => {
   const [courses, updateCourses] = useState(null);
@@ -66,7 +68,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
   // Generates a row containing the prof information.
   const generateProfRow = (prof) => {
     return (
-      <tr key={prof.id}>
+      <tr key={prof.id} className={styles.tableRow}>
         <td>
           <Link
             routeName="factrak.professors"
@@ -76,7 +78,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
           </Link>
         </td>
 
-        <td>{prof.title}</td>
+        <td className={styles.title}>{prof.title}</td>
         <td>
           <a href={`mailto:${prof.unixID}@williams.edu`}>{prof.unixID}</a>
         </td>
@@ -106,29 +108,24 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
     return (
       <>
         <br />
-        <h4>
-          {area?.name ? (
-            `Professors in ${area.name}`
-          ) : (
-            <>
-              Professors in <Line width="20%" />
-            </>
-          )}
-        </h4>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Title</th>
-              <th className="unix-column">Unix</th>
-            </tr>
-          </thead>
-          <tbody>
-            {profs
-              ? profs.map((prof) => generateProfRow(prof))
-              : [...Array(5)].map((_, i) => profSkeleton(i))}
-          </tbody>
-        </table>
+        <EuiFlexGroup direction="column" alignItems="center">
+          <EuiFlexItem style={{ width: "70%", justifyContent: "center" }}>
+            <table className={styles.professorTables}>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Title</th>
+                  <th>Unix</th>
+                </tr>
+              </thead>
+              <tbody>
+                {profs
+                  ? profs.map((prof) => generateProfRow(prof))
+                  : [...Array(5)].map((_, i) => profSkeleton(i))}
+              </tbody>
+            </table>
+          </EuiFlexItem>
+        </EuiFlexGroup>
       </>
     );
   };
@@ -160,8 +157,8 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
   // Generates a row containing the course information.
   const generateCourseRow = (course) => {
     return (
-      <tr key={course.id}>
-        <td className="col-20">
+      <tr key={course.id} className={styles.tableRow}>
+        <td className={styles.courseTitle}>
           <Link
             routeName="factrak.courses"
             routeParams={{ courseID: course.id }}
@@ -169,7 +166,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
             {`${area.abbreviation} ${course.number}`}
           </Link>
         </td>
-        <td className="col-80">{generateCourseProfessors(course)}</td>
+        <td>{generateCourseProfessors(course)}</td>
       </tr>
     );
   };
@@ -177,10 +174,10 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
   // Generates a skeleton for the course
   const courseSkeleton = (key) => (
     <tr key={key}>
-      <td className="col-20">
+      <td>
         <Line width="30%" />
       </td>
-      <td className="col-80">
+      <td>
         <Line width="50%" />
       </td>
     </tr>
@@ -192,33 +189,54 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
     if (courses && courses.length === 0) return null;
     return (
       <>
-        <h4>Courses</h4>
-        <table>
-          <thead>
-            <tr>
-              <th className="col-20">Course</th>
-              <th className="col-80">Professors</th>
-            </tr>
-          </thead>
-          <tbody>
-            {courses
-              ? courses.map((course) => generateCourseRow(course))
-              : [...Array(5)].map((_, i) => courseSkeleton(i))}
-          </tbody>
-        </table>
+        <EuiFlexGroup direction="column" alignItems="center">
+          <EuiFlexItem>
+            <h4>Courses</h4>
+          </EuiFlexItem>
+          <EuiFlexItem style={{ width: "70%", justifyContent: "center" }}>
+            <table className={styles.professorTables}>
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Professors</th>
+                </tr>
+              </thead>
+              <tbody>
+                {courses
+                  ? courses.map((course) => generateCourseRow(course))
+                  : [...Array(5)].map((_, i) => courseSkeleton(i))}
+              </tbody>
+            </table>
+          </EuiFlexItem>
+        </EuiFlexGroup>
       </>
     );
   };
 
   return (
-    <article className="factrak-home">
-      <section className="margin-vertical-small">
-        <h3>{area && area.name ? area.name : <Line width="30%" />}</h3>
-        {generateProfs()}
-      </section>
+    <EuiFlexGroup className={styles.factrakDepartments} direction="column">
+      <EuiFlexItem>
+        <h3 style={{ marginLeft: "15%" }}>
+          {area && area.name ? area.name : <Line width="30%" />} Department
+        </h3>
+      </EuiFlexItem>
+      <EuiFlexItem style={{ alignItems: "center" }}>
+        <EuiFlexGroup style={{ width: "70%" }}>
+          <EuiFlexItem grow={1}>
+            <h2>Professors</h2>
+          </EuiFlexItem>
+          <EuiFlexItem grow={1}>
+            <h2>Courses</h2>
+          </EuiFlexItem>
+          <EuiFlexItem grow={6} />
+        </EuiFlexGroup>
+      </EuiFlexItem>
 
-      <section className="margin-vertical-small">{generateCourses()}</section>
-    </article>
+      <EuiFlexItem>
+        {generateProfs()}
+        {generateCourses()}
+      </EuiFlexItem>
+    </EuiFlexGroup>
   );
 };
 

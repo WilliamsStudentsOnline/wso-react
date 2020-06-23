@@ -10,7 +10,8 @@ import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
-// import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
+import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
+import styles from "./FactrakSearch.module.scss";
 
 // FactrakSearch refers to the search result page
 const FactrakSearch = ({ route, navigateTo, wso }) => {
@@ -66,7 +67,7 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
   const professorRow = (prof) => {
     // Doesn't check for existence of professor in LDAP.
     return (
-      <tr key={prof.name}>
+      <tr key={prof.name} className={styles.tableRow}>
         <td>
           <Link
             routeName="factrak.professors"
@@ -75,7 +76,7 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
             {prof.name}
           </Link>
         </td>
-        <td>{prof?.unixID}</td>
+        <td className={styles.unix}>{prof?.unixID}</td>
         <td>{prof?.office?.number}</td>
       </tr>
     );
@@ -85,20 +86,26 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
   const professorDisplay = () => {
     if (!profs || profs.length === 0) return null;
     return (
-      <section className="margin-vertical-small">
-        <br />
-        <h4>Professors</h4>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th className="unix-column">Unix</th>
-              <th>Office</th>
-            </tr>
-          </thead>
-          <tbody>{profs.map((prof) => professorRow(prof))}</tbody>
-        </table>
-      </section>
+      <EuiFlexItem style={{ width: "100%" }}>
+        <EuiFlexGroup direction="column" alignItems="center">
+          <EuiFlexItem>
+            <br />
+            <h4>Professors</h4>
+          </EuiFlexItem>
+          <EuiFlexItem style={{ width: "70%" }}>
+            <table className={styles.searchTable}>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Unix</th>
+                  <th>Office</th>
+                </tr>
+              </thead>
+              <tbody>{profs.map((prof) => professorRow(prof))}</tbody>
+            </table>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiFlexItem>
     );
   };
 
@@ -127,8 +134,8 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
   // Generates one row of course results.
   const courseRow = (course) => {
     return (
-      <tr key={course.id}>
-        <td className="col-20">
+      <tr key={course.id} className={styles.tableRow}>
+        <td className={styles.course}>
           <Link
             routeName="factrak.courses"
             routeParams={{ courseID: course.id }}
@@ -136,7 +143,7 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
             {course.areaOfStudy.abbreviation} {course.number}
           </Link>
         </td>
-        <td className="col-80">{courseRowProfs(course)}</td>
+        <td>{courseRowProfs(course)}</td>
       </tr>
     );
   };
@@ -145,18 +152,25 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
   const courseDisplay = () => {
     if (!courses || courses.length === 0) return null;
     return (
-      <section className="margin-vertical-small">
-        <h4>Courses</h4>
-        <table>
-          <thead>
-            <tr>
-              <th className="col-20">Course</th>
-              <th className="col-80">Professors</th>
-            </tr>
-          </thead>
-          <tbody>{courses.map((course) => courseRow(course))}</tbody>
-        </table>
-      </section>
+      <EuiFlexItem style={{ width: "100%" }}>
+        <EuiFlexGroup direction="column" alignItems="center">
+          <EuiFlexItem>
+            <br />
+            <h4>Courses</h4>
+          </EuiFlexItem>
+          <EuiFlexItem style={{ width: "70%" }}>
+            <table className={styles.searchTable}>
+              <thead>
+                <tr>
+                  <th>Course</th>
+                  <th>Professors</th>
+                </tr>
+              </thead>
+              <tbody>{courses.map((course) => courseRow(course))}</tbody>
+            </table>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiFlexItem>
     );
   };
 
@@ -166,7 +180,7 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
       return (
         <>
           <br />
-          <h1 className="no-matches-found">No matches were found.</h1>
+          <h1>No matches were found.</h1>
         </>
       );
     }
@@ -174,11 +188,11 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
   };
 
   return (
-    <article className="factrak-home">
+    <EuiFlexGroup direction="column" alignItems="center">
       {professorDisplay()}
       {courseDisplay()}
       {noResults()}
-    </article>
+    </EuiFlexGroup>
   );
 };
 
