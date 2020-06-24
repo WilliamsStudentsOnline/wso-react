@@ -68,7 +68,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
   return (
     <article className={styles.factrak}>
       <EuiFlexGroup direction="rowReverse" justifyContent="space-around">
-        <EuiFlexItem className="sidebar" grow={2}>
+        <EuiFlexItem grow={2}>
           <h3>Departments</h3>
           <div className={styles.departmentCard} description="">
             <EuiFlexGroup direction="row" justifyContent="space-between">
@@ -80,21 +80,16 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
               <EuiListGroup>
                 {areas ? (
                   areas.map((area) => (
-                    <Link
-                      routeName="factrak.areasOfStudy"
-                      routeParams={{ area: area.id }}
-                    >
-                      <EuiListGroupItem label={area.name}>
-                        <li key={area.name}>
-                          <Link
-                            routeName="factrak.areasOfStudy"
-                            routeParams={{ area: area.id }}
-                          >
-                            {area.name}
-                          </Link>
-                        </li>
-                      </EuiListGroupItem>
-                    </Link>
+                    <EuiListGroupItem label={area.name}>
+                      <li key={area.name}>
+                        <Link
+                          routeName="factrak.areasOfStudy"
+                          routeParams={{ area: area.id }}
+                        >
+                          {area.name}
+                        </Link>
+                      </li>
+                    </EuiListGroupItem>
                   ))
                 ) : (
                   <List height="80%" center numRows={46} />
