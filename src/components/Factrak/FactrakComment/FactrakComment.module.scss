@@ -1,20 +1,22 @@
+@import "../../theme";
+
 .agreeCount {
   border-radius: 15px;
 }
 
 .surveyText {
-  font-family: "Nunito", sans-serif;
-  color: #555f61;
+  font-family: $default-font;
+  color: $cool-gray-8;
   line-height: 1.2rem;
 }
 
 .seeMore {
-  font-size: 0.9rem;
-  color: #8c979a;
+  font-size: $f-1;
+  color: $cool-gray-6;
 }
 
 .commentHeader {
-  font-size: 1.1rem;
+  font-size: $f-2;
   font-weight: 600;
   margin-bottom: 10px;
 }
@@ -24,8 +26,8 @@
 }
 
 .commentDetail {
-  font-size: 0.8rem;
-  color: #c1c7c9;
+  font-size: $f-0;
+  color: $cool-gray-4;
   font-style: italic;
   margin-top: 10px;
 }

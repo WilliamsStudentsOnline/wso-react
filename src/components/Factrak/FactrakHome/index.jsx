@@ -16,7 +16,12 @@ import { Link } from "react-router5";
 import styles from "./FactrakHome.module.scss";
 
 // Elastic imports
-import { EuiFlexGroup, EuiFlexItem, EuiAccordion } from "@elastic/eui";
+import {
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiListGroup,
+  EuiListGroupItem,
+} from "@elastic/eui";
 
 const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
   const [areas, updateAreas] = useState(null);
@@ -72,22 +77,29 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
               <EuiFlexItem className={styles.square} grow={false} />
             </EuiFlexGroup>
             <ul id="dept_list">
-              <EuiAccordion id="A" arrowDisplay="none" buttonContent="A">
+              <EuiListGroup>
                 {areas ? (
                   areas.map((area) => (
-                    <li key={area.name}>
-                      <Link
-                        routeName="factrak.areasOfStudy"
-                        routeParams={{ area: area.id }}
-                      >
-                        {area.name}
-                      </Link>
-                    </li>
+                    <Link
+                      routeName="factrak.areasOfStudy"
+                      routeParams={{ area: area.id }}
+                    >
+                      <EuiListGroupItem label={area.name}>
+                        <li key={area.name}>
+                          <Link
+                            routeName="factrak.areasOfStudy"
+                            routeParams={{ area: area.id }}
+                          >
+                            {area.name}
+                          </Link>
+                        </li>
+                      </EuiListGroupItem>
+                    </Link>
                   ))
                 ) : (
                   <List height="80%" center numRows={46} />
                 )}
-              </EuiAccordion>
+              </EuiListGroup>
             </ul>
             <EuiFlexGroup direction="row" justifyContent="space-between">
               <EuiFlexItem className={styles.square} grow={false} />

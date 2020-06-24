@@ -12,7 +12,7 @@ import { Link } from "react-router5";
 import styles from "./FactrakLayout.module.scss";
 
 // Elastic Imports
-import { EuiFlexGroup, EuiFlexItem, EuiFieldSearch } from "@elastic/eui";
+import { EuiFieldSearch, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
   const [query, setQuery] = useState("");

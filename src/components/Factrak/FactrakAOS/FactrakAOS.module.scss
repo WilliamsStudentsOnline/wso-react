@@ -1,26 +1,28 @@
+@import "../../theme";
+
 .professorTables {
-  font-family: "Nunito", sans-serif;
+  font-family: $default-font;
 
   thead tr {
-    background: #4b3081;
+    background: $primary-6;
     color: white;
     font-weight: 400;
   }
 
   th {
     font-weight: 200;
-    font-family: "Nunito", sans-serif;
+    font-family: $default-font;
     height: 25px;
-    padding: 8px;
+    padding: $px-3;
     text-align: justify;
     padding-left: 30px;
   }
 
   td {
-    border-bottom: 2px solid #c1c7c9;
+    border-bottom: 2px solid $cool-gray-4;
     height: 30px;
     padding: 10px;
-    background-color: #f6f6f6;
+    background-color: $cool-gray-1;
   }
 
   table {
@@ -32,10 +34,10 @@
   justify-content: center;
 
   h3 {
-    font-size: 1.5rem;
+    font-size: $f-4;
     font-weight: 600;
     margin: 5px;
-    color: #45528d;
+    color: $blue-5;
   }
 }
 
@@ -45,11 +47,11 @@
 }
 
 .title {
-  border-bottom: 2px solid #c1c7c9;
-  border-left: 2px solid #c1c7c9;
-  border-right: 2px solid #c1c7c9;
+  border-bottom: 2px solid $cool-gray-4;
+  border-left: 2px solid $cool-gray-4;
+  border-right: 2px solid $cool-gray-4;
 }
 
 .courseTitle {
-  border-right: 2px solid #c1c7c9;
+  border-right: 2px solid $cool-gray-4;
 }

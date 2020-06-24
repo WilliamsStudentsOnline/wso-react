@@ -16,7 +16,7 @@ import { format } from "timeago.js";
 import styles from "./FactrakComment.module.scss";
 
 // Elastic Imports
-import { EuiFlexGroup, EuiFlexItem, EuiBadge } from "@elastic/eui";
+import { EuiBadge, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakComment = ({
   abridged,
