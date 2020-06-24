@@ -99,16 +99,16 @@ $base-font-size: 16px;
   font-size: calculateRem($size);
 }
 
-$f-0: calcluateRem(12px);
+$f-0: calculateRem(12px);
 $f-1: calculateRem(14px);
 $f-2: calculateRem(18px);
 $f-3: calculateRem(20px);
-$f-4: calcualteRem(24px);
-$f-5: calcualteRem(30px);
-$f-6: calcualteRem(36px);
-$f-7: calcualteRem(48px);
-$f-8: calcualteRem(60px);
-$f-9: calcualteRem(72px);
+$f-4: calculateRem(24px);
+$f-5: calculateRem(30px);
+$f-6: calculateRem(36px);
+$f-7: calculateRem(48px);
+$f-8: calculateRem(60px);
+$f-9: calculateRem(72px);
 
 /* PIXEL SPACING */
 $px-0: 1px;
