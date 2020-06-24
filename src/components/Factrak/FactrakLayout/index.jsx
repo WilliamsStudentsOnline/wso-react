@@ -187,7 +187,7 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
             </EuiFlexItem>
             <EuiFlexItem grow={3} />
           </EuiFlexGroup>
-          <hr style={{ marginBottom: "1%", borderTop: "2px solid #d4d4d4" }} />
+          <hr className={styles.lineBreak} />
         </header>
         {children}
       </>

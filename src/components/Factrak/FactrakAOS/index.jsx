@@ -109,7 +109,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
       <>
         <br />
         <EuiFlexGroup direction="column" alignItems="center">
-          <EuiFlexItem style={{ width: "70%", justifyContent: "center" }}>
+          <EuiFlexItem className={styles.mainPage}>
             <table className={styles.professorTables}>
               <thead>
                 <tr>
@@ -193,7 +193,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
           <EuiFlexItem>
             <h4>Courses</h4>
           </EuiFlexItem>
-          <EuiFlexItem style={{ width: "70%", justifyContent: "center" }}>
+          <EuiFlexItem className={styles.mainPage}>
             <table className={styles.professorTables}>
               <thead>
                 <tr>

@@ -86,13 +86,13 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
   const professorDisplay = () => {
     if (!profs || profs.length === 0) return null;
     return (
-      <EuiFlexItem style={{ width: "100%" }}>
+      <EuiFlexItem className={styles.parent}>
         <EuiFlexGroup direction="column" alignItems="center">
           <EuiFlexItem>
             <br />
             <h4>Professors</h4>
           </EuiFlexItem>
-          <EuiFlexItem style={{ width: "70%" }}>
+          <EuiFlexItem className={styles.child}>
             <table className={styles.searchTable}>
               <thead>
                 <tr>
@@ -152,13 +152,13 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
   const courseDisplay = () => {
     if (!courses || courses.length === 0) return null;
     return (
-      <EuiFlexItem style={{ width: "100%" }}>
+      <EuiFlexItem className={styles.parent}>
         <EuiFlexGroup direction="column" alignItems="center">
           <EuiFlexItem>
             <br />
             <h4>Courses</h4>
           </EuiFlexItem>
-          <EuiFlexItem style={{ width: "70%" }}>
+          <EuiFlexItem className={styles.child}>
             <table className={styles.searchTable}>
               <thead>
                 <tr>
