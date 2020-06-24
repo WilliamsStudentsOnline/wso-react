@@ -27,7 +27,7 @@ const Ephmatcher = ({
         const photoResponse = await wso.userService.getUserLargePhoto(
           ephmatcher.unixID
         );
-        updateUserPhoto(URL.createObjectURL(photoResponse.data));
+        updateUserPhoto(URL.createObjectURL(photoResponse));
       } catch {
         // Handle it via the skeleton
       }

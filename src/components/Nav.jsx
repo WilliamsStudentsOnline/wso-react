@@ -26,7 +26,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
         const photoResponse = await wso.userService.getUserThumbPhoto(
           currUser.unixID
         );
-        updateUserPhoto(URL.createObjectURL(photoResponse.data));
+        updateUserPhoto(URL.createObjectURL(photoResponse));
       } catch {
         // Do nothing - it's okay to gracefully handle this.
       }
