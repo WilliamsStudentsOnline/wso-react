@@ -39,6 +39,7 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
           <article className={styles.search}>
             <form onSubmit={submitHandler}>
               <input
+                // still trying to include search icon to the left, might need to use Font Awesome?
                 id="search"
                 type="search"
                 placeholder="Search Facebook"
@@ -48,9 +49,10 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
               />
             </form>
           </article>
+          <br />
           <article className={styles.options}>
-            <EuiFlexGroup>
-              <EuiFlexItem>
+            <EuiFlexGroup justifyContent="center">
+              <EuiFlexItem grow={false}>
                 {currUser === null
                   ? null
                   : [
@@ -62,7 +64,7 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
                       </Link>,
                     ]}
               </EuiFlexItem>
-              <EuiFlexItem>
+              <EuiFlexItem grow={false}>
                 <Link routeName="facebook.help">Help</Link>
               </EuiFlexItem>
             </EuiFlexGroup>
