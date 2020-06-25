@@ -9,7 +9,7 @@ import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
-import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
+import { EuiFormControlLayout, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 import styles from "./FacebookLayout.module.scss";
 
 const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
@@ -38,15 +38,16 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
           </h1>
           <article className={styles.search}>
             <form onSubmit={submitHandler}>
-              <input
-                // still trying to include search icon to the left, might need to use Font Awesome?
-                id="search"
-                type="search"
-                placeholder="Search Facebook"
-                autoFocus
-                onChange={(event) => updateQuery(event.target.value)}
-                value={query}
-              />
+              <EuiFormControlLayout icon="search">
+                <input
+                  id="search"
+                  type="search"
+                  placeholder="Search Facebook"
+                  autoFocus
+                  onChange={(event) => updateQuery(event.target.value)}
+                  value={query}
+                />
+              </EuiFormControlLayout>
             </form>
           </article>
           <br />

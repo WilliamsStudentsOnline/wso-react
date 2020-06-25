@@ -23,14 +23,16 @@ body {
 }
 
 .search {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .search input {
   background-color: $cool-gray-0;
   border: 2px solid $cool-gray-3;
-  border-radius: 5px;
-  padding-left: 40px;
+  border-radius: 7px;
+  padding-left: 35px;
   height: 35px;
   width: 650px;
 }
