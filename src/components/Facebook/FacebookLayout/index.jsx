@@ -38,7 +38,10 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
           </h1>
           <article className={styles.search}>
             <form onSubmit={submitHandler}>
-              <EuiFormControlLayout icon="search">
+              <EuiFormControlLayout
+                icon="search"
+                className={styles.formControlLayout}
+              >
                 <input
                   id="search"
                   type="search"
@@ -54,16 +57,14 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
           <article className={styles.options}>
             <EuiFlexGroup justifyContent="center">
               <EuiFlexItem grow={false}>
-                {currUser === null
-                  ? null
-                  : [
-                      <Link
-                        routeName="facebook.users"
-                        routeParams={{ userID: currUser.id }}
-                      >
-                        My Profile
-                      </Link>,
-                    ]}
+                {currUser && [
+                  <Link
+                    routeName="facebook.users"
+                    routeParams={{ userID: currUser.id }}
+                  >
+                    My Profile
+                  </Link>,
+                ]}
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <Link routeName="facebook.help">Help</Link>
