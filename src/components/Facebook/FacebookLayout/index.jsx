@@ -9,7 +9,12 @@ import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
-import { EuiFormControlLayout, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
+import {
+  EuiFormControlLayout,
+  EuiFlexGroup,
+  EuiFlexItem,
+  EuiSpacer,
+} from "@elastic/eui";
 import styles from "./FacebookLayout.module.scss";
 
 const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
@@ -35,6 +40,7 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
         <div className="page-head">
           <h1>
             <Link routeName="facebook">Facebook</Link>
+            <EuiSpacer size="m" />
           </h1>
           <article className={styles.search}>
             <form onSubmit={submitHandler}>
