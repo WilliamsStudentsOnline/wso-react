@@ -12,6 +12,8 @@ import { Link } from "react-router5";
 
 // Additional Imports
 import { userTypeStudent } from "../../../constants/general";
+import { EuiFlexItem } from "@elastic/eui";
+import styles from "./FacebookHome.module.scss";
 
 const FacebookHome = ({ wso, route, navigateTo }) => {
   const [results, updateResults] = useState(null);
@@ -68,7 +70,7 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
     }
   };
 
-  // Generates the user's room
+  // Generates the user's room, might be phased out with ListView
   const listUserRoom = (user) => {
     if (user.type === userTypeStudent && user.dormVisible && user.dormRoom) {
       return `${user.dormRoom.dorm.name} ${user.dormRoom.number}`;
@@ -87,7 +89,7 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
     return `'${user.classYear % 100}`;
   };
 
-  // Displays results in a list view when there are too many results
+  // Displays results in a list view when there are too many results, might be phased out
   const ListView = () => {
     return (
       <>
@@ -131,15 +133,25 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
   // Displays results in a grid view when there aren't too many results
   const GridView = () => {
     return (
-      <div className="grid-wrap">
+      <div className={styles.gridWrap}>
+        <div className={styles.results}>{total} results found</div>
+        <br />
         {results.map((user) => (
-          <FacebookGridUser
-            gridUser={user}
-            gridUserClassYear={classYear(user)}
-            key={user.id}
-            wso={wso}
-          />
+          <EuiFlexItem grow={false}>
+            <FacebookGridUser
+              gridUser={user}
+              gridUserClassYear={classYear(user)}
+              key={user.id}
+              wso={wso}
+            />
+          </EuiFlexItem>
         ))}
+        <PaginationButtons
+          clickHandler={clickHandler}
+          page={page}
+          total={total}
+          perPage={perPage}
+        />
       </div>
     );
   };
@@ -150,7 +162,7 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
       return (
         <>
           <br />
-          <h1 className="no-matches-found">Loading...</h1>
+          <h1 className="matches-found">Loading...</h1>
         </>
       );
     }
@@ -159,7 +171,7 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
       return (
         <>
           <br />
-          <h1 className="no-matches-found">No matches were found.</h1>
+          <h1 className="matches-found">No matches were found.</h1>
         </>
       );
 
@@ -171,8 +183,8 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
       );
     }
 
-    if (total < 10) return GridView();
-    return ListView();
+    if (total > 1) return GridView();
+    return ListView(); // temporarily here before completely removing list view ?
   };
 
   // This will act as a loading buffer
@@ -181,7 +193,7 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
       <article className="facebook-results">
         <section>
           <br />
-          <h1 className="no-matches-found">Loading...</h1>
+          <h1 className="matches-found">Loading...</h1>
         </section>
       </article>
     );

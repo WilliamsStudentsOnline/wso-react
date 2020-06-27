@@ -1,0 +1,17 @@
+@import "../../theme.scss";
+
+body {
+  font-family: $default-font;
+  font-size: $base-font-size;
+}
+
+.results {
+  color: $blue-3;
+}
+
+.gridWrap {
+  color: $blue-0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+}
