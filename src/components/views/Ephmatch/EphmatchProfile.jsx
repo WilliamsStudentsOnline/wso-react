@@ -38,7 +38,11 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
           const ephmatchProfile = ownProfile.data;
           updateProfile(ephmatchProfile);
           updateDescription(ephmatchProfile.description);
-          updateTags(ephmatchProfile.user.tags.map((tag) => tag.name));
+          updateTags(
+            ephmatchProfile.user.tags
+              ? ephmatchProfile.user.tags.map((tag) => tag.name)
+              : []
+          );
           updateMatchMessage(ephmatchProfile.matchMessage);
           updateLocationVisible(ephmatchProfile.locationVisible);
           updateLocationTown(ephmatchProfile.locationTown);
@@ -53,7 +57,6 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
           updateUnixID(ephmatchProfile.user.unixID);
         }
       } catch {
-        // There shouldn't be any reason for the submission to be rejected.
         navigateTo("500");
       }
     };
