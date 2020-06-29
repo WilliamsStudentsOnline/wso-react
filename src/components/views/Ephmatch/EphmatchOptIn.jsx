@@ -46,18 +46,20 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
 
       try {
         const ownEphmatchProfile = await wso.ephmatchService.getSelfProfile();
-        updateDescription(ownEphmatchProfile.description);
-        updateMatchMessage(ownEphmatchProfile.matchMessage);
-        updateLocationVisible(ownEphmatchProfile.locationVisible);
-        updateLocationTown(ownEphmatchProfile.locationTown);
-        updateLocationState(ownEphmatchProfile.locationState);
-        updateLocationCountry(ownEphmatchProfile.locationCountry);
-        updateMessagingPlatform(
-          ownEphmatchProfile.messagingPlatform
-            ? ownEphmatchProfile.messagingPlatform
-            : "NONE"
-        );
-        updateMessagingUsername(ownEphmatchProfile.messagingUsername);
+        if (isMounted) {
+          updateDescription(ownEphmatchProfile.data.description);
+          updateMatchMessage(ownEphmatchProfile.data.matchMessage);
+          updateLocationVisible(ownEphmatchProfile.data.locationVisible);
+          updateLocationTown(ownEphmatchProfile.data.locationTown);
+          updateLocationState(ownEphmatchProfile.data.locationState);
+          updateLocationCountry(ownEphmatchProfile.data.locationCountry);
+          updateMessagingPlatform(
+            ownEphmatchProfile.data.messagingPlatform
+              ? ownEphmatchProfile.data.messagingPlatform
+              : "NONE"
+          );
+          updateMessagingUsername(ownEphmatchProfile.data.messagingUsername);
+        }
       } catch (error) {
         if (error.errorCode === 404) {
           // This is expected if the user has no profile
