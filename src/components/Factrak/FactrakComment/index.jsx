@@ -328,16 +328,15 @@ const FactrakComment = ({
     );
 
   return (
-    <div className="comment">
+    <div>
       <div className={styles.commentContent}>
         <h1 className={styles.commentHeader}>
           {profName()}
           {courseLink()}
         </h1>
-
-        {agreeCount()}
         {surveyText()}
         {surveyDetail()}
+        {agreeCount()}
       </div>
     </div>
   );

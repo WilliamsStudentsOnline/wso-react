@@ -14,6 +14,10 @@ import { actions, createRouteNodeSelector } from "redux-router5";
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
+import styles from "./FactrakProfessor.module.scss";
+
+// Elastic Eui imports
+import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
   const [professor, updateProfessor] = useState(null);
@@ -81,7 +85,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
   if (!professor)
     return (
       <article className="facebook-profile" id="fbprof">
-        <section className="info">
+        <section>
           <h3>
             <Line width="20%" />
           </h3>
@@ -112,58 +116,69 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
     );
 
   return (
-    <article className="facebook-profile" id="fbprof">
-      <section className="info">
-        <h3>{professor.name}</h3>
+    <article className={styles.facebookProfile}>
+      <EuiFlexGroup direction="column" alignItems="center">
+        <EuiFlexItem>
+          <EuiFlexGroup
+            alignItems="spaceAround"
+            className={styles.professorHeader}
+          >
+            <EuiFlexItem className={styles.circle}>
+              <div className={styles.professorPhoto} />
+            </EuiFlexItem>
+            <EuiFlexItem className={styles.professorText}>
+              <h3>{professor.name}</h3>
 
-        <h5>
-          {department?.name}
+              <h5>
+                <span>
+                  {department?.name} - {professor?.title}
+                </span>
+                <br />
+                <span>{professor?.unixID}@williams.edu</span>
+              </h5>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </EuiFlexItem>
+        <EuiFlexItem className={styles.ratingsBar}>
+          <FactrakRatings ratings={ratings} />
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <Link
+            routeName="factrak.newSurvey"
+            routeParams={{ profID: professor.id }}
+          >
+            Write Review
+          </Link>
+        </EuiFlexItem>
+        <EuiFlexItem>
           <br />
-          <span>{professor?.title}</span>
-        </h5>
-        <br />
+          <FactrakDeficitMessage currUser={currUser} />
+          <div id="factrak-comments-section">
+            {surveys && surveys.length > 0
+              ? surveys.map((survey) => {
+                  if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
+                    return (
+                      <FactrakComment
+                        comment={survey}
+                        showProf={false}
+                        abridged={false}
+                        key={survey.id}
+                      />
+                    );
+                  }
 
-        <br />
-        <Link
-          routeName="factrak.newSurvey"
-          routeParams={{ profID: professor.id }}
-        >
-          Click here to review this professor
-        </Link>
-        <br />
-        <br />
-        <FactrakRatings ratings={ratings} />
-        <br />
-        <br />
-
-        <h3>Comments</h3>
-        <br />
-        <FactrakDeficitMessage currUser={currUser} />
-        <div id="factrak-comments-section">
-          {surveys && surveys.length > 0
-            ? surveys.map((survey) => {
-                if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
                   return (
                     <FactrakComment
-                      comment={survey}
-                      showProf={false}
                       abridged={false}
+                      showProf={false}
                       key={survey.id}
                     />
                   );
-                }
-
-                return (
-                  <FactrakComment
-                    abridged={false}
-                    showProf={false}
-                    key={survey.id}
-                  />
-                );
-              })
-            : "No comments yet."}
-        </div>
-      </section>
+                })
+              : "No comments yet."}
+          </div>
+        </EuiFlexItem>
+      </EuiFlexGroup>
     </article>
   );
 };

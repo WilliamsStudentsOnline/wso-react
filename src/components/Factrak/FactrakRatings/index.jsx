@@ -3,6 +3,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Line } from "../../common/Skeleton";
 
+// Scss and elastic
+import styles from "./FactrakRatings.module.scss";
+import { EuiFlexItem, EuiFlexGroup, EuiText } from "@elastic/eui";
+
 const FactrakRatings = ({ ratings, general = false }) => {
   if (!ratings) return null;
 
@@ -12,21 +16,35 @@ const FactrakRatings = ({ ratings, general = false }) => {
 
     const WORKLOAD_DESCRIPTIONS = [
       "",
-      "very easy",
-      "easy",
-      "somewhat easy",
-      "normal",
-      "somewhat hard",
-      "hard",
-      "very hard",
+      "Very easy",
+      "Easy",
+      "Somewhat easy",
+      "Normal",
+      "Somewhat hard",
+      "Hard",
+      "Very hard",
     ];
     return (
-      <li>
-        The course workloads are&nbsp;
-        <u>{WORKLOAD_DESCRIPTIONS[Math.round(ratings.avgCourseWorkload)]}</u>
-        &nbsp;when compared to other courses ({ratings.numCourseWorkload}
-        &nbsp;surveys).
-      </li>
+      <EuiText>
+        <div className={styles.ratingHeader}>
+          {WORKLOAD_DESCRIPTIONS[Math.round(ratings.avgCourseWorkload)]}
+        </div>
+        Workload
+      </EuiText>
+    );
+  };
+
+  // Generates the number of reviews for the professor
+  const reviews = () => {
+    if (!ratings.numWouldTakeAnother) return null;
+
+    return (
+      <EuiText>
+        <div className={styles.ratingHeader}>
+          {[Math.round(ratings.numWouldTakeAnother)]}
+        </div>
+        Reviews
+      </EuiText>
     );
   };
 
@@ -35,22 +53,22 @@ const FactrakRatings = ({ ratings, general = false }) => {
     if (!ratings.numCourseStimulating) return null;
     const STIMULATING_DESCR = [
       "",
-      "very boring",
-      "boring",
-      "somewhat boring",
-      "normal",
-      "somewhat stimulating",
-      "stimulating",
-      "very stimulating",
+      "Very boring",
+      "Boring",
+      "Somewhat boring",
+      "Normal",
+      "Somewhat stimulating",
+      "Stimulating",
+      "Very stimulating",
     ];
 
     return (
-      <li>
-        The courses taught are&nbsp;
-        <u>{STIMULATING_DESCR[Math.round(ratings.avgCourseStimulating)]}</u>
-        &nbsp;when compared to other courses ({ratings.numCourseStimulating}
-        &nbsp;surveys).
-      </li>
+      <EuiText>
+        <div className={styles.ratingHeader}>
+          {STIMULATING_DESCR[Math.round(ratings.avgCourseStimulating)]}
+        </div>
+        when compared to other professors.
+      </EuiText>
     );
   };
 
@@ -59,23 +77,22 @@ const FactrakRatings = ({ ratings, general = false }) => {
     if (!ratings.avgApproachability) return null;
     const APPROACH_DESCR = [
       "",
-      "very unapproachable",
-      "unapproachable",
-      "somewhat unapproachable",
-      "somewhat approachable",
-      "moderately approachable",
-      "approchable",
-      "very approchable",
+      "Very unapproachable",
+      "Unapproachable",
+      "Somewhat unapproachable",
+      "Somewhat approachable",
+      "Moderately approachable",
+      "Approchable",
+      "Very approchable",
     ];
 
     return (
-      <li>
-        The professor is&nbsp;
-        <u>{APPROACH_DESCR[Math.round(ratings.avgApproachability)]}</u>
-        &nbsp;(
-        {ratings.numApproachability}
-        &nbsp;surveys).
-      </li>
+      <EuiText>
+        <div className={styles.ratingHeader}>
+          {APPROACH_DESCR[Math.round(ratings.avgApproachability)]}
+        </div>
+        Personality
+      </EuiText>
     );
   };
 
@@ -84,21 +101,21 @@ const FactrakRatings = ({ ratings, general = false }) => {
     if (!ratings.numLeadLecture) return null;
     const LECTURE_DESCR = [
       "",
-      "very ineffective",
-      "ineffective",
-      "somewhat ineffective",
-      "somewhat effective",
-      "moderately effective",
-      "effective",
-      "very effective",
+      "Very ineffective",
+      "Ineffective",
+      "Somewhat ineffective",
+      "Somewhat effective",
+      "Moderately effective",
+      "Effective",
+      "Very effective",
     ];
     return (
-      <li>
-        The professor is&nbsp;
-        <u>{LECTURE_DESCR[Math.round(ratings.avgLeadLecture)]}</u>
-        &nbsp;at lecturing ({ratings.numLeadLecture}
-        &nbsp;surveys).
-      </li>
+      <EuiText>
+        <div className={styles.ratingHeader}>
+          {LECTURE_DESCR[Math.round(ratings.avgLeadLecture)]}
+        </div>
+        At lecturing.
+      </EuiText>
     );
   };
 
@@ -107,21 +124,21 @@ const FactrakRatings = ({ ratings, general = false }) => {
     if (!ratings.numOutsideHelpfulness) return null;
     const HELP_DESCR = [
       "",
-      "very unhelpful",
-      "unhelpful",
-      "somewhat unhelpful",
-      "somewhat helpful",
-      "moderately helpful",
-      "helpful",
-      "very helpful",
+      "Very unhelpful",
+      "Unhelpful",
+      "Somewhat unhelpful",
+      "Somewhat helpful",
+      "Moderately helpful",
+      "Helpful",
+      "Very helpful",
     ];
     return (
-      <li>
-        The professor is&nbsp;
-        <u>{HELP_DESCR[Math.round(ratings.avgOutsideHelpfulness)]}</u>
-        &nbsp;outside of class ({ratings.numOutsideHelpfulness}
-        &nbsp;surveys).
-      </li>
+      <EuiText>
+        <div className={styles.ratingHeader}>
+          {HELP_DESCR[Math.round(ratings.avgOutsideHelpfulness)]}
+        </div>
+        Outside of class.
+      </EuiText>
     );
   };
 
@@ -129,42 +146,57 @@ const FactrakRatings = ({ ratings, general = false }) => {
     if (!ratings.numWouldTakeAnother) return null;
 
     return (
-      <li>
-        <u>{`${Math.round(ratings.avgWouldTakeAnother * 100)}%`}</u>
-        {` out of ${
-          ratings.numWouldTakeAnother
-        } would take another course with ${
+      <EuiText>
+        <div className={styles.ratingHeader}>
+          {`${Math.round(ratings.avgWouldTakeAnother * 100)}%`}
+        </div>
+        {` out of would take another course with ${
           general ? "their professors." : "this professor."
         }`}
-      </li>
+      </EuiText>
     );
   };
 
   const wouldRecommendCourse = () => {
     if (!ratings.numWouldRecommendCourse) return null;
     return (
-      <li>
-        <u>{`${Math.round(ratings.avgWouldRecommendCourse * 100)}%`}</u>
-        {` out of ${ratings.numWouldRecommendCourse} recommend this ${
+      <EuiText>
+        <div className={styles.ratingHeader}>
+          {`${Math.round(ratings.avgWouldRecommendCourse * 100)}%`}
+        </div>
+        {` would recommend this ${
           general ? "course" : "professor's courses"
         } to a friend.`}
-      </li>
+      </EuiText>
     );
   };
 
   return (
-    <div>
-      <h4>Survey Statistics</h4>
-      <ul>
-        {wouldTakeAnother()}
-        {wouldRecommendCourse()}
-        {courseWorkload()}
-        {courseStimulating()}
-        {profApproachability()}
-        {profLecture()}
-        {profHelpful()}
-      </ul>
-    </div>
+    <EuiFlexGroup
+      direction="column"
+      alignItems="center"
+      className={styles.professorRatings}
+    >
+      <EuiFlexItem>
+        <EuiFlexGroup
+          justifyContent="spaceAround"
+          className={styles.topSection}
+        >
+          <EuiFlexItem>{reviews()}</EuiFlexItem>
+          <EuiFlexItem>{wouldTakeAnother()}</EuiFlexItem>
+          <EuiFlexItem>{wouldRecommendCourse()}</EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiFlexItem>
+      <EuiFlexItem>
+        <EuiFlexGroup justifyContent="spaceBetween">
+          <EuiFlexItem>{courseWorkload()}</EuiFlexItem>
+          <EuiFlexItem>{courseStimulating()}</EuiFlexItem>
+          <EuiFlexItem>{profApproachability()}</EuiFlexItem>
+          <EuiFlexItem>{profLecture()}</EuiFlexItem>
+          <EuiFlexItem>{profHelpful()}</EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiFlexItem>
+    </EuiFlexGroup>
   );
 };
 

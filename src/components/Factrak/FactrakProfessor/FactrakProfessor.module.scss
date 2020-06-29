@@ -1,0 +1,36 @@
+@import "../../theme";
+
+.facebookProfile {
+  font-family: $default-font;
+
+  h3 {
+    font-size: $f-4;
+    font-weight: 600;
+    margin: $px-4 0;
+  }
+}
+
+.ratingsBar {
+  width: 100%;
+  background-color: $primary-1;
+  align-items: center;
+}
+
+.professorPhoto {
+  background: $warm-gray-3;
+  border-radius: 50%;
+  height: $px-10 + $px-6;
+  width: $px-10 + $px-6;
+}
+
+.professorText {
+  justify-content: center;
+}
+
+.circle {
+  align-items: center;
+}
+
+.professorHeader {
+  margin: $px-4 0;
+}

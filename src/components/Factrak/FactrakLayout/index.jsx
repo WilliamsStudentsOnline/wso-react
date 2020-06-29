@@ -161,7 +161,6 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
                     <EuiFieldSearch
                       className={styles.search}
                       onChange={factrakAutocomplete}
-                      placeholder="Search for a professor or course"
                       fullWidth
                     />
                     {factrakSuggestions()}
