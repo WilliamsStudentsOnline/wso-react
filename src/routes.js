@@ -67,6 +67,7 @@ export default [
       { name: "matches", path: "/matches" },
       { name: "profile", path: "/profile" },
       { name: "optOut", path: "/opt-out" },
+      { name: "optIn", path: "/opt-in" },
     ],
   },
   { name: "login", path: "/account/login" },

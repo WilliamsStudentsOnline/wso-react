@@ -43,7 +43,8 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
           updateMatches(ephmatchersResponse.data);
         }
       } catch {
-        navigateTo("500");
+        // Handle it by not doing anything - users can decide to refresh or not,
+        // and users without the ephmatch:matches scope should still be able to access.
       }
     };
 
@@ -54,7 +55,8 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
           updateMatchesTotalCount(ephmatchersCountResponse.data.total);
         }
       } catch {
-        // Handle it by not doing anything - users can decide to refresh or not.
+        // Handle it by not doing anything - users can decide to refresh or not,
+        // and users without the ephmatch:matches scope should still be able to access.
       }
     };
 
@@ -82,9 +84,10 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       !containsOneOfScopes(token, [
         scopes.ScopeEphmatchMatches,
         scopes.ScopeEphmatchProfiles,
-      ])
+      ]) &&
+      route.name !== "ephmatch.optIn"
     ) {
-      return <EphmatchOptIn />;
+      return <Redirect to="ephmatch.optIn" />;
     }
 
     const splitRoute = route.name.split(".");
@@ -104,9 +107,7 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
             <h1 className="no-matches-found">
               {availability?.nextOpenTime ? (
                 <>
-                  Ephmatch has officially closed.
-                  <br />
-                  Will open again {format(availability.nextOpenTime)}.
+                  Ephmatch will open again {format(availability.nextOpenTime)}.
                 </>
               ) : (
                 <>Ephmatch has officially closed for this year.</>
@@ -124,6 +125,8 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
         return <EphmatchMatch matches={matches} />;
       case "optOut":
         return <EphmatchOptOut />;
+      case "optIn":
+        return <EphmatchOptIn />;
       default:
         navigateTo("ephmatch");
         return null;

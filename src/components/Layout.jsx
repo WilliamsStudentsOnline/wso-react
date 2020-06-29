@@ -11,10 +11,10 @@ const Layout = ({ children, notice, warning }) => {
       <Nav />
 
       <aside>
-        {notice ? <section className="notice">{notice}</section> : null}
-        {warning ? (
+        {notice && <section className="notice">{notice}</section>}
+        {warning && (
           <section className="notice">{`Warning: ${warning}`}</section>
-        ) : null}
+        )}
       </aside>
 
       {children}
@@ -36,15 +36,15 @@ const Layout = ({ children, notice, warning }) => {
 };
 
 Layout.propTypes = {
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   notice: PropTypes.string,
   warning: PropTypes.string,
-  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 Layout.defaultProps = {
+  children: null,
   notice: "",
   warning: "",
-  children: null,
 };
 
 export default Layout;

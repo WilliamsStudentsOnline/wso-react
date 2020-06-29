@@ -8,11 +8,11 @@ import { format } from "timeago.js";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 
 const EphmatchLayout = ({
-  children,
-  token,
   available,
+  children,
   closingTime,
   matchesTotalCount,
+  token,
 }) => {
   return (
     <>
@@ -51,6 +51,9 @@ const EphmatchLayout = ({
               </>
             )}
           </ul>
+
+          <br />
+          <div>Ephmatch strongly discourages meeting in person.</div>
         </div>
       </header>
       {children}
@@ -59,16 +62,16 @@ const EphmatchLayout = ({
 };
 
 EphmatchLayout.propTypes = {
-  token: PropTypes.string.isRequired,
-  children: PropTypes.object,
   available: PropTypes.bool,
+  children: PropTypes.object,
   closingTime: PropTypes.object,
   matchesTotalCount: PropTypes.number,
+  token: PropTypes.string.isRequired,
 };
 
 EphmatchLayout.defaultProps = {
-  children: null,
   available: false,
+  children: null,
   closingTime: null,
   matchesTotalCount: 0,
 };
