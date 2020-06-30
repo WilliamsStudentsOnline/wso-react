@@ -8,7 +8,7 @@ import FacebookGridUser from "../FacebookGridUser";
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
-import { Link } from "react-router5";
+// import { Link } from "react-router5";
 
 // Additional Imports
 import { userTypeStudent } from "../../../constants/general";
@@ -71,15 +71,15 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
   };
 
   // Generates the user's room, might be phased out with ListView
-  const listUserRoom = (user) => {
-    if (user.type === userTypeStudent && user.dormVisible && user.dormRoom) {
-      return `${user.dormRoom.dorm.name} ${user.dormRoom.number}`;
-    }
-    if (user.type !== userTypeStudent && user.office) {
-      return user.office.number;
-    }
-    return null;
-  };
+  // const listUserRoom = (user) => {
+  //   if (user.type === userTypeStudent && user.dormVisible && user.dormRoom) {
+  //     return `${user.dormRoom.dorm.name} ${user.dormRoom.number}`;
+  //   }
+  //   if (user.type !== userTypeStudent && user.office) {
+  //     return user.office.number;
+  //   }
+  //   return null;
+  // };
 
   // Generates the user's class year
   const classYear = (user) => {
@@ -90,45 +90,45 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
   };
 
   // Displays results in a list view when there are too many results, might be phased out
-  const ListView = () => {
-    return (
-      <>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th className="unix-column">Unix</th>
-              <th>Room/Office</th>
-            </tr>
-          </thead>
-          <tbody>
-            {results.map((user) => {
-              return (
-                <tr key={user.id}>
-                  <td>
-                    <Link
-                      routeName="facebook.users"
-                      routeParams={{ userID: user.id }}
-                    >
-                      {user.name} {classYear(user)}
-                    </Link>
-                  </td>
-                  <td>{user.unixID}</td>
-                  <td>{listUserRoom(user)}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        <PaginationButtons
-          clickHandler={clickHandler}
-          page={page}
-          total={total}
-          perPage={perPage}
-        />
-      </>
-    );
-  };
+  // const ListView = () => {
+  //   return (
+  //     <>
+  //       <table>
+  //         <thead>
+  //           <tr>
+  //             <th>Name</th>
+  //             <th className="unix-column">Unix</th>
+  //             <th>Room/Office</th>
+  //           </tr>
+  //         </thead>
+  //         <tbody>
+  //           {results.map((user) => {
+  //             return (
+  //               <tr key={user.id}>
+  //                 <td>
+  //                   <Link
+  //                     routeName="facebook.users"
+  //                     routeParams={{ userID: user.id }}
+  //                   >
+  //                     {user.name} {classYear(user)}
+  //                   </Link>
+  //                 </td>
+  //                 <td>{user.unixID}</td>
+  //                 <td>{listUserRoom(user)}</td>
+  //               </tr>
+  //             );
+  //           })}
+  //         </tbody>
+  //       </table>
+  //       <PaginationButtons
+  //         clickHandler={clickHandler}
+  //         page={page}
+  //         total={total}
+  //         perPage={perPage}
+  //       />
+  //     </>
+  //   );
+  // };
 
   // Displays results in a grid view when there aren't too many results
   const GridView = () => {
@@ -137,7 +137,7 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
         <div className={styles.results}>{total} results found</div>
         <br />
         {results.map((user) => (
-          <EuiFlexItem grow={false}>
+          <EuiFlexItem key={user.id} grow={false}>
             <FacebookGridUser
               gridUser={user}
               gridUserClassYear={classYear(user)}
@@ -158,22 +158,16 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
 
   // Returns the results of the search
   const FacebookResults = () => {
-    if (isResultsLoading) {
-      return (
-        <>
-          <br />
-          <h1 className="matches-found">Loading...</h1>
-        </>
-      );
+    if (!results || isResultsLoading) {
+      return <h1 className="matches-found">Loading...</h1>;
     }
 
-    if (total === 0 && route.params.q)
-      return (
-        <>
-          <br />
-          <h1 className="matches-found">No matches were found.</h1>
-        </>
-      );
+    if (total === 0)
+      return <h1 className="matches-found">No matches were found.</h1>;
+
+    if (!route.params.q) {
+      return null;
+    }
 
     if (total === 1) {
       navigateTo(
@@ -183,25 +177,15 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
       );
     }
 
-    if (total > 1) return GridView();
-    return ListView(); // temporarily here before completely removing list view ?
+    return GridView();
   };
-
-  // This will act as a loading buffer
-  if (!results) {
-    return (
-      <article className="facebook-results">
-        <section>
-          <br />
-          <h1 className="matches-found">Loading...</h1>
-        </section>
-      </article>
-    );
-  }
 
   return (
     <article className="facebook-results">
-      <section>{FacebookResults()}</section>
+      <section>
+        <br />
+        {FacebookResults()}
+      </section>
     </article>
   );
 };

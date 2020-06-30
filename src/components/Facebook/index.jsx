@@ -22,10 +22,8 @@ const FacebookMain = ({ route }) => {
 
     switch (splitRoute[1]) {
       case "help":
-        console.log("FacebookHelp");
         return <FacebookHelp />;
       case "users":
-        console.log("FacebookUser");
         return <FacebookUser />;
       // case "edit":
       //   return <FacebookEdit />;
