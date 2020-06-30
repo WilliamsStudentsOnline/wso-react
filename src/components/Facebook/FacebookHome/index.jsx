@@ -165,10 +165,6 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
     if (total === 0)
       return <h1 className="matches-found">No matches were found.</h1>;
 
-    if (!route.params.q) {
-      return null;
-    }
-
     if (total === 1) {
       navigateTo(
         "facebook.users",
@@ -179,6 +175,10 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
 
     return GridView();
   };
+
+  if (!route.params.q) {
+    return null;
+  }
 
   return (
     <article className="facebook-results">
