@@ -85,7 +85,7 @@ const FactrakComment = ({
 
     return (
       <h1>
-        <EuiFlexGroup>
+        <EuiFlexGroup gutterSize="s">
           <EuiFlexItem>
             <EuiBadge
               iconType="faceHappy"
@@ -173,7 +173,7 @@ const FactrakComment = ({
           <EuiFlexItem>{agreeCount()}</EuiFlexItem>
           <EuiFlexItem grow={6} />
           <EuiFlexItem>
-            <EuiFlexGroup>
+            <EuiFlexGroup gutterSize="s">
               <EuiFlexItem>
                 <EuiButton
                   onClick={() =>
@@ -200,7 +200,7 @@ const FactrakComment = ({
 
     return (
       <>
-        <EuiFlexGroup>
+        <EuiFlexGroup gutterSize="s">
           <EuiFlexItem grow={8} />
           <EuiFlexItem className={styles.agreeButton}>
             <Button
@@ -356,8 +356,15 @@ const FactrakComment = ({
           {courseLink()}
         </h1>
         {surveyText()}
-        {surveyDetail()}
-        {agree()}
+        <EuiFlexGroup
+          direction={
+            survey.lorem || survey.userID === currUser.id ? "column" : "row"
+          }
+          gutterSize="none"
+        >
+          <EuiFlexItem>{surveyDetail()}</EuiFlexItem>
+          <EuiFlexItem>{agree()}</EuiFlexItem>
+        </EuiFlexGroup>
       </div>
     </div>
   );
