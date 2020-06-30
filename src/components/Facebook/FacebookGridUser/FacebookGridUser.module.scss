@@ -1,0 +1,31 @@
+@import "../../theme.scss";
+
+.flexGroup {
+  margin: $px-0;
+  padding: $px-5;
+}
+
+.third {
+  display: block;
+  float: left;
+  margin: 0px;
+  max-height: 150px;
+  min-height: 125px;
+}
+
+.twoThird {
+  color: $blue-0;
+  background-color: $blue-5;
+  border-radius: 0 $f-3 $f-3 0;
+  margin: 0px;
+  max-height: 150px;
+  min-height: 125px;
+  padding: $px-5;
+
+  h4 {
+    font-size: $f-2;
+  }
+  ul {
+    font-size: $f-1;
+  }
+}

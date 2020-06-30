@@ -11,6 +11,8 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 // Additional Imports
 import { ConnectedLink } from "react-router5";
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
+import { EuiFlexItem, EuiFlexGroup } from "@elastic/eui";
+import styles from "./FacebookUser.module.scss";
 
 const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
   const [viewPerson, updateTarget] = useState(null);
@@ -49,9 +51,9 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
           <h5>
             <Line width="10%" />
           </h5>
-          <h4>
+          <h6>
             <Line width="25%" />
-          </h4>
+          </h6>
           <br />
         </>
       );
@@ -64,9 +66,9 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
       return (
         <>
           <h5>Room:</h5>
-          <h4>
+          <h6>
             {viewPerson.dormRoom.dorm.name} {viewPerson.dormRoom.number}
-          </h4>
+          </h6>
           <br />
         </>
       );
@@ -76,7 +78,7 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
       return (
         <>
           <h5>Office:</h5>
-          <h4>{viewPerson.office.number}</h4>
+          <h6>{viewPerson.office.number}</h6>
           <br />
         </>
       );
@@ -89,15 +91,14 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
     if (!viewPerson) return <Line width="10%" />;
 
     if (viewPerson.type === userTypeStudent) {
-      return <h5>Student</h5>;
+      return <h2>Student</h2>;
     }
     if (viewPerson.title) {
       return (
-        <h5>
-          {viewPerson.title}
-          <br />
-          {viewPerson.department && viewPerson.department.name}
-        </h5>
+        <>
+          <h2>{viewPerson.title}</h2>
+          <h6>{viewPerson.department && viewPerson.department.name}</h6>
+        </>
       );
     }
 
@@ -128,9 +129,9 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
           <h5>
             <Line width="10%" />
           </h5>
-          <h4>
+          <h6>
             <Line width="10%" />
-          </h4>
+          </h6>
           <br />
         </>
       );
@@ -140,7 +141,7 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
       return (
         <>
           <h5>Unix:</h5>
-          <h4>{viewPerson.unixID}</h4>
+          <h6>{viewPerson.unixID}</h6>
           <br />
         </>
       );
@@ -156,9 +157,9 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
           <h5>
             <Line width="10%" />
           </h5>
-          <h4>
+          <h6>
             <Line width="30%" />
-          </h4>
+          </h6>
           <br />
         </>
       );
@@ -202,9 +203,9 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
           <h5>
             <Line width="10%" />
           </h5>
-          <h4>
+          <h6>
             <Line width="25%" />
-          </h4>
+          </h6>
           <br />
         </>
       );
@@ -213,7 +214,7 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
       return (
         <>
           <h5>SU Box:</h5>
-          <h4>{viewPerson.suBox || "None listed"}</h4>
+          <h6>{viewPerson.suBox || "None listed"}</h6>
           <br />
         </>
       );
@@ -229,9 +230,9 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
           <h5>
             <Line width="20%" />
           </h5>
-          <h4>
+          <h6>
             <Line width="45%" />
-          </h4>
+          </h6>
           <br />
         </>
       );
@@ -244,12 +245,12 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
       return (
         <>
           <h5>Hometown:</h5>
-          <h4>
+          <h6>
             {viewPerson.homeTown},&nbsp;
             {viewPerson.homeCountry === "United States"
               ? viewPerson.homeState
               : viewPerson.homeCountry}
-          </h4>
+          </h6>
         </>
       );
     }
@@ -279,26 +280,36 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
   };
 
   return (
-    <article className="facebook-profile">
+    <article className={styles.facebookProfile}>
       <section>
-        <aside className="picture">{picture()}</aside>
-
-        <aside className="info">
-          <h3>
-            {nameAndYear()}
-            {currUser && viewPerson && currUser.id === viewPerson.id && (
-              <span>&nbsp;(me)</span>
-            )}
-          </h3>
-          {userTitle()}
-          {userPronouns()}
-          <br />
-          {userUnix()}
-          {userTags()}
-          {userSUBox()}
-          {userRoom()}
-          {userHometown()}
-        </aside>
+        <EuiFlexGroup className={styles.flexGroupTop}>
+          <EuiFlexItem grow={false}>
+            <aside className={styles.title}>{userTitle()}</aside>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+        <EuiFlexGroup className={styles.flexGroupBottom}>
+          <EuiFlexItem grow={false}>
+            <aside className={styles.picture}>{picture()}</aside>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>
+            <aside className={styles.info}>
+              <h3>
+                {nameAndYear()}
+                {currUser && viewPerson && currUser.id === viewPerson.id && (
+                  <span>&nbsp;(me)</span>
+                )}
+              </h3>
+              {/* {userTitle()} */}
+              {userPronouns()}
+              <br />
+              {userUnix()}
+              {userTags()}
+              {userSUBox()}
+              {userRoom()}
+              {userHometown()}
+            </aside>
+          </EuiFlexItem>
+        </EuiFlexGroup>
       </section>
     </article>
   );

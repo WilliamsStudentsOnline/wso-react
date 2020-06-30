@@ -37,7 +37,7 @@ body {
 .search input {
   background-color: $cool-gray-0;
   border: 2px solid $cool-gray-3;
-  border-radius: 7px;
+  border-radius: $px-3;
   padding-left: 35px;
   height: 35px;
   width: 575px;

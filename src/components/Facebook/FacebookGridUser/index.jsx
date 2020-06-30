@@ -7,6 +7,8 @@ import { Link } from "react-router5";
 
 // Additional Imports
 import { userTypeStudent } from "../../../constants/general";
+import { EuiFlexItem, EuiFlexGroup, EuiSpacer } from "@elastic/eui";
+import styles from "./FacebookGridUser.module.scss";
 
 const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
   const [userPhoto, updateUserPhoto] = useState(null);
@@ -31,8 +33,8 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
     if (user.unixID) {
       return (
         <>
-          <li className="list-headers">UNIX</li>
-          <li className="list-contents">{user.unixID}</li>
+          <li className="list-headers">UNIX: {user.unixID}</li>
+          {/* <li className="list-contents">{user.unixID}</li> */}
         </>
       );
     }
@@ -44,18 +46,37 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
     if (user.type === userTypeStudent && user.dormVisible && user.dormRoom) {
       return (
         <>
-          <li className="list-headers"> Room</li>
-          <li className="list-contents">
-            {user.dormRoom.dorm.name} {user.dormRoom.number}
+          <li className="list-headers">
+            Room: {user.dormRoom.dorm.name} {user.dormRoom.number}
           </li>
+          {/* <li className="list-contents">
+            {user.dormRoom.dorm.name} {user.dormRoom.number}
+          </li> */}
         </>
       );
     }
     if (user.type !== userTypeStudent && user.office) {
       return (
         <>
-          <li className="list-headers"> Office</li>
-          <li className="list-contents">{user.office.number}</li>
+          <li className="list-headers"> Office: {user.office.number}</li>
+          {/* <li className="list-contents">{user.office.number}</li> */}
+        </>
+      );
+    }
+    return null;
+  };
+
+  // Generates the user's hometown in grid view
+  const gridUserHometown = (user) => {
+    if (user.type === userTypeStudent && user.homeVisible && user.homeTown) {
+      return (
+        <>
+          <li className="list-headers">
+            Hometown: {user.homeTown},&nbsp;
+            {user.homeCountry === "United States"
+              ? user.homeState
+              : user.homeCountry}
+          </li>
         </>
       );
     }
@@ -63,8 +84,8 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
   };
 
   return (
-    <aside key={gridUser.id}>
-      <div className="third">
+    <EuiFlexGroup key={gridUser.id} className={styles.flexGroup}>
+      <EuiFlexItem className={styles.third}>
         <div className="profile-photo">
           <Link
             routeName="facebook.users"
@@ -73,8 +94,8 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
             <img src={userPhoto} alt="avatar" />
           </Link>
         </div>
-      </div>
-      <div className="two-third">
+      </EuiFlexItem>
+      <EuiFlexItem className={styles.twoThird}>
         <h4>
           <Link
             routeName="facebook.users"
@@ -83,12 +104,14 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
             {gridUser.name} {gridUserClassYear}
           </Link>
         </h4>
+        <EuiSpacer size="s" />
         <ul>
           {gridUnixID(gridUser)}
           {gridUserRoom(gridUser)}
+          {gridUserHometown(gridUser)}
         </ul>
-      </div>
-    </aside>
+      </EuiFlexItem>
+    </EuiFlexGroup>
   );
 };
 

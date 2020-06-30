@@ -1,0 +1,59 @@
+@import "../../theme.scss";
+
+body {
+  font-family: $default-font;
+  font-size: $base-font-size;
+}
+
+.facebookProfile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+
+  h2 {
+    font-size: $f-6;
+    letter-spacing: $px-4;
+  }
+  h3 {
+    font-size: $f-5;
+  }
+  h5 {
+    font-size: $f-3;
+  }
+  h6 {
+    font-size: $f-2;
+  }
+}
+
+.flexGroupTop {
+  background-color: $secondary-2;
+  border-radius: $px-3 $px-3 0 0;
+  margin-top: $px-6;
+  padding: $px-0 $px-5;
+
+  .title {
+    color: $primary-6;
+  }
+}
+
+.flexGroupBottom {
+  background-color: $blue-5;
+  margin-bottom: $px-9;
+  margin-top: $px-4;
+  padding: $px-5;
+}
+
+.picture {
+  border-radius: 2px;
+  display: block;
+  float: left;
+  margin: 0.25em auto;
+  max-height: 300px;
+  width: 200px;
+}
+
+.info {
+  color: $blue-0;
+  width: 400px;
+}

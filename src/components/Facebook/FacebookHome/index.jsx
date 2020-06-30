@@ -12,7 +12,7 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
 import { userTypeStudent } from "../../../constants/general";
-import { EuiFlexItem } from "@elastic/eui";
+import { EuiFlexGrid, EuiFlexItem } from "@elastic/eui";
 import styles from "./FacebookHome.module.scss";
 
 const FacebookHome = ({ wso, route, navigateTo }) => {
@@ -136,16 +136,18 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
       <div className={styles.gridWrap}>
         <div className={styles.results}>{total} results found</div>
         <br />
-        {results.map((user) => (
-          <EuiFlexItem key={user.id} grow={false}>
-            <FacebookGridUser
-              gridUser={user}
-              gridUserClassYear={classYear(user)}
-              key={user.id}
-              wso={wso}
-            />
-          </EuiFlexItem>
-        ))}
+        <EuiFlexGrid className={styles.flexGrid} columns={2} direction="column">
+          {results.map((user) => (
+            <EuiFlexItem className={styles.info} key={user.id} grow={false}>
+              <FacebookGridUser
+                gridUser={user}
+                gridUserClassYear={classYear(user)}
+                key={user.id}
+                wso={wso}
+              />
+            </EuiFlexItem>
+          ))}
+        </EuiFlexGrid>
         <PaginationButtons
           clickHandler={clickHandler}
           page={page}

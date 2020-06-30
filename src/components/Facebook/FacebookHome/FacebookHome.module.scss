@@ -9,9 +9,15 @@ body {
   color: $blue-3;
 }
 
-.gridWrap {
+.flexGrid {
+  padding: $px-4;
+}
+
+.info {
   color: $blue-0;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 10px;
+  border-radius: $px-3;
+}
+
+.gridWrap {
+  padding: $px-5;
 }
