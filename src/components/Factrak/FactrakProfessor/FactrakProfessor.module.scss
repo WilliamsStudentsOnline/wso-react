@@ -8,6 +8,11 @@
     font-weight: 600;
     margin: $px-4 0;
   }
+
+  button {
+    background-color: $primary-6;
+    color: white;
+  }
 }
 
 .ratingsBar {
@@ -33,4 +38,19 @@
 
 .professorHeader {
   margin: $px-4 0;
+}
+
+.reviews {
+  width: 70%;
+
+  button {
+    background-color: white;
+    color: black;
+  }
+}
+
+.professorReview {
+  border-bottom: 2px solid $warm-gray-3;
+  padding: 1% 10%;
+  padding-top: 2%;
 }

@@ -17,7 +17,7 @@ import { Link } from "react-router5";
 import styles from "./FactrakProfessor.module.scss";
 
 // Elastic Eui imports
-import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
+import { EuiButton, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
   const [professor, updateProfessor] = useState(null);
@@ -147,32 +147,38 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
             routeName="factrak.newSurvey"
             routeParams={{ profID: professor.id }}
           >
-            Write Review
+            <EuiButton fill color="#dddddd">
+              Write Review
+            </EuiButton>
           </Link>
         </EuiFlexItem>
-        <EuiFlexItem>
+        <EuiFlexItem className={styles.reviews}>
           <br />
           <FactrakDeficitMessage currUser={currUser} />
-          <div id="factrak-comments-section">
+          <div>
             {surveys && surveys.length > 0
               ? surveys.map((survey) => {
                   if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
                     return (
-                      <FactrakComment
-                        comment={survey}
-                        showProf={false}
-                        abridged={false}
-                        key={survey.id}
-                      />
+                      <EuiFlexItem className={styles.professorReview}>
+                        <FactrakComment
+                          comment={survey}
+                          showProf={false}
+                          abridged={false}
+                          key={survey.id}
+                        />
+                      </EuiFlexItem>
                     );
                   }
 
                   return (
-                    <FactrakComment
-                      abridged={false}
-                      showProf={false}
-                      key={survey.id}
-                    />
+                    <EuiFlexItem>
+                      <FactrakComment
+                        abridged={false}
+                        showProf={false}
+                        key={survey.id}
+                      />
+                    </EuiFlexItem>
                   );
                 })
               : "No comments yet."}
