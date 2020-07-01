@@ -30,12 +30,6 @@ const Homepage = ({ navigateTo }) => {
   return (
     <div className="home">
       <div className="full-width">
-        <div id="join-header" className="gray-background">
-          <a href="https://docs.google.com/spreadsheets/u/1/d/1ZIvDZpHqvNZkf8dGFXVjfk-Wq0Y9FTG410NJbH_8K8M/htmlview">
-            Consider donating to a fund that supports anti-racism activism
-            today!
-          </a>
-        </div>
         <header>
           <div className="logo">
             <h2 align="center" id="logotype">

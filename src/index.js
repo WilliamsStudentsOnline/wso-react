@@ -7,8 +7,8 @@ import App from "./components/App";
 import "typeface-nunito";
 import "typeface-source-sans-pro";
 import "@elastic/eui/dist/eui_theme_light.css";
-// import "./index.scss";
-import "./components/i.scss";
+import "./index.scss";
+// import "./components/i.scss";
 
 // Redux/store imports
 import { Provider } from "react-redux";
