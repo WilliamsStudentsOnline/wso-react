@@ -1,12 +1,15 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { selectDept } from "./FactrakSurvey.module.scss";
+import styles, { selectDept } from "./FactrakSurvey.module.scss";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
+
+// Elastic
+import { EuiButton, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakSurvey = ({ wso, route, navigateTo }) => {
   const [survey, updateSurvey] = useState(null);
@@ -136,7 +139,7 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         value={courseAOS}
       >
         <option value="" selected disabled hidden>
-          Select Prefix
+          Course Prefix*
         </option>
         {areasOfStudy.map((areaOfStudy) => (
           <option value={areaOfStudy.abbreviation} key={areaOfStudy.id}>
@@ -152,8 +155,6 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
     return [1, 2, 3, 4, 5, 6, 7].map((ans) => {
       return (
         <React.Fragment key={ans}>
-          {ans}
-          &nbsp;
           <input
             type="radio"
             checked={type ? type === ans : false}
@@ -171,16 +172,7 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
     if (prof) {
       return (
         <>
-          {edit && survey ? (
-            <h3>
-              Editing review on
-              {survey.course
-                ? ` ${survey.course.areaOfStudy.abbreviation} ${survey.course.number} with `
-                : " "}
-              {prof.name}
-            </h3>
-          ) : null}
-          <h3>{`Review of ${prof.name}`}</h3>
+          <h3>{`${prof.name}`}</h3>
         </>
       );
     }
@@ -188,26 +180,26 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
   };
 
   return (
-    <div className="article">
+    <div>
       <section>
-        <article>
-          <div id="errors">
+        <EuiFlexGroup direction="column" alignItems="center">
+          <EuiFlexItem>
             {errors ? errors.map((msg) => <p key={msg}>{msg}</p>) : null}
-          </div>
-
-          <form onSubmit={(event) => submitHandler(event)}>
-            {surveyTitle()}
-            <table id="factrak-survey-table">
-              <tbody>
-                <tr>
-                  <td align="left">
-                    <strong>What course is this for?*</strong>
-                  </td>
-                  <td align="left">
-                    <div className="survey_course_name">
-                      {deptDropdown()}
+          </EuiFlexItem>
+          <EuiFlexItem className={styles.surveyPage}>
+            <form onSubmit={(event) => submitHandler(event)}>
+              <EuiFlexGroup
+                direction="column"
+                className={styles.surveyForm}
+                alignItems="center"
+              >
+                <EuiFlexItem>{surveyTitle()}</EuiFlexItem>
+                <EuiFlexItem className={styles.surveyPage}>
+                  <EuiFlexGroup>
+                    <EuiFlexItem>{deptDropdown()}</EuiFlexItem>
+                    <EuiFlexItem>
                       <input
-                        placeholder="NUMBER"
+                        placeholder="Course Number*"
                         type="text"
                         onChange={(event) =>
                           updateCourseNumber(event.target.value)
@@ -217,132 +209,128 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
                           survey && survey.course ? survey.course.number : ""
                         }
                       />
-                    </div>
-                  </td>
-                </tr>
+                    </EuiFlexItem>
+                    <EuiFlexItem grow={2} />
+                  </EuiFlexGroup>
+                </EuiFlexItem>
+                <EuiFlexItem className={styles.surveyPage}>
+                  <table className={styles.surveyTable}>
+                    <tbody>
+                      <tr>
+                        <td align="left">
+                          Would you would recommend this course to a friend?
+                        </td>
+                        <td align="left">
+                          Yes&nbsp;
+                          <input
+                            type="radio"
+                            checked={wouldRecommendCourse || false}
+                            onChange={() => updateRecommend(true)}
+                          />
+                          No&nbsp;
+                          <input
+                            type="radio"
+                            onChange={() => updateRecommend(false)}
+                            checked={
+                              wouldRecommendCourse !== null &&
+                              wouldRecommendCourse === false
+                            }
+                          />
+                        </td>
+                      </tr>
 
-                <tr>
-                  <td align="left">
-                    <strong>
-                      Would you would recommend this course to a friend?
-                    </strong>
-                  </td>
-                  <td align="left">
-                    Yes&nbsp;
-                    <input
-                      type="radio"
-                      checked={wouldRecommendCourse || false}
-                      onChange={() => updateRecommend(true)}
-                    />
-                    No&nbsp;
-                    <input
-                      type="radio"
-                      onChange={() => updateRecommend(false)}
-                      checked={
-                        wouldRecommendCourse !== null &&
-                        wouldRecommendCourse === false
-                      }
-                    />
-                  </td>
-                </tr>
+                      <tr>
+                        <td align="left">
+                          Would you take another course with this professor?
+                        </td>
+                        <td align="left">
+                          Yes&nbsp;
+                          <input
+                            type="radio"
+                            checked={wouldTakeAnother || false}
+                            onChange={() => updateTakeAnother(true)}
+                          />
+                          No&nbsp;
+                          <input
+                            type="radio"
+                            checked={
+                              wouldTakeAnother !== null &&
+                              wouldTakeAnother === false
+                            }
+                            onChange={() => updateTakeAnother(false)}
+                          />
+                        </td>
+                      </tr>
 
-                <tr>
-                  <td align="left">
-                    <strong>
-                      Would you take another course with this professor?
-                    </strong>
-                  </td>
-                  <td align="left">
-                    Yes&nbsp;
-                    <input
-                      type="radio"
-                      checked={wouldTakeAnother || false}
-                      onChange={() => updateTakeAnother(true)}
-                    />
-                    No&nbsp;
-                    <input
-                      type="radio"
-                      checked={
-                        wouldTakeAnother !== null && wouldTakeAnother === false
-                      }
-                      onChange={() => updateTakeAnother(false)}
-                    />
-                  </td>
-                </tr>
+                      <tr>
+                        <td align="left">
+                          How does the workload compare to other courses
+                          you&apos;ve taken?
+                        </td>
+                        <td align="left">
+                          {optionBuilder(workload, updateWorkload)}
+                        </td>
+                      </tr>
 
-                <tr>
-                  <td align="left">
-                    <strong>
-                      How does the workload compare to other courses you&apos;ve
-                      taken?
-                    </strong>
-                  </td>
-                  <td align="left">
-                    {optionBuilder(workload, updateWorkload)}
-                  </td>
-                </tr>
+                      <tr>
+                        <td align="left">
+                          How approachable was this professor?
+                        </td>
+                        <td align="left">
+                          {optionBuilder(approachability, updateApprochability)}
+                        </td>
+                      </tr>
 
-                <tr>
-                  <td align="left">
-                    <strong>How approachable was this professor?</strong>
-                  </td>
-                  <td align="left">
-                    {optionBuilder(approachability, updateApprochability)}
-                  </td>
-                </tr>
+                      <tr>
+                        <td align="left">
+                          If applicable, how effective was this professor at
+                          lecturing?
+                        </td>
+                        <td align="left">
+                          {optionBuilder(lecture, updateLecture)}
+                        </td>
+                      </tr>
 
-                <tr>
-                  <td align="left">
-                    <strong>
-                      If applicable, how effective was this professor at
-                      lecturing?
-                    </strong>
-                  </td>
-                  <td align="left">{optionBuilder(lecture, updateLecture)}</td>
-                </tr>
+                      <tr>
+                        <td align="left">
+                          If applicable, how effective was this professor at
+                          promoting discussion?
+                        </td>
+                        <td align="left">
+                          {optionBuilder(discussion, updateDiscussion)}
+                        </td>
+                      </tr>
 
-                <tr>
-                  <td align="left">
-                    <strong>
-                      If applicable, how effective was this professor at
-                      promoting discussion?
-                    </strong>
-                  </td>
-                  <td align="left">
-                    {optionBuilder(discussion, updateDiscussion)}
-                  </td>
-                </tr>
-
-                <tr>
-                  <td align="left">
-                    <strong>
-                      How helpful was this professor outside of class?
-                    </strong>
-                  </td>
-                  <td align="left">{optionBuilder(helpful, updateHelpful)}</td>
-                </tr>
-
-                <tr>
-                  <td colSpan="2">
-                    <br />
-                    <strong>Comments*</strong>
-                    <textarea
-                      style={{ minHeight: "100px" }}
-                      placeholder="Minimum 100 characters"
-                      value={comment}
-                      onChange={(event) => updateComment(event.target.value)}
-                    />
-                    <input
-                      type="submit"
-                      value="Save"
-                      data-disable-with="Save"
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </form>
-        </article>
+                      <tr>
+                        <td align="left">
+                          How helpful was this professor outside of class?
+                        </td>
+                        <td align="left">
+                          {optionBuilder(helpful, updateHelpful)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </EuiFlexItem>
+                <EuiFlexItem className={styles.surveyPage}>
+                  Comments
+                  <textarea
+                    placeholder="Minimum 100 characters"
+                    value={comment}
+                    onChange={(event) => updateComment(event.target.value)}
+                    className={styles.textArea}
+                  />
+                  <EuiButton type="submit" fullWidth={false} size="m">
+                    Publish Review
+                  </EuiButton>
+                  <br />
+                  <input type="submit" value="Save" data-disable-with="Save" />
+                  <br />
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </form>
+          </EuiFlexItem>
+        </EuiFlexGroup>
       </section>
     </div>
   );

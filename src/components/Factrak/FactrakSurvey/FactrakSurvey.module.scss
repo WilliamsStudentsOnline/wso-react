@@ -1,6 +1,36 @@
+@import "../../theme";
+
 .selectDept {
   display: inline;
-  width: 48%;
+  width: 80%;
   vertical-align: middle;
   margin-bottom: 0;
+}
+
+.surveyPage {
+  width: 100%;
+}
+
+.surveyForm {
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10%;
+}
+
+.surveyTable {
+  font-size: $f-1;
+  font-weight: 300;
+  font-family: $default-font;
+  letter-spacing: 0px;
+  color: $primary-7;
+
+  tr {
+    line-height: $px-6;
+  }
+}
+
+.textArea {
+  height: 100px;
+  background-color: $warm-gray-1;
 }
