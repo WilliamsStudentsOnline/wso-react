@@ -34,3 +34,19 @@
   height: 100px;
   background-color: $warm-gray-1;
 }
+
+.courseNumber {
+  background-color: $warm-gray-2;
+  border-radius: $px-2;
+  width: 60%;
+  height: $px-7;
+  padding-left: $px-3;
+  color: $primary-7;
+}
+
+.courseNumber::placeholder {
+  color: $primary-7;
+  font-size: $f-1;
+  font-weight: 300;
+  font-family: $default-font;
+}

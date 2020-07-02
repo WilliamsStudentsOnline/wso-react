@@ -9,7 +9,7 @@ import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Elastic
-import { EuiButton, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
+import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSelect } from "@elastic/eui";
 
 const FactrakSurvey = ({ wso, route, navigateTo }) => {
   const [survey, updateSurvey] = useState(null);
@@ -123,6 +123,12 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
       updateErrors([error.message]);
     }
   };
+  const options = [
+    areasOfStudy.map((areaOfStudy) => ({
+      value: areaOfStudy.abbreviation,
+      text: areaOfStudy.abbreviation,
+    })),
+  ];
 
   // Generates the dropdown for the department
   const deptDropdown = () => {
@@ -133,20 +139,12 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         </select>
       );
     return (
-      <select
+      <EuiSelect
         className={selectDept}
         onChange={(event) => updateCourseAOS(event.target.value)}
         value={courseAOS}
-      >
-        <option value="" selected disabled hidden>
-          Course Prefix*
-        </option>
-        {areasOfStudy.map((areaOfStudy) => (
-          <option value={areaOfStudy.abbreviation} key={areaOfStudy.id}>
-            {areaOfStudy.abbreviation}
-          </option>
-        ))}
-      </select>
+        options={options}
+      />
     );
   };
 
@@ -204,10 +202,10 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
                         onChange={(event) =>
                           updateCourseNumber(event.target.value)
                         }
-                        id="factrak_survey_course_num"
                         defaultValue={
                           survey && survey.course ? survey.course.number : ""
                         }
+                        className={styles.courseNumber}
                       />
                     </EuiFlexItem>
                     <EuiFlexItem grow={2} />

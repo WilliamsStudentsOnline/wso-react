@@ -8,11 +8,11 @@ import { format } from "timeago.js";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 
 const EphmatchLayout = ({
-  children,
-  token,
   available,
+  children,
   closingTime,
   matchesTotalCount,
+  token,
 }) => {
   return (
     <>
@@ -51,6 +51,14 @@ const EphmatchLayout = ({
               </>
             )}
           </ul>
+
+          <br />
+          <div style={{ background: "#ffc5c5", padding: 20 }}>
+            While Ephmatch aims to facilitate getting to know other Ephs, we
+            strongly discourage meeting up in person. People found to violate
+            local social distancing regulations will have their Ephmatch access
+            revoked!
+          </div>
         </div>
       </header>
       {children}
@@ -59,16 +67,16 @@ const EphmatchLayout = ({
 };
 
 EphmatchLayout.propTypes = {
-  token: PropTypes.string.isRequired,
-  children: PropTypes.object,
   available: PropTypes.bool,
+  children: PropTypes.object,
   closingTime: PropTypes.object,
   matchesTotalCount: PropTypes.number,
+  token: PropTypes.string.isRequired,
 };
 
 EphmatchLayout.defaultProps = {
-  children: null,
   available: false,
+  children: null,
   closingTime: null,
   matchesTotalCount: 0,
 };

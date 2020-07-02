@@ -15,6 +15,10 @@ import { createRouteNodeSelector } from "redux-router5";
 import { removeStateFromStorage } from "../../../stateStorage";
 import { userTypeStudent } from "../../../constants/general";
 
+// Asset imports
+import WSOLogo from "../../../assets/images/brand/wso_icon_white_border.svg";
+import styles from "./Nav.module.scss";
+
 const Nav = ({ currUser, removeCreds, wso }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
@@ -62,13 +66,13 @@ const Nav = ({ currUser, removeCreds, wso }) => {
   };
 
   return (
-    <nav className="gray-background">
-      <div className="nav-container">
-        <span className="nav-left-container">
+    <nav id={styles.navBar}>
+      <div id={styles.navContainer}>
+        <span className={styles.navLeftContainer}>
           <a
             href="#top"
             type="button"
-            id="nav-menu-button"
+            id={styles.navMenuButton}
             onClick={(event) => {
               event.preventDefault();
               updateMenuVisibility(!menuVisible);
@@ -76,75 +80,48 @@ const Nav = ({ currUser, removeCreds, wso }) => {
           >
             Menu
           </a>
+          <span className={menuVisible ? styles.navLeft : styles.navLeftHidden}>
+            <ConnectedLink routeName="home">
+              <img src={WSOLogo} id={styles.navLogo} alt="WSO logo" />
+            </ConnectedLink>
+            <Link routeName="facebook">Facebook</Link>
 
-          <ul
-            className="nav-left"
-            id="nav-menu-content"
-            style={{ display: menuVisible ? "block" : "" }}
-          >
-            <li>
-              <ConnectedLink routeName="home">Home</ConnectedLink>
-            </li>
-            <li>
-              <Link routeName="facebook">Facebook</Link>
-            </li>
             {currUser?.type === userTypeStudent && (
               <>
-                <li>
-                  <Link routeName="factrak">Factrak</Link>
-                </li>
-                <li>
-                  <Link routeName="dormtrak">Dormtrak</Link>
-                </li>
+                <Link routeName="factrak">Factrak</Link>
+                <Link routeName="dormtrak">Dormtrak</Link>
               </>
             )}
 
-            <li>
-              <Link routeName="faq">FAQ</Link>
-            </li>
-            <li>
-              <a href="/wiki">Wiki</a>
-            </li>
-            <li>
-              <Link routeName="about">About</Link>
-            </li>
-            <li>
-              <Link routeName="scheduler">Course Scheduler</Link>
-            </li>
+            <Link routeName="faq">FAQ</Link>
+            <a href="/wiki">Wiki</a>
+            <Link routeName="about">About</Link>
+            <Link routeName="scheduler">Course Scheduler</Link>
+
             {ephmatchVisibility && (
-              <li>
-                <Link className="ephmatch-link" routeName="ephmatch">
-                  Ephmatch
-                </Link>
-              </li>
+              <Link className="ephmatch-link" routeName="ephmatch">
+                Ephmatch
+              </Link>
             )}
-          </ul>
+          </span>
         </span>
 
-        <span className="nav-right-container">
-          <ul className="nav-right">
-            {currUser?.id ? (
-              <>
-                <li className="avatar">
-                  <Link
-                    routeName="facebook.users"
-                    routeParams={{ userID: currUser.id }}
-                  >
-                    <img src={userPhoto} alt="avatar" />
-                  </Link>
-                </li>
-                <li>
-                  <Link onClick={() => logout()} routeName="home">
-                    Logout
-                  </Link>
-                </li>
-              </>
-            ) : (
-              <li>
-                <Link routeName="login">Login</Link>
-              </li>
-            )}
-          </ul>
+        <span className={styles.navRight}>
+          {currUser?.id ? (
+            <>
+              <Link
+                routeName="facebook.users"
+                routeParams={{ userID: currUser.id }}
+              >
+                <img src={userPhoto} alt="avatar" />
+              </Link>
+              <Link onClick={() => logout()} routeName="home">
+                Logout
+              </Link>
+            </>
+          ) : (
+            <Link routeName="login">Login</Link>
+          )}
         </span>
       </div>
     </nav>

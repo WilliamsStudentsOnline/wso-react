@@ -1,0 +1,50 @@
+@import "../../theme.scss";
+
+#navBar {
+  background-color: $primary-7;
+  color: white;
+}
+
+#navContainer {
+  max-width: $lg;
+  display: flex;
+  justify-content: space-between;
+  margin: 0px auto;
+  padding: 10px 0;
+  font-size: $f-2;
+  line-height: $f-5;
+
+  a {
+    padding: 0 10px;
+  }
+}
+
+.navRight {
+  display: flex;
+}
+
+.navLeftContainer,
+.navLeft {
+  display: flex;
+  flex-direction: column;
+}
+
+.navLeftHidden {
+  display: none;
+}
+
+#navLogo {
+  width: $px-7;
+}
+
+@include mq($md) {
+  #navMenuButton {
+    display: none;
+  }
+
+  .navLeft,
+  .navLeftHidden {
+    display: flex;
+    flex-direction: row;
+  }
+}

@@ -76,26 +76,22 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
               <EuiFlexItem />
               <EuiFlexItem className={styles.square} grow={false} />
             </EuiFlexGroup>
-            <ul id="dept_list">
-              <EuiListGroup>
-                {areas ? (
-                  areas.map((area) => (
+            <EuiListGroup>
+              {areas ? (
+                areas.map((area) => (
+                  <Link
+                    routeName="factrak.areasOfStudy"
+                    routeParams={{ area: area.id }}
+                  >
                     <EuiListGroupItem label={area.name}>
-                      <li key={area.name}>
-                        <Link
-                          routeName="factrak.areasOfStudy"
-                          routeParams={{ area: area.id }}
-                        >
-                          {area.name}
-                        </Link>
-                      </li>
+                      {area.name}
                     </EuiListGroupItem>
-                  ))
-                ) : (
-                  <List height="80%" center numRows={46} />
-                )}
-              </EuiListGroup>
-            </ul>
+                  </Link>
+                ))
+              ) : (
+                <List height="80%" center numRows={46} />
+              )}
+            </EuiListGroup>
             <EuiFlexGroup direction="row" justifyContent="space-between">
               <EuiFlexItem className={styles.square} grow={false} />
               <EuiFlexItem />

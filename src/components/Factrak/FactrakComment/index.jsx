@@ -323,8 +323,8 @@ const FactrakComment = ({
 
   if (survey.lorem)
     return (
-      <div className>
-        <div className>
+      <div>
+        <div>
           <h1>
             {showProf && (
               <Link routeName="factrak" className={styles.transparent}>
@@ -395,7 +395,7 @@ FactrakComment.defaultProps = {
 };
 
 const FactrakCommentSkeleton = () => (
-  <div className="comment">
+  <div>
     <Line width="30%" />
     <Paragraph numRows={3} />
     <Line width="25%" />

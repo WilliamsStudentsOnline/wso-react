@@ -52,8 +52,12 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
           professorID
         );
         updateRatings(ratingsResponse.data);
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        if (error.errorCode === 1330) {
+          // Do nothing - This should be expected if the user has not fulfilled the 2 surveys
+        } else {
+          navigateTo("500");
+        }
       }
     };
 
@@ -67,8 +71,12 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
       try {
         const surveysResponse = await wso.factrakService.listSurveys(params);
         updateSurveys(surveysResponse.data);
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        if (error.errorCode === 1330) {
+          // Do nothing - This should be expected if the user has not fulfilled the 2 surveys
+        } else {
+          navigateTo("500");
+        }
       }
     };
 
