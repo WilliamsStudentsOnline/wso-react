@@ -17,7 +17,7 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
         const photoResponse = await wso.userService.getUserLargePhoto(
           gridUser.unixID
         );
-        updateUserPhoto(URL.createObjectURL(photoResponse.data));
+        updateUserPhoto(URL.createObjectURL(photoResponse));
       } catch (error) {
         // eslint-disable-next-line no-empty
       }

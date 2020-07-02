@@ -95,7 +95,8 @@ const Ephmatcher = ({
   };
 
   const createMessageField = () => {
-    const { messagingPlatform, messagingUsername, unixID } = ephmatcherProfile;
+    const { messagingPlatform, messagingUsername } = ephmatcherProfile;
+    const unixID = ephmatcher.unixID;
 
     let icon;
     let link;
