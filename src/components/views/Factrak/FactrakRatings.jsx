@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Line } from "../../Skeleton";
 
-const FactrakRatings = ({ ratings, general = false }) => {
+const FactrakRatings = ({ ratings, general }) => {
   if (!ratings) return null;
 
   // Generates the crowdsourced opinion on the professor's courses' workload
@@ -169,8 +169,12 @@ const FactrakRatings = ({ ratings, general = false }) => {
 };
 
 FactrakRatings.propTypes = {
+  general: PropTypes.bool,
   ratings: PropTypes.object.isRequired,
-  general: PropTypes.bool.isRequired,
+};
+
+FactrakRatings.defaultProps = {
+  general: false,
 };
 
 const FactrakRatingsSkeleton = () => (
