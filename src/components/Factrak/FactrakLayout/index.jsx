@@ -10,14 +10,16 @@ import { actions, createRouteNodeSelector } from "redux-router5";
 // Additional imports
 import { Link } from "react-router5";
 import styles from "./FactrakLayout.module.scss";
+import SearchIcon from "../../../assets/SVG/VectorsearchIcon.svg";
+import SearchIconPurple from "../../../assets/SVG/VectorsearchIconPurple.svg";
 
 // Elastic Imports
-import { EuiFieldSearch, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
+import { EuiButton, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [setSuggestions] = useState([]);
+  const [setShowSuggestions] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -75,6 +77,9 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
     setShowSuggestions(false);
   };
 
+  // Might be removed //
+
+  /*
   const suggestionRow = (suggestion) => {
     if (suggestion.type && suggestion.type === "area") {
       return (
@@ -118,23 +123,20 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
   };
 
   const factrakSuggestions = () => {
-    return (
-      <div className="autocomplete">
-        <table id="suggestions">
-          <tbody>
-            {suggestions.length > 0 &&
-              showSuggestions &&
-              suggestions.map((suggestion) => (
-                <tr key={suggestion.value}>
-                  <td>{suggestionRow(suggestion)}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
+      return (
+          <EuiFlexGroup className={styles.autocomplete} direction="column">
+                {suggestions.length > 0 &&
+                  showSuggestions &&
+                  suggestions.map((suggestion) => (
+                    <EuiFlexItem grow={false} className={styles.autocompleteItem}>
+                      {suggestionRow(suggestion)}
+                    </EuiFlexItem>
 
+                  ))}
+          </EuiFlexGroup>
+      );
+  };
+  */
   if (currUser) {
     if (!currUser.hasAcceptedFactrakPolicy) {
       navigateTo("factrak.policy");
@@ -143,7 +145,7 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
     return (
       <>
         <header>
-          <EuiFlexGroup className={styles.pageHead}>
+          <EuiFlexGroup className={styles.pageHead} alignItems="flexStart">
             <EuiFlexItem grow={1}>
               <h1>
                 <Link routeName="factrak">Factrak</Link>
@@ -158,28 +160,50 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
                     onBlur={blurHandler}
                     className={styles.searchBar}
                   >
-                    <EuiFieldSearch
-                      className={styles.search}
-                      onChange={factrakAutocomplete}
-                      fullWidth
-                    />
-                    {factrakSuggestions()}
+                    <EuiFlexGroup>
+                      <EuiFlexItem className={styles.searchWrapper}>
+                        <img
+                          className={styles.searchIcon}
+                          src={SearchIcon}
+                          alt=""
+                        />
+                        <img
+                          className={styles.searchIconPurple}
+                          src={SearchIconPurple}
+                          alt=""
+                        />
+                        <input
+                          className={styles.search}
+                          onChange={factrakAutocomplete}
+                          placeholder="Search Factrak"
+                          type="text"
+                        />
+                      </EuiFlexItem>
+                      <EuiFlexItem grow={false}>
+                        <EuiButton fill color="#644a98" onClick={submitHandler}>
+                          Search
+                        </EuiButton>
+                      </EuiFlexItem>
+                    </EuiFlexGroup>
                   </form>
                 </EuiFlexItem>
                 <EuiFlexItem>
-                  <EuiFlexGroup direction="row" className={styles.factrakText}>
-                    <EuiFlexItem>
+                  <EuiFlexGroup
+                    direction="row"
+                    className={styles.factrakText}
+                    justifyContent="flexStart"
+                  >
+                    <EuiFlexItem grow={false}>
                       <Link routeName="factrak.surveys">My Reviews</Link>
                     </EuiFlexItem>
-                    <EuiFlexItem>
+                    <EuiFlexItem grow={false}>
                       <Link routeName="factrak.policy">Policy</Link>
                     </EuiFlexItem>
                     {currUser.factrakAdmin && (
-                      <EuiFlexItem>
+                      <EuiFlexItem grow={false}>
                         <Link routeName="factrak.moderate">Moderate</Link>
                       </EuiFlexItem>
                     )}
-                    <EuiFlexItem grow={5} />
                   </EuiFlexGroup>
                 </EuiFlexItem>
               </EuiFlexGroup>

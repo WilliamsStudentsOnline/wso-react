@@ -1,31 +1,94 @@
 @import "../../theme";
 
+/****** Main Properties *********/
+
 .pageHead {
   font-family: $default-font;
+  margin-top: $px-4;
 
   h1 {
     font-size: $f-6;
-    margin: 2.5rem 2rem;
-    font-weight: 700;
+    margin-left: $px-10;
+    font-weight: 600;
     color: $primary-6;
+    margin-top: $px-1;
   }
+
+  button {
+    background-color: $primary-5;
+    color: white;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.factrakText {
+  font-size: $f-2;
+  color: $primary-4;
+
+  a {
+    padding-bottom: $px-2;
+    margin-bottom: $px-1;
+  }
+
+  a:hover {
+    border-bottom: $px-1 solid $primary-5;
+    color: $primary-5;
+    margin-bottom: -$px-0;
+  }
+}
+
+.lineBreak {
+  margin-bottom: 1%;
+  border-top: $px-1 solid $cool-gray-3;
+}
+
+/****** Search Bar Properties *********/
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  min-width: $px-11;
 }
 
 .searchBar {
   border-radius: 5px;
-  margin-top: 2.5rem;
-}
-
-.factrakText {
-  font-size: $f-0;
-  color: $blue-3;
-  margin-bottom: 2%;
+  height: $px-7;
 }
 
 .search {
-  border-radius: 5px;
+  border: $px-1 solid $cool-gray-3;
+  border-radius: 10px;
+  height: 40px;
+  width: 100%;
+  padding: $px-1 $px-6 $px-1 $px-8;
+  outline: 0;
+  background-color: $cool-gray-0;
 }
-.lineBreak {
-  margin-bottom: 1%;
-  border-top: 2px solid $warm-gray-3;
+
+.search::placeholder {
+  color: $cool-gray-6;
+}
+
+.searchIcon,
+.searchIconPurple {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 20px;
+}
+
+.searchIconPurple {
+  display: none;
+}
+
+/****** Search Bar animations *********/
+
+.searchWrapper:hover .search,
+.search:focus {
+  border: $px-1 solid $primary-4;
+}
+
+.searchWrapper:hover .searchIconPurple,
+.searchWrapper:focus-within .searchIconPurple {
+  display: block;
 }
