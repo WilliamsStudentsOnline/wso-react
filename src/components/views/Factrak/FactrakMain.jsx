@@ -59,7 +59,12 @@ const FactrakMain = ({ currUser, route, token }) => {
   }
 
   // Returns body only if the user has the respective scopes
-  if (!containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
+  if (
+    !containsOneOfScopes(token, [
+      scopes.ScopeFactrakLimited,
+      scopes.ScopeFactrakFull,
+    ])
+  ) {
     return (
       <FactrakLayout>
         <FactrakPolicy />
