@@ -16,10 +16,8 @@ import SearchIconPurple from "../../../assets/SVG/VectorsearchIconPurple.svg";
 // Elastic Imports
 import { EuiButton, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
-const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
+const FactrakLayout = ({ children, currUser, navigateTo, route }) => {
   const [query, setQuery] = useState("");
-  const [setSuggestions] = useState([]);
-  const [setShowSuggestions] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -31,7 +29,6 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
 
     if (isMounted) {
       loadQuery();
-      setShowSuggestions(false);
     }
 
     return () => {
@@ -39,28 +36,8 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
     };
   }, [route.params.q, route.path]);
 
-  // Initiates new autocomplete
   const factrakAutocomplete = async (event) => {
     setQuery(event.target.value);
-    let suggestData = [];
-
-    try {
-      const factrakResponse = await wso.autocompleteService.autocompleteFactrak(
-        query
-      );
-
-      suggestData = factrakResponse.data;
-    } catch {
-      // No need to do anything - it's alright if we don't have autocomplete.
-    }
-
-    // Limit the number of factrak suggestions to 5.
-    if (suggestData.length > 5) {
-      setSuggestions(suggestData.slice(0, 5));
-    } else {
-      setSuggestions(suggestData);
-    }
-    setShowSuggestions(true);
   };
 
   const submitHandler = (event) => {
@@ -69,74 +46,6 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
     navigateTo("factrak.search", { q: query }, { reload: true });
   };
 
-  const focusHandler = () => {
-    setShowSuggestions(true);
-  };
-
-  const blurHandler = () => {
-    setShowSuggestions(false);
-  };
-
-  // Might be removed //
-
-  /*
-  const suggestionRow = (suggestion) => {
-    if (suggestion.type && suggestion.type === "area") {
-      return (
-        <Link
-          routeName="factrak.areasOfStudy"
-          routeParams={{ area: suggestion.id }}
-          onMouseDown={(e) => e.preventDefault()}
-          successCallback={() => setShowSuggestions(false)}
-        >
-          {suggestion.value}
-        </Link>
-      );
-    }
-    if (suggestion.type && suggestion.type === "course") {
-      return (
-        <Link
-          routeName="factrak.courses"
-          routeParams={{ courseID: suggestion.id }}
-          onMouseDown={(e) => e.preventDefault()}
-          successCallback={() => setShowSuggestions(false)}
-        >
-          {suggestion.value}
-        </Link>
-      );
-    }
-    if (suggestion.type && suggestion.type === "professor") {
-      return (
-        <Link
-          routeName="factrak.professors"
-          routeParams={{ profID: suggestion.id }}
-          onMouseDown={(e) => e.preventDefault()}
-          successCallback={() => setShowSuggestions(false)}
-        >
-          {suggestion.value}
-        </Link>
-      );
-    }
-
-    // Just to handle weird cases
-    return null;
-  };
-
-  const factrakSuggestions = () => {
-      return (
-          <EuiFlexGroup className={styles.autocomplete} direction="column">
-                {suggestions.length > 0 &&
-                  showSuggestions &&
-                  suggestions.map((suggestion) => (
-                    <EuiFlexItem grow={false} className={styles.autocompleteItem}>
-                      {suggestionRow(suggestion)}
-                    </EuiFlexItem>
-
-                  ))}
-          </EuiFlexGroup>
-      );
-  };
-  */
   if (currUser) {
     if (!currUser.hasAcceptedFactrakPolicy) {
       navigateTo("factrak.policy");
@@ -154,12 +63,7 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
             <EuiFlexItem grow={4}>
               <EuiFlexGroup direction="column">
                 <EuiFlexItem>
-                  <form
-                    onSubmit={submitHandler}
-                    onFocus={focusHandler}
-                    onBlur={blurHandler}
-                    className={styles.searchBar}
-                  >
+                  <form onSubmit={submitHandler} className={styles.searchBar}>
                     <EuiFlexGroup>
                       <EuiFlexItem className={styles.searchWrapper}>
                         <img
@@ -175,6 +79,7 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
                         <input
                           className={styles.search}
                           onChange={factrakAutocomplete}
+                          onSubmit={submitHandler}
                           placeholder="Search Factrak"
                           type="text"
                         />
@@ -222,7 +127,6 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
 };
 
 FactrakLayout.propTypes = {
-  wso: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired,
   currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
