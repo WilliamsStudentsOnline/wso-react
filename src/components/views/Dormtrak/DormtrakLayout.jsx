@@ -59,9 +59,9 @@ const DormtrakLayout = ({ children, currUser, navigateTo, wso }) => {
               <li>
                 <a
                   href="http://student-life.williams.edu"
-                  title="Office of Student Life"
+                  title="Office of Campus Life"
                 >
-                  OSL
+                  OCL
                 </a>
               </li>
               {neighborhoods.map((neighborhood) =>
