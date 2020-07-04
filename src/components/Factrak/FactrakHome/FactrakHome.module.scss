@@ -1,57 +1,40 @@
 @import "../../theme";
 
+/****** Main Page Styling *********/
+
 .factrak {
-  margin: 0 15%;
+  margin: 0 270px;
   font-family: $default-font;
 
   h3 {
     text-align: justify;
-    font-size: $f-4;
+    font-size: $f-5;
     font-weight: 600;
-    margin: 5px;
     color: $blue-5;
-  }
-
-  li {
-    text-align: justify;
-    color: $blue-5;
-  }
-
-  ul {
-    padding: 0 10%;
+    margin-bottom: $px-3;
+    margin-top: $px-2;
   }
 }
 
-.square {
-  background: $warm-gray-3;
-  height: 33px;
-  width: 33px;
-}
+/****** Department Section *********/
 
 .departmentCard {
-  border: 2px solid $warm-gray-3;
-  padding: 0;
-  border-radius: 5px;
-  margin-top: 16px;
+  background: $cool-gray-0;
+  box-shadow: 0 $px-2 $px-3 rgba(0, 0, 0, 0.15);
+  padding: $px-4 0 $px-5 $px-6;
 }
 
-.factrakComment {
-  margin: 10px;
+.depTitle {
+  font-size: $f-2;
+  color: $blue-5;
+  font-weight: 600;
+  margin-top: $px-3;
+  margin-bottom: $px-3;
+  margin: $px-3 0;
 }
 
-.factrakWriteReview {
-  background-color: $primary-6;
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: $base-font-size;
-  border-radius: 5px;
-  margin-bottom: 5%;
-}
-
-hr {
-  height: 2px;
+.depListItem {
+  color: $primary-4;
+  font-size: $f-0;
+  font-weight: normal;
 }

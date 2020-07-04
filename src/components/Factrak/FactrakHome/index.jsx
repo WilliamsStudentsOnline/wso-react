@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import FactrakComment, { FactrakCommentSkeleton } from "../FactrakComment";
-import { List } from "../../common/Skeleton";
 import FactrakDeficitMessage from "../FactrakUtils";
 
 // Redux imports
@@ -16,12 +15,7 @@ import { Link } from "react-router5";
 import styles from "./FactrakHome.module.scss";
 
 // Elastic imports
-import {
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiListGroup,
-  EuiListGroupItem,
-} from "@elastic/eui";
+import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
   const [areas, updateAreas] = useState(null);
@@ -65,45 +59,64 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
     loadAreas();
   }, [navigateTo, token, wso]);
 
+  // List of Departments according to specific letter
+  const depChildren = (letter) => {
+    const letteredNames = [];
+    for (let i = 0; i < areas.length; i += 1) {
+      if (letter === areas[i].name.charAt(0)) {
+        letteredNames.push(areas[i]);
+      }
+    }
+    return letteredNames.map((area) => (
+      <EuiFlexItem>
+        <Link
+          routeName="factrak.areasOfStudy"
+          routeParams={{ area: area.id }}
+          className={styles.depListItem}
+        >
+          {area.name}
+        </Link>
+      </EuiFlexItem>
+    ));
+  };
+
+  // Get List of Departments
+  const depNames = () => {
+    if (areas != null) {
+      const letters = [];
+      for (let i = 0; i < areas.length; i += 1) {
+        const currentLetter = areas[i].name.charAt(0);
+        if (!letters.includes(currentLetter)) {
+          letters.push(currentLetter);
+        }
+      }
+      return letters.map((letter) => (
+        <EuiFlexItem>
+          <h4 className={styles.depTitle}>{letter}</h4>
+          <EuiFlexGroup direction="column" gutterSize="none">
+            {depChildren(letter)}
+          </EuiFlexGroup>
+        </EuiFlexItem>
+      ));
+    }
+    return null;
+  };
+
   return (
     <article className={styles.factrak}>
-      <EuiFlexGroup direction="rowReverse" justifyContent="space-around">
-        <EuiFlexItem grow={2}>
+      <EuiFlexGroup direction="rowReverse" justifyContent="spaceAround">
+        <EuiFlexItem grow={7}>
           <h3>Departments</h3>
           <div className={styles.departmentCard} description="">
-            <EuiFlexGroup direction="row" justifyContent="space-between">
-              <EuiFlexItem className={styles.square} grow={false} />
-              <EuiFlexItem />
-              <EuiFlexItem className={styles.square} grow={false} />
-            </EuiFlexGroup>
-            <EuiListGroup>
-              {areas ? (
-                areas.map((area) => (
-                  <Link
-                    routeName="factrak.areasOfStudy"
-                    routeParams={{ area: area.id }}
-                  >
-                    <EuiListGroupItem label={area.name}>
-                      {area.name}
-                    </EuiListGroupItem>
-                  </Link>
-                ))
-              ) : (
-                <List height="80%" center numRows={46} />
-              )}
-            </EuiListGroup>
-            <EuiFlexGroup direction="row" justifyContent="space-between">
-              <EuiFlexItem className={styles.square} grow={false} />
-              <EuiFlexItem />
-              <EuiFlexItem className={styles.square} grow={false} />
+            <EuiFlexGroup direction="column" gutterSize="none">
+              {depNames()}
             </EuiFlexGroup>
           </div>
         </EuiFlexItem>
 
-        <EuiFlexItem grow={3}>
+        <EuiFlexItem grow={10}>
           <section>
             <h3>Recent Reviews</h3>
-            <br />
             <FactrakDeficitMessage currUser={currUser} />
             <EuiFlexGroup direction="column">
               {surveys
@@ -111,10 +124,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
                     if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
                       return (
                         <EuiFlexItem>
-                          <hr style={{ background: "#d4d4d4" }} />
-                          <br />
                           <FactrakComment
-                            className={styles.factrakComment}
                             comment={survey}
                             showProf
                             abridged
