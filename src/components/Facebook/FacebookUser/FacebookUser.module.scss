@@ -1,10 +1,5 @@
 @import "../../theme.scss";
 
-body {
-  font-family: $default-font;
-  font-size: $base-font-size;
-}
-
 .facebookProfile {
   display: flex;
   align-items: center;
@@ -37,11 +32,25 @@ body {
   }
 }
 
-.flexGroupBottom {
+.flexGroupMiddle {
   background-color: $blue-5;
-  margin-bottom: $px-9;
   margin-top: $px-4;
   padding: $px-5;
+}
+
+.flexGroupMiddleSearch {
+  background-color: $blue-5;
+  margin-top: $px-4;
+  margin-bottom: $px-9;
+  padding: $px-5;
+}
+
+.flexGroupBottom {
+  background-color: $cool-gray-1;
+  border-radius: 0 0 $px-3 $px-3;
+  margin-top: $px-6;
+  margin-bottom: $px-9;
+  padding: $px-0 $px-5;
 }
 
 .picture {
@@ -56,4 +65,14 @@ body {
 .info {
   color: $blue-0;
   width: 400px;
+}
+
+.editProfileButton {
+  background-color: $blue-1;
+  color: $blue-5;
+}
+
+.logOutButton {
+  background-color: $blue-5;
+  color: $blue-0;
 }

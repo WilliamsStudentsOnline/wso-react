@@ -1,16 +1,11 @@
 @import "../../theme.scss";
 
-body {
-  font-family: $default-font;
-  font-size: $base-font-size;
-}
-
 .results {
   color: $blue-3;
 }
 
 .flexGrid {
-  padding: $px-4;
+  margin-bottom: $px-6;
 }
 
 .info {
@@ -19,5 +14,7 @@ body {
 }
 
 .gridWrap {
+  margin-left: $px-9;
+  margin-right: $px-9;
   padding: $px-5;
 }

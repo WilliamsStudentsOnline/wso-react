@@ -11,7 +11,8 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 // Additional Imports
 import { ConnectedLink } from "react-router5";
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
-import { EuiFlexItem, EuiFlexGroup } from "@elastic/eui";
+import { EuiButton, EuiFlexItem, EuiFlexGroup } from "@elastic/eui";
+// import { logout } from "../../Layout/Nav/index";
 import styles from "./FacebookUser.module.scss";
 
 const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
@@ -109,14 +110,14 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
   const userPronouns = () => {
     if (!viewPerson) {
       return (
-        <h5>
+        <h6>
           <Line width="30%" />
-        </h5>
+        </h6>
       );
     }
 
     if (viewPerson.pronoun) {
-      return <h5>{`Pronouns: ${viewPerson.pronoun}`}</h5>;
+      return <h6>{`Pronouns: ${viewPerson.pronoun}`}</h6>;
     }
     return null;
   };
@@ -279,6 +280,63 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
     return <Line width="40%" />;
   };
 
+  if (currUser && viewPerson && currUser.id === viewPerson.id) {
+    return (
+      <article className={styles.facebookProfile}>
+        <section>
+          <EuiFlexGroup className={styles.flexGroupTop}>
+            <EuiFlexItem grow={false}>
+              <aside className={styles.title}>{userTitle()}</aside>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiFlexGroup className={styles.flexGroupMiddle}>
+            <EuiFlexItem grow={false}>
+              <aside className={styles.picture}>{picture()}</aside>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <aside className={styles.info}>
+                <h3>
+                  {nameAndYear()}
+                  {<span>&nbsp;(me)</span>}
+                </h3>
+                {userPronouns()}
+                <br />
+                {userUnix()}
+                {userTags()}
+                {userSUBox()}
+                {userRoom()}
+                {userHometown()}
+              </aside>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+          <EuiFlexGroup className={styles.flexGroupBottom}>
+            <EuiFlexItem grow={false}>
+              <EuiButton
+                className={styles.editProfileButton}
+                fill
+                color="#000000"
+                href="../edit"
+              >
+                Edit Profile
+              </EuiButton>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <EuiButton
+                className={styles.logOutButton}
+                fill
+                // onClick={() => logout()}
+                href="../../#"
+                color="#000000"
+              >
+                Log Out
+              </EuiButton>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </section>
+      </article>
+    );
+  }
+
   return (
     <article className={styles.facebookProfile}>
       <section>
@@ -287,29 +345,25 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
             <aside className={styles.title}>{userTitle()}</aside>
           </EuiFlexItem>
         </EuiFlexGroup>
-        <EuiFlexGroup className={styles.flexGroupBottom}>
-          <EuiFlexItem grow={false}>
-            <aside className={styles.picture}>{picture()}</aside>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false}>
-            <aside className={styles.info}>
-              <h3>
-                {nameAndYear()}
-                {currUser && viewPerson && currUser.id === viewPerson.id && (
-                  <span>&nbsp;(me)</span>
-                )}
-              </h3>
-              {/* {userTitle()} */}
-              {userPronouns()}
-              <br />
-              {userUnix()}
-              {userTags()}
-              {userSUBox()}
-              {userRoom()}
-              {userHometown()}
-            </aside>
-          </EuiFlexItem>
-        </EuiFlexGroup>
+        <div className={styles.flexGroupMiddleSearch}>
+          <EuiFlexGroup className={styles.flexGroupMiddle}>
+            <EuiFlexItem grow={false}>
+              <aside className={styles.picture}>{picture()}</aside>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <aside className={styles.info}>
+                <h3>{nameAndYear()}</h3>
+                {userPronouns()}
+                <br />
+                {userUnix()}
+                {userTags()}
+                {userSUBox()}
+                {userRoom()}
+                {userHometown()}
+              </aside>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </div>
       </section>
     </article>
   );

@@ -34,7 +34,6 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
       return (
         <>
           <li className="list-headers">UNIX: {user.unixID}</li>
-          {/* <li className="list-contents">{user.unixID}</li> */}
         </>
       );
     }
@@ -49,9 +48,6 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
           <li className="list-headers">
             Room: {user.dormRoom.dorm.name} {user.dormRoom.number}
           </li>
-          {/* <li className="list-contents">
-            {user.dormRoom.dorm.name} {user.dormRoom.number}
-          </li> */}
         </>
       );
     }
@@ -59,7 +55,6 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
       return (
         <>
           <li className="list-headers"> Office: {user.office.number}</li>
-          {/* <li className="list-contents">{user.office.number}</li> */}
         </>
       );
     }
@@ -84,18 +79,17 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
   };
 
   return (
-    <EuiFlexGroup key={gridUser.id} className={styles.flexGroup}>
-      <EuiFlexItem className={styles.third}>
-        <div className="profile-photo">
-          <Link
-            routeName="facebook.users"
-            routeParams={{ userID: gridUser.id }}
-          >
-            <img src={userPhoto} alt="avatar" />
-          </Link>
-        </div>
+    <EuiFlexGroup
+      gutterSize="none"
+      key={gridUser.id}
+      className={styles.flexGroup}
+    >
+      <EuiFlexItem className={styles.gridPicture}>
+        <Link routeName="facebook.users" routeParams={{ userID: gridUser.id }}>
+          <img src={userPhoto} alt="avatar" />
+        </Link>
       </EuiFlexItem>
-      <EuiFlexItem className={styles.twoThird}>
+      <EuiFlexItem className={styles.gridInfo}>
         <h4>
           <Link
             routeName="facebook.users"
