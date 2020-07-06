@@ -1,33 +1,37 @@
 @import "../../theme";
 
-.agreeCount {
-  border-radius: $px-5;
-  margin-top: $px-3;
+/****** Overall Styling *********/
+
+.commentCard {
+  border-radius: 0px 10px 10px 0px;
+  box-shadow: 0 $px-2 $px-3 rgba(0, 0, 0, 0.3);
 }
 
-.seeMore {
-  font-size: $f-0;
-  color: $primary-4;
+/****** Comment Headers *********/
+
+.commentHeaderBase {
+  color: $primary-6;
+  font-family: $default-font;
+  margin-bottom: $px-2;
 }
 
 .commentHeaderAbridged {
-  font-family: $default-font;
+  @extend .commentHeaderBase;
   font-size: $f-0;
   font-weight: 600;
-  color: $primary-6;
   margin-top: $px-3;
-  margin-bottom: $px-1;
+  margin-bottom: $px-2;
 }
 
 .commentHeader {
-  font-family: $default-font;
+  @extend .commentHeaderBase;
   font-size: $f-2;
   font-weight: 300;
   line-height: $px-6;
-  color: $primary-6;
   margin-top: $px-2;
-  margin-bottom: $px-2;
 }
+
+/****** Comment Content *********/
 
 .commentContentAbridged {
   font-family: $default-font;
@@ -41,26 +45,32 @@
 }
 
 .commentContentProf {
-  font-size: $f-1;
-  line-height: 19px;
+  @extend .commentContent;
   padding: $px-5;
+}
+
+/******  Minor Stylings *********/
+
+.agreeCount {
+  border-radius: $px-5;
+  margin-top: $px-3;
+}
+
+.seeMore {
+  font-size: $f-0;
+  color: $primary-4;
 }
 
 .commentDetail {
   font-size: 10px;
   color: $cool-gray-6;
   font-style: italic;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: $px-3;
+  margin-bottom: $px-3;
 }
 
 .transparent {
   color: transparent;
-}
-
-.commentCard {
-  border-radius: 0px 10px 10px 0px;
-  box-shadow: 0 $px-2 $px-3 rgba(0, 0, 0, 0.3);
 }
 
 .recommendations {
