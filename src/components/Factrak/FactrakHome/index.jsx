@@ -118,7 +118,11 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
           <section>
             <h3>Recent Reviews</h3>
             <FactrakDeficitMessage currUser={currUser} />
-            <EuiFlexGroup direction="column">
+            <EuiFlexGroup
+              direction="column"
+              className={styles.comments}
+              gutterSize="xl"
+            >
               {surveys
                 ? surveys.map((survey) => {
                     if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
