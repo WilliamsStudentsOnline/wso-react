@@ -63,6 +63,27 @@ export const containsOneOfScopes = (token, scopesToCheck) => {
 };
 
 /**
+ * Checks if token contains all of the given scopes.
+ *
+ * @param {String} token - API token string.
+ * @param {String[]} scopesToCheck - scopes to be checked against.
+ */
+export const containsAllOfScopes = (token, scopesToCheck) => {
+  try {
+    const decoded = jwtDecode(token);
+    if (decoded.scope) {
+      for (let i = 0; i < scopesToCheck.length; i += 1) {
+        if (decoded.scope.indexOf(scopesToCheck[i]) === -1) return false;
+      }
+    }
+  } catch (err) {
+    return false;
+  }
+
+  return true;
+};
+
+/**
  * Retrieves the token level of a given token.
  *
  * 0 - Unauthenticated User out of Williams IP address
