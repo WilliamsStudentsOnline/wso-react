@@ -2,34 +2,53 @@
 
 .agreeCount {
   border-radius: $px-5;
-}
-
-.surveyText {
-  font-family: $default-font;
-  color: $cool-gray-8;
-  line-height: 1.2rem;
+  margin-top: $px-3;
 }
 
 .seeMore {
-  font-size: $f-1;
-  color: $cool-gray-6;
+  font-size: $f-0;
+  color: $primary-4;
+}
+
+.commentHeaderAbridged {
+  font-family: $default-font;
+  font-size: $f-0;
+  font-weight: 600;
+  color: $primary-6;
+  margin-top: $px-3;
+  margin-bottom: $px-1;
 }
 
 .commentHeader {
   font-family: $default-font;
   font-size: $f-2;
-  font-weight: 600;
-  margin-bottom: 10px;
+  font-weight: 300;
+  line-height: $px-6;
+  color: $primary-6;
+  margin-top: $px-2;
+  margin-bottom: $px-2;
+}
+
+.commentContentAbridged {
+  font-family: $default-font;
+  font-size: $f-0;
+  color: $cool-gray-9;
 }
 
 .commentContent {
-  font-family: $default-font;
-  margin-left: 15px;
+  font-size: $f-1;
+  line-height: 19px;
+}
+
+.commentContentProf {
+  font-size: $f-1;
+  line-height: 19px;
+  padding: $px-5;
 }
 
 .commentDetail {
-  font-size: $f-0;
-  color: $cool-gray-4;
+  font-size: 10px;
+  color: $cool-gray-6;
   font-style: italic;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -37,4 +56,15 @@
 
 .transparent {
   color: transparent;
+}
+
+.commentCard {
+  border-radius: 0px 10px 10px 0px;
+  box-shadow: 0 $px-2 $px-3 rgba(0, 0, 0, 0.3);
+}
+
+.recommendations {
+  font-size: $f-0;
+  line-height: $px-5;
+  color: $cool-gray-8;
 }
