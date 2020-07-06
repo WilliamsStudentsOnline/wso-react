@@ -37,7 +37,7 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
   return (
     <article className={styles.facebook}>
       <header>
-        <div className="page-head">
+        <div>
           <h1>
             <Link routeName="facebook">Facebook</Link>
             <EuiSpacer size="m" />

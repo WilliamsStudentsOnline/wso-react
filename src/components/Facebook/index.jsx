@@ -3,10 +3,10 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // Component Imports
-import FacebookLayout from "./FacebookLayout";
-import FacebookHome from "./FacebookHome";
-import FacebookHelp from "./FacebookHelp";
 import FacebookEdit from "./FacebookEdit";
+import FacebookHelp from "./FacebookHelp";
+import FacebookHome from "./FacebookHome";
+import FacebookLayout from "./FacebookLayout";
 import FacebookUser from "./FacebookUser";
 
 // Redux Imports

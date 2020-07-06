@@ -3,24 +3,27 @@
 .facebook {
   h1 {
     color: $primary-6;
-    font-size: $f-8;
+    font-size: $f-6;
     font-weight: bold;
-    margin: auto;
-    padding: 10px;
-    text-align: center;
-    width: 50%;
+    margin: $px-0;
+    padding: $px-4;
+    vertical-align: top;
   }
 
-  left: 50%;
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -110%);
+  display: flex;
+  flex-direction: row;
+  margin: $px-5;
+}
+
+.title {
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .options {
   color: $blue-3;
-  text-align: center;
+  justify-content: left;
 }
 
 .search {

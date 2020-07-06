@@ -35,7 +35,7 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
           targetResponse.data.unixID
         );
 
-        updateUserPhoto(URL.createObjectURL(photoResponse));
+        updateUserPhoto(URL.createObjectURL(photoResponse.data));
       } catch {
         updateUserPhoto(null);
       }

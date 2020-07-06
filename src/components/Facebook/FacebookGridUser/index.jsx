@@ -31,11 +31,7 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
   // Generates the unix id field in grid view
   const gridUnixID = (user) => {
     if (user.unixID) {
-      return (
-        <>
-          <li className="list-headers">UNIX: {user.unixID}</li>
-        </>
-      );
+      return <li>UNIX: {user.unixID}</li>;
     }
     return null;
   };
@@ -44,19 +40,13 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
   const gridUserRoom = (user) => {
     if (user.type === userTypeStudent && user.dormVisible && user.dormRoom) {
       return (
-        <>
-          <li className="list-headers">
-            Room: {user.dormRoom.dorm.name} {user.dormRoom.number}
-          </li>
-        </>
+        <li>
+          Room: {user.dormRoom.dorm.name} {user.dormRoom.number}
+        </li>
       );
     }
     if (user.type !== userTypeStudent && user.office) {
-      return (
-        <>
-          <li className="list-headers"> Office: {user.office.number}</li>
-        </>
-      );
+      return <li> Office: {user.office.number}</li>;
     }
     return null;
   };
@@ -65,14 +55,12 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
   const gridUserHometown = (user) => {
     if (user.type === userTypeStudent && user.homeVisible && user.homeTown) {
       return (
-        <>
-          <li className="list-headers">
-            Hometown: {user.homeTown},&nbsp;
-            {user.homeCountry === "United States"
-              ? user.homeState
-              : user.homeCountry}
-          </li>
-        </>
+        <li>
+          Hometown: {user.homeTown},&nbsp;
+          {user.homeCountry === "United States"
+            ? user.homeState
+            : user.homeCountry}
+        </li>
       );
     }
     return null;
