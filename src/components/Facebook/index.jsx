@@ -3,10 +3,10 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // Component Imports
+import FacebookAltLayout from "./FacebookAltLayout";
 import FacebookEdit from "./FacebookEdit";
 import FacebookHelp from "./FacebookHelp";
 import FacebookHome from "./FacebookHome";
-import FacebookLayout from "./FacebookLayout";
 import FacebookUser from "./FacebookUser";
 
 // Redux Imports
@@ -23,21 +23,21 @@ const FacebookMain = ({ route }) => {
     switch (splitRoute[1]) {
       case "help":
         return (
-          <FacebookLayout>
+          <FacebookAltLayout>
             <FacebookHelp />
-          </FacebookLayout>
+          </FacebookAltLayout>
         );
       case "users":
         return (
-          <FacebookLayout>
+          <FacebookAltLayout>
             <FacebookUser />
-          </FacebookLayout>
+          </FacebookAltLayout>
         );
       case "edit":
         return (
-          <FacebookLayout>
+          <FacebookAltLayout>
             <FacebookEdit />
-          </FacebookLayout>
+          </FacebookAltLayout>
         );
       default:
         return <FacebookHome />;
