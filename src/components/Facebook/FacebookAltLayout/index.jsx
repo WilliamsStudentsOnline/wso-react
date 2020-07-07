@@ -65,14 +65,14 @@ const FacebookAltLayout = ({ children, currUser, navigateTo, route }) => {
             <article className={styles.options}>
               <EuiFlexGroup>
                 <EuiFlexItem grow={false}>
-                  {currUser && [
+                  {currUser && (
                     <Link
                       routeName="facebook.users"
                       routeParams={{ userID: currUser.id }}
                     >
                       My Profile
-                    </Link>,
-                  ]}
+                    </Link>
+                  )}
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
                   <Link routeName="facebook.help">Help</Link>

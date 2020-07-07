@@ -22,17 +22,29 @@ const FacebookMain = ({ route }) => {
 
     switch (splitRoute[1]) {
       case "help":
-        return <FacebookHelp />;
+        return (
+          <FacebookLayout>
+            <FacebookHelp />
+          </FacebookLayout>
+        );
       case "users":
-        return <FacebookUser />;
+        return (
+          <FacebookLayout>
+            <FacebookUser />
+          </FacebookLayout>
+        );
       case "edit":
-        return <FacebookEdit />;
+        return (
+          <FacebookLayout>
+            <FacebookEdit />
+          </FacebookLayout>
+        );
       default:
         return <FacebookHome />;
     }
   };
 
-  return <FacebookLayout>{facebookBody()}</FacebookLayout>;
+  return facebookBody();
 };
 
 FacebookMain.propTypes = {

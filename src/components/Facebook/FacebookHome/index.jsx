@@ -14,8 +14,10 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 import { userTypeStudent } from "../../../constants/general";
 import { EuiFlexGrid, EuiFlexItem } from "@elastic/eui";
 import styles from "./FacebookHome.module.scss";
+import FacebookAltLayout from "../FacebookAltLayout";
+import FacebookLayout from "../FacebookLayout";
 
-const FacebookHome = ({ wso, route, navigateTo }) => {
+const FacebookHome = ({ navigateTo, route, wso }) => {
   const [results, updateResults] = useState(null);
   const perPage = 20;
   const [page, updatePage] = useState(0);
@@ -179,16 +181,18 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
   };
 
   if (!route.params.q) {
-    return null;
+    return <FacebookLayout />;
   }
 
   return (
-    <article className="facebook-results">
-      <section>
-        <br />
-        {FacebookResults()}
-      </section>
-    </article>
+    <FacebookAltLayout>
+      <article className="facebook-results">
+        <section>
+          <br />
+          {FacebookResults()}
+        </section>
+      </article>
+    </FacebookAltLayout>
   );
 };
 

@@ -63,14 +63,14 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
           <article className={styles.options}>
             <EuiFlexGroup justifyContent="center">
               <EuiFlexItem grow={false}>
-                {currUser && [
+                {currUser && (
                   <Link
                     routeName="facebook.users"
                     routeParams={{ userID: currUser.id }}
                   >
                     My Profile
-                  </Link>,
-                ]}
+                  </Link>
+                )}
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
                 <Link routeName="facebook.help">Help</Link>
@@ -86,13 +86,14 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
 
 FacebookLayout.propTypes = {
   children: PropTypes.object,
-  currUser: PropTypes.object.isRequired,
+  currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
 };
 
 FacebookLayout.defaultProps = {
-  children: {},
+  children: null,
+  currUser: null,
 };
 
 const mapStateToProps = () => {
