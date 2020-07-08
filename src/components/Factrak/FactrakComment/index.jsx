@@ -279,10 +279,10 @@ const FactrakComment = ({
   // Generate the survey text.
   const surveyText = () => {
     if (abridged) {
-      if (survey.comment.length > 135) {
+      if (survey.comment.length > 125) {
         return (
           <div>
-            {`${survey.comment.substring(0, 135)}`}
+            {`${survey.comment.substring(0, 125)}`}
             <Link
               routeName="factrak.professors"
               routeParams={{ profID: survey.professorID }}
@@ -342,6 +342,18 @@ const FactrakComment = ({
     );
   };
 
+  // Find how long ago review was submitted
+  const getTimeDifference = () => {
+    const date1 = new Date(survey.createdTime);
+    const today = new Date();
+    const timeDifference = today.getTime() - date1.getTime();
+    const dayDifference = timeDifference / (1000 * 3600 * 24);
+    if (dayDifference > 7) {
+      return false;
+    }
+    return true;
+  };
+
   if (isDeleted) return null;
 
   if (survey.lorem)
@@ -373,7 +385,11 @@ const FactrakComment = ({
 
   if (abridged) {
     return (
-      <EuiFlexGroup className={styles.commentCard}>
+      <EuiFlexGroup
+        className={
+          getTimeDifference() ? styles.commentCardRecent : styles.commentCard
+        }
+      >
         <EuiFlexItem grow={1} />
         <EuiFlexItem className={styles.commentContentAbridged} grow={5}>
           <h1 className={styles.commentHeaderAbridged}>
@@ -396,7 +412,11 @@ const FactrakComment = ({
 
   if (!showProf) {
     return (
-      <EuiFlexGroup className={styles.commentCard}>
+      <EuiFlexGroup
+        className={
+          getTimeDifference() ? styles.commentCardRecent : styles.commentCard
+        }
+      >
         <EuiFlexItem className={styles.commentContentProf}>
           <h1 className={styles.commentHeader}>{courseLink()}</h1>
           {surveyText()}
@@ -421,7 +441,11 @@ const FactrakComment = ({
   }
 
   return (
-    <EuiFlexGroup className={styles.commentCard}>
+    <EuiFlexGroup
+      className={
+        getTimeDifference() ? styles.commentCardRecent : styles.commentCard
+      }
+    >
       <EuiFlexItem grow={1} />
       <EuiFlexItem className={styles.commentContent} grow={5}>
         <h1 className={styles.commentHeader}>

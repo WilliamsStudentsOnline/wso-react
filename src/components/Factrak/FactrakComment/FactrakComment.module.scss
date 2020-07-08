@@ -5,6 +5,12 @@
 .commentCard {
   border-radius: 0px 10px 10px 0px;
   box-shadow: 0 $px-2 $px-3 rgba(0, 0, 0, 0.3);
+  border-left: 16px solid transparent;
+}
+
+.commentCardRecent {
+  @extend .commentCard;
+  border-left: $px-5 solid $new-0;
 }
 
 /****** Comment Headers *********/
