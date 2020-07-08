@@ -41,7 +41,7 @@ const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
         <EuiFlexGroup
           className={styles.reviewList}
           direction="column"
-          alignItems="center"
+          gutterSize="xl"
         >
           {surveys.length > 0 ? (
             <>
@@ -54,7 +54,6 @@ const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
                     abridged={false}
                     key={survey.id}
                   />
-                  <hr />
                 </EuiFlexItem>
               ))}
             </>
