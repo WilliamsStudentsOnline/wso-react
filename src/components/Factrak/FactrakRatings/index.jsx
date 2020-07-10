@@ -37,13 +37,12 @@ const FactrakRatings = ({ ratings, general }) => {
   // Generates the number of reviews for the professor
   const reviews = () => {
     if (!ratings.numWouldTakeAnother) return null;
-
     return (
       <EuiText>
         <div className={styles.ratingHeader}>
           {[Math.round(ratings.numWouldTakeAnother)]}
         </div>
-        Reviews
+        {ratings.numWouldTakeAnother === 1 ? "Review" : "Reviews"}
       </EuiText>
     );
   };
@@ -222,5 +221,20 @@ const FactrakRatingsSkeleton = () => (
   </>
 );
 
+const FactrakReviewCount = ({ ratings }) => {
+  if (ratings == null) return null;
+  return (
+    <p>
+      {[Math.round(ratings.numWouldTakeAnother)]}&nbsp;
+      {ratings.numWouldTakeAnother === 1 ? "Review" : "Reviews"}
+    </p>
+  );
+};
+
+FactrakReviewCount.propTypes = {
+  ratings: PropTypes.object.isRequired,
+};
+
 export default FactrakRatings;
 export { FactrakRatingsSkeleton };
+export { FactrakReviewCount };

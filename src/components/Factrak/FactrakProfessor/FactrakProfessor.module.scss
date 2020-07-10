@@ -2,11 +2,26 @@
 
 .facebookProfile {
   font-family: $default-font;
+  margin-bottom: $px-7;
 
   h3 {
     font-size: $f-4;
-    font-weight: 600;
     margin: $px-4 0;
+    color: $blue-5;
+  }
+
+  h5 {
+    color: $blue-5;
+    font-size: $f-2;
+    font-weight: 300;
+    margin-bottom: $px-3;
+  }
+
+  h6 {
+    color: $blue-5;
+    font-size: $f-1;
+    line-height: $px-5;
+    font-weight: 300;
   }
 
   button {
@@ -17,15 +32,16 @@
 
 .ratingsBar {
   width: 100%;
-  background-color: $primary-1;
+  background-color: $cool-gray-1;
   align-items: center;
 }
 
 .professorPhoto {
   background: $warm-gray-3;
   border-radius: 50%;
-  height: $px-10 + $px-6;
-  width: $px-10 + $px-6;
+  height: $px-10;
+  width: $px-10;
+  margin-right: none;
 }
 
 .professorText {
@@ -33,15 +49,11 @@
 }
 
 .circle {
-  align-items: center;
-}
-
-.professorHeader {
-  margin: $px-4 0;
+  //align-items: center;
 }
 
 .reviews {
-  width: 70%;
+  width: 60%;
 
   button {
     background-color: white;
@@ -49,8 +61,12 @@
   }
 }
 
-.professorReview {
-  border-bottom: 2px solid $warm-gray-3;
-  padding: 1% 10%;
-  padding-top: 2%;
+.reviewCount {
+  font-size: $f-4;
+  justify-content: center;
+  color: $new-3;
+}
+
+.professorHeader {
+  width: 100%;
 }

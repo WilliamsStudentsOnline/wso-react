@@ -2,7 +2,10 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import FactrakComment, { FactrakCommentSkeleton } from "../FactrakComment";
-import FactrakRatings, { FactrakRatingsSkeleton } from "../FactrakRatings";
+import FactrakRatings, {
+  FactrakRatingsSkeleton,
+  FactrakReviewCount,
+} from "../FactrakRatings";
 import FactrakDeficitMessage from "../FactrakUtils";
 import { Line } from "../../common/Skeleton";
 
@@ -126,49 +129,61 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
   return (
     <article className={styles.facebookProfile}>
       <EuiFlexGroup direction="column" alignItems="center">
-        <EuiFlexItem>
-          <EuiFlexGroup
-            alignItems="spaceAround"
-            className={styles.professorHeader}
-          >
-            <EuiFlexItem className={styles.circle}>
+        <EuiFlexItem grow className={styles.professorHeader}>
+          <EuiFlexGroup alignItems="center" justifyContent="flexStart">
+            <EuiFlexItem grow={5} />
+            <EuiFlexItem className={styles.circle} grow={3}>
               <div className={styles.professorPhoto} />
             </EuiFlexItem>
-            <EuiFlexItem className={styles.professorText}>
+            <EuiFlexItem className={styles.professorText} grow={8}>
               <h3>{professor.name}</h3>
 
               <h5>
                 <span>
-                  {department?.name} - {professor?.title}
+                  {department?.name.includes("Department")
+                    ? department?.name.substring(
+                        0,
+                        department?.name.length - 11
+                      )
+                    : department?.name}
+                  &nbsp;-&nbsp;
+                  {professor?.title}
                 </span>
-                <br />
-                <span>{professor?.unixID}@williams.edu</span>
               </h5>
+              <h6>
+                <span>{professor?.unixID}@williams.edu</span>
+                <br />
+                <span>Office</span>
+              </h6>
             </EuiFlexItem>
+            <EuiFlexItem className={styles.reviewCount} grow={6}>
+              <FactrakReviewCount ratings={ratings} />
+            </EuiFlexItem>
+            <EuiFlexItem grow={7} />
           </EuiFlexGroup>
-        </EuiFlexItem>
-        <EuiFlexItem className={styles.ratingsBar}>
-          <FactrakRatings ratings={ratings} />
         </EuiFlexItem>
         <EuiFlexItem>
           <Link
             routeName="factrak.newSurvey"
             routeParams={{ profID: professor.id }}
           >
-            <EuiButton fill color="#dddddd">
+            <EuiButton fill color="#dddddd" size="m">
               Write Review
             </EuiButton>
           </Link>
         </EuiFlexItem>
+        <EuiFlexItem className={styles.ratingsBar}>
+          <FactrakRatings ratings={ratings} />
+        </EuiFlexItem>
         <EuiFlexItem className={styles.reviews}>
           <br />
           <FactrakDeficitMessage currUser={currUser} />
-          <div>
+          <EuiFlexGroup direction="column" gutterSize="xl">
             {surveys && surveys.length > 0
               ? surveys.map((survey) => {
                   if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
                     return (
-                      <EuiFlexItem className={styles.professorReview}>
+                      <EuiFlexItem>
                         <FactrakComment
                           comment={survey}
                           showProf={false}
@@ -190,7 +205,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
                   );
                 })
               : "No comments yet."}
-          </div>
+          </EuiFlexGroup>
         </EuiFlexItem>
       </EuiFlexGroup>
     </article>
