@@ -12,7 +12,14 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
 import { userTypeStudent } from "../../../constants/general";
-import { EuiFlexGrid, EuiFlexItem } from "@elastic/eui";
+import {
+  EuiCheckbox,
+  EuiFlexGrid,
+  EuiFlexGroup,
+  EuiFlexItem,
+  // EuiSpacer,
+} from "@elastic/eui";
+// import { htmlIdGenerator } from "@elastic/eui/lib/services";
 import styles from "./FacebookHome.module.scss";
 import FacebookAltLayout from "../FacebookAltLayout";
 import FacebookLayout from "../FacebookLayout";
@@ -132,42 +139,107 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
   //   );
   // };
 
+  const [checked, setChecked] = useState(false);
+
+  const onChange = (e) => {
+    setChecked(e.target.checked);
+  };
+
   // Displays results in a grid view when there aren't too many results
   const GridView = () => {
     return (
-      <div className={styles.gridWrap}>
-        <div className={styles.results}>{total} results found</div>
-        <br />
-        <EuiFlexGrid className={styles.flexGrid} columns={2} direction="column">
-          {results.map((user) => (
-            <EuiFlexItem className={styles.info} key={user.id} grow={false}>
-              <FacebookGridUser
-                gridUser={user}
-                gridUserClassYear={classYear(user)}
-                key={user.id}
-                wso={wso}
-              />
+      <>
+        <div className={styles.gridWrap}>
+          <div className={styles.results}>{total} results found</div>
+          <br />
+          <EuiFlexGroup classname={styles.bigGroup}>
+            <EuiFlexGrid
+              className={styles.flexGrid}
+              columns={2}
+              direction="column"
+            >
+              {results.map((user) => (
+                <EuiFlexItem className={styles.info} key={user.id} grow={false}>
+                  <FacebookGridUser
+                    gridUser={user}
+                    gridUserClassYear={classYear(user)}
+                    key={user.id}
+                    wso={wso}
+                  />
+                </EuiFlexItem>
+              ))}
+            </EuiFlexGrid>
+            <EuiFlexItem className={styles.checkboxes}>
+              Year
+              <EuiFlexItem>
+                <EuiCheckbox
+                  id={21}
+                  label="2021"
+                  checked={checked}
+                  onChange={(twentyOne) => onChange(twentyOne)}
+                />
+                <EuiCheckbox
+                  id={22}
+                  label="2022"
+                  checked={checked}
+                  onChange={(twentyTwo) => onChange(twentyTwo)}
+                />
+                <EuiCheckbox
+                  id={23}
+                  label="2023"
+                  checked={checked}
+                  onChange={(twentyThree) => onChange(twentyThree)}
+                />
+                <EuiCheckbox
+                  id={24}
+                  label="2024"
+                  checked={checked}
+                  onChange={(twentyFour) => onChange(twentyFour)}
+                />
+              </EuiFlexItem>
+              <h6>Off-cycle years are rounded up</h6>
+              Role
+              <EuiFlexItem className={styles.checkboxes}>
+                <EuiCheckbox
+                  id={1}
+                  label="Student"
+                  checked={checked}
+                  onChange={(student) => onChange(student)}
+                />
+                <EuiCheckbox
+                  id={2}
+                  label="Faculty"
+                  checked={checked}
+                  onChange={(faculty) => onChange(faculty)}
+                />
+                <EuiCheckbox
+                  id={3}
+                  label="Staff"
+                  checked={checked}
+                  onChange={(staff) => onChange(staff)}
+                />
+              </EuiFlexItem>
             </EuiFlexItem>
-          ))}
-        </EuiFlexGrid>
+          </EuiFlexGroup>
+        </div>
         <PaginationButtons
           clickHandler={clickHandler}
           page={page}
           total={total}
           perPage={perPage}
         />
-      </div>
+      </>
     );
   };
 
   // Returns the results of the search
   const FacebookResults = () => {
     if (!results || isResultsLoading) {
-      return <h1 className="matches-found">Loading...</h1>;
+      return <h1 className={styles.matchesFound}>Loading...</h1>;
     }
 
     if (total === 0)
-      return <h1 className="matches-found">No matches were found.</h1>;
+      return <h1 className={styles.matchesFound}>No matches were found.</h1>;
 
     if (total === 1) {
       navigateTo(

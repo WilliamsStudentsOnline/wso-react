@@ -5,18 +5,18 @@
 }
 
 .gridPicture {
+  border-radius: $f-3 0 0 $f-3;
   display: block;
   float: left;
-  max-height: 150px;
-  min-height: 125px;
+  min-height: 170px;
 }
 
 .gridInfo {
-  color: $blue-0;
   background-color: $blue-5;
   border-radius: 0 $f-3 $f-3 0;
-  max-height: 150px;
-  min-height: 125px;
+  color: $blue-0;
+  max-width: 200px;
+  min-height: 170px;
   padding: $px-5;
 
   h4 {

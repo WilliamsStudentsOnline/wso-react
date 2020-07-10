@@ -1,7 +1,22 @@
 @import "../../theme.scss";
 
+.matchesFound {
+  color: $primary-6;
+  font-size: $f-8;
+  font-weight: bold;
+  margin: auto;
+  padding: 10px;
+  text-align: center;
+}
+
 .results {
   color: $blue-3;
+}
+
+.bigGroup {
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 .flexGrid {
@@ -15,6 +30,13 @@
 
 .gridWrap {
   margin-left: $px-11;
-  margin-right: $px-9;
+  margin-right: $px-5;
   padding: $px-5;
+  width: 900px;
+}
+
+.checkboxes {
+  border: 1px;
+  border-color: $cool-gray-3;
+  border-radius: $px-3;
 }

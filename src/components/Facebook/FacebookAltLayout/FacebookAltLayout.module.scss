@@ -34,15 +34,16 @@
 
 .formControlLayout {
   height: 40px;
-  max-width: 575px;
+  max-width: $px-15;
   width: 100%;
 }
 
 .search input {
   background-color: $cool-gray-0;
   border-radius: $px-3;
-  border: 2px solid $cool-gray-3;
+  border: $px-1 solid $cool-gray-3;
   height: 35px;
   padding-left: 35px;
-  width: 575px;
+  padding-right: 5px;
+  width: $px-15;
 }

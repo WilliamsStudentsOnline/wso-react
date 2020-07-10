@@ -12,7 +12,6 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 import { ConnectedLink } from "react-router5";
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 import { EuiButton, EuiFlexItem, EuiFlexGroup } from "@elastic/eui";
-// import { logout } from "../../Layout/Nav/index";
 import styles from "./FacebookUser.module.scss";
 
 const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
@@ -312,21 +311,27 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
           <EuiFlexGroup className={styles.flexGroupBottom}>
             <EuiFlexItem grow={false}>
               <EuiButton
-                className={styles.editProfileButton}
                 fill
-                color="#000000"
                 href="../edit"
+                style={{
+                  backgroundColor: "#c6cbe1",
+                  border: "#c6cbe1",
+                  color: "#45528d",
+                }}
               >
                 Edit Profile
               </EuiButton>
             </EuiFlexItem>
             <EuiFlexItem grow={false}>
               <EuiButton
-                className={styles.logOutButton}
                 fill
-                // onClick={() => logout()}
                 href="../../#"
-                color="#000000"
+                style={{
+                  backgroundColor: "#45528d",
+                  border: "#45528d",
+                  color: "#dce0ef",
+                }}
+                // onClick={() => logout()}
               >
                 Log Out
               </EuiButton>
