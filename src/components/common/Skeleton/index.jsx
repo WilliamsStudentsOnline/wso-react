@@ -34,12 +34,29 @@ const Line = ({ width, height, center, className }) => {
 Line.propTypes = commonPropTypes;
 Line.defaultProps = commonDefaultProps;
 
-const Photo = ({ height, width }) => {
-  return <div className={skeletonPhoto} style={{ height, width }} />;
+const Photo = ({ borderRadius, className, height, style, width }) => {
+  return (
+    <div
+      className={`${skeletonPhoto} ${className}`}
+      style={{ ...style, borderRadius, height, width }}
+    />
+  );
 };
 
-Photo.propTypes = { height: PropTypes.string, width: PropTypes.string };
-Photo.defaultProps = { height: "250px", width: "250px" };
+Photo.propTypes = {
+  borderRadius: PropTypes.string,
+  className: PropTypes.string,
+  height: PropTypes.string,
+  style: PropTypes.object,
+  width: PropTypes.string,
+};
+Photo.defaultProps = {
+  borderRadius: "0px",
+  className: "",
+  height: "250px",
+  width: "250px",
+  style: {},
+};
 
 const randPercentBetween = (min, max) => {
   const randomPercent = min + Math.random() * (max - min);

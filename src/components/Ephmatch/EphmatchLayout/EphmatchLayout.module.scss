@@ -1,0 +1,26 @@
+@import "../../theme.scss";
+
+.pageTitle {
+  font-size: $f-6;
+  padding-bottom: $px-6;
+  font-weight: 600;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: center;
+  color: $primary-6;
+  padding-bottom: $px-4;
+  border-bottom: 1px $cool-gray-3 solid;
+}
+
+.pageHead {
+  max-width: $lg;
+  flex-grow: 1;
+  padding-top: $px-7;
+
+  .navLinks a {
+    margin-right: $px-5;
+    color: $primary-4;
+  }
+}

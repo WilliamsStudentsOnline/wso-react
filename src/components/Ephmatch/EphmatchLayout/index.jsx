@@ -6,58 +6,45 @@ import PropTypes from "prop-types";
 import { Link } from "react-router5";
 import { format } from "timeago.js";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
+import styles from "./EphmatchLayout.module.scss";
 
 const EphmatchLayout = ({
   available,
   children,
   closingTime,
-  matchesTotalCount,
+  // matchesTotalCount,
   token,
 }) => {
   return (
     <>
-      <header>
+      <header className={styles.pageHeader}>
         {available && closingTime && (
+          // TODO: test this.
           <section className="notice">
             Ephmatch closes {format(closingTime)}
           </section>
         )}
 
-        <div className="page-head">
-          <h1>
-            <Link routeName="ephmatch">Ephmatch</Link>
+        <div className={styles.pageHead}>
+          <h1 className={styles.pageTitle}>
+            <Link routeName="ephmatch">EphMatch</Link>
           </h1>
-          <ul>
-            <li>
-              <Link routeName="ephmatch">Home</Link>
-            </li>
+          <div className={styles.navLinks}>
             {containsOneOfScopes(token, [
               scopes.ScopeEphmatchMatches,
               scopes.ScopeEphmatchProfiles,
             ]) && (
               <>
-                <li>
-                  <Link routeName="ephmatch.matches">Matches</Link>
-                  <span className="ephmatch-badge" title="Matches!">
-                    {matchesTotalCount}
-                  </span>
-                </li>
-                <li>
-                  <Link routeName="ephmatch.profile">Profile</Link>
-                </li>
-                <li>
-                  <Link routeName="ephmatch.optOut">Opt Out</Link>
-                </li>
+                <Link routeName="ephmatch.matches">Matches</Link>
+                {/* <span className="ephmatch-badge" title="Matches!">
+                  {matchesTotalCount}
+                </span> */}
+
+                <Link routeName="ephmatch.profile">Profile</Link>
+
+                <Link routeName="ephmatch.optOut">Opt Out</Link>
               </>
             )}
-          </ul>
-
-          <br />
-          <div style={{ background: "#ffc5c5", padding: 20 }}>
-            While Ephmatch aims to facilitate getting to know other Ephs, we
-            strongly discourage meeting up in person. People found to violate
-            local social distancing regulations will have their Ephmatch access
-            revoked!
           </div>
         </div>
       </header>
@@ -70,7 +57,7 @@ EphmatchLayout.propTypes = {
   available: PropTypes.bool,
   children: PropTypes.object,
   closingTime: PropTypes.object,
-  matchesTotalCount: PropTypes.number,
+  // matchesTotalCount: PropTypes.number,
   token: PropTypes.string.isRequired,
 };
 
@@ -78,7 +65,7 @@ EphmatchLayout.defaultProps = {
   available: false,
   children: null,
   closingTime: null,
-  matchesTotalCount: 0,
+  // matchesTotalCount: 0,
 };
 
 export default EphmatchLayout;

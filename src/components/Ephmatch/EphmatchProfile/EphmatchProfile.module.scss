@@ -1,0 +1,37 @@
+@import "../../theme.scss";
+
+.page {
+  display: flex;
+  justify-content: center;
+}
+
+.pageContent {
+  flex-grow: 1;
+  max-width: $md;
+}
+
+.formElementLabel {
+  font-size: $f-2;
+  font-weight: 400;
+  color: $cool-gray-9;
+}
+
+.flex {
+  display: flex;
+}
+
+.inlineIcon {
+  justify-content: center;
+}
+
+.userName {
+  font-weight: 600;
+  font-size: 30px;
+}
+
+.photo {
+  border-radius: 10px;
+  height: 300px;
+  width: 300px;
+  object-fit: cover;
+}
