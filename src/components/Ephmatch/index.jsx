@@ -3,9 +3,8 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import EphmatchHome from "./EphmatchHome";
 import EphmatchLayout from "./EphmatchLayout";
-import EphmatchMatch from "./EphmatchMatch";
+import EphmatchMatches from "./EphmatchMatches";
 import EphmatchProfile from "./EphmatchProfile";
-import EphmatchOptOut from "./EphmatchOptOut";
 import EphmatchOptIn from "./EphmatchOptIn";
 import Redirect from "../common/Redirect";
 import "./Ephmatch.scss";
@@ -122,9 +121,9 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       case "profile":
         return <EphmatchProfile />;
       case "matches":
-        return <EphmatchMatch matches={matches} />;
-      case "optOut":
-        return <EphmatchOptOut />;
+        return <EphmatchMatches matches={matches} />;
+      case "settings":
+        return <EphmatchProfile />;
       default:
         navigateTo("ephmatch");
         return null;

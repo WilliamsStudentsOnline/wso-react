@@ -35,14 +35,14 @@ const EphmatchLayout = ({
               scopes.ScopeEphmatchProfiles,
             ]) && (
               <>
-                <Link routeName="ephmatch.matches">Matches</Link>
+                <Link routeName="ephmatch.matches">My Matches</Link>
                 {/* <span className="ephmatch-badge" title="Matches!">
                   {matchesTotalCount}
                 </span> */}
 
-                <Link routeName="ephmatch.profile">Profile</Link>
+                <Link routeName="ephmatch.profile">My Profile</Link>
 
-                <Link routeName="ephmatch.optOut">Opt Out</Link>
+                <Link routeName="ephmatch.settings">Settings</Link>
               </>
             )}
           </div>
