@@ -10,7 +10,7 @@
   display: flex;
   justify-content: center;
   color: $primary-6;
-  padding-bottom: $px-4;
+  padding-bottom: $px-2;
   border-bottom: 1px $cool-gray-3 solid;
 }
 
@@ -18,9 +18,15 @@
   max-width: $lg;
   flex-grow: 1;
   padding-top: $px-7;
+}
 
-  .navLinks a {
-    margin-right: $px-5;
-    color: $primary-4;
-  }
+.navLink {
+  margin-right: $px-5;
+  color: $primary-4;
+}
+
+.activeNavLink {
+  margin-right: $px-5;
+  color: $primary-5;
+  border-bottom: $px-1 solid $primary-5;
 }

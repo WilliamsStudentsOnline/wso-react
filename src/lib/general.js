@@ -146,6 +146,8 @@ export const toClassYear = (year, offCycle) => {
  * @param {object} user - User to be processed
  */
 export const userToNameWithClassYear = (user) => {
+  if (!user) return null;
+
   const { name, classYear, offCycle } = user;
   return `${name} ${toClassYear(classYear, offCycle)}`;
 };

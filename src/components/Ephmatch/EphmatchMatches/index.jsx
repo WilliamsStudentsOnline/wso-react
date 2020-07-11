@@ -10,7 +10,7 @@ import { actions } from "redux-router5";
 // Additional imports
 import styles from "./EphmatchMatches.module.scss";
 import { userToNameWithClassYear } from "../../../lib/general";
-import { Photo } from "../../common/Skeleton";
+import { MaybePhoto } from "../../common/Skeleton";
 import { EuiButton, EuiIcon } from "@elastic/eui";
 import { format } from "timeago.js";
 
@@ -20,7 +20,7 @@ const EphmatchMatch = ({
   lastModified,
   wso,
 }) => {
-  const [userPhoto, updateUserPhoto] = useState(null);
+  const [photo, updatePhoto] = useState(null);
 
   useEffect(() => {
     const loadPhoto = async () => {
@@ -28,7 +28,7 @@ const EphmatchMatch = ({
         const photoResponse = await wso.userService.getUserLargePhoto(
           ephmatcher.unixID
         );
-        updateUserPhoto(URL.createObjectURL(photoResponse.data));
+        updatePhoto(URL.createObjectURL(photoResponse.data));
       } catch {
         // Handle it via the skeleton
       }
@@ -37,13 +37,6 @@ const EphmatchMatch = ({
     if (ephmatcher) loadPhoto();
     // eslint-disable-next-line
   }, [ephmatcher, wso]);
-
-  const renderPhoto = () => {
-    if (userPhoto)
-      return <img src={userPhoto} className={styles.photo} alt="profile" />;
-
-    return <Photo className={styles.photo} />;
-  };
 
   const matchedTime = () => {
     if (lastModified === "") return null;
@@ -75,7 +68,7 @@ const EphmatchMatch = ({
       <div className={styles.tags}>
         <EuiIcon type="tag" />
         {ephmatcher.tags.map(({ name }) => (
-          <span>{name}</span>
+          <span key={name}>{name}</span>
         ))}
       </div>
     );
@@ -97,7 +90,7 @@ const EphmatchMatch = ({
 
   return (
     <div className={styles.match}>
-      {renderPhoto()}
+      <MaybePhoto photo={photo} className={styles.photo} />
       <div className={styles.profile}>
         {renderNameAndClassYear()}
         {renderPronouns()}
@@ -119,7 +112,7 @@ EphmatchMatch.propTypes = {
 EphmatchMatch.defaultProps = { lastModified: "" };
 
 const EphmatchMatches = ({ navigateTo, wso }) => {
-  const [matches, updateMatches] = useState([]);
+  const [matches, updateMatches] = useState(null);
 
   useEffect(() => {
     const loadMatches = async () => {
@@ -137,27 +130,26 @@ const EphmatchMatches = ({ navigateTo, wso }) => {
   }, [navigateTo, wso]);
 
   const renderMatches = () => {
-    if (matches.length === 0)
-      return <h1 className="no-matches-found">No matches.</h1>;
+    if (!matches) return <h1>Loading..</h1>;
 
-    return (
-      <div className={styles.page}>
-        <div className={styles.pageContent}>
-          {matches.map((match) => (
-            <EphmatchMatch
-              ephmatcher={match.matchedUser}
-              ephmatcherProfile={match.matchedUser.ephmatchProfile}
-              key={match.id}
-              lastModified={match.updatedAt ?? match.createdAt}
-              wso={wso}
-            />
-          ))}
-        </div>
-      </div>
-    );
+    if (matches.length === 0) return <h1>No matches.</h1>;
+
+    return matches.map((match) => (
+      <EphmatchMatch
+        ephmatcher={match.matchedUser}
+        ephmatcherProfile={match.matchedUser.ephmatchProfile}
+        key={match.id}
+        lastModified={match.updatedAt ?? match.createdAt}
+        wso={wso}
+      />
+    ));
   };
 
-  return <article className="facebook-results">{renderMatches()}</article>;
+  return (
+    <div className={styles.page}>
+      <div className={styles.pageContent}> {renderMatches()} </div>
+    </div>
+  );
 };
 
 EphmatchMatches.propTypes = {

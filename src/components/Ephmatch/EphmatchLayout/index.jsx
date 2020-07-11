@@ -2,11 +2,55 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+// Redux/routing imports
+import { connect } from "react-redux";
+
 // Additional imports
 import { Link } from "react-router5";
 import { format } from "timeago.js";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
+import { createRouteNodeSelector } from "redux-router5";
 import styles from "./EphmatchLayout.module.scss";
+
+const NavLink = ({ activeStyle, children, defaultStyle, route, routeName }) => {
+  console.log(routeName);
+  console.log(route);
+  if (routeName === route.name) {
+    console.log(activeStyle);
+    return (
+      <Link className={activeStyle} routeName={routeName}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <Link className={defaultStyle} routeName={routeName}>
+      {children}
+    </Link>
+  );
+};
+
+NavLink.propTypes = {
+  activeStyle: PropTypes.string,
+  children: PropTypes.element,
+  defaultStyle: PropTypes.string,
+  route: PropTypes.object.isRequired,
+  routeName: PropTypes.string.isRequired,
+};
+NavLink.defaultProps = {
+  activeStyle: "",
+  children: null,
+  defaultStyle: "",
+};
+
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("ephmatch");
+
+  return (state) => routeNodeSelector(state);
+};
+
+const ConnectedNavLink = connect(mapStateToProps)(NavLink);
 
 const EphmatchLayout = ({
   available,
@@ -35,14 +79,32 @@ const EphmatchLayout = ({
               scopes.ScopeEphmatchProfiles,
             ]) && (
               <>
-                <Link routeName="ephmatch.matches">My Matches</Link>
+                <ConnectedNavLink
+                  activeStyle={styles.activeNavLink}
+                  defaultStyle={styles.navLink}
+                  routeName="ephmatch.matches"
+                >
+                  My Matches
+                </ConnectedNavLink>
                 {/* <span className="ephmatch-badge" title="Matches!">
                   {matchesTotalCount}
                 </span> */}
 
-                <Link routeName="ephmatch.profile">My Profile</Link>
+                <ConnectedNavLink
+                  activeStyle={styles.activeNavLink}
+                  defaultStyle={styles.navLink}
+                  routeName="ephmatch.profile"
+                >
+                  My Profile
+                </ConnectedNavLink>
 
-                <Link routeName="ephmatch.settings">Settings</Link>
+                <ConnectedNavLink
+                  activeStyle={styles.activeNavLink}
+                  defaultStyle={styles.navLink}
+                  routeName="ephmatch.settings"
+                >
+                  Settings
+                </ConnectedNavLink>
               </>
             )}
           </div>

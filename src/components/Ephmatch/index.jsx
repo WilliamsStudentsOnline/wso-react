@@ -1,6 +1,9 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+
+// Component imports
+import EphmatchEdit from "./EphmatchEdit";
 import EphmatchHome from "./EphmatchHome";
 import EphmatchLayout from "./EphmatchLayout";
 import EphmatchMatches from "./EphmatchMatches";
@@ -123,7 +126,7 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       case "matches":
         return <EphmatchMatches matches={matches} />;
       case "settings":
-        return <EphmatchProfile />;
+        return <EphmatchEdit />;
       default:
         navigateTo("ephmatch");
         return null;

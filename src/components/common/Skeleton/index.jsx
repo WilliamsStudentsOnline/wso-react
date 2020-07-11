@@ -168,7 +168,7 @@ MaybePhoto.propTypes = {
   className: PropTypes.string,
   height: PropTypes.string,
   style: PropTypes.object,
-  photo: PropTypes.object,
+  photo: PropTypes.string,
   width: PropTypes.string,
 };
 MaybePhoto.defaultProps = {

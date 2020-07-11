@@ -17,11 +17,14 @@ import {
   EuiFlexItem,
   EuiSpacer,
 } from "@elastic/eui";
+import { connect } from "react-redux";
+import { getCurrUser } from "../../../selectors/auth";
+import { Link } from "react-router5";
 
 const Ephmatcher = ({
+  currUser,
   ephmatcher,
   ephmatcherProfile,
-
   // matched,
   photo,
   // selectEphmatcher,
@@ -124,7 +127,7 @@ const Ephmatcher = ({
       <div className={styles.tags}>
         <EuiIcon type="tag" />
         {tags.map(({ name }) => (
-          <span>{name}</span>
+          <span key={name}>{name}</span>
         ))}
       </div>
     );
@@ -137,6 +140,18 @@ const Ephmatcher = ({
   };
 
   const renderButtons = () => {
+    if (ephmatcher.unixID === currUser.unixID) {
+      return (
+        <EuiFlexGroup justifyContent="center">
+          <EuiFlexItem grow={false}>
+            <EuiButton fill>
+              <Link routeName="ephmatch.settings">Edit</Link>
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      );
+    }
+
     return (
       <EuiFlexGroup justifyContent="center">
         <EuiFlexItem grow={false}>
@@ -173,8 +188,9 @@ const Ephmatcher = ({
 };
 
 Ephmatcher.propTypes = {
+  currUser: PropTypes.object.isRequired,
   ephmatcher: PropTypes.object,
-  ephmatcherProfile: PropTypes.object.isRequired,
+  ephmatcherProfile: PropTypes.object,
   // selectEphmatcher: PropTypes.func,
   // index: PropTypes.number,
   photo: PropTypes.string,
@@ -188,8 +204,13 @@ Ephmatcher.defaultProps = {
   ephmatcher: {
     unixID: "Loading...",
   },
+  ephmatcherProfile: null,
   photo: null,
   // matched: false,
 };
 
-export default Ephmatcher;
+const mapStateToProps = (state) => ({
+  currUser: getCurrUser(state),
+});
+
+export default connect(mapStateToProps)(Ephmatcher);
