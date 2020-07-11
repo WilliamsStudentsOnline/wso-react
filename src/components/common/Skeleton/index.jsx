@@ -138,4 +138,46 @@ CircularLoader.propTypes = {
 };
 CircularLoader.defaultProps = { className: "" };
 
-export { Line, List, Paragraph, Photo, Circle, CircularLoader };
+const MaybePhoto = ({
+  borderRadius,
+  className,
+  height,
+  photo,
+  style,
+  width,
+}) => {
+  if (photo) {
+    return (
+      <img
+        src={photo}
+        style={{ ...style, borderRadius, height, width, objectFit: "cover" }}
+        alt="profile"
+      />
+    );
+  }
+  return (
+    <div
+      className={`${skeletonPhoto} ${className}`}
+      style={{ ...style, borderRadius, height, width }}
+    />
+  );
+};
+
+MaybePhoto.propTypes = {
+  borderRadius: PropTypes.string,
+  className: PropTypes.string,
+  height: PropTypes.string,
+  style: PropTypes.object,
+  photo: PropTypes.object,
+  width: PropTypes.string,
+};
+MaybePhoto.defaultProps = {
+  borderRadius: "10px",
+  className: "",
+  height: "300px",
+  style: {},
+  photo: null,
+  width: "300px",
+};
+
+export { Circle, CircularLoader, Line, List, MaybePhoto, Paragraph, Photo };

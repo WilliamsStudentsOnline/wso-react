@@ -128,7 +128,7 @@ export const addDays = (date, days) => {
 };
 
 /**
- * Generate's the user's class year
+ * Generates the user's class year
  *
  * @param {number} year - Student's rounded class year
  * @param {boolean} offCycle - Whether the student is off-cycle.
@@ -138,4 +138,14 @@ export const toClassYear = (year, offCycle) => {
   if (offCycle) return `'${(year - 1) % 100}.5`;
 
   return `'${year % 100}`;
+};
+
+/**
+ * Generates a string containing the user's name and class year
+ *
+ * @param {object} user - User to be processed
+ */
+export const userToNameWithClassYear = (user) => {
+  const { name, classYear, offCycle } = user;
+  return `${name} ${toClassYear(classYear, offCycle)}`;
 };

@@ -9,7 +9,7 @@ import { actions } from "redux-router5";
 
 // Additional imports
 import styles from "./EphmatchMatches.module.scss";
-import { toClassYear } from "../../../lib/general";
+import { userToNameWithClassYear } from "../../../lib/general";
 import { Photo } from "../../common/Skeleton";
 import { EuiButton, EuiIcon } from "@elastic/eui";
 import { format } from "timeago.js";
@@ -57,10 +57,9 @@ const EphmatchMatch = ({
 
   const renderNameAndClassYear = () => {
     if (!ephmatcher) return null;
-    const { name, classYear, offCycle } = ephmatcher;
     return (
       <div className={styles.userName}>
-        {name} {toClassYear(classYear, offCycle)} {matchedTime()}
+        {userToNameWithClassYear(ephmatcher)} {matchedTime()}
       </div>
     );
   };
