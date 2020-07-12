@@ -14,7 +14,7 @@ const Footer = () => {
             <a
               href="https://www.instagram.com/wsogram/"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               <FaInstagram />
             </a>
@@ -24,7 +24,7 @@ const Footer = () => {
             <a
               href="mailto:wso-dev@williams.edu"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               <FiMail />
             </a>

@@ -14,6 +14,19 @@ import {
   getTokenLevel,
   getWSO,
 } from "../../selectors/auth";
+import LoginBackground from "../../assets/images/LoginBackground.jpg";
+import styles from "./Login.module.scss";
+import WSO from "../../assets/images/brand/wso_icon_white_border.svg";
+import {
+  EuiCheckbox,
+  EuiFieldText,
+  EuiForm,
+  EuiFormRow,
+  EuiFieldPassword,
+  EuiButton,
+  EuiSpacer,
+  EuiIconTip,
+} from "@elastic/eui";
 
 const Login = ({
   currUser,
@@ -27,8 +40,9 @@ const Login = ({
 }) => {
   const [unixID, setUnix] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, updateErrors] = useState([]);
+  const [showErrors, setShowErrors] = useState(false);
   const [remember, setRemember] = useState(true);
+  const [errors, setErrors] = useState(null);
 
   useEffect(() => {
     if (route.params.previousRoute) {
@@ -56,20 +70,12 @@ const Login = ({
     // when token changes.
   }, [currUser, navigateTo, scopes, tokenLevel, route.params, wso]);
 
-  // TODO: this shouldn't be coded this way. - it's better to do the splitting in the sign in.
-  const unixHandler = (event) => {
-    const splitValue = event.target.value.split("@");
-    setUnix(splitValue[0]);
-  };
-
   const submitHandler = async (event) => {
     event.preventDefault();
+    setShowErrors(true);
 
     // Guard clause for empty id or password field.
-    if (unixID === "" || password === "") {
-      updateErrors(["Please enter a valid unixID and password."]);
-      return;
-    }
+    if (unixID === "" || password === "") return;
 
     try {
       const tokenResponse = await wso.authService.getIdentityToken({
@@ -82,62 +88,102 @@ const Login = ({
       updateIdenToken(identityToken);
       navigateTo("home");
     } catch (error) {
-      if (error.errors) {
-        updateErrors(error.errors);
+      if (error.errorCode === 401) {
+        setErrors("Invalid unix or password provided!");
       }
     }
   };
   return (
-    <header>
-      <div className="page-head">
-        <h1>Login</h1>
-        <ul>
-          <li>
+    <div className={styles.page}>
+      <img
+        className={styles.background}
+        src={LoginBackground}
+        alt="Student at Sawyer Balcony"
+      />
+      <div className={styles.overlay} />
+      <div className={styles.pageContent}>
+        <div className={styles.aboutWSO}>
+          <div>
+            <img className={styles.icon} src={WSO} alt="WSO Logo" />
+            <span className={styles.wso}>WSO</span>
+          </div>
+          <p className={styles.description}>
+            Founded in 1995, WSO (Williams Students Online) is a student
+            organization devoted to creating useful and innovative
+            computer-based services and offering them to the Williams College
+            community.
+          </p>
+        </div>
+
+        <div className={styles.logInForm}>
+          <EuiForm
+            component="form"
+            onSubmit={submitHandler}
+            isInvalid={showErrors && errors}
+            error={errors}
+          >
+            <EuiFormRow
+              label={
+                <>
+                  Unix &nbsp;
+                  <EuiIconTip position="right" content="e.g. abc9" />
+                </>
+              }
+              isInvalid={showErrors && unixID === ""}
+              error="Unix must not be blank!"
+            >
+              <EuiFieldText
+                placeholder="Enter your unix"
+                onChange={(event) => setUnix(event.target.value)}
+                value={unixID}
+                isInvalid={showErrors && unixID === ""}
+              />
+            </EuiFormRow>
+            <EuiSpacer size="xl" />
+            <EuiFormRow
+              label={
+                <>
+                  Password &nbsp;
+                  <EuiIconTip
+                    position="right"
+                    content="This is the same password as your email"
+                  />
+                </>
+              }
+              isInvalid={showErrors && password === ""}
+              error="Password must not be blank!"
+            >
+              <EuiFieldPassword
+                placeholder="Password"
+                onChange={(event) => setPassword(event.target.value)}
+                value={password}
+                isInvalid={showErrors && password === ""}
+              />
+            </EuiFormRow>
+            <EuiSpacer size="xl" />
+            <EuiFormRow>
+              <EuiCheckbox
+                id="remember_me"
+                checked={remember}
+                onChange={() => setRemember(!remember)}
+                label="Stay signed in"
+              />
+            </EuiFormRow>
+            <EuiSpacer size="xxl" />
+
+            <EuiButton className={styles.fullWidth} type="submit" fill>
+              Login
+            </EuiButton>
+          </EuiForm>
+          <EuiSpacer />
+          <div className={`${styles.fullWidth} ${styles.forgotPassword}`}>
             <a href="https://pchanger.williams.edu/pchecker/">
               Forgot My Password
             </a>
-          </li>
-        </ul>
-      </div>
-
-      <form onSubmit={submitHandler}>
-        <div id="errors">
-          {errors?.map((msg) => (
-            <p key={msg}>{msg}</p>
-          ))}
+          </div>
         </div>
-        <br />
-        <input
-          type="text"
-          id="unixID"
-          placeholder="Enter your unix"
-          onChange={unixHandler}
-        />
-        <input
-          type="password"
-          id="password"
-          placeholder="Password"
-          onChange={(event) => setPassword(event.target.value)}
-        />
-
-        <label htmlFor="remember_me">
-          <input
-            type="checkbox"
-            id="remember_me"
-            checked={remember}
-            onChange={() => setRemember(!remember)}
-          />
-          Remember me
-        </label>
-        <input
-          type="submit"
-          name="commit"
-          value="Login"
-          className="submit"
-          data-disable-with="Login"
-        />
-      </form>
-    </header>
+      </div>
+    </div>
   );
 };
 
