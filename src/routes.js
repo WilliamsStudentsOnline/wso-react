@@ -1,6 +1,11 @@
 export default [
   { name: "home", path: "/" },
   {
+    name: "about",
+    path: "/about",
+    children: [{ name: "team", path: "/team" }],
+  },
+  {
     name: "bulletins",
     path: "/bulletins/:type",
     children: [
@@ -18,7 +23,6 @@ export default [
     ],
   },
   { name: "rides", path: "/rides" },
-  { name: "about", path: "/about" },
   { name: "scheduler", path: "/schedulecourses" },
   {
     name: "facebook",
