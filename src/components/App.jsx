@@ -37,7 +37,6 @@ const DiscussionMain = lazy(() => import("./Discussions"));
 const DormtrakMain = lazy(() => import("./Dormtrak"));
 const FacebookMain = lazy(() => import("./Facebook"));
 const FactrakMain = lazy(() => import("./Factrak"));
-const FAQ = lazy(() => import("./FAQ"));
 const EphmatchMain = lazy(() => import("./Ephmatch"));
 const FiveOhOh = lazy(() => import("./Errors/FiveOhOh"));
 const FourOhFour = lazy(() => import("./Errors/FourOhFour"));
@@ -188,8 +187,6 @@ const App = ({
         return <DormtrakMain />;
       case "factrak":
         return <FactrakMain />;
-      case "faq":
-        return <FAQ />;
       case "login":
         return <Login />;
       case "ephmatch":
