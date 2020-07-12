@@ -1,12 +1,17 @@
 // React imports
 import React from "react";
 
+import styles from "./Errors.module.scss";
+import PageNotFound from "../../assets/SVG/PageNotFound.svg";
+
 const FourOhFour = () => {
   return (
-    <header>
-      <h1>Whoops! Page not found!</h1>
-      404. Run. Hide. Cease and Desist.
-    </header>
+    <div className={styles.page}>
+      <div className={styles.pageContent}>
+        <img className={styles.svg} src={PageNotFound} alt="Page not found" />
+        <span className={styles.message}>Page not found!</span>
+      </div>
+    </div>
   );
 };
 
