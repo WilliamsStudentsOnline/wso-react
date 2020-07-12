@@ -1,14 +1,14 @@
-@import "../../theme";
+@import "../../../theme";
 
 .professorRatings {
   padding: $px-7 15%;
   color: $primary-4;
 }
 
-.ratingHeader {
+.rating {
   font-size: $f-4;
-  font-weight: 600;
-  color: $primary-6;
+  font-weight: 400;
+  color: $blue-5;
 }
 
 .topSection {

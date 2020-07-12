@@ -26,23 +26,12 @@ const FactrakRatings = ({ ratings, general }) => {
     ];
     return (
       <EuiText>
-        <div className={styles.ratingHeader}>
-          {WORKLOAD_DESCRIPTIONS[Math.round(ratings.avgCourseWorkload)]}
+        <div className={styles.rating}>
+          <strong>
+            {WORKLOAD_DESCRIPTIONS[Math.round(ratings.avgCourseWorkload)]}
+          </strong>
+          &nbsp;workload
         </div>
-        Workload
-      </EuiText>
-    );
-  };
-
-  // Generates the number of reviews for the professor
-  const reviews = () => {
-    if (!ratings.numWouldTakeAnother) return null;
-    return (
-      <EuiText>
-        <div className={styles.ratingHeader}>
-          {[Math.round(ratings.numWouldTakeAnother)]}
-        </div>
-        {ratings.numWouldTakeAnother === 1 ? "Review" : "Reviews"}
       </EuiText>
     );
   };
@@ -63,10 +52,11 @@ const FactrakRatings = ({ ratings, general }) => {
 
     return (
       <EuiText>
-        <div className={styles.ratingHeader}>
-          {STIMULATING_DESCR[Math.round(ratings.avgCourseStimulating)]}
+        <div className={styles.rating}>
+          <strong>
+            {STIMULATING_DESCR[Math.round(ratings.avgCourseStimulating)]}
+          </strong>
         </div>
-        when compared to other professors.
       </EuiText>
     );
   };
@@ -87,10 +77,11 @@ const FactrakRatings = ({ ratings, general }) => {
 
     return (
       <EuiText>
-        <div className={styles.ratingHeader}>
-          {APPROACH_DESCR[Math.round(ratings.avgApproachability)]}
+        <div className={styles.rating}>
+          <strong>
+            {APPROACH_DESCR[Math.round(ratings.avgApproachability)]}
+          </strong>
         </div>
-        Personality
       </EuiText>
     );
   };
@@ -110,10 +101,10 @@ const FactrakRatings = ({ ratings, general }) => {
     ];
     return (
       <EuiText>
-        <div className={styles.ratingHeader}>
-          {LECTURE_DESCR[Math.round(ratings.avgLeadLecture)]}
+        <div className={styles.rating}>
+          <strong>{LECTURE_DESCR[Math.round(ratings.avgLeadLecture)]}</strong>
+          &nbsp;at lecturing
         </div>
-        At lecturing.
       </EuiText>
     );
   };
@@ -133,10 +124,12 @@ const FactrakRatings = ({ ratings, general }) => {
     ];
     return (
       <EuiText>
-        <div className={styles.ratingHeader}>
-          {HELP_DESCR[Math.round(ratings.avgOutsideHelpfulness)]}
+        <div className={styles.rating}>
+          <strong>
+            {HELP_DESCR[Math.round(ratings.avgOutsideHelpfulness)]}
+          </strong>
+          &nbsp;outside of class
         </div>
-        Outside of class.
       </EuiText>
     );
   };
@@ -146,7 +139,7 @@ const FactrakRatings = ({ ratings, general }) => {
 
     return (
       <EuiText>
-        <div className={styles.ratingHeader}>
+        <div className={styles.rating}>
           {`${Math.round(ratings.avgWouldTakeAnother * 100)}%`}
         </div>
         {` out of would take another course with ${
@@ -160,7 +153,7 @@ const FactrakRatings = ({ ratings, general }) => {
     if (!ratings.numWouldRecommendCourse) return null;
     return (
       <EuiText>
-        <div className={styles.ratingHeader}>
+        <div className={styles.rating}>
           {`${Math.round(ratings.avgWouldRecommendCourse * 100)}%`}
         </div>
         {` would recommend this ${
@@ -172,7 +165,7 @@ const FactrakRatings = ({ ratings, general }) => {
 
   return (
     <EuiFlexGroup
-      direction="column"
+      direction="row"
       alignItems="center"
       className={styles.professorRatings}
     >
@@ -180,14 +173,14 @@ const FactrakRatings = ({ ratings, general }) => {
         <EuiFlexGroup
           justifyContent="spaceAround"
           className={styles.topSection}
+          direction="column"
         >
-          <EuiFlexItem>{reviews()}</EuiFlexItem>
           <EuiFlexItem>{wouldTakeAnother()}</EuiFlexItem>
           <EuiFlexItem>{wouldRecommendCourse()}</EuiFlexItem>
         </EuiFlexGroup>
       </EuiFlexItem>
       <EuiFlexItem>
-        <EuiFlexGroup justifyContent="spaceBetween">
+        <EuiFlexGroup justifyContent="spaceBetween" direction="column">
           <EuiFlexItem>{courseWorkload()}</EuiFlexItem>
           <EuiFlexItem>{courseStimulating()}</EuiFlexItem>
           <EuiFlexItem>{profApproachability()}</EuiFlexItem>
