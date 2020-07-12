@@ -1,49 +1,46 @@
+@import "../../../theme.scss";
+
 .bulletinTitleDiv {
   text-align: center;
-  background: #6f4993;
+  background: $blue-5;
   padding: 1rem 0.5rem;
   border-bottom: 2px solid #d9d9d9;
-  border-top-left-radius: 2px;
-  border-top-right-radius: 2px;
-}
-
-.bulletinLink {
+  border-radius: 10px 10px 0 0;
+  margin-bottom: $px-4;
   color: white;
   font-weight: bold;
   font-size: 1.25em;
 }
 
-.bulletinChildren {
-  padding: 1em;
-  box-shadow: inset 2px -2px 0 #d9d9d9, inset -2px 0 0 #d9d9d9;
+.bulletinChild,
+.bulletinActiveChild {
+  padding: 0 1em;
   display: grid;
-  grid-template-columns: 7fr 3fr;
+  color: $primary-4;
+  margin: $px-3 0;
 }
 
 .threadLink {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.listDate {
-  display: block;
-  background: #fcfcfc;
-  padding-left: 5px;
-  font-variant: small-caps;
-  font-weight: bold;
-  color: #666;
-  font-size: 0.9em;
-  text-align: center;
+  margin-bottom: $px-3;
 }
 
 .bulletin {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 5fr;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
+  margin-bottom: $px-5;
 }
 
-.bulletinChildrenContainer {
-  display: grid;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+.bulletinActiveChild {
+  border-left: $new-0 solid $px-2;
+}
+
+.seeAll {
+  text-align: center;
+  font-weight: 600;
+  font-size: $f-3;
+  color: $primary-6;
+  padding: $px-4 0;
 }

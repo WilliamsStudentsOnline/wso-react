@@ -1,81 +1,134 @@
 // React imports
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Component imports
-import { bulletinList } from "./Homepage.module.scss";
+import styles from "./Homepage.module.scss";
+import Post from "./PostBoard/Post";
 import BulletinBox from "./Bulletins/BulletinBox";
 
 // Redux Imports
 import { connect } from "react-redux";
-import { actions } from "redux-router5";
+import { EuiAvatar, EuiSpacer, EuiTextArea } from "@elastic/eui";
+import { getWSO } from "../selectors/auth";
+import Discussion from "../assets/SVG/Discussion1.svg";
+import JobOffers from "../assets/SVG/JobOffers.svg";
+import RideShare from "../assets/SVG/RideShare2.svg";
+import Exchange from "../assets/SVG/Exchange2.svg";
 
-const Homepage = ({ navigateTo }) => {
-  const bulletinTypeWords = [
-    "Discussions",
-    "Announcements",
-    "Exchanges",
-    "Lost And Found",
-    "Jobs",
-    "Rides",
-  ];
-  const [query, updateQuery] = useState("");
+import WSO from "../assets/images/brand/wso_icon_white_border.svg";
 
-  const submitHandler = (event) => {
-    event.preventDefault();
+const Category = ({ image, title }) => {
+  return (
+    <div className={styles.category}>
+      <img src={image} alt={`${title} category`} />
+      <div className={styles.categoryTitle}>{title}</div>
+    </div>
+  );
+};
 
-    navigateTo("facebook", { q: query }, { reload: true });
+Category.propTypes = {
+  image: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+};
+
+const Homepage = ({ wso }) => {
+  const [post, setPost] = useState("");
+  const [posts, setPosts] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPosts = async () => {
+      try {
+        const postResponse = await wso.bulletinService.listBulletins({
+          limit: 10,
+          preload: ["user"],
+          type: "announcements",
+        });
+
+        if (isMounted) {
+          setPosts(postResponse.data);
+        }
+      } catch (error) {
+        // TODO
+      }
+    };
+
+    loadPosts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [wso]);
+
+  const renderNewPost = () => {
+    return (
+      <div className={styles.newPost}>
+        <EuiAvatar name="avatar" imageUrl={WSO} size="xl" />
+        <EuiTextArea
+          value={post}
+          onChange={(event) => setPost(event.target.value)}
+          resize="none"
+        />
+      </div>
+    );
+  };
+
+  const renderCategories = () => {
+    return (
+      <div className={styles.categories}>
+        <Category image={Discussion} title="Discussions" />
+        <Category image={Exchange} title="Exchange" />
+        <Category image={JobOffers} title="Jobs" />
+        <Category image={RideShare} title="Ride Share" />
+      </div>
+    );
+  };
+
+  const renderRecentPosts = () => {
+    if (!posts) return null;
+
+    return (
+      <div className={styles.recentPosts}>
+        <div className={styles.title}>Recent Posts</div>
+        {posts.map((recentPost) => (
+          <Post key={recentPost.id} post={recentPost} />
+        ))}
+      </div>
+    );
   };
 
   return (
-    <div className="home">
-      <div className="full-width">
-        <header>
-          <div className="logo">
-            <h2 align="center" id="logotype">
-              WSO
-            </h2>
-            <h4 align="center" id="tagline">
-              By Students, For Students!
-            </h4>
+    <div className={styles.page}>
+      <div className={styles.pageContent}>
+        <div className={styles.title}>PostBoard</div>
+        {renderNewPost()}
+        <EuiSpacer />
+        {renderCategories()}
+        <EuiSpacer size="xxl" />
+        <div className={styles.bulletins}>
+          {renderRecentPosts()}
+          <div>
+            <BulletinBox typeWord="Discussions" />
+            <BulletinBox typeWord="Lost And Found" />
+            <BulletinBox typeWord="Announcements" />
           </div>
-          <br />
-          <form onSubmit={submitHandler}>
-            <input
-              aria-label="Search box for Facebook"
-              type="search"
-              placeholder="Search Facebook"
-              onChange={(event) => updateQuery(event.target.value)}
-            />
-            <input
-              data-disable-with="Search"
-              type="submit"
-              value="Search"
-              className="submit"
-            />
-          </form>
-        </header>
-        <article>
-          <section>
-            <div className={bulletinList}>
-              {bulletinTypeWords.map((bulletin) => {
-                return <BulletinBox typeWord={bulletin} key={bulletin} />;
-              })}
-            </div>
-          </section>
-        </article>
+        </div>
+        <EuiSpacer size="xl" />
       </div>
     </div>
   );
 };
 
-Homepage.propTypes = { navigateTo: PropTypes.func.isRequired };
+Homepage.propTypes = {
+  wso: PropTypes.object.isRequired,
+};
 
 Homepage.defaultProps = {};
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
+const mapStateToProps = (state) => ({
+  wso: getWSO(state),
 });
 
-export default connect(null, mapDispatchToProps)(Homepage);
+export default connect(mapStateToProps)(Homepage);

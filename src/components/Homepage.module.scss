@@ -1,6 +1,92 @@
-.bulletinList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 340px);
-  place-content: center;
-  grid-gap: 30px;
+@import "../theme.scss";
+
+.page {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.pageContent {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: $lg;
+  align-items: center;
+}
+
+.title {
+  font-size: $f-8;
+  color: $primary-6;
+  text-align: center;
+  font-weight: 700;
+  margin: $px-6;
+}
+
+.newPost {
+  width: 70%;
+  height: 150px;
+  background-color: $cool-gray-1;
+  display: flex;
+  justify-content: center;
+  padding: $px-6;
+  textarea {
+    flex-grow: 1;
+    max-width: none;
+    background-color: $cool-gray-1;
+    box-shadow: none;
+    margin-left: $px-4;
+  }
+
+  textarea:focus {
+    background-color: $cool-gray-1;
+    box-shadow: none;
+  }
+}
+
+.categories {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.category {
+  background-color: $cool-gray-1;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
+  flex-basis: 23%;
+  display: flex;
+  flex-direction: column;
+
+  img {
+    flex-grow: 1;
+  }
+
+  .categoryTitle {
+    background-color: $primary-6;
+    color: white;
+    font-weight: 600;
+    font-size: $f-4;
+    text-align: center;
+    padding: $px-6;
+    border-radius: 0 0 10px 10px;
+  }
+}
+
+.recentPosts {
+  margin-right: $px-6;
+  flex-grow: 1;
+
+  .title {
+    font-weight: 600;
+    font-size: $f-5;
+    color: $blue-5;
+    text-align: left;
+  }
+}
+
+.bulletins {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
 }

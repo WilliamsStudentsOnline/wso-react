@@ -1,0 +1,51 @@
+@import "../../../theme.scss";
+
+.post,
+.postRecent {
+  border-radius: 10px;
+  padding: $px-6;
+  margin-bottom: $px-6;
+  width: 100%;
+  box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
+  display: flex;
+
+  div {
+    margin: $px-4;
+  }
+
+  .userPhoto {
+    width: $px-9;
+  }
+
+  .postUser {
+    color: $primary-6;
+    font-size: $f-2;
+  }
+
+  .datePosted,
+  .userPronouns {
+    font-style: italic;
+    color: $cool-gray-6;
+    font-size: $f-0;
+  }
+
+  .postTitle {
+    font-size: $f-2;
+    font-weight: 600;
+    color: $primary-6;
+  }
+
+  .postType {
+    border-radius: $f-3;
+    font-size: $f-2;
+    font-weight: 600;
+    background-color: $cool-gray-8;
+    color: white;
+    padding: $px-3;
+    width: max-content;
+  }
+}
+
+.postRecent {
+  border-left: $px-3 solid $new-0;
+}

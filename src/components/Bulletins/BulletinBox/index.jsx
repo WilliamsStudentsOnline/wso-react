@@ -2,15 +2,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Line } from "../../common/Skeleton";
-import {
-  bulletinTitleDiv,
-  bulletinLink,
-  bulletinChildren,
-  threadLink,
-  listDate,
-  bulletin,
-  bulletinChildrenContainer,
-} from "./BulletinBox.module.scss";
+import styles from "./BulletinBox.module.scss";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
@@ -75,16 +67,6 @@ const BulletinBox = ({ wso, typeWord }) => {
     };
   }, [wso, type]);
 
-  const formatDate = (showDate) => {
-    const options = {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    };
-
-    return new Date(showDate).toLocaleString("en-US", options);
-  };
-
   // Generates the threadTitle
   const threadTitle = (thread) => {
     if (type === bulletinTypeRide) {
@@ -94,106 +76,99 @@ const BulletinBox = ({ wso, typeWord }) => {
     return thread.title;
   };
 
-  // Generates thread Date
-  const threadDate = (thread) => {
-    if (type === bulletinTypeRide) {
-      return thread.date;
-    }
-    if (type === discussionType) {
-      return thread.lastActive;
-    }
-    return thread.startDate;
-  };
-
   // Generate bulletin title link
-  const bulletinTitle = () => {
+  const categoryLink = (text) => {
     if (type === discussionType) {
       return (
-        <div className={bulletinTitleDiv}>
-          <Link className={bulletinLink} routeName="discussions">
-            {typeWord}
-          </Link>
-        </div>
+        <Link className={styles.bulletinLink} routeName="discussions">
+          {text}
+        </Link>
       );
     }
 
     return (
-      <div className={bulletinTitleDiv}>
-        <Link
-          className={bulletinLink}
-          routeName="bulletins"
-          routeParams={{ type }}
-        >
-          {typeWord}
-        </Link>
-      </div>
+      <Link routeName="bulletins" routeParams={{ type }}>
+        {text}
+      </Link>
     );
   };
 
   const bulletinSkeleton = () =>
     [...Array(5)].map((_, i) => (
       // eslint-disable-next-line react/no-array-index-key
-      <div className={bulletinChildren} key={i}>
+      <div className={styles.bulletinChildren} key={i}>
         <Line width="90%" center />
-
-        <span className={listDate}>
-          <Line width="90%" center />
-        </span>
       </div>
     ));
 
+  const bulletinThread = (thread) => {
+    // Generates thread Date
+    const threadDate = () => {
+      if (type === bulletinTypeRide) {
+        return thread.date;
+      }
+      if (type === discussionType) {
+        return thread.lastActive;
+      }
+      return thread.startDate;
+    };
+
+    const isRecent =
+      new Date() - new Date(threadDate(thread)) < 7 * 1000 * 60 * 60 * 24;
+
+    return (
+      <div
+        className={isRecent ? styles.bulletinActiveChild : styles.bulletinChild}
+        key={thread.id}
+      >
+        {type === discussionType ? (
+          <Link
+            className={styles.threadLink}
+            routeName="discussions.show"
+            routeParams={{
+              discussionID: thread.id,
+            }}
+          >
+            {threadTitle(thread)}
+          </Link>
+        ) : (
+          <Link
+            className={styles.threadLink}
+            routeName="bulletins.show"
+            routeParams={{
+              type,
+              bulletinID: thread.id,
+            }}
+          >
+            {threadTitle(thread)}
+          </Link>
+        )}
+      </div>
+    );
+  };
+
   const bulletinThreads = () => {
     return (
-      <div className={bulletinChildrenContainer}>
+      <div className={styles.bulletinChildrenContainer}>
         {threads
-          ? threads.map((thread) => {
-              return (
-                <div className={bulletinChildren} key={thread.id}>
-                  {type === discussionType ? (
-                    <Link
-                      className={threadLink}
-                      routeName="discussions.show"
-                      routeParams={{
-                        discussionID: thread.id,
-                      }}
-                    >
-                      {threadTitle(thread)}
-                    </Link>
-                  ) : (
-                    <Link
-                      className={threadLink}
-                      routeName="bulletins.show"
-                      routeParams={{
-                        type,
-                        bulletinID: thread.id,
-                      }}
-                    >
-                      {threadTitle(thread)}
-                    </Link>
-                  )}
-
-                  <span className={listDate}>
-                    {formatDate(threadDate(thread))}
-                  </span>
-                </div>
-              );
-            })
+          ? threads.map((thread) => bulletinThread(thread))
           : bulletinSkeleton()}
+        <div className={styles.seeAll}>{categoryLink("See All")}</div>
       </div>
     );
   };
 
   return (
-    <div className={bulletin}>
-      {bulletinTitle()}
+    <div className={styles.bulletin}>
+      <div className={styles.bulletinTitleDiv}>{categoryLink(typeWord)}</div>
       {bulletinThreads()}
     </div>
   );
 };
 
 BulletinBox.propTypes = {
-  wso: PropTypes.object.isRequired,
   typeWord: PropTypes.string.isRequired,
+  wso: PropTypes.object.isRequired,
 };
 
 BulletinBox.defaultProps = {};
