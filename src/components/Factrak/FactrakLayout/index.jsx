@@ -85,7 +85,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, route }) => {
                         />
                       </EuiFlexItem>
                       <EuiFlexItem grow={false}>
-                        <EuiButton fill color="#644a98" onClick={submitHandler}>
+                        <EuiButton fill onClick={submitHandler}>
                           Search
                         </EuiButton>
                       </EuiFlexItem>

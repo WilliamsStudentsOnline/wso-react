@@ -167,7 +167,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
             routeName="factrak.newSurvey"
             routeParams={{ profID: professor.id }}
           >
-            <EuiButton fill color="#dddddd" size="m">
+            <EuiButton fill size="m">
               Write Review
             </EuiButton>
           </Link>
