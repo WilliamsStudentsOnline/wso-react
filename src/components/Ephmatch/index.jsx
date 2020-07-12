@@ -128,8 +128,7 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       case "settings":
         return <EphmatchEdit />;
       default:
-        navigateTo("ephmatch");
-        return null;
+        return <Redirect to="404" />;
     }
   };
 
