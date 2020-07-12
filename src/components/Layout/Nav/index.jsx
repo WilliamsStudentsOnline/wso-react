@@ -93,7 +93,6 @@ const Nav = ({ currUser, removeCreds, wso }) => {
               </>
             )}
 
-            <Link routeName="faq">FAQ</Link>
             <a href="/wiki">Wiki</a>
             <Link routeName="about">About</Link>
             <Link routeName="scheduler">Course Scheduler</Link>
