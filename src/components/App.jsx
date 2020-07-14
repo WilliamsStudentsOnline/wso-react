@@ -32,7 +32,7 @@ import jwtDecode from "jwt-decode";
 
 // More component imports
 const About = lazy(() => import("./About"));
-const BulletinMain = lazy(() => import("./Bulletins"));
+// const BulletinMain = lazy(() => import("./Bulletins"));
 const DiscussionMain = lazy(() => import("./Discussions"));
 const DormtrakMain = lazy(() => import("./Dormtrak"));
 const FacebookMain = lazy(() => import("./Facebook"));
@@ -42,6 +42,7 @@ const FiveOhOh = lazy(() => import("./Errors/FiveOhOh"));
 const FourOhFour = lazy(() => import("./Errors/FourOhFour"));
 const FourOhThree = lazy(() => import("./Errors/FourOhThree"));
 const Login = lazy(() => import("./Login"));
+const PostBoard = lazy(() => import("./PostBoard"));
 const Scheduler = lazy(() => import("./CourseScheduler"));
 
 const App = ({
@@ -192,7 +193,7 @@ const App = ({
       case "ephmatch":
         return <EphmatchMain />;
       case "bulletins":
-        return <BulletinMain />;
+        return <PostBoard />;
       case "discussions":
         return <DiscussionMain />;
       case "403":

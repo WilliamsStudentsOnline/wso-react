@@ -9,14 +9,6 @@ import WSO from "../../../assets/images/brand/wso_icon_white_border.svg";
 import { format } from "timeago.js";
 import { Link } from "react-router5";
 
-import {
-  bulletinTypeRide,
-  bulletinTypeJob,
-  discussionType,
-  bulletinTypeLostAndFound,
-  bulletinTypeExchange,
-  bulletinTypeAnnouncement,
-} from "../../../constants/general";
 import { getWSO } from "../../../selectors/auth";
 
 import { userToNameWithClassYear } from "../../../lib/general";
@@ -53,16 +45,6 @@ const Post = ({ post, wso }) => {
   const isRecent =
     new Date() - new Date(post.startDate) < 7 * 1000 * 24 * 60 * 60;
 
-  // Converts the typeWord to the type of bulletin/discussion to be obtained.
-  const linkMap = new Map([
-    ["Announcement", bulletinTypeAnnouncement],
-    ["Exchange", bulletinTypeExchange],
-    ["Lost And Found", bulletinTypeLostAndFound],
-    ["Jobs", bulletinTypeJob],
-    ["Ride", bulletinTypeRide],
-    ["Discussion", discussionType],
-  ]);
-
   const renderPhoto = () => {
     if (!photo) return <img src={WSO} alt="WSO icon" />;
 
@@ -85,7 +67,7 @@ const Post = ({ post, wso }) => {
         <div className={styles.postTitle}>
           <Link
             routeName="bulletins.show"
-            routeParams={{ type: linkMap.get(post.type), bulletinID: post.id }}
+            routeParams={{ type: post.type, bulletinID: post.id }}
           >
             {post.title}
           </Link>

@@ -1,0 +1,35 @@
+@import "../../../theme.scss";
+
+.page {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.pageContent {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: $lg;
+  align-items: center;
+}
+
+.title {
+  font-size: $f-8;
+  color: $primary-6;
+  text-align: center;
+  font-weight: 700;
+  margin: $px-6;
+}
+
+.navLink {
+  margin-right: $px-5;
+  color: $primary-4;
+}
+
+.activeNavLink {
+  margin-right: $px-5;
+  color: $primary-5;
+  border-bottom: $px-1 solid $primary-5;
+}

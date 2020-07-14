@@ -8,6 +8,7 @@ import Post from "./PostBoard/Post";
 import BulletinBox from "./Bulletins/BulletinBox";
 
 // Redux Imports
+import { Link } from "react-router5";
 import { connect } from "react-redux";
 import { EuiAvatar, EuiSpacer, EuiTextArea } from "@elastic/eui";
 import { getWSO } from "../selectors/auth";
@@ -18,18 +19,28 @@ import Exchange from "../assets/SVG/Exchange2.svg";
 
 import WSO from "../assets/images/brand/wso_icon_white_border.svg";
 
-const Category = ({ image, title }) => {
+const Category = ({ image, title, routeName, routeParams }) => {
   return (
-    <div className={styles.category}>
+    <Link
+      routeName={routeName}
+      routeParams={routeParams}
+      className={styles.category}
+    >
       <img src={image} alt={`${title} category`} />
       <div className={styles.categoryTitle}>{title}</div>
-    </div>
+    </Link>
   );
 };
 
 Category.propTypes = {
   image: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
+  routeName: PropTypes.string.isRequired,
+  routeParams: PropTypes.object,
+};
+
+Category.defaultProps = {
+  routeParams: {},
 };
 
 const Homepage = ({ wso }) => {
@@ -78,10 +89,29 @@ const Homepage = ({ wso }) => {
   const renderCategories = () => {
     return (
       <div className={styles.categories}>
-        <Category image={Discussion} title="Discussions" />
-        <Category image={Exchange} title="Exchange" />
-        <Category image={JobOffers} title="Jobs" />
-        <Category image={RideShare} title="Ride Share" />
+        <Category
+          image={Discussion}
+          title="Discussions"
+          routeName="discussions"
+        />
+        <Category
+          image={Exchange}
+          title="Exchange"
+          routeName="bulletins"
+          routeParams={{ type: "exchange" }}
+        />
+        <Category
+          image={JobOffers}
+          title="Jobs"
+          routeName="bulletins"
+          routeParams={{ type: "job" }}
+        />
+        <Category
+          image={RideShare}
+          title="Ride Share"
+          routeName="bulletins"
+          routeParams={{ type: "ride" }}
+        />
       </div>
     );
   };
