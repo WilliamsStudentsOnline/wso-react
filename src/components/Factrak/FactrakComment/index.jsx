@@ -1,5 +1,5 @@
 // React imports
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Paragraph, Line } from "../../common/Skeleton";
 import Button from "../../common/Button";
@@ -29,6 +29,21 @@ const FactrakComment = ({
 }) => {
   const [survey, updateSurvey] = useState(comment);
   const [isDeleted, updateDeleted] = useState(false);
+  const [userPhoto, updateUserPhoto] = useState(null);
+
+  useEffect(() => {
+    const loadPhoto = async () => {
+      try {
+        const photoResponse = await wso.userService.getUserLargePhoto(
+          survey.professorID
+        );
+        updateUserPhoto(URL.createObjectURL(photoResponse));
+      } catch (error) {
+        // eslint-disable-next-line no-empty
+      }
+    };
+    loadPhoto();
+  }, [wso, survey.professorID]);
 
   // Get the survey and update it after editing.
   const getAndUpdateSurvey = async () => {
@@ -390,7 +405,14 @@ const FactrakComment = ({
           getTimeDifference() ? styles.commentCardRecent : styles.commentCard
         }
       >
-        <EuiFlexItem grow={1} />
+        <EuiFlexItem grow={1}>
+          <Link
+            routeName="factrak.professors"
+            routeParams={{ profID: survey.professorID }}
+          >
+            <img src={userPhoto} alt="avatar" />
+          </Link>
+        </EuiFlexItem>
         <EuiFlexItem className={styles.commentContentAbridged} grow={5}>
           <h1 className={styles.commentHeaderAbridged}>
             {profName()}
@@ -446,7 +468,14 @@ const FactrakComment = ({
         getTimeDifference() ? styles.commentCardRecent : styles.commentCard
       }
     >
-      <EuiFlexItem grow={1} />
+      <EuiFlexItem grow={1}>
+        <Link
+          routeName="factrak.professors"
+          routeParams={{ profID: survey.professorID }}
+        >
+          <img src={userPhoto} alt="avatar" />
+        </Link>
+      </EuiFlexItem>
       <EuiFlexItem className={styles.commentContent} grow={5}>
         <h1 className={styles.commentHeader}>
           {profName()}
