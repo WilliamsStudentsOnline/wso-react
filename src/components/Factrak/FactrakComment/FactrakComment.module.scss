@@ -84,3 +84,17 @@
   line-height: $px-5;
   color: $cool-gray-8;
 }
+
+.professorPhoto {
+  img {
+    border-radius: 50%;
+  }
+}
+
+.professorPhotoSmall {
+  @extend .professorPhoto;
+  width: $px-9;
+  img {
+    height: auto;
+  }
+}

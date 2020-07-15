@@ -404,16 +404,19 @@ const FactrakComment = ({
         className={
           getTimeDifference() ? styles.commentCardRecent : styles.commentCard
         }
+        alignItems="center"
+        justifyContent="center"
       >
         <EuiFlexItem grow={1}>
           <Link
             routeName="factrak.professors"
             routeParams={{ profID: survey.professorID }}
+            className={styles.professorPhotoSmall}
           >
             <img src={userPhoto} alt="avatar" />
           </Link>
         </EuiFlexItem>
-        <EuiFlexItem className={styles.commentContentAbridged} grow={5}>
+        <EuiFlexItem className={styles.commentContentAbridged} grow={6}>
           <h1 className={styles.commentHeaderAbridged}>
             {profName()}
             {courseLink()}
@@ -472,11 +475,12 @@ const FactrakComment = ({
         <Link
           routeName="factrak.professors"
           routeParams={{ profID: survey.professorID }}
+          className={styles.professorPhoto}
         >
           <img src={userPhoto} alt="avatar" />
         </Link>
       </EuiFlexItem>
-      <EuiFlexItem className={styles.commentContent} grow={5}>
+      <EuiFlexItem className={styles.commentContent} grow={7}>
         <h1 className={styles.commentHeader}>
           {profName()}
           {courseLink()}
