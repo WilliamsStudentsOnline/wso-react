@@ -27,16 +27,18 @@ const NavLink = ({
   routeName,
   routeParams,
 }) => {
-  if (routeName === route.name && route.params.type === routeParams.type) {
-    return (
-      <Link
-        className={activeStyle}
-        routeName={routeName}
-        routeParams={routeParams}
-      >
-        {children}
-      </Link>
-    );
+  if (routeName === route.name) {
+    if (!route.params.type || route.params.type === routeParams.type) {
+      return (
+        <Link
+          className={activeStyle}
+          routeName={routeName}
+          routeParams={routeParams}
+        >
+          {children}
+        </Link>
+      );
+    }
   }
 
   return (
@@ -52,7 +54,7 @@ const NavLink = ({
 
 NavLink.propTypes = {
   activeStyle: PropTypes.string,
-  children: PropTypes.element,
+  children: PropTypes.string,
   defaultStyle: PropTypes.string,
   route: PropTypes.object.isRequired,
   routeName: PropTypes.string.isRequired,
@@ -60,7 +62,7 @@ NavLink.propTypes = {
 };
 NavLink.defaultProps = {
   activeStyle: "",
-  children: null,
+  children: "",
   defaultStyle: "",
   routeParams: null,
 };

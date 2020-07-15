@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import PaginationButtons from "../../common/PaginationButtons";
-import { Line } from "../../common/Skeleton";
+import { Paragraph } from "../../common/Skeleton";
 
 // Redux and routing imports
-import { getWSO, getCurrUser } from "../../../selectors/auth";
+import { getCurrUser, getWSO } from "../../../selectors/auth";
 import { connect } from "react-redux";
 
 // Additional imports
@@ -16,21 +16,22 @@ import { bulletinTypeRide } from "../../../constants/general";
 import Post from "../Post";
 
 const PostBoardIndex = ({ navigateTo, route, wso }) => {
-  const [bulletins, updateBulletins] = useState(null);
+  const [bulletins, updatePosts] = useState(null);
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
+
   const perPage = 20;
+
   const loadBulletins = async (newPage) => {
     const params = {
       type: route.params.type,
       preload: ["user"],
       limit: 20,
       offset: perPage * newPage,
-      all: true,
     };
     try {
       const bulletinsResponse = await wso.bulletinService.listBulletins(params);
-      updateBulletins(bulletinsResponse.data);
+      updatePosts(bulletinsResponse.data);
       updateTotal(bulletinsResponse.paginationTotal);
     } catch {
       navigateTo("500");
@@ -47,8 +48,23 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
     };
     try {
       const ridesResponse = await wso.bulletinService.listRides(params);
-      updateBulletins(ridesResponse.data);
+      updatePosts(ridesResponse.data);
       updateTotal(ridesResponse.paginationTotal);
+    } catch {
+      navigateTo("500");
+    }
+  };
+
+  const loadDiscussions = async (newPage) => {
+    const params = {
+      preload: ["user"],
+      limit: 20,
+      offset: perPage * newPage,
+    };
+    try {
+      const postsResponse = await wso.bulletinService.listDiscussions(params);
+      updatePosts(postsResponse.data);
+      updateTotal(postsResponse.paginationTotal);
     } catch {
       navigateTo("500");
     }
@@ -57,7 +73,9 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
   // Loads the next page appropriately
   const loadNext = (newPage) => {
     // Different because the wso endpoints are different
-    if (route.params?.type === bulletinTypeRide) loadRides(newPage);
+
+    if (route.name === "discussions") loadDiscussions(newPage);
+    else if (route.params?.type === bulletinTypeRide) loadRides(newPage);
     else loadBulletins(newPage);
   };
 
@@ -82,8 +100,6 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
     loadNext(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route, wso]);
-
-  //   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
 
   // Handles deletion
   //   const deleteHandler = async (event, bulletinID) => {
@@ -129,18 +145,6 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
   //     );
   //   };
 
-  // Generate Bulletin date
-  //   const generateBulletinDate = (bulletin) => {
-  //     if (route.params.type === bulletinTypeRide) {
-  //       return new Date(bulletin.date).toLocaleDateString("en-US", dateOptions);
-  //     }
-
-  //     return new Date(bulletin.startDate).toLocaleDateString(
-  //       "en-US",
-  //       dateOptions
-  //     );
-  //   };
-
   // Link to edit bulletin
   //   const editLink = (bulletin) => {
   //     if (currUser?.id === bulletin.user.id) {
@@ -180,29 +184,36 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
   //     return null;
   //   };
 
-  const bulletinSkeleton = (key) => (
-    <tr key={key}>
-      <td className="col-60">
-        <Line width="70%" />
-      </td>
-      <td className="col-20">
-        <Line width="80%" />
-      </td>
-      <td className="col-20">
-        <Line width="80%" />
-      </td>
-    </tr>
-  );
+  const deleteHandler = async (id) => {
+    try {
+      if (route.params.type === bulletinTypeRide) {
+        await wso.bulletinService.deleteRide(id);
+      } else {
+        await wso.bulletinService.deleteBulletin(id);
+      }
+      loadNext(page);
+    } catch {
+      navigateTo("500");
+    }
+  };
+
+  const bulletinSkeleton = (key) => <Paragraph key={key} />;
 
   // Generate Bulletin Table
   const renderBulletins = () => {
-    if (bulletins && bulletins.length === 0) {
+    if (bulletins?.length === 0) {
       return <h1 className="no-posts">No Posts</h1>;
     }
     return (
       <div>
         {bulletins
-          ? bulletins.map((bulletin) => <Post post={bulletin} />)
+          ? bulletins.map((bulletin) => (
+              <Post
+                key={bulletin.id}
+                post={bulletin}
+                deleteHandler={deleteHandler}
+              />
+            ))
           : [...Array(20)].map((_, i) => bulletinSkeleton(i))}
       </div>
     );
@@ -219,7 +230,6 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
         showPages
       />
       {renderBulletins()}
-
       <PaginationButtons
         selectionHandler={selectionHandler}
         clickHandler={clickHandler}
@@ -236,7 +246,6 @@ PostBoardIndex.propTypes = {
   // currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -245,7 +254,7 @@ PostBoardIndex.defaultProps = {
 };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("bulletins");
+  const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
     currUser: getCurrUser(state),

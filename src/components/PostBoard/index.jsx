@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import PostBoardLayout from "./PostBoardLayout";
-import PostBoard from "./PostBoard";
+import PostBoardIndex from "./PostBoardIndex";
 // import PostBoardIndex from "./PostBoardIndex";
 // import PostBoardShow from "./PostBoardShow";
 // import PostBoardForm from "./PostBoardForm";
@@ -23,7 +23,7 @@ import {
 
 const PostBoardMain = ({ route }) => {
   const PostBoardBody = () => {
-    return <PostBoard />;
+    return <PostBoardIndex />;
     // const splitRoute = route.name.split(".");
 
     // if (splitRoute.length < 2) {
@@ -41,20 +41,20 @@ const PostBoardMain = ({ route }) => {
     // }
   };
 
-  // Check that this is a valid route with 'type' params
-  if (route.params?.type) {
-    // Check that the type is valid
-    const validPostBoardTypes = [
-      bulletinTypeLostAndFound,
-      bulletinTypeJob,
-      bulletinTypeRide,
-      bulletinTypeExchange,
-      bulletinTypeAnnouncement,
-    ];
+  // Check that the type is valid
+  const validPostBoardTypes = [
+    bulletinTypeLostAndFound,
+    bulletinTypeJob,
+    bulletinTypeRide,
+    bulletinTypeExchange,
+    bulletinTypeAnnouncement,
+  ];
 
-    if (validPostBoardTypes.indexOf(route.params.type) !== -1) {
-      return <PostBoardLayout>{PostBoardBody()}</PostBoardLayout>;
-    }
+  if (
+    validPostBoardTypes.indexOf(route.params?.type) !== -1 ||
+    route.name === "discussions"
+  ) {
+    return <PostBoardLayout>{PostBoardBody()}</PostBoardLayout>;
   }
 
   return null;

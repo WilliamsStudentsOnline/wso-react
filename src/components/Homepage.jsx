@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 // Component imports
 import styles from "./Homepage.module.scss";
 import Post from "./PostBoard/Post";
-import BulletinBox from "./Bulletins/BulletinBox";
+import BulletinBox from "./PostBoard/BulletinBox";
 
 // Redux Imports
 import { Link } from "react-router5";

@@ -9,12 +9,18 @@ import WSO from "../../../assets/images/brand/wso_icon_white_border.svg";
 import { format } from "timeago.js";
 import { Link } from "react-router5";
 
-import { getWSO } from "../../../selectors/auth";
+import { getCurrUser, getWSO } from "../../../selectors/auth";
 
 import { userToNameWithClassYear } from "../../../lib/general";
+import { EuiButton } from "@elastic/eui";
+import DeleteModal from "../DeleteModal";
 
-const Post = ({ post, wso }) => {
+const Post = ({ currUser, deleteHandler, post, wso }) => {
   const [photo, setPhoto] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const openModal = () => setIsModalVisible(true);
+  const closeModal = () => setIsModalVisible(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -51,6 +57,60 @@ const Post = ({ post, wso }) => {
     return <img src={photo} alt="User profile" />;
   };
 
+  const renderPostTitle = () => {
+    // If it is a bulletin
+    if (post.type) {
+      return (
+        <div className={styles.postTitle}>
+          <Link
+            routeName="bulletins.show"
+            routeParams={{ type: post.type, bulletinID: post.id }}
+          >
+            {post.title}
+          </Link>
+        </div>
+      );
+    }
+
+    // Otherwise, it must be a discussion
+    return (
+      <div className={styles.postTitle}>
+        <Link
+          routeName="discussions.show"
+          routeParams={{ discussionID: post.id }}
+        >
+          {post.title}
+        </Link>
+      </div>
+    );
+  };
+
+  const renderPostType = () => {
+    if (!post.type) return null;
+
+    return <div className={styles.postType}>{post.type}</div>;
+  };
+
+  const renderDeleteButton = () => {
+    if (currUser?.id === post.user.id || currUser?.admin) {
+      return <EuiButton onClick={openModal}>Delete</EuiButton>;
+    }
+    return null;
+  };
+
+  const renderModal = () => {
+    if (isModalVisible) {
+      return (
+        <DeleteModal
+          closeModal={closeModal}
+          deleteHandler={() => deleteHandler(post.id)}
+        />
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className={isRecent ? styles.postRecent : styles.post}>
       <div className={styles.userPhoto}>{renderPhoto()}</div>
@@ -64,26 +124,24 @@ const Post = ({ post, wso }) => {
           </span>
         </div>
         <div className={styles.userPronouns}>{post.user?.pronoun}</div>
-        <div className={styles.postTitle}>
-          <Link
-            routeName="bulletins.show"
-            routeParams={{ type: post.type, bulletinID: post.id }}
-          >
-            {post.title}
-          </Link>
-        </div>
-        <div className={styles.postType}>{post.type}</div>
+        {renderPostTitle()}
+        {renderPostType()}
+        {renderDeleteButton()}
+        {renderModal()}
       </div>
     </div>
   );
 };
 
 Post.propTypes = {
+  currUser: PropTypes.object.isRequired,
+  deleteHandler: PropTypes.func.isRequired,
   post: PropTypes.object.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
+  currUser: getCurrUser(state),
   wso: getWSO(state),
 });
 
