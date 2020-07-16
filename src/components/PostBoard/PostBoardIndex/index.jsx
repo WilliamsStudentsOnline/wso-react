@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import PaginationButtons from "../../common/PaginationButtons";
 import { Paragraph } from "../../common/Skeleton";
+import Post from "../Post";
 
 // Redux and routing imports
 import { getCurrUser, getWSO } from "../../../selectors/auth";
@@ -12,8 +13,6 @@ import { connect } from "react-redux";
 // import { Link } from "react-router5";
 import { actions, createRouteNodeSelector } from "redux-router5";
 import { bulletinTypeRide } from "../../../constants/general";
-
-import Post from "../Post";
 
 const PostBoardIndex = ({ navigateTo, route, wso }) => {
   const [bulletins, updatePosts] = useState(null);
@@ -100,25 +99,6 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
     loadNext(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route, wso]);
-
-  // Handles deletion
-  //   const deleteHandler = async (event, bulletinID) => {
-  //     event.preventDefault();
-  //     // eslint-disable-next-line no-restricted-globals, no-alert
-  //     const confirmDelete = confirm("Are you sure?");
-  //     if (!confirmDelete) return;
-
-  //     try {
-  //       if (route.params.type === bulletinTypeRide) {
-  //         await wso.bulletinService.deleteRide(bulletinID);
-  //       } else {
-  //         await wso.bulletinService.deleteBulletin(bulletinID);
-  //       }
-  //       loadNext(page);
-  //     } catch {
-  //       navigateTo("500");
-  //     }
-  //   };
 
   // Creates the Bulletin Title link
   //   const generateBulletinTitle = (bulletin) => {

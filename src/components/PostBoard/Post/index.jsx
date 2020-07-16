@@ -1,19 +1,20 @@
 // React imports
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import DeleteModal from "../DeleteModal";
 
-import styles from "./Post.module.scss";
-
+// Redux/Routing imports
 import { connect } from "react-redux";
-import WSO from "../../../assets/images/brand/wso_icon_white_border.svg";
-import { format } from "timeago.js";
 import { Link } from "react-router5";
-
 import { getCurrUser, getWSO } from "../../../selectors/auth";
 
-import { userToNameWithClassYear } from "../../../lib/general";
+// External imports
 import { EuiButton } from "@elastic/eui";
-import DeleteModal from "../DeleteModal";
+import { format } from "timeago.js";
+import styles from "./Post.module.scss";
+import { userToNameWithClassYear } from "../../../lib/general";
+import WSO from "../../../assets/images/brand/wso_icon_white_border.svg";
+import { bulletinTypeRide } from "../../../constants/general";
 
 const Post = ({ currUser, deleteHandler, post, wso }) => {
   const [photo, setPhoto] = useState(null);
@@ -35,59 +36,61 @@ const Post = ({ currUser, deleteHandler, post, wso }) => {
           setPhoto(URL.createObjectURL(photoResponse));
         }
       } catch (error) {
-        // Do nothing.
+        // Do nothing - the default WSO icon should handle it.
       }
     };
 
-    if (post.user) {
-      loadPhoto();
-    }
+    if (post.user) loadPhoto();
 
     return () => {
       isMounted = false;
     };
   }, [post, wso]);
 
-  const isRecent =
-    new Date() - new Date(post.startDate) < 7 * 1000 * 24 * 60 * 60;
-
   const renderPhoto = () => {
     if (!photo) return <img src={WSO} alt="WSO icon" />;
-
     return <img src={photo} alt="User profile" />;
   };
 
-  const renderPostTitle = () => {
-    // If it is a bulletin
-    if (post.type) {
+  const isBulletin = post.type;
+
+  // Generates thread Date
+  const threadDate = () => {
+    if (!isBulletin) return post.lastActive;
+    if (post.type === bulletinTypeRide) return post.date;
+
+    return post.startDate;
+  };
+
+  // Define a post as recent if it was made in the last 7 days.
+  const isRecent =
+    new Date() - new Date(threadDate()) < 7 * 1000 * 24 * 60 * 60;
+
+  const renderPostTitleLink = () => {
+    if (isBulletin) {
       return (
-        <div className={styles.postTitle}>
-          <Link
-            routeName="bulletins.show"
-            routeParams={{ type: post.type, bulletinID: post.id }}
-          >
-            {post.title}
-          </Link>
-        </div>
+        <Link
+          routeName="bulletins.show"
+          routeParams={{ type: post.type, bulletinID: post.id }}
+        >
+          {post.title}
+        </Link>
       );
     }
 
     // Otherwise, it must be a discussion
     return (
-      <div className={styles.postTitle}>
-        <Link
-          routeName="discussions.show"
-          routeParams={{ discussionID: post.id }}
-        >
-          {post.title}
-        </Link>
-      </div>
+      <Link
+        routeName="discussions.show"
+        routeParams={{ discussionID: post.id }}
+      >
+        {post.title}
+      </Link>
     );
   };
 
   const renderPostType = () => {
-    if (!post.type) return null;
-
+    if (!isBulletin) return null;
     return <div className={styles.postType}>{post.type}</div>;
   };
 
@@ -124,7 +127,8 @@ const Post = ({ currUser, deleteHandler, post, wso }) => {
           </span>
         </div>
         <div className={styles.userPronouns}>{post.user?.pronoun}</div>
-        {renderPostTitle()}
+
+        <div className={styles.postTitle}>{renderPostTitleLink()}</div>
         {renderPostType()}
         {renderDeleteButton()}
         {renderModal()}

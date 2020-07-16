@@ -12,52 +12,28 @@ import { connect } from "react-redux";
 
 // External Imports
 import { createRouteNodeSelector } from "redux-router5";
-import {
-  bulletinTypeLostAndFound,
-  bulletinTypeJob,
-  bulletinTypeRide,
-  bulletinTypeExchange,
-  bulletinTypeAnnouncement,
-} from "../../constants/general";
+import DiscussionShow from "../Discussions/DiscussionShow";
 // import { getAPIToken } from "../selectors/auth";
 
 const PostBoardMain = ({ route }) => {
+  console.log("hi");
   const PostBoardBody = () => {
+    const splitRoute = route.name.split(".");
+
+    if (splitRoute.length < 2) {
+      return <PostBoardIndex />;
+    }
+
+    console.log(route.name);
+    if (route.name === "discussions.show") {
+      console.log("hey");
+      return <DiscussionShow />;
+    }
+
     return <PostBoardIndex />;
-    // const splitRoute = route.name.split(".");
-
-    // if (splitRoute.length < 2) {
-    //   return <PostBoardIndex type={postBoardType} />;
-    // }
-
-    // switch (splitRoute[1]) {
-    //   case "show":
-    //     return <PostBoardShow />;
-    //   case "new":
-    //   case "edit":
-    //     return <PostBoardForm />;
-    //   default:
-    //     return <PostBoardIndex type={postBoardType} />;
-    // }
   };
 
-  // Check that the type is valid
-  const validPostBoardTypes = [
-    bulletinTypeLostAndFound,
-    bulletinTypeJob,
-    bulletinTypeRide,
-    bulletinTypeExchange,
-    bulletinTypeAnnouncement,
-  ];
-
-  if (
-    validPostBoardTypes.indexOf(route.params?.type) !== -1 ||
-    route.name === "discussions"
-  ) {
-    return <PostBoardLayout>{PostBoardBody()}</PostBoardLayout>;
-  }
-
-  return null;
+  return <PostBoardLayout>{PostBoardBody()}</PostBoardLayout>;
 };
 
 PostBoardMain.propTypes = {
@@ -67,11 +43,13 @@ PostBoardMain.propTypes = {
 PostBoardMain.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("bulletins");
+  const routeNodeSelector = createRouteNodeSelector("");
+  const routeNodeSelectorD = createRouteNodeSelector("discussions");
 
   return (state) => ({
     // token: getAPIToken(state),
     ...routeNodeSelector(state),
+    ...routeNodeSelectorD(state),
   });
 };
 

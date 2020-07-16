@@ -19,7 +19,7 @@ import {
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
 
-const BulletinBox = ({ wso, typeWord }) => {
+const BulletinBox = ({ typeWord, wso }) => {
   const [threads, updateThreads] = useState(null);
 
   // Converts the typeWord to the type of bulletin/discussion to be obtained.
@@ -54,9 +54,7 @@ const BulletinBox = ({ wso, typeWord }) => {
     };
 
     try {
-      if (wso.isAuthenticated()) {
-        getThreads();
-      }
+      if (wso.isAuthenticated()) getThreads();
     } catch (e) {
       // We aren't really expecting any errors here, unless the token is empty for some reason.
       updateThreads([]);
@@ -104,12 +102,9 @@ const BulletinBox = ({ wso, typeWord }) => {
   const bulletinThread = (thread) => {
     // Generates thread Date
     const threadDate = () => {
-      if (type === bulletinTypeRide) {
-        return thread.date;
-      }
-      if (type === discussionType) {
-        return thread.lastActive;
-      }
+      if (type === bulletinTypeRide) return thread.date;
+      if (type === discussionType) return thread.lastActive;
+
       return thread.startDate;
     };
 
