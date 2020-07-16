@@ -139,10 +139,27 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
   //   );
   // };
 
-  const [checked, setChecked] = useState(false);
+  const [yearFilter, updateYearFilter] = useState({
+    2021: false,
+    2022: false,
+    2023: false,
+    2024: false,
+  });
 
-  const onChange = (e) => {
-    setChecked(e.target.checked);
+  const onChange = (year) => {
+    const updatedYearFilter = { ...yearFilter, year: !yearFilter[year] };
+    updateYearFilter(updatedYearFilter);
+  };
+
+  const [roleFilter, updateRoleFilter] = useState({
+    1: false,
+    2: false,
+    3: false,
+  });
+
+  const onChange2 = (role) => {
+    const updatedRoleFilter = { ...roleFilter, role: !roleFilter[role] };
+    updateRoleFilter(updatedRoleFilter);
   };
 
   // Displays results in a grid view when there aren't too many results
@@ -171,52 +188,52 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
             </EuiFlexGrid>
             <EuiFlexItem className={styles.checkboxes}>
               Year
-              <EuiFlexItem>
+              <EuiFlexItem className={styles.checkboxGroup}>
                 <EuiCheckbox
                   id={21}
                   label="2021"
-                  checked={checked}
-                  onChange={(twentyOne) => onChange(twentyOne)}
+                  checked={yearFilter[2021]}
+                  onChange={() => onChange(2021)}
                 />
                 <EuiCheckbox
                   id={22}
                   label="2022"
-                  checked={checked}
-                  onChange={(twentyTwo) => onChange(twentyTwo)}
+                  checked={yearFilter[2022]}
+                  onChange={() => updateYearFilter(2022)}
                 />
                 <EuiCheckbox
                   id={23}
                   label="2023"
-                  checked={checked}
-                  onChange={(twentyThree) => onChange(twentyThree)}
+                  checked={yearFilter[2023]}
+                  onChange={() => onChange(2023)}
                 />
                 <EuiCheckbox
                   id={24}
                   label="2024"
-                  checked={checked}
-                  onChange={(twentyFour) => onChange(twentyFour)}
+                  checked={yearFilter[2024]}
+                  onChange={() => updateYearFilter(2024)}
                 />
               </EuiFlexItem>
               <h6>Off-cycle years are rounded up</h6>
               Role
-              <EuiFlexItem className={styles.checkboxes}>
+              <EuiFlexItem className={styles.checkboxGroup}>
                 <EuiCheckbox
                   id={1}
                   label="Student"
-                  checked={checked}
-                  onChange={(student) => onChange(student)}
+                  checked={roleFilter[1]}
+                  onChange={() => onChange2(1)}
                 />
                 <EuiCheckbox
                   id={2}
                   label="Faculty"
-                  checked={checked}
-                  onChange={(faculty) => onChange(faculty)}
+                  checked={roleFilter[2]}
+                  onChange={() => onChange2(2)}
                 />
                 <EuiCheckbox
                   id={3}
                   label="Staff"
-                  checked={checked}
-                  onChange={(staff) => onChange(staff)}
+                  checked={roleFilter[3]}
+                  onChange={() => onChange2(3)}
                 />
               </EuiFlexItem>
             </EuiFlexItem>

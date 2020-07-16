@@ -1,4 +1,4 @@
-@import "../../theme.scss";
+@import "../../../theme.scss";
 
 .matchesFound {
   color: $primary-6;
@@ -36,7 +36,14 @@
 }
 
 .checkboxes {
-  border: 1px;
-  border-color: $cool-gray-3;
   border-radius: $px-3;
+  border: 2px $cool-gray-3 solid;
+  flex-direction: column;
+  justify-content: start;
+  padding: 4px;
+  width: 200px;
+
+  .checkboxGroup {
+    flex-grow: 0;
+  }
 }
