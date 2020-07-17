@@ -93,7 +93,6 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) {
       // If token doesnt have access to profiles, must mean that ephmatch is closed for the year
-      //  || new Date() < ephmatchEndDate
       if (
         containsOneOfScopes(token, [scopes.ScopeEphmatchProfiles]) &&
         availability?.available

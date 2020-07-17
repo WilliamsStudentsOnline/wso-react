@@ -6,17 +6,15 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 // Additional imports
+import { EuiSpacer } from "@elastic/eui";
 import { Link } from "react-router5";
-import { format } from "timeago.js";
-import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { createRouteNodeSelector } from "redux-router5";
+import { format } from "timeago.js";
 import styles from "./EphmatchLayout.module.scss";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
 
 const NavLink = ({ activeStyle, children, defaultStyle, route, routeName }) => {
-  console.log(routeName);
-  console.log(route);
   if (routeName === route.name) {
-    console.log(activeStyle);
     return (
       <Link className={activeStyle} routeName={routeName}>
         {children}
@@ -110,6 +108,7 @@ const EphmatchLayout = ({
           </div>
         </div>
       </header>
+      <EuiSpacer />
       {children}
     </>
   );

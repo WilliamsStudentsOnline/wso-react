@@ -1,4 +1,4 @@
-@import "../../theme.scss";
+@import "../../../theme.scss";
 
 .page {
   display: flex;
@@ -76,4 +76,12 @@
   stroke: white;
   opacity: 0;
   pointer-events: none;
+}
+
+.iconChoice {
+  height: 2em;
+  width: 2em;
+  display: inline-block;
+  vertical-align: middle;
+  color: $primary-6;
 }

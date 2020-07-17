@@ -155,12 +155,7 @@ const Ephmatcher = ({
     return (
       <EuiFlexGroup justifyContent="center">
         <EuiFlexItem grow={false}>
-          <EuiButton fill>Pass</EuiButton>
-        </EuiFlexItem>
-        <EuiFlexItem grow={false}>
-          <EuiButton fill color="secondary">
-            Match
-          </EuiButton>
+          <EuiButton fill>Match</EuiButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     );

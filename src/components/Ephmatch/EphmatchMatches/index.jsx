@@ -11,7 +11,7 @@ import { actions } from "redux-router5";
 import styles from "./EphmatchMatches.module.scss";
 import { userToNameWithClassYear } from "../../../lib/general";
 import { MaybePhoto } from "../../common/Skeleton";
-import { EuiButton, EuiIcon } from "@elastic/eui";
+import { EuiButtonEmpty, EuiIcon } from "@elastic/eui";
 import { format } from "timeago.js";
 
 const EphmatchMatch = ({
@@ -83,7 +83,7 @@ const EphmatchMatch = ({
   const renderButtons = () => {
     return (
       <div>
-        <EuiButton>Unmatch</EuiButton> <EuiButton fill> Full Profile</EuiButton>
+        <EuiButtonEmpty>Unmatch</EuiButtonEmpty>
       </div>
     );
   };

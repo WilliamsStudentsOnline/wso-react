@@ -22,31 +22,38 @@ import {
   EuiGlobalToastList,
   EuiIcon,
   EuiSpacer,
+  EuiSuperSelect,
   EuiTextArea,
 } from "@elastic/eui";
+import { AiFillPhone } from "react-icons/ai";
+import { FaSnapchatSquare, FaInstagramSquare } from "react-icons/fa";
 import styles from "./EphmatchEdit.module.scss";
 import { userToNameWithClassYear } from "../../../lib/general";
+import ProfileUpdated from "../../../assets/SVG/EphMatch3.svg";
 
 const EphmatchProfile = ({ navigateTo, wso }) => {
-  const [profile, updateProfile] = useState(null);
-  // const [locationVisible, updateLocationVisible] = useState(true);
-  // const [locationTown, updateLocationTown] = useState("");
-  // const [locationState, updateLocationState] = useState("");
-  // const [locationCountry, updateLocationCountry] = useState("");
-  // const [messagingPlatform, updateMessagingPlatform] = useState("NONE");
-  // const [messagingUsername, updateMessagingUsername] = useState("");
-  const [photo, updatePhoto] = useState(null);
+  // User information
+  const [description, setDescription] = useState("");
+  const [matchMessage, setMatchMessage] = useState("");
+  const [messagingPlatform, setMessagingPlatform] = useState("NONE");
+  const [messagingUsername, setMessagingUsername] = useState("");
+  const [photo, setPhoto] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [pronouns, setPronouns] = useState("");
+  const [tags, setTags] = useState([]);
 
-  const [tags, updateTags] = useState([]);
-  const [pronouns, updatePronouns] = useState("");
-  const [description, updateDescription] = useState("");
-  const [matchMessage, updateMatchMessage] = useState("");
+  // Available options for organization tags
+  const [tagOptions, setTagOptions] = useState([]);
 
-  const [tagOptions, updateTagOptions] = useState([]);
+  // Whether the user decides to opt out
+  const [optOut, setOptOut] = useState(false);
 
-  const [optOut, updateOptOut] = useState(false);
-
+  // Global toasts
   const [toasts, setToasts] = useState([]);
+
+  // Modal for form submission/Ephmatch opt out/in.
+  const [modal, setModal] = useState(null);
+  setModal(ProfileUpdated);
 
   useEffect(() => {
     let isMounted = true;
@@ -57,26 +64,22 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
 
         if (isMounted) {
           const ephmatchProfile = ownProfile.data;
-          updateProfile(ephmatchProfile);
-          updateDescription(ephmatchProfile.description);
-          updateTags(
-            ephmatchProfile.user.tags
-              ? ephmatchProfile.user.tags.map((tag) => ({ label: tag.name }))
-              : []
+          setProfile(ephmatchProfile);
+          setDescription(ephmatchProfile.description);
+          setTags(
+            (ephmatchProfile.user.tags ?? []).map((tag) => ({
+              label: tag.name,
+            }))
           );
-          updateMatchMessage(ephmatchProfile.matchMessage);
-          // updateLocationVisible(ephmatchProfile.locationVisible);
-          // updateLocationTown(ephmatchProfile.locationTown);
-          // updateLocationState(ephmatchProfile.locationState);
-          // updateLocationCountry(ephmatchProfile.locationCountry);
-          // updateMessagingPlatform(
-          //   ephmatchProfile.messagingPlatform
-          //     ? ephmatchProfile.messagingPlatform
-          //     : "NONE"
-          // );
-          // updateMessagingUsername(ephmatchProfile.messagingUsername);
-          // updateUnixID(ephmatchProfile.user.unixID);
-          updatePronouns(ephmatchProfile.user.pronoun ?? "");
+          setMatchMessage(ephmatchProfile.matchMessage);
+          if (
+            ephmatchProfile.messagingPlatform &&
+            ephmatchProfile.messagingPlatform !== ""
+          ) {
+            setMessagingPlatform(ephmatchProfile.messagingPlatform);
+          }
+          setMessagingUsername(ephmatchProfile.messagingUsername);
+          setPronouns(ephmatchProfile.user.pronoun ?? "");
         }
       } catch {
         // There shouldn't be any reason for the submission to be rejected.
@@ -97,15 +100,12 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
     const params = {
       description,
       matchMessage,
-      // locationVisible,
-      // locationTown,
-      // locationState,
-      // locationCountry,
-      // messagingPlatform,
-      // messagingUsername:
-      //   messagingUsername === "NONE" ? null : messagingUsername,
+      messagingPlatform,
+      messagingUsername:
+        messagingUsername === "NONE" ? null : messagingUsername,
     };
 
+    // The endpoint expects only an array of strings.
     const tagParams = tags.map((tag) => tag.label);
 
     try {
@@ -115,9 +115,7 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
       await wso.userService.updateUser("me", { pronoun: pronouns });
 
       // Update Photos
-      if (photo) {
-        await wso.userService.updateUserPhoto("me", photo);
-      }
+      if (photo) await wso.userService.updateUserPhoto("me", photo);
     } catch (error) {
       setToasts([
         {
@@ -129,7 +127,28 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
     }
   };
 
-  const handlePhotoUpload = (event) => updatePhoto(event.target.files[0]);
+  const optOutChangeHandler = async (event) => {
+    const newChecked = event.target.checked;
+
+    setOptOut(newChecked);
+
+    if (newChecked) {
+      try {
+        await wso.ephmatchService.deleteSelfProfile();
+      } catch (error) {
+        setOptOut(!newChecked);
+        setToasts([
+          {
+            title: "Unable to opt out of Ephmatch right now!",
+            text: error.message,
+            color: "danger",
+          },
+        ]);
+      }
+    }
+  };
+
+  const handlePhotoUpload = (event) => setPhoto(event.target.files[0]);
 
   const renderPhotoWithPicker = () => {
     return (
@@ -172,7 +191,7 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
         5
       );
       const newSuggestions = tagResponse.data;
-      updateTagOptions(newSuggestions.map((tag) => ({ label: tag.value })));
+      setTagOptions(newSuggestions.map((tag) => ({ label: tag.value })));
     } catch {
       // Do nothing - it's okay to not have autocomplete.
     }
@@ -181,6 +200,34 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
   const removeToast = (removedToast) => {
     setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
   };
+
+  const contactPlatformOptions = [
+    { value: "NONE", inputDisplay: "None" },
+    {
+      value: "Phone",
+      inputDisplay: (
+        <span>
+          <AiFillPhone className={styles.iconChoice} /> Phone
+        </span>
+      ),
+    },
+    {
+      value: "Snapchat",
+      inputDisplay: (
+        <span>
+          <FaSnapchatSquare className={styles.iconChoice} /> Snapchat
+        </span>
+      ),
+    },
+    {
+      value: "Instagram",
+      inputDisplay: (
+        <span>
+          <FaInstagramSquare className={styles.iconChoice} /> Instagram
+        </span>
+      ),
+    },
+  ];
 
   return (
     <div className={styles.page}>
@@ -196,8 +243,8 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
           >
             <EuiFieldText
               value={pronouns}
-              name="first"
-              onChange={(e) => updatePronouns(e.target.value)}
+              name="pronouns"
+              onChange={(e) => setPronouns(e.target.value)}
             />
           </EuiFormRow>
           <EuiFormRow fullWidth>
@@ -212,7 +259,7 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
                   placeholder="Add tags"
                   selectedOptions={tags}
                   isClearable={false}
-                  onChange={(selectedOptions) => updateTags(selectedOptions)}
+                  onChange={(selectedOptions) => setTags(selectedOptions)}
                   onSearchChange={tagAutocomplete}
                   options={tagOptions}
                 />
@@ -228,7 +275,7 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
               fullWidth
               resize="none"
               value={description}
-              onChange={(e) => updateDescription(e.target.value)}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </EuiFormRow>
           <EuiFormRow
@@ -242,18 +289,47 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
               fullWidth
               resize="none"
               value={matchMessage}
-              onChange={(e) => updateMatchMessage(e.target.value)}
+              onChange={(e) => setMatchMessage(e.target.value)}
               placeholder="Add a message for your matches!"
             />
           </EuiFormRow>
-          <EuiFormRow>
-            <EuiCheckbox
-              id="hide-profile"
-              checked={optOut}
-              onChange={(event) => updateOptOut(event.target.checked)}
-              label="Hide my EphMatch Profile"
-            />
+          <EuiFormRow
+            label={
+              <span className={styles.formElementLabel}>
+                Contact Information
+              </span>
+            }
+            helpText="Only your matches can see this"
+          >
+            <EuiFlexGroup>
+              <EuiFlexItem>
+                <EuiSuperSelect
+                  options={contactPlatformOptions}
+                  valueOfSelected={messagingPlatform}
+                  onChange={(value) => setMessagingPlatform(value)}
+                />
+              </EuiFlexItem>
+              <EuiFlexItem>
+                <EuiFieldText
+                  value={messagingUsername}
+                  name="first"
+                  onChange={(e) => setMessagingUsername(e.target.value)}
+                />
+              </EuiFlexItem>
+            </EuiFlexGroup>
           </EuiFormRow>
+
+          {/* Separate form for this - opt out the moment the checkbox is ticked */}
+          <EuiForm>
+            <EuiFormRow>
+              <EuiCheckbox
+                id="hide-profile"
+                checked={optOut}
+                onChange={optOutChangeHandler}
+                label="Hide my EphMatch Profile"
+              />
+            </EuiFormRow>
+          </EuiForm>
 
           <EuiButton type="submit" fill>
             Save Edits
@@ -265,6 +341,7 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
           dismissToast={removeToast}
           toastLifeTimeMs={6000}
         />
+        {modal}
       </div>
     </div>
   );
