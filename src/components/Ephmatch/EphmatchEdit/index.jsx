@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { InfoModal } from "../../common/Modal";
 import { MaybePhoto } from "../../common/Skeleton";
 
 // Redux/routing imports
@@ -30,6 +31,7 @@ import { FaSnapchatSquare, FaInstagramSquare } from "react-icons/fa";
 import styles from "./EphmatchEdit.module.scss";
 import { userToNameWithClassYear } from "../../../lib/general";
 import ProfileUpdated from "../../../assets/SVG/EphMatch3.svg";
+import HideProfile from "../../../assets/SVG/HideProfile.svg";
 
 const EphmatchProfile = ({ navigateTo, wso }) => {
   // User information
@@ -53,7 +55,6 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
 
   // Modal for form submission/Ephmatch opt out/in.
   const [modal, setModal] = useState(null);
-  setModal(ProfileUpdated);
 
   useEffect(() => {
     let isMounted = true;
@@ -80,6 +81,7 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
           }
           setMessagingUsername(ephmatchProfile.messagingUsername);
           setPronouns(ephmatchProfile.user.pronoun ?? "");
+          setOptOut(ephmatchProfile.deleted);
         }
       } catch {
         // There shouldn't be any reason for the submission to be rejected.
@@ -116,6 +118,15 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
 
       // Update Photos
       if (photo) await wso.userService.updateUserPhoto("me", photo);
+
+      setModal(
+        <InfoModal
+          alt="Profile Updated"
+          image={ProfileUpdated}
+          closeModal={() => setModal(null)}
+          title="Profile Updated!"
+        />
+      );
     } catch (error) {
       setToasts([
         {
@@ -135,6 +146,18 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
     if (newChecked) {
       try {
         await wso.ephmatchService.deleteSelfProfile();
+
+        setModal(
+          <InfoModal
+            alt="Profile Hidden"
+            image={HideProfile}
+            closeModal={() => setModal(null)}
+            title="Profile Hidden!"
+            message={`Your profile will not be viewable by other users \
+                  of Ephmatch nor will you be able to view other \
+                  profiles while your profile is hidden.`}
+          />
+        );
       } catch (error) {
         setOptOut(!newChecked);
         setToasts([
@@ -319,6 +342,8 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
             </EuiFlexGroup>
           </EuiFormRow>
 
+          <EuiSpacer />
+
           {/* Separate form for this - opt out the moment the checkbox is ticked */}
           <EuiForm>
             <EuiFormRow>
@@ -330,6 +355,8 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
               />
             </EuiFormRow>
           </EuiForm>
+
+          <EuiSpacer />
 
           <EuiButton type="submit" fill>
             Save Edits

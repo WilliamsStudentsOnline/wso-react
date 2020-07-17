@@ -33,12 +33,17 @@ const Ephmatcher = ({
   const [userPhoto, updateUserPhoto] = useState(photo);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadPhoto = async () => {
       try {
         const photoResponse = await wso.userService.getUserLargePhoto(
           ephmatcher.unixID
         );
-        updateUserPhoto(URL.createObjectURL(photoResponse.data));
+
+        if (isMounted) {
+          updateUserPhoto(URL.createObjectURL(photoResponse.data));
+        }
       } catch {
         // Handle it via the skeleton
       }
@@ -48,6 +53,10 @@ const Ephmatcher = ({
     else if (photo) {
       updateUserPhoto(photo);
     }
+
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line
   }, [ephmatcher, photo, wso]);
 

@@ -8,7 +8,6 @@ import EphmatchHome from "./EphmatchHome";
 import EphmatchLayout from "./EphmatchLayout";
 import EphmatchMatches from "./EphmatchMatches";
 import EphmatchProfile from "./EphmatchProfile";
-import EphmatchOptIn from "./EphmatchOptIn";
 import Redirect from "../common/Redirect";
 import "./Ephmatch.scss";
 
@@ -87,7 +86,7 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
         scopes.ScopeEphmatchProfiles,
       ])
     ) {
-      return <EphmatchOptIn />;
+      return <EphmatchEdit />;
     }
 
     const splitRoute = route.name.split(".");
