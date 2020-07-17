@@ -1,11 +1,24 @@
-@import "../../theme.scss";
+@import "../../../theme.scss";
 
 .footer {
-  height: $px-9;
+  height: $px-13;
   background-color: $primary-7;
   color: white;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  div {
+    max-width: $lg;
+    width: 100%;
+  }
+}
+
+.socialLinks {
+  display: flex;
+  justify-content: center;
+
+  svg {
+    font-size: $f-5;
+  }
 }
