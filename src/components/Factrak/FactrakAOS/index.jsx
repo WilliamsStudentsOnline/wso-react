@@ -17,6 +17,8 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
   const [courses, updateCourses] = useState(null);
   const [profs, updateProfs] = useState(null);
   const [area, updateArea] = useState({});
+  const [table, updateTable] = useState(0);
+  // const [userPhoto, updateUserPhoto] = useState(null);
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
@@ -68,20 +70,26 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
   // Generates a row containing the prof information.
   const generateProfRow = (prof) => {
     return (
-      <tr key={prof.id} className={styles.tableRow}>
+      <tr key={prof.id} className={styles.profRow}>
         <td>
-          <Link
-            routeName="factrak.professors"
-            routeParams={{ profID: prof.id }}
-          >
-            {prof.name}
-          </Link>
+          <EuiFlexGroup alignItems="center">
+            <EuiFlexItem grow={false} className={styles.professorPhotoSmall}>
+              <img src="none" alt="avatar" />
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <Link
+                routeName="factrak.professors"
+                routeParams={{ profID: prof.id }}
+                className={styles.professorName}
+              >
+                {prof.name}
+              </Link>
+              <a href={`mailto:${prof.unixID}@williams.edu`}>{prof.unixID}</a>
+            </EuiFlexItem>
+          </EuiFlexGroup>
         </td>
 
-        <td className={styles.title}>{prof.title}</td>
-        <td>
-          <a href={`mailto:${prof.unixID}@williams.edu`}>{prof.unixID}</a>
-        </td>
+        <td>{prof.title}</td>
       </tr>
     );
   };
@@ -95,9 +103,6 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
       <td>
         <Line width="80%" />
       </td>
-      <td>
-        <Line width="30%" />
-      </td>
     </tr>
   );
 
@@ -106,27 +111,25 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
     // If no profs were found, return null. Should not happen for Area of Study unless it's new.
     if (profs?.length === 0) return null;
     return (
-      <>
-        <br />
-        <EuiFlexGroup direction="column" alignItems="center">
-          <EuiFlexItem className={styles.mainPage}>
-            <table className={styles.professorTables}>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Title</th>
-                  <th>Unix</th>
-                </tr>
-              </thead>
-              <tbody>
-                {profs
-                  ? profs.map((prof) => generateProfRow(prof))
-                  : [...Array(5)].map((_, i) => profSkeleton(i))}
-              </tbody>
-            </table>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-      </>
+      <EuiFlexItem className={styles.mainPage} grow={false}>
+        <table className={styles.professorTables}>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Courses Taught</th>
+            </tr>
+          </thead>
+          <tbody>
+            {profs
+              ? profs.map((prof) => generateProfRow(prof))
+              : [...Array(5)].map((_, i) => profSkeleton(i))}
+            <tr>
+              <td />
+              <td />
+            </tr>
+          </tbody>
+        </table>
+      </EuiFlexItem>
     );
   };
 
@@ -157,8 +160,8 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
   // Generates a row containing the course information.
   const generateCourseRow = (course) => {
     return (
-      <tr key={course.id} className={styles.tableRow}>
-        <td className={styles.courseTitle}>
+      <tr key={course.id} className={styles.courseRow}>
+        <td>
           <Link
             routeName="factrak.courses"
             routeParams={{ courseID: course.id }}
@@ -188,54 +191,78 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
     // If no courses were found, return null. Should not happen for Area of Study unless it's new.
     if (courses && courses.length === 0) return null;
     return (
-      <>
-        <EuiFlexGroup direction="column" alignItems="center">
-          <EuiFlexItem>
-            <h4>Courses</h4>
-          </EuiFlexItem>
-          <EuiFlexItem className={styles.mainPage}>
-            <table className={styles.professorTables}>
-              <thead>
-                <tr>
-                  <th>Course</th>
-                  <th>Professors</th>
-                </tr>
-              </thead>
-              <tbody>
-                {courses
-                  ? courses.map((course) => generateCourseRow(course))
-                  : [...Array(5)].map((_, i) => courseSkeleton(i))}
-              </tbody>
-            </table>
-          </EuiFlexItem>
-        </EuiFlexGroup>
-      </>
+      <EuiFlexItem className={styles.mainPage} grow={false}>
+        <table className={styles.courseTable}>
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>Professor(s)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {courses
+              ? courses.map((course) => generateCourseRow(course))
+              : [...Array(5)].map((_, i) => courseSkeleton(i))}
+            <tr>
+              <td />
+              <td />
+            </tr>
+          </tbody>
+        </table>
+      </EuiFlexItem>
     );
   };
 
+  // Change Table based on selected Item
+  const handleCourseClick = () => {
+    updateTable(true);
+  };
+  const handleProfessorClick = () => {
+    updateTable(false);
+  };
+  const generateTable = () => {
+    if (table) {
+      return generateCourses();
+    }
+    return generateProfs();
+  };
+
   return (
-    <EuiFlexGroup className={styles.factrakDepartments} direction="column">
-      <EuiFlexItem>
-        <h3 style={{ marginLeft: "15%" }}>
+    <EuiFlexGroup
+      className={styles.factrakDepartments}
+      direction="column"
+      alignItems="center"
+      gutterSize="none"
+      justifyContent="flexStart"
+    >
+      <EuiFlexItem className={styles.departmentFlexItem} grow={false}>
+        <h3>
           {area && area.name ? area.name : <Line width="30%" />} Department
         </h3>
       </EuiFlexItem>
-      <EuiFlexItem style={{ alignItems: "center" }}>
-        <EuiFlexGroup style={{ width: "70%" }}>
-          <EuiFlexItem grow={1}>
-            <h2>Professors</h2>
+      <EuiFlexItem className={styles.departmentFlexItem} grow={false}>
+        <EuiFlexGroup>
+          <EuiFlexItem grow={false}>
+            <h2
+              onClick={handleProfessorClick}
+              className={table ? "" : styles.pressed}
+              role="presentation"
+            >
+              Professors
+            </h2>
           </EuiFlexItem>
-          <EuiFlexItem grow={1}>
-            <h2>Courses</h2>
+          <EuiFlexItem grow={false}>
+            <h2
+              onClick={handleCourseClick}
+              className={table ? styles.pressed : ""}
+              role="presentation"
+            >
+              Courses
+            </h2>
           </EuiFlexItem>
-          <EuiFlexItem grow={6} />
         </EuiFlexGroup>
       </EuiFlexItem>
-
-      <EuiFlexItem>
-        {generateProfs()}
-        {generateCourses()}
-      </EuiFlexItem>
+      {generateTable()}
     </EuiFlexGroup>
   );
 };
