@@ -48,3 +48,34 @@
     flex-direction: row;
   }
 }
+
+@keyframes ephMatch {
+  0% {
+    color: #fff;
+  }
+  50% {
+    color: #341a68;
+  }
+  100% {
+    color: #fff;
+  }
+}
+
+@-webkit-keyframes ephMatch {
+  0% {
+    color: #fff;
+  }
+  50% {
+    color: #341a68;
+  }
+  100% {
+    color: #fff;
+  }
+}
+
+.ephMatchLink {
+  animation: ephMatch 2s;
+  animation-iteration-count: 3;
+  -webkit-animation: ephMatch 2s;
+  -webkit-animation-iteration-count: 3;
+}

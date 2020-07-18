@@ -1,10 +1,5 @@
 @import "../../../theme.scss";
 
-.messageIcon {
-  color: #aaa;
-  vertical-align: middle;
-}
-
 .name {
   font-weight: 600;
   font-size: $f-5;
@@ -36,4 +31,9 @@
     margin-left: $px-4;
     color: $primary-5;
   }
+}
+
+.matchMessage {
+  background-color: $primary-0;
+  padding: $px-2;
 }

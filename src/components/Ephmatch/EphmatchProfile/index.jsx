@@ -40,11 +40,13 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
   return (
     <div className={styles.page}>
       <div className={styles.pageContent}>
-        <Ephmatcher
-          ephmatcher={profile?.user}
-          ephmatcherProfile={profile}
-          wso={wso}
-        />
+        {profile && (
+          <Ephmatcher
+            ephmatcher={profile.user}
+            ephmatcherProfile={profile}
+            wso={wso}
+          />
+        )}
       </div>
     </div>
   );

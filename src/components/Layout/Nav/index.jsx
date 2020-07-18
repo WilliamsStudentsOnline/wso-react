@@ -107,7 +107,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
             <Link routeName="scheduler">Course Scheduler</Link>
 
             {ephmatchVisibility && (
-              <Link className="ephmatch-link" routeName="ephmatch">
+              <Link className={styles.ephMatchLink} routeName="ephmatch">
                 Ephmatch
               </Link>
             )}

@@ -31,6 +31,7 @@ import { FaSnapchatSquare, FaInstagramSquare } from "react-icons/fa";
 import styles from "./EphmatchEdit.module.scss";
 import { userToNameWithClassYear } from "../../../lib/general";
 import ProfileUpdated from "../../../assets/SVG/EphMatch3.svg";
+import ShowProfile from "../../../assets/SVG/EphMatch4.svg";
 import HideProfile from "../../../assets/SVG/HideProfile.svg";
 
 const EphmatchProfile = ({ navigateTo, wso }) => {
@@ -40,9 +41,10 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
   const [messagingPlatform, setMessagingPlatform] = useState("NONE");
   const [messagingUsername, setMessagingUsername] = useState("");
   const [photo, setPhoto] = useState(null);
-  const [profile, setProfile] = useState(null);
   const [pronouns, setPronouns] = useState("");
   const [tags, setTags] = useState([]);
+  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
 
   // Available options for organization tags
   const [tagOptions, setTagOptions] = useState([]);
@@ -56,6 +58,9 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
   // Modal for form submission/Ephmatch opt out/in.
   const [modal, setModal] = useState(null);
 
+  // Asks the user to uncheck the opt out function
+  const [shouldShowError, setShouldShowError] = useState(false);
+
   useEffect(() => {
     let isMounted = true;
     // Check if there is an ephmatch profile for the user
@@ -67,11 +72,6 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
           const ephmatchProfile = ownProfile.data;
           setProfile(ephmatchProfile);
           setDescription(ephmatchProfile.description);
-          setTags(
-            (ephmatchProfile.user.tags ?? []).map((tag) => ({
-              label: tag.name,
-            }))
-          );
           setMatchMessage(ephmatchProfile.matchMessage);
           if (
             ephmatchProfile.messagingPlatform &&
@@ -80,16 +80,39 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
             setMessagingPlatform(ephmatchProfile.messagingPlatform);
           }
           setMessagingUsername(ephmatchProfile.messagingUsername);
-          setPronouns(ephmatchProfile.user.pronoun ?? "");
           setOptOut(ephmatchProfile.deleted);
         }
+      } catch (error) {
+        if (error.errorCode === 404) {
+          // This is expected if the user does not already have a profile
+        } else {
+          navigateTo("500");
+        }
+      }
+    };
+
+    const loadUser = async () => {
+      try {
+        const ownResponse = await wso.userService.getUser("me");
+        const me = ownResponse.data;
+
+        if (isMounted) {
+          setUser(me);
+          setPronouns(me.pronoun ?? "");
+          setTags(
+            (me.tags ?? []).map((tag) => ({
+              label: tag.name,
+            }))
+          );
+        }
       } catch {
-        // There shouldn't be any reason for the submission to be rejected.
+        // No reason for this to fail
         navigateTo("500");
       }
     };
 
     loadEphmatchProfile();
+    loadUser();
 
     return () => {
       isMounted = false;
@@ -99,47 +122,55 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
   const submitHandler = async (event) => {
     event.preventDefault();
 
-    const params = {
-      description,
-      matchMessage,
-      messagingPlatform,
-      messagingUsername:
-        messagingUsername === "NONE" ? null : messagingUsername,
-    };
+    if (!optOut) {
+      const params = {
+        description,
+        matchMessage,
+        messagingPlatform,
+        messagingUsername:
+          messagingUsername === "NONE" ? null : messagingUsername,
+      };
 
-    // The endpoint expects only an array of strings.
-    const tagParams = tags.map((tag) => tag.label);
+      // The endpoint expects only an array of strings.
+      const tagParams = tags.map((tag) => tag.label);
 
-    try {
-      // Update the profile.
-      await wso.ephmatchService.updateSelfProfile(params);
-      await wso.userService.updateUserTags("me", { tags: tagParams });
-      await wso.userService.updateUser("me", { pronoun: pronouns });
+      try {
+        if (profile) {
+          await wso.ephmatchService.updateSelfProfile(params);
+        } else {
+          await wso.ephmatchService.createSelfProfile(params);
+        }
+        await wso.userService.updateUserTags("me", { tags: tagParams });
+        await wso.userService.updateUser("me", { pronoun: pronouns });
 
-      // Update Photos
-      if (photo) await wso.userService.updateUserPhoto("me", photo);
+        // Update Photos
+        if (photo) await wso.userService.updateUserPhoto("me", photo);
 
-      setModal(
-        <InfoModal
-          alt="Profile Updated"
-          image={ProfileUpdated}
-          closeModal={() => setModal(null)}
-          title="Profile Updated!"
-        />
-      );
-    } catch (error) {
-      setToasts([
-        {
-          title: "Unable to Update Profile",
-          text: error.message,
-          color: "danger",
-        },
-      ]);
+        setModal(
+          <InfoModal
+            alt="Profile Updated"
+            image={ProfileUpdated}
+            closeModal={() => setModal(null)}
+            title="Profile Updated!"
+          />
+        );
+      } catch (error) {
+        setToasts([
+          {
+            title: "Unable to Update Profile",
+            text: error.message,
+            color: "danger",
+            id: "Unable to Update Profile",
+          },
+        ]);
+      }
+    } else {
+      setShouldShowError(true);
     }
   };
 
-  const optOutChangeHandler = async (event) => {
-    const newChecked = event.target.checked;
+  const optOutChangeHandler = async () => {
+    const newChecked = !optOut;
 
     setOptOut(newChecked);
 
@@ -162,7 +193,41 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
         setOptOut(!newChecked);
         setToasts([
           {
+            id: "Unable to opt out of Ephmatch right now!",
             title: "Unable to opt out of Ephmatch right now!",
+            text: error.message,
+            color: "danger",
+          },
+        ]);
+      }
+    } else {
+      try {
+        const params = {
+          description,
+          matchMessage,
+          messagingPlatform,
+          messagingUsername:
+            messagingUsername === "" ? null : messagingUsername,
+        };
+
+        await wso.ephmatchService.createSelfProfile(params);
+
+        setModal(
+          <InfoModal
+            alt="Profile Visible"
+            image={ShowProfile}
+            closeModal={() => setModal(null)}
+            title="Profile Visible!"
+            message={`Your profile will be viewable by other users \
+                  of Ephmatch!`}
+          />
+        );
+      } catch (error) {
+        setOptOut(!newChecked);
+        setToasts([
+          {
+            id: "Unable to opt into Ephmatch right now!",
+            title: "Unable to opt into Ephmatch right now!",
             text: error.message,
             color: "danger",
           },
@@ -199,11 +264,9 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
   };
 
   const renderNameAndClassYear = () => {
-    if (!profile?.user) return null;
+    if (!user) return null;
     return (
-      <span className={styles.userName}>
-        {userToNameWithClassYear(profile.user)}
-      </span>
+      <span className={styles.userName}>{userToNameWithClassYear(user)}</span>
     );
   };
 
@@ -299,6 +362,7 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
               resize="none"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              placeholder="Tell everyone else something about yourself!"
             />
           </EuiFormRow>
           <EuiFormRow
@@ -333,11 +397,13 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
                 />
               </EuiFlexItem>
               <EuiFlexItem>
-                <EuiFieldText
-                  value={messagingUsername}
-                  name="first"
-                  onChange={(e) => setMessagingUsername(e.target.value)}
-                />
+                {messagingPlatform !== "NONE" && (
+                  <EuiFieldText
+                    value={messagingUsername}
+                    name="first"
+                    onChange={(e) => setMessagingUsername(e.target.value)}
+                  />
+                )}
               </EuiFlexItem>
             </EuiFlexGroup>
           </EuiFormRow>
@@ -346,7 +412,11 @@ const EphmatchProfile = ({ navigateTo, wso }) => {
 
           {/* Separate form for this - opt out the moment the checkbox is ticked */}
           <EuiForm>
-            <EuiFormRow>
+            <EuiFormRow
+              isInvalid={shouldShowError}
+              error="Uncheck this box to update your profile!"
+              helpText="If your profile is hidden, you will not be able to access EphMatch's services."
+            >
               <EuiCheckbox
                 id="hide-profile"
                 checked={optOut}

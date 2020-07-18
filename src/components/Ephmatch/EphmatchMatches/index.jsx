@@ -1,23 +1,26 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import ContactField from "../Common/ContactField";
+import { MaybePhoto } from "../../common/Skeleton";
 
 // Redux/routing imports
 import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
 import { actions } from "redux-router5";
+import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
+import { EuiButtonEmpty, EuiGlobalToastList, EuiIcon } from "@elastic/eui";
+import { format } from "timeago.js";
 import styles from "./EphmatchMatches.module.scss";
 import { userToNameWithClassYear } from "../../../lib/general";
-import { MaybePhoto } from "../../common/Skeleton";
-import { EuiButtonEmpty, EuiIcon } from "@elastic/eui";
-import { format } from "timeago.js";
 
 const EphmatchMatch = ({
   ephmatcher,
   ephmatcherProfile,
   lastModified,
+  loadMatches,
+  setToasts,
   wso,
 }) => {
   const [photo, updatePhoto] = useState(null);
@@ -80,11 +83,40 @@ const EphmatchMatch = ({
     );
   };
 
+  const clickHandler = async () => {
+    try {
+      await wso.ephmatchService.unlikeProfile(ephmatcher.id);
+      loadMatches();
+    } catch (error) {
+      setToasts([
+        {
+          title: `Unable to unmatch with ${ephmatcher.name} right now!`,
+          color: "danger",
+        },
+      ]);
+    }
+  };
+
   const renderButtons = () => {
     return (
       <div>
-        <EuiButtonEmpty>Unmatch</EuiButtonEmpty>
+        <EuiButtonEmpty onClick={clickHandler}>Unmatch</EuiButtonEmpty>
       </div>
+    );
+  };
+
+  const renderMatchMessage = () => {
+    return (
+      <>
+        <span className={styles.matchMessage}>
+          {ephmatcherProfile.matchMessage}
+        </span>
+
+        <ContactField
+          ephmatcher={ephmatcher}
+          ephmatcherProfile={ephmatcherProfile}
+        />
+      </>
     );
   };
 
@@ -96,6 +128,8 @@ const EphmatchMatch = ({
         {renderPronouns()}
         {renderTags()}
         {renderDescription()}
+
+        {renderMatchMessage()}
         {renderButtons()}
       </div>
     </div>
@@ -106,28 +140,38 @@ EphmatchMatch.propTypes = {
   ephmatcher: PropTypes.object.isRequired,
   ephmatcherProfile: PropTypes.object.isRequired,
   lastModified: PropTypes.string,
+  loadMatches: PropTypes.func.isRequired,
+  setToasts: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
 EphmatchMatch.defaultProps = { lastModified: "" };
 
 const EphmatchMatches = ({ navigateTo, wso }) => {
-  const [matches, updateMatches] = useState(null);
+  const [matches, setMatches] = useState(null);
+
+  // Global toasts
+  const [toasts, setToasts] = useState([]);
+
+  const loadMatches = async () => {
+    try {
+      const ephmatchersResponse = await wso.ephmatchService.listMatches({
+        preload: ["tags"],
+      });
+      setMatches(ephmatchersResponse.data);
+    } catch {
+      navigateTo("500");
+    }
+  };
 
   useEffect(() => {
-    const loadMatches = async () => {
-      try {
-        const ephmatchersResponse = await wso.ephmatchService.listMatches({
-          preload: ["tags"],
-        });
-        updateMatches(ephmatchersResponse.data);
-      } catch {
-        navigateTo("500");
-      }
-    };
-
     loadMatches();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigateTo, wso]);
+
+  const removeToast = (removedToast) => {
+    setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
+  };
 
   const renderMatches = () => {
     if (!matches) return <h1>Loading..</h1>;
@@ -140,6 +184,8 @@ const EphmatchMatches = ({ navigateTo, wso }) => {
         ephmatcherProfile={match.matchedUser.ephmatchProfile}
         key={match.id}
         lastModified={match.updatedAt ?? match.createdAt}
+        loadMatches={loadMatches}
+        setToasts={setToasts}
         wso={wso}
       />
     ));
@@ -148,6 +194,11 @@ const EphmatchMatches = ({ navigateTo, wso }) => {
   return (
     <div className={styles.page}>
       <div className={styles.pageContent}> {renderMatches()} </div>
+      <EuiGlobalToastList
+        toasts={toasts}
+        dismissToast={removeToast}
+        toastLifeTimeMs={6000}
+      />
     </div>
   );
 };

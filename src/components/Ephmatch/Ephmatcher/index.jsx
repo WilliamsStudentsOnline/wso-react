@@ -1,21 +1,23 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import ContactField from "../Common/ContactField";
 import { MaybePhoto } from "../../common/Skeleton";
+import { InfoModal } from "../../common/Modal";
+import Matched from "../../../assets/SVG/EphMatch1.svg";
 
 // External imports
-// import { ConnectedLink } from "react-router5";
-// import { IoMdPin, IoMdText } from "react-icons/io";
-// import { FaSnapchatGhost, FaInstagram } from "react-icons/fa";
-// import { MdEmail } from "react-icons/md";
 import { userToNameWithClassYear } from "../../../lib/general";
 import styles from "./Ephmatcher.module.scss";
 import {
   EuiButton,
-  EuiIcon,
   EuiFlexGroup,
   EuiFlexItem,
+  EuiGlobalToastList,
+  EuiIcon,
   EuiSpacer,
+  EuiButtonEmpty,
+  EuiToolTip,
 } from "@elastic/eui";
 import { connect } from "react-redux";
 import { getCurrUser } from "../../../selectors/auth";
@@ -25,12 +27,15 @@ const Ephmatcher = ({
   currUser,
   ephmatcher,
   ephmatcherProfile,
-  // matched,
   photo,
-  // selectEphmatcher,
   wso,
 }) => {
-  const [userPhoto, updateUserPhoto] = useState(photo);
+  const [userPhoto, setUserPhoto] = useState(photo);
+  const [profile, setProfile] = useState(ephmatcherProfile);
+
+  // Global state variables
+  const [toasts, setToasts] = useState([]);
+  const [modal, setModal] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -42,7 +47,7 @@ const Ephmatcher = ({
         );
 
         if (isMounted) {
-          updateUserPhoto(URL.createObjectURL(photoResponse.data));
+          setUserPhoto(URL.createObjectURL(photoResponse.data));
         }
       } catch {
         // Handle it via the skeleton
@@ -50,84 +55,13 @@ const Ephmatcher = ({
     };
 
     if (ephmatcher && !photo) loadPhoto();
-    else if (photo) {
-      updateUserPhoto(photo);
-    }
+    else if (photo) setUserPhoto(photo);
 
     return () => {
       isMounted = false;
     };
     // eslint-disable-next-line
   }, [ephmatcher, photo, wso]);
-
-  // const formatLocation = () => {
-  //   const { locationCountry, locationState, locationTown } = ephmatcherProfile;
-
-  //   let locations;
-  //   if (locationCountry === "United States") {
-  //     locations = [locationTown, locationState];
-  //   } else {
-  //     locations = [locationTown, locationState, locationCountry];
-  //   }
-
-  //   locations = locations.filter((loc) => loc);
-
-  //   if (locations.length > 0) {
-  //     return (
-  //       <div className={styles.messageIcon}>
-  //         <IoMdPin /> {locations.join(", ")}
-  //       </div>
-  //     );
-  //   }
-
-  //   return null;
-  // };
-
-  // const createMessageField = () => {
-  //   const { messagingPlatform, messagingUsername } = ephmatcherProfile;
-  //   const unixID = ephmatcher.unixID;
-
-  //   let icon;
-  //   let link;
-  //   switch (messagingPlatform) {
-  //     case "Phone":
-  //       icon = <IoMdText className={styles.messageIcon} />;
-  //       link = <a href={`sms:${messagingUsername}`}>{messagingUsername}</a>;
-  //       break;
-  //     case "Snapchat":
-  //       icon = <FaSnapchatGhost className={styles.messageIcon} />;
-  //       link = (
-  //         <a href={`https://www.snapchat.com/add/${messagingUsername}`}>
-  //           {messagingUsername}
-  //         </a>
-  //       );
-  //       break;
-  //     case "Instagram":
-  //       icon = <FaInstagram className={styles.messageIcon} />;
-  //       link = (
-  //         <a href={`https://www.instagram.com/${messagingUsername}`}>
-  //           {messagingUsername}
-  //         </a>
-  //       );
-  //       break;
-  //     default:
-  //       icon = "";
-  //       link = "";
-  //   }
-
-  //   if (!messagingPlatform || !messagingUsername || !link) {
-  //     icon = <MdEmail className={styles.messageIcon} />;
-  //     link = (
-  //       <a href={`mailto:${unixID}@williams.edu`}>{unixID}@williams.edu</a>
-  //     );
-  //   }
-
-  //   return (
-  //     <div>
-  //       {icon} {link}
-  //     </div>
-  //   );
-  // };
 
   const renderTags = (tags) => {
     if (!tags) return null;
@@ -148,6 +82,10 @@ const Ephmatcher = ({
     return <div className={styles.description}>{description}</div>;
   };
 
+  const removeToast = (removedToast) => {
+    setToasts(toasts.filter((toast) => toast.id !== removedToast.id));
+  };
+
   const renderButtons = () => {
     if (ephmatcher.unixID === currUser.unixID) {
       return (
@@ -161,13 +99,102 @@ const Ephmatcher = ({
       );
     }
 
+    if (profile.liked) {
+      const unmatchHandler = async () => {
+        try {
+          await wso.ephmatchService.unlikeProfile(ephmatcher.id);
+          const updatedEphmatcher = await wso.ephmatchService.getProfile(
+            ephmatcher.id
+          );
+          setProfile(updatedEphmatcher.data);
+        } catch {
+          setToasts([
+            {
+              title: `Unable to unlike ${profile.user.name}`,
+              color: "danger",
+              id: "Unable to unlike profile",
+            },
+          ]);
+        }
+      };
+
+      return (
+        <EuiFlexGroup justifyContent="center">
+          <EuiFlexItem grow={false}>
+            <EuiButtonEmpty onClick={unmatchHandler}>Unmatch</EuiButtonEmpty>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      );
+    }
+
+    const matchHandler = async () => {
+      try {
+        await wso.ephmatchService.likeProfile(ephmatcher.id);
+        const updatedEphmatcher = await wso.ephmatchService.getProfile(
+          ephmatcher.id
+        );
+        setProfile(updatedEphmatcher.data);
+
+        if (updatedEphmatcher.data.matched) {
+          setModal(
+            <InfoModal
+              alt="Matched!"
+              image={Matched}
+              closeModal={() => setModal(null)}
+              title="You two matched!"
+            />
+          );
+        }
+      } catch {
+        setToasts([
+          {
+            title: `Unable to like ${profile.user.name}`,
+            color: "danger",
+            id: "Unable to Update Profile",
+          },
+        ]);
+      }
+    };
+
     return (
       <EuiFlexGroup justifyContent="center">
         <EuiFlexItem grow={false}>
-          <EuiButton fill>Match</EuiButton>
+          <EuiButton onClick={matchHandler} fill>
+            Match
+          </EuiButton>
         </EuiFlexItem>
       </EuiFlexGroup>
     );
+  };
+
+  const renderMatchedFields = () => {
+    if (ephmatcher.id === currUser.id && profile.matchMessage) {
+      return (
+        <EuiToolTip content="Only visible to your matches">
+          <>
+            <span className={styles.matchMessage}>{profile.matchMessage}</span>
+            <ContactField
+              ephmatcher={ephmatcher}
+              ephmatcherProfile={ephmatcherProfile}
+            />
+          </>
+        </EuiToolTip>
+      );
+    }
+
+    if (profile.matched) {
+      return (
+        <>
+          <span className={styles.matchMessage}>{profile.matchMessage}</span>
+          <ContactField
+            ephmatcher={ephmatcher}
+            ephmatcherProfile={ephmatcherProfile}
+          />
+        </>
+      );
+    }
+
+    return null;
   };
 
   const { pronoun } = ephmatcher;
@@ -179,38 +206,30 @@ const Ephmatcher = ({
       <div className={styles.name}>{userToNameWithClassYear(ephmatcher)}</div>
       <div className={styles.pronouns}>{pronoun}</div>
       {renderTags(ephmatcher?.tags)}
-
-      {/* {locationVisible && formatLocation()}
-      {matched && createMessageField()} */}
       {renderDesciption(ephmatcherProfile?.description)}
-      {/* {matched && matchMessage && (
-        <div className="match-message">{matchMessage}</div>
-      )} */}
+      <EuiSpacer />
+      {renderMatchedFields()}
       {renderButtons()}
+      <EuiGlobalToastList
+        toasts={toasts}
+        dismissToast={removeToast}
+        toastLifeTimeMs={6000}
+      />
+      {modal}
     </div>
   );
 };
 
 Ephmatcher.propTypes = {
   currUser: PropTypes.object.isRequired,
-  ephmatcher: PropTypes.object,
-  ephmatcherProfile: PropTypes.object,
-  // selectEphmatcher: PropTypes.func,
-  // index: PropTypes.number,
+  ephmatcher: PropTypes.object.isRequired,
+  ephmatcherProfile: PropTypes.object.isRequired,
   photo: PropTypes.string,
-  // matched: PropTypes.bool,
   wso: PropTypes.object.isRequired,
 };
 
 Ephmatcher.defaultProps = {
-  // selectEphmatcher: null,
-  // index: 0,
-  ephmatcher: {
-    unixID: "Loading...",
-  },
-  ephmatcherProfile: null,
   photo: null,
-  // matched: false,
 };
 
 const mapStateToProps = (state) => ({

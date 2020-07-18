@@ -9,15 +9,13 @@ import EphmatchLayout from "./EphmatchLayout";
 import EphmatchMatches from "./EphmatchMatches";
 import EphmatchProfile from "./EphmatchProfile";
 import Redirect from "../common/Redirect";
-import "./Ephmatch.scss";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
 import { actions, createRouteNodeSelector } from "redux-router5";
-import { getAPIToken, getWSO } from "../../selectors/auth";
-import { containsOneOfScopes, scopes } from "../../lib/general";
-
 import { format } from "timeago.js";
+import { containsOneOfScopes, scopes } from "../../lib/general";
+import { getAPIToken, getWSO } from "../../selectors/auth";
 
 const EphmatchMain = ({ navigateTo, route, token, wso }) => {
   const [availability, updateAvailability] = useState(null);
@@ -68,6 +66,9 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       ])
     ) {
       loadAvailability();
+    }
+
+    if (containsOneOfScopes(token, [scopes.ScopeEphmatchMatches])) {
       loadMatchesCount();
       loadMatches();
     }
@@ -84,9 +85,10 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       !containsOneOfScopes(token, [
         scopes.ScopeEphmatchMatches,
         scopes.ScopeEphmatchProfiles,
-      ])
+      ]) &&
+      route.name !== "ephmatch.settings"
     ) {
-      return <EphmatchEdit />;
+      return <Redirect to="ephmatch.settings" />;
     }
 
     const splitRoute = route.name.split(".");

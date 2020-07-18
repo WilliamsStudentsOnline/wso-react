@@ -54,7 +54,7 @@ const EphmatchLayout = ({
   available,
   children,
   closingTime,
-  // matchesTotalCount,
+  matchesTotalCount,
   token,
 }) => {
   return (
@@ -82,11 +82,11 @@ const EphmatchLayout = ({
                   defaultStyle={styles.navLink}
                   routeName="ephmatch.matches"
                 >
-                  My Matches
+                  My Matches &nbsp;
+                  <span className={styles.ephmatchBadge} title="Matches!">
+                    {matchesTotalCount > 0 && `(${matchesTotalCount})`}
+                  </span>
                 </ConnectedNavLink>
-                {/* <span className="ephmatch-badge" title="Matches!">
-                  {matchesTotalCount}
-                </span> */}
 
                 <ConnectedNavLink
                   activeStyle={styles.activeNavLink}
@@ -118,7 +118,7 @@ EphmatchLayout.propTypes = {
   available: PropTypes.bool,
   children: PropTypes.object,
   closingTime: PropTypes.object,
-  // matchesTotalCount: PropTypes.number,
+  matchesTotalCount: PropTypes.number,
   token: PropTypes.string.isRequired,
 };
 
@@ -126,7 +126,7 @@ EphmatchLayout.defaultProps = {
   available: false,
   children: null,
   closingTime: null,
-  // matchesTotalCount: 0,
+  matchesTotalCount: 0,
 };
 
 export default EphmatchLayout;
