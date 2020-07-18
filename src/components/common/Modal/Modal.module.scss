@@ -1,0 +1,23 @@
+@import "../../../theme.scss";
+
+.modal {
+  padding: $px-9;
+}
+
+.modalTitle {
+  font-weight: 600;
+  text-align: center;
+  margin: $px-6 auto;
+  font-size: $f-4;
+}
+
+.modalImage {
+  width: 100%;
+  height: $px-12;
+}
+
+.modalMessage {
+  font-size: $f-3;
+  line-height: $px-6;
+  max-width: $px-14;
+}

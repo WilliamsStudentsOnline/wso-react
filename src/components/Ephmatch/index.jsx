@@ -1,22 +1,21 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+
+// Component imports
+import EphmatchEdit from "./EphmatchEdit";
 import EphmatchHome from "./EphmatchHome";
 import EphmatchLayout from "./EphmatchLayout";
-import EphmatchMatch from "./EphmatchMatch";
+import EphmatchMatches from "./EphmatchMatches";
 import EphmatchProfile from "./EphmatchProfile";
-import EphmatchOptOut from "./EphmatchOptOut";
-import EphmatchOptIn from "./EphmatchOptIn";
 import Redirect from "../common/Redirect";
-import "./Ephmatch.scss";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
 import { actions, createRouteNodeSelector } from "redux-router5";
-import { getAPIToken, getWSO } from "../../selectors/auth";
-import { containsOneOfScopes, scopes } from "../../lib/general";
-
 import { format } from "timeago.js";
+import { containsOneOfScopes, scopes } from "../../lib/general";
+import { getAPIToken, getWSO } from "../../selectors/auth";
 
 const EphmatchMain = ({ navigateTo, route, token, wso }) => {
   const [availability, updateAvailability] = useState(null);
@@ -67,6 +66,9 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       ])
     ) {
       loadAvailability();
+    }
+
+    if (containsOneOfScopes(token, [scopes.ScopeEphmatchMatches])) {
       loadMatchesCount();
       loadMatches();
     }
@@ -83,15 +85,15 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       !containsOneOfScopes(token, [
         scopes.ScopeEphmatchMatches,
         scopes.ScopeEphmatchProfiles,
-      ])
+      ]) &&
+      route.name !== "ephmatch.settings"
     ) {
-      return <EphmatchOptIn />;
+      return <Redirect to="ephmatch.settings" />;
     }
 
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) {
       // If token doesnt have access to profiles, must mean that ephmatch is closed for the year
-      //  || new Date() < ephmatchEndDate
       if (
         containsOneOfScopes(token, [scopes.ScopeEphmatchProfiles]) &&
         availability?.available
@@ -122,12 +124,11 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       case "profile":
         return <EphmatchProfile />;
       case "matches":
-        return <EphmatchMatch matches={matches} />;
-      case "optOut":
-        return <EphmatchOptOut />;
+        return <EphmatchMatches matches={matches} />;
+      case "settings":
+        return <EphmatchEdit />;
       default:
-        navigateTo("ephmatch");
-        return null;
+        return <Redirect to="404" />;
     }
   };
 

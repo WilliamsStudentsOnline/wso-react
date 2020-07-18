@@ -1,4 +1,39 @@
-.messageIcon {
-  color: #aaa;
-  vertical-align: middle;
+@import "../../../theme.scss";
+
+.name {
+  font-weight: 600;
+  font-size: $f-5;
+  color: $cool-gray-9;
+}
+
+.pronouns {
+  font-style: italic;
+  font-size: $f-2;
+  color: $cool-gray-6;
+}
+
+.description {
+  font-size: $f-2;
+  color: $cool-gray-8;
+}
+
+.ephmatcher {
+  div {
+    margin-top: $px-3;
+  }
+}
+
+.tags {
+  font-size: $f-2;
+  font-weight: 600;
+
+  span {
+    margin-left: $px-4;
+    color: $primary-5;
+  }
+}
+
+.matchMessage {
+  background-color: $primary-0;
+  padding: $px-2;
 }

@@ -7,7 +7,7 @@ import { allButFooter, floatingButtonLink } from "./Layout.module.scss";
 
 const Layout = ({ children }) => {
   return (
-    <div className="front dormtrak facebook factrak announcement">
+    <div>
       <div className={allButFooter}>
         <Nav />
 
