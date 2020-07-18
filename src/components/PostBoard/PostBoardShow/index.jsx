@@ -8,30 +8,70 @@ import { Line } from "../../common/Skeleton";
 import { connect } from "react-redux";
 import { actions, createRouteNodeSelector } from "redux-router5";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
+import { discussionType, bulletinTypeRide } from "../../../constants/general";
 
-const DiscussionShow = ({ currUser, navigateTo, route, wso }) => {
-  const [posts, updatePosts] = useState(null);
-  const [reply, updateReply] = useState("");
-  const [discussion, updateDiscussion] = useState(null);
-  const [errors, updateErrors] = useState([]);
+const PostBoardShow = ({ currUser, navigateTo, route, wso }) => {
+  const [posts, setPosts] = useState(null);
+  const [reply, setReply] = useState("");
+  const [discussion, setBulletin] = useState(null);
+  const [errors, setErrors] = useState([]);
 
   useEffect(() => {
+    let isMounted = true;
     const loadDiscussion = async () => {
       try {
         const discussionResponse = await wso.bulletinService.getDiscussion(
-          route.params.discussionID,
+          route.params.bulletinID,
           ["posts", "postsUsers"]
         );
 
-        updateDiscussion(discussionResponse.data);
-        updatePosts(discussionResponse.data.posts || []);
+        if (isMounted) {
+          setBulletin(discussionResponse.data);
+          setPosts(discussionResponse.data.posts || []);
+        }
       } catch (error) {
         if (error.errorCode === 404) navigateTo("404");
       }
     };
 
-    loadDiscussion();
-  }, [navigateTo, route.params.discussionID, wso]);
+    const loadRide = async () => {
+      try {
+        const rideResponse = await wso.bulletinService.getRide(
+          route.params.bulletinID
+        );
+
+        if (isMounted) {
+          setBulletin(rideResponse.data);
+          setPosts([]);
+        }
+      } catch (error) {
+        if (error.errorCode === 404) navigateTo("404");
+      }
+    };
+
+    const loadBulletin = async () => {
+      try {
+        const rideResponse = await wso.bulletinService.getBulletin(
+          route.params.bulletinID
+        );
+
+        if (isMounted) {
+          setBulletin(rideResponse.data);
+          setPosts([]);
+        }
+      } catch (error) {
+        if (error.errorCode === 404) navigateTo("404");
+      }
+    };
+
+    if (route.params.type === discussionType) loadDiscussion();
+    else if (route.params.type === bulletinTypeRide) loadRide();
+    else loadBulletin();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [navigateTo, route.params, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -42,13 +82,13 @@ const DiscussionShow = ({ currUser, navigateTo, route, wso }) => {
 
     try {
       const response = await wso.bulletinService.createPost(params);
-      updatePosts(posts.concat([response.data]));
-      updateReply("");
+      setPosts(posts.concat([response.data]));
+      setReply("");
     } catch (error) {
       if (error.message) {
-        updateErrors([error.message]);
+        setErrors([error.message]);
       } else if (error.errors) {
-        updateErrors(error.errors);
+        setErrors(error.errors);
       }
     }
   };
@@ -74,7 +114,7 @@ const DiscussionShow = ({ currUser, navigateTo, route, wso }) => {
           <textarea
             id="post_content"
             value={reply}
-            onChange={(event) => updateReply(event.target.value)}
+            onChange={(event) => setReply(event.target.value)}
           />
           {errors?.length > 0 && (
             <div id="errors">
@@ -97,7 +137,7 @@ const DiscussionShow = ({ currUser, navigateTo, route, wso }) => {
   };
 
   return (
-    <section className="discussion-thread">
+    <div style={{ width: "100%" }}>
       <h5>
         <b>{discussion ? discussion.title : <Line width="50%" />}</b>
         <br />
@@ -107,18 +147,18 @@ const DiscussionShow = ({ currUser, navigateTo, route, wso }) => {
 
       {renderPosts()}
       {replyArea()}
-    </section>
+    </div>
   );
 };
 
-DiscussionShow.propTypes = {
+PostBoardShow.propTypes = {
   currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
-DiscussionShow.defaultProps = {
+PostBoardShow.defaultProps = {
   currUser: null,
 };
 
@@ -137,4 +177,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DiscussionShow);
+export default connect(mapStateToProps, mapDispatchToProps)(PostBoardShow);

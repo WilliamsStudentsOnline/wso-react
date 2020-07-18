@@ -14,7 +14,7 @@
   }
 
   .userPhoto {
-    width: $px-9;
+    width: $px-10;
   }
 
   .postUser {
@@ -37,7 +37,7 @@
 
   .postType {
     border-radius: $f-3;
-    font-size: $f-2;
+    font-size: $f-1;
     font-weight: 600;
     background-color: $cool-gray-8;
     color: white;
@@ -48,4 +48,9 @@
 
 .postRecent {
   border-left: $px-3 solid $new-0;
+}
+
+.icon {
+  display: inline-block;
+  color: $primary-6;
 }

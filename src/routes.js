@@ -9,14 +9,6 @@ export default [
       { name: "edit", path: "/edit?:bulletinID" },
     ],
   },
-  {
-    name: "discussions",
-    path: "/discussions",
-    children: [
-      { name: "new", path: "/new" },
-      { name: "show", path: "/threads/:discussionID" },
-    ],
-  },
   { name: "rides", path: "/rides" },
   { name: "about", path: "/about" },
   { name: "scheduler", path: "/schedulecourses" },

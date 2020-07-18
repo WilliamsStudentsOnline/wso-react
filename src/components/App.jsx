@@ -191,7 +191,6 @@ const App = ({
       case "ephmatch":
         return <EphmatchMain />;
       case "bulletins":
-      case "discussions":
         return <PostBoard />;
       case "403":
         return <FourOhThree />;

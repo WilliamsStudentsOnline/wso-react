@@ -76,16 +76,12 @@ const BulletinBox = ({ typeWord, wso }) => {
 
   // Generate bulletin title link
   const categoryLink = (text) => {
-    if (type === discussionType) {
-      return (
-        <Link className={styles.bulletinLink} routeName="discussions">
-          {text}
-        </Link>
-      );
-    }
-
     return (
-      <Link routeName="bulletins" routeParams={{ type }}>
+      <Link
+        className={styles.bulletinLink}
+        routeName="bulletins"
+        routeParams={{ type }}
+      >
         {text}
       </Link>
     );
@@ -116,28 +112,16 @@ const BulletinBox = ({ typeWord, wso }) => {
         className={isRecent ? styles.bulletinActiveChild : styles.bulletinChild}
         key={thread.id}
       >
-        {type === discussionType ? (
-          <Link
-            className={styles.threadLink}
-            routeName="discussions.show"
-            routeParams={{
-              discussionID: thread.id,
-            }}
-          >
-            {threadTitle(thread)}
-          </Link>
-        ) : (
-          <Link
-            className={styles.threadLink}
-            routeName="bulletins.show"
-            routeParams={{
-              type,
-              bulletinID: thread.id,
-            }}
-          >
-            {threadTitle(thread)}
-          </Link>
-        )}
+        <Link
+          className={styles.threadLink}
+          routeName="bulletins.show"
+          routeParams={{
+            type,
+            bulletinID: thread.id,
+          }}
+        >
+          {threadTitle(thread)}
+        </Link>
       </div>
     );
   };

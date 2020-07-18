@@ -12,12 +12,12 @@ import { connect } from "react-redux";
 // Additional imports
 // import { Link } from "react-router5";
 import { actions, createRouteNodeSelector } from "redux-router5";
-import { bulletinTypeRide } from "../../../constants/general";
+import { bulletinTypeRide, discussionType } from "../../../constants/general";
 
 const PostBoardIndex = ({ navigateTo, route, wso }) => {
-  const [bulletins, updatePosts] = useState(null);
-  const [page, updatePage] = useState(0);
-  const [total, updateTotal] = useState(0);
+  const [posts, setPosts] = useState(null);
+  const [page, setPage] = useState(0);
+  const [total, setTotal] = useState(0);
 
   const perPage = 20;
 
@@ -30,8 +30,8 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
     };
     try {
       const bulletinsResponse = await wso.bulletinService.listBulletins(params);
-      updatePosts(bulletinsResponse.data);
-      updateTotal(bulletinsResponse.paginationTotal);
+      setPosts(bulletinsResponse.data);
+      setTotal(bulletinsResponse.paginationTotal);
     } catch {
       navigateTo("500");
     }
@@ -47,8 +47,8 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
     };
     try {
       const ridesResponse = await wso.bulletinService.listRides(params);
-      updatePosts(ridesResponse.data);
-      updateTotal(ridesResponse.paginationTotal);
+      setPosts(ridesResponse.data);
+      setTotal(ridesResponse.paginationTotal);
     } catch {
       navigateTo("500");
     }
@@ -62,8 +62,10 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
     };
     try {
       const postsResponse = await wso.bulletinService.listDiscussions(params);
-      updatePosts(postsResponse.data);
-      updateTotal(postsResponse.paginationTotal);
+      const threads = postsResponse.data;
+
+      setPosts(threads.map((thread) => ({ ...thread, type: discussionType })));
+      setTotal(postsResponse.paginationTotal);
     } catch {
       navigateTo("500");
     }
@@ -73,7 +75,7 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
   const loadNext = (newPage) => {
     // Different because the wso endpoints are different
 
-    if (route.name === "discussions") loadDiscussions(newPage);
+    if (route.params?.type === discussionType) loadDiscussions(newPage);
     else if (route.params?.type === bulletinTypeRide) loadRides(newPage);
     else loadBulletins(newPage);
   };
@@ -82,16 +84,16 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
   const clickHandler = (number) => {
     if (number === -1 && page > 0) {
       loadNext(page - 1);
-      updatePage(page - 1);
+      setPage(page - 1);
     } else if (number === 1 && total - (page + 1) * perPage > 0) {
       loadNext(page + 1);
-      updatePage(page + 1);
+      setPage(page + 1);
     }
   };
 
   // Handles selection of page
   const selectionHandler = (newPage) => {
-    updatePage(newPage);
+    setPage(newPage);
     loadNext(newPage);
   };
 
@@ -181,17 +183,18 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
 
   // Generate Bulletin Table
   const renderBulletins = () => {
-    if (bulletins?.length === 0) {
+    if (posts?.length === 0) {
       return <h1 className="no-posts">No Posts</h1>;
     }
     return (
       <div>
-        {bulletins
-          ? bulletins.map((bulletin) => (
+        {posts
+          ? posts.map((bulletin) => (
               <Post
                 key={bulletin.id}
                 post={bulletin}
                 deleteHandler={deleteHandler}
+                showType={false}
               />
             ))
           : [...Array(20)].map((_, i) => bulletinSkeleton(i))}
@@ -200,7 +203,7 @@ const PostBoardIndex = ({ navigateTo, route, wso }) => {
   };
 
   return (
-    <div>
+    <div style={{ width: "100%" }}>
       <PaginationButtons
         selectionHandler={selectionHandler}
         clickHandler={clickHandler}
@@ -234,7 +237,7 @@ PostBoardIndex.defaultProps = {
 };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("");
+  const routeNodeSelector = createRouteNodeSelector("bulletins");
 
   return (state) => ({
     currUser: getCurrUser(state),

@@ -11,8 +11,8 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 // Additional Imports
 import DatePicker from "react-date-picker";
 import {
-  bulletinTypeRide,
   bulletinTypeAnnouncement,
+  bulletinTypeRide,
 } from "../../../constants/general";
 
 const BulletinForm = ({ wso, currUser, navigateTo, route }) => {

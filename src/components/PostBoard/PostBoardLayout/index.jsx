@@ -9,7 +9,6 @@ import { connect } from "react-redux";
 
 // Additional imports
 import { Link } from "react-router5";
-import { EuiHorizontalRule } from "@elastic/eui";
 import { createRouteNodeSelector } from "redux-router5";
 import {
   bulletinTypeLostAndFound,
@@ -17,7 +16,9 @@ import {
   bulletinTypeRide,
   bulletinTypeExchange,
   bulletinTypeAnnouncement,
+  discussionType,
 } from "../../../constants/general";
+import { EuiSpacer } from "@elastic/eui";
 
 const NavLink = ({
   activeStyle,
@@ -77,68 +78,73 @@ const ConnectedNavLink = connect(mapStateToProps)(NavLink);
 
 const PostBoardLayout = ({ children }) => {
   return (
-    <div className={styles.page}>
-      <div className={styles.pageContent}>
-        <div className={styles.title}>
-          <Link routeName="home">PostBoard</Link>
+    <>
+      <header className={styles.pageHeader}>
+        <div className={styles.pageHead}>
+          <div className={styles.title}>
+            <Link routeName="home">PostBoard</Link>
+          </div>
+          <div className={styles.navLinks}>
+            <ConnectedNavLink
+              activeStyle={styles.activeNavLink}
+              defaultStyle={styles.navLink}
+              routeName="bulletins"
+              routeParams={{ type: discussionType }}
+            >
+              Discussions
+            </ConnectedNavLink>
+            <ConnectedNavLink
+              activeStyle={styles.activeNavLink}
+              defaultStyle={styles.navLink}
+              routeName="bulletins"
+              routeParams={{ type: bulletinTypeAnnouncement }}
+            >
+              Announcements
+            </ConnectedNavLink>
+
+            <ConnectedNavLink
+              activeStyle={styles.activeNavLink}
+              defaultStyle={styles.navLink}
+              routeName="bulletins"
+              routeParams={{ type: bulletinTypeExchange }}
+            >
+              Exchange
+            </ConnectedNavLink>
+
+            <ConnectedNavLink
+              activeStyle={styles.activeNavLink}
+              defaultStyle={styles.navLink}
+              routeName="bulletins"
+              routeParams={{ type: bulletinTypeLostAndFound }}
+            >
+              Lost and Found
+            </ConnectedNavLink>
+
+            <ConnectedNavLink
+              activeStyle={styles.activeNavLink}
+              defaultStyle={styles.navLink}
+              routeName="bulletins"
+              routeParams={{ type: bulletinTypeJob }}
+            >
+              Jobs
+            </ConnectedNavLink>
+
+            <ConnectedNavLink
+              activeStyle={styles.activeNavLink}
+              defaultStyle={styles.navLink}
+              routeName="bulletins"
+              routeParams={{ type: bulletinTypeRide }}
+            >
+              Ride Share
+            </ConnectedNavLink>
+          </div>
         </div>
-        <div className={styles.navLinks}>
-          <ConnectedNavLink
-            activeStyle={styles.activeNavLink}
-            defaultStyle={styles.navLink}
-            routeName="discussions"
-          >
-            Discussions
-          </ConnectedNavLink>
-          <ConnectedNavLink
-            activeStyle={styles.activeNavLink}
-            defaultStyle={styles.navLink}
-            routeName="bulletins"
-            routeParams={{ type: bulletinTypeAnnouncement }}
-          >
-            Announcements
-          </ConnectedNavLink>
-
-          <ConnectedNavLink
-            activeStyle={styles.activeNavLink}
-            defaultStyle={styles.navLink}
-            routeName="bulletins"
-            routeParams={{ type: bulletinTypeExchange }}
-          >
-            Exchange
-          </ConnectedNavLink>
-
-          <ConnectedNavLink
-            activeStyle={styles.activeNavLink}
-            defaultStyle={styles.navLink}
-            routeName="bulletins"
-            routeParams={{ type: bulletinTypeLostAndFound }}
-          >
-            Lost and Found
-          </ConnectedNavLink>
-
-          <ConnectedNavLink
-            activeStyle={styles.activeNavLink}
-            defaultStyle={styles.navLink}
-            routeName="bulletins"
-            routeParams={{ type: bulletinTypeJob }}
-          >
-            Jobs
-          </ConnectedNavLink>
-
-          <ConnectedNavLink
-            activeStyle={styles.activeNavLink}
-            defaultStyle={styles.navLink}
-            routeName="bulletins"
-            routeParams={{ type: bulletinTypeRide }}
-          >
-            Ride Share
-          </ConnectedNavLink>
-        </div>
-        <EuiHorizontalRule />
-        {children}
+      </header>
+      <EuiSpacer />
+      <div className={styles.page}>
+        <div className={styles.pageContent}>{children}</div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,7 +1,8 @@
 // React imports
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import DeleteModal from "../DeleteModal";
+import { DeleteModal } from "../../common/Modal";
+import WSO from "../../../assets/images/brand/wso_icon_white_border.svg";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
@@ -10,13 +11,19 @@ import { getCurrUser, getWSO } from "../../../selectors/auth";
 
 // External imports
 import { EuiButton } from "@elastic/eui";
+import { AiOutlineMessage } from "react-icons/ai";
 import { format } from "timeago.js";
 import styles from "./Post.module.scss";
 import { userToNameWithClassYear } from "../../../lib/general";
-import WSO from "../../../assets/images/brand/wso_icon_white_border.svg";
-import { bulletinTypeRide } from "../../../constants/general";
+import {
+  bulletinTypeAnnouncement,
+  bulletinTypeExchange,
+  bulletinTypeJob,
+  bulletinTypeLostAndFound,
+  bulletinTypeRide,
+} from "../../../constants/general";
 
-const Post = ({ currUser, deleteHandler, post, wso }) => {
+const Post = ({ currUser, deleteHandler, post, showType, wso }) => {
   const [photo, setPhoto] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -52,7 +59,7 @@ const Post = ({ currUser, deleteHandler, post, wso }) => {
     return <img src={photo} alt="User profile" />;
   };
 
-  const isBulletin = post.type;
+  const isBulletin = post.type !== "discussion";
 
   // Generates thread Date
   const threadDate = () => {
@@ -67,22 +74,10 @@ const Post = ({ currUser, deleteHandler, post, wso }) => {
     new Date() - new Date(threadDate()) < 7 * 1000 * 24 * 60 * 60;
 
   const renderPostTitleLink = () => {
-    if (isBulletin) {
-      return (
-        <Link
-          routeName="bulletins.show"
-          routeParams={{ type: post.type, bulletinID: post.id }}
-        >
-          {post.title}
-        </Link>
-      );
-    }
-
-    // Otherwise, it must be a discussion
     return (
       <Link
-        routeName="discussions.show"
-        routeParams={{ discussionID: post.id }}
+        routeName="bulletins.show"
+        routeParams={{ type: post.type, bulletinID: post.id }}
       >
         {post.title}
       </Link>
@@ -90,13 +85,25 @@ const Post = ({ currUser, deleteHandler, post, wso }) => {
   };
 
   const renderPostType = () => {
-    if (!isBulletin) return null;
-    return <div className={styles.postType}>{post.type}</div>;
+    const typeMap = {
+      [bulletinTypeAnnouncement]: "Anouncement",
+      [bulletinTypeExchange]: "Exchange",
+      [bulletinTypeJob]: "Jobs",
+      [bulletinTypeLostAndFound]: "Lost And Found",
+      [bulletinTypeRide]: "Ride Share",
+      discussion: "Discussion",
+    };
+
+    return <div className={styles.postType}>{typeMap[post.type]}</div>;
   };
 
   const renderDeleteButton = () => {
     if (currUser?.id === post.user.id || currUser?.admin) {
-      return <EuiButton onClick={openModal}>Delete</EuiButton>;
+      return (
+        <div>
+          <EuiButton onClick={openModal}>Delete</EuiButton>
+        </div>
+      );
     }
     return null;
   };
@@ -114,14 +121,45 @@ const Post = ({ currUser, deleteHandler, post, wso }) => {
     return null;
   };
 
+  const renderUserName = () => {
+    if (post.user.visible) {
+      return (
+        <span className={styles.postUser}>
+          <Link
+            routeName="facebook.users"
+            routeParams={{ userID: post.user.id }}
+          >
+            {userToNameWithClassYear(post.user)}
+          </Link>
+        </span>
+      );
+    }
+
+    return (
+      <span className={styles.postUser}>
+        {userToNameWithClassYear(post.user)}
+      </span>
+    );
+  };
+
+  const renderComments = () => {
+    if (isBulletin) return null;
+
+    return (
+      <div className={styles.comments}>
+        <AiOutlineMessage alt="comments" className={styles.icon} />{" "}
+        {post.numComments} comment{post.numComments !== 1 && "s"}
+      </div>
+    );
+  };
+
   return (
     <div className={isRecent ? styles.postRecent : styles.post}>
       <div className={styles.userPhoto}>{renderPhoto()}</div>
       <div>
         <div>
-          <span className={styles.postUser}>
-            {userToNameWithClassYear(post.user)}
-          </span>{" "}
+          {renderUserName()}
+          &nbsp;
           <span className={styles.datePosted}>
             posted about {format(post.startDate)}
           </span>
@@ -129,7 +167,8 @@ const Post = ({ currUser, deleteHandler, post, wso }) => {
         <div className={styles.userPronouns}>{post.user?.pronoun}</div>
 
         <div className={styles.postTitle}>{renderPostTitleLink()}</div>
-        {renderPostType()}
+        {showType && renderPostType()}
+        {renderComments()}
         {renderDeleteButton()}
         {renderModal()}
       </div>
@@ -141,7 +180,12 @@ Post.propTypes = {
   currUser: PropTypes.object.isRequired,
   deleteHandler: PropTypes.func.isRequired,
   post: PropTypes.object.isRequired,
+  showType: PropTypes.bool,
   wso: PropTypes.object.isRequired,
+};
+
+Post.defaultProps = {
+  showType: true,
 };
 
 const mapStateToProps = (state) => ({

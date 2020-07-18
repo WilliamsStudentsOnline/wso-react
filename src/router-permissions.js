@@ -17,11 +17,6 @@ const routePermissions = {
     scopes: [scopes.ScopeBulletin, scopes.ScopeUsers],
     tokenLevel: 3,
   },
-  discussions: { scopes: [scopes.ScopeBulletin, scopes.ScopeUsers] },
-  "discussions.new": {
-    tokenLevel: 3,
-    scopes: [scopes.ScopeBulletin, scopes.ScopeUsers],
-  },
   dormtrak: { tokenLevel: 3 },
   ephmatch: { tokenLevel: 3 },
   facebook: { scopes: [scopes.ScopeUsers] },

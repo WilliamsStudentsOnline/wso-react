@@ -55,11 +55,52 @@ const Homepage = ({ wso }) => {
         const postResponse = await wso.bulletinService.listBulletins({
           limit: 10,
           preload: ["user"],
-          type: "announcements",
         });
 
+        const ridesResponse = await wso.bulletinService.listRides({
+          limit: 10,
+          preload: ["user"],
+        });
+
+        const discussionsResponse = await wso.bulletinService.listDiscussions({
+          limit: 10,
+          preload: ["postsUsers"],
+        });
+
+        const discussionPosts = [];
+
+        for (const discussion of discussionsResponse.data) {
+          for (const discussionPost of discussion.posts) {
+            discussionPosts.push({
+              ...discussionPost,
+              type: "discussion",
+              title: discussion.title,
+              discussionId: discussion.id,
+              numComments: discussion.posts.length,
+            });
+          }
+        }
+
+        const recentPosts = [
+          ...postResponse.data,
+          ...ridesResponse.data,
+          ...discussionPosts,
+        ];
+
+        const mostRecentPosts = recentPosts
+          .sort((a, b) => {
+            let aTime = a.createdTime;
+            let bTime = b.createdTime;
+
+            if (a.startDate) aTime = a.startDate;
+            if (b.startDate) bTime = b.startDate;
+
+            return aTime > bTime;
+          })
+          .slice(0, recentPosts.length > 10 ? 10 : recentPosts.length);
+
         if (isMounted) {
-          setPosts(postResponse.data);
+          setPosts(mostRecentPosts);
         }
       } catch (error) {
         // TODO
@@ -92,7 +133,8 @@ const Homepage = ({ wso }) => {
         <Category
           image={Discussion}
           title="Discussions"
-          routeName="discussions"
+          routeName="bulletins"
+          routeParams={{ type: "discussions" }}
         />
         <Category
           image={Exchange}
@@ -140,7 +182,6 @@ const Homepage = ({ wso }) => {
         <div className={styles.bulletins}>
           {renderRecentPosts()}
           <div>
-            <BulletinBox typeWord="Discussions" />
             <BulletinBox typeWord="Lost And Found" />
             <BulletinBox typeWord="Announcements" />
           </div>
