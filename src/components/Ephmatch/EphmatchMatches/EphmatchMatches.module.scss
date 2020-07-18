@@ -1,0 +1,63 @@
+@import "../../../theme.scss";
+
+.page {
+  display: flex;
+  justify-content: center;
+}
+
+.pageContent {
+  max-width: $lg;
+  flex-grow: 1;
+}
+
+.match {
+  width: 100%;
+  border: $px-6 solid $cool-gray-0;
+  display: flex;
+  background-color: $cool-gray-0;
+}
+
+.photo {
+  border-radius: 10px;
+  height: 300px;
+  width: 300px;
+  object-fit: cover;
+  margin: 0 $px-5 0 0;
+}
+
+.userName {
+  font-weight: 600;
+  font-size: $f-4;
+  color: $primary-5;
+}
+
+.profile div {
+  margin: $px-4 0;
+}
+
+.pronouns,
+.description,
+.matchedTime {
+  color: $cool-gray-6;
+}
+
+.tags {
+  font-size: $f-2;
+  font-weight: 600;
+
+  span {
+    margin-left: $px-4;
+    color: $primary-5;
+  }
+}
+
+.matchedTime {
+  font-style: italic;
+  font-size: $f-1;
+  font-weight: 400;
+}
+
+.matchMessage {
+  background-color: $primary-0;
+  padding: $px-2;
+}

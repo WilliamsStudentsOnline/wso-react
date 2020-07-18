@@ -25,12 +25,17 @@ const Nav = ({ currUser, removeCreds, wso }) => {
   const [ephmatchVisibility, updateEphmatchVisibility] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadPhoto = async () => {
       try {
         const photoResponse = await wso.userService.getUserThumbPhoto(
           currUser.unixID
         );
-        updateUserPhoto(URL.createObjectURL(photoResponse.data));
+
+        if (isMounted) {
+          updateUserPhoto(URL.createObjectURL(photoResponse.data));
+        }
       } catch {
         // Do nothing - it's okay to gracefully handle this.
       }
@@ -40,7 +45,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
       try {
         const ephmatchAvailabilityResp = await wso.ephmatchService.getAvailability();
 
-        if (ephmatchAvailabilityResp?.data?.available) {
+        if (ephmatchAvailabilityResp?.data?.available && isMounted) {
           updateEphmatchVisibility(true);
         }
       } catch {
@@ -56,6 +61,10 @@ const Nav = ({ currUser, removeCreds, wso }) => {
     }
 
     updateMenuVisibility(false);
+
+    return () => {
+      isMounted = false;
+    };
   }, [currUser, wso]);
 
   const logout = () => {
@@ -98,7 +107,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
             <Link routeName="scheduler">Course Scheduler</Link>
 
             {ephmatchVisibility && (
-              <Link className="ephmatch-link" routeName="ephmatch">
+              <Link className={styles.ephMatchLink} routeName="ephmatch">
                 Ephmatch
               </Link>
             )}

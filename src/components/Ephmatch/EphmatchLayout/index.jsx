@@ -2,10 +2,53 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+// Redux/routing imports
+import { connect } from "react-redux";
+
 // Additional imports
+import { EuiSpacer } from "@elastic/eui";
 import { Link } from "react-router5";
+import { createRouteNodeSelector } from "redux-router5";
 import { format } from "timeago.js";
+import styles from "./EphmatchLayout.module.scss";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
+
+const NavLink = ({ activeStyle, children, defaultStyle, route, routeName }) => {
+  if (routeName === route.name) {
+    return (
+      <Link className={activeStyle} routeName={routeName}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <Link className={defaultStyle} routeName={routeName}>
+      {children}
+    </Link>
+  );
+};
+
+NavLink.propTypes = {
+  activeStyle: PropTypes.string,
+  children: PropTypes.element,
+  defaultStyle: PropTypes.string,
+  route: PropTypes.object.isRequired,
+  routeName: PropTypes.string.isRequired,
+};
+NavLink.defaultProps = {
+  activeStyle: "",
+  children: null,
+  defaultStyle: "",
+};
+
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("ephmatch");
+
+  return (state) => routeNodeSelector(state);
+};
+
+const ConnectedNavLink = connect(mapStateToProps)(NavLink);
 
 const EphmatchLayout = ({
   available,
@@ -16,51 +59,56 @@ const EphmatchLayout = ({
 }) => {
   return (
     <>
-      <header>
+      <header className={styles.pageHeader}>
         {available && closingTime && (
+          // TODO: test this.
           <section className="notice">
             Ephmatch closes {format(closingTime)}
           </section>
         )}
 
-        <div className="page-head">
-          <h1>
-            <Link routeName="ephmatch">Ephmatch</Link>
+        <div className={styles.pageHead}>
+          <h1 className={styles.pageTitle}>
+            <Link routeName="ephmatch">EphMatch</Link>
           </h1>
-          <ul>
-            <li>
-              <Link routeName="ephmatch">Home</Link>
-            </li>
+          <div className={styles.navLinks}>
             {containsOneOfScopes(token, [
               scopes.ScopeEphmatchMatches,
               scopes.ScopeEphmatchProfiles,
             ]) && (
               <>
-                <li>
-                  <Link routeName="ephmatch.matches">Matches</Link>
-                  <span className="ephmatch-badge" title="Matches!">
-                    {matchesTotalCount}
+                <ConnectedNavLink
+                  activeStyle={styles.activeNavLink}
+                  defaultStyle={styles.navLink}
+                  routeName="ephmatch.matches"
+                >
+                  My Matches &nbsp;
+                  <span className={styles.ephmatchBadge} title="Matches!">
+                    {matchesTotalCount > 0 && `(${matchesTotalCount})`}
                   </span>
-                </li>
-                <li>
-                  <Link routeName="ephmatch.profile">Profile</Link>
-                </li>
-                <li>
-                  <Link routeName="ephmatch.optOut">Opt Out</Link>
-                </li>
+                </ConnectedNavLink>
+
+                <ConnectedNavLink
+                  activeStyle={styles.activeNavLink}
+                  defaultStyle={styles.navLink}
+                  routeName="ephmatch.profile"
+                >
+                  My Profile
+                </ConnectedNavLink>
+
+                <ConnectedNavLink
+                  activeStyle={styles.activeNavLink}
+                  defaultStyle={styles.navLink}
+                  routeName="ephmatch.settings"
+                >
+                  Settings
+                </ConnectedNavLink>
               </>
             )}
-          </ul>
-
-          <br />
-          <div style={{ background: "#ffc5c5", padding: 20 }}>
-            While Ephmatch aims to facilitate getting to know other Ephs, we
-            strongly discourage meeting up in person. People found to violate
-            local social distancing regulations will have their Ephmatch access
-            revoked!
           </div>
         </div>
       </header>
+      <EuiSpacer />
       {children}
     </>
   );

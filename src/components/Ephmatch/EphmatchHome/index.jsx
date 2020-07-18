@@ -1,8 +1,6 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import PaginationButtons from "../../common/PaginationButtons";
-import Select from "../../common/Select";
 
 // Redux/ routing imports
 import { connect } from "react-redux";
@@ -11,23 +9,25 @@ import { actions } from "redux-router5";
 
 // Additional imports
 import Ephmatcher from "../Ephmatcher";
+import styles from "./EphmatchHome.module.scss";
+import { EuiButtonIcon } from "@elastic/eui";
 
 const EphmatchHome = ({ navigateTo, wso }) => {
-  const perPage = 20; // Number of results per page
+  const perPage = 1; // Number of results per page
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
-  const [ephmatchers, updateEphmatchers] = useState([]);
-  const [sort, updateSort] = useState("recommended");
+  const [ephmatcher, updateEphmatcher] = useState(null);
+  // const [sort, updateSort] = useState("recommended");
 
   useEffect(() => {
     let isMounted = true;
 
     const loadNextEphmatchers = async (newPage) => {
       const params = {
-        limit: perPage,
+        limit: 1,
         offset: newPage * perPage,
         preload: ["tags", "liked", "matched"],
-        sort,
+        sort: "recommended",
       };
 
       try {
@@ -35,8 +35,8 @@ const EphmatchHome = ({ navigateTo, wso }) => {
           params
         );
 
-        if (isMounted) {
-          updateEphmatchers(ephmatchersResponse.data);
+        if (isMounted && ephmatchersResponse?.data?.length > 0) {
+          updateEphmatcher(ephmatchersResponse.data[0]);
           updateTotal(ephmatchersResponse.paginationTotal);
         }
       } catch {
@@ -49,12 +49,11 @@ const EphmatchHome = ({ navigateTo, wso }) => {
     return () => {
       isMounted = false;
     };
-  }, [navigateTo, page, sort, wso]);
+  }, [navigateTo, page, wso]);
 
-  const selectEphmatcher = async (event, index) => {
+  const selectEphmatcher = async (event) => {
     // Alternatively, use the classname to determine the method to be called.
     // That way works but is more hacky.
-    const ephmatcher = ephmatchers[index];
     const target = event.currentTarget;
 
     try {
@@ -69,7 +68,9 @@ const EphmatchHome = ({ navigateTo, wso }) => {
         ephmatcher.userID
       );
 
-      ephmatchers.splice(index, 1, updatedEphmatcher.data);
+      updateEphmatcher(updatedEphmatcher.data);
+
+      // ephmatchers.splice(index, 1, updatedEphmatcher.data);
     } catch {
       navigateTo("500");
     }
@@ -85,92 +86,42 @@ const EphmatchHome = ({ navigateTo, wso }) => {
     window.scrollTo(0, 0);
   };
 
-  // Handles selection of page
-  const selectionHandler = (newPage) => {
-    updatePage(newPage - 1);
-  };
-
   return (
-    <article className="facebook-results">
-      <section>
-        <div>
-          <p>
-            Select as many people as you want by clicking on their profile. You
-            can also come back later and modify your selections. To check if you
-            have matches, click &ldquo;Matches&rdquo; above or refresh the page.
-            Have fun, and good luck!
-            <br />
-            <strong>Note:</strong>
-            &nbsp;You can&apos;t see yourself in the list below, but everyone
-            else can.
-          </p>
-          <br />
-
-          {ephmatchers.length > 0 ? (
-            <>
-              <div className="added-sort">
-                <strong>Sort By:</strong>
-                <Select
-                  onChange={(event) => {
-                    updateSort(event.target.value);
-                  }}
-                  options={[
-                    "Recommended",
-                    "Most Active",
-                    "Newest",
-                    "Alphabetical (A-Z)",
-                  ]}
-                  value={sort}
-                  valueList={["recommended", "updated", "new", "alphabetical"]}
-                  style={{
-                    display: "inline",
-                    margin: "5px 0px 5px 20px",
-                    padding: "4px",
-                  }}
-                />
-              </div>
-              <PaginationButtons
-                selectionHandler={selectionHandler}
-                clickHandler={clickHandler}
-                page={page}
-                total={total}
-                perPage={perPage}
-                showPages
-              />
-              <div className="ephmatch-results">
-                {ephmatchers.map(
-                  (ephmatcher, index) =>
-                    ephmatcher.user && (
-                      <Ephmatcher
-                        wso={wso}
-                        ephmatcher={ephmatcher.user}
-                        ephmatcherProfile={ephmatcher}
-                        selectEphmatcher={selectEphmatcher}
-                        index={index}
-                        matched={ephmatcher.matched}
-                        key={ephmatcher.id}
-                      />
-                    )
-                )}
-              </div>
-              <br />
-              <PaginationButtons
-                selectionHandler={selectionHandler}
-                clickHandler={clickHandler}
-                page={page}
-                total={total}
-                perPage={perPage}
-                showPages
-              />
-            </>
+    <div className={styles.page}>
+      <div className={styles.pageContent}>
+        <EuiButtonIcon
+          onClick={() => clickHandler(-1)}
+          iconType="arrowLeft"
+          aria-label="Previous"
+          disabled={page === 0}
+          iconSize="xxl"
+        />
+        <div className={styles.info}>
+          {ephmatcher ? (
+            <Ephmatcher
+              wso={wso}
+              ephmatcher={ephmatcher.user}
+              ephmatcherProfile={ephmatcher}
+              selectEphmatcher={selectEphmatcher}
+              index={0}
+              matched={ephmatcher.matched}
+              key={ephmatcher.id}
+            />
           ) : (
             <h1 className="no-matches-found">
               Invite your friends to join Ephmatch!
             </h1>
           )}
         </div>
-      </section>
-    </article>
+        <EuiButtonIcon
+          onClick={() => clickHandler(1)}
+          iconType="arrowRight"
+          aria-label="Next"
+          disabled={total - (page + 1) <= 0}
+          iconSize="xxl"
+        />
+      </div>
+    </div>
   );
 };
 

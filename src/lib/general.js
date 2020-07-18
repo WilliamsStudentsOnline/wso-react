@@ -118,8 +118,8 @@ export const capitalize = (string) => {
  * Adds days to the date. date must be in a format that is convertible
  * by `new Date(date)`.
  *
- * @param {*} date - Date to be converted.
- * @param {number} days - number of days to be added.
+ * @param {String} date - Date to be converted.
+ * @param {number} days - Number of days to be added.
  */
 export const addDays = (date, days) => {
   const result = new Date(date);
