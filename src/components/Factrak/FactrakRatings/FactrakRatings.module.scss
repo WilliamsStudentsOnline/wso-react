@@ -14,3 +14,19 @@
 .topSection {
   margin: 0 15%;
 }
+
+.percentages {
+  div {
+    font-size: $f-4;
+    line-height: $px-7;
+  }
+}
+.wouldTakeAnother {
+  @extend .percentages;
+  color: $good-4;
+}
+
+.wouldRecommend {
+  @extend .percentages;
+  color: $warning-4;
+}

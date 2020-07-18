@@ -6,10 +6,14 @@ import { Line } from "../../common/Skeleton";
 // Scss and elastic
 import styles from "./FactrakRatings.module.scss";
 import { EuiFlexItem, EuiFlexGroup, EuiText } from "@elastic/eui";
+import { Chart, Partition } from "@elastic/charts";
+import { EUI_CHARTS_THEME_DARK } from "@elastic/eui/dist/eui_charts_theme";
 
 const FactrakRatings = ({ ratings, general }) => {
   if (!ratings) return null;
 
+  const euiChartTheme = EUI_CHARTS_THEME_DARK;
+  const euiPartitionConfig = euiChartTheme.partition;
   // Generates the crowdsourced opinion on the professor's courses' workload
   const courseWorkload = () => {
     if (!ratings.numCourseWorkload) return null;
@@ -138,11 +142,9 @@ const FactrakRatings = ({ ratings, general }) => {
     if (!ratings.numWouldTakeAnother) return null;
 
     return (
-      <EuiText>
-        <div className={styles.rating}>
-          {`${Math.round(ratings.avgWouldTakeAnother * 100)}%`}
-        </div>
-        {` out of would take another course with ${
+      <EuiText className={styles.wouldTakeAnother}>
+        <div>{`${Math.round(ratings.avgWouldTakeAnother * 100)}%`}</div>
+        {` Would take another course with ${
           general ? "their professors." : "this professor."
         }`}
       </EuiText>
@@ -152,11 +154,9 @@ const FactrakRatings = ({ ratings, general }) => {
   const wouldRecommendCourse = () => {
     if (!ratings.numWouldRecommendCourse) return null;
     return (
-      <EuiText>
-        <div className={styles.rating}>
-          {`${Math.round(ratings.avgWouldRecommendCourse * 100)}%`}
-        </div>
-        {` would recommend this ${
+      <EuiText className={styles.wouldRecommend}>
+        <div>{`${Math.round(ratings.avgWouldRecommendCourse * 100)}%`}</div>
+        {` Recommend this ${
           general ? "course" : "professor's courses"
         } to a friend.`}
       </EuiText>
@@ -175,8 +175,49 @@ const FactrakRatings = ({ ratings, general }) => {
           className={styles.topSection}
           direction="column"
         >
-          <EuiFlexItem>{wouldTakeAnother()}</EuiFlexItem>
-          <EuiFlexItem>{wouldRecommendCourse()}</EuiFlexItem>
+          <EuiFlexItem>
+            <EuiFlexGroup direction="row">
+              <EuiFlexItem>
+                <Chart size={{ height: 200 }}>
+                  <Partition
+                    data={[
+                      {
+                        language: "JavaScript",
+                        percent: 50,
+                      },
+                      {
+                        language: "TypeScript",
+                        percent: 50,
+                      },
+                    ]}
+                    valueAccessor={(d) => Number(d.percent)}
+                    valueFormatter={() => ""}
+                    layers={[
+                      {
+                        groupByRollup: (d) => d.language,
+                        shape: {
+                          fillColor: (d) =>
+                            euiChartTheme.theme.colors.vizColors[d.sortIndex],
+                        },
+                      },
+                    ]}
+                    config={{
+                      ...euiPartitionConfig,
+                      emptySizeRatio: 0.4,
+                      clockwiseSectors: false,
+                    }}
+                  />
+                </Chart>
+              </EuiFlexItem>
+              <EuiFlexItem>{wouldTakeAnother()}</EuiFlexItem>
+            </EuiFlexGroup>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiFlexGroup direction="row">
+              <EuiFlexItem />
+              <EuiFlexItem>{wouldRecommendCourse()}</EuiFlexItem>
+            </EuiFlexGroup>
+          </EuiFlexItem>
         </EuiFlexGroup>
       </EuiFlexItem>
       <EuiFlexItem>
