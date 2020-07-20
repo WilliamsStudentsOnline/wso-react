@@ -331,7 +331,6 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
                   border: "#45528d",
                   color: "#dce0ef",
                 }}
-                // onClick={() => logout()}
               >
                 Log Out
               </EuiButton>

@@ -17,7 +17,7 @@ import {
   EuiFlexGrid,
   EuiFlexGroup,
   EuiFlexItem,
-  // EuiSpacer,
+  EuiSpacer,
 } from "@elastic/eui";
 // import { htmlIdGenerator } from "@elastic/eui/lib/services";
 import styles from "./FacebookHome.module.scss";
@@ -30,6 +30,12 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
   const [isResultsLoading, updateResultLoadStatus] = useState(false);
+  const [yearFilter, updateYearFilter] = useState({
+    2021: false,
+    2022: false,
+    2023: false,
+    2024: false,
+  });
 
   // loads the next set of users
   const loadUsers = async (newPage) => {
@@ -39,8 +45,25 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
       return;
     }
 
+    let search = route.params.q;
+
+    const years = Object.keys(yearFilter);
+
+    //
+
+    const temp = [];
+    for (const y of years) {
+      if (yearFilter[y] === true) {
+        temp.push(` class: ${y}`);
+      }
+    }
+
+    if (temp.length !== 0) {
+      search += ` (${temp.join(" OR")})`;
+    }
+
     const queryParams = {
-      q: route.params.q,
+      q: search,
       limit: perPage,
       offset: perPage * newPage,
       preload: ["dorm", "office"],
@@ -66,7 +89,7 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
     loadUsers(0);
     updatePage(0);
     // eslint-disable-next-line
-  }, [wso, route.params.q]);
+  }, [route.params.q, wso, yearFilter]);
 
   // Handles clicking of the next/previous page
   const clickHandler = (number) => {
@@ -139,15 +162,8 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
   //   );
   // };
 
-  const [yearFilter, updateYearFilter] = useState({
-    2021: false,
-    2022: false,
-    2023: false,
-    2024: false,
-  });
-
   const onChange = (year) => {
-    const updatedYearFilter = { ...yearFilter, year: !yearFilter[year] };
+    const updatedYearFilter = { ...yearFilter, [year]: !yearFilter[year] };
     updateYearFilter(updatedYearFilter);
   };
 
@@ -158,7 +174,7 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
   });
 
   const onChange2 = (role) => {
-    const updatedRoleFilter = { ...roleFilter, role: !roleFilter[role] };
+    const updatedRoleFilter = { ...roleFilter, [role]: !roleFilter[role] };
     updateRoleFilter(updatedRoleFilter);
   };
 
@@ -199,7 +215,7 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
                   id={22}
                   label="2022"
                   checked={yearFilter[2022]}
-                  onChange={() => updateYearFilter(2022)}
+                  onChange={() => onChange(2022)}
                 />
                 <EuiCheckbox
                   id={23}
@@ -211,10 +227,11 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
                   id={24}
                   label="2024"
                   checked={yearFilter[2024]}
-                  onChange={() => updateYearFilter(2024)}
+                  onChange={() => onChange(2024)}
                 />
               </EuiFlexItem>
               <h6>Off-cycle years are rounded up</h6>
+              <EuiSpacer size="m" />
               Role
               <EuiFlexItem className={styles.checkboxGroup}>
                 <EuiCheckbox
@@ -245,6 +262,7 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
           total={total}
           perPage={perPage}
         />
+        <EuiSpacer size="m" />
       </>
     );
   };

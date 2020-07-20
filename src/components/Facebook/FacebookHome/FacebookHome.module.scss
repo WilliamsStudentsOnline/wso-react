@@ -21,6 +21,7 @@
 
 .flexGrid {
   margin-bottom: $px-6;
+  width: $px-16;
 }
 
 .info {
@@ -28,22 +29,28 @@
   border-radius: $px-3;
 }
 
-.gridWrap {
-  margin-left: $px-11;
-  margin-right: $px-5;
-  padding: $px-5;
-  width: 900px;
-}
-
 .checkboxes {
   border-radius: $px-3;
-  border: 2px $cool-gray-3 solid;
+  border: $px-1 $cool-gray-3 solid;
+  color: $blue-3;
   flex-direction: column;
   justify-content: start;
-  padding: 4px;
-  width: 200px;
+  padding: $px-6;
+  width: $px-11;
+
+  h6 {
+    color: $cool-gray-7;
+    font-size: $f-0;
+  }
 
   .checkboxGroup {
     flex-grow: 0;
   }
+}
+
+.gridWrap {
+  margin-left: $px-11;
+  margin-right: $px-5;
+  padding: $px-5;
+  width: 1000px;
 }
