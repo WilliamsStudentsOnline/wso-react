@@ -7,6 +7,8 @@
   margin: auto;
   padding: 10px;
   text-align: center;
+  margin-right: 68px;
+  margin-left: $px-11;
 }
 
 .results {
@@ -16,6 +18,13 @@
 .bigGroup {
   display: flex;
   flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.bigGroupMatches {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-top: $px-6;
   white-space: nowrap;
 }
 
@@ -34,9 +43,13 @@
   border: $px-1 $cool-gray-3 solid;
   color: $blue-3;
   flex-direction: column;
+  float: right;
   justify-content: start;
+  margin-right: 192px;
   padding: $px-6;
-  width: $px-11;
+  max-width: $px-11;
+  min-height: 300px;
+  max-height: 300px;
 
   h6 {
     color: $cool-gray-7;

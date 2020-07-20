@@ -36,6 +36,11 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
     2023: false,
     2024: false,
   });
+  const [roleFilter, updateRoleFilter] = useState({
+    1: false,
+    2: false,
+    3: false,
+  });
 
   // loads the next set of users
   const loadUsers = async (newPage) => {
@@ -48,18 +53,28 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
     let search = route.params.q;
 
     const years = Object.keys(yearFilter);
+    const roles = Object.keys(roleFilter);
 
-    //
-
-    const temp = [];
+    const checkedYears = [];
     for (const y of years) {
       if (yearFilter[y] === true) {
-        temp.push(` class: ${y}`);
+        checkedYears.push(` class: ${y}`);
       }
     }
 
-    if (temp.length !== 0) {
-      search += ` (${temp.join(" OR")})`;
+    if (checkedYears.length !== 0) {
+      search += ` (${checkedYears.join(" OR")})`;
+    }
+
+    const checkedRoles = [];
+    for (const r of roles) {
+      if (roleFilter[r] === true) {
+        checkedRoles.push(` role: ${r}`);
+      }
+    }
+
+    if (checkedRoles.length !== 0) {
+      search += ` (${checkedRoles.join(" OR")})`;
     }
 
     const queryParams = {
@@ -167,12 +182,6 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
     updateYearFilter(updatedYearFilter);
   };
 
-  const [roleFilter, updateRoleFilter] = useState({
-    1: false,
-    2: false,
-    3: false,
-  });
-
   const onChange2 = (role) => {
     const updatedRoleFilter = { ...roleFilter, [role]: !roleFilter[role] };
     updateRoleFilter(updatedRoleFilter);
@@ -274,7 +283,65 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
     }
 
     if (total === 0)
-      return <h1 className={styles.matchesFound}>No matches were found.</h1>;
+      return (
+        <>
+          <EuiFlexGroup classname={styles.bigGroupMatches}>
+            <h1 className={styles.matchesFound}>No matches were found.</h1>
+            <EuiFlexItem className={styles.checkboxes}>
+              Year
+              <EuiFlexItem className={styles.checkboxGroup}>
+                <EuiCheckbox
+                  id={21}
+                  label="2021"
+                  checked={yearFilter[2021]}
+                  onChange={() => onChange(2021)}
+                />
+                <EuiCheckbox
+                  id={22}
+                  label="2022"
+                  checked={yearFilter[2022]}
+                  onChange={() => onChange(2022)}
+                />
+                <EuiCheckbox
+                  id={23}
+                  label="2023"
+                  checked={yearFilter[2023]}
+                  onChange={() => onChange(2023)}
+                />
+                <EuiCheckbox
+                  id={24}
+                  label="2024"
+                  checked={yearFilter[2024]}
+                  onChange={() => onChange(2024)}
+                />
+              </EuiFlexItem>
+              <h6>Off-cycle years are rounded up</h6>
+              <EuiSpacer size="m" />
+              Role
+              <EuiFlexItem className={styles.checkboxGroup}>
+                <EuiCheckbox
+                  id={1}
+                  label="Student"
+                  checked={roleFilter[1]}
+                  onChange={() => onChange2(1)}
+                />
+                <EuiCheckbox
+                  id={2}
+                  label="Faculty"
+                  checked={roleFilter[2]}
+                  onChange={() => onChange2(2)}
+                />
+                <EuiCheckbox
+                  id={3}
+                  label="Staff"
+                  checked={roleFilter[3]}
+                  onChange={() => onChange2(3)}
+                />
+              </EuiFlexItem>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </>
+      );
 
     if (total === 1) {
       navigateTo(
