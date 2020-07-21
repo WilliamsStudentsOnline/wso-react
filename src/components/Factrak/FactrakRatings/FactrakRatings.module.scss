@@ -1,8 +1,8 @@
 @import "../../../theme";
 
 .professorRatings {
-  padding: $px-7 15%;
   color: $primary-4;
+  padding: $px-7 0;
 }
 
 .rating {
@@ -12,7 +12,6 @@
 }
 
 .topSection {
-  margin: 0 15%;
 }
 
 .percentages {
@@ -24,9 +23,15 @@
 .wouldTakeAnother {
   @extend .percentages;
   color: $good-4;
+  width: 70%;
 }
 
 .wouldRecommend {
   @extend .percentages;
   color: $warning-4;
+  width: 75%;
+}
+
+.chart {
+  margin-left: auto;
 }

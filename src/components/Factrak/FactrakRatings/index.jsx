@@ -7,12 +7,13 @@ import { Line } from "../../common/Skeleton";
 import styles from "./FactrakRatings.module.scss";
 import { EuiFlexItem, EuiFlexGroup, EuiText } from "@elastic/eui";
 import { Chart, Partition } from "@elastic/charts";
-import { EUI_CHARTS_THEME_DARK } from "@elastic/eui/dist/eui_charts_theme";
+import { EUI_CHARTS_THEME_LIGHT } from "@elastic/eui/dist/eui_charts_theme";
+import "@elastic/charts/dist/theme_only_light.css";
 
 const FactrakRatings = ({ ratings, general }) => {
   if (!ratings) return null;
 
-  const euiChartTheme = EUI_CHARTS_THEME_DARK;
+  const euiChartTheme = EUI_CHARTS_THEME_LIGHT;
   const euiPartitionConfig = euiChartTheme.partition;
   // Generates the crowdsourced opinion on the professor's courses' workload
   const courseWorkload = () => {
@@ -170,31 +171,35 @@ const FactrakRatings = ({ ratings, general }) => {
       className={styles.professorRatings}
     >
       <EuiFlexItem>
-        <EuiFlexGroup
-          justifyContent="spaceAround"
-          className={styles.topSection}
-          direction="column"
-        >
+        <EuiFlexGroup className={styles.topSection} direction="column">
           <EuiFlexItem>
-            <EuiFlexGroup direction="row">
-              <EuiFlexItem>
-                <Chart size={{ height: 200 }}>
+            <EuiFlexGroup
+              direction="row"
+              alignItems="center"
+              justifyContent="spaceAround"
+            >
+              <EuiFlexItem grow={3}>
+                <Chart
+                  size={{ height: 100, width: 100 }}
+                  className={styles.chart}
+                >
                   <Partition
                     data={[
                       {
-                        language: "JavaScript",
-                        percent: 50,
+                        name: "",
+                        percent: Math.round(ratings.avgWouldTakeAnother * 100),
                       },
                       {
-                        language: "TypeScript",
-                        percent: 50,
+                        name: " ",
+                        percent:
+                          100 - Math.round(ratings.avgWouldTakeAnother * 100),
                       },
                     ]}
                     valueAccessor={(d) => Number(d.percent)}
                     valueFormatter={() => ""}
                     layers={[
                       {
-                        groupByRollup: (d) => d.language,
+                        groupByRollup: (d) => d.name,
                         shape: {
                           fillColor: (d) =>
                             euiChartTheme.theme.colors.vizColors[d.sortIndex],
@@ -203,19 +208,58 @@ const FactrakRatings = ({ ratings, general }) => {
                     ]}
                     config={{
                       ...euiPartitionConfig,
-                      emptySizeRatio: 0.4,
+                      emptySizeRatio: 0.3,
                       clockwiseSectors: false,
                     }}
                   />
                 </Chart>
               </EuiFlexItem>
-              <EuiFlexItem>{wouldTakeAnother()}</EuiFlexItem>
+              <EuiFlexItem grow={2}>{wouldTakeAnother()}</EuiFlexItem>
             </EuiFlexGroup>
           </EuiFlexItem>
           <EuiFlexItem>
-            <EuiFlexGroup direction="row">
-              <EuiFlexItem />
-              <EuiFlexItem>{wouldRecommendCourse()}</EuiFlexItem>
+            <EuiFlexGroup direction="row" alignItems="center">
+              <EuiFlexItem grow={3}>
+                <Chart
+                  size={{ height: 100, width: 100 }}
+                  className={styles.chart}
+                >
+                  <Partition
+                    data={[
+                      {
+                        name: "",
+                        percent: Math.round(
+                          ratings.avgWouldRecommendCourse * 100
+                        ),
+                      },
+                      {
+                        name: " ",
+                        percent:
+                          100 -
+                          Math.round(ratings.avgWouldRecommendCourse * 100),
+                      },
+                    ]}
+                    valueAccessor={(d) => Number(d.percent)}
+                    // Removes the number label
+                    valueFormatter={() => ""}
+                    layers={[
+                      {
+                        groupByRollup: (d) => d.name,
+                        shape: {
+                          fillColor: (d) =>
+                            euiChartTheme.theme.colors.vizColors[d.sortIndex],
+                        },
+                      },
+                    ]}
+                    config={{
+                      ...euiPartitionConfig,
+                      emptySizeRatio: 0.3,
+                      clockwiseSectors: false,
+                    }}
+                  />
+                </Chart>
+              </EuiFlexItem>
+              <EuiFlexItem grow={2}>{wouldRecommendCourse()}</EuiFlexItem>
             </EuiFlexGroup>
           </EuiFlexItem>
         </EuiFlexGroup>
