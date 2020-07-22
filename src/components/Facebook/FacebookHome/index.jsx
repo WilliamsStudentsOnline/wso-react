@@ -69,7 +69,7 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
     const checkedRoles = [];
     for (const r of roles) {
       if (roleFilter[r] === true) {
-        checkedRoles.push(` role: ${r}`);
+        checkedRoles.push(` type: ${r}`);
       }
     }
 
@@ -183,7 +183,7 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
   };
 
   const onChange2 = (role) => {
-    const updatedRoleFilter = { ...roleFilter, [role]: !roleFilter[role] };
+    const updatedRoleFilter = { ...roleFilter, [role]: !roleFilter.role };
     updateRoleFilter(updatedRoleFilter);
   };
 
@@ -246,20 +246,20 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
                 <EuiCheckbox
                   id={1}
                   label="Student"
-                  checked={roleFilter[1]}
-                  onChange={() => onChange2(1)}
+                  checked={roleFilter.student}
+                  onChange={() => onChange2("student")}
                 />
                 <EuiCheckbox
                   id={2}
                   label="Faculty"
-                  checked={roleFilter[2]}
-                  onChange={() => onChange2(2)}
+                  checked={roleFilter.faculty}
+                  onChange={() => onChange2("faculty")}
                 />
                 <EuiCheckbox
                   id={3}
                   label="Staff"
-                  checked={roleFilter[3]}
-                  onChange={() => onChange2(3)}
+                  checked={roleFilter.staff}
+                  onChange={() => onChange2("staff")}
                 />
               </EuiFlexItem>
             </EuiFlexItem>
