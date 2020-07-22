@@ -40,7 +40,7 @@ const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
         courseID,
         populateAgreements: true,
         populateClientAgreement: true,
-        professorID: profID > 0 ? profID : null,
+        professorID: profID !== -1 ? profID : null,
       };
 
       try {
@@ -61,7 +61,7 @@ const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
       try {
         const ratingsResponse = await wso.factrakService.getCourseRatings(
           courseID,
-          profID
+          profID !== -1 ? profID : null
         );
         updateRatings(ratingsResponse.data);
       } catch (error) {
