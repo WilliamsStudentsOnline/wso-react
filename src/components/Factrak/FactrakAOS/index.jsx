@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Line } from "../../common/Skeleton";
 import styles from "./FactrakAOS.module.scss";
+import ProfessorRow from "./FactrakProfessorRow.jsx";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
@@ -70,27 +71,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
   // Generates a row containing the prof information.
   const generateProfRow = (prof) => {
     return (
-      <tr key={prof.id} className={styles.profRow}>
-        <td>
-          <EuiFlexGroup alignItems="center">
-            <EuiFlexItem grow={false} className={styles.professorPhotoSmall}>
-              <img src="none" alt="avatar" />
-            </EuiFlexItem>
-            <EuiFlexItem>
-              <Link
-                routeName="factrak.professors"
-                routeParams={{ profID: prof.id }}
-                className={styles.professorName}
-              >
-                {prof.name}
-              </Link>
-              <a href={`mailto:${prof.unixID}@williams.edu`}>{prof.unixID}</a>
-            </EuiFlexItem>
-          </EuiFlexGroup>
-        </td>
-
-        <td>{prof.title}</td>
-      </tr>
+      <ProfessorRow professor={prof} />
     );
   };
 
