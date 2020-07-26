@@ -46,25 +46,23 @@ const Course = ({
   const instructors = () => {
     return (
       <span>
-        {course.instructors
-          ? course.instructors.map((instructor, index) => (
-              <a
-                key={instructor.name}
-                href={instructor.url ? instructor.url : undefined}
-                className={instructor.url ? undefined : "no-url"}
-              >
-                {index === 0 ? instructor.name : `, ${instructor.name}`}
-              </a>
-            ))
-          : null}
+        {course.instructors?.map((instructor, index) => (
+          <a
+            key={instructor.name}
+            href={instructor.url ? instructor.url : undefined}
+            className={instructor.url ? undefined : "no-url"}
+          >
+            {index === 0 ? instructor.name : `, ${instructor.name}`}
+          </a>
+        ))}
       </span>
     );
   };
 
   const courseTime = () => {
-    let result = " ";
-
     if (!course.meetings) return "";
+
+    let result = " ";
 
     course.meetings.forEach((meeting) => {
       result += `${meeting.days}`;
@@ -273,7 +271,7 @@ const Course = ({
           <div className="row header-info">
             <div className="column">{distributionIcons()}</div>
             <div className="column ra">
-              {`${course.semester}, ${course.classType}, Section ${course.section}`}
+              {`${course.semester}, ${course.classType}, Section ${course.section}, ${course.sectionType}`}
             </div>
           </div>
         </div>
@@ -322,12 +320,12 @@ const Course = ({
           {course.peoplesoftNumber}
         </p>
 
-        {course.extraInfo ? (
+        {course.extraInfo && (
           <p className="extra-information">
             <strong>Extra Information:&nbsp;</strong>
             {course.extraInfo}
           </p>
-        ) : null}
+        )}
       </div>
 
       {courseButtons()}
