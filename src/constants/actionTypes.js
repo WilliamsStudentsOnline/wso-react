@@ -12,6 +12,7 @@ export const TOGGLE_SEM = 'TOGGLE_SEM';
 export const TOGGLE_DIST = 'TOGGLE_DIST';
 export const TOGGLE_DIV = 'TOGGLE_DIV';
 export const TOGGLE_OTHERS = 'TOGGLE_OTHERS';
+export const TOGGLE_REMOTE = 'TOGGLE_REMOTE';
 export const TOGGLE_CONFLICT = 'TOGGLE_CONFLICT';
 export const TOGGLE_LEVEL = 'TOGGLE_LEVEL';
 export const UPDATE_GAPI = 'UPDATE_GAPI';

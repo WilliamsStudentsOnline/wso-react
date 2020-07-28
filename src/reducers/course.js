@@ -14,6 +14,7 @@ import {
   TOGGLE_CONFLICT,
   TOGGLE_LEVEL,
   TOGGLE_TYPE,
+  TOGGLE_REMOTE,
   UPDATE_END,
   UPDATE_START,
   RESET_FILTERS,
@@ -28,6 +29,7 @@ import {
   LEVELS,
   CLASS_TYPES,
   DATES,
+  REMOTE,
 } from "../constants/constants.json";
 import { DEPARTMENT } from "../constants/departments.json";
 import { addDays } from "../lib/general";
@@ -70,6 +72,7 @@ const INITIAL_FILTER_STATE = {
   start: "",
   end: "",
   classTypes: [false, false, false, false, false, false],
+  remote: [false, false, false],
 };
 
 const INITIAL_COUNT_STATE = {
@@ -80,6 +83,7 @@ const INITIAL_COUNT_STATE = {
   levels: [0, 0, 0, 0, 0],
   conflict: [0],
   classTypes: [0, 0, 0, 0, 0, 0],
+  remote: [0, 0, 0],
 };
 
 /* 
@@ -289,6 +293,7 @@ const applyFilters = (state, queried, filters) => {
     others,
     classTypes,
     conflict,
+    remote,
   } = filters;
 
   const result = [];
@@ -308,8 +313,17 @@ const applyFilters = (state, queried, filters) => {
       continue;
 
     let check = false;
+    // Remote filtering
+    if (hasFilter(remote)) {
+      for (let i = 0; i < remote.length; i += 1) {
+        if (remote[i] && course.sectionType === remote[i]) check = true;
+      }
+      if (!check) continue;
+    }
+
     // Distribution filtering
     if (hasFilter(distributions)) {
+      check = false;
       for (let i = 0; i < distributions.length; i += 1) {
         if (distributions[i] && course.courseAttributes[distributions[i]])
           check = true;
@@ -394,7 +408,7 @@ const findCount = (
 ) => {
   const filters = JSON.parse(JSON.stringify(state.filters));
 
-  return original[filter].map((value, index) => {
+  return original[filter].map((_, index) => {
     const oldFilter = filters[filter].slice();
 
     for (let i = 0; i < filters[filter].length; i += 1) {
@@ -424,6 +438,7 @@ const updateCounts = (state) => {
   newCounts.levels = findCount(state, newCounts, "levels", LEVELS);
   newCounts.conflict = findCount(state, newCounts, "conflict", [true]);
   newCounts.classTypes = findCount(state, newCounts, "classTypes", CLASS_TYPES);
+  newCounts.remote = findCount(state, newCounts, "remote", REMOTE);
 
   return newCounts;
 };
@@ -610,50 +625,61 @@ const applyLoadCatalog = (state, catalog) => {
   return { ...state, ...applySearchCourse(INITIAL_STATE) };
 };
 
+const toggleRemote = (state, action) => {
+  const final = state.filters.remote.slice();
+
+  if (final[action.index] !== false) final[action.index] = false;
+  else final[action.index] = REMOTE[action.index];
+
+  return { ...state, filters: { ...state.filters, remote: final } };
+};
+
 const courseReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case LOAD_CATALOG:
-      return applyLoadCatalog(state, action.catalog);
-    case SEARCH_COURSE:
-      return applySearchCourse(state, action.param);
-    case RESET_LOAD:
-      return applyResetLoad(state);
-    case LOAD_COURSES:
-      return applyLoadCourses(state, action);
     case COURSE_ADD:
       return applyAddCourse(state, action);
-    case COURSE_REMOVE:
-      return applyRemoveCourse(state, action);
     case COURSE_HIDE:
       if (state.hidden.indexOf(action.course) === -1)
         return applyHideCourse(state, action);
       break;
+    case COURSE_REMOVE:
+      return applyRemoveCourse(state, action);
     case COURSE_UNHIDE:
       if (state.hidden.indexOf(action.course) !== -1)
         return applyUnhideCourse(state, action);
       break;
+    case LOAD_CATALOG:
+      return applyLoadCatalog(state, action.catalog);
+    case LOAD_COURSES:
+      return applyLoadCourses(state, action);
+    case RESET_FILTERS:
+      return resetFilters(state);
+    case RESET_LOAD:
+      return applyResetLoad(state);
+    case REMOVE_SEMESTER_COURSES:
+      return removeSemesterCourses(state, action);
+    case SEARCH_COURSE:
+      return applySearchCourse(state, action.param);
     case TOGGLE_CONFLICT:
       return toggleConf(state, action);
-    case TOGGLE_SEM:
-      return toggleSem(state, action);
     case TOGGLE_DIST:
       return toggleDist(state, action);
     case TOGGLE_DIV:
       return toggleDiv(state, action);
-    case TOGGLE_OTHERS:
-      return toggleOthers(state, action);
     case TOGGLE_LEVEL:
       return toggleLevel(state, action);
+    case TOGGLE_OTHERS:
+      return toggleOthers(state, action);
+    case TOGGLE_REMOTE:
+      return toggleRemote(state, action);
+    case TOGGLE_SEM:
+      return toggleSem(state, action);
     case TOGGLE_TYPE:
       return toggleType(state, action);
-    case UPDATE_START:
-      return updateStart(state, action);
     case UPDATE_END:
       return updateEnd(state, action);
-    case RESET_FILTERS:
-      return resetFilters(state);
-    case REMOVE_SEMESTER_COURSES:
-      return removeSemesterCourses(state, action);
+    case UPDATE_START:
+      return updateStart(state, action);
     default:
       return state;
   }

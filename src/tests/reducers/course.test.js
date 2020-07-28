@@ -7,7 +7,7 @@ import {
   OTHERS,
   LEVELS,
   CLASS_TYPES,
-} from "../../constants/constants";
+} from "../../constants/constants.json";
 import {
   SEARCH_COURSE,
   RESET_LOAD,
@@ -240,6 +240,7 @@ describe("Course reducer", () => {
       distributions: [false, false, false],
       divisions: [false, false, false],
       others: [false, false],
+      remote: [false, false, false],
       levels: [false, false, false, false, false],
       conflict: [false],
       start: "",
@@ -251,6 +252,7 @@ describe("Course reducer", () => {
       distributions: [0, 0, 0],
       divisions: [0, 0, 0],
       others: [0, 0],
+      remote: [0, 0, 0],
       levels: [0, 0, 0, 0, 0],
       conflict: [0],
       classTypes: [0, 0, 0, 0, 0, 0],
@@ -293,6 +295,7 @@ describe("Course reducer", () => {
         distributions: [1, 0, 0],
         divisions: [0, 1, 0],
         others: [1, 1],
+        remote: [0, 0, 0],
         levels: [0, 1, 0, 0, 0],
         conflict: [1],
         classTypes: [1, 0, 0, 0, 0, 0],
@@ -480,6 +483,7 @@ describe("Course reducer", () => {
         distributions: [false, false, false],
         divisions: [false, false, false],
         others: [false, false],
+        remote: [false, false, false],
         levels: [false, false, false, false, false],
         conflict: [false],
         start: "",
