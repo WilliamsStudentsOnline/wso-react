@@ -7,11 +7,12 @@ import Button from "../../common/Button";
 // Additional imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { avatarHelper } from "../../../lib/imageHelper";
 import { userTypeStudent } from "../../../constants/general";
 import { Link } from "react-router5";
 import { actions } from "redux-router5";
 import { format } from "timeago.js";
+
+import styles from "./DormtrakRecentComments.module.scss";
 
 const DormtrakRecentComments = ({
   wso,
@@ -69,26 +70,22 @@ const DormtrakRecentComments = ({
   // Renders an abridged comment
   const renderAbridgedComment = (review) => {
     return (
-      <div className="comment" key={review.id}>
-        <div className="comment-image">
-          <img
-            alt="dorm avatar"
-            src={avatarHelper(review.dormRoom.dorm.name)}
-          />
+      <div className={styles.comment} key={review.id}>
+        <div>
+          <Link
+            routeName="dormtrak.dorms"
+            routeParams={{ dormID: review.dormRoom.dorm.id }}
+          >
+            <h1 className={styles.commentTitle}>
+              {review.dormRoom.dorm.name}-
+              {review.dormRoom.dorm.neighborhood.name}
+            </h1>
+          </Link>
         </div>
 
-        <div className="comment-content">
-          <h1>
-            <Link
-              routeName="dormtrak.dorms"
-              routeParams={{ dormID: review.dormRoom.dorm.id }}
-            >
-              {review.dormRoom.dorm.name}
-            </Link>
-          </h1>
-
+        <div className={styles.commentContent}>
           <p>{review.comment.substring(0, 200)}</p>
-          <p className="comment-detail">
+          <p className={styles.commentDate}>
             {`Posted ${format(new Date(review.createdTime))}`}
           </p>
           {editDeleteButtons(review)}
@@ -100,12 +97,14 @@ const DormtrakRecentComments = ({
   // Render Full Comment
   const renderFullComment = (review) => {
     return (
-      <div className="comment" key={review.id}>
+      <div className={styles.comment} key={review.id}>
         <p>{review.comment}</p>
-        <p className="comment-detail">
+        <p className={styles.commentContent}>
           {`posted about ${format(new Date(review.createdTime))}`}
         </p>
-        <span className="comment-detail">{editDeleteButtons(review)}</span>
+        <span className={styles.commentContent}>
+          {editDeleteButtons(review)}
+        </span>
       </div>
     );
   };
@@ -118,10 +117,10 @@ const DormtrakRecentComments = ({
 
   const fullCommentSkeleton = (key) => {
     return (
-      <div className="comment" key={key}>
+      <div className={styles.comment} key={key}>
         <Paragraph numRows={4} />
         <br />
-        <div className="comment-detail">
+        <div className={styles.commentContent}>
           <Line width="30%" />
         </div>
       </div>
@@ -130,12 +129,12 @@ const DormtrakRecentComments = ({
 
   const abridgedCommentSkeleton = (key) => {
     return (
-      <div className="comment" key={key}>
-        <div className="comment-image">
+      <div className={styles.comment} key={key}>
+        <div className={styles.commentImage}>
           <Photo width="6em" height="2em" />
         </div>
 
-        <div className="comment-content">
+        <div className={styles.commentContent}>
           <h1>
             <Line width="25%" />
           </h1>
@@ -161,8 +160,8 @@ const DormtrakRecentComments = ({
   };
 
   return (
-    <section>
-      <h3>Recent Comments</h3>
+    <section className={styles.container}>
+      <h3>Recent Reviews</h3>
       <br />
       {renderCommentList()}
     </section>

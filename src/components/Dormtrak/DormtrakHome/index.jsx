@@ -21,7 +21,7 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
     const loadReviews = async () => {
       const queryParams = {
         limit: 10,
-        preload: ["dormRoom", "dorm"],
+        preload: ["dormRoom", "dorm", "neighborhood"],
         commented: true,
       };
       try {
@@ -30,6 +30,7 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
         );
         if (isMounted) {
           updateReviews(dormReviewResponse.data);
+          console.log(dormReviewResponse.data);
         }
       } catch {
         navigateTo("500");
