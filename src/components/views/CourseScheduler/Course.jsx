@@ -248,6 +248,10 @@ const Course = ({
     return null;
   };
 
+  const courseBodyClick = (event) => {
+    event.stopPropagation();
+  };
+
   return (
     <div
       className="course"
@@ -294,7 +298,12 @@ const Course = ({
         </div>
       </div>
 
-      <div className="course-body" hidden={bodyHidden}>
+      <div
+        className="course-body"
+        hidden={bodyHidden}
+        onClick={courseBodyClick}
+        role="presentation"
+      >
         {bookstoreLink()}
         <br />
         <br />
