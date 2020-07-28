@@ -161,11 +161,11 @@ const DormtrakRecentComments = ({
   };
 
   return (
-    <>
+    <section>
       <h3>Recent Comments</h3>
       <br />
       {renderCommentList()}
-    </>
+    </section>
   );
 };
 

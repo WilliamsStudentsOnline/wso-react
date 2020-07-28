@@ -10,7 +10,7 @@ import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
 // Additional imports
-import { Link } from "react-router5";
+import styles from "./DormtrakHome.module.scss";
 
 const DormtrakHome = ({ currUser, navigateTo, wso }) => {
   const [reviews, updateReviews] = useState(null);
@@ -43,50 +43,11 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
     };
   }, [navigateTo, wso]);
 
-  // Link to survey.
-  const surveyLink = () => {
-    if (currUser.dormRoomID) {
-      return (
-        <p>
-          <strong>
-            To fill out the survey, click{" "}
-            <Link routeName="dormtrak.newReview">here</Link>
-          </strong>
-          .
-        </p>
-      );
-    }
-    return null;
-  };
-
   return (
-    <div className="container">
-      <aside className="sidebar">
-        <DormtrakRanking />
-      </aside>
+    <div className={styles.container}>
+      <DormtrakRecentComments abridged currUser={currUser} reviews={reviews} />
 
-      <article className="main">
-        <section className="lead">
-          <h3>Welcome to Dormtrak</h3>
-          <p>
-            Dormtrak is a system where students can
-            <Link routeName="dormtrak.policy">&nbsp;anonymously&nbsp;</Link>
-            share their thoughts about dorm buildings and rooms, as well as find
-            out everything there is to know about housing at Williams. Much of
-            our information is pulled from surveys that students fill out, so by
-            filling out the survey for your building, you help all of us make
-            the most informed decision we can about where to live.
-          </p>
-          {surveyLink()}
-        </section>
-        <section>
-          <DormtrakRecentComments
-            abridged
-            currUser={currUser}
-            reviews={reviews}
-          />
-        </section>
-      </article>
+      <DormtrakRanking />
     </div>
   );
 };

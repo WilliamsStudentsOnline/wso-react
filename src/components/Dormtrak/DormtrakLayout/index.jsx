@@ -9,7 +9,16 @@ import { actions } from "redux-router5";
 
 // Additional imports
 import { Link } from "react-router5";
+import styles from "./DormtrakLayout.module.scss";
 import Redirect from "../../common/Redirect";
+
+// Elastic Imports
+import {
+  EuiButton,
+  EuiFieldSearch,
+  EuiFlexGroup,
+  EuiFlexItem,
+} from "@elastic/eui";
 
 const DormtrakLayout = ({ children, currUser, navigateTo, wso }) => {
   const [neighborhoods, updateNeighborhoods] = useState([]);
@@ -21,7 +30,11 @@ const DormtrakLayout = ({ children, currUser, navigateTo, wso }) => {
       try {
         const neighborhoodsResponse = await wso.dormtrakService.listNeighborhoods();
         if (isMounted) {
-          updateNeighborhoods(neighborhoodsResponse.data);
+          updateNeighborhoods(
+            neighborhoodsResponse.data.filter(
+              (n) => n.name !== "First-year" && n.name !== "Co-op"
+            )
+          );
         }
       } catch {
         // It's alright to handle this gracefully without showing them.
@@ -45,57 +58,72 @@ const DormtrakLayout = ({ children, currUser, navigateTo, wso }) => {
     return (
       <>
         <header>
-          <div className="page-head">
-            <h1>
-              <Link routeName="dormtrak">Dormtrak</Link>
-            </h1>
-            <ul>
-              <li>
-                <Link routeName="dormtrak">Home</Link>
-              </li>
-              <li>
-                <Link routeName="dormtrak.policy">Policy</Link>
-              </li>
-              <li>
-                <a
-                  href="http://student-life.williams.edu"
-                  title="Office of Campus Life"
-                >
-                  OCL
-                </a>
-              </li>
-              {neighborhoods.map((neighborhood) =>
-                neighborhood.name !== "First-year" &&
-                neighborhood.name !== "Co-op" ? (
-                  <li key={neighborhood.name}>
-                    <Link
-                      routeName="dormtrak.neighborhoods"
-                      routeParams={{ neighborhoodID: neighborhood.id }}
-                      title={`${neighborhood.name} Neighborhood Dorms`}
-                    >
-                      {neighborhood.name}
-                    </Link>
-                  </li>
-                ) : null
-              )}
-            </ul>
-          </div>
-
-          <form onSubmit={(event) => submitHandler(event)}>
-            <input
-              type="search"
-              id="search"
-              placeholder="Enter all or part of a building's name"
-              value={query}
-              onChange={(event) => updateQuery(event.target.value)}
-            />
-            <input
-              type="submit"
-              value="Search"
-              className="submit"
-              data-disable-with="Search"
-            />
-          </form>
+          <EuiFlexGroup
+            className={styles.pageHead}
+            alignItems="flexStart"
+            gutterSize="none"
+          >
+            <EuiFlexItem grow={1}>
+              <h1>
+                <Link routeName="dormtrak">Dormtrak</Link>
+              </h1>
+            </EuiFlexItem>
+            <EuiFlexItem grow={4}>
+              <EuiFlexGroup direction="column">
+                <EuiFlexItem>
+                  <form onSubmit={submitHandler} className={styles.searchBar}>
+                    <EuiFlexGroup>
+                      <EuiFlexItem className={styles.searchWrapper}>
+                        <EuiFieldSearch
+                          placeholder="Enter all or part of a building's name"
+                          value={query}
+                          onChange={(event) => updateQuery(event.target.value)}
+                          fullWidth
+                        />
+                      </EuiFlexItem>
+                      <EuiFlexItem grow={false}>
+                        <EuiButton fill onClick={submitHandler}>
+                          Search
+                        </EuiButton>
+                      </EuiFlexItem>
+                    </EuiFlexGroup>
+                  </form>
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiFlexGroup
+                    direction="row"
+                    className={styles.factrakText}
+                    justifyContent="flexStart"
+                  >
+                    {neighborhoods.map((neighborhood) => (
+                      <EuiFlexItem grow={false} key={neighborhood.name}>
+                        <Link
+                          routeName="dormtrak.neighborhoods"
+                          routeParams={{ neighborhoodID: neighborhood.id }}
+                          title={`${neighborhood.name} Neighborhood Dorms`}
+                        >
+                          {neighborhood.name}
+                        </Link>
+                      </EuiFlexItem>
+                    ))}
+                    <EuiFlexItem grow={false}>
+                      <a
+                        href="http://student-life.williams.edu"
+                        title="Office of Campus Life"
+                      >
+                        OCL
+                      </a>
+                    </EuiFlexItem>
+                    <EuiFlexItem grow={false}>
+                      <Link routeName="dormtrak.policy">Policy</Link>
+                    </EuiFlexItem>
+                  </EuiFlexGroup>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+            <EuiFlexItem grow={3} />
+          </EuiFlexGroup>
+          <hr className={styles.lineBreak} />
         </header>
         {children}
       </>
