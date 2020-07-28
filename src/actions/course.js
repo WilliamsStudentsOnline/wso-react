@@ -13,6 +13,7 @@ import {
   TOGGLE_CONFLICT,
   TOGGLE_LEVEL,
   TOGGLE_TYPE,
+  TOGGLE_REMOTE,
   UPDATE_START,
   UPDATE_END,
   RESET_FILTERS,
@@ -84,6 +85,11 @@ const doToggleSem = (index) => ({
   index,
 });
 
+const doToggleRemote = (index) => ({
+  type: TOGGLE_REMOTE,
+  index,
+});
+
 const doToggleDist = (index) => ({
   type: TOGGLE_DIST,
   index,
@@ -147,6 +153,7 @@ export {
   doToggleOthers,
   doToggleSem,
   doToggleType,
+  doToggleRemote,
   doUpdateEnd,
   doUpdateStart,
   doResetFilters,

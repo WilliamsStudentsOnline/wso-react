@@ -1,5 +1,5 @@
 // React imports
-import React, { Component } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -7,46 +7,33 @@ import PropTypes from "prop-types";
 import { search, courseSearch, md36 } from "./Search.module.scss";
 
 // Redux (Selector, Reducer, Actions) imports
-import {
-  doSearchCourse,
-  doResetLoad,
-  doLoadCourses,
-} from "../../../actions/course";
+import { doSearchCourse, doResetLoad } from "../../../actions/course";
 import {
   getSearchedCourses,
   getLoadedCourses,
   getQuery,
 } from "../../../selectors/course";
 
-class Search extends Component {
-  constructor(props) {
-    super(props);
-
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange(event) {
-    const { onSearch, resetLoad } = this.props;
+const Search = ({ query, onSearch, resetLoad }) => {
+  const onChange = (event) => {
     const { value } = event.target;
     onSearch(value);
     resetLoad();
-  }
+  };
 
-  render() {
-    return (
-      <form onSubmit={this.onSubmit} className={search}>
-        <i className={`material-icons ${md36}`}>search</i>
-        <input
-          id={courseSearch}
-          type="text"
-          placeholder="Search by course title, code, or instructors!"
-          value={this.props.query}
-          onChange={this.onChange}
-        />
-      </form>
-    );
-  }
-}
+  return (
+    <form className={search}>
+      <i className={`material-icons ${md36}`}>search</i>
+      <input
+        id={courseSearch}
+        type="text"
+        placeholder="Search by course title, code, or instructors!"
+        value={query}
+        onChange={onChange}
+      />
+    </form>
+  );
+};
 
 Search.propTypes = {
   onSearch: PropTypes.func.isRequired,
@@ -62,7 +49,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onSearch: (query, filters) => dispatch(doSearchCourse(query, filters)),
-  onLoad: (courses) => dispatch(doLoadCourses(courses)),
   resetLoad: () => dispatch(doResetLoad()),
 });
 

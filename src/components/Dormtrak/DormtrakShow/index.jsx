@@ -15,6 +15,7 @@ import { actions, createRouteNodeSelector } from "redux-router5";
 import { bannerHelper } from "../../../lib/imageHelper";
 import { Link } from "react-router5";
 import { userTypeStudent } from "../../../constants/general";
+import floorplanHelper from "./floorplanHelper";
 
 const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
   const [reviews, updateReviews] = useState(null);
@@ -53,6 +54,36 @@ const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
     return currUser.type === userTypeStudent && currUser.dorm.id === dorm.id;
   };
 
+  const dormFloorplanLinks = (dormName) => {
+    const floorplanLinks = floorplanHelper(dormName);
+
+    if (floorplanLinks.length === 1) {
+      return (
+        <strong>
+          Floorplan available{" "}
+          <a href={floorplanLinks[0]} target="_blank" rel="noopener noreferrer">
+            here
+          </a>
+        </strong>
+      );
+    }
+
+    if (floorplanLinks.length > 1) {
+      return (
+        <strong>
+          Floorplans available here:{" "}
+          {floorplanLinks.map((link, i) => (
+            <a key={link} href={link} target="_blank" rel="noopener noreferrer">
+              &nbsp;{i + 1}&nbsp;
+            </a>
+          ))}
+        </strong>
+      );
+    }
+
+    return <strong>Floorplan not available</strong>;
+  };
+
   const dormInfo = () => {
     if (!dorm)
       return (
@@ -82,6 +113,7 @@ const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
 
         <strong>Summary</strong>
         <p>{dorm.description}</p>
+        {dormFloorplanLinks(dorm.name)}
       </section>
     );
   };

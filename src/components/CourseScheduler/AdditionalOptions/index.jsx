@@ -41,6 +41,7 @@ import {
   doToggleSem,
   doToggleDist,
   doToggleDiv,
+  doToggleRemote,
   doToggleType,
   doUpdateStart,
   doUpdateEnd,
@@ -57,6 +58,7 @@ const AdditionalOptions = ({
   conflictClick,
   levelClick,
   typeClick,
+  remoteClick,
   filters,
   onSearch,
   startChange,
@@ -262,6 +264,32 @@ const AdditionalOptions = ({
             </li>
           </ul>
         </Accordion>
+        <Accordion header="Remote Availability">
+          <ul className="remote">
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(remoteClick, 0)}
+                checked={filters.remote[0]}
+              />
+              {`Hybrid (${counts.remote[0]})`}
+            </li>
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(remoteClick, 1)}
+                checked={filters.remote[1]}
+              />
+              {`Remote (${counts.remote[1]})`}
+            </li>
+
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(remoteClick, 2)}
+                checked={filters.remote[2]}
+              />
+              {`In-person (${counts.remote[2]})`}
+            </li>
+          </ul>
+        </Accordion>
         <Accordion header="Others">
           <ul className="pffc">
             <li>
@@ -343,6 +371,7 @@ AdditionalOptions.propTypes = {
   conflictClick: PropTypes.func.isRequired,
   levelClick: PropTypes.func.isRequired,
   typeClick: PropTypes.func.isRequired,
+  remoteClick: PropTypes.func.isRequired,
   filters: PropTypes.object.isRequired,
   onSearch: PropTypes.func.isRequired,
   startChange: PropTypes.func.isRequired,
@@ -380,6 +409,7 @@ const mapDispatchToProps = (dispatch) => ({
   endChange: (time) => dispatch(doUpdateEnd(time)),
   resetFilters: () => dispatch(doResetFilters()),
   typeClick: (index) => dispatch(doToggleType(index)),
+  remoteClick: (index) => dispatch(doToggleRemote(index)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdditionalOptions);

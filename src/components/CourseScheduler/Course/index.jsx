@@ -46,25 +46,23 @@ const Course = ({
   const instructors = () => {
     return (
       <span>
-        {course.instructors
-          ? course.instructors.map((instructor, index) => (
-              <a
-                key={instructor.name}
-                href={instructor.url ? instructor.url : undefined}
-                className={instructor.url ? undefined : styles.noUrl}
-              >
-                {index === 0 ? instructor.name : `, ${instructor.name}`}
-              </a>
-            ))
-          : null}
+        {course.instructors?.map((instructor, index) => (
+          <a
+            key={instructor.name}
+            href={instructor.url ? instructor.url : undefined}
+            className={instructor.url ? undefined : "no-url"}
+          >
+            {index === 0 ? instructor.name : `, ${instructor.name}`}
+          </a>
+        ))}
       </span>
     );
   };
 
   const courseTime = () => {
-    let result = " ";
-
     if (!course.meetings) return "";
+
+    let result = " ";
 
     course.meetings.forEach((meeting) => {
       result += `${meeting.days}`;
@@ -250,6 +248,10 @@ const Course = ({
     return null;
   };
 
+  const courseBodyClick = (event) => {
+    event.stopPropagation();
+  };
+
   return (
     <div
       className={styles.course}
@@ -273,7 +275,7 @@ const Course = ({
           <div className={`row ${styles.headerInfo}`}>
             <div className="column">{distributionIcons()}</div>
             <div className={`column ${styles.ra}`}>
-              {`${course.semester}, ${course.classType}, Section ${course.section}`}
+              {`${course.semester}, ${course.classType}, Section ${course.section}, ${course.sectionType}`}
             </div>
           </div>
         </div>
@@ -296,7 +298,12 @@ const Course = ({
         </div>
       </div>
 
-      <div className={styles.courseBody} hidden={bodyHidden}>
+      <div
+        className={styles.courseBody}
+        hidden={bodyHidden}
+        onClick={courseBodyClick}
+        role="presentation"
+      >
         {bookstoreLink()}
         <br />
         <br />
@@ -322,12 +329,12 @@ const Course = ({
           {course.peoplesoftNumber}
         </p>
 
-        {course.extraInfo ? (
+        {course.extraInfo && (
           <p className="extra-information">
             <strong>Extra Information:&nbsp;</strong>
             {course.extraInfo}
           </p>
-        ) : null}
+        )}
       </div>
 
       {courseButtons()}
