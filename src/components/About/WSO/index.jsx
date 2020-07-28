@@ -92,7 +92,11 @@ const WSO = () => {
             <p>
               WSO is always looking for new members, regardless of computing
               expertise or experience. Contact us{" "}
-              <EuiLink href="https://docs.google.com/forms/d/e/1FAIpQLSeRAHhBnQ7qeJsiVIidnIjtuljenif-1M3OKaHpyQT1vlHgZg/viewform">
+              <EuiLink
+                href="https://docs.google.com/forms/d/e/1FAIpQLSeRAHhBnQ7qeJsiVIidnIjtuljenif-1M3OKaHpyQT1vlHgZg/viewform"
+                external
+                target="_blank"
+              >
                 here
               </EuiLink>{" "}
               and we&apos;ll get back to you quickly!

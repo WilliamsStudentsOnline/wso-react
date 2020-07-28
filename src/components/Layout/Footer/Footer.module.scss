@@ -1,7 +1,6 @@
 @import "../../../theme.scss";
 
 .footer {
-  height: $px-13;
   background-color: $primary-7;
   color: white;
   display: flex;
@@ -11,6 +10,66 @@
   div {
     max-width: $lg;
     width: 100%;
+  }
+
+  .logo {
+    width: 60%;
+    margin: 0 auto;
+  }
+
+  .footerInformation {
+    display: flex;
+    flex-wrap: wrap;
+    margin: $px-8 auto;
+
+    @include mq($md) {
+      flex-wrap: initial;
+
+      .wsoInformation {
+        margin-bottom: auto;
+      }
+    }
+
+    .wsoInformation {
+      margin-bottom: $px-7;
+    }
+  }
+
+  .siteLinks {
+    display: flex;
+    margin: 0 $px-5;
+
+    .sectionLink {
+      font-weight: 700;
+    }
+
+    div {
+      display: flex;
+      flex-direction: column;
+      line-height: $f-5;
+    }
+  }
+
+  .linkButtons {
+    display: flex;
+    justify-content: space-evenly;
+    margin: $px-4 auto;
+
+    .linkButton {
+      background-color: white;
+      border-radius: 10px;
+      font-weight: bold;
+      padding: $px-6 $px-5;
+    }
+  }
+
+  .boring {
+    margin-bottom: $px-5;
+  }
+
+  // not sure why it's needed
+  small {
+    line-height: 1.5;
   }
 }
 
