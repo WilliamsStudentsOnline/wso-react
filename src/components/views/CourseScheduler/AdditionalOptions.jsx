@@ -85,6 +85,32 @@ const AdditionalOptions = ({
       <div className="additional-options">
         {numFound(catalog.length)}
         <span className="refine">Refine by</span>
+        <Accordion header="Remote Availability" startsHidden={false}>
+          <ul className="remote">
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(remoteClick, 0)}
+                checked={filters.remote[0]}
+              />
+              {`Hybrid (${counts.remote[0]})`}
+            </li>
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(remoteClick, 1)}
+                checked={filters.remote[1]}
+              />
+              {`Remote (${counts.remote[1]})`}
+            </li>
+
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(remoteClick, 2)}
+                checked={filters.remote[2]}
+              />
+              {`In-person (${counts.remote[2]})`}
+            </li>
+          </ul>
+        </Accordion>
         <Accordion header="Semester">
           <ul className="semester">
             <li>
@@ -256,32 +282,7 @@ const AdditionalOptions = ({
             </li>
           </ul>
         </Accordion>
-        <Accordion header="Remote Availability">
-          <ul className="remote">
-            <li>
-              <Checkbox
-                onClick={() => clickLoader(remoteClick, 0)}
-                checked={filters.remote[0]}
-              />
-              {`Hybrid (${counts.remote[0]})`}
-            </li>
-            <li>
-              <Checkbox
-                onClick={() => clickLoader(remoteClick, 1)}
-                checked={filters.remote[1]}
-              />
-              {`Remote (${counts.remote[1]})`}
-            </li>
 
-            <li>
-              <Checkbox
-                onClick={() => clickLoader(remoteClick, 2)}
-                checked={filters.remote[2]}
-              />
-              {`In-person (${counts.remote[2]})`}
-            </li>
-          </ul>
-        </Accordion>
         <Accordion header="Others">
           <ul className="pffc">
             <li>
