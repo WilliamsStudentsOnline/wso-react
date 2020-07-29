@@ -9,6 +9,7 @@ import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
 import { Link } from "react-router5";
+import styles from "./DormtrakRanking.module.scss";
 
 const DormtrakRanking = ({ wso }) => {
   const [dormInfo, updateDormsInfo] = useState(null);
@@ -70,9 +71,9 @@ const DormtrakRanking = ({ wso }) => {
 
   return (
     <article className="dorm-ranks">
-      <h3>Rankings</h3>
+      <h3>Facts</h3>
 
-      <table>
+      <table className={styles.table}>
         <tbody>
           <tr>
             <th>Max Mean Single Size</th>
@@ -99,11 +100,11 @@ const DormtrakRanking = ({ wso }) => {
         </tbody>
       </table>
 
-      <table>
-        <tbody>
-          <tr>
-            <th>Biggest Singles</th>
-            <th>Smallest Singles</th>
+      <table className={styles.table}>
+        <tbody className={styles.tableContent}>
+          <tr className={styles.tableHeader}>
+            <th className={styles.columnTitle}>Biggest Singles</th>
+            <th className={styles.columnTitle}>Smallest Singles</th>
           </tr>
           {times.map((_, index) => {
             if (!dormInfo) return rankingSkeleton(index);
@@ -130,7 +131,7 @@ const DormtrakRanking = ({ wso }) => {
         </tbody>
       </table>
 
-      <table>
+      <table className={styles.table}>
         <tbody>
           <tr>
             <th>Max Mean Double Size</th>
@@ -157,7 +158,7 @@ const DormtrakRanking = ({ wso }) => {
         </tbody>
       </table>
 
-      <table>
+      <table className={styles.table}>
         <tbody>
           <tr>
             <th>Biggest Doubles</th>
@@ -189,7 +190,7 @@ const DormtrakRanking = ({ wso }) => {
         </tbody>
       </table>
 
-      <table>
+      <table className={styles.table}>
         <tbody>
           <tr>
             <th>Most Singles</th>
@@ -217,7 +218,7 @@ const DormtrakRanking = ({ wso }) => {
         </tbody>
       </table>
 
-      <table>
+      {/* <table>
         <tbody>
           <tr>
             <th>Most bathrooms</th>
@@ -243,7 +244,7 @@ const DormtrakRanking = ({ wso }) => {
             );
           })}
         </tbody>
-      </table>
+      </table> */}
     </article>
   );
 };
