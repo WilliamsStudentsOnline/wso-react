@@ -1,0 +1,11 @@
+@import "../../../../theme.scss";
+
+.contactField {
+  padding: $px-3 0;
+
+  .messageIcon {
+    color: $primary-5;
+    vertical-align: middle;
+    display: inline-block;
+  }
+}

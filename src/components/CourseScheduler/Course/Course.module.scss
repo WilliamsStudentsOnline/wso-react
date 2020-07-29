@@ -1,0 +1,143 @@
+.course {
+  margin-top: 0px;
+  margin-left: auto;
+  margin-bottom: 20px;
+  margin-right: auto;
+  font-family: "Source Sans Pro", sans-serif;
+  cursor: pointer;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
+  max-width: 850px;
+
+  button {
+    background-color: lavender;
+    color: indigo;
+    border-radius: 10px;
+    width: 20%;
+    min-width: 200px;
+    padding: 5px 10px;
+    border: none;
+    display: inline-flex;
+    line-height: 24px;
+    vertical-align: middle;
+    justify-content: center;
+    margin-right: 20px;
+  }
+
+  &:hover {
+    box-shadow: 0px 0px 10px indigo;
+
+    .click-expand-message i {
+      display: inline-block;
+    }
+  }
+
+  .column .row {
+    line-height: 25px;
+  }
+}
+
+.courseButtonsDiv {
+  padding: 0 30px 20px 30px;
+  text-align: right;
+  margin-right: 0;
+
+  span {
+    padding-left: 15px;
+  }
+}
+
+.courseTitle {
+  font-size: 24px;
+  font-weight: 600;
+  flex: 9.2;
+  padding: 30px 0px 10px 0px;
+  box-sizing: border-box;
+  border-bottom: 2px solid #c3c3d0;
+}
+
+.title {
+  padding-bottom: 10px;
+}
+.ra {
+  text-align: right;
+}
+
+.headerInfo {
+  color: #626268;
+  font-size: 16px;
+  text-transform: capitalize;
+}
+
+.courseSummary {
+  padding: 10px 0px 15px 0px;
+  box-sizing: border-box;
+}
+
+.courseBody {
+  padding: 0 30px 30px 30px;
+
+  .course a {
+    color: black;
+  }
+}
+
+.courseHeader {
+  padding: 0 30px;
+}
+
+.addedCourse {
+  background-color: paleturquoise;
+}
+
+.division {
+  background-color: rgb(99, 131, 133);
+}
+
+.req {
+  background-color: rgb(143, 149, 100);
+}
+
+.dreq {
+  width: 18px;
+  line-height: 18px;
+  display: inline-block;
+  overflow: hidden;
+  font-size: 12px;
+  align-items: center;
+  vertical-align: middle;
+  text-align: center;
+  color: #fff;
+  font-style: normal;
+  margin: 0 2px 0 2px;
+}
+
+.disIcons {
+  text-align: left;
+}
+
+.clickExpandMessage {
+  text-align: center;
+  margin: 2px auto;
+  line-height: 24px;
+  height: 24px;
+  font-size: 24px;
+
+  i {
+    display: none;
+  }
+
+  span {
+    line-height: 24px;
+  }
+}
+
+.noUrl {
+  cursor: default;
+
+  :hover {
+    transition: none;
+    opacity: 1;
+  }
+}

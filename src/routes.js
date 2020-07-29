@@ -66,12 +66,11 @@ export default [
     children: [
       { name: "matches", path: "/matches" },
       { name: "profile", path: "/profile" },
-      { name: "optOut", path: "/opt-out" },
+      { name: "settings", path: "/settings" },
       { name: "optIn", path: "/opt-in" },
     ],
   },
   { name: "login", path: "/account/login" },
-  { name: "faq", path: "/faq" },
   { name: "403", path: "/403" },
   { name: "404", path: "/404" },
   { name: "500", path: "/500" },

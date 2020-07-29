@@ -1,0 +1,33 @@
+@import "../../theme.scss";
+
+.page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.pageContent {
+  flex-grow: 1;
+  max-width: $lg;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.svg {
+  width: 40%;
+  height: 40vh;
+  margin: $px-7 auto;
+}
+
+.message {
+  text-align: center;
+  font-weight: 600;
+  color: $cool-gray-9;
+  font-size: $f-6;
+}
+
+.explanation {
+  margin: $px-4;
+}

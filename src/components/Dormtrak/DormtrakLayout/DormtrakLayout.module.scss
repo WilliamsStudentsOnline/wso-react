@@ -1,0 +1,93 @@
+@import "../../../theme";
+
+/****** Main Properties *********/
+
+.pageHead {
+  font-family: $default-font;
+  margin-top: $px-6;
+
+  h1 {
+    font-size: $f-6;
+    margin-right: $px-6;
+    font-weight: 600;
+    color: $primary-6;
+    margin-top: $px-1;
+    text-align: right;
+  }
+
+  button {
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.factrakText {
+  font-size: $f-2;
+  color: $primary-4;
+
+  a {
+    padding-bottom: $px-2;
+    margin-bottom: $px-1;
+  }
+
+  a:hover {
+    border-bottom: $px-1 solid $primary-5;
+    color: $primary-5;
+    margin-bottom: -$px-0;
+  }
+}
+
+.lineBreak {
+  margin-bottom: 1%;
+  border-top: $px-1 solid $cool-gray-3;
+}
+
+/****** Search Bar Properties *********/
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  min-width: $px-11;
+}
+
+.searchBar {
+  border-radius: 5px;
+  height: $px-7;
+}
+
+.search {
+  border: $px-1 solid $cool-gray-3;
+  border-radius: 10px;
+  height: 40px;
+  width: 100%;
+  padding: $px-1 $px-6 $px-1 $px-8;
+  outline: 0;
+  background-color: $cool-gray-0;
+}
+
+.search::placeholder {
+  color: $cool-gray-6;
+}
+
+.searchIcon,
+.searchIconPurple {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 20px;
+}
+
+.searchIconPurple {
+  display: none;
+}
+
+/****** Search Bar animations *********/
+
+.searchWrapper:hover .search,
+.search:focus {
+  border: $px-1 solid $primary-4;
+}
+
+.searchWrapper:hover .searchIconPurple,
+.searchWrapper:focus-within .searchIconPurple {
+  display: block;
+}

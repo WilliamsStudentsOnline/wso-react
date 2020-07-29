@@ -118,11 +118,36 @@ export const capitalize = (string) => {
  * Adds days to the date. date must be in a format that is convertible
  * by `new Date(date)`.
  *
- * @param {*} date - Date to be converted.
- * @param {number} days - number of days to be added.
+ * @param {String} date - Date to be converted.
+ * @param {number} days - Number of days to be added.
  */
 export const addDays = (date, days) => {
   const result = new Date(date);
   result.setDate(result.getDate() + days);
   return result;
+};
+
+/**
+ * Generates the user's class year
+ *
+ * @param {number} year - Student's rounded class year
+ * @param {boolean} offCycle - Whether the student is off-cycle.
+ */
+export const toClassYear = (year, offCycle) => {
+  if (!year) return null;
+  if (offCycle) return `'${(year - 1) % 100}.5`;
+
+  return `'${year % 100}`;
+};
+
+/**
+ * Generates a string containing the user's name and class year
+ *
+ * @param {object} user - User to be processed
+ */
+export const userToNameWithClassYear = (user) => {
+  if (!user) return null;
+
+  const { name, classYear, offCycle } = user;
+  return `${name} ${toClassYear(classYear, offCycle)}`;
 };

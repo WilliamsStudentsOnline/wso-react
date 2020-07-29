@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 // Component imports
-import "./stylesheets/Homepage.css";
-import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
+import { bulletinList } from "./Homepage.module.scss";
+import BulletinBox from "./Bulletins/BulletinBox";
 
 // Redux Imports
 import { connect } from "react-redux";
@@ -30,12 +30,6 @@ const Homepage = ({ navigateTo }) => {
   return (
     <div className="home">
       <div className="full-width">
-        <div id="join-header">
-          <a href="https://docs.google.com/spreadsheets/u/1/d/1ZIvDZpHqvNZkf8dGFXVjfk-Wq0Y9FTG410NJbH_8K8M/htmlview">
-            Consider donating to a fund that supports anti-racism activism
-            today!
-          </a>
-        </div>
         <header>
           <div className="logo">
             <h2 align="center" id="logotype">
@@ -63,7 +57,7 @@ const Homepage = ({ navigateTo }) => {
         </header>
         <article>
           <section>
-            <div className="bulletin-list">
+            <div className={bulletinList}>
               {bulletinTypeWords.map((bulletin) => {
                 return <BulletinBox typeWord={bulletin} key={bulletin} />;
               })}

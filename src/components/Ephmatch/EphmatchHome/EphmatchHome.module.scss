@@ -1,0 +1,17 @@
+@import "../../../theme.scss";
+
+.page {
+  display: flex;
+  justify-content: center;
+}
+
+.pageContent {
+  flex-grow: 1;
+  max-width: $lg;
+  display: flex;
+}
+
+.info {
+  flex-grow: 1;
+  min-height: $px-15;
+}

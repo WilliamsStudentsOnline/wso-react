@@ -1,0 +1,62 @@
+@import "../../../theme.scss";
+
+.aboutBanner {
+  height: $px-13;
+  display: flex;
+  align-items: center;
+  background: black;
+
+  img {
+    width: 100%;
+    height: $px-13;
+    object-fit: cover;
+    position: absolute;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  .introduction {
+    .clubName {
+      font-size: $f-5;
+    }
+
+    z-index: 1;
+    position: relative;
+    max-width: $md;
+    color: white;
+    margin: auto;
+    font-size: $f-4;
+    line-height: $f-5;
+  }
+}
+
+.aboutSection {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  color: $cool-gray-9;
+
+  h2 {
+    font-size: $f-5;
+    font-weight: 600;
+    margin: 10px auto;
+  }
+
+  article {
+    max-width: $md;
+  }
+
+  p,
+  li {
+    line-height: $f-4;
+    margin-bottom: $f-2;
+  }
+
+  li {
+    list-style: circle inside;
+  }
+
+  .section {
+    margin: $px-8 auto;
+  }
+}
