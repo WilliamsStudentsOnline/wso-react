@@ -1,25 +1,31 @@
 @import "../../../theme.scss";
 
-.table {
+table {
   border-radius: 10px;
   background: #ffffff;
-  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  box-shadow: (0px 4px 4px rgba(0, 0, 0, 0.25));
+  font-size: $f-2;
+  text-align: left;
   margin: 18px;
+  line-height: 25px;
+  width: 345px;
 
-  .tableContent {
-    font-size: $f-2;
-    line-height: 25px;
-    padding: 0px $px-4;
-
-    .tableHeader {
-      background: $blue-5;
-      line-height: 25px;
-      color: #ffffff;
-      border-radius: 10px 10px 0px 0px;
-
-      .columnTitle {
-        padding: $px-4 0px;
-      }
-    }
+  .dormName {
+    color: $primary-5;
   }
+}
+
+td,
+th {
+  padding: $px-4 $px-6;
+}
+
+td {
+  color: $cool-gray-8;
+}
+
+th {
+  font-weight: normal;
+  color: #ffffff;
+  background: $blue-5;
 }

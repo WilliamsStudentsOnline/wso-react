@@ -70,14 +70,14 @@ const DormtrakRanking = ({ wso }) => {
   };
 
   return (
-    <article className="dorm-ranks">
+    <article>
       <h3>Facts</h3>
 
-      <table className={styles.table}>
+      <table>
         <tbody>
           <tr>
-            <th>Max Mean Single Size</th>
-            <th>Min Mean Single Size</th>
+            <th className={styles.leftColumnHeader}>Max Mean Single</th>
+            <th className={styles.rightColumnHeader}>Min Mean Single</th>
           </tr>
           {times.map((_, index) => {
             if (!dormInfo) return rankingSkeleton(index);
@@ -88,11 +88,15 @@ const DormtrakRanking = ({ wso }) => {
               <tr key={b.averageSingleArea + a.averageSingleArea}>
                 <td>
                   <DormLink dormID={a.id}>{a.name}</DormLink>
-                  {`(${a.averageSingleArea} sq. ft.)`}
+                  <span
+                    className={styles.dormName}
+                  >{`(${a.averageSingleArea} sq. ft.)`}</span>
                 </td>
                 <td>
                   <DormLink dormID={b.id}>{b.name}</DormLink>
-                  {`(${b.averageSingleArea} sq. ft.)`}
+                  <span
+                    className={styles.dormName}
+                  >{`(${b.averageSingleArea} sq. ft.)`}</span>
                 </td>
               </tr>
             );
@@ -100,11 +104,11 @@ const DormtrakRanking = ({ wso }) => {
         </tbody>
       </table>
 
-      <table className={styles.table}>
-        <tbody className={styles.tableContent}>
-          <tr className={styles.tableHeader}>
-            <th className={styles.columnTitle}>Biggest Singles</th>
-            <th className={styles.columnTitle}>Smallest Singles</th>
+      <table>
+        <tbody>
+          <tr>
+            <th>Biggest Singles</th>
+            <th>Smallest Singles</th>
           </tr>
           {times.map((_, index) => {
             if (!dormInfo) return rankingSkeleton(index);
@@ -114,14 +118,18 @@ const DormtrakRanking = ({ wso }) => {
             return (
               <tr key={a.area}>
                 <td>
-                  <DormLink dormID={a.dormID}>
-                    {`${a.dorm.name} ${a.number}`}
+                  <DormLink className={styles.dormName} dormID={a.dormID}>
+                    <span
+                      className={styles.dormName}
+                    >{`${a.dorm.name} ${a.number}`}</span>
                   </DormLink>
                   {`(${a.area} sq. ft.)`}
                 </td>
                 <td>
-                  <DormLink dormID={b.dormID}>
-                    {`${b.dorm.name} ${b.number}`}
+                  <DormLink className={styles.dormName} dormID={b.dormID}>
+                    <span
+                      className={styles.dormName}
+                    >{`${b.dorm.name} ${b.number}`}</span>
                   </DormLink>
                   {`(${b.area} sq. ft.)`}
                 </td>
@@ -131,7 +139,7 @@ const DormtrakRanking = ({ wso }) => {
         </tbody>
       </table>
 
-      <table className={styles.table}>
+      <table>
         <tbody>
           <tr>
             <th>Max Mean Double Size</th>
@@ -146,11 +154,15 @@ const DormtrakRanking = ({ wso }) => {
               <tr key={a.averageDoubleArea}>
                 <td>
                   <DormLink dormID={a.id}>{a.name}</DormLink>
-                  {`(${a.averageDoubleArea} sq. ft.)`}
+                  <span
+                    className={styles.dormName}
+                  >{`(${a.averageDoubleArea} sq. ft.)`}</span>
                 </td>
                 <td>
                   <DormLink dormID={b.id}>{b.name}</DormLink>
-                  {`(${b.averageDoubleArea} sq. ft.)`}
+                  <span
+                    className={styles.dormName}
+                  >{`(${b.averageDoubleArea} sq. ft.)`}</span>
                 </td>
               </tr>
             );
@@ -158,7 +170,7 @@ const DormtrakRanking = ({ wso }) => {
         </tbody>
       </table>
 
-      <table className={styles.table}>
+      <table>
         <tbody>
           <tr>
             <th>Biggest Doubles</th>
@@ -174,13 +186,17 @@ const DormtrakRanking = ({ wso }) => {
               <tr key={a.area}>
                 <td>
                   <DormLink dormID={a.id}>
-                    {`${a.dorm.name} ${a.number}`}
+                    <span
+                      className={styles.dormName}
+                    >{`${a.dorm.name} ${a.number}`}</span>
                   </DormLink>
                   {`(${a.area} sq. ft.)`}
                 </td>
                 <td>
                   <DormLink dormID={b.id}>
-                    {`${b.dorm.name} ${b.number}`}
+                    <span
+                      className={styles.dormName}
+                    >{`${b.dorm.name} ${b.number}`}</span>
                   </DormLink>
                   {`(${b.area} sq. ft.)`}
                 </td>
@@ -190,7 +206,7 @@ const DormtrakRanking = ({ wso }) => {
         </tbody>
       </table>
 
-      <table className={styles.table}>
+      <table>
         <tbody>
           <tr>
             <th>Most Singles</th>
@@ -206,11 +222,15 @@ const DormtrakRanking = ({ wso }) => {
               <tr key={a.numberSingles}>
                 <td>
                   <DormLink dormID={a.id}>{a.name}</DormLink>
-                  {`(${a.numberSingles})`}
+                  <span
+                    className={styles.dormName}
+                  >{`(${a.numberSingles})`}</span>
                 </td>
                 <td>
                   <DormLink dormID={b.id}>{b.name}</DormLink>
-                  {`(${b.numberDoubles})`}
+                  <span
+                    className={styles.dormName}
+                  >{`(${b.numberDoubles})`}</span>
                 </td>
               </tr>
             );
