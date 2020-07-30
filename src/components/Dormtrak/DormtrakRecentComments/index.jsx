@@ -22,10 +22,15 @@ const DormtrakRecentComments = ({
   reviews,
 }) => {
   const [currReviews, updateCurrReviews] = useState(null);
+  // const [expanded, updateExpanded] = useState(false);
 
   useEffect(() => {
     updateCurrReviews(reviews);
   }, [reviews]);
+
+  // useEffect(() => {
+  //   updateExpanded(!expanded);
+  // });
 
   const deleteHandler = async (reviewID) => {
     // eslint-disable-next-line no-restricted-globals, no-alert
@@ -67,6 +72,48 @@ const DormtrakRecentComments = ({
     return null;
   };
 
+  // Render Full Comment
+  const renderFullComment = (review) => {
+    return (
+      <div className={styles.comment} key={review.id}>
+        <p>{review.comment}</p>
+        <p className={styles.commentDate}>
+          {`posted about ${format(new Date(review.createdTime))}`}
+        </p>
+        <span className={styles.commentContent}>
+          {editDeleteButtons(review)}
+        </span>
+      </div>
+    );
+  };
+
+  // Expands Review from Abridged -> Full Depending on State
+  // const seeMore = (review) => {
+  //   const linkName = expanded ? "see less..." : "see more...";
+
+  //   const link = <div>
+  //   <Link
+  //     onClick={() => {
+  //       updateExpanded(!expanded);
+  //     }}
+  //     className={styles.seeMore}
+  //   >
+  //     {linkName}
+  //   </Link>
+  // </div>
+
+  //   if (!expanded) {
+  //     return (
+  //       renderFullComment(review),
+  //       { link },
+  //     )
+  //   }
+  //   return (
+  //     renderAbridgedComment(review);
+  //     { link };
+  //   );
+  // };
+
   // Renders an abridged comment
   const renderAbridgedComment = (review) => {
     return (
@@ -77,34 +124,23 @@ const DormtrakRecentComments = ({
             routeParams={{ dormID: review.dormRoom.dorm.id }}
           >
             <h1 className={styles.commentTitle}>
-              {review.dormRoom.dorm.name}-
+              {review.dormRoom.dorm.name} -{" "}
               {review.dormRoom.dorm.neighborhood.name}
             </h1>
           </Link>
         </div>
 
+        {/* see more function */}
         <div className={styles.commentContent}>
-          <p>{review.comment.substring(0, 200)}</p>
+          <div>
+            <span>{review.comment.substring(0, 200)} </span>
+            <span className={styles.seeMore}>see more...</span>
+          </div>
           <p className={styles.commentDate}>
             {`Posted ${format(new Date(review.createdTime))}`}
           </p>
           {editDeleteButtons(review)}
         </div>
-      </div>
-    );
-  };
-
-  // Render Full Comment
-  const renderFullComment = (review) => {
-    return (
-      <div className={styles.comment} key={review.id}>
-        <p>{review.comment}</p>
-        <p className={styles.commentContent}>
-          {`posted about ${format(new Date(review.createdTime))}`}
-        </p>
-        <span className={styles.commentContent}>
-          {editDeleteButtons(review)}
-        </span>
       </div>
     );
   };
