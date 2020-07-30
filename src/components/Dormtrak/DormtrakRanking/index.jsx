@@ -76,8 +76,8 @@ const DormtrakRanking = ({ wso }) => {
       <table>
         <tbody>
           <tr>
-            <th className={styles.leftColumnHeader}>Max Mean Single</th>
-            <th className={styles.rightColumnHeader}>Min Mean Single</th>
+            <th>Max Mean Single</th>
+            <th>Min Mean Single</th>
           </tr>
           {times.map((_, index) => {
             if (!dormInfo) return rankingSkeleton(index);
@@ -87,16 +87,16 @@ const DormtrakRanking = ({ wso }) => {
             return (
               <tr key={b.averageSingleArea + a.averageSingleArea}>
                 <td>
-                  <DormLink dormID={a.id}>{a.name}</DormLink>
-                  <span
-                    className={styles.dormName}
-                  >{`(${a.averageSingleArea} sq. ft.)`}</span>
+                  <DormLink dormID={a.id}>
+                    <span className={styles.dormName}>{a.name}</span>
+                  </DormLink>
+                  {`(${a.averageSingleArea} sq. ft.)`}
                 </td>
                 <td>
-                  <DormLink dormID={b.id}>{b.name}</DormLink>
-                  <span
-                    className={styles.dormName}
-                  >{`(${b.averageSingleArea} sq. ft.)`}</span>
+                  <DormLink dormID={b.id}>
+                    <span className={styles.dormName}>{b.name}</span>
+                  </DormLink>
+                  {`(${b.averageSingleArea} sq. ft.)`}
                 </td>
               </tr>
             );
@@ -118,7 +118,7 @@ const DormtrakRanking = ({ wso }) => {
             return (
               <tr key={a.area}>
                 <td>
-                  <DormLink className={styles.dormName} dormID={a.dormID}>
+                  <DormLink dormID={a.dormID}>
                     <span
                       className={styles.dormName}
                     >{`${a.dorm.name} ${a.number}`}</span>
@@ -126,7 +126,7 @@ const DormtrakRanking = ({ wso }) => {
                   {`(${a.area} sq. ft.)`}
                 </td>
                 <td>
-                  <DormLink className={styles.dormName} dormID={b.dormID}>
+                  <DormLink dormID={b.dormID}>
                     <span
                       className={styles.dormName}
                     >{`${b.dorm.name} ${b.number}`}</span>
@@ -153,16 +153,16 @@ const DormtrakRanking = ({ wso }) => {
             return (
               <tr key={a.averageDoubleArea}>
                 <td>
-                  <DormLink dormID={a.id}>{a.name}</DormLink>
-                  <span
-                    className={styles.dormName}
-                  >{`(${a.averageDoubleArea} sq. ft.)`}</span>
+                  <DormLink dormID={a.id}>
+                    <span className={styles.dormName}>{a.name}</span>
+                  </DormLink>
+                  {`(${a.averageDoubleArea} sq. ft.)`}
                 </td>
                 <td>
-                  <DormLink dormID={b.id}>{b.name}</DormLink>
-                  <span
-                    className={styles.dormName}
-                  >{`(${b.averageDoubleArea} sq. ft.)`}</span>
+                  <DormLink dormID={b.id}>
+                    <span className={styles.dormName}>{b.name}</span>
+                  </DormLink>
+                  {`(${b.averageDoubleArea} sq. ft.)`}
                 </td>
               </tr>
             );
@@ -221,16 +221,16 @@ const DormtrakRanking = ({ wso }) => {
             return (
               <tr key={a.numberSingles}>
                 <td>
-                  <DormLink dormID={a.id}>{a.name}</DormLink>
-                  <span
-                    className={styles.dormName}
-                  >{`(${a.numberSingles})`}</span>
+                  <DormLink dormID={a.id}>
+                    <span className={styles.dormName}>{a.name}</span>
+                  </DormLink>
+                  {`(${a.numberSingles})`}
                 </td>
                 <td>
-                  <DormLink dormID={b.id}>{b.name}</DormLink>
-                  <span
-                    className={styles.dormName}
-                  >{`(${b.numberDoubles})`}</span>
+                  <DormLink dormID={b.id}>
+                    <span className={styles.dormName}>{b.name}</span>
+                  </DormLink>
+                  {`(${b.numberDoubles})`}
                 </td>
               </tr>
             );
