@@ -92,7 +92,6 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
       }
       return letters.map((letter) => (
         <EuiFlexItem>
-          <h4 className={styles.depTitle}>{letter}</h4>
           <EuiFlexGroup direction="column" gutterSize="none">
             {depChildren(letter)}
           </EuiFlexGroup>
@@ -108,7 +107,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
         <EuiFlexItem grow={7}>
           <h3>Departments</h3>
           <div className={styles.departmentCard} description="">
-            <EuiFlexGroup direction="column" gutterSize="none">
+            <EuiFlexGroup direction="column" gutterSize="m">
               {depNames()}
             </EuiFlexGroup>
           </div>

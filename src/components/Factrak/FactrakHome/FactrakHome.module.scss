@@ -5,13 +5,14 @@
 .factrak {
   margin: 0 244px;
   font-family: $default-font;
+  margin-bottom: $px-9;
 
   h3 {
     text-align: justify;
-    font-size: $f-5;
-    font-weight: 600;
+    font-size: $f-4;
+    font-weight: 300;
     color: $blue-5;
-    margin-bottom: $px-3;
+    margin-bottom: $px-5;
     margin-top: $px-2;
   }
 }
@@ -21,22 +22,13 @@
 .departmentCard {
   background: $cool-gray-0;
   box-shadow: 0 $px-2 $px-3 rgba(0, 0, 0, 0.15);
-  padding: $px-4 0 $px-5 $px-6;
-}
-
-.depTitle {
-  font-size: $f-2;
-  color: $blue-5;
-  font-weight: 600;
-  margin-top: $px-3;
-  margin-bottom: $px-3;
-  margin: $px-3 0;
+  padding: $px-7 0 $px-7 $px-7;
 }
 
 .depListItem {
   color: $primary-4;
-  font-size: $f-0;
-  font-weight: normal;
+  font-size: $f-1;
+  font-weight: 300;
 }
 
 /****** Comment Styling *********/
