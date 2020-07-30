@@ -9,11 +9,12 @@ import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Elastic
-import { EuiButton, EuiFlexGroup, EuiFlexItem, EuiSelect } from "@elastic/eui";
+import { EuiButton, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakSurvey = ({ wso, route, navigateTo }) => {
   const [survey, updateSurvey] = useState(null);
   const [prof, updateProf] = useState(null);
+  // const [department, updateDepartment] = useState(null);
 
   const edit = route.name.split(".")[1] === "editSurvey";
 
@@ -38,7 +39,13 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
     const loadProf = async (professorID) => {
       try {
         const profResponse = await wso.factrakService.getProfessor(professorID);
-        updateProf(profResponse.data);
+        const profData = profResponse.data;
+        updateProf(profData);
+
+        // const departmentResponse = await wso.factrakService.getDepartment(
+        // profData.departmentID
+        // );
+        // updateDepartment(departmentResponse.data);
       } catch {
         navigateTo("500");
       }
@@ -123,12 +130,6 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
       updateErrors([error.message]);
     }
   };
-  const options = [
-    areasOfStudy.map((areaOfStudy) => ({
-      value: areaOfStudy.abbreviation,
-      text: areaOfStudy.abbreviation,
-    })),
-  ];
 
   // Generates the dropdown for the department
   const deptDropdown = () => {
@@ -139,191 +140,269 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         </select>
       );
     return (
-      <EuiSelect
-        className={selectDept}
-        onChange={(event) => updateCourseAOS(event.target.value)}
-        value={courseAOS}
-        options={options}
-      />
+      <div className={styles.selectDeptContainer}>
+        <select
+          className={styles.selectDept}
+          onChange={(event) => updateCourseAOS(event.target.value)}
+          value={courseAOS}
+        >
+          <option value="" defaultValue disabled hidden>
+            Course Prefix
+          </option>
+          {areasOfStudy.map((areaOfStudy) => (
+            <option value={areaOfStudy.abbreviation} key={areaOfStudy.id}>
+              {areaOfStudy.abbreviation}
+            </option>
+          ))}
+        </select>
+      </div>
     );
   };
 
   // Constructor which helps us build the option bubbles for each option
-  const optionBuilder = (type, changeHandler) => {
-    return [1, 2, 3, 4, 5, 6, 7].map((ans) => {
+  const optionBuilder = (type, changeHandler, optional, string) => {
+    return [1, 2, 3, 4, 5, "N/A"].map((ans) => {
+      // Generates the optional N/A option
+      if (ans === "N/A") {
+        if (optional) {
+          return (
+            <EuiFlexItem grow={false} key={null}>
+              <EuiFlexGroup
+                direction="column"
+                alignItems="center"
+                gutterSize="s"
+              >
+                <EuiFlexItem>
+                  <p className={styles.radioText}>N/A</p>
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  <label
+                    className={styles.checkboxContainer}
+                    htmlFor={`${string}na`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={!type}
+                      onChange={() => {
+                        changeHandler(null);
+                      }}
+                      id={`${string}na`}
+                    />
+                    <span className={styles.customCheckbox} />
+                  </label>
+                </EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+          );
+        }
+        return null;
+      }
       return (
-        <React.Fragment key={ans}>
-          <input
-            type="radio"
-            checked={type ? type === ans : false}
-            onChange={() => {
-              changeHandler(ans);
-            }}
-          />
-        </React.Fragment>
+        <EuiFlexItem key={ans} grow={false} className={styles.radioFlexItem}>
+          <EuiFlexGroup direction="column" alignItems="center" gutterSize="s">
+            <EuiFlexItem>
+              <p className={styles.radioText}>{ans}</p>
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <label
+                className={styles.radioContainer}
+                htmlFor={`${string}${ans}`}
+              >
+                <input
+                  type="radio"
+                  checked={type ? type === ans : false}
+                  onChange={() => {
+                    changeHandler(ans);
+                  }}
+                  id={`${string}${ans}`}
+                />
+                <span className={styles.customRadio} />
+              </label>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </EuiFlexItem>
       );
     });
   };
 
-  // Generates the title of the survey
-  const surveyTitle = () => {
-    if (prof) {
-      return (
-        <>
-          <h3>{`${prof.name}`}</h3>
-        </>
-      );
-    }
-    return null;
+  const yesNoQuestion = (recommend) => {
+    const option = recommend ? wouldRecommendCourse : wouldTakeAnother;
+    return (
+      <>
+        <EuiFlexItem>
+          {recommend
+            ? "Would you recommend this course to a friend?"
+            : "Would you take another course with this professor?"}
+        </EuiFlexItem>
+        <EuiFlexItem className={styles.yesNoContainer}>
+          <EuiFlexGroup gutterSize="xs">
+            <EuiFlexItem grow={false}>
+              <label
+                className={styles.radioContainerSmall}
+                htmlFor={recommend ? "recommendYes" : "takeAnotherYes"}
+              >
+                <input
+                  type="radio"
+                  checked={option || false}
+                  onChange={() =>
+                    recommend ? updateRecommend(true) : updateTakeAnother(true)
+                  }
+                  id={recommend ? "recommendYes" : "takeAnotherYes"}
+                />
+                <span className={styles.customRadioSmall} />
+              </label>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <p className={styles.yesNo}>Yes&nbsp;</p>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <label
+                className={styles.radioContainerSmall}
+                htmlFor={recommend ? "recommendNo" : "takeAnotherNo"}
+              >
+                <input
+                  type="radio"
+                  onChange={() =>
+                    recommend
+                      ? updateRecommend(false)
+                      : updateTakeAnother(false)
+                  }
+                  checked={option !== null && option === false}
+                  id={recommend ? "recommendNo" : "takeAnotherNo"}
+                />
+                <span className={styles.customRadioSmall} />
+              </label>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>
+              <p className={styles.yesNo}>No&nbsp;</p>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </EuiFlexItem>
+      </>
+    );
   };
 
   return (
     <div>
       <section>
         <EuiFlexGroup direction="column" alignItems="center">
-          <EuiFlexItem>
-            {errors ? errors.map((msg) => <p key={msg}>{msg}</p>) : null}
-          </EuiFlexItem>
           <EuiFlexItem className={styles.surveyPage}>
             <form onSubmit={(event) => submitHandler(event)}>
               <EuiFlexGroup
                 direction="column"
                 className={styles.surveyForm}
-                alignItems="center"
+                gutterSize="m"
               >
-                <EuiFlexItem>{surveyTitle()}</EuiFlexItem>
-                <EuiFlexItem className={styles.surveyPage}>
+                <EuiFlexItem>
                   <EuiFlexGroup>
-                    <EuiFlexItem>{deptDropdown()}</EuiFlexItem>
-                    <EuiFlexItem>
-                      <input
-                        placeholder="Course Number*"
-                        type="text"
-                        onChange={(event) =>
-                          updateCourseNumber(event.target.value)
-                        }
-                        defaultValue={
-                          survey && survey.course ? survey.course.number : ""
-                        }
-                        className={styles.courseNumber}
-                      />
+                    <EuiFlexItem grow={false}>
+                      <h3>Review</h3>
                     </EuiFlexItem>
-                    <EuiFlexItem grow={2} />
+                    <EuiFlexItem grow={false}>
+                      {errors
+                        ? errors.map((msg) => (
+                            <p key={msg} className={styles.errorMessage}>
+                              {msg}
+                            </p>
+                          ))
+                        : null}
+                    </EuiFlexItem>
                   </EuiFlexGroup>
                 </EuiFlexItem>
-                <EuiFlexItem className={styles.surveyPage}>
-                  <table className={styles.surveyTable}>
-                    <tbody>
-                      <tr>
-                        <td align="left">
-                          Would you would recommend this course to a friend?
-                        </td>
-                        <td align="left">
-                          Yes&nbsp;
-                          <input
-                            type="radio"
-                            checked={wouldRecommendCourse || false}
-                            onChange={() => updateRecommend(true)}
-                          />
-                          No&nbsp;
-                          <input
-                            type="radio"
-                            onChange={() => updateRecommend(false)}
-                            checked={
-                              wouldRecommendCourse !== null &&
-                              wouldRecommendCourse === false
-                            }
-                          />
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td align="left">
-                          Would you take another course with this professor?
-                        </td>
-                        <td align="left">
-                          Yes&nbsp;
-                          <input
-                            type="radio"
-                            checked={wouldTakeAnother || false}
-                            onChange={() => updateTakeAnother(true)}
-                          />
-                          No&nbsp;
-                          <input
-                            type="radio"
-                            checked={
-                              wouldTakeAnother !== null &&
-                              wouldTakeAnother === false
-                            }
-                            onChange={() => updateTakeAnother(false)}
-                          />
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td align="left">
-                          How does the workload compare to other courses
-                          you&apos;ve taken?
-                        </td>
-                        <td align="left">
-                          {optionBuilder(workload, updateWorkload)}
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td align="left">
-                          How approachable was this professor?
-                        </td>
-                        <td align="left">
-                          {optionBuilder(approachability, updateApprochability)}
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td align="left">
-                          If applicable, how effective was this professor at
-                          lecturing?
-                        </td>
-                        <td align="left">
-                          {optionBuilder(lecture, updateLecture)}
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td align="left">
-                          If applicable, how effective was this professor at
-                          promoting discussion?
-                        </td>
-                        <td align="left">
-                          {optionBuilder(discussion, updateDiscussion)}
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td align="left">
-                          How helpful was this professor outside of class?
-                        </td>
-                        <td align="left">
-                          {optionBuilder(helpful, updateHelpful)}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <EuiFlexItem>{deptDropdown()}</EuiFlexItem>
+                <EuiFlexItem>
+                  <span className={styles.profName}>
+                    <p>{prof?.name}</p>
+                  </span>
                 </EuiFlexItem>
-                <EuiFlexItem className={styles.surveyPage}>
-                  Comments
+                <EuiFlexItem>
+                  <input
+                    placeholder="Course Number"
+                    type="text"
+                    onChange={(event) => updateCourseNumber(event.target.value)}
+                    defaultValue={
+                      survey && survey.course ? survey.course.number : ""
+                    }
+                    className={styles.courseNumber}
+                  />
+                </EuiFlexItem>
+                {yesNoQuestion(true)}
+                {yesNoQuestion(false)}
+                <EuiFlexItem>
+                  <p className={styles.text}>
+                    The following questions are asked on a scale of 1-5, 5 being
+                    the most positive and 1 the most negative.
+                    <br />
+                    Some of these questions will include a ‘Not Applicable’
+                    option if appropriate.
+                  </p>
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  How effective was this professor at lecturing?
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiFlexGroup gutterSize="xl">
+                    {optionBuilder(lecture, updateLecture, true, "lecture")}
+                  </EuiFlexGroup>
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  How effective was this professor as promoting discussion?
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiFlexGroup gutterSize="xl">
+                    {optionBuilder(
+                      discussion,
+                      updateDiscussion,
+                      true,
+                      "discussion"
+                    )}
+                  </EuiFlexGroup>
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  How does the workload compare to your other courses?
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiFlexGroup gutterSize="xl">
+                    {optionBuilder(workload, updateWorkload, false, "workload")}
+                  </EuiFlexGroup>
+                </EuiFlexItem>
+                <EuiFlexItem>How approachable was this professor?</EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiFlexGroup gutterSize="xl">
+                    {optionBuilder(
+                      approachability,
+                      updateApprochability,
+                      false,
+                      "approachability"
+                    )}
+                  </EuiFlexGroup>
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  How helpful was this professor outside of class?
+                </EuiFlexItem>
+                <EuiFlexItem>
+                  <EuiFlexGroup gutterSize="xl">
+                    {optionBuilder(helpful, updateHelpful, false, "helpful")}
+                  </EuiFlexGroup>
+                </EuiFlexItem>
+                <EuiFlexItem>Comments</EuiFlexItem>
+                <EuiFlexItem>
                   <textarea
-                    placeholder="Minimum 100 characters"
+                    placeholder=""
                     value={comment}
                     onChange={(event) => updateComment(event.target.value)}
                     className={styles.textArea}
                   />
-                  <EuiButton type="submit" fullWidth={false} size="m">
-                    Publish Review
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <EuiButton
+                    type="submit"
+                    size="m"
+                    fill
+                    className={styles.submitButton}
+                  >
+                    Post Review
                   </EuiButton>
-                  <br />
-                  <input type="submit" value="Save" data-disable-with="Save" />
-                  <br />
                 </EuiFlexItem>
               </EuiFlexGroup>
             </form>

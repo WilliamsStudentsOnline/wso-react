@@ -1,52 +1,248 @@
 @import "../../../theme";
 
-.selectDept {
-  display: inline;
-  width: 80%;
-  vertical-align: middle;
-  margin-bottom: 0;
-}
+/****** Main Page Properties *********/
 
 .surveyPage {
   width: 100%;
 }
 
 .surveyForm {
-  width: 70%;
+  width: 66%;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 10%;
-}
+  margin-bottom: $px-9;
 
-.surveyTable {
-  font-size: $f-1;
-  font-weight: 300;
-  font-family: $default-font;
-  letter-spacing: 0px;
-  color: $primary-7;
-
-  tr {
-    line-height: $px-6;
+  h3 {
+    font-size: $f-4;
+    color: $blue-5;
+    margin-top: $px-4;
   }
 }
 
-.textArea {
-  height: 100px;
-  background-color: $warm-gray-1;
-}
+/****** Heading Properties *********/
 
 .courseNumber {
-  background-color: $warm-gray-2;
-  border-radius: $px-2;
-  width: 60%;
-  height: $px-7;
-  padding-left: $px-3;
-  color: $primary-7;
+  width: $px-11;
+  height: $px-8;
+  padding-left: $px-6;
+  color: $cool-gray-6;
+  border: $px-0 solid $cool-gray-3;
+  background: $cool-gray-0;
+  font-size: $f-0;
+  margin-bottom: $px-4;
 }
 
+.courseNumber:focus {
+  border: $px-0 solid $primary-4;
+}
 .courseNumber::placeholder {
-  color: $primary-7;
+  color: $cool-gray-6;
   font-size: $f-1;
+}
+
+.selectDeptContainer {
+  border-radius: $px-4;
+  border: $px-0 solid $cool-gray-3;
+  width: 163px;
+  background: $cool-gray-0;
+
+  select {
+    border-radius: $px-4;
+    width: 135px;
+    height: $f-6;
+    background: $cool-gray-0;
+    padding-left: $px-6;
+    color: $cool-gray-6;
+    font-size: $f-1;
+  }
+}
+
+.errorMessage {
+  color: $bad-3;
+  font-size: $px-5;
   font-weight: 300;
-  font-family: $default-font;
+  margin-top: $px-5;
+}
+
+.profName {
+  border: $px-0 solid $cool-gray-3;
+  height: $px-8;
+  width: $px-12;
+  background: $cool-gray-0;
+  padding: $px-5 $px-6;
+  color: $cool-gray-6;
+  font-size: $f-1;
+}
+
+/****** Survey Properties *********/
+
+.radioText {
+  color: $cool-gray-6;
+  font-size: $f-2;
+}
+
+.yesNo {
+  @extend .radioText;
+  margin-right: $px-4;
+  font-size: $f-1;
+  margin-top: $px-0;
+}
+
+.yesNoContainer {
+  height: $px-6;
+}
+
+.submitButton {
+  width: $px-10;
+}
+
+.textArea {
+  height: $px-10;
+  background-color: $cool-gray-0;
+  border: $px-0 solid $cool-gray-3;
+  padding: $px-4;
+  margin-bottom: $px-6;
+}
+
+.text {
+  margin: $px-5 0;
+}
+
+/****** Radio Button Properties *********/
+
+// Make the "input" invisible
+.radioContainer {
+  display: block;
+  position: relative;
+  padding-left: $px-5;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  input:checked ~ .customRadio {
+    background-color: white;
+    border: $px-1 solid $primary-5;
+  }
+
+  input:checked ~ .customRadio:after {
+    display: block;
+  }
+}
+
+// Create the custom radio styling
+.customRadio {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: $f-3;
+  width: $f-3;
+  background-color: white;
+  border-radius: 50%;
+  border: $px-1 solid $cool-gray-6;
+}
+
+// Add the dot in the middle
+.customRadio:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+// Style the dot in the middle once it appears
+.radioContainer .customRadio:after {
+  top: $px-1;
+  left: $px-1;
+  width: $px-4;
+  height: $px-4;
+  border-radius: 50%;
+  background: $primary-5;
+}
+
+/****** Smaller Radio Button *********/
+
+.radioContainerSmall {
+  @extend .radioContainer;
+
+  input:checked ~ .customRadioSmall {
+    background-color: white;
+    border: $px-1 solid $primary-5;
+  }
+
+  input:checked ~ .customRadioSmall:after {
+    display: block;
+  }
+}
+
+.radioContainerSmall .customRadioSmall:after {
+  top: $px-1;
+  left: $px-1;
+  width: $px-3;
+  height: $px-3;
+  border-radius: 50%;
+  background: $primary-5;
+}
+
+.customRadioSmall {
+  @extend .customRadio;
+  height: $px-5;
+  width: $px-5;
+}
+
+.radioFlexItem {
+  height: $px-9;
+}
+
+/****** Checkbox Properties *********/
+
+.checkboxContainer {
+  @extend .radioContainer;
+  margin-bottom: $px-4;
+
+  :hover ~ .customCheckbox {
+    background-color: $cool-gray-5;
+  }
+
+  input:checked ~ .customCheckbox {
+    background-color: $primary-5;
+    border: none;
+  }
+
+  input:checked ~ .customCheckbox:after {
+    display: block;
+  }
+}
+
+.customCheckbox {
+  @extend .customRadio;
+  border-radius: 0;
+}
+
+.customCheckbox:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+// Create the checkmark in the middle of the checkbox
+.checkboxContainer .customCheckbox:after {
+  // Exact pixel sizing is necessary for it to work properly
+  left: 6px;
+  top: 1px;
+  width: 8px;
+  height: 14px;
+
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  border-radius: 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
