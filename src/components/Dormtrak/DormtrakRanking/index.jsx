@@ -76,8 +76,8 @@ const DormtrakRanking = ({ wso }) => {
       <table>
         <tbody>
           <tr>
-            <th>Max Mean Single</th>
-            <th>Min Mean Single</th>
+            <th className={styles.left}>Max Mean Single</th>
+            <th className={styles.right}>Min Mean Single</th>
           </tr>
           {times.map((_, index) => {
             if (!dormInfo) return rankingSkeleton(index);
@@ -107,8 +107,8 @@ const DormtrakRanking = ({ wso }) => {
       <table>
         <tbody>
           <tr>
-            <th>Biggest Singles</th>
-            <th>Smallest Singles</th>
+            <th className={styles.left}>Biggest Singles</th>
+            <th className={styles.right}>Smallest Singles</th>
           </tr>
           {times.map((_, index) => {
             if (!dormInfo) return rankingSkeleton(index);
@@ -142,8 +142,8 @@ const DormtrakRanking = ({ wso }) => {
       <table>
         <tbody>
           <tr>
-            <th>Max Mean Double Size</th>
-            <th>Min Mean Double Size</th>
+            <th className={styles.left}>Max Mean Double Size</th>
+            <th className={styles.right}>Min Mean Double Size</th>
           </tr>
           {times.map((_, index) => {
             if (!dormInfo) return rankingSkeleton(index);
@@ -173,8 +173,8 @@ const DormtrakRanking = ({ wso }) => {
       <table>
         <tbody>
           <tr>
-            <th>Biggest Doubles</th>
-            <th>Smallest Doubles</th>
+            <th className={styles.left}>Biggest Doubles</th>
+            <th className={styles.right}>Smallest Doubles</th>
           </tr>
 
           {times.map((_, index) => {
@@ -209,8 +209,8 @@ const DormtrakRanking = ({ wso }) => {
       <table>
         <tbody>
           <tr>
-            <th>Most Singles</th>
-            <th>Most Doubles</th>
+            <th className={styles.left}>Most Singles</th>
+            <th className={styles.right}>Most Doubles</th>
           </tr>
 
           {times.map((_, index) => {

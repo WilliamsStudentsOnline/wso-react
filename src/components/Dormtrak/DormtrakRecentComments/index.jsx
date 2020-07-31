@@ -5,7 +5,9 @@ import { Line, Paragraph, Photo } from "../../common/Skeleton";
 import Button from "../../common/Button";
 
 // Additional imports
+import { avatarHelper } from "../../../lib/imageHelper";
 import { connect } from "react-redux";
+import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 import { getWSO } from "../../../selectors/auth";
 import { userTypeStudent } from "../../../constants/general";
 import { Link } from "react-router5";
@@ -104,8 +106,8 @@ const DormtrakRecentComments = ({
 
   //   if (!expanded) {
   //     return (
-  //       renderFullComment(review),
-  //       { link },
+  //       renderFullComment(review);
+  //       { link };
   //     )
   //   }
   //   return (
@@ -117,31 +119,42 @@ const DormtrakRecentComments = ({
   // Renders an abridged comment
   const renderAbridgedComment = (review) => {
     return (
-      <div className={styles.comment} key={review.id}>
-        <div>
-          <Link
-            routeName="dormtrak.dorms"
-            routeParams={{ dormID: review.dormRoom.dorm.id }}
-          >
-            <h1 className={styles.commentTitle}>
-              {review.dormRoom.dorm.name} -{" "}
-              {review.dormRoom.dorm.neighborhood.name}
-            </h1>
-          </Link>
-        </div>
+      <EuiFlexGroup className={styles.comment} key={review.id}>
+        <EuiFlexItem className={styles.dormIconContainer} grow={1}>
+          <img
+            alt="dorm"
+            src={avatarHelper(review.dormRoom.dorm.name)}
+            className={styles.dormIcon}
+          />
+        </EuiFlexItem>
 
-        {/* see more function */}
-        <div className={styles.commentContent}>
+        <EuiFlexItem grow={5}>
           <div>
-            <span>{review.comment.substring(0, 200)} </span>
-            <span className={styles.seeMore}>see more...</span>
+            <Link
+              routeName="dormtrak.dorms"
+              routeParams={{ dormID: review.dormRoom.dorm.id }}
+            >
+              <h1 className={styles.commentTitle}>
+                {review.dormRoom.dorm.name} -{" "}
+                {review.dormRoom.dorm.neighborhood.name}
+              </h1>
+            </Link>
           </div>
-          <p className={styles.commentDate}>
-            {`Posted ${format(new Date(review.createdTime))}`}
-          </p>
-          {editDeleteButtons(review)}
-        </div>
-      </div>
+
+          {/* see more function */}
+          <div className={styles.commentContent}>
+            <div>
+              <span>{review.comment.substring(0, 200)} </span>
+              {/* clicking "see more..." directs the user to the part of the dorm's page with the review */}
+              <span className={styles.seeMore}>see more...</span>
+            </div>
+            <p className={styles.commentDate}>
+              {`Posted ${format(new Date(review.createdTime))}`}
+            </p>
+            {editDeleteButtons(review)}
+          </div>
+        </EuiFlexItem>
+      </EuiFlexGroup>
     );
   };
 

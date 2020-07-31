@@ -46,9 +46,18 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
 
   return (
     <div className={styles.container}>
-      <DormtrakRecentComments abridged currUser={currUser} reviews={reviews} />
+      <div>
+        <DormtrakRecentComments
+          className={styles.recentComments}
+          abridged
+          currUser={currUser}
+          reviews={reviews}
+        />
+      </div>
 
-      <DormtrakRanking />
+      <div>
+        <DormtrakRanking className={styles.rankings} />
+      </div>
     </div>
   );
 };

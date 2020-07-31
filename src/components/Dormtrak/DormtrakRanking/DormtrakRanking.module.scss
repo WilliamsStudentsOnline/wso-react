@@ -22,6 +22,15 @@ th {
 
 td {
   color: $cool-gray-8;
+  border-top: 1px solid $cool-gray-3;
+}
+
+.left {
+  border-radius: 10px 0 0 0;
+}
+
+.right {
+  border-radius: 0 10px 0 0;
 }
 
 th {
