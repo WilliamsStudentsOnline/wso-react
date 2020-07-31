@@ -70,7 +70,6 @@ const App = ({
         useIP: true,
       });
       const newIdenToken = tokenResponse.token;
-
       updateIdenToken(newIdenToken);
     } catch (error) {
       navigateTo("500");
@@ -96,7 +95,7 @@ const App = ({
       if (persistedToken) {
         updateIdenToken(persistedToken);
       } else {
-        getIPIdentityToken();
+        await getIPIdentityToken();
       }
 
       setInitialized(true);
@@ -136,7 +135,6 @@ const App = ({
         getIPIdentityToken();
       }
     };
-
     if (initialized) {
       updateAPI();
     }
@@ -145,7 +143,7 @@ const App = ({
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [identityToken]);
+  }, [identityToken, initialized]);
 
   /**
    * Each time the authentication mechanism/ API is updated, see if we need to update the current
