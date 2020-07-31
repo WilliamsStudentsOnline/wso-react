@@ -4,82 +4,86 @@
   padding-right: 10px;
 }
 
-// .commentContainer {
-//   display: flex;
-
-//   .greenStrip {
-//     width: $px-4;
-//     background-color: $new-0;
-//     z-index: 2;
-//     margin-bottom: $px-6;
-//     margin-top: -$px-3;
-//   }
-
-.comment {
+.commentContainer {
   display: flex;
-  z-index: 1;
-  font-style: normal;
-  width: 589px;
-  border-radius: 0px 10px 10px 0px;
-  background: $cool-gray-0;
-  line-height: 25px;
-  margin-bottom: $px-6;
-  padding: $px-6 $px-7 $px-3 $px-7;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
-  .dormIconContainer {
-    min-width: 88px;
-
-    .dormIcon {
-      height: 88px;
-      width: 100%;
-      object-fit: cover;
-      border-radius: 50%;
-    }
+  .isRecent {
+    width: $px-4;
+    background: $new-0;
+    z-index: 2;
+    margin-bottom: $px-6;
+    margin-top: -$px-3;
+  }
+  .isNotRecent {
+    width: $px-4;
   }
 
-  .commentTitle {
-    color: $primary-6;
-    font-size: $f-2;
-  }
-
-  .commentContent {
-    line-height: 22px;
-  }
-
-  .seeMore {
-    color: $primary-5;
-  }
-
-  .commentDate {
-    font-style: italic;
-    color: $cool-gray-6;
-    font-size: $f-1;
-    padding-top: $px-5;
-  }
-}
-// }
-
-h3 {
-  line-height: 33px;
-  font-size: $f-4;
-  font-weight: normal;
-  color: $blue-5;
-}
-
-@media (max-width: $md) {
   .comment {
-    justify-content: center;
-    width: 100%;
+    display: flex;
+    z-index: 1;
+    font-style: normal;
+    width: 589px;
+    border-radius: 0px 10px 10px 0px;
+    background: $cool-gray-0;
+    line-height: 25px;
+    margin-bottom: $px-6;
+    padding: $px-6 $px-7 $px-3 $px-7;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
     .dormIconContainer {
-      height: 88px;
+      min-width: 88px;
 
       .dormIcon {
-        width: 88px;
         height: 88px;
-        margin-left: auto;
-        margin-right: auto;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+    }
+
+    .commentTitle {
+      color: $primary-6;
+      font-size: $f-2;
+    }
+
+    .commentContent {
+      line-height: 22px;
+    }
+
+    .seeMore {
+      color: $primary-5;
+    }
+
+    .commentDate {
+      font-style: italic;
+      color: $cool-gray-6;
+      font-size: $f-1;
+      padding-top: $px-5;
+    }
+  }
+  // }
+
+  h3 {
+    line-height: 33px;
+    font-size: $f-4;
+    font-weight: normal;
+    color: $blue-5;
+  }
+
+  @media (max-width: $md) {
+    .comment {
+      justify-content: center;
+      width: 100%;
+
+      .dormIconContainer {
+        height: 88px;
+
+        .dormIcon {
+          width: 88px;
+          height: 88px;
+          margin-left: auto;
+          margin-right: auto;
+        }
       }
     }
   }

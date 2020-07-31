@@ -1,0 +1,20 @@
+@import "../../../theme.scss";
+
+.article {
+  width: 60%;
+  margin-left: 177px;
+  color: $cool-gray-8;
+  line-height: 22px;
+
+  .link {
+    color: $primary-5;
+  }
+}
+
+@media (max-width: $md) {
+  .article {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

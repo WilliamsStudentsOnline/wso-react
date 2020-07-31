@@ -118,9 +118,12 @@ const DormtrakRecentComments = ({
 
   // Renders an abridged comment
   const renderAbridgedComment = (review) => {
+    const isRecent =
+      new Date() - new Date(review.createdTime) < 7 * 1000 * 24 * 60 * 60;
+
     return (
       <div className={styles.commentContainer}>
-        <div className={styles.greenStrip} />
+        <div className={isRecent ? styles.isRecent : styles.isNotRecent} />
         <EuiFlexGroup className={styles.comment} key={review.id}>
           <EuiFlexItem className={styles.dormIconContainer} grow={1}>
             <img
