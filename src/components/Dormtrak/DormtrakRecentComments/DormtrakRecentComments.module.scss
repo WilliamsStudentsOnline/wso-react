@@ -1,9 +1,5 @@
 @import "../../../theme.scss";
 
-.container {
-  padding-right: 10px;
-}
-
 .commentContainer {
   display: flex;
 
@@ -21,7 +17,6 @@
   .comment {
     display: flex;
     z-index: 1;
-    font-style: normal;
     width: 589px;
     border-radius: 0px 10px 10px 0px;
     background: $cool-gray-0;
@@ -60,14 +55,6 @@
       font-size: $f-1;
       padding-top: $px-5;
     }
-  }
-  // }
-
-  h3 {
-    line-height: 33px;
-    font-size: $f-4;
-    font-weight: normal;
-    color: $blue-5;
   }
 
   @media (max-width: $md) {

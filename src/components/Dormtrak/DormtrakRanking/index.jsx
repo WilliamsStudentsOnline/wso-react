@@ -70,7 +70,7 @@ const DormtrakRanking = ({ wso }) => {
   };
 
   return (
-    <article>
+    <section>
       <h3>Facts</h3>
 
       <table>
@@ -265,7 +265,7 @@ const DormtrakRanking = ({ wso }) => {
           })}
         </tbody>
       </table> */}
-    </article>
+    </section>
   );
 };
 
