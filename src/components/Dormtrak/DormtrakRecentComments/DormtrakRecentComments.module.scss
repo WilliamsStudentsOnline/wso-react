@@ -4,8 +4,20 @@
   padding-right: 10px;
 }
 
+// .commentContainer {
+//   display: flex;
+
+//   .greenStrip {
+//     width: $px-4;
+//     background-color: $new-0;
+//     z-index: 2;
+//     margin-bottom: $px-6;
+//     margin-top: -$px-3;
+//   }
+
 .comment {
   display: flex;
+  z-index: 1;
   font-style: normal;
   width: 589px;
   border-radius: 0px 10px 10px 0px;
@@ -46,6 +58,7 @@
     padding-top: $px-5;
   }
 }
+// }
 
 h3 {
   line-height: 33px;

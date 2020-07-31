@@ -50,7 +50,7 @@ const DormtrakRecentComments = ({
   const editDeleteButtons = (review) => {
     if (currUser.type === userTypeStudent && currUser.id === review.userID) {
       return (
-        <p className="comment-detail">
+        <p className={styles.commentContent}>
           <Button
             onClick={() =>
               navigateTo("dormtrak.editReview", {
@@ -119,42 +119,45 @@ const DormtrakRecentComments = ({
   // Renders an abridged comment
   const renderAbridgedComment = (review) => {
     return (
-      <EuiFlexGroup className={styles.comment} key={review.id}>
-        <EuiFlexItem className={styles.dormIconContainer} grow={1}>
-          <img
-            alt="dorm"
-            src={avatarHelper(review.dormRoom.dorm.name)}
-            className={styles.dormIcon}
-          />
-        </EuiFlexItem>
+      <div className={styles.commentContainer}>
+        <div className={styles.greenStrip} />
+        <EuiFlexGroup className={styles.comment} key={review.id}>
+          <EuiFlexItem className={styles.dormIconContainer} grow={1}>
+            <img
+              alt="dorm"
+              src={avatarHelper(review.dormRoom.dorm.name)}
+              className={styles.dormIcon}
+            />
+          </EuiFlexItem>
 
-        <EuiFlexItem grow={5}>
-          <div>
-            <Link
-              routeName="dormtrak.dorms"
-              routeParams={{ dormID: review.dormRoom.dorm.id }}
-            >
-              <h1 className={styles.commentTitle}>
-                {review.dormRoom.dorm.name} -{" "}
-                {review.dormRoom.dorm.neighborhood.name}
-              </h1>
-            </Link>
-          </div>
-
-          {/* see more function */}
-          <div className={styles.commentContent}>
+          <EuiFlexItem grow={5}>
             <div>
-              <span>{review.comment.substring(0, 200)} </span>
-              {/* clicking "see more..." directs the user to the part of the dorm's page with the review */}
-              <span className={styles.seeMore}>see more...</span>
+              <Link
+                routeName="dormtrak.dorms"
+                routeParams={{ dormID: review.dormRoom.dorm.id }}
+              >
+                <h1 className={styles.commentTitle}>
+                  {review.dormRoom.dorm.name} -{" "}
+                  {review.dormRoom.dorm.neighborhood.name}
+                </h1>
+              </Link>
             </div>
-            <p className={styles.commentDate}>
-              {`Posted ${format(new Date(review.createdTime))}`}
-            </p>
-            {editDeleteButtons(review)}
-          </div>
-        </EuiFlexItem>
-      </EuiFlexGroup>
+
+            {/* see more function */}
+            <div className={styles.commentContent}>
+              <div>
+                <span>{review.comment.substring(0, 200)} </span>
+                {/* clicking "see more..." directs the user to the part of the dorm's page with the review */}
+                <span className={styles.seeMore}>see more...</span>
+              </div>
+              <p className={styles.commentDate}>{`Posted ${format(
+                new Date(review.createdTime)
+              )}`}</p>
+              {editDeleteButtons(review)}
+            </div>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      </div>
     );
   };
 

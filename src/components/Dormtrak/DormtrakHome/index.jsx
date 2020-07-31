@@ -30,7 +30,6 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
         );
         if (isMounted) {
           updateReviews(dormReviewResponse.data);
-          console.log(dormReviewResponse.data);
         }
       } catch {
         navigateTo("500");
