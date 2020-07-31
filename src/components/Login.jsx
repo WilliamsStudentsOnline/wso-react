@@ -82,8 +82,8 @@ const Login = ({
       updateIdenToken(identityToken);
       navigateTo("home");
     } catch (error) {
-      if (error.errors) {
-        updateErrors(error.errors);
+      if (error.errorCode === 401) {
+        updateErrors(["Invalid unix id or password!"]);
       }
     }
   };
