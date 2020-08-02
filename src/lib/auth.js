@@ -102,7 +102,7 @@ const configureRequestInterceptors = (api) => {
 const configureResponseInterceptors = (api) => {
   api.interceptors.response.use(async (response) => {
     if (
-      !response.config.url === "/api/v2/auth/api/refresh" &&
+      response.config.url !== "/api/v2/auth/api/refresh" &&
       response.data.updateToken
     )
       await updateAPIToken();
