@@ -99,36 +99,33 @@ const FactrakComment = ({
     if (abridged) return null;
 
     return (
-      <h1>
-        <EuiFlexGroup gutterSize="s">
-          <EuiFlexItem>
-            <EuiBadge
-              iconType="faceHappy"
-              color="#78dca0"
-              className={styles.agreeCount}
-            >
-              <span>{survey.totalAgree ? survey.totalAgree : 0}</span>
-            </EuiBadge>
-          </EuiFlexItem>
-          <EuiFlexItem>
-            <EuiBadge
-              iconType="faceSad"
-              color="#dc3c32"
-              className={styles.agreeCount}
-            >
-              <span>{survey.totalDisagree ? survey.totalDisagree : 0}</span>
-            </EuiBadge>
-          </EuiFlexItem>
-          <EuiFlexItem grow={7} />
-        </EuiFlexGroup>
-      </h1>
+      <EuiFlexGroup gutterSize="s" justifyContent="flexStart">
+        <EuiFlexItem>
+          <EuiBadge
+            iconType="faceHappy"
+            color="#78dca0"
+            className={styles.agreeCount}
+          >
+            <span>{survey.totalAgree ? survey.totalAgree : 0}</span>
+          </EuiBadge>
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiBadge
+            iconType="faceSad"
+            color="#dc3c32"
+            className={styles.agreeCount}
+          >
+            <span>{survey.totalDisagree ? survey.totalDisagree : 0}</span>
+          </EuiBadge>
+        </EuiFlexItem>
+      </EuiFlexGroup>
     );
   };
 
   // Generates all the survey details
   const surveyDetail = () => {
     return (
-      <p className={styles.commentDetail}>{`posted about ${format(
+      <p className={styles.commentDetail}>{`Posted about ${format(
         new Date(survey.createdTime)
       )}`}</p>
     );
@@ -237,9 +234,8 @@ const FactrakComment = ({
 
     return (
       <>
-        <EuiFlexGroup gutterSize="s">
-          <EuiFlexItem grow={8} />
-          <EuiFlexItem className={styles.agreeButton}>
+        <EuiFlexGroup gutterSize="m">
+          <EuiFlexItem className={styles.agreeButton} grow={false}>
             <Button
               className={
                 survey.clientAgreement !== undefined && survey.clientAgreement
@@ -257,7 +253,7 @@ const FactrakComment = ({
               </EuiBadge>
             </Button>
           </EuiFlexItem>
-          <EuiFlexItem className={styles.agreeButton}>
+          <EuiFlexItem className={styles.agreeButton} grow={false}>
             <Button
               className={
                 survey.clientAgreement !== undefined && !survey.clientAgreement
@@ -276,7 +272,7 @@ const FactrakComment = ({
             </Button>
           </EuiFlexItem>
           {!abridged && !survey.flagged && (
-            <EuiFlexItem className={styles.agreeButton}>
+            <EuiFlexItem className={styles.agreeButton} grow={false}>
               <Button onClick={flagHandler}>
                 <EuiBadge iconType="flag">
                   <span title="Flagged for moderator attention">
@@ -448,17 +444,16 @@ const FactrakComment = ({
           <EuiFlexGroup
             direction="row"
             gutterSize="none"
-            justifyContent="center"
+            justifyContent="flexStart"
             alignItems="center"
           >
             <EuiFlexItem>
-              <EuiFlexGroup direction="column" gutterSize="none">
+              <EuiFlexGroup direction="column" gutterSize="m">
                 <EuiFlexItem>{agree()}</EuiFlexItem>
                 <EuiFlexItem>{surveyDetail()}</EuiFlexItem>
               </EuiFlexGroup>
             </EuiFlexItem>
-            <EuiFlexItem grow={6} />
-            <EuiFlexItem>{edit()}</EuiFlexItem>
+            <EuiFlexItem grow={false}>{edit()}</EuiFlexItem>
           </EuiFlexGroup>
         </EuiFlexItem>
       </EuiFlexGroup>
@@ -468,7 +463,9 @@ const FactrakComment = ({
   return (
     <EuiFlexGroup
       className={
-        getTimeDifference() ? styles.commentCardRecent : styles.commentCard
+        getTimeDifference()
+          ? styles.commentCardRecentLarge
+          : styles.commentCardLarge
       }
     >
       <EuiFlexItem grow={1}>
@@ -480,7 +477,7 @@ const FactrakComment = ({
           <img src={userPhoto} alt="avatar" />
         </Link>
       </EuiFlexItem>
-      <EuiFlexItem className={styles.commentContent} grow={7}>
+      <EuiFlexItem className={styles.commentContent} grow={6}>
         <h1 className={styles.commentHeader}>
           {profName()}
           {courseLink()}
@@ -493,13 +490,12 @@ const FactrakComment = ({
           alignItems="center"
         >
           <EuiFlexItem>
-            <EuiFlexGroup direction="column" gutterSize="none">
+            <EuiFlexGroup direction="column" gutterSize="m">
               <EuiFlexItem>{agree()}</EuiFlexItem>
               <EuiFlexItem>{surveyDetail()}</EuiFlexItem>
             </EuiFlexGroup>
           </EuiFlexItem>
-          <EuiFlexItem grow={6} />
-          <EuiFlexItem>{edit()}</EuiFlexItem>
+          <EuiFlexItem grow={false}>{edit()}</EuiFlexItem>
         </EuiFlexGroup>
       </EuiFlexItem>
     </EuiFlexGroup>

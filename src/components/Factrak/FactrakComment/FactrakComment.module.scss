@@ -5,12 +5,24 @@
 .commentCard {
   border-radius: 0px 10px 10px 0px;
   box-shadow: 0 $px-2 $px-3 rgba(0, 0, 0, 0.3);
-  border-left: 16px solid transparent;
+  border-left: $px-4 solid transparent;
+  padding-right: $px-5;
+}
+
+.commentCardLarge {
+  @extend .commentCard;
+  padding-top: $px-6;
+  padding-bottom: $px-5;
 }
 
 .commentCardRecent {
   @extend .commentCard;
-  border-left: $px-5 solid $new-0;
+  border-left: $px-4 solid $new-0;
+}
+
+.commentCardRecentLarge {
+  @extend .commentCardLarge;
+  border-left: $px-4 solid $new-0;
 }
 
 /****** Comment Headers *********/
@@ -23,16 +35,16 @@
 
 .commentHeaderAbridged {
   @extend .commentHeaderBase;
-  font-size: $f-0;
-  font-weight: 600;
+  font-size: $px-5;
+  font-weight: normal;
   margin-top: $px-3;
-  margin-bottom: $px-2;
+  margin-bottom: $px-3;
 }
 
 .commentHeader {
   @extend .commentHeaderBase;
   font-size: $f-2;
-  font-weight: 300;
+  font-weight: normal;
   line-height: $px-6;
   margin-top: $px-2;
 }
@@ -41,13 +53,15 @@
 
 .commentContentAbridged {
   font-family: $default-font;
-  font-size: $f-0;
+  font-size: $f-1;
   color: $cool-gray-9;
+  line-height: 22px;
 }
 
 .commentContent {
-  font-size: $f-1;
+  font-size: $px-5;
   line-height: 19px;
+  color: $cool-gray-9;
 }
 
 .commentContentProf {
@@ -68,10 +82,11 @@
 }
 
 .commentDetail {
-  font-size: 10px;
+  font-size: $f-1;
   color: $cool-gray-6;
   font-style: italic;
-  margin-top: $px-3;
+  font-weight: 300;
+  margin-top: $px-2;
   margin-bottom: $px-3;
 }
 
@@ -80,7 +95,7 @@
 }
 
 .recommendations {
-  font-size: $f-0;
+  font-size: $px-5;
   line-height: $px-5;
   color: $cool-gray-8;
 }
