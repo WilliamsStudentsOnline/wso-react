@@ -2,9 +2,11 @@
 
 .professorTables {
   font-family: $default-font;
-  margin-left: $px-4;
-  box-shadow: 0 $px-2 $px-3 rgba(0, 0, 0, 0.3);
+  margin-left: $px-2;
+  margin-bottom: $px-8;
+  box-shadow: 0 $px-2 $px-2 rgba(0, 0, 0, 0.25);
   height: $px-15;
+  //border-radius: $px-2;
 
   thead tr {
     background: $blue-5;
@@ -43,6 +45,7 @@
     padding-left: $px-5;
     padding-top: $px-5;
     justify-content: center;
+    border-radius: $px-2;
   }
 
   td + td {
