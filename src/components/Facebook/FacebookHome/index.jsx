@@ -229,7 +229,7 @@ const FacebookHome = ({ navigateTo, route, wso }) => {
           />
           <EuiCheckbox
             id={2}
-            label="professor"
+            label="Faculty"
             checked={roleFilter.professor}
             onChange={() => onChange2("professor")}
           />

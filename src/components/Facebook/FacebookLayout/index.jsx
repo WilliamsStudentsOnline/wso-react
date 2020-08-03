@@ -14,6 +14,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiSpacer,
+  EuiButton,
 } from "@elastic/eui";
 import styles from "./FacebookLayout.module.scss";
 
@@ -44,38 +45,52 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
           </h1>
           <article className={styles.search}>
             <form onSubmit={submitHandler}>
-              <EuiFormControlLayout
-                icon="search"
-                className={styles.formControlLayout}
-              >
-                <input
-                  id="search"
-                  type="search"
-                  placeholder="Search Facebook"
-                  autoFocus
-                  onChange={(event) => updateQuery(event.target.value)}
-                  value={query}
-                />
-              </EuiFormControlLayout>
+              <EuiFlexGroup>
+                <EuiFlexItem grow={false}>
+                  <EuiFormControlLayout
+                    icon="search"
+                    className={styles.formControlLayout}
+                  >
+                    <input
+                      id="search"
+                      type="search"
+                      placeholder="Search Facebook"
+                      autoFocus
+                      onChange={(event) => updateQuery(event.target.value)}
+                      value={query}
+                    />
+                  </EuiFormControlLayout>
+                </EuiFlexItem>
+                <EuiFlexItem grow={false}>
+                  <EuiButton
+                    data-disable-with="Search"
+                    type="submit"
+                    value="Search"
+                    className="submit"
+                    style={{
+                      backgroundColor: "#644a98",
+                      border: "#644a98",
+                      color: "#efdfff",
+                    }}
+                  >
+                    Search
+                  </EuiButton>
+                </EuiFlexItem>
+              </EuiFlexGroup>
             </form>
           </article>
           <br />
           <article className={styles.options}>
-            <EuiFlexGroup justifyContent="center">
-              <EuiFlexItem grow={false}>
-                {currUser && (
-                  <Link
-                    routeName="facebook.users"
-                    routeParams={{ userID: currUser.id }}
-                  >
-                    My Profile
-                  </Link>
-                )}
-              </EuiFlexItem>
-              <EuiFlexItem grow={false}>
-                <Link routeName="facebook.help">Help</Link>
-              </EuiFlexItem>
-            </EuiFlexGroup>
+            <EuiFlexItem grow={false}>
+              {currUser && (
+                <Link
+                  routeName="facebook.users"
+                  routeParams={{ userID: currUser.id }}
+                >
+                  My Profile
+                </Link>
+              )}
+            </EuiFlexItem>
           </article>
         </div>
       </header>
