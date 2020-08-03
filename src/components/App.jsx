@@ -3,8 +3,7 @@ import React, { Suspense, lazy, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Component Imports
-import "./stylesheets/Application.css";
-import Layout from "./Layout";
+import Layout from "./Layout/Layout";
 import Homepage from "./Homepage";
 
 // Redux/routing
@@ -32,23 +31,18 @@ import configureInterceptors from "../lib/auth";
 import jwtDecode from "jwt-decode";
 
 // More component imports
-const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
-const About = lazy(() => import("./views/Misc/About"));
-const FAQ = lazy(() => import("./views/Misc/FAQ"));
-const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
-const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
-const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
-const EphmatchMain = lazy(() => import("./views/Ephmatch/EphmatchMain"));
-const FourOhFour = lazy(() => import("./views/Errors/FourOhFour"));
+const About = lazy(() => import("./About"));
+const BulletinMain = lazy(() => import("./Bulletins"));
+const DiscussionMain = lazy(() => import("./Discussions"));
+const DormtrakMain = lazy(() => import("./Dormtrak"));
+const FacebookMain = lazy(() => import("./Facebook"));
+const FactrakMain = lazy(() => import("./Factrak"));
+const EphmatchMain = lazy(() => import("./Ephmatch"));
+const FiveOhOh = lazy(() => import("./Errors/FiveOhOh"));
+const FourOhFour = lazy(() => import("./Errors/FourOhFour"));
+const FourOhThree = lazy(() => import("./Errors/FourOhThree"));
 const Login = lazy(() => import("./Login"));
-const FourOhThree = lazy(() => import("./views/Errors/FourOhThree"));
-const FiveOhOh = lazy(() => import("./views/Errors/FiveOhOh"));
-const BulletinMain = lazy(() =>
-  import("./views/BulletinsDiscussions/BulletinMain")
-);
-const DiscussionMain = lazy(() =>
-  import("./views/BulletinsDiscussions/DiscussionMain")
-);
+const Scheduler = lazy(() => import("./CourseScheduler"));
 
 const App = ({
   apiToken,
@@ -191,8 +185,6 @@ const App = ({
         return <DormtrakMain />;
       case "factrak":
         return <FactrakMain />;
-      case "faq":
-        return <FAQ />;
       case "login":
         return <Login />;
       case "ephmatch":
