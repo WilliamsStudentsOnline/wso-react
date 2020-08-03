@@ -16,6 +16,7 @@ import {
 import { getAddedCourses, getHiddenCourses } from "../../../selectors/course";
 import { getTimeFormat } from "../../../selectors/schedulerUtils";
 import { BORDER_PALETTE } from "../../../constants/constants.json";
+import { Link } from "react-router5";
 
 // External imports
 import dayjs from "dayjs";
@@ -46,15 +47,25 @@ const Course = ({
   const instructors = () => {
     return (
       <span>
-        {course.instructors?.map((instructor, index) => (
-          <a
-            key={instructor.name}
-            href={instructor.url ? instructor.url : undefined}
-            className={instructor.url ? undefined : "no-url"}
-          >
-            {index === 0 ? instructor.name : `, ${instructor.name}`}
-          </a>
-        ))}
+        {course.instructors?.map((instructor, index) => {
+          if (!instructor.id) {
+            return (
+              <span className="no-url">
+                {index === 0 ? instructor.name : `, ${instructor.name}`}
+              </span>
+            );
+          }
+
+          return (
+            <Link
+              key={instructor.name}
+              routeName="factrak.professors"
+              routeParams={{ profID: instructor.id }}
+            >
+              {index === 0 ? instructor.name : `, ${instructor.name}`}
+            </Link>
+          );
+        })}
       </span>
     );
   };

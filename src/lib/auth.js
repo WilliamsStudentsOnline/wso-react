@@ -1,6 +1,7 @@
 import { doUpdateAPIToken, doUpdateUser, doUpdateWSO } from "../actions/auth";
 import jwtDecode from "jwt-decode";
 import { SimpleAuthentication } from "wso-api-client";
+import { actions } from "redux-router5";
 
 /**
  * Checks whether the request is made with a token header. We claim that this is
@@ -13,7 +14,7 @@ const hasTokenHeader = (config) => {
 };
 
 /**
- * Refreshes the API token present if necessary, and updates it in store.
+ * Gets a new API token and updates it in store.
  *
  * @returns Updated token
  */
@@ -22,8 +23,8 @@ const updateAPIToken = async () => {
 
   let token;
   try {
-    const tokenResponse = await authState.wso.authService.refreshAPIToken(
-      authState.apiToken
+    const tokenResponse = await authState.wso.authService.getAPIToken(
+      authState.identityToken
     );
     token = tokenResponse.token;
     const wso = authState.wso;
@@ -40,6 +41,9 @@ const updateAPIToken = async () => {
     window.store.dispatch(doUpdateUser(user));
   } catch (error) {
     // eslint-disable no-empty
+
+    window.store.dispatch(actions.navigateTo("login"));
+    return null;
   }
   return token;
 };
@@ -79,12 +83,12 @@ const configureRequestInterceptors = (api) => {
 
       if (tokenIsExpired(token)) {
         const newToken = await updateAPIToken();
+
         const updatedConfig = { ...config };
         updatedConfig.headers.Authorization = `Bearer ${newToken}`;
         return updatedConfig;
       }
     }
-
     return config;
   });
 };
@@ -97,7 +101,11 @@ const configureRequestInterceptors = (api) => {
  */
 const configureResponseInterceptors = (api) => {
   api.interceptors.response.use(async (response) => {
-    if (response.data.updateToken) await updateAPIToken();
+    if (
+      response.config.url !== "/api/v2/auth/api/refresh" &&
+      response.data.updateToken
+    )
+      await updateAPIToken();
 
     return response;
   });

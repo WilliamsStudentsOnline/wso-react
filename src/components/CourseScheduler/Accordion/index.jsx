@@ -8,8 +8,8 @@ import {
 } from "./Accordion.module.scss";
 
 // Simple component that takes in a header and children, with the ability to show or hide children.
-const Accordion = ({ header, children }) => {
-  const [hidden, setHidden] = useState(true);
+const Accordion = ({ children, header, startsHidden }) => {
+  const [hidden, setHidden] = useState(startsHidden);
 
   return (
     <div>
@@ -35,8 +35,13 @@ const Accordion = ({ header, children }) => {
 };
 
 Accordion.propTypes = {
-  header: PropTypes.string.isRequired,
   children: PropTypes.element.isRequired,
+  header: PropTypes.string.isRequired,
+  startsHidden: PropTypes.bool,
+};
+
+Accordion.defaultProps = {
+  startsHidden: true,
 };
 
 export default Accordion;
