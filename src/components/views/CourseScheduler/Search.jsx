@@ -22,7 +22,7 @@ const Search = ({ query, onSearch, resetLoad }) => {
   };
 
   return (
-    <form className="search">
+    <div className="search">
       <i className="material-icons md-36">search</i>
       <input
         id="course-search"
@@ -31,14 +31,14 @@ const Search = ({ query, onSearch, resetLoad }) => {
         value={query}
         onChange={onChange}
       />
-    </form>
+    </div>
   );
 };
 
 Search.propTypes = {
   onSearch: PropTypes.func.isRequired,
-  resetLoad: PropTypes.func.isRequired,
   query: PropTypes.string.isRequired,
+  resetLoad: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
