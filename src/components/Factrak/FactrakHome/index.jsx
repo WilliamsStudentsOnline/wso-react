@@ -103,16 +103,10 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
 
   return (
     <article className={styles.factrak}>
-      <EuiFlexGroup direction="rowReverse" justifyContent="spaceAround">
-        <EuiFlexItem grow={7}>
-          <h3>Departments</h3>
-          <div className={styles.departmentCard} description="">
-            <EuiFlexGroup direction="column" gutterSize="m">
-              {depNames()}
-            </EuiFlexGroup>
-          </div>
-        </EuiFlexItem>
-
+      <EuiFlexGroup
+        justifyContent="spaceAround"
+        className={styles.homeContainer}
+      >
         <EuiFlexItem grow={10}>
           <section>
             <h3>Recent Reviews</h3>
@@ -146,6 +140,14 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
                   ))}
             </EuiFlexGroup>
           </section>
+        </EuiFlexItem>
+        <EuiFlexItem grow={7}>
+          <h3>Departments</h3>
+          <div className={styles.departmentCard} description="">
+            <EuiFlexGroup direction="column" gutterSize="m">
+              {depNames()}
+            </EuiFlexGroup>
+          </div>
         </EuiFlexItem>
       </EuiFlexGroup>
     </article>
