@@ -22,6 +22,7 @@
 .factrakText {
   font-size: $f-2;
   color: $primary-4;
+  flex-wrap: nowrap;
 
   a {
     padding-bottom: $px-2;
@@ -44,13 +45,19 @@
 
 .searchWrapper {
   position: relative;
-  display: flex;
   min-width: $px-11;
+  flex-wrap: nowrap;
+}
+
+.searchBarContainer {
+  flex-wrap: nowrap;
+  justify-content: space-between;
 }
 
 .searchBar {
   border-radius: 5px;
   height: $px-7;
+  max-width: $px-15;
 }
 
 .search {
@@ -79,6 +86,10 @@
   display: none;
 }
 
+.searchButton {
+  width: $px-9;
+}
+
 /****** Search Bar animations *********/
 
 .searchWrapper:hover .search,
@@ -89,4 +100,36 @@
 .searchWrapper:hover .searchIconPurple,
 .searchWrapper:focus-within .searchIconPurple {
   display: block;
+}
+
+/****** For responsivness *********/
+
+@media (max-width: 768px) {
+  .pageHead {
+    h1 {
+      text-align: center;
+      margin-left: 0;
+    }
+  }
+
+  .factrakText {
+    padding: 0 $px-9;
+    text-align: center;
+  }
+
+  .searchButton {
+    margin-left: $px-6;
+  }
+
+  .searchBarContainer {
+    padding: 0 $px-7;
+  }
+
+  .searchBar {
+    max-width: none;
+  }
+
+  .searchButtonContainer {
+    max-width: 140px;
+  }
 }

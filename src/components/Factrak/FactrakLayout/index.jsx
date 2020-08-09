@@ -64,7 +64,10 @@ const FactrakLayout = ({ children, currUser, navigateTo, route }) => {
               <EuiFlexGroup direction="column">
                 <EuiFlexItem>
                   <form onSubmit={submitHandler} className={styles.searchBar}>
-                    <EuiFlexGroup>
+                    <EuiFlexGroup
+                      direction="row"
+                      className={styles.searchBarContainer}
+                    >
                       <EuiFlexItem className={styles.searchWrapper}>
                         <img
                           className={styles.searchIcon}
@@ -84,8 +87,15 @@ const FactrakLayout = ({ children, currUser, navigateTo, route }) => {
                           type="text"
                         />
                       </EuiFlexItem>
-                      <EuiFlexItem grow={false}>
-                        <EuiButton fill onClick={submitHandler}>
+                      <EuiFlexItem
+                        grow={false}
+                        className={styles.searchButtonContainer}
+                      >
+                        <EuiButton
+                          fill
+                          onClick={submitHandler}
+                          className={styles.searchButton}
+                        >
                           Search
                         </EuiButton>
                       </EuiFlexItem>
@@ -93,11 +103,7 @@ const FactrakLayout = ({ children, currUser, navigateTo, route }) => {
                   </form>
                 </EuiFlexItem>
                 <EuiFlexItem>
-                  <EuiFlexGroup
-                    direction="row"
-                    className={styles.factrakText}
-                    justifyContent="flexStart"
-                  >
+                  <EuiFlexGroup direction="row" className={styles.factrakText}>
                     <EuiFlexItem grow={false}>
                       <Link routeName="factrak.surveys">My Reviews</Link>
                     </EuiFlexItem>
