@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Line } from "../../common/Skeleton";
 import styles from "./FactrakAOS.module.scss";
-import ProfessorRow from "./FactrakProfessorRow.jsx";
+import ProfessorRow from "./FactrakProfessorRow";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
@@ -70,9 +70,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
 
   // Generates a row containing the prof information.
   const generateProfRow = (prof) => {
-    return (
-      <ProfessorRow professor={prof} />
-    );
+    return <ProfessorRow professor={prof} />;
   };
 
   // Generate a skeleton of prof information
@@ -96,7 +94,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
         <table className={styles.professorTables}>
           <thead>
             <tr>
-              <th>Name</th>
+              <th>Professor</th>
               <th>Courses Taught</th>
             </tr>
           </thead>
@@ -104,10 +102,6 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
             {profs
               ? profs.map((prof) => generateProfRow(prof))
               : [...Array(5)].map((_, i) => profSkeleton(i))}
-            <tr>
-              <td />
-              <td />
-            </tr>
           </tbody>
         </table>
       </EuiFlexItem>
@@ -184,10 +178,6 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
             {courses
               ? courses.map((course) => generateCourseRow(course))
               : [...Array(5)].map((_, i) => courseSkeleton(i))}
-            <tr>
-              <td />
-              <td />
-            </tr>
           </tbody>
         </table>
       </EuiFlexItem>
@@ -212,7 +202,6 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
     <EuiFlexGroup
       className={styles.factrakDepartments}
       direction="column"
-      alignItems="center"
       gutterSize="none"
       justifyContent="flexStart"
     >
@@ -222,8 +211,11 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
         </h3>
       </EuiFlexItem>
       <EuiFlexItem className={styles.departmentFlexItem} grow={false}>
-        <EuiFlexGroup>
-          <EuiFlexItem grow={false}>
+        <EuiFlexGroup className={styles.sectionToggle} gutterSize="none">
+          <EuiFlexItem
+            grow={false}
+            className={styles.sectionContainerProfessors}
+          >
             <h2
               onClick={handleProfessorClick}
               className={table ? "" : styles.pressed}
@@ -232,7 +224,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
               Professors
             </h2>
           </EuiFlexItem>
-          <EuiFlexItem grow={false}>
+          <EuiFlexItem grow={false} className={styles.sectionContainerCourses}>
             <h2
               onClick={handleCourseClick}
               className={table ? styles.pressed : ""}

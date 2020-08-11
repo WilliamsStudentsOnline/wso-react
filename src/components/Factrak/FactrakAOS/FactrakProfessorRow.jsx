@@ -44,11 +44,15 @@ const ProfessorRow = ({ professor, wso }) => {
   return (
     <tr key={professor.id} className={styles.profRow}>
       <td>
-        <EuiFlexGroup alignItems="center">
+        <EuiFlexGroup
+          alignItems="center"
+          direction="row"
+          className={styles.professorRow}
+        >
           <EuiFlexItem grow={false} className={styles.professorPhotoSmall}>
             <img src={photo} alt="avatar" />
           </EuiFlexItem>
-          <EuiFlexItem>
+          <EuiFlexItem grow={false}>
             <Link
               routeName="factrak.professors"
               routeParams={{ profID: professor.id }}
