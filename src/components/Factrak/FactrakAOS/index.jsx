@@ -171,7 +171,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
           <thead>
             <tr>
               <th>Course</th>
-              <th>Professor(s)</th>
+              <th>Professors</th>
             </tr>
           </thead>
           <tbody>
@@ -211,11 +211,8 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
         </h3>
       </EuiFlexItem>
       <EuiFlexItem className={styles.departmentFlexItem} grow={false}>
-        <EuiFlexGroup className={styles.sectionToggle} gutterSize="none">
-          <EuiFlexItem
-            grow={false}
-            className={styles.sectionContainerProfessors}
-          >
+        <div className={styles.sectionToggle}>
+          <div className={styles.sectionContainerProfessors}>
             <h2
               onClick={handleProfessorClick}
               className={table ? "" : styles.pressed}
@@ -223,8 +220,8 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
             >
               Professors
             </h2>
-          </EuiFlexItem>
-          <EuiFlexItem grow={false} className={styles.sectionContainerCourses}>
+          </div>
+          <div className={styles.sectionContainerCourses}>
             <h2
               onClick={handleCourseClick}
               className={table ? styles.pressed : ""}
@@ -232,8 +229,8 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
             >
               Courses
             </h2>
-          </EuiFlexItem>
-        </EuiFlexGroup>
+          </div>
+        </div>
       </EuiFlexItem>
       {generateTable()}
     </EuiFlexGroup>

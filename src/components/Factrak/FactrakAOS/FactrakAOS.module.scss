@@ -18,7 +18,7 @@
     font-size: $f-2;
     padding: $px-4;
     text-align: justify;
-    padding-left: 30px;
+    padding-left: $px-5;
   }
 
   th:first-child {
@@ -75,6 +75,7 @@
 
 .courseTable {
   @extend .professorTables;
+  min-width: $px-14;
 
   th:first-child {
     width: $px-12;
@@ -163,6 +164,10 @@
   }
 }
 
+.sectionToggle {
+  display: flex;
+}
+
 @media (max-width: $lg) {
   .mainPage {
     margin: auto;
@@ -194,6 +199,10 @@
 
   .professorRow {
     flex-wrap: nowrap;
+  }
+
+  .courseTable {
+    min-width: $px-13;
   }
 
   .professorPhotoSmall {
