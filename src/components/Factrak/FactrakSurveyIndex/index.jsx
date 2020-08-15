@@ -39,9 +39,9 @@ const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
     <div>
       <section>
         <EuiFlexGroup
-          className={styles.reviewList}
           direction="column"
           gutterSize="xl"
+          className={styles.reviewList}
         >
           {surveys.length > 0 ? (
             <>

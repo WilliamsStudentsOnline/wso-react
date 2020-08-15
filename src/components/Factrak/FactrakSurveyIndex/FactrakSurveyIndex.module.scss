@@ -2,8 +2,21 @@
 
 .reviewList {
   padding-left: $px-12;
+  padding-right: $px-9;
+  margin-bottom: $px-8;
 }
 
 .personalReviews {
-  width: $px-16;
+  max-width: $px-16;
+}
+
+@media (max-width: $lg) {
+  .reviewList {
+    padding: 0 $px-7;
+    align-items: center;
+  }
+
+  .personalReviews {
+    min-width: $px-13;
+  }
 }
