@@ -1,7 +1,6 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import "../../stylesheets/DatePicker.css";
 
 // Redux and routing imports
 import { connect } from "react-redux";
@@ -14,6 +13,8 @@ import {
   bulletinTypeRide,
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
+/// Keep this after the "react-date-picker" import so that this css style will take priority.
+import "../../stylesheets/DatePicker.css";
 
 const BulletinForm = ({ wso, currUser, navigateTo, route }) => {
   // For non-rides bulletins

@@ -15,4 +15,10 @@
   box-sizing: initial;
   border: none;
   padding: 0;
+  margin: 0;
+}
+
+.react-date-picker__inputGroup {
+  display: flex;
+  padding: 10px 0;
 }
