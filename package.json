@@ -8,7 +8,7 @@
     "dom-to-image": "^2.6.0",
     "google-client-api": "^1.0.4",
     "jwt-decode": "^2.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-date-picker": "^7.8.1",
@@ -104,7 +104,7 @@
   },
   "proxy": "http://localhost:8080",
   "resolutions": {
-    "**/**/dot-prop": "^5.1.1",
+    "**/**/dot-prop": "^5.2.0",
     "**/**/elliptic": "^6.5.3",
     "**/**/kind-of": "^6.0.3",
     "**/**/lodash": "^4.17.19",
