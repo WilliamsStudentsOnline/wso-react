@@ -155,6 +155,10 @@ const Timetable = ({
     const timeZone = "TZID=America/New_York:";
 
     for (const course of semAddedVisible) {
+      if (course.meetings === null) {
+        // this course hasn't set any meeting times, skipping it
+        continue;
+      }
       for (const meeting of course.meetings) {
         let result = "BEGIN:VEVENT\n";
         result += `SUMMARY:${courseString(course)}\n`;
@@ -247,6 +251,10 @@ const Timetable = ({
 
   const exportCalendar = () => {
     for (const course of semAddedVisible) {
+      if (course.meetings === null) {
+        // this course hasn't set any meeting times, skipping it
+        continue;
+      }
       for (const meeting of course.meetings) {
         exportCalendarEvent(course, meeting);
       }
