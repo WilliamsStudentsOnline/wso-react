@@ -62,6 +62,12 @@ $ yarn start
 
 to launch a development build, which includes Hot Module Reload(HMR), where changes you make will be instantly reflected without having to restart the server. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
+**5) Communicating with the Backend**
+
+While we've set up the React side of things, we need to set up the backend to allow our client to get the information from a local server. To do so, set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/), and run the `wso-go` server alongside the React development server at `yarn start`.
+
+The development server is set to communicate to the backend via a proxy, allowing all HTTP requests can thus be made to `/path/to/endpoint` without further settings.
+
 ## Development
 
 **Optional Installations:**
@@ -80,14 +86,6 @@ Styling is currently done via vanilla CSS, although we will likely be moving to 
 - Start by reading the section on contributing to find out the ways you can contribute to this repository. Contrary to popular belief, contributions need not come in the form of code. Fixing typos, creating issues for bugs, adding comments, suggesting tutorials, and helping out the community are valued ways of contributing.
 - If you're interested in learning more about React and Redux, we recommend [this tutorial](https://www.robinwieruch.de/react-redux-tutorial/#react-redux-and-x-tutorial).
 - Look out for issues labelled as 'good first issue' [here](https://github.com/WilliamsStudentsOnline/wso-react/labels/good%20first%20issue). These issues are usually what we have deemed to be great places to get your feet wet.
-
-**Communicating with the Backend**
-
-1. Set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/).
-2. Run the `wso-go` server.
-3. Run the React development sever via `yarn start`.
-
-The development server is set to communicate to the backend via a proxy, allowing all HTTP requests can thus be made to `/path/to/endpoint` without further settings.
 
 ## Available Scripts
 
