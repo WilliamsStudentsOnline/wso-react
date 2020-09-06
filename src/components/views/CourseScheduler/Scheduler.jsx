@@ -26,7 +26,7 @@ import {
 } from "../../../actions/schedulerUtils";
 import { FAILURE } from "../../../constants/actionTypes";
 import { doLoadCatalog } from "../../../actions/course";
-import { addDays } from "../../../lib/general";
+import { addDays } from "../../../lib/scheduler";
 import { DATES } from "../../../constants/constants.json";
 
 /* 
@@ -61,7 +61,6 @@ if (
 const Scheduler = ({
   doUpdateGAPI,
   doUpdateSemester,
-  // doUpdateSignIn,
   doAddNotification,
   active,
   loadCatalog,
@@ -85,14 +84,11 @@ const Scheduler = ({
           apiKey: API_KEY,
         });
 
-        // Listen for sign-in state changes.
         doUpdateGAPI(gapiClient);
-        // doUpdateSignIn(gapiClient.auth2.getAuthInstance().isSignedIn.get());
       } catch (error) {
         doAddNotification({
           type: FAILURE,
-          title: "Failed to execute Google Authentication.",
-          body: error,
+          title: "Failed to load Google API client.",
         });
       }
     };

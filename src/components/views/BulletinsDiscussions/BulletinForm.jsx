@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 // Redux and routing imports
 import { connect } from "react-redux";
-import { getCurrUser, getWSO } from "../../../selectors/auth";
+import { getWSO } from "../../../selectors/auth";
 import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
@@ -16,7 +16,7 @@ import {
 /// Keep this after the "react-date-picker" import so that this css style will take priority.
 import "../../stylesheets/DatePicker.css";
 
-const BulletinForm = ({ wso, currUser, navigateTo, route }) => {
+const BulletinForm = ({ wso, navigateTo, route }) => {
   // For non-rides bulletins
   const [title, updateTitle] = useState("");
 
@@ -82,14 +82,7 @@ const BulletinForm = ({ wso, currUser, navigateTo, route }) => {
     } else {
       updateType(bulletinTypeRide);
     }
-  }, [
-    wso,
-    currUser.id,
-    navigateTo,
-    route.name,
-    route.params.bulletinID,
-    route.params.type,
-  ]);
+  }, [wso, navigateTo, route.name, route.params.bulletinID, route.params.type]);
 
   // Date picker for the start date of the announcement
   const startDateField = () => {
@@ -260,7 +253,6 @@ const BulletinForm = ({ wso, currUser, navigateTo, route }) => {
 
 BulletinForm.propTypes = {
   wso: PropTypes.object.isRequired,
-  currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
 };
@@ -272,7 +264,6 @@ const mapStateToProps = () => {
 
   return (state) => ({
     wso: getWSO(state),
-    currUser: getCurrUser(state),
     ...routeNodeSelector(state),
   });
 };

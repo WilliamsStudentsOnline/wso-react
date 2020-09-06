@@ -32,7 +32,7 @@ import {
   REMOTE,
 } from "../constants/constants.json";
 import { DEPARTMENT } from "../constants/departments.json";
-import { addDays } from "../lib/general";
+import { addDays } from "../lib/scheduler";
 
 const INITIAL_STATE = {};
 let INITIAL_CATALOG = [];
