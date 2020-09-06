@@ -1,10 +1,16 @@
 // React imports
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 // External imports
 import domtoimage from "dom-to-image";
+import {
+  dayConversionGCal,
+  gcalFormattedDate,
+  nextDateWithDay,
+  toDayArray,
+} from "../../../lib/scheduler";
 
 // Component imports
 import Schedule from "./Schedule";
@@ -29,7 +35,7 @@ import {
   changeOrientation,
   // updateSignIn,
 } from "../../../actions/schedulerUtils";
-import { SUCCESS } from "../../../constants/actionTypes";
+import { FAILURE, SUCCESS } from "../../../constants/actionTypes";
 import { DATES, SEMESTERS } from "../../../constants/constants.json";
 
 const Timetable = ({
@@ -45,41 +51,33 @@ const Timetable = ({
   removeSemesterCourses,
   hidden,
 }) => {
-  let signedIn;
-  if (gapi && gapi.auth2.getAuthInstance()) {
-    signedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
-  } else {
-    signedIn = false;
-  }
-  let currApiRequests = [];
+  const [sortOrder, updateSortOrder] = useState("Alphabetical(A-Z)");
+  const [isSignedIn, updateSignIn] = useState(false);
+  const [calendarEvents, updateCalendarEvents] = useState([]);
+
+  useEffect(() => {
+    if (gapi?.auth2.getAuthInstance()) {
+      updateSignIn(gapi.auth2.getAuthInstance().isSignedIn.get());
+    }
+  }, [gapi]);
+
+  const courseShortTitle = (course) => {
+    return course.department + course.number;
+  };
 
   // Defines sorting orders
   const sortOrders = {
     "Alphabetical(A-Z)": (courses) =>
       courses.concat().sort((a, b) => {
-        // Sorts the courses by their name rather than add order for user convenience.
-        const titleA = a.department + a.number;
-        const titleB = b.department + b.number;
-
-        if (titleA < titleB) return -1;
-        if (titleA > titleB) return 1;
-        return 0;
+        return courseShortTitle(a).localeCompare(courseShortTitle(b));
       }),
     "Reverse Alphabetical (Z-A)": (courses) =>
       courses.concat().sort((a, b) => {
-        // Sorts the courses by their name rather than add order for user convenience.
-        const titleA = a.department + a.number;
-        const titleB = b.department + b.number;
-
-        if (titleA < titleB) return 1;
-        if (titleA > titleB) return -1;
-        return 0;
+        return courseShortTitle(b).localeCompare(courseShortTitle(a));
       }),
     "Earliest Added First": (courses) => courses,
     "Latest Added First": (courses) => courses.concat().reverse(),
   };
-
-  const [sortOrder, updateSortOrder] = useState("Alphabetical(A-Z)");
 
   const semAdded = added.filter(
     (course) => course.semester === SEMESTERS[currSem]
@@ -119,36 +117,6 @@ const Timetable = ({
       });
   };
 
-  const dayConversionGCal = (days) => {
-    if (days === "M-F") return "MO,TU,WE,TH,FR";
-
-    const result = [];
-
-    days.split("").forEach((day) => {
-      switch (day) {
-        case "M":
-          result.push("MO");
-          break;
-        case "T":
-          result.push("TU");
-          break;
-        case "W":
-          result.push("WE");
-          break;
-        case "R":
-          result.push("TH");
-          break;
-        case "F":
-          result.push("FR");
-          break;
-        default:
-          break;
-      }
-    });
-
-    return result.join(",");
-  };
-
   const exportICS = () => {
     let calendar =
       "BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\n";
@@ -160,17 +128,24 @@ const Timetable = ({
         continue;
       }
       for (const meeting of course.meetings) {
+        const meetingStartDate = nextDateWithDay(
+          DATES[course.semester].START,
+          toDayArray(meeting.days)
+        );
+
         let result = "BEGIN:VEVENT\n";
         result += `SUMMARY:${courseString(course)}\n`;
         result += `RRULE:FREQ=WEEKLY;UNTIL=${
           DATES[course.semester].END
         }T000000Z;BYDAY=${dayConversionGCal(meeting.days)}`;
-        result += `DTSTART;${timeZone}${
-          DATES[course.semester].START
-        }T${meeting.start.replace(":", "")}00\n`;
-        result += `DTEND;${timeZone}${
-          DATES[course.semester].START
-        }T${meeting.end.replace(":", "")}00\n`;
+        result += `DTSTART;${timeZone}${meetingStartDate}T${meeting.start.replace(
+          ":",
+          ""
+        )}00\n`;
+        result += `DTEND;${timeZone}${meetingStartDate}T${meeting.end.replace(
+          ":",
+          ""
+        )}00\n`;
         result += `LOCATION:${meeting.facil}\n`;
         result += `DESCRIPTION:${course.descriptionSearch}\n`;
         result += "END:VEVENT\n";
@@ -191,17 +166,21 @@ const Timetable = ({
     document.body.removeChild(link);
   };
 
-  const exportCalendarEvent = (course, meeting) => {
+  const createGCalEvent = (course, meeting) => {
+    const gcalStartDate = gcalFormattedDate(
+      nextDateWithDay(DATES[course.semester].START, toDayArray(meeting.days))
+    );
+
     const event = {
       summary: courseString(course),
       location: meeting.facil,
       description: course.descriptionSearch,
       start: {
-        dateTime: `${DATES[course.semester].START_GCAL}${meeting.start}:00`,
+        dateTime: `${gcalStartDate}T${meeting.start}:00`,
         timeZone: "America/New_York",
       },
       end: {
-        dateTime: `${DATES[course.semester].START_GCAL}${meeting.end}:00`,
+        dateTime: `${gcalStartDate}T${meeting.end}:00`,
         timeZone: "America/New_York",
       },
       recurrence: [
@@ -211,18 +190,20 @@ const Timetable = ({
       ],
     };
 
-    currApiRequests.push({
-      request: gapi.client.calendar.events.insert({
+    return {
+      request: {
         calendarId: "primary",
         resource: event,
-      }),
+      },
       course,
-    });
+    };
   };
 
-  const performAPIRequests = () => {
-    for (const { request, course } of currApiRequests) {
-      request.execute((response) => {
+  const performAPIRequests = (events) => {
+    const calEvents = events ?? calendarEvents;
+
+    for (const { request, course } of calEvents) {
+      gapi.client.calendar.events.insert(request).execute((response) => {
         if (!response.error) {
           notifAdd({
             notifType: SUCCESS,
@@ -235,38 +216,36 @@ const Timetable = ({
       });
     }
     // ? what if only one request fails?
-    currApiRequests = [];
+    updateCalendarEvents([]);
   };
 
-  const updateSignInStatus = (isSignedIn) => {
-    if (isSignedIn) {
-      signedIn = true;
-      if (currApiRequests.length > 0) {
-        performAPIRequests(currApiRequests);
-      }
-    } else {
-      signedIn = false;
-    }
-  };
-
-  const exportCalendar = () => {
+  const exportCalendar = async () => {
+    const events = [];
     for (const course of semAddedVisible) {
       if (course.meetings === null) {
         // this course hasn't set any meeting times, skipping it
         continue;
       }
       for (const meeting of course.meetings) {
-        exportCalendarEvent(course, meeting);
+        events.push(createGCalEvent(course, meeting));
       }
     }
 
-    // If user is signed in, export all the events
-    if (signedIn) {
-      performAPIRequests();
-    } else {
-      gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignInStatus);
-      gapi.auth2.getAuthInstance().signIn();
+    if (!isSignedIn) {
+      try {
+        await gapi.auth2.getAuthInstance().signIn();
+        updateSignIn(true);
+      } catch (error) {
+        notifAdd({
+          type: FAILURE,
+          title: "Failed to authenticate Google calendar.",
+        });
+
+        return;
+      }
     }
+
+    performAPIRequests(events);
   };
 
   const addedComponent = () => {

@@ -113,16 +113,3 @@ export const getTokenLevel = (token) => {
 export const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
-
-/**
- * Adds days to the date. date must be in a format that is convertible
- * by `new Date(date)`.
- *
- * @param {*} date - Date to be converted.
- * @param {number} days - number of days to be added.
- */
-export const addDays = (date, days) => {
-  const result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
-};
