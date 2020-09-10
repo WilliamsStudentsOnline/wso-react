@@ -51,6 +51,18 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
         </>
       );
     }
+    if (
+      user.type === userTypeStudent &&
+      (!user.dormVisible || !user.dormRoom) &&
+      user.campusStatus
+    ) {
+      return (
+        <>
+          <li className="list-headers"> Campus Status</li>
+          <li className="list-contents">{user.campusStatus}</li>
+        </>
+      );
+    }
     if (user.type !== userTypeStudent && user.office) {
       return (
         <>

@@ -148,6 +148,34 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
     return null;
   };
 
+  // Generate user's campus status
+  const userCampusStatus = () => {
+    if (!viewPerson) {
+      return (
+        <>
+          <h5>
+            <Line width="10%" />
+          </h5>
+          <h4>
+            <Line width="10%" />
+          </h4>
+          <br />
+        </>
+      );
+    }
+
+    if (viewPerson.campusStatus) {
+      return (
+        <>
+          <h5>Campus Status:</h5>
+          <h4>{viewPerson.campusStatus}</h4>
+          <br />
+        </>
+      );
+    }
+    return null;
+  };
+
   // Generate user's tags
   const userTags = () => {
     if (!viewPerson) {
@@ -294,6 +322,7 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
           {userPronouns()}
           <br />
           {userUnix()}
+          {userCampusStatus()}
           {userTags()}
           {userSUBox()}
           {userRoom()}
