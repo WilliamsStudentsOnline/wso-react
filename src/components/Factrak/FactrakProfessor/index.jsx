@@ -36,6 +36,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
       try {
         const professorResponse = await wso.factrakService.getProfessor(
           professorID
+          // preload: ["office"],
         );
         const professorData = professorResponse.data;
 
@@ -92,6 +93,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
       updateSurveys([...Array(10)].map((_, id) => ({ id })));
     }
   }, [navigateTo, route.params.professor, route.params.profID, token, wso]);
+  console.log(professor);
 
   if (!professor)
     return (
@@ -128,38 +130,31 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
 
   return (
     <article className={styles.facebookProfile}>
-      <EuiFlexGroup direction="column" alignItems="center">
-        <EuiFlexItem grow className={styles.professorHeader}>
-          <EuiFlexGroup alignItems="center" justifyContent="flexStart">
-            <EuiFlexItem grow={5} />
+      <EuiFlexGroup direction="column" alignItems="center" responsive={false}>
+        <EuiFlexItem grow className={styles.professorHeader} id="header">
+          <EuiFlexGroup>
             <EuiFlexItem className={styles.circle} grow={3}>
               <div className={styles.professorPhoto} />
             </EuiFlexItem>
-            <EuiFlexItem className={styles.professorText} grow={8}>
+            <EuiFlexItem grow={8}>
               <h3>{professor.name}</h3>
 
               <h5>
-                <span>
+                <div>{professor?.title}</div>
+                <div>
                   {department?.name.includes("Department")
                     ? department?.name.substring(
                         0,
                         department?.name.length - 11
                       )
                     : department?.name}
-                  &nbsp;-&nbsp;
-                  {professor?.title}
-                </span>
+                </div>
+                <div>{professor?.unixID}</div>
               </h5>
               <h6>
-                <span>{professor?.unixID}@williams.edu</span>
-                <br />
-                <span>Office</span>
+                <div>Office</div>
               </h6>
             </EuiFlexItem>
-            <EuiFlexItem className={styles.reviewCount} grow={6}>
-              <FactrakReviewCount ratings={ratings} />
-            </EuiFlexItem>
-            <EuiFlexItem grow={7} />
           </EuiFlexGroup>
         </EuiFlexItem>
         <EuiFlexItem>
@@ -178,7 +173,10 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
         <EuiFlexItem className={styles.reviews}>
           <br />
           <FactrakDeficitMessage currUser={currUser} />
-          <EuiFlexGroup direction="column" gutterSize="xl">
+          <EuiFlexGroup direction="column" gutterSize="l">
+            <EuiFlexItem>
+              <FactrakReviewCount ratings={ratings} />
+            </EuiFlexItem>
             {surveys && surveys.length > 0
               ? surveys.map((survey) => {
                   if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {

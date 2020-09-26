@@ -2,32 +2,33 @@
 
 .facebookProfile {
   font-family: $default-font;
-  margin-bottom: $px-7;
+  margin-bottom: $px-9;
 
   h3 {
-    font-size: $f-4;
-    margin: $px-4 0;
-    color: $blue-5;
+    font-size: $f-3;
+    font-weight: 600;
+    margin-top: $px-4;
   }
 
   h5 {
-    color: $blue-5;
-    font-size: $f-2;
-    font-weight: 300;
+    color: $cool-gray-6;
+    font-size: $px-5;
+    line-height: 22px;
     margin-bottom: $px-3;
+    font-weight: 300;
   }
 
   h6 {
-    color: $blue-5;
+    color: $cool-gray-8;
     font-size: $f-1;
-    line-height: $px-5;
-    font-weight: 300;
   }
 }
 
 .ratingsBar {
-  width: 100%;
-  background-color: $cool-gray-1;
+  width: 850px;
+  background-color: $cool-gray-0;
+  border-radius: 10px;
+  box-shadow: 0 $px-2 $px-2 rgba(0, 0, 0, 0.25);
 }
 
 .professorPhoto {
@@ -38,16 +39,12 @@
   margin-right: none;
 }
 
-.professorText {
-  justify-content: center;
-}
-
 .circle {
   //align-items: center;
 }
 
 .reviews {
-  width: 60%;
+  width: 820px;
 
   button {
     background-color: white;
@@ -55,12 +52,42 @@
   }
 }
 
-.reviewCount {
-  font-size: $f-4;
-  justify-content: center;
-  color: $new-3;
+.professorHeader {
+  width: $px-15;
+  background-color: $cool-gray-0;
+  border-radius: 0px 10px 10px 0px;
+  box-shadow: 0 $px-2 $px-2 rgba(0, 0, 0, 0.25);
+  padding: $px-6;
 }
 
-.professorHeader {
-  width: 100%;
+@media (max-width: $lg) {
+  .professorHeader {
+    width: $px-14;
+    text-align: center;
+  }
+
+  .professorPhoto {
+    margin: auto;
+  }
+
+  .ratingsBar {
+    width: auto;
+  }
+}
+
+@media (max-width: $md) {
+  .ratingsBar {
+    width: auto;
+  }
+
+  .reviews {
+    width: auto;
+  }
+}
+
+@media (max-width: $sm) {
+  .professorHeader {
+    width: auto;
+    margin: 0 10px;
+  }
 }

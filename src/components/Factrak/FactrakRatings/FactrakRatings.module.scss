@@ -1,17 +1,21 @@
 @import "../../../theme";
 
 .professorRatings {
-  color: $primary-4;
+  color: $cool-gray-8;
   padding: $px-7 0;
 }
 
 .rating {
-  font-size: $f-4;
-  font-weight: 400;
-  color: $blue-5;
+  font-size: $f-3;
+  font-weight: 300;
+  color: $cool-gray-8;
+  line-height: $px-6;
 }
 
-.topSection {
+.judgements {
+  border-left: 2px solid $cool-gray-3;
+  padding: $px-5;
+  padding-left: $px-5;
 }
 
 .percentages {
@@ -22,16 +26,48 @@
 }
 .wouldTakeAnother {
   @extend .percentages;
-  color: $good-4;
-  width: 70%;
+  width: 100%;
+  .colored {
+    color: $good-4;
+  }
 }
 
 .wouldRecommend {
   @extend .percentages;
-  color: $warning-4;
-  width: 75%;
+  width: 100%;
+
+  .colored {
+    color: $warning-4;
+  }
 }
 
 .chart {
   margin-left: auto;
+}
+
+.reviewCount {
+  color: $cool-gray-6;
+  padding-left: $px-4;
+}
+
+@media (max-width: $lg) {
+  .professorRatings {
+    padding-left: $px-4;
+  }
+}
+
+@media (max-width: $md) {
+  .judgements {
+    border-left: none;
+    border-top: 2px solid $cool-gray-3;
+  }
+
+  .rating {
+    text-align: center;
+  }
+  /*
+  .professorRatings {
+    width: $px-14;
+  }
+  */
 }

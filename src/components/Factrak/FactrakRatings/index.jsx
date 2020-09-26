@@ -21,21 +21,21 @@ const FactrakRatings = ({ ratings, general }) => {
 
     const WORKLOAD_DESCRIPTIONS = [
       "",
-      "Very easy",
-      "Easy",
-      "Somewhat easy",
-      "Normal",
-      "Somewhat hard",
-      "Hard",
-      "Very hard",
+      "very easy",
+      "easy",
+      "somewhat easy",
+      "normal",
+      "somewhat hard",
+      "hard",
+      "very hard",
     ];
     return (
       <EuiText>
         <div className={styles.rating}>
+          Workload is&nbsp;
           <strong>
             {WORKLOAD_DESCRIPTIONS[Math.round(ratings.avgCourseWorkload)]}
           </strong>
-          &nbsp;workload
         </div>
       </EuiText>
     );
@@ -46,18 +46,19 @@ const FactrakRatings = ({ ratings, general }) => {
     if (!ratings.numCourseStimulating) return null;
     const STIMULATING_DESCR = [
       "",
-      "Very boring",
-      "Boring",
-      "Somewhat boring",
-      "Normal",
-      "Somewhat stimulating",
-      "Stimulating",
-      "Very stimulating",
+      "very boring",
+      "boring",
+      "somewhat boring",
+      "normal",
+      "somewhat stimulating",
+      "stimulating",
+      "very stimulating",
     ];
 
     return (
       <EuiText>
         <div className={styles.rating}>
+          Course is&nbsp;
           <strong>
             {STIMULATING_DESCR[Math.round(ratings.avgCourseStimulating)]}
           </strong>
@@ -71,18 +72,19 @@ const FactrakRatings = ({ ratings, general }) => {
     if (!ratings.avgApproachability) return null;
     const APPROACH_DESCR = [
       "",
-      "Very unapproachable",
-      "Unapproachable",
-      "Somewhat unapproachable",
-      "Somewhat approachable",
-      "Moderately approachable",
-      "Approchable",
-      "Very approchable",
+      "very unapproachable",
+      "unapproachable",
+      "somewhat unapproachable",
+      "somewhat approachable",
+      "moderately approachable",
+      "approchable",
+      "very approchable",
     ];
 
     return (
       <EuiText>
         <div className={styles.rating}>
+          Professor(s) is&nbsp;
           <strong>
             {APPROACH_DESCR[Math.round(ratings.avgApproachability)]}
           </strong>
@@ -96,19 +98,19 @@ const FactrakRatings = ({ ratings, general }) => {
     if (!ratings.numLeadLecture) return null;
     const LECTURE_DESCR = [
       "",
-      "Very ineffective",
-      "Ineffective",
-      "Somewhat ineffective",
-      "Somewhat effective",
-      "Moderately effective",
-      "Effective",
-      "Very effective",
+      "very ineffective",
+      "ineffective",
+      "somewhat ineffective",
+      "somewhat effective",
+      "moderately effective",
+      "effective",
+      "very effective",
     ];
     return (
       <EuiText>
         <div className={styles.rating}>
+          Lectures are&nbsp;
           <strong>{LECTURE_DESCR[Math.round(ratings.avgLeadLecture)]}</strong>
-          &nbsp;at lecturing
         </div>
       </EuiText>
     );
@@ -119,21 +121,21 @@ const FactrakRatings = ({ ratings, general }) => {
     if (!ratings.numOutsideHelpfulness) return null;
     const HELP_DESCR = [
       "",
-      "Very unhelpful",
-      "Unhelpful",
-      "Somewhat unhelpful",
-      "Somewhat helpful",
-      "Moderately helpful",
-      "Helpful",
-      "Very helpful",
+      "very unhelpful",
+      "unhelpful",
+      "somewhat unhelpful",
+      "somewhat helpful",
+      "moderately helpful",
+      "helpful",
+      "very helpful",
     ];
     return (
       <EuiText>
         <div className={styles.rating}>
+          Professor(s) is&nbsp;
           <strong>
             {HELP_DESCR[Math.round(ratings.avgOutsideHelpfulness)]}
           </strong>
-          &nbsp;outside of class
         </div>
       </EuiText>
     );
@@ -144,7 +146,9 @@ const FactrakRatings = ({ ratings, general }) => {
 
     return (
       <EuiText className={styles.wouldTakeAnother}>
-        <div>{`${Math.round(ratings.avgWouldTakeAnother * 100)}%`}</div>
+        <div className={styles.colored}>{`${Math.round(
+          ratings.avgWouldTakeAnother * 100
+        )}%`}</div>
         {` Would take another course with ${
           general ? "their professors." : "this professor."
         }`}
@@ -156,7 +160,9 @@ const FactrakRatings = ({ ratings, general }) => {
     if (!ratings.numWouldRecommendCourse) return null;
     return (
       <EuiText className={styles.wouldRecommend}>
-        <div>{`${Math.round(ratings.avgWouldRecommendCourse * 100)}%`}</div>
+        <div className={styles.colored}>{`${Math.round(
+          ratings.avgWouldRecommendCourse * 100
+        )}%`}</div>
         {` Recommend this ${
           general ? "course" : "professor's courses"
         } to a friend.`}
@@ -177,8 +183,10 @@ const FactrakRatings = ({ ratings, general }) => {
               direction="row"
               alignItems="center"
               justifyContent="spaceAround"
+              wrap={false}
+              responsive={false}
             >
-              <EuiFlexItem grow={3}>
+              <EuiFlexItem grow={1}>
                 <Chart
                   size={{ height: 100, width: 100 }}
                   className={styles.chart}
@@ -218,8 +226,12 @@ const FactrakRatings = ({ ratings, general }) => {
             </EuiFlexGroup>
           </EuiFlexItem>
           <EuiFlexItem>
-            <EuiFlexGroup direction="row" alignItems="center">
-              <EuiFlexItem grow={3}>
+            <EuiFlexGroup
+              direction="row"
+              alignItems="center"
+              responsive={false}
+            >
+              <EuiFlexItem grow={1}>
                 <Chart
                   size={{ height: 100, width: 100 }}
                   className={styles.chart}
@@ -265,7 +277,11 @@ const FactrakRatings = ({ ratings, general }) => {
         </EuiFlexGroup>
       </EuiFlexItem>
       <EuiFlexItem>
-        <EuiFlexGroup justifyContent="spaceBetween" direction="column">
+        <EuiFlexGroup
+          justifyContent="spaceBetween"
+          direction="column"
+          className={styles.judgements}
+        >
           <EuiFlexItem>{courseWorkload()}</EuiFlexItem>
           <EuiFlexItem>{courseStimulating()}</EuiFlexItem>
           <EuiFlexItem>{profApproachability()}</EuiFlexItem>
@@ -302,7 +318,7 @@ const FactrakRatingsSkeleton = () => (
 const FactrakReviewCount = ({ ratings }) => {
   if (ratings == null) return null;
   return (
-    <p>
+    <p className={styles.reviewCount}>
       {[Math.round(ratings.numWouldTakeAnother)]}&nbsp;
       {ratings.numWouldTakeAnother === 1 ? "Review" : "Reviews"}
     </p>
