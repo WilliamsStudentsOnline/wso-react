@@ -1,0 +1,69 @@
+@import "../../../theme";
+
+/****** Main Page Styling *********/
+
+.factrak {
+  padding: 0 244px;
+  font-family: $default-font;
+  margin-bottom: $px-9;
+
+  h3 {
+    text-align: justify;
+    font-size: $f-4;
+    font-weight: 300;
+    color: $blue-5;
+    margin-bottom: $px-5;
+    margin-top: $px-2;
+  }
+}
+
+.homeContainer {
+  flex-wrap: wrap;
+}
+
+/****** Department Section *********/
+
+.departmentCard {
+  background: $cool-gray-0;
+  box-shadow: 0 $px-2 $px-2 rgba(0, 0, 0, 0.25);
+  padding: $px-7 0 $px-7 $px-7;
+  min-width: $px-12;
+}
+
+.depListItem {
+  color: $primary-4;
+  font-size: $px-5;
+  font-weight: 300;
+  line-height: 22px;
+}
+
+/****** Comment Styling *********/
+
+.comments {
+  padding: $px-4;
+  min-width: 450px;
+}
+
+/****** For responsiveness *********/
+
+@media (max-width: 768px) {
+  .factrak {
+    padding: 0 $px-6;
+
+    h3 {
+      padding-left: $px-3;
+    }
+  }
+
+  .departmentCard {
+    margin: 0 $px-4;
+  }
+
+  .depListItem {
+    line-height: $px-2;
+  }
+
+  .comments {
+    min-width: $px-12;
+  }
+}

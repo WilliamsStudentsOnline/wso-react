@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import FactrakComment, { FactrakCommentSkeleton } from "../FactrakComment";
-import { List } from "../../common/Skeleton";
 import FactrakDeficitMessage from "../FactrakUtils";
 
 // Redux imports
@@ -13,6 +12,10 @@ import { actions } from "redux-router5";
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
+import styles from "./FactrakHome.module.scss";
+
+// Elastic imports
+import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
   const [areas, updateAreas] = useState(null);
@@ -56,60 +59,97 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
     loadAreas();
   }, [navigateTo, token, wso]);
 
+  // List of Departments according to specific letter
+  const depChildren = (letter) => {
+    const letteredNames = [];
+    for (let i = 0; i < areas.length; i += 1) {
+      if (letter === areas[i].name.charAt(0)) {
+        letteredNames.push(areas[i]);
+      }
+    }
+    return letteredNames.map((area) => (
+      <EuiFlexItem>
+        <Link
+          routeName="factrak.areasOfStudy"
+          routeParams={{ area: area.id }}
+          className={styles.depListItem}
+        >
+          {area.name}
+        </Link>
+      </EuiFlexItem>
+    ));
+  };
+
+  // Get List of Departments
+  const depNames = () => {
+    if (areas != null) {
+      const letters = [];
+      for (let i = 0; i < areas.length; i += 1) {
+        const currentLetter = areas[i].name.charAt(0);
+        if (!letters.includes(currentLetter)) {
+          letters.push(currentLetter);
+        }
+      }
+      return letters.map((letter) => (
+        <EuiFlexItem>
+          <EuiFlexGroup direction="column" gutterSize="none">
+            {depChildren(letter)}
+          </EuiFlexGroup>
+        </EuiFlexItem>
+      ));
+    }
+    return null;
+  };
+
   return (
-    <article className="dormtrak">
-      <div className="container">
-        <aside className="sidebar">
-          <article className="home">
-            <h3>Departments</h3>
-            <ul id="dept_list">
-              {areas ? (
-                areas.map((area) => (
-                  <li key={area.name}>
-                    <Link
-                      routeName="factrak.areasOfStudy"
-                      routeParams={{ area: area.id }}
-                    >
-                      {area.name}
-                    </Link>
-                  </li>
-                ))
-              ) : (
-                <List height="80%" center numRows={46} />
-              )}
-            </ul>
-          </article>
-        </aside>
-
-        <article className="main">
-          <section className="lead">
-            <h3>Recent Comments</h3>
-            <br />
+    <article className={styles.factrak}>
+      <EuiFlexGroup
+        justifyContent="spaceAround"
+        className={styles.homeContainer}
+      >
+        <EuiFlexItem grow={10}>
+          <section>
+            <h3>Recent Reviews</h3>
             <FactrakDeficitMessage currUser={currUser} />
-
-            {surveys
-              ? surveys.map((survey) => {
-                  if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
-                    return (
-                      <FactrakComment
-                        comment={survey}
-                        showProf
-                        abridged
-                        key={survey.id}
-                      />
-                    );
-                  }
-                  return <FactrakComment showProf abridged key={survey.id} />;
-                })
-              : [...Array(10)].map((_, i) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <div key={i}>
-                    <FactrakCommentSkeleton />
-                  </div>
-                ))}
+            <EuiFlexGroup
+              direction="column"
+              className={styles.comments}
+              gutterSize="xl"
+            >
+              {surveys
+                ? surveys.map((survey) => {
+                    if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
+                      return (
+                        <EuiFlexItem>
+                          <FactrakComment
+                            comment={survey}
+                            showProf
+                            abridged
+                            key={survey.id}
+                          />
+                        </EuiFlexItem>
+                      );
+                    }
+                    return <FactrakComment showProf abridged key={survey.id} />;
+                  })
+                : [...Array(10)].map((_, i) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <div key={i}>
+                      <FactrakCommentSkeleton />
+                    </div>
+                  ))}
+            </EuiFlexGroup>
           </section>
-        </article>
-      </div>
+        </EuiFlexItem>
+        <EuiFlexItem grow={7}>
+          <h3>Departments</h3>
+          <div className={styles.departmentCard} description="">
+            <EuiFlexGroup direction="column" gutterSize="m">
+              {depNames()}
+            </EuiFlexGroup>
+          </div>
+        </EuiFlexItem>
+      </EuiFlexGroup>
     </article>
   );
 };

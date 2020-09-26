@@ -1,0 +1,115 @@
+@import "../../../theme";
+
+/****** Overall Styling *********/
+
+.commentCard {
+  border-radius: 0px 10px 10px 0px;
+  box-shadow: 0 $px-2 $px-2 rgba(0, 0, 0, 0.25);
+  border-left: $px-4 solid transparent;
+  padding-right: $px-5;
+}
+
+.commentCardLarge {
+  @extend .commentCard;
+  padding-top: $px-6;
+  padding-bottom: $px-5;
+}
+
+.commentCardRecent {
+  @extend .commentCard;
+  border-left: $px-4 solid $new-0;
+}
+
+.commentCardRecentLarge {
+  @extend .commentCardLarge;
+  border-left: $px-4 solid $new-0;
+}
+
+/****** Comment Headers *********/
+
+.commentHeaderBase {
+  color: $primary-6;
+  font-family: $default-font;
+  margin-bottom: $px-2;
+}
+
+.commentHeaderAbridged {
+  @extend .commentHeaderBase;
+  font-size: $px-5;
+  font-weight: normal;
+  margin-top: $px-3;
+  margin-bottom: $px-3;
+}
+
+.commentHeader {
+  @extend .commentHeaderBase;
+  font-size: $f-2;
+  font-weight: normal;
+  line-height: $px-6;
+  margin-top: $px-2;
+}
+
+/****** Comment Content *********/
+
+.commentContentAbridged {
+  font-family: $default-font;
+  font-size: $f-1;
+  color: $cool-gray-9;
+  line-height: 22px;
+}
+
+.commentContent {
+  font-size: $px-5;
+  line-height: 19px;
+  color: $cool-gray-9;
+}
+
+.commentContentProf {
+  @extend .commentContent;
+  padding: $px-5;
+}
+
+/******  Minor Stylings *********/
+
+.agreeCount {
+  border-radius: $px-5;
+  margin-top: $px-3;
+}
+
+.seeMore {
+  font-size: $f-0;
+  color: $primary-4;
+}
+
+.commentDetail {
+  font-size: $f-1;
+  color: $cool-gray-6;
+  font-style: italic;
+  font-weight: 300;
+  margin-top: $px-2;
+  margin-bottom: $px-3;
+}
+
+.transparent {
+  color: transparent;
+}
+
+.recommendations {
+  font-size: $px-5;
+  line-height: $px-5;
+  color: $cool-gray-8;
+}
+
+.professorPhoto {
+  img {
+    border-radius: 50%;
+  }
+}
+
+.professorPhotoSmall {
+  @extend .professorPhoto;
+  width: $px-9;
+  img {
+    height: auto;
+  }
+}

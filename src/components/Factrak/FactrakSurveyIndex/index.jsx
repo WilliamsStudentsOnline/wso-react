@@ -8,6 +8,10 @@ import { connect } from "react-redux";
 import { getCurrUser, getWSO } from "../../../selectors/auth";
 import { actions } from "redux-router5";
 
+import styles from "./FactrakSurveyIndex.module.scss";
+
+import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
+
 const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
   const [surveys, updateSurveys] = useState([]);
 
@@ -32,27 +36,31 @@ const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
   }, [navigateTo, currUser.id, wso]);
 
   return (
-    <div className="article">
+    <div>
       <section>
-        <article>
+        <EuiFlexGroup
+          direction="column"
+          gutterSize="xl"
+          className={styles.reviewList}
+        >
           {surveys.length > 0 ? (
             <>
-              <h3>Your Reviews</h3>
-              <br />
               <br />
               {surveys.map((survey) => (
-                <FactrakComment
-                  comment={survey}
-                  showProf
-                  abridged={false}
-                  key={survey.id}
-                />
+                <EuiFlexItem className={styles.personalReviews}>
+                  <FactrakComment
+                    comment={survey}
+                    showProf
+                    abridged={false}
+                    key={survey.id}
+                  />
+                </EuiFlexItem>
               ))}
             </>
           ) : (
-            <h1 className="no-matches-found">No reviews yet.</h1>
+            <h1>No reviews yet.</h1>
           )}
-        </article>
+        </EuiFlexGroup>
       </section>
     </div>
   );

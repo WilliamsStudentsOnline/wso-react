@@ -1,0 +1,213 @@
+@import "../../../theme";
+
+.professorTables {
+  font-family: $default-font;
+  margin-left: $px-2;
+  margin-bottom: $px-8;
+  box-shadow: 0 $px-2 $px-2 rgba(0, 0, 0, 0.25);
+  border-radius: $px-3;
+
+  thead tr {
+    background: $blue-5;
+  }
+
+  th {
+    color: white;
+    font-weight: 200;
+    font-family: $default-font;
+    font-size: $f-2;
+    padding: $px-4;
+    text-align: justify;
+    padding-left: $px-5;
+  }
+
+  th:first-child {
+    border-radius: $px-3 0px 0px 0px;
+    width: $px-13;
+  }
+
+  th:last-child {
+    border-radius: 0px $px-3 0px 0px;
+  }
+
+  td {
+    padding: 10px;
+    background-color: $cool-gray-0;
+    color: $cool-gray-8;
+    font-weight: 300;
+    font-size: $f-1;
+    border-top: $px-0 solid $cool-gray-3;
+  }
+
+  td:last-child {
+    color: $primary-5;
+    font-size: $px-5;
+    align-items: center;
+    justify-content: center;
+    border-radius: $px-2;
+    vertical-align: middle;
+  }
+
+  .profRow {
+    height: $px-1;
+  }
+
+  .professorName {
+    color: $primary-6;
+    font-size: $f-3;
+    font-weight: 300;
+  }
+
+  tbody {
+    tr:last-child {
+      border-radius: $px-3;
+
+      td {
+        border-radius: $px-3;
+      }
+
+      .professorRow {
+        border-radius: $px-3;
+      }
+    }
+  }
+}
+
+.courseTable {
+  @extend .professorTables;
+  min-width: $px-14;
+
+  th:first-child {
+    width: $px-12;
+  }
+
+  .courseRow {
+    height: $px-5;
+
+    td:first-child {
+      color: $primary-6;
+      font-size: $f-3;
+      font-weight: 300;
+      padding-left: $px-6;
+      padding-top: $px-5;
+    }
+
+    td:last-child {
+      color: $primary-5;
+      font-weight: 300;
+      font-size: $f-1;
+      padding-left: $px-6;
+    }
+  }
+}
+
+.coursesTitle {
+  text-align: center;
+}
+
+.factrakDepartments {
+  h3 {
+    font-size: $f-4;
+    color: $blue-5;
+    margin-top: $px-2;
+    margin-bottom: $px-5;
+  }
+
+  h2 {
+    font-size: $f-2;
+    color: $primary-6;
+    background-color: $cool-gray-3;
+    padding: $px-3 $px-5;
+  }
+
+  .pressed {
+    color: white;
+    background-color: $primary-5;
+    box-shadow: inset 0px $px-2 $px-2 rgba(0, 0, 0, 0.25);
+  }
+
+  h2:hover {
+    @extend .pressed;
+    cursor: pointer;
+  }
+}
+
+.sectionContainerProfessors {
+  h2 {
+    border-radius: 10px 0 0 10px;
+  }
+}
+
+.sectionContainerCourses {
+  h2 {
+    border-radius: 0 10px 10px 0;
+  }
+}
+
+.mainPage {
+  margin: 0 240px;
+  min-width: $px-15;
+  margin-top: $px-3;
+}
+
+.departmentFlexItem {
+  width: 100%;
+  margin-left: 245px;
+  text-align: justify;
+}
+
+.professorPhotoSmall {
+  width: $px-9;
+  img {
+    height: auto;
+    border-radius: 50%;
+  }
+}
+
+.sectionToggle {
+  display: flex;
+}
+
+@media (max-width: $lg) {
+  .mainPage {
+    margin: auto;
+    margin-top: $px-3;
+    min-width: 0px;
+  }
+
+  .departmentFlexItem {
+    text-align: center;
+    margin: auto;
+  }
+
+  .sectionToggle {
+    flex-wrap: nowrap;
+    justify-content: center;
+    padding: 0 $px-8;
+
+    h2 {
+      width: $px-10;
+      margin: auto;
+    }
+  }
+}
+
+@media (max-width: $md) {
+  .professorTables {
+    margin: 0 $px-7;
+  }
+
+  .professorRow {
+    flex-wrap: nowrap;
+  }
+
+  .courseTable {
+    min-width: $px-13;
+  }
+
+  .professorPhotoSmall {
+    img {
+      width: $px-9;
+    }
+  }
+}

@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Line } from "../../common/Skeleton";
+import styles from "./FactrakAOS.module.scss";
+import ProfessorRow from "./FactrakProfessorRow";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
@@ -10,11 +12,14 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
 import { Link } from "react-router5";
+import { EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakAOS = ({ navigateTo, route, wso }) => {
   const [courses, updateCourses] = useState(null);
   const [profs, updateProfs] = useState(null);
   const [area, updateArea] = useState({});
+  const [table, updateTable] = useState(0);
+  // const [userPhoto, updateUserPhoto] = useState(null);
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
@@ -65,23 +70,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
 
   // Generates a row containing the prof information.
   const generateProfRow = (prof) => {
-    return (
-      <tr key={prof.id}>
-        <td>
-          <Link
-            routeName="factrak.professors"
-            routeParams={{ profID: prof.id }}
-          >
-            {prof.name}
-          </Link>
-        </td>
-
-        <td>{prof.title}</td>
-        <td>
-          <a href={`mailto:${prof.unixID}@williams.edu`}>{prof.unixID}</a>
-        </td>
-      </tr>
-    );
+    return <ProfessorRow professor={prof} />;
   };
 
   // Generate a skeleton of prof information
@@ -93,9 +82,6 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
       <td>
         <Line width="80%" />
       </td>
-      <td>
-        <Line width="30%" />
-      </td>
     </tr>
   );
 
@@ -104,23 +90,12 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
     // If no profs were found, return null. Should not happen for Area of Study unless it's new.
     if (profs?.length === 0) return null;
     return (
-      <>
-        <br />
-        <h4>
-          {area?.name ? (
-            `Professors in ${area.name}`
-          ) : (
-            <>
-              Professors in <Line width="20%" />
-            </>
-          )}
-        </h4>
-        <table>
+      <EuiFlexItem className={styles.mainPage} grow={false}>
+        <table className={styles.professorTables}>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Title</th>
-              <th className="unix-column">Unix</th>
+              <th>Professor</th>
+              <th>Courses Taught</th>
             </tr>
           </thead>
           <tbody>
@@ -129,7 +104,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
               : [...Array(5)].map((_, i) => profSkeleton(i))}
           </tbody>
         </table>
-      </>
+      </EuiFlexItem>
     );
   };
 
@@ -160,8 +135,8 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
   // Generates a row containing the course information.
   const generateCourseRow = (course) => {
     return (
-      <tr key={course.id}>
-        <td className="col-20">
+      <tr key={course.id} className={styles.courseRow}>
+        <td>
           <Link
             routeName="factrak.courses"
             routeParams={{ courseID: course.id }}
@@ -169,7 +144,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
             {`${area.abbreviation} ${course.number}`}
           </Link>
         </td>
-        <td className="col-80">{generateCourseProfessors(course)}</td>
+        <td>{generateCourseProfessors(course)}</td>
       </tr>
     );
   };
@@ -177,10 +152,10 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
   // Generates a skeleton for the course
   const courseSkeleton = (key) => (
     <tr key={key}>
-      <td className="col-20">
+      <td>
         <Line width="30%" />
       </td>
-      <td className="col-80">
+      <td>
         <Line width="50%" />
       </td>
     </tr>
@@ -191,13 +166,12 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
     // If no courses were found, return null. Should not happen for Area of Study unless it's new.
     if (courses && courses.length === 0) return null;
     return (
-      <>
-        <h4>Courses</h4>
-        <table>
+      <EuiFlexItem className={styles.mainPage} grow={false}>
+        <table className={styles.courseTable}>
           <thead>
             <tr>
-              <th className="col-20">Course</th>
-              <th className="col-80">Professors</th>
+              <th>Course</th>
+              <th>Professors</th>
             </tr>
           </thead>
           <tbody>
@@ -206,19 +180,60 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
               : [...Array(5)].map((_, i) => courseSkeleton(i))}
           </tbody>
         </table>
-      </>
+      </EuiFlexItem>
     );
   };
 
-  return (
-    <article className="factrak-home">
-      <section className="margin-vertical-small">
-        <h3>{area && area.name ? area.name : <Line width="30%" />}</h3>
-        {generateProfs()}
-      </section>
+  // Change Table based on selected Item
+  const handleCourseClick = () => {
+    updateTable(true);
+  };
+  const handleProfessorClick = () => {
+    updateTable(false);
+  };
+  const generateTable = () => {
+    if (table) {
+      return generateCourses();
+    }
+    return generateProfs();
+  };
 
-      <section className="margin-vertical-small">{generateCourses()}</section>
-    </article>
+  return (
+    <EuiFlexGroup
+      className={styles.factrakDepartments}
+      direction="column"
+      gutterSize="none"
+      justifyContent="flexStart"
+    >
+      <EuiFlexItem className={styles.departmentFlexItem} grow={false}>
+        <h3>
+          {area && area.name ? area.name : <Line width="30%" />} Department
+        </h3>
+      </EuiFlexItem>
+      <EuiFlexItem className={styles.departmentFlexItem} grow={false}>
+        <div className={styles.sectionToggle}>
+          <div className={styles.sectionContainerProfessors}>
+            <h2
+              onClick={handleProfessorClick}
+              className={table ? "" : styles.pressed}
+              role="presentation"
+            >
+              Professors
+            </h2>
+          </div>
+          <div className={styles.sectionContainerCourses}>
+            <h2
+              onClick={handleCourseClick}
+              className={table ? styles.pressed : ""}
+              role="presentation"
+            >
+              Courses
+            </h2>
+          </div>
+        </div>
+      </EuiFlexItem>
+      {generateTable()}
+    </EuiFlexGroup>
   );
 };
 

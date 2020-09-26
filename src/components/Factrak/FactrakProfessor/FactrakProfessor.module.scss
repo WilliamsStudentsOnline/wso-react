@@ -1,0 +1,93 @@
+@import "../../../theme";
+
+.facebookProfile {
+  font-family: $default-font;
+  margin-bottom: $px-9;
+
+  h3 {
+    font-size: $f-3;
+    font-weight: 600;
+    margin-top: $px-4;
+  }
+
+  h5 {
+    color: $cool-gray-6;
+    font-size: $px-5;
+    line-height: 22px;
+    margin-bottom: $px-3;
+    font-weight: 300;
+  }
+
+  h6 {
+    color: $cool-gray-8;
+    font-size: $f-1;
+  }
+}
+
+.ratingsBar {
+  width: 850px;
+  background-color: $cool-gray-0;
+  border-radius: 10px;
+  box-shadow: 0 $px-2 $px-2 rgba(0, 0, 0, 0.25);
+}
+
+.professorPhoto {
+  background: $warm-gray-3;
+  border-radius: 50%;
+  height: $px-10;
+  width: $px-10;
+  margin-right: none;
+}
+
+.circle {
+  //align-items: center;
+}
+
+.reviews {
+  width: 820px;
+
+  button {
+    background-color: white;
+    color: black;
+  }
+}
+
+.professorHeader {
+  width: $px-15;
+  background-color: $cool-gray-0;
+  border-radius: 0px 10px 10px 0px;
+  box-shadow: 0 $px-2 $px-2 rgba(0, 0, 0, 0.25);
+  padding: $px-6;
+}
+
+@media (max-width: $lg) {
+  .professorHeader {
+    width: $px-14;
+    text-align: center;
+  }
+
+  .professorPhoto {
+    margin: auto;
+  }
+
+  .ratingsBar {
+    width: auto;
+  }
+}
+
+@media (max-width: $md) {
+  .ratingsBar {
+    width: auto;
+  }
+
+  .reviews {
+    width: auto;
+  }
+}
+
+@media (max-width: $sm) {
+  .professorHeader {
+    width: auto;
+    margin: 0 10px;
+  }
+}

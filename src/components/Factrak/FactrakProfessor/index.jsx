@@ -2,7 +2,10 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import FactrakComment, { FactrakCommentSkeleton } from "../FactrakComment";
-import FactrakRatings, { FactrakRatingsSkeleton } from "../FactrakRatings";
+import FactrakRatings, {
+  FactrakRatingsSkeleton,
+  FactrakReviewCount,
+} from "../FactrakRatings";
 import FactrakDeficitMessage from "../FactrakUtils";
 import { Line } from "../../common/Skeleton";
 
@@ -14,6 +17,10 @@ import { actions, createRouteNodeSelector } from "redux-router5";
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
+import styles from "./FactrakProfessor.module.scss";
+
+// Elastic Eui imports
+import { EuiButton, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
   const [professor, updateProfessor] = useState(null);
@@ -29,6 +36,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
       try {
         const professorResponse = await wso.factrakService.getProfessor(
           professorID
+          // preload: ["office"],
         );
         const professorData = professorResponse.data;
 
@@ -85,11 +93,12 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
       updateSurveys([...Array(10)].map((_, id) => ({ id })));
     }
   }, [navigateTo, route.params.professor, route.params.profID, token, wso]);
+  console.log(professor);
 
   if (!professor)
     return (
       <article className="facebook-profile" id="fbprof">
-        <section className="info">
+        <section>
           <h3>
             <Line width="20%" />
           </h3>
@@ -120,58 +129,83 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
     );
 
   return (
-    <article className="facebook-profile" id="fbprof">
-      <section className="info">
-        <h3>{professor.name}</h3>
+    <article className={styles.facebookProfile}>
+      <EuiFlexGroup direction="column" alignItems="center" responsive={false}>
+        <EuiFlexItem grow className={styles.professorHeader} id="header">
+          <EuiFlexGroup>
+            <EuiFlexItem className={styles.circle} grow={3}>
+              <div className={styles.professorPhoto} />
+            </EuiFlexItem>
+            <EuiFlexItem grow={8}>
+              <h3>{professor.name}</h3>
 
-        <h5>
-          {department?.name}
+              <h5>
+                <div>{professor?.title}</div>
+                <div>
+                  {department?.name.includes("Department")
+                    ? department?.name.substring(
+                        0,
+                        department?.name.length - 11
+                      )
+                    : department?.name}
+                </div>
+                <div>{professor?.unixID}</div>
+              </h5>
+              <h6>
+                <div>Office</div>
+              </h6>
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <Link
+            routeName="factrak.newSurvey"
+            routeParams={{ profID: professor.id }}
+          >
+            <EuiButton fill size="m">
+              Write Review
+            </EuiButton>
+          </Link>
+        </EuiFlexItem>
+        <EuiFlexItem className={styles.ratingsBar}>
+          <FactrakRatings ratings={ratings} />
+        </EuiFlexItem>
+        <EuiFlexItem className={styles.reviews}>
           <br />
-          <span>{professor?.title}</span>
-        </h5>
-        <br />
+          <FactrakDeficitMessage currUser={currUser} />
+          <EuiFlexGroup direction="column" gutterSize="l">
+            <EuiFlexItem>
+              <FactrakReviewCount ratings={ratings} />
+            </EuiFlexItem>
+            {surveys && surveys.length > 0
+              ? surveys.map((survey) => {
+                  if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
+                    return (
+                      <EuiFlexItem>
+                        <FactrakComment
+                          comment={survey}
+                          showProf={false}
+                          abridged={false}
+                          key={survey.id}
+                        />
+                      </EuiFlexItem>
+                    );
+                  }
 
-        <br />
-        <Link
-          routeName="factrak.newSurvey"
-          routeParams={{ profID: professor.id }}
-        >
-          Click here to review this professor
-        </Link>
-        <br />
-        <br />
-        <FactrakRatings ratings={ratings} />
-        <br />
-        <br />
-
-        <h3>Comments</h3>
-        <br />
-        <FactrakDeficitMessage currUser={currUser} />
-        <div id="factrak-comments-section">
-          {surveys && surveys.length > 0
-            ? surveys.map((survey) => {
-                if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
                   return (
-                    <FactrakComment
-                      comment={survey}
-                      showProf={false}
-                      abridged={false}
-                      key={survey.id}
-                    />
+                    <EuiFlexItem>
+                      <FactrakComment
+                        abridged={false}
+                        showProf={false}
+                        key={survey.id}
+                      />
+                    </EuiFlexItem>
                   );
-                }
-
-                return (
-                  <FactrakComment
-                    abridged={false}
-                    showProf={false}
-                    key={survey.id}
-                  />
-                );
-              })
-            : "No comments yet."}
-        </div>
-      </section>
+                })
+              : "No comments yet."}
+          </EuiFlexGroup>
+        </EuiFlexItem>
+      </EuiFlexGroup>
     </article>
   );
 };

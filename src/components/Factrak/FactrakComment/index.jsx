@@ -1,5 +1,5 @@
 // React imports
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Paragraph, Line } from "../../common/Skeleton";
 import Button from "../../common/Button";
@@ -13,6 +13,10 @@ import { actions } from "redux-router5";
 // Additional Imports
 import { Link } from "react-router5";
 import { format } from "timeago.js";
+import styles from "./FactrakComment.module.scss";
+
+// Elastic Imports
+import { EuiButton, EuiBadge, EuiFlexGroup, EuiFlexItem } from "@elastic/eui";
 
 const FactrakComment = ({
   abridged,
@@ -25,6 +29,21 @@ const FactrakComment = ({
 }) => {
   const [survey, updateSurvey] = useState(comment);
   const [isDeleted, updateDeleted] = useState(false);
+  const [userPhoto, updateUserPhoto] = useState(null);
+
+  useEffect(() => {
+    const loadPhoto = async () => {
+      try {
+        const photoResponse = await wso.userService.getUserLargePhoto(
+          survey.professorID
+        );
+        updateUserPhoto(URL.createObjectURL(photoResponse));
+      } catch (error) {
+        // eslint-disable-next-line no-empty
+      }
+    };
+    loadPhoto();
+  }, [wso, survey.professorID]);
 
   // Get the survey and update it after editing.
   const getAndUpdateSurvey = async () => {
@@ -80,44 +99,33 @@ const FactrakComment = ({
     if (abridged) return null;
 
     return (
-      <h1>
-        <span>{survey.totalAgree ? survey.totalAgree : 0}</span>
-        &nbsp;agree&emsp;
-        <span>{survey.totalDisagree ? survey.totalDisagree : 0}</span>
-        &nbsp;disagree
-        <span className="factrak-flag" title="Flagged for moderator attention">
-          {survey.flagged && <>&#10071;</>}
-        </span>
-      </h1>
+      <EuiFlexGroup gutterSize="s" justifyContent="flexStart">
+        <EuiFlexItem>
+          <EuiBadge
+            iconType="faceHappy"
+            color="#78dca0"
+            className={styles.agreeCount}
+          >
+            <span>{survey.totalAgree ? survey.totalAgree : 0}</span>
+          </EuiBadge>
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiBadge
+            iconType="faceSad"
+            color="#dc3c32"
+            className={styles.agreeCount}
+          >
+            <span>{survey.totalDisagree ? survey.totalDisagree : 0}</span>
+          </EuiBadge>
+        </EuiFlexItem>
+      </EuiFlexGroup>
     );
   };
 
   // Generates all the survey details
   const surveyDetail = () => {
-    // If the current user was the one who made the survey
-    if (currUser.id === survey.userID) {
-      return (
-        <p className="survey-detail">
-          <Button
-            onClick={() =>
-              navigateTo("factrak.editSurvey", {
-                surveyID: survey.id,
-              })
-            }
-            className="inlineButton"
-          >
-            Edit
-          </Button>
-
-          <Button onClick={deleteHandler} className="inlineButton">
-            Delete
-          </Button>
-        </p>
-      );
-    }
-
     return (
-      <p className="comment-detail">{`posted about ${format(
+      <p className={styles.commentDetail}>{`Posted about ${format(
         new Date(survey.createdTime)
       )}`}</p>
     );
@@ -142,13 +150,19 @@ const FactrakComment = ({
     if (survey.wouldTakeAnother)
       return (
         <>
-          <br />I would take another course with this professor
+          <br />I{" "}
+          <strong>
+            <i>would</i>
+          </strong>{" "}
+          take another course with this professor
         </>
       );
     return (
       <>
-        <br />I would
-        <b>&nbsp;not&nbsp;</b>
+        <br />I{" "}
+        <strong>
+          <i>would not</i>
+        </strong>{" "}
         take another course with this professor
       </>
     );
@@ -160,52 +174,115 @@ const FactrakComment = ({
     if (survey.wouldRecommendCourse)
       return (
         <>
-          <br />I would recommend this course to a friend
+          <br />I{" "}
+          <strong>
+            <i>would</i>
+          </strong>{" "}
+          recommend this course to a friend
         </>
       );
     return (
       <>
-        <br />I would
-        <b>&nbsp;not&nbsp;</b>
+        <br />I{" "}
+        <strong>
+          <i>would not</i>
+        </strong>{" "}
         recommend this course to a friend
       </>
     );
   };
 
+  // Generate Edit and Delete buttons for user's comments
+  const edit = () => {
+    if (survey.lorem || survey.userID === currUser.id) {
+      return (
+        <EuiFlexGroup gutterSize="s">
+          <EuiFlexItem>
+            <EuiButton
+              onClick={() =>
+                navigateTo("factrak.editSurvey", {
+                  surveyID: survey.id,
+                })
+              }
+              size="s"
+              fill
+            >
+              Edit
+            </EuiButton>
+          </EuiFlexItem>
+          <EuiFlexItem>
+            <EuiButton onClick={deleteHandler} size="s" fill>
+              Delete
+            </EuiButton>
+          </EuiFlexItem>
+        </EuiFlexGroup>
+      );
+    }
+    return null;
+  };
+
   // Generate the agree/disagree buttons.
   const agree = () => {
-    if (survey.lorem || survey.userID === currUser.id) return null;
+    if (survey.lorem || survey.userID === currUser.id) {
+      return (
+        <EuiFlexGroup>
+          <EuiFlexItem>{agreeCount()}</EuiFlexItem>
+          <EuiFlexItem grow={6} />
+        </EuiFlexGroup>
+      );
+    }
 
     return (
       <>
-        <Button
-          className={
-            survey.clientAgreement !== undefined && survey.clientAgreement
-              ? "inlineButtonInverted"
-              : "inlineButton"
-          }
-          onClick={() => agreeHandler(true)}
-        >
-          Agree
-        </Button>
-        &ensp;
-        <Button
-          className={
-            survey.clientAgreement !== undefined && !survey.clientAgreement
-              ? "inlineButtonInverted"
-              : "inlineButton"
-          }
-          onClick={() => agreeHandler(false)}
-        >
-          Disagree
-        </Button>
-        {!abridged && !survey.flagged && (
-          <span>
-            <Button className="inlineButton" onClick={flagHandler}>
-              Flag for moderator attention
+        <EuiFlexGroup gutterSize="m">
+          <EuiFlexItem className={styles.agreeButton} grow={false}>
+            <Button
+              className={
+                survey.clientAgreement !== undefined && survey.clientAgreement
+                  ? "inlineButtonInverted"
+                  : "inlineButton"
+              }
+              onClick={() => agreeHandler(true)}
+            >
+              <EuiBadge
+                iconType="faceHappy"
+                color="#78dca0"
+                className={styles.agreeCount}
+              >
+                <span>{survey.totalAgree ? survey.totalAgree : 0}</span>
+              </EuiBadge>
             </Button>
-          </span>
-        )}
+          </EuiFlexItem>
+          <EuiFlexItem className={styles.agreeButton} grow={false}>
+            <Button
+              className={
+                survey.clientAgreement !== undefined && !survey.clientAgreement
+                  ? "inlineButtonInverted"
+                  : "inlineButton"
+              }
+              onClick={() => agreeHandler(false)}
+            >
+              <EuiBadge
+                iconType="faceSad"
+                color="#dc3c32"
+                className={styles.agreeCount}
+              >
+                <span>{survey.totalDisagree ? survey.totalDisagree : 0}</span>
+              </EuiBadge>
+            </Button>
+          </EuiFlexItem>
+          {!abridged && !survey.flagged && (
+            <EuiFlexItem className={styles.agreeButton} grow={false}>
+              <Button onClick={flagHandler}>
+                <EuiBadge iconType="flag">
+                  <span title="Flagged for moderator attention">
+                    {survey.flagged && <>&#10071;</>}
+                  </span>
+                </EuiBadge>
+              </Button>
+            </EuiFlexItem>
+          )}
+        </EuiFlexGroup>
       </>
     );
   };
@@ -213,33 +290,32 @@ const FactrakComment = ({
   // Generate the survey text.
   const surveyText = () => {
     if (abridged) {
-      if (survey.comment.length > 145) {
+      if (survey.comment.length > 125) {
         return (
-          <div className="survey-text">
-            {`${survey.comment.substring(0, 145)}...`}
-            <div>
-              <Link
-                routeName="factrak.professors"
-                routeParams={{ profID: survey.professorID }}
-              >
-                See More
-              </Link>
-            </div>
+          <div>
+            {`${survey.comment.substring(0, 125)}`}
+            <Link
+              routeName="factrak.professors"
+              routeParams={{ profID: survey.professorID }}
+              className={styles.seeMore}
+            >
+              &nbsp;see more...
+            </Link>
           </div>
         );
       }
 
-      return <div className="survey-text">{survey.comment}</div>;
+      return <div>{survey.comment}</div>;
     }
 
     return (
-      <div className="survey-text">
+      <div>
         {survey.comment}
         <br />
-        {wouldTakeAnother()}
-        {wouldRecommend()}
-        <br />
-        {agree()}
+        <div className={styles.recommendations}>
+          {wouldTakeAnother()}
+          {wouldRecommend()}
+        </div>
       </div>
     );
   };
@@ -277,48 +353,152 @@ const FactrakComment = ({
     );
   };
 
+  // Find how long ago review was submitted
+  const getTimeDifference = () => {
+    const date1 = new Date(survey.createdTime);
+    const today = new Date();
+    const timeDifference = today.getTime() - date1.getTime();
+    const dayDifference = timeDifference / (1000 * 3600 * 24);
+    if (dayDifference > 7) {
+      return false;
+    }
+    return true;
+  };
+
   if (isDeleted) return null;
 
   if (survey.lorem)
     return (
-      <div className="comment">
-        <div className="comment-content blurred">
+      <div>
+        <div>
           <h1>
             {showProf && (
-              <Link routeName="factrak" style={{ color: "transparent" }}>
+              <Link routeName="factrak" className={styles.transparent}>
                 Ephraiem Williams
               </Link>
             )}
           </h1>
 
           <h1>
-            <span style={{ color: "transparent" }}>0</span>
+            <span className={styles.transparent}>0</span>
             &nbsp;agree&emsp;
-            <span style={{ color: "transparent" }}>0</span>
+            <span className={styles.transparent}>0</span>
             &nbsp;disagree
           </h1>
 
           {surveyText()}
-          <p className="comment-detail">
-            posted about <span className="blurred">1793</span>
+          <p className={styles.commentDetail}>
+            posted about <span>1793</span>
           </p>
         </div>
       </div>
     );
 
+  if (abridged) {
+    return (
+      <EuiFlexGroup
+        className={
+          getTimeDifference() ? styles.commentCardRecent : styles.commentCard
+        }
+        alignItems="center"
+        justifyContent="center"
+      >
+        <EuiFlexItem grow={1}>
+          <Link
+            routeName="factrak.professors"
+            routeParams={{ profID: survey.professorID }}
+            className={styles.professorPhotoSmall}
+          >
+            <img src={userPhoto} alt="avatar" />
+          </Link>
+        </EuiFlexItem>
+        <EuiFlexItem className={styles.commentContentAbridged} grow={6}>
+          <h1 className={styles.commentHeaderAbridged}>
+            {profName()}
+            {courseLink()}
+          </h1>
+          {surveyText()}
+          <EuiFlexGroup
+            direction={
+              survey.lorem || survey.userID === currUser.id ? "column" : "row"
+            }
+            gutterSize="none"
+          >
+            <EuiFlexItem>{surveyDetail()}</EuiFlexItem>
+          </EuiFlexGroup>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+    );
+  }
+
+  if (!showProf) {
+    return (
+      <EuiFlexGroup
+        className={
+          getTimeDifference() ? styles.commentCardRecent : styles.commentCard
+        }
+      >
+        <EuiFlexItem className={styles.commentContentProf}>
+          <h1 className={styles.commentHeader}>{courseLink()}</h1>
+          {surveyText()}
+          <EuiFlexGroup
+            direction="row"
+            gutterSize="none"
+            justifyContent="flexStart"
+            alignItems="center"
+          >
+            <EuiFlexItem>
+              <EuiFlexGroup direction="column" gutterSize="m">
+                <EuiFlexItem>{agree()}</EuiFlexItem>
+                <EuiFlexItem>{surveyDetail()}</EuiFlexItem>
+              </EuiFlexGroup>
+            </EuiFlexItem>
+            <EuiFlexItem grow={false}>{edit()}</EuiFlexItem>
+          </EuiFlexGroup>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+    );
+  }
+
   return (
-    <div className="comment">
-      <div className="comment-content">
-        <h1>
+    <EuiFlexGroup
+      className={
+        getTimeDifference()
+          ? styles.commentCardRecentLarge
+          : styles.commentCardLarge
+      }
+    >
+      <EuiFlexItem grow={1}>
+        <Link
+          routeName="factrak.professors"
+          routeParams={{ profID: survey.professorID }}
+          className={styles.professorPhoto}
+        >
+          <img src={userPhoto} alt="avatar" />
+        </Link>
+      </EuiFlexItem>
+      <EuiFlexItem className={styles.commentContent} grow={6}>
+        <h1 className={styles.commentHeader}>
           {profName()}
           {courseLink()}
         </h1>
-
-        {agreeCount()}
         {surveyText()}
-        {surveyDetail()}
-      </div>
-    </div>
+        <EuiFlexGroup
+          direction="row"
+          gutterSize="none"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <EuiFlexItem>
+            <EuiFlexGroup direction="column" gutterSize="m">
+              <EuiFlexItem>{agree()}</EuiFlexItem>
+              <EuiFlexItem>{surveyDetail()}</EuiFlexItem>
+            </EuiFlexGroup>
+          </EuiFlexItem>
+          <EuiFlexItem grow={false}>{edit()}</EuiFlexItem>
+        </EuiFlexGroup>
+      </EuiFlexItem>
+    </EuiFlexGroup>
   );
 };
 
@@ -347,7 +527,7 @@ FactrakComment.defaultProps = {
 };
 
 const FactrakCommentSkeleton = () => (
-  <div className="comment">
+  <div>
     <Line width="30%" />
     <Paragraph numRows={3} />
     <Line width="25%" />
