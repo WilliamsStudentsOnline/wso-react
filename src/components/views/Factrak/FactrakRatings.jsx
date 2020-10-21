@@ -64,8 +64,8 @@ const FactrakRatings = ({ ratings, general }) => {
       "somewhat unapproachable",
       "somewhat approachable",
       "moderately approachable",
-      "approchable",
-      "very approchable",
+      "approachable",
+      "very approachable",
     ];
 
     return (
