@@ -64,9 +64,10 @@ const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
   const lastCommenter = (thread) => {
     if (!thread.posts) return "";
     const last = thread.posts[thread.posts.length - 1];
-    if (!last) return "";
+    if (!last) return "WSO User";
     if (last.user) return last.user.name;
-    return last.exUserName;
+    if (last.exUserName !== "") return last.exUserName;
+    return "WSO User";
   };
 
   // Generates thread title.
@@ -85,13 +86,19 @@ const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
     );
   };
 
+  // Gets the username of the last commenter.
+  const threadStarter = (thread) => {
+    if (thread.user) return thread.user.name;
+    if (thread.exUserName !== "") return thread.exUserName;
+    return "WSO User";
+  };
+
   // Generates Started by
   const startedBy = (thread) => {
     return (
       <div className="small-font">
         Started {new Date(thread.createdTime).toDateString()}
-        {" by "}
-        {thread.user ? thread.user.name : thread.exUserName}
+        {` by ${threadStarter(thread)}`}
       </div>
     );
   };

@@ -90,7 +90,7 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
 
   // Generate bulletin creator name
   const generateBulletinStarter = () => {
-    if (bulletin.userID) {
+    if (bulletin.userID && bulletin.user?.name) {
       return (
         <Link
           routeName="facebook.users"
@@ -101,7 +101,9 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
       );
     }
 
-    return bulletin.user.name;
+    if (bulletin.user?.name) return bulletin.user.name;
+
+    return "WSO User";
   };
 
   // Generate the edit button only if the current user is the bulletin starter

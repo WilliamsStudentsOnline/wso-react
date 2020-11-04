@@ -77,23 +77,30 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
     return null;
   };
 
+  // Comment Writer
+  const generateCommentWriter = () => {
+    if (currPost.user) {
+      return (
+        <Link
+          routeName="facebook.users"
+          routeParams={{ userID: currPost.userID }}
+        >
+          {currPost.user.name}
+        </Link>
+      );
+    }
+
+    if (currPost.exUserName !== "") return currPost.exUserName;
+
+    return "WSO User";
+  };
+
   // Generates comment contents
   const commentContent = () => {
     if (!edit) {
       return (
         <div className="comment-content">
-          <b>
-            {currPost.user ? (
-              <Link
-                routeName="facebook.users"
-                routeParams={{ userID: currPost.userID }}
-              >
-                {currPost.user.name}
-              </Link>
-            ) : (
-              currPost.exUserName
-            )}
-          </b>
+          <b>{generateCommentWriter()}</b>
           &nbsp;
           <em>{new Date(currPost.createdTime).toDateString()}</em>
           <br />
@@ -130,13 +137,15 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
 };
 
 DiscussionPost.propTypes = {
-  currUser: PropTypes.object.isRequired,
+  currUser: PropTypes.object,
   navigateTo: PropTypes.func.isRequired,
   post: PropTypes.object.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
-DiscussionPost.defaultProps = {};
+DiscussionPost.defaultProps = {
+  currUser: null,
+};
 
 const DiscussionPostSkeleton = () => (
   <div className="comment">
