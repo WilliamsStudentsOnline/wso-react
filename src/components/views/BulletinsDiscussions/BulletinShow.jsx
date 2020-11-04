@@ -194,13 +194,15 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
 };
 
 BulletinShow.propTypes = {
-  currUser: PropTypes.object.isRequired,
+  currUser: PropTypes.object,
   route: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
-BulletinShow.defaultProps = {};
+BulletinShow.defaultProps = {
+  currUser: null,
+};
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("bulletins.show");
