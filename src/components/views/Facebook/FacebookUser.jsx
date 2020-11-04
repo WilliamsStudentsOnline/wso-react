@@ -27,6 +27,12 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
         const targetResponse = await wso.userService.getUser(
           route.params.userID
         );
+
+        if (targetResponse.status === 1404) {
+          navigateTo("404");
+          return;
+        }
+
         updateTarget(targetResponse.data);
         const photoResponse = await wso.userService.getUserLargePhoto(
           targetResponse.data.unixID
