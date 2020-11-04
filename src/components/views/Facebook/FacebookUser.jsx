@@ -28,18 +28,17 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
           route.params.userID
         );
 
-        if (targetResponse.status === 1404) {
-          navigateTo("404");
-          return;
-        }
-
         updateTarget(targetResponse.data);
         const photoResponse = await wso.userService.getUserLargePhoto(
           targetResponse.data.unixID
         );
 
         updateUserPhoto(URL.createObjectURL(photoResponse));
-      } catch {
+      } catch (error) {
+        if (error.errorCode === 1404) {
+          navigateTo("404");
+          return;
+        }
         updateUserPhoto(null);
       }
     };
