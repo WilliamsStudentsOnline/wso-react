@@ -158,7 +158,10 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
 
   // Edit/Delete Links
   const editDeleteLinks = (bulletin) => {
-    if (currUser?.id === bulletin.user.id || currUser?.admin) {
+    if (
+      (bulletin.user && currUser?.id === bulletin.user.id) ||
+      currUser?.admin
+    ) {
       return (
         <>
           &nbsp;[&nbsp;
@@ -177,6 +180,13 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
     return null;
   };
 
+  // Returns the name of the bulletin user
+  const bulletinUser = (bulletin) => {
+    if (bulletin.user) return bulletin.user.name;
+
+    return "WSO User";
+  };
+
   // Populate Bulletin
   const generateBulletin = (bulletin) => {
     return (
@@ -185,7 +195,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
           {generateBulletinTitle(bulletin)}
           {editDeleteLinks(bulletin)}
         </td>
-        <td className="col-20">{bulletin.user.name}</td>
+        <td className="col-20">{bulletinUser(bulletin)}</td>
         <td className="col-20">{generateBulletinDate(bulletin)}</td>
       </tr>
     );

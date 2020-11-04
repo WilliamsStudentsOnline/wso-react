@@ -10,7 +10,9 @@ const DiscussionLayout = ({ children }) => {
     <>
       <header>
         <div className="page-head">
-          <h1>Discussions</h1>
+          <h1>
+            <Link routeName="discussions">Discussions</Link>
+          </h1>
           <ul>
             <li>
               <Link routeName="discussions">Home</Link>
