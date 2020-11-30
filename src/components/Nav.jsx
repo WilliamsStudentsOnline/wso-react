@@ -41,7 +41,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
           (ephmatchAvailabilityResp?.data?.nextOpenTime &&
             new Date(ephmatchAvailabilityResp?.data?.nextOpenTime).valueOf() -
               new Date().valueOf() <
-              604800000)
+              5*604800000) // used to be 1 week: 604800000. Now 5 weeks: 3024000000
         ) {
           updateEphmatchVisibility(true);
         }
