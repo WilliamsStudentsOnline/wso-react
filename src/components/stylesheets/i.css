@@ -3795,10 +3795,11 @@ header .login .toggles input[type="submit"]:last-child {
 }
 
 .ephmatch-link {
-  animation: ephmatch 2s;
+  color: #FFF238;
+  /*animation: ephmatch 2s;
   animation-iteration-count: 3;
   -webkit-animation: ephmatch 2s;
-  -webkit-animation-iteration-count: 3;
+  -webkit-animation-iteration-count: 3;*/
 }
 
 .match-message {
