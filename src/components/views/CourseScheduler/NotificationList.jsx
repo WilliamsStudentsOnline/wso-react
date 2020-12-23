@@ -14,7 +14,12 @@ const NotificationList = ({ notifications }) => {
   return (
     <div className="notification-list">
       {(notifications || []).map((notification) => (
-        <Notification {...notification} key={notification.body} />
+        <Notification
+          title={notification.title}
+          body={notification.body}
+          notifType={notification.notifType}
+          key={notification.body}
+        />
       ))}
     </div>
   );

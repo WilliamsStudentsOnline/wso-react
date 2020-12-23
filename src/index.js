@@ -22,8 +22,24 @@ import setUpRouterPermissions from "./router-permissions";
 import * as serviceWorker from "./serviceWorker";
 
 // External imports
-import throttle from "lodash/throttle";
 import ReactGA from "react-ga";
+
+// This code might not work if "this" is used. Test it.
+function throttle(callback, limit) {
+  let waiting = false; // Initially, we're not waiting
+  return function func(...args) {
+    // We return a throttled function
+    if (!waiting) {
+      // If we're not waiting
+      callback.apply(this, args); // Execute users function
+      waiting = true; // Prevent future invocations
+      setTimeout(() => {
+        // After a period of time
+        waiting = false; // And allow future invocations
+      }, limit);
+    }
+  };
+}
 
 const initializeAnalytics = (router) => {
   // Only set up analytics if we are in production to avoid data contamination
