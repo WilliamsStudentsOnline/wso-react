@@ -18,7 +18,7 @@
     "react-icons": "^3.10.0",
     "react-redux": "^7.1.0",
     "react-router5": "^7.1.0",
-    "react-scripts": "^3.3.0",
+    "react-scripts": "^4.0.1",
     "redux": "^4.0.1",
     "redux-router5": "^7.0.2",
     "redux-saga": "^1.0.5",
@@ -107,9 +107,9 @@
     "**/**/dot-prop": ">=5.2.0",
     "**/**/elliptic": ">=6.5.3",
     "**/**/kind-of": ">=6.0.3",
-    "**/**/lodash": ">=4.17.19",
     "**/**/minimist": ">=1.2.2",
     "**/**/object-path": ">=0.11.5",
-    "**/**/node-forge": ">=0.10.0"
+    "**/**/node-forge": ">=0.10.0",
+    "**/**/node-notifier": "8.0.1"
   }
 }
