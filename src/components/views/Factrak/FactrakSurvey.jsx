@@ -49,6 +49,7 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         // Could use a defaultSurvey and update that object, but will hardly save any lines.
         updateSurvey(surveyData);
         updateProf(surveyData.professor);
+        updateCourseNumber(surveyData.course.number);
         updateCourseAOS(surveyData.course.areaOfStudy.abbreviation);
         updateRecommend(surveyData.wouldRecommendCourse);
         updateWorkload(surveyData.courseWorkload);
@@ -212,10 +213,8 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
                         onChange={(event) =>
                           updateCourseNumber(event.target.value)
                         }
+                        value={courseNumber}
                         id="factrak_survey_course_num"
-                        defaultValue={
-                          survey && survey.course ? survey.course.number : ""
-                        }
                       />
                     </div>
                   </td>
