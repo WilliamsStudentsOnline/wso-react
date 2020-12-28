@@ -28,11 +28,10 @@ import {
   OTHERS,
   LEVELS,
   CLASS_TYPES,
-  DATES,
   REMOTE,
 } from "../constants/constants.json";
 import { DEPARTMENT } from "../constants/departments.json";
-import { addDays } from "../lib/scheduler";
+import { DEFAULT_SEMESTER_INDEX } from "../lib/scheduler";
 
 const INITIAL_STATE = {};
 let INITIAL_CATALOG = [];
@@ -86,34 +85,8 @@ const INITIAL_COUNT_STATE = {
   remote: [0, 0, 0],
 };
 
-/* 
-  Set default semester based on date. 
-  
-  Academic year Period: SEMESTER TO SHOW
-
-  1. Start of Fall Semester - 2 Weeks before Spring Preregistration: FALL
-  2. 2 Weeks before Spring Pre-registration to Winter Registration: SPRING
-  3. Winter Registration to 1 week before Winter ends: WINTER
-  4. 1 week before Winter ends to 2 Weeks before Fall Pre-registration: SPRING
-  5. 2 Weeks before Fall Pre-registration to next year: FALL
-*/
 const DEFAULT_SEMESTER = [false, false, false];
-const now = new Date();
-// Check if Winter (Period 3, above)
-if (
-  new Date(DATES.PREREG.WINTER) < now &&
-  now < addDays(new Date(DATES.Winter.END), -7)
-) {
-  DEFAULT_SEMESTER[1] = SEMESTERS[1];
-} else if (
-  // Check if Spring (Periods 2 and 4, above)
-  addDays(new Date(DATES.PREREG.SPRING), -14) < now &&
-  now < addDays(new Date(DATES.PREREG.FALL), -14)
-) {
-  DEFAULT_SEMESTER[2] = SEMESTERS[2];
-} else {
-  DEFAULT_SEMESTER[0] = SEMESTERS[0];
-}
+DEFAULT_SEMESTER[DEFAULT_SEMESTER_INDEX] = SEMESTERS[DEFAULT_SEMESTER_INDEX];
 
 Object.assign(INITIAL_FILTER_STATE, {
   semesters: DEFAULT_SEMESTER,
@@ -514,7 +487,9 @@ const applyRemoveCourse = (state, action) => {
   // Update State
   return {
     ...state,
-    added: state.added.filter((course) => course !== action.course),
+    added: state.added.filter(
+      (course) => course.courseID !== action.course.courseID
+    ),
   };
 };
 

@@ -90,7 +90,7 @@ const App = ({
 
     const initialize = async () => {
       const persistedSchedulerOptions = loadState("schedulerOptions");
-      updateSchedulerState(persistedSchedulerOptions);
+      updateSchedulerState(persistedSchedulerOptions.schedulerUtilState);
       const persistedToken = loadState("state")?.authState?.identityToken;
       if (persistedToken) {
         updateIdenToken(persistedToken);

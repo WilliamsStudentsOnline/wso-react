@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { DATES } from "../constants/constants.json";
 
 /**
  * Adds `days` to `date`.
@@ -7,7 +8,9 @@ import dayjs from "dayjs";
  * @param {number} days - number of days to be added.
  */
 export const addDays = (date, days) => {
-  date.setDate(date.getDate() + days);
+  const newDate = new Date(date);
+  newDate.setDate(date.getDate() + days);
+  return newDate;
 };
 
 /**
@@ -100,3 +103,39 @@ export const dayConversionGCal = (days) => {
 
   return result.join(",");
 };
+
+/* 
+  Returns default semester based on date. 
+  
+  Academic year Period: SEMESTER TO SHOW
+
+  1. Start of Fall Semester - 2 Weeks before Spring Preregistration: FALL (0)
+  2. 2 Weeks before Spring Pre-registration to Winter Registration: SPRING (2)
+  3. Winter Registration to 1 week before Winter ends: WINTER (1)
+  4. 1 week before Winter ends to 2 Weeks before Fall Pre-registration: SPRING (2)
+  5. 2 Weeks before Fall Pre-registration to next year: FALL (0)
+*/
+const getDefaultSemesterIndex = () => {
+  let result = 0;
+
+  const now = new Date();
+  // Check if Winter (Period 3, above)
+  if (
+    new Date(DATES.PREREG.WINTER) < now &&
+    now < addDays(new Date(DATES.Winter.END), -7)
+  ) {
+    result = 1;
+  } else if (
+    // Check if Spring (Periods 2 and 4, above)
+    addDays(new Date(DATES.PREREG.SPRING), -14) < now &&
+    now < addDays(new Date(DATES.PREREG.FALL), -14)
+  ) {
+    result = 2;
+  } else {
+    result = 0;
+  }
+
+  return result;
+};
+
+export const DEFAULT_SEMESTER_INDEX = getDefaultSemesterIndex();
