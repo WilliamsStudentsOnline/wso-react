@@ -26,37 +26,7 @@ import {
 } from "../../../actions/schedulerUtils";
 import { FAILURE } from "../../../constants/actionTypes";
 import { doLoadCatalog } from "../../../actions/course";
-import { addDays } from "../../../lib/scheduler";
-import { DATES } from "../../../constants/constants.json";
-
-/* 
-  Set default semester based on date. 
-  
-  Academic year Period: SEMESTER TO SHOW
-
-  1. Start of Fall Semester - 2 Weeks before Spring Preregistration: FALL
-  2. 2 Weeks before Spring Pre-registration to Winter Registration: SPRING
-  3. Winter Registration to 1 week before Winter ends: WINTER
-  4. 1 week before Winter ends to 2 Weeks before Fall Pre-registration: SPRING
-  5. 2 Weeks before Fall Pre-registration to next year: FALL
-*/
-let DEFAULT_SEMESTER = 0;
-const now = new Date();
-// Check if Winter (Period 3, above)
-if (
-  new Date(DATES.PREREG.WINTER) < now &&
-  now < addDays(new Date(DATES.Winter.END), -7)
-) {
-  DEFAULT_SEMESTER = 1;
-} else if (
-  // Check if Spring (Periods 2 and 4, above)
-  addDays(new Date(DATES.PREREG.SPRING), -14) < now &&
-  now < addDays(new Date(DATES.PREREG.FALL), -14)
-) {
-  DEFAULT_SEMESTER = 2;
-} else {
-  DEFAULT_SEMESTER = 0;
-}
+import { DEFAULT_SEMESTER_INDEX } from "../../../lib/scheduler";
 
 const Scheduler = ({
   doUpdateGAPI,
@@ -106,7 +76,7 @@ const Scheduler = ({
 
     loadGAPI();
     loadCatalogCourses();
-    doUpdateSemester(DEFAULT_SEMESTER);
+    doUpdateSemester(DEFAULT_SEMESTER_INDEX);
   }, [
     doUpdateSemester,
     doUpdateGAPI,
