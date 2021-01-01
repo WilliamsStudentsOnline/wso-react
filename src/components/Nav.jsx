@@ -18,7 +18,9 @@ import { userTypeStudent } from "../constants/general";
 const Nav = ({ currUser, removeCreds, wso }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
-  const [ephmatchVisibility, updateEphmatchVisibility] = useState(false);
+  const [
+    
+    atchVisibility, updateEphmatchVisibility] = useState(false);
 
   useEffect(() => {
     const loadPhoto = async () => {
@@ -119,7 +121,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
             </li>
             {ephmatchVisibility && (
               <li>
-                <Link className="ephmatch-link" routeName="ephmatch">
+                <Link className="ephmatch-link" style={{ color: "#fff238" }} routeName="ephmatch">
                   Ephmatch
                 </Link>
               </li>
