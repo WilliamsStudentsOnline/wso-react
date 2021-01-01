@@ -18,9 +18,7 @@ import { userTypeStudent } from "../constants/general";
 const Nav = ({ currUser, removeCreds, wso }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
-  const [
-    
-    atchVisibility, updateEphmatchVisibility] = useState(false);
+  const [ephmatchVisibility, updateEphmatchVisibility] = useState(false);
 
   useEffect(() => {
     const loadPhoto = async () => {
