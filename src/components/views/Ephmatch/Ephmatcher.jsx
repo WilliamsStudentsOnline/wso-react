@@ -149,7 +149,7 @@ const Ephmatcher = ({
             style={{
               width: "100%",
               borderRadius: "10px 10px 0 0",
-              height: "300px",
+              max-height: "600px",
               objectFit: "cover",
             }}
             alt="profile"
