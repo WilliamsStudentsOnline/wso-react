@@ -116,7 +116,7 @@ const EphmatchHome = ({ navigateTo, wso }) => {
                   }}
                   options={[
                     "Recommended",
-                    "Most Active",
+                    "Recently Updated",
                     "Newest",
                     "Alphabetical (A-Z)",
                   ]}
