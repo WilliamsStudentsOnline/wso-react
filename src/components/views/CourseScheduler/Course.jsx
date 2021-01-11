@@ -328,7 +328,7 @@ const Course = ({
 
         <p className="course-enroll-pref">
           <strong>Enrollment Preferences:&nbsp;</strong>
-          {course.enrlPref ? course.enrlPref : "No Enrollment Preferences"}
+          {course.enrolmentPreferences ?? "No Enrollment Preferences"}
         </p>
 
         <p className="pass-fail">
