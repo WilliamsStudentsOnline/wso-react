@@ -460,10 +460,18 @@ const applyLoadCourses = (state, action) => {
 
 const applyAddCourse = (state, action) => {
   let addedCourses = localStorage.getItem("added");
-  if (!addedCourses)
+  if (!addedCourses) {
     addedCourses = `${action.course.department};${action.course.peoplesoftNumber}`;
-  else
-    addedCourses += `,${action.course.department};${action.course.peoplesoftNumber}`;
+  } else {
+    const brownie = addedCourses.split(",");
+    const index = brownie.indexOf(
+      `${action.course.department};${action.course.peoplesoftNumber}`
+    );
+
+    if (index === -1) {
+      addedCourses += `,${action.course.department};${action.course.peoplesoftNumber}`;
+    }
+  }
 
   localStorage.setItem("added", addedCourses);
 
@@ -477,10 +485,18 @@ const applyRemoveCourse = (state, action) => {
   if (!addedCourses) addedCourses = "";
 
   const brownie = addedCourses.split(",");
-  const index = brownie.indexOf(
+  let index = brownie.indexOf(
     `${action.course.department};${action.course.peoplesoftNumber}`
   );
-  if (index !== -1) brownie.splice(index, 1);
+
+  // While loop to fix previous errors that may have resulted in more than one
+  // of the same course added.
+  while (index !== -1) {
+    brownie.splice(index, 1);
+    index = brownie.indexOf(
+      `${action.course.department};${action.course.peoplesoftNumber}`
+    );
+  }
 
   localStorage.setItem("added", brownie.join(","));
 
@@ -488,7 +504,7 @@ const applyRemoveCourse = (state, action) => {
   return {
     ...state,
     added: state.added.filter(
-      (course) => course.courseID !== action.course.courseID
+      (course) => course.peoplesoftNumber !== action.course.peoplesoftNumber
     ),
   };
 };

@@ -274,7 +274,7 @@ const Timetable = ({
         {sortOrders[sortOrder](semAdded || []).map((course) => (
           <Course
             course={course}
-            key={course.department + course.courseID}
+            key={course.department + course.peoplesoftNumber}
             location="timetable"
           />
         ))}
