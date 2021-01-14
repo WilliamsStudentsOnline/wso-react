@@ -50,7 +50,7 @@ const Course = ({
         {course.instructors?.map((instructor, index) => {
           if (!instructor.id) {
             return (
-              <span className="no-url">
+              <span className="no-url" key={instructor.name}>
                 {index === 0 ? instructor.name : `, ${instructor.name}`}
               </span>
             );
@@ -77,13 +77,16 @@ const Course = ({
 
     course.meetings.forEach((meeting) => {
       result += `${meeting.days}`;
-      result += `${
-        twelveHour
-          ? dayjs(meeting.start, "HH:mm").format("h:mmA")
-          : meeting.start
-      } - ${
-        twelveHour ? dayjs(meeting.end, "HH:mm").format("h:mmA") : meeting.end
-      } `;
+      if (meeting.start && meeting.end) {
+        result += `${
+          twelveHour
+            ? dayjs(meeting.start, "HH:mm").format("h:mmA")
+            : meeting.start
+        } - ${
+          twelveHour ? dayjs(meeting.end, "HH:mm").format("h:mmA") : meeting.end
+        } `;
+      }
+
       result += `${meeting.facility}`;
     });
 
