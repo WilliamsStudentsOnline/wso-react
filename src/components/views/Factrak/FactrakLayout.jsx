@@ -121,7 +121,7 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
             {suggestions.length > 0 &&
               showSuggestions &&
               suggestions.map((suggestion) => (
-                <tr key={suggestion.value}>
+                <tr key={`${suggestion.type}.${suggestion.id}`}>
                   <td>{suggestionRow(suggestion)}</td>
                 </tr>
               ))}
