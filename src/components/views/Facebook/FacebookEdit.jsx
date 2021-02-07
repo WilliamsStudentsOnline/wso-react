@@ -16,7 +16,7 @@ import TagEdit from "../../TagEdit";
 
 const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
   const [tags, updateTags] = useState([]);
-  const [pronoun, setPronoun] = useState(currUser?.pronoun);
+  const [pronoun] = useState(currUser?.pronoun);
   const [visible, setVisible] = useState(currUser?.visible);
   const [homeVisible, setHomeVisible] = useState(currUser?.homeVisible);
   const [dormVisible, setDormVisible] = useState(currUser?.dormVisible);
@@ -64,7 +64,6 @@ const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
         dormVisible,
         homeVisible,
         offCycle,
-        pronoun,
         visible,
       };
 
@@ -184,11 +183,10 @@ const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
               </>
             ) : null}
             <strong>Pronouns:</strong>
-            <input
-              type="text"
-              value={pronoun || ""}
-              onChange={(event) => setPronoun(event.target.value)}
-            />
+            <br />
+            Change this by changing your pronouns in{" "}
+            <a href="https://sarah.williams.edu">Peoplesoft</a>.
+            <input type="text" value={pronoun || ""} disabled />
             <br />
             <br />
             {submitting ? (
