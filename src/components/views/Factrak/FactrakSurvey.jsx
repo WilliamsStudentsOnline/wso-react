@@ -95,6 +95,11 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
       return;
     }
 
+    if (courseSemester === "") {
+      updateErrors(["Please enter a course semester"]);
+      return;
+    }
+
     const [semesterSeason, semesterYear] = courseSemester.split(".");
 
     // Parse integers here rather than below to minimize the expensive operation
