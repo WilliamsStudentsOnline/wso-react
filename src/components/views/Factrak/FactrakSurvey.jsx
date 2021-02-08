@@ -26,6 +26,8 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
   const [lecture, updateLecture] = useState(null);
   const [discussion, updateDiscussion] = useState(null);
   const [helpful, updateHelpful] = useState(null);
+  const [courseSemester, updateCourseSemester] = useState("");
+  const [courseFormat, updateCourseFormat] = useState("");
 
   const professorParam = route.params.profID;
   const surveyParam = route.params.surveyID;
@@ -93,6 +95,8 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
       return;
     }
 
+    const [semesterSeason, semesterYear] = courseSemester.split(".");
+
     // Parse integers here rather than below to minimize the expensive operation
     const surveyParams = {
       areaOfStudyAbbreviation: courseAOS,
@@ -108,7 +112,11 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
       leadLecture: parseInt(lecture, 10),
       promoteDiscussion: parseInt(discussion, 10),
       outsideHelpfulness: parseInt(helpful, 10),
+      semesterSeason,
+      semesterYear: parseInt(semesterYear, 10),
     };
+    if (courseFormat && courseFormat !== "")
+      surveyParams.courseFormat = courseFormat;
 
     try {
       if (edit) {
@@ -142,6 +150,51 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         {areasOfStudy.map((areaOfStudy) => (
           <option value={areaOfStudy.abbreviation} key={areaOfStudy.id}>
             {areaOfStudy.abbreviation}
+          </option>
+        ))}
+      </select>
+    );
+  };
+
+  // Generates the dropdown for the semester
+  const semesterDropdown = () => {
+    const years = [];
+
+    const currYear = new Date().getFullYear();
+    years.unshift({
+      title: `Winter Study ${currYear}`,
+      id: `winter-study.${currYear}`,
+    });
+    years.unshift({ title: `Spring ${currYear}`, id: `spring.${currYear}` });
+
+    if (new Date().getMonth() === 9) {
+      years.unshift({ title: `Fall ${currYear}`, id: `fall.${currYear}` });
+    }
+
+    for (let i = 1; i <= 8; i += 1) {
+      years.push({ title: `Fall ${currYear - i}`, id: `fall.${currYear - i}` });
+      years.push({
+        title: `Spring ${currYear - i}`,
+        id: `spring.${currYear - i}`,
+      });
+      years.push({
+        title: `Winter Study ${currYear - i}`,
+        id: `winter-study.${currYear - i}`,
+      });
+    }
+
+    return (
+      <select
+        className="select-course-info"
+        onChange={(event) => updateCourseSemester(event.target.value)}
+        value={courseSemester}
+      >
+        <option value="" disabled hidden>
+          Select Semester
+        </option>
+        {years.map((year) => (
+          <option value={year.id} key={year.id}>
+            {year.title}
           </option>
         ))}
       </select>
@@ -222,6 +275,45 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
 
                 <tr>
                   <td align="left">
+                    <strong>What semester was this course?*</strong>
+                  </td>
+                  <td align="left">
+                    <div>{semesterDropdown()}</div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="left">
+                    <strong>What format was this course?</strong>
+                  </td>
+                  <td align="left">
+                    <div>
+                      <select
+                        className="select-course-info"
+                        onChange={(event) =>
+                          updateCourseFormat(event.target.value)
+                        }
+                        value={courseFormat}
+                      >
+                        <option value="" disabled hidden>
+                          Select Course Format
+                        </option>
+                        <option value="in-person" key="in-person">
+                          In Person
+                        </option>
+                        <option value="hybrid" key="hybrid">
+                          Hybrid
+                        </option>
+                        <option value="remote" key="remote">
+                          Remote
+                        </option>
+                      </select>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="left">
                     <strong>
                       Would you would recommend this course to a friend?
                     </strong>
@@ -266,6 +358,13 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
                       }
                       onChange={() => updateTakeAnother(false)}
                     />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <br />
+                    Rank the following from 1 to 7 with 1 being the least and 7
+                    being the most.
                   </td>
                 </tr>
 

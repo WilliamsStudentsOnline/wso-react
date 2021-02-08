@@ -54,6 +54,18 @@ const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
     return currUser.type === userTypeStudent && currUser.dorm.id === dorm.id;
   };
 
+  // Link to survey.
+  const surveyLink = () => {
+    if (checkUserCommentRights()) {
+      return (
+        <Link routeName="dormtrak.newReview">
+          <button type="button">Click here to review your dorm room!</button>
+        </Link>
+      );
+    }
+    return null;
+  };
+
   const dormFloorplanLinks = (dormName) => {
     const floorplanLinks = floorplanHelper(dormName);
 
@@ -81,7 +93,7 @@ const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
       );
     }
 
-    return <strong>Floorplan not available</strong>;
+    return <strong>Floorplan not available.</strong>;
   };
 
   const dormInfo = () => {
@@ -135,11 +147,7 @@ const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
       <article className="main">
         {dormInfo()}
         <section>
-          {checkUserCommentRights() && (
-            <strong>
-              <Link routeName="dormtrak.newReview">Fill out survey</Link>
-            </strong>
-          )}
+          {surveyLink()}
 
           <DormtrakRecentComments
             reviews={reviews}

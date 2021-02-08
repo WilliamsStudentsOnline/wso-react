@@ -130,13 +130,11 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
           <span>{professor?.title}</span>
         </h5>
         <br />
-
-        <br />
         <Link
           routeName="factrak.newSurvey"
           routeParams={{ profID: professor.id }}
         >
-          Click here to review this professor
+          <button type="button">Click here to review this professor</button>
         </Link>
         <br />
         <br />
