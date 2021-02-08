@@ -277,6 +277,57 @@ const FactrakComment = ({
     );
   };
 
+  // Generate semester info
+  const semesterInfo = () => {
+    if (survey.semesterSeason) {
+      let season;
+      switch (survey.semesterSeason) {
+        case "spring":
+          season = "Spring";
+          break;
+        case "winter-study":
+          season = "Winter Study";
+          break;
+        case "fall":
+          season = "Fall";
+          break;
+        default:
+          season = "Unknown";
+      }
+
+      return (
+        <>
+          {" "}
+          &mdash; {season} {survey.semesterYear}
+        </>
+      );
+    }
+    return null;
+  };
+
+  // Generate course format
+  const courseFormat = () => {
+    if (survey.courseFormat) {
+      let cFormat;
+      switch (survey.courseFormat) {
+        case "in-person":
+          cFormat = "In Person";
+          break;
+        case "hybrid":
+          cFormat = "Hybrid";
+          break;
+        case "remote":
+          cFormat = "Remote";
+          break;
+        default:
+          cFormat = "Unknown";
+      }
+
+      return <> ({cFormat})</>;
+    }
+    return null;
+  };
+
   if (isDeleted) return null;
 
   if (survey.lorem)
@@ -312,6 +363,8 @@ const FactrakComment = ({
         <h1>
           {profName()}
           {courseLink()}
+          {semesterInfo()}
+          {courseFormat()}
         </h1>
 
         {agreeCount()}

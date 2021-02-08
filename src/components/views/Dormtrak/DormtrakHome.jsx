@@ -47,16 +47,19 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
   const surveyLink = () => {
     if (currUser.dormRoomID) {
       return (
-        <p>
-          <strong>
-            To fill out the survey, click{" "}
-            <Link routeName="dormtrak.newReview">here</Link>
-          </strong>
-          .
-        </p>
+        <Link routeName="dormtrak.newReview">
+          <button type="button">Click here to review your dorm room!</button>
+        </Link>
       );
     }
-    return null;
+    return (
+      <p>
+        <strong>
+          You are unable to review a dorm room right now as there is no room
+          under your name. Try again later.
+        </strong>
+      </p>
+    );
   };
 
   return (
