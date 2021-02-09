@@ -31,8 +31,8 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
         if (isMounted) {
           updateAvailability(availabilityResp.data);
         }
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 

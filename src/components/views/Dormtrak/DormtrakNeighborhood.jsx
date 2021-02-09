@@ -20,8 +20,8 @@ const DormtrakNeighborhood = ({ navigateTo, route, wso }) => {
           neighborhoodID
         );
         updateHoodInfo(hoodResponse.data);
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 

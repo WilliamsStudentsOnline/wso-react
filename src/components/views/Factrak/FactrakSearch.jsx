@@ -28,8 +28,8 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
         );
 
         updateProfs(profsResponse.data.sort((a, b) => a.name > b.name));
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 
@@ -51,8 +51,8 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
               b.areaOfStudy.abbreviation + b.number
           )
         );
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 

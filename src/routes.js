@@ -75,4 +75,5 @@ export default [
   { name: "403", path: "/403" },
   { name: "404", path: "/404" },
   { name: "500", path: "/500" },
+  { name: "error", path: "/error" },
 ];

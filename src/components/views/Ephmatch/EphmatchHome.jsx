@@ -39,8 +39,8 @@ const EphmatchHome = ({ navigateTo, wso }) => {
           updateEphmatchers(ephmatchersResponse.data);
           updateTotal(ephmatchersResponse.paginationTotal);
         }
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 
@@ -70,8 +70,8 @@ const EphmatchHome = ({ navigateTo, wso }) => {
       );
 
       ephmatchers.splice(index, 1, updatedEphmatcher.data);
-    } catch {
-      navigateTo("500");
+    } catch (error) {
+      navigateTo("error", { error });
     }
   };
 

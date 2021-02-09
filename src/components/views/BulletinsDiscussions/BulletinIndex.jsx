@@ -29,8 +29,8 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
       const bulletinsResponse = await wso.bulletinService.listBulletins(params);
       updateBulletins(bulletinsResponse.data);
       updateTotal(bulletinsResponse.paginationTotal);
-    } catch {
-      navigateTo("500");
+    } catch (error) {
+      navigateTo("error", { error });
     }
   };
 
@@ -46,8 +46,8 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
       const ridesResponse = await wso.bulletinService.listRides(params);
       updateBulletins(ridesResponse.data);
       updateTotal(ridesResponse.paginationTotal);
-    } catch {
-      navigateTo("500");
+    } catch (error) {
+      navigateTo("error", { error });
     }
   };
 
@@ -96,8 +96,8 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
         await wso.bulletinService.deleteBulletin(bulletinID);
       }
       loadNext(page);
-    } catch {
-      navigateTo("500");
+    } catch (error) {
+      navigateTo("error", { error });
     }
   };
 

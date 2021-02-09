@@ -27,8 +27,8 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
       try {
         const profsResponse = await wso.factrakService.listProfessors(params);
         updateProfs(profsResponse.data);
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 
@@ -40,8 +40,8 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
         const coursesResponse = await wso.factrakService.listCourses(params);
         const coursesData = coursesResponse.data;
         updateCourses(coursesData.sort((a, b) => a.number > b.number));
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 
@@ -53,8 +53,8 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
         );
 
         updateArea(areaOfStudyResponse.data);
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 

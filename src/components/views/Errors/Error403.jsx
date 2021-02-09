@@ -1,7 +1,7 @@
 // React imports
 import React from "react";
 
-const FourOhThree = () => {
+const Error403 = () => {
   return (
     <header>
       <h1>403. Uh-huh. Nope. Forbidden</h1>
@@ -11,4 +11,4 @@ const FourOhThree = () => {
   );
 };
 
-export default FourOhThree;
+export default Error403;

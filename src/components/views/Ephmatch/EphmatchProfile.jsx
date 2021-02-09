@@ -56,8 +56,8 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
           updateMessagingUsername(ephmatchProfile.messagingUsername);
           updateUnixID(ephmatchProfile.user.unixID);
         }
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 

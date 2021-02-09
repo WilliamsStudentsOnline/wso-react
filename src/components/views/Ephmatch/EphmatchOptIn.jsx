@@ -40,8 +40,8 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
           updateLocationState(ownProfile.data.homeState);
           updateLocationCountry(ownProfile.data.homeCountry);
         }
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
 
       try {
@@ -64,7 +64,7 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
         if (error.errorCode === 404) {
           // This is expected if the user has no profile
         } else {
-          navigateTo("500");
+          navigateTo("error", { error });
         }
       }
     };
@@ -110,9 +110,9 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
     try {
       await wso.ephmatchService.createSelfProfile(params);
       setUpdated(true);
-    } catch {
+    } catch (error) {
       // There shouldn't be any reason for the submission to be rejected.
-      navigateTo("500");
+      navigateTo("error", { error });
     }
   };
 

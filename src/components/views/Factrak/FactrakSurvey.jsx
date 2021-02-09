@@ -38,8 +38,8 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
       try {
         const profResponse = await wso.factrakService.getProfessor(professorID);
         updateProf(profResponse.data);
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 
@@ -62,8 +62,12 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         updateRecommend(surveyData.wouldRecommendCourse);
         updateTakeAnother(surveyData.wouldTakeAnother);
         updateComment(surveyData.comment);
-      } catch {
-        navigateTo("500");
+        updateCourseSemester(
+          `${surveyData.semesterSeason}.${surveyData.semesterYear}`
+        );
+        updateCourseFormat(surveyData.courseFormat);
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 
@@ -71,8 +75,8 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
       try {
         const areasOfStudyResponse = await wso.factrakService.listAreasOfStudy();
         updateAreasOfStudy(areasOfStudyResponse.data);
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 

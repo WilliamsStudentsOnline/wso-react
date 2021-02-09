@@ -18,8 +18,8 @@ const EphmatchMatch = ({ navigateTo, wso }) => {
       try {
         const ephmatchersResponse = await wso.ephmatchService.listMatches();
         updateMatches(ephmatchersResponse.data);
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 

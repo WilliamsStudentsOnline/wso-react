@@ -2,11 +2,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const FiveOhOh = ({ error }) => {
+const Error = ({ error }) => {
   return (
     <header>
       <h1>Whoops! Something Bad Happened!</h1>
-      Error Code #500.
+      Error Code {error?.errorCode || "500"}.
       <br />
       {error?.message}
       <br />
@@ -17,12 +17,12 @@ const FiveOhOh = ({ error }) => {
   );
 };
 
-FiveOhOh.propTypes = {
+Error.propTypes = {
   error: PropTypes.object,
 };
 
-FiveOhOh.defaultProps = {
+Error.defaultProps = {
   error: null,
 };
 
-export default FiveOhOh;
+export default Error;

@@ -24,8 +24,8 @@ const DormtrakPolicy = ({ currUser, navigateTo, wso }) => {
     try {
       await wso.userService.updateUser("me", updateParams);
       setUpdated(true);
-    } catch {
-      navigateTo("500");
+    } catch (error) {
+      navigateTo("error", { error });
     }
   };
 

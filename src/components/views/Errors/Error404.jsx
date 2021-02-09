@@ -1,7 +1,7 @@
 // React imports
 import React from "react";
 
-const FourOhFour = () => {
+const Error404 = () => {
   return (
     <header>
       <h1>Whoops! Page not found!</h1>
@@ -10,4 +10,4 @@ const FourOhFour = () => {
   );
 };
 
-export default FourOhFour;
+export default Error404;

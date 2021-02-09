@@ -39,10 +39,11 @@ const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
 const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
 const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
 const EphmatchMain = lazy(() => import("./views/Ephmatch/EphmatchMain"));
-const FourOhFour = lazy(() => import("./views/Errors/FourOhFour"));
+const Error404 = lazy(() => import("./views/Errors/Error404"));
 const Login = lazy(() => import("./Login"));
-const FourOhThree = lazy(() => import("./views/Errors/FourOhThree"));
-const FiveOhOh = lazy(() => import("./views/Errors/FiveOhOh"));
+const Error403 = lazy(() => import("./views/Errors/Error403"));
+const Error500 = lazy(() => import("./views/Errors/Error500"));
+const Error = lazy(() => import("./views/Errors/Error"));
 const BulletinMain = lazy(() =>
   import("./views/BulletinsDiscussions/BulletinMain")
 );
@@ -72,7 +73,7 @@ const App = ({
       const newIdenToken = tokenResponse.token;
       updateIdenToken(newIdenToken);
     } catch (error) {
-      navigateTo("500");
+      navigateTo("error", { error });
     }
   };
 
@@ -129,7 +130,7 @@ const App = ({
             updateWSO(updatedWSO);
           }
         } catch (error) {
-          navigateTo("500");
+          navigateTo("error", { error });
         }
       } else {
         getIPIdentityToken();
@@ -162,7 +163,7 @@ const App = ({
             }
           }
         } catch (error) {
-          navigateTo("500");
+          navigateTo("error", { error });
         }
       }
     };
@@ -202,13 +203,15 @@ const App = ({
       case "discussions":
         return <DiscussionMain />;
       case "403":
-        return <FourOhThree />;
+        return <Error403 />;
       case "404":
-        return <FourOhFour />;
+        return <Error404 />;
       case "500":
-        return <FiveOhOh />;
+        return <Error500 />;
+      case "error":
+        return <Error />;
       default:
-        return <FourOhFour />;
+        return <Error404 />;
     }
   };
 

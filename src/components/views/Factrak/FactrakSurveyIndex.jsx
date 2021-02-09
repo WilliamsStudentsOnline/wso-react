@@ -23,8 +23,8 @@ const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
         const userSurveyResponse = await wso.factrakService.listSurveys(params);
 
         updateSurveys(userSurveyResponse.data);
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 

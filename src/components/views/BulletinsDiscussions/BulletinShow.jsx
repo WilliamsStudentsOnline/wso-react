@@ -29,8 +29,8 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
       navigateTo("bulletins", {
         type: bulletin.type || bulletinTypeRide,
       });
-    } catch {
-      navigateTo("500");
+    } catch (error) {
+      navigateTo("error", { error });
     }
   };
 

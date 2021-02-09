@@ -28,8 +28,8 @@ const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
       try {
         const dormResponse = await wso.dormtrakService.getDorm(dormID);
         updateDorm(dormResponse.data);
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 
@@ -40,8 +40,8 @@ const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
           queryParams
         );
         updateReviews(dormReviewResponse.data);
-      } catch {
-        navigateTo("500");
+      } catch (error) {
+        navigateTo("error", { error });
       }
     };
 

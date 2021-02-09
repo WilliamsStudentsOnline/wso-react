@@ -33,8 +33,8 @@ const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
 
       updateThreads(discussionsResponse.data);
       updateTotal(discussionsResponse.paginationTotal);
-    } catch {
-      navigateTo("500");
+    } catch (error) {
+      navigateTo("error", { error });
     }
   };
 
@@ -128,8 +128,8 @@ const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
       await wso.bulletinService.deleteDiscussion(threadID);
 
       loadThreads(page);
-    } catch {
-      navigateTo("500");
+    } catch (error) {
+      navigateTo("error", { error });
     }
   };
 

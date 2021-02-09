@@ -28,8 +28,8 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
       const response = await wso.bulletinService.updatePost(post.id, params);
       setEdit(false);
       updateCurrPost(response.data);
-    } catch {
-      navigateTo("500");
+    } catch (error) {
+      navigateTo("error", { error });
     }
   };
 
@@ -42,8 +42,8 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
     try {
       await wso.bulletinService.deletePost(post.id);
       updateDeleted(true);
-    } catch {
-      navigateTo("500");
+    } catch (error) {
+      navigateTo("error", { error });
     }
   };
 
