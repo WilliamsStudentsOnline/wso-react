@@ -35,6 +35,9 @@ import jwtDecode from "jwt-decode";
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
 const About = lazy(() => import("./views/Misc/About"));
 const FAQ = lazy(() => import("./views/Misc/FAQ"));
+const MobilePrivacyPolicy = lazy(() =>
+  import("./views/Misc/MobilePrivacyPolicy")
+);
 const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
 const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
 const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
@@ -194,6 +197,8 @@ const App = ({
         return <FactrakMain />;
       case "faq":
         return <FAQ />;
+      case "mobile-privacy-policy":
+        return <MobilePrivacyPolicy />;
       case "login":
         return <Login />;
       case "ephmatch":
