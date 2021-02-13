@@ -16,7 +16,7 @@ const HoodTableRow = ({ dorm, wso }) => {
   useEffect(() => {
     const loadDormInfo = async () => {
       try {
-        const dormResponse = await wso.dormtrakService.getFacts(dorm.id);
+        const dormResponse = await wso.dormtrakService.getDormFacts(dorm.id);
         updateDormInfo(dormResponse.data);
       } catch {
         // Let this be handled by the loading state for now
