@@ -279,6 +279,10 @@ const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
     const result = [];
     if (course.meetings) {
       for (const meeting of course.meetings) {
+        if (!meeting.days || meeting.days === "FORG") {
+          continue;
+        }
+
         const courseDays = getCourseDays(meeting.days);
         for (const day of courseDays) {
           const slot = [
@@ -384,7 +388,4 @@ const mapStateToProps = (state) => ({
   horizontal: getOrientation(state),
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(Schedule);
+export default connect(mapStateToProps, null)(Schedule);

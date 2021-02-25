@@ -128,6 +128,10 @@ const Timetable = ({
         continue;
       }
       for (const meeting of course.meetings) {
+        if (!meeting.days || meeting.days === "FORG") {
+          continue;
+        }
+
         const meetingStartDate = nextDateWithDay(
           DATES[course.semester].START,
           toDayArray(meeting.days)
@@ -227,6 +231,9 @@ const Timetable = ({
         continue;
       }
       for (const meeting of course.meetings) {
+        if (!meeting.days || meeting.days === "FORG") {
+          continue;
+        }
         events.push(createGCalEvent(course, meeting));
       }
     }
