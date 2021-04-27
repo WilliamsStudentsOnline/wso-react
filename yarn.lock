@@ -9742,6 +9742,11 @@ react-scripts@^4.0.1:
   optionalDependencies:
     fsevents "^2.1.3"
 
+react-table@^7.7.0:
+  version "7.7.0"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.7.0.tgz#e2ce14d7fe3a559f7444e9ecfe8231ea8373f912"
+  integrity sha512-jBlj70iBwOTvvImsU9t01LjFjy4sXEtclBovl3mTiqjz23Reu0DKnRza4zlLtOPACx6j2/7MrQIthIK1Wi+LIA==
+
 react-test-renderer@^16.8.6:
   version "16.14.0"
   resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-16.14.0.tgz#e98360087348e260c56d4fe2315e970480c228ae"
@@ -12219,13 +12224,9 @@ ws@^7.2.3:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.3.tgz#1f9643de34a543b8edb124bdcbc457ae55a6e5cd"
   integrity sha512-hr6vCR76GsossIRsr8OLR9acVVm1jyfEWvhbNjtgPOrfvAlKzvyeg/P6r8RuDjRyrcQoPQT7K0DGEPc7Ae6jzA==
 
-wso-api-client@^21.2.7:
-  version "21.2.8"
-  resolved "https://registry.yarnpkg.com/wso-api-client/-/wso-api-client-21.2.8.tgz#db18053e6ed579d363f39792159e7758820fded1"
-  integrity sha512-cIVR519/wFDHLp3jzF1IIq/pWrhbWUlRnV4b1Do3+D4AT3FwY+s9syJ0pBvRnT8XJooVX6rQcR7+BuaVikzlNg==
-  dependencies:
-    axios "^0.21.1"
-    jwt-decode "^3.1.2"
+"wso-api-client@link:../wso-api-client":
+  version "0.0.0"
+  uid ""
 
 xml-name-validator@^3.0.0:
   version "3.0.0"

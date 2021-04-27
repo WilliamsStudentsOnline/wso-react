@@ -39,6 +39,12 @@ export const scopes = {
   ScopeEphmatchMatches: "service:ephmatch:matches",
   // Allows access to read profiles, write like/unlike. For when a user is signed up and Ephmatch is open
   ScopeEphmatchProfiles: "service:ephmatch:profiles",
+
+  // Service: Goodrich
+  // Allows access to read/write self goodrich orders and read goodrich menu
+  ScopeGoodrich: "service:goodrich",
+  // Allows access to read/write all goodrich orders and read/write goodrich menu
+  ScopeGoodrichManager: "service:goodrich:manager",
 };
 
 /**

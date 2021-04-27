@@ -42,6 +42,7 @@ const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
 const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
 const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
 const EphmatchMain = lazy(() => import("./views/Ephmatch/EphmatchMain"));
+const GoodrichMain = lazy(() => import("./views/Goodrich/GoodrichMain"));
 const Error404 = lazy(() => import("./views/Errors/Error404"));
 const Login = lazy(() => import("./Login"));
 const Error403 = lazy(() => import("./views/Errors/Error403"));
@@ -207,6 +208,8 @@ const App = ({
         return <BulletinMain />;
       case "discussions":
         return <DiscussionMain />;
+      case "goodrich":
+        return <GoodrichMain />;
       case "403":
         return <Error403 />;
       case "404":

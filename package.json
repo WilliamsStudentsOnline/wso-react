@@ -18,6 +18,7 @@
     "react-redux": "^7.1.0",
     "react-router5": "^7.1.0",
     "react-scripts": "^4.0.1",
+    "react-table": "^7.7.0",
     "redux": "^4.0.1",
     "redux-router5": "^7.0.2",
     "redux-saga": "^1.0.5",
@@ -26,7 +27,7 @@
     "serialize-javascript": "3.1.0",
     "timeago.js": "^4.0.0-beta.2",
     "typeface-source-sans-pro": "^0.0.75",
-    "wso-api-client": "^21.2.7"
+    "wso-api-client": "link:/Users/aidanlloyd-tucker/Williams/WSO/wso-api-client"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",

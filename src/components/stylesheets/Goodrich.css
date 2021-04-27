@@ -1,0 +1,4 @@
+.expand-col {
+  flex-shrink: 1 !important;
+  min-width: auto !important;
+}
