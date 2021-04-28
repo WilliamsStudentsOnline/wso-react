@@ -5,6 +5,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { actions } from "redux-router5";
 import PlacedTable from "./Manager/PlacedTable";
+import OngoingTable from "./Manager/OngoingTable";
 
 const GoodrichManager = () => {
   return (
@@ -14,6 +15,11 @@ const GoodrichManager = () => {
           <h3>Placed Orders</h3>
 
           <PlacedTable />
+        </section>
+        <section>
+          <h3>Ongoing Orders</h3>
+
+          <OngoingTable />
         </section>
       </article>
     </div>

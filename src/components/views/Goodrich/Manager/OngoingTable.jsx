@@ -16,61 +16,22 @@ import {
   paymentMethodString,
 } from "../Order/misc";
 import { FaCaretRight, FaCaretDown } from "react-icons/fa";
-import AcceptOrderModal from "./AcceptOrderModal";
-import RejectOrderModal from "./RejectOrderModal";
 
-const PlacedTable = ({ navigateTo, wso }) => {
+const OngoingTable = ({ navigateTo, wso }) => {
   const [data, updateData] = useState([]);
-  const [acceptModalOpen, updateAcceptModalOpen] = React.useState(false);
-  const [acceptModalOrder, updateAcceptModalOrder] = React.useState(null);
-  const [rejectModalOpen, updateRejectModalOpen] = React.useState(false);
-  const [rejectModalOrder, updateRejectModalOrder] = React.useState(null);
 
   const loadData = async () => {
     try {
       const ordersResponse = await wso.goodrichService.listOrders({
-        statuses: [Goodrich.OrderStatus.Placed],
+        statuses: [
+          Goodrich.OrderStatus.Accepted,
+          Goodrich.OrderStatus.InProgress,
+        ],
       });
       updateData(ordersResponse.data);
     } catch (error) {
       navigateTo("error", { error });
     }
-  };
-
-  useEffect(() => {
-    const refreshInterval = setInterval(() => {
-      loadData();
-    }, 5000);
-
-    return () => {
-      clearInterval(refreshInterval);
-    };
-  }, []);
-
-  const openAcceptModal = (order) => {
-    updateAcceptModalOrder(order);
-    updateAcceptModalOpen(true);
-  };
-
-  const closeAcceptModal = (removeRow) => {
-    if (removeRow) {
-      loadData();
-    }
-    updateAcceptModalOrder(null);
-    updateAcceptModalOpen(false);
-  };
-
-  const openRejectModal = (order) => {
-    updateRejectModalOrder(order);
-    updateRejectModalOpen(true);
-  };
-
-  const closeRejectModal = (removeRow) => {
-    if (removeRow) {
-      loadData();
-    }
-    updateRejectModalOrder(null);
-    updateRejectModalOpen(false);
   };
 
   const columns = React.useMemo(
@@ -98,8 +59,8 @@ const PlacedTable = ({ navigateTo, wso }) => {
         accessor: "id", // accessor is the "key" in the data
       },
       {
-        Header: "Requested Time",
-        accessor: "preferredTime",
+        Header: "Pickup Time",
+        accessor: "pickupTime",
         Cell: (props) => <div> {formatPickupTime(props.value)} </div>,
       },
       {
@@ -128,6 +89,7 @@ const PlacedTable = ({ navigateTo, wso }) => {
     ({ row }) => (
       <div>
         <div className="goodrich-expand-info">
+          <br />
           <h5>Items:</h5>
           <ul>
             {row.original.items.map((item) => {
@@ -136,8 +98,19 @@ const PlacedTable = ({ navigateTo, wso }) => {
           </ul>
 
           <br />
-          <h5>Notes:</h5>
-          <p>{row.original.notes}</p>
+          {row.original.notes && (
+            <>
+              <h5>Notes:</h5>
+              <p>{row.original.notes}</p>
+            </>
+          )}
+
+          {row.original.adminNotes && (
+            <>
+              <h5>Admin Notes:</h5>
+              <p>{row.original.adminNotes}</p>
+            </>
+          )}
 
           <h5>Payment Method:</h5>
           <p>{paymentMethodString(row.original.paymentMethod)}</p>
@@ -153,20 +126,7 @@ const PlacedTable = ({ navigateTo, wso }) => {
           <p>{row.original.phoneNumber}</p>
         </div>
         <div className="goodrich-expand-btns">
-          <button
-            type="button"
-            className="accept"
-            onClick={() => openAcceptModal(row.original)}
-          >
-            Accept
-          </button>
-          <button
-            type="button"
-            className="reject"
-            onClick={() => openRejectModal(row.original)}
-          >
-            Reject
-          </button>
+          <button type="button">Complete Order</button>
         </div>
       </div>
     ),
@@ -180,7 +140,7 @@ const PlacedTable = ({ navigateTo, wso }) => {
     rows,
     prepareRow,
     visibleColumns,
-  } = useTable({ columns, data, autoResetExpanded: false }, useExpanded);
+  } = useTable({ columns, data }, useExpanded);
 
   return (
     <>
@@ -207,51 +167,37 @@ const PlacedTable = ({ navigateTo, wso }) => {
                     );
                   })}
                 </tr>
-                {/*
-                    If the row is in an expanded state, render a row with a
-                    column that fills the entire length of the table.
-                  */}
-                {row.isExpanded ? (
-                  <tr>
-                    <td colSpan={visibleColumns.length}>
-                      {/*
-                          Inside it, call our renderRowSubComponent function. In reality,
-                          you could pass whatever you want as props to
-                          a component like this, including the entire
-                          table instance. But for this example, we'll just
-                          pass the row
-                        */}
-                      {renderRowSubComponent({ row })}
-                    </td>
-                  </tr>
-                ) : null}
+                <tr>
+                  <td colSpan={visibleColumns.length}>
+                    <div>
+                      <span>
+                        <b>Items: </b>
+                        {row.original.items
+                          .map((item) => {
+                            return formatItemName(item);
+                          })
+                          .join(", ")}
+                      </span>
+                    </div>
+                    {row.isExpanded && renderRowSubComponent({ row })}
+                  </td>
+                </tr>
               </React.Fragment>
             );
           })}
         </tbody>
       </table>
-
-      <AcceptOrderModal
-        modalOpen={acceptModalOpen}
-        closeModal={closeAcceptModal}
-        order={acceptModalOrder}
-      />
-
-      <RejectOrderModal
-        modalOpen={rejectModalOpen}
-        closeModal={closeRejectModal}
-        order={rejectModalOrder}
-      />
     </>
   );
 };
 
-PlacedTable.propTypes = {
+OngoingTable.propTypes = {
   navigateTo: PropTypes.func.isRequired,
+  onRefresh: PropTypes.func.isRequired,
   wso: PropTypes.instanceOf(WSO).isRequired,
 };
 
-PlacedTable.defaultProps = {};
+OngoingTable.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   wso: getWSO(state),
@@ -262,4 +208,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlacedTable);
+export default connect(mapStateToProps, mapDispatchToProps)(OngoingTable);

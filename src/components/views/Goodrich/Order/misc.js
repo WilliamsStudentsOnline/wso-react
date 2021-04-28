@@ -1,4 +1,5 @@
 import { Goodrich } from "wso-api-client";
+import moment from "moment";
 
 export const paymentMethodString = (paymentMethod) => {
   switch (paymentMethod) {
@@ -20,16 +21,10 @@ export const orderStatusString = (orderStatus) => {
   switch (orderStatus) {
     case Goodrich.OrderStatus.Placed:
       return "Placed";
-    case Goodrich.OrderStatus.Accepted:
-      return "Accepted";
-    case Goodrich.OrderStatus.Rejected:
-      return "Rejected";
-    case Goodrich.OrderStatus.InProgress:
-      return "In-Progress";
     case Goodrich.OrderStatus.Completed:
       return "Completed";
-    case Goodrich.OrderStatus.PickedUp:
-      return "Picked-Up";
+    case Goodrich.OrderStatus.Paid:
+      return "Paid";
     case Goodrich.OrderStatus.Unknown:
     default:
       return "Unknown Order Status";
@@ -38,4 +33,8 @@ export const orderStatusString = (orderStatus) => {
 
 export const formatItemName = (item) => {
   return item.title;
+};
+
+export const formatPickupTime = (time) => {
+  return moment(time).format("hh:mm a (MM/DD)");
 };

@@ -13,6 +13,7 @@ import { containsOneOfScopes, scopes } from "../../../lib/general";
 import GoodrichLayout from "./GoodrichLayout";
 import GoodrichHome from "./GoodrichHome";
 import GoodrichManager from "./GoodrichManager";
+import GoodrichOrder from "./GoodrichOrder";
 
 const GoodrichMain = ({ route, token }) => {
   const goodrichBody = () => {
@@ -33,8 +34,8 @@ const GoodrichMain = ({ route, token }) => {
     switch (splitRoute[1]) {
       case "manager":
         return <GoodrichManager />;
-      /* case "order":
-        return <GoodrichOrder />; */
+      case "order":
+        return <GoodrichOrder />;
       default:
         return <GoodrichHome />;
     }

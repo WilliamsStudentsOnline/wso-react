@@ -3857,10 +3857,10 @@ header .login .toggles input[type="submit"]:last-child {
   width: 100%;
 }
 
-.goodrich-expand-btns .accept {
+.goodrich-expand-btns button.accept {
   background-color: green;
 }
-.goodrich-expand-btns .reject {
+.goodrich-expand-btns button.reject {
   background-color: red;
 }
 
@@ -3873,4 +3873,7 @@ header .login .toggles input[type="submit"]:last-child {
   color: #000000;
 }
 
+.goodrich-modal-btn-row {
+  display: inline;
+}
 /*# sourceMappingURL=i.css.map */
