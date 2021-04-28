@@ -34,6 +34,7 @@ const OrderCheckout = ({
   // eslint-disable-next-line no-unused-vars
   const [slotList, updateSlotList] = useState([]);
   const [openModal, updateOpenModal] = useState(false);
+  const [openTSModal, updateOpenTSModal] = useState(false);
 
   const [timeSlot, updateTimeSlot] = useState("");
   const [paymentMethod, updatePaymentMethod] = useState(0);
@@ -45,6 +46,15 @@ const OrderCheckout = ({
   const loadSlotList = async () => {
     try {
       const slotListResp = await wso.goodrichService.listTimeSlots();
+      if (!slotListResp.data || slotListResp.data.length === 0) {
+        updateOpenTSModal(true);
+        return;
+      }
+      if (slotListResp.data.findIndex((sl) => sl.openSpots > 0) === -1) {
+        updateOpenTSModal(true);
+        return;
+      }
+
       updateSlotList(slotListResp.data);
     } catch (error) {
       navigateTo("error", { error });
@@ -207,6 +217,25 @@ const OrderCheckout = ({
           type="button"
         >
           Close
+        </button>
+      </Modal>
+      <Modal
+        isOpen={openTSModal}
+        style={modalStyles}
+        contentLabel="Error Time Slots"
+        onRequestClose={() => {
+          navigateTo("goodrich");
+        }}
+      >
+        <h4>Error!</h4>
+        <p>No time slots remaining today.</p>
+        <button
+          onClick={() => {
+            navigateTo("goodrich");
+          }}
+          type="button"
+        >
+          Go Back
         </button>
       </Modal>
     </>
