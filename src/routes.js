@@ -70,6 +70,22 @@ export default [
       { name: "optIn", path: "/opt-in" },
     ],
   },
+  {
+    name: "goodrich",
+    path: "/goodrich",
+    children: [
+      { name: "manager", path: "/manager" },
+      {
+        name: "order",
+        path: "/order",
+        children: [
+          { name: "combo", path: "/combo" },
+          { name: "menu", path: "/menu" },
+          { name: "checkout", path: "/checkout" },
+        ],
+      },
+    ],
+  },
   { name: "login", path: "/account/login" },
   { name: "faq", path: "/faq" },
   { name: "mobile-privacy-policy", path: "/mobile-privacy-policy" },

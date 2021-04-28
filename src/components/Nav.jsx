@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
-import { getCurrUser, getWSO } from "../selectors/auth";
+import { getCurrUser, getScopes, getWSO } from "../selectors/auth";
 import { connect } from "react-redux";
 import { doRemoveCreds } from "../actions/auth";
 
@@ -14,8 +14,9 @@ import { createRouteNodeSelector } from "redux-router5";
 
 import { removeStateFromStorage } from "../stateStorage";
 import { userTypeStudent } from "../constants/general";
+import { scopes, scopesContainsOneOfScopes } from "../lib/general";
 
-const Nav = ({ currUser, removeCreds, wso }) => {
+const Nav = ({ currUser, removeCreds, wso, userScopes }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
   const [ephmatchVisibility, updateEphmatchVisibility] = useState(false);
@@ -41,7 +42,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
           (ephmatchAvailabilityResp?.data?.nextOpenTime &&
             new Date(ephmatchAvailabilityResp?.data?.nextOpenTime).valueOf() -
               new Date().valueOf() <
-              5*604800000) // used to be 1 week: 604800000. Now 5 weeks: 3024000000
+              5 * 604800000) // used to be 1 week: 604800000. Now 5 weeks: 3024000000
         ) {
           updateEphmatchVisibility(true);
         }
@@ -119,11 +120,23 @@ const Nav = ({ currUser, removeCreds, wso }) => {
             </li>
             {ephmatchVisibility && (
               <li>
-                <Link className="ephmatch-link" style={{ color: "#fff238" }} routeName="ephmatch">
+                <Link
+                  className="ephmatch-link"
+                  style={{ color: "#fff238" }}
+                  routeName="ephmatch"
+                >
                   Ephmatch
                 </Link>
               </li>
             )}
+            {userScopes &&
+              scopesContainsOneOfScopes(userScopes, [scopes.ScopeGoodrich]) && (
+                <>
+                  <li>
+                    <Link routeName="goodrich">Goodrich</Link>
+                  </li>
+                </>
+              )}
           </ul>
         </span>
 
@@ -162,9 +175,10 @@ Nav.propTypes = {
   currUser: PropTypes.object,
   removeCreds: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
+  userScopes: PropTypes.arrayOf(PropTypes.string),
 };
 
-Nav.defaultProps = { currUser: {} };
+Nav.defaultProps = { currUser: {}, userScopes: [] };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
@@ -172,6 +186,7 @@ const mapStateToProps = () => {
   return (state) => ({
     currUser: getCurrUser(state),
     wso: getWSO(state),
+    userScopes: getScopes(state),
     ...routeNodeSelector(state),
   });
 };

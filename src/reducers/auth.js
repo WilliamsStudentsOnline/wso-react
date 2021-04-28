@@ -82,6 +82,8 @@ const updateUser = (state, action) => {
     factrakAdmin: newUser.factrakAdmin,
     hasAcceptedFactrakPolicy: newUser.hasAcceptedFactrakPolicy,
     factrakSurveyDeficit: newUser.factrakSurveyDeficit,
+    williamsID: newUser.williamsID,
+    cellPhone: newUser.cellPhone,
   };
 
   return { ...state, currUser };

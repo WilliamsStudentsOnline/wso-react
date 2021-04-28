@@ -26,6 +26,11 @@ const routePermissions = {
   ephmatch: { tokenLevel: 3 },
   facebook: { scopes: [scopes.ScopeUsers] },
   factrak: { tokenLevel: 3 },
+  goodrich: { tokenLevel: 3, scopes: [scopes.ScopeGoodrich] },
+  "goodrich.manager": {
+    tokenLevel: 3,
+    scopes: [scopes.ScopeGoodrich, scopes.ScopeGoodrichManager],
+  },
 };
 
 /**

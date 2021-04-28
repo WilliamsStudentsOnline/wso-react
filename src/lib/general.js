@@ -39,6 +39,12 @@ export const scopes = {
   ScopeEphmatchMatches: "service:ephmatch:matches",
   // Allows access to read profiles, write like/unlike. For when a user is signed up and Ephmatch is open
   ScopeEphmatchProfiles: "service:ephmatch:profiles",
+
+  // Service: Goodrich
+  // Allows access to read/write self goodrich orders and read goodrich menu
+  ScopeGoodrich: "service:goodrich",
+  // Allows access to read/write all goodrich orders and read/write goodrich menu
+  ScopeGoodrichManager: "service:goodrich:manager",
 };
 
 /**
@@ -53,6 +59,26 @@ export const containsOneOfScopes = (token, scopesToCheck) => {
     if (decoded.scope) {
       for (let i = 0; i < scopesToCheck.length; i += 1) {
         if (decoded.scope.indexOf(scopesToCheck[i]) !== -1) return true;
+      }
+    }
+  } catch (err) {
+    return false;
+  }
+
+  return false;
+};
+
+/**
+ * Checks if token contains any of the given scopes.
+ *
+ * @param {String[]} tokenScopes - API token string.
+ * @param {String[]} scopesToCheck - scopes to be checked against.
+ */
+export const scopesContainsOneOfScopes = (tokenScopes, scopesToCheck) => {
+  try {
+    if (tokenScopes) {
+      for (let i = 0; i < scopesToCheck.length; i += 1) {
+        if (tokenScopes.indexOf(scopesToCheck[i]) !== -1) return true;
       }
     }
   } catch (err) {
