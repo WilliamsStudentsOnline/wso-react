@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
@@ -12,27 +12,26 @@ import { WSO, Goodrich } from "wso-api-client";
 import { useTable, useExpanded } from "react-table";
 import {
   formatItemName,
-  formatPickupTime,
+  formatTimeSlot,
   paymentMethodString,
 } from "../Order/misc";
 import { FaCaretRight, FaCaretDown } from "react-icons/fa";
+import { getGoodrichManagerOrders } from "../../../../selectors/goodrich";
+import moment from "moment";
 
-const OngoingTable = ({ navigateTo, wso }) => {
+const PaidTable = ({ orders }) => {
   const [data, updateData] = useState([]);
 
-  const loadData = async () => {
-    try {
-      const ordersResponse = await wso.goodrichService.listOrders({
-        statuses: [
-          Goodrich.OrderStatus.Accepted,
-          Goodrich.OrderStatus.InProgress,
-        ],
+  useEffect(() => {
+    const sortedOrders = orders
+      .filter((o) => o.status === Goodrich.OrderStatus.Paid)
+      .sort((a, b) => {
+        const aTime = moment(a.timeSlot, "HH:mm");
+        const bTime = moment(b.timeSlot, "HH:mm");
+        return aTime.diff(bTime);
       });
-      updateData(ordersResponse.data);
-    } catch (error) {
-      navigateTo("error", { error });
-    }
-  };
+    updateData(sortedOrders);
+  }, [orders]);
 
   const columns = React.useMemo(
     () => [
@@ -60,12 +59,12 @@ const OngoingTable = ({ navigateTo, wso }) => {
       },
       {
         Header: "Pickup Time",
-        accessor: "pickupTime",
-        Cell: (props) => <div> {formatPickupTime(props.value)} </div>,
+        accessor: "timeSlot",
+        Cell: (props) => <div> {formatTimeSlot(props.value)} </div>,
       },
       {
         Header: "Price",
-        accessor: "totalPrice",
+        accessor: (d) => `${d.totalPrice}${d.comboDeal ? " (combo)" : ""}`,
         Cell: (props) => <div> ${props.value} </div>,
       },
       {
@@ -80,10 +79,6 @@ const OngoingTable = ({ navigateTo, wso }) => {
     ],
     []
   );
-
-  useEffect(() => {
-    loadData();
-  }, [navigateTo, wso]);
 
   const renderRowSubComponent = React.useCallback(
     ({ row }) => (
@@ -125,9 +120,6 @@ const OngoingTable = ({ navigateTo, wso }) => {
           <h5>Phone Number:</h5>
           <p>{row.original.phoneNumber}</p>
         </div>
-        <div className="goodrich-expand-btns">
-          <button type="button">Complete Order</button>
-        </div>
       </div>
     ),
     []
@@ -140,7 +132,14 @@ const OngoingTable = ({ navigateTo, wso }) => {
     rows,
     prepareRow,
     visibleColumns,
-  } = useTable({ columns, data }, useExpanded);
+  } = useTable(
+    {
+      data,
+      columns,
+      autoResetExpanded: false,
+    },
+    useExpanded
+  );
 
   return (
     <>
@@ -191,16 +190,18 @@ const OngoingTable = ({ navigateTo, wso }) => {
   );
 };
 
-OngoingTable.propTypes = {
+PaidTable.propTypes = {
   navigateTo: PropTypes.func.isRequired,
-  onRefresh: PropTypes.func.isRequired,
   wso: PropTypes.instanceOf(WSO).isRequired,
+  orders: PropTypes.arrayOf(PropTypes.object).isRequired,
+  refreshOrders: PropTypes.func.isRequired,
 };
 
-OngoingTable.defaultProps = {};
+PaidTable.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   wso: getWSO(state),
+  orders: getGoodrichManagerOrders(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -208,4 +209,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(OngoingTable);
+export default connect(mapStateToProps, mapDispatchToProps)(PaidTable);

@@ -1,16 +1,6 @@
-import moment from 'moment';
-
-export const goodrichOpen = '8:30am'
-export const goodrichOpenMoment = moment.duration({
-  minutes: 30,
-  hours: 8,
-})
-export const goodrichClose = '11:30am'
-export const goodrichCloseMoment = moment.duration({
-  minutes: 30,
-  hours: 15,
-})
+// eslint-disable-next-line import/prefer-default-export
 export const goodrichDates = [
+  '04/28/2021',
   '05/01/2021',
   '05/02/2021',
   '05/08/2021',

@@ -1,2 +1,4 @@
 const getGoodrichOrder = ({ goodrichState }) => goodrichState.order;
-export default getGoodrichOrder;
+const getGoodrichManagerOrders = ({ goodrichState }) =>
+  goodrichState.managerOrders;
+export { getGoodrichOrder, getGoodrichManagerOrders };

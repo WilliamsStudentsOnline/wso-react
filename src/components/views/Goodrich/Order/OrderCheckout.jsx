@@ -10,8 +10,8 @@ import { actions } from "redux-router5";
 import Modal from "react-modal";
 import { paymentMethodString } from "./misc";
 import moment from "moment";
-import doGoodrichOrderUpdate from "../../../../actions/goodrich";
-import getGoodrichOrder from "../../../../selectors/goodrich";
+import { doGoodrichOrderUpdate } from "../../../../actions/goodrich";
+import { getGoodrichOrder } from "../../../../selectors/goodrich";
 
 const modalStyles = {
   content: {

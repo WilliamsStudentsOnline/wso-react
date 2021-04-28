@@ -5,7 +5,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { actions } from "redux-router5";
-import doGoodrichOrderUpdate from "../../../../actions/goodrich";
+import { doGoodrichOrderUpdate } from "../../../../actions/goodrich";
 
 const OrderCombo = ({ goodrichOrderUpdate, navigateTo }) => {
   const onSubmit = (useCombo) => {

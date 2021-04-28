@@ -21,8 +21,8 @@ export const orderStatusString = (orderStatus) => {
   switch (orderStatus) {
     case Goodrich.OrderStatus.Placed:
       return "Placed";
-    case Goodrich.OrderStatus.Completed:
-      return "Completed";
+    case Goodrich.OrderStatus.Ready:
+      return "Ready";
     case Goodrich.OrderStatus.Paid:
       return "Paid";
     case Goodrich.OrderStatus.Unknown:
@@ -35,6 +35,6 @@ export const formatItemName = (item) => {
   return `${item.title} (${item.type})`;
 };
 
-export const formatPickupTime = (time) => {
-  return moment(time).format("hh:mm a (MM/DD)");
+export const formatTimeSlot = (timeSlot) => {
+  return moment(timeSlot, "HH:mm").format("hh:mm a");
 };

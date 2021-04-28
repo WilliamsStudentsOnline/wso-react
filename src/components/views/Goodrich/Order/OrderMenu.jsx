@@ -8,8 +8,8 @@ import { WSO } from "wso-api-client";
 import { getWSO } from "../../../../selectors/auth";
 import { actions } from "redux-router5";
 import Modal from "react-modal";
-import doGoodrichOrderUpdate from "../../../../actions/goodrich";
-import getGoodrichOrder from "../../../../selectors/goodrich";
+import { doGoodrichOrderUpdate } from "../../../../actions/goodrich";
+import { getGoodrichOrder } from "../../../../selectors/goodrich";
 
 const modalStyles = {
   content: {

@@ -74,6 +74,7 @@ const GoodrichHome = ({ navigateTo, wso }) => {
                 .filter((order) => {
                   return order.date === moment().format("YYYY-MM-DD");
                 })
+                .sort((a, b) => b.id - a.id)
                 .map((order) => <OrderCard order={order} />)}
           </div>
           <br />
@@ -86,6 +87,7 @@ const GoodrichHome = ({ navigateTo, wso }) => {
                 .filter((order) => {
                   return order.date !== moment().format("YYYY-MM-DD");
                 })
+                .sort((a, b) => b.id - a.id)
                 .map((order) => <OrderCard order={order} />)}
           </div>
         </section>

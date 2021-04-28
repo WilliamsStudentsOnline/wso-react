@@ -44,9 +44,11 @@ const GoodrichOrder = ({ route, navigateTo }) => {
   return (
     <>
       <div className="container">
-        <h3>New Order</h3>
-        <br />
         <article className="facebook-results">
+          <section>
+            <h3>New Order</h3>
+            <br />
+          </section>
           <section>{orderBody()}</section>
         </article>
       </div>

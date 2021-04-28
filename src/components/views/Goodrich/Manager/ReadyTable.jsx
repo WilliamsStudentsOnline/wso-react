@@ -19,12 +19,12 @@ import { FaCaretRight, FaCaretDown } from "react-icons/fa";
 import { getGoodrichManagerOrders } from "../../../../selectors/goodrich";
 import moment from "moment";
 
-const PlacedTable = ({ wso, refreshOrders, orders }) => {
+const ReadyTable = ({ wso, refreshOrders, orders }) => {
   const [data, updateData] = useState([]);
 
   useEffect(() => {
     const sortedOrders = orders
-      .filter((o) => o.status === Goodrich.OrderStatus.Placed)
+      .filter((o) => o.status === Goodrich.OrderStatus.Ready)
       .sort((a, b) => {
         const aTime = moment(a.timeSlot, "HH:mm");
         const bTime = moment(b.timeSlot, "HH:mm");
@@ -33,10 +33,10 @@ const PlacedTable = ({ wso, refreshOrders, orders }) => {
     updateData(sortedOrders);
   }, [orders]);
 
-  const setOrderReady = async (id) => {
+  const setOrderPaid = async (id) => {
     try {
       await wso.goodrichService.updateOrder(id, {
-        status: Goodrich.OrderStatus.Ready,
+        status: Goodrich.OrderStatus.Paid,
       });
       refreshOrders();
     } catch (error) {
@@ -132,8 +132,8 @@ const PlacedTable = ({ wso, refreshOrders, orders }) => {
           <p>{row.original.phoneNumber}</p>
         </div>
         <div className="goodrich-expand-btns">
-          <button onClick={() => setOrderReady(row.original.id)} type="button">
-            Set Order Ready
+          <button onClick={() => setOrderPaid(row.original.id)} type="button">
+            Set Order Paid
           </button>
         </div>
       </div>
@@ -206,14 +206,14 @@ const PlacedTable = ({ wso, refreshOrders, orders }) => {
   );
 };
 
-PlacedTable.propTypes = {
+ReadyTable.propTypes = {
   navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.instanceOf(WSO).isRequired,
   orders: PropTypes.arrayOf(PropTypes.object).isRequired,
   refreshOrders: PropTypes.func.isRequired,
 };
 
-PlacedTable.defaultProps = {};
+ReadyTable.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   wso: getWSO(state),
@@ -225,4 +225,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlacedTable);
+export default connect(mapStateToProps, mapDispatchToProps)(ReadyTable);
