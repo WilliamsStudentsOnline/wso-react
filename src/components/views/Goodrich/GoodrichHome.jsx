@@ -9,14 +9,11 @@ import { actions } from "redux-router5";
 
 // Additional imports
 import { WSO } from "wso-api-client";
+import moment from "moment";
+import OrderCard from "./OrderCard";
 
 const GoodrichHome = ({ navigateTo, wso }) => {
   const [userOrders, updateUserOrders] = useState(null);
-
-  const itemNames = (items) => {
-    console.log(items);
-    return items.map((i) => i.title).join(", ");
-  };
 
   useEffect(() => {
     let isMounted = true;
@@ -43,80 +40,54 @@ const GoodrichHome = ({ navigateTo, wso }) => {
     <div className="container">
       <article className="facebook-results">
         <section>
-          <h3>Welcome to Dormtrak</h3>
+          <h3>Goodrich Order Online</h3>
           <p>
-            Dormtrak is a system where students can share their thoughts about
-            dorm buildings and rooms, as well as find out everything there is to
-            know about housing at Williams. Much of our information is pulled
-            from surveys that students fill out, so by filling out the survey
-            for your building, you help all of us make the most informed
-            decision we can about where to live.
+            Goodrich is the student-run coffee house on campus. Located right by
+            Currier Quad, it is a hub for all students!{" "}
+            <b>
+              Goodrich will be open for all weekends through the end of the
+              semester from 8:30am-11:30am.
+            </b>
+            &nbsp;You cannot order there and must place an order ahead of time
+            on here.
           </p>
+          <button
+            type="button"
+            onClick={() => {
+              navigateTo("goodrich.order");
+            }}
+          >
+            Create a New Order!
+          </button>
         </section>
 
-        <section>
+        <section
+          style={{
+            marginTop: "1em",
+          }}
+        >
+          <h3>Today&apos;s Orders</h3>
+
+          <div className="goodrich-user-order">
+            {userOrders &&
+              userOrders
+                .filter((order) => {
+                  return order.date === moment().format("YYYY-MM-DD");
+                })
+                .map((order) => <OrderCard order={order} />)}
+          </div>
+          <br />
+
           <h3>Previous Orders</h3>
 
           <div className="goodrich-user-order">
             {userOrders &&
-              userOrders.map((order) => (
-                <aside
-                  key={order.id}
-                  className="goodrich-user-order-card"
-                  style={{
-                    textAlign: "left",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "80%",
-                      float: "left",
-                    }}
-                  >
-                    <h4>Order #{order.id}</h4>
-                    <ul>
-                      <li>{itemNames(order.items)}</li>
-                      <li>{order.pickupTime}</li>
-                    </ul>
-                  </div>
-                  <div
-                    style={{
-                      textAlign: "right",
-                      width: "20%",
-                      float: "right",
-                    }}
-                  >
-                    <h4>{order.status}</h4>
-                  </div>
-                </aside>
-              ))}
+              userOrders
+                .filter((order) => {
+                  return order.date !== moment().format("YYYY-MM-DD");
+                })
+                .map((order) => <OrderCard order={order} />)}
           </div>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Status</th>
-                <th>Pickup Time</th>
-                <th>Price</th>
-                <th>Payment Method</th>
-                <th>Items</th>
-              </tr>
-            </thead>
-            <tbody>
-              {userOrders &&
-                userOrders.map((order) => (
-                  <tr key={order.id}>
-                    <td>{order.id}</td>
-                    <td>{order.status}</td>
-                    <td>{order.pickupTime}</td>
-                    <td>{order.totalPrice}</td>
-                    <td>{order.paymentMethod}</td>
-                    <td>{JSON.stringify(order.items)}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
         </section>
       </article>
     </div>

@@ -32,7 +32,7 @@ export const orderStatusString = (orderStatus) => {
 };
 
 export const formatItemName = (item) => {
-  return item.title;
+  return `${item.title} (${item.type})`;
 };
 
 export const formatPickupTime = (time) => {

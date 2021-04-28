@@ -8,6 +8,8 @@ import { WSO } from "wso-api-client";
 import { getWSO } from "../../../../selectors/auth";
 import { actions } from "redux-router5";
 import Modal from "react-modal";
+import doGoodrichOrderUpdate from "../../../../actions/goodrich";
+import getGoodrichOrder from "../../../../selectors/goodrich";
 
 const modalStyles = {
   content: {
@@ -20,9 +22,7 @@ const modalStyles = {
   },
 };
 
-// eslint-disable-next-line no-unused-vars
-const OrderMenu = ({ order, updateOrder, onFwd, wso, navigateTo }) => {
-  // eslint-disable-next-line no-unused-vars
+const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
   const [menu, updateMenu] = useState([]);
   const [selectedItems, updateSelectedItems] = useState([]);
   const [openModal, updateOpenModal] = useState(false);
@@ -81,11 +81,11 @@ const OrderMenu = ({ order, updateOrder, onFwd, wso, navigateTo }) => {
       return;
     }
 
-    updateOrder({
-      itemIDs: selectedItems,
+    goodrichOrderUpdate({
       ...order,
+      itemIDs: selectedItems,
     });
-    onFwd();
+    navigateTo("goodrich.order.checkout");
   };
 
   const onCheckboxChange = (e, menuItemID) => {
@@ -123,6 +123,9 @@ const OrderMenu = ({ order, updateOrder, onFwd, wso, navigateTo }) => {
   useEffect(() => {
     loadData();
   }, [navigateTo, wso]);
+  useEffect(() => {
+    updateSelectedItems(order.itemIDs || []);
+  }, [order]);
 
   return (
     <>
@@ -146,6 +149,7 @@ const OrderMenu = ({ order, updateOrder, onFwd, wso, navigateTo }) => {
                     type="checkbox"
                     id={`menuitem${m.id}`}
                     value={m.id}
+                    defaultChecked={selectedItems.indexOf(m.id) !== -1}
                     onChange={(e) => onCheckboxChange(e, m.id)}
                   />
                   {m.title} {m.type && `(${m.type})`} - ${m.price}
@@ -175,6 +179,7 @@ const OrderMenu = ({ order, updateOrder, onFwd, wso, navigateTo }) => {
                     type="checkbox"
                     id={`menuitem${m.id}`}
                     value={m.id}
+                    defaultChecked={selectedItems.indexOf(m.id) !== -1}
                     onChange={(e) => onCheckboxChange(e, m.id)}
                   />
                   {m.title} {m.type && `(${m.type})`} - ${m.price}
@@ -204,6 +209,7 @@ const OrderMenu = ({ order, updateOrder, onFwd, wso, navigateTo }) => {
                     type="checkbox"
                     id={`menuitem${m.id}`}
                     value={m.id}
+                    defaultChecked={selectedItems.indexOf(m.id) !== -1}
                     onChange={(e) => onCheckboxChange(e, m.id)}
                   />
                   {m.title} {m.type && `(${m.type})`} - ${m.price}
@@ -233,6 +239,7 @@ const OrderMenu = ({ order, updateOrder, onFwd, wso, navigateTo }) => {
                     type="checkbox"
                     id={`menuitem${m.id}`}
                     value={m.id}
+                    defaultChecked={selectedItems.indexOf(m.id) !== -1}
                     onChange={(e) => onCheckboxChange(e, m.id)}
                   />
                   {m.title} {m.type && `(${m.type})`} - ${m.price}
@@ -243,41 +250,45 @@ const OrderMenu = ({ order, updateOrder, onFwd, wso, navigateTo }) => {
       </div>
 
       <br />
-      <h4>Summary</h4>
-      <ul>
-        {selectedItems &&
-          selectedItems.map((id) => {
-            const m = getItemByID(id);
-            return (
-              <li key={`subtotal${m.id}`}>
-                - {m.title} {m.type && `(${m.type})`}
-              </li>
-            );
-          })}
-      </ul>
-      <b>Subtotal: ${getSubtotal()}</b>
-      <br />
+      {menu && menu.length && (
+        <>
+          <h4>Summary</h4>
+          <ul>
+            {selectedItems &&
+              selectedItems.map((id) => {
+                const m = getItemByID(id);
+                return (
+                  <li key={`subtotal${m.id}`}>
+                    - {m.title} {m.type && `(${m.type})`}
+                  </li>
+                );
+              })}
+          </ul>
+          <b>Subtotal: ${getSubtotal()}</b>
+          <br />
 
-      {order.comboDeal && comboInvalid() && (
-        <p
-          style={{
-            color: "red",
-          }}
-        >
-          Cannot get the combo deal with these items. Please have exactly 1
-          drink, 1 bagel, 1 spread.
-        </p>
+          {order.comboDeal && comboInvalid() && (
+            <p
+              style={{
+                color: "red",
+              }}
+            >
+              Cannot get the combo deal with these items. Please have exactly 1
+              drink, 1 bagel, 1 spread.
+            </p>
+          )}
+
+          <button
+            style={{
+              marginTop: "1em",
+            }}
+            onClick={onSubmit}
+            type="button"
+          >
+            Go to Checkout
+          </button>
+        </>
       )}
-
-      <button
-        style={{
-          marginTop: "1em",
-        }}
-        onClick={onSubmit}
-        type="button"
-      >
-        Go to Checkout
-      </button>
 
       <Modal
         isOpen={openModal}
@@ -306,22 +317,23 @@ const OrderMenu = ({ order, updateOrder, onFwd, wso, navigateTo }) => {
 };
 
 OrderMenu.propTypes = {
-  order: PropTypes.object.isRequired,
-  updateOrder: PropTypes.func.isRequired,
-  onFwd: PropTypes.func.isRequired,
   wso: PropTypes.instanceOf(WSO).isRequired,
   navigateTo: PropTypes.func.isRequired,
+  goodrichOrderUpdate: PropTypes.func.isRequired,
+  order: PropTypes.object.isRequired,
 };
 
 OrderMenu.defaultProps = {};
 
 const mapStateToProps = (state) => ({
   wso: getWSO(state),
+  order: getGoodrichOrder(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location, params, opts) =>
     dispatch(actions.navigateTo(location, params, opts)),
+  goodrichOrderUpdate: (newOrder) => dispatch(doGoodrichOrderUpdate(newOrder)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderMenu);

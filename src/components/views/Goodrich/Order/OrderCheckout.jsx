@@ -10,6 +10,8 @@ import { actions } from "redux-router5";
 import Modal from "react-modal";
 import { paymentMethodString } from "./misc";
 import moment from "moment";
+import doGoodrichOrderUpdate from "../../../../actions/goodrich";
+import getGoodrichOrder from "../../../../selectors/goodrich";
 
 const modalStyles = {
   content: {
@@ -22,11 +24,9 @@ const modalStyles = {
   },
 };
 
-// eslint-disable-next-line no-unused-vars
 const OrderCheckout = ({
   order,
-  updateOrder,
-  onFwd,
+  goodrichOrderUpdate,
   wso,
   navigateTo,
   currUser,
@@ -148,7 +148,8 @@ const OrderCheckout = ({
         phoneNumber,
         timeSlot,
       });
-      onFwd();
+      goodrichOrderUpdate({});
+      navigateTo("goodrich");
     } catch (e) {
       showError(e);
     }
@@ -213,12 +214,11 @@ const OrderCheckout = ({
 };
 
 OrderCheckout.propTypes = {
-  order: PropTypes.object.isRequired,
-  updateOrder: PropTypes.func.isRequired,
-  onFwd: PropTypes.func.isRequired,
   wso: PropTypes.instanceOf(WSO).isRequired,
   currUser: PropTypes.object.isRequired,
   navigateTo: PropTypes.func.isRequired,
+  goodrichOrderUpdate: PropTypes.func.isRequired,
+  order: PropTypes.object.isRequired,
 };
 
 OrderCheckout.defaultProps = {};
@@ -226,11 +226,13 @@ OrderCheckout.defaultProps = {};
 const mapStateToProps = (state) => ({
   wso: getWSO(state),
   currUser: getCurrUser(state),
+  order: getGoodrichOrder(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   navigateTo: (location, params, opts) =>
     dispatch(actions.navigateTo(location, params, opts)),
+  goodrichOrderUpdate: (newOrder) => dispatch(doGoodrichOrderUpdate(newOrder)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderCheckout);

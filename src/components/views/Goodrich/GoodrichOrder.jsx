@@ -1,71 +1,96 @@
 // React imports
-import React, { useState } from "react";
+import React from "react";
 
 // Redux imports
 import { connect } from "react-redux";
 import OrderCombo from "./Order/OrderCombo";
 import OrderMenu from "./Order/OrderMenu";
 import OrderCheckout from "./Order/OrderCheckout";
+import PropTypes from "prop-types";
+import { actions, createRouteNodeSelector } from "redux-router5";
+import Modal from "react-modal";
+import moment from "moment";
+import { goodrichDates } from "../../../constants/goodrich";
 
-const GoodrichOrder = () => {
-  const [order, updateOrder] = useState({});
-  const [loc, updateLoc] = useState(0);
+const modalStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+};
 
-  const onComboFwd = () => {
-    updateLoc(1);
-  };
-  const onMenuFwd = () => {
-    updateLoc(2);
-  };
-  const onCheckoutFwd = () => {
-    updateLoc(0);
-  };
+const GoodrichOrder = ({ route, navigateTo }) => {
+  const openModal = goodrichDates.indexOf(moment().format("MM/DD/YYYY")) === -1;
 
   const orderBody = () => {
-    switch (loc) {
-      case 1:
-        return (
-          <OrderMenu
-            order={order}
-            updateOrder={updateOrder}
-            onFwd={onMenuFwd}
-          />
-        );
-      case 2:
-        return (
-          <OrderCheckout
-            order={order}
-            updateOrder={updateOrder}
-            onFwd={onCheckoutFwd}
-          />
-        );
-      case 0:
+    const splitRoute = route.name.split(".");
+    if (splitRoute.length !== 3) return <OrderCombo />;
+
+    switch (splitRoute[2]) {
+      case "menu":
+        return <OrderMenu />;
+      case "checkout":
+        return <OrderCheckout />;
+      case "combo":
       default:
-        return (
-          <OrderCombo
-            order={order}
-            updateOrder={updateOrder}
-            onFwd={onComboFwd}
-          />
-        );
+        return <OrderCombo />;
     }
   };
 
   return (
-    <div className="container">
-      <h3>New Order</h3>
-      <br />
-      <article className="facebook-results">
-        <section>{orderBody()}</section>
-      </article>
-    </div>
+    <>
+      <div className="container">
+        <h3>New Order</h3>
+        <br />
+        <article className="facebook-results">
+          <section>{orderBody()}</section>
+        </article>
+      </div>
+      <Modal
+        isOpen={openModal}
+        onRequestClose={() => {
+          navigateTo("goodrich");
+        }}
+        style={modalStyles}
+        contentLabel="Error"
+      >
+        <h4>Error!</h4>
+        <p>Goodrich is closed today!</p>
+        <button
+          onClick={() => {
+            navigateTo("goodrich");
+          }}
+          type="button"
+        >
+          Go Back
+        </button>
+      </Modal>
+    </>
   );
 };
 
-GoodrichOrder.propTypes = {};
+GoodrichOrder.propTypes = {
+  route: PropTypes.object.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+};
 
 GoodrichOrder.defaultProps = {};
 
-const mapStateToProps = () => {};
+const mapStateToProps = () => {
+  const routeNodeSelector = createRouteNodeSelector("goodrich.order");
 
-export default connect(mapStateToProps)(GoodrichOrder);
+  return (state) => ({
+    ...routeNodeSelector(state),
+  });
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GoodrichOrder);

@@ -4,15 +4,15 @@ import React from "react";
 // Redux imports
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { actions } from "redux-router5";
+import doGoodrichOrderUpdate from "../../../../actions/goodrich";
 
-// eslint-disable-next-line no-unused-vars
-const OrderCombo = ({ order, updateOrder, onFwd }) => {
+const OrderCombo = ({ goodrichOrderUpdate, navigateTo }) => {
   const onSubmit = (useCombo) => {
-    updateOrder({
+    goodrichOrderUpdate({
       comboDeal: useCombo,
-      ...order,
     });
-    onFwd();
+    navigateTo("goodrich.order.menu");
   };
 
   return (
@@ -38,15 +38,18 @@ const OrderCombo = ({ order, updateOrder, onFwd }) => {
 };
 
 OrderCombo.propTypes = {
-  order: PropTypes.object.isRequired,
-  updateOrder: PropTypes.func.isRequired,
-  onFwd: PropTypes.func.isRequired,
+  navigateTo: PropTypes.func.isRequired,
+  goodrichOrderUpdate: PropTypes.func.isRequired,
 };
 
 OrderCombo.defaultProps = {};
 
-const mapStateToProps = () => {};
+const mapStateToProps = () => ({});
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = (dispatch) => ({
+  navigateTo: (location, params, opts) =>
+    dispatch(actions.navigateTo(location, params, opts)),
+  goodrichOrderUpdate: (newOrder) => dispatch(doGoodrichOrderUpdate(newOrder)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderCombo);
