@@ -12256,9 +12256,13 @@ ws@^7.2.3:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.3.tgz#1f9643de34a543b8edb124bdcbc457ae55a6e5cd"
   integrity sha512-hr6vCR76GsossIRsr8OLR9acVVm1jyfEWvhbNjtgPOrfvAlKzvyeg/P6r8RuDjRyrcQoPQT7K0DGEPc7Ae6jzA==
 
-"wso-api-client@link:../wso-api-client":
-  version "0.0.0"
-  uid ""
+wso-api-client@^21.4.28:
+  version "21.4.28"
+  resolved "https://registry.yarnpkg.com/wso-api-client/-/wso-api-client-21.4.28.tgz#bbcd0ea99fb66a41671a44f2008db9e4904cf84b"
+  integrity sha512-CoKubN7dw+CCbkj+fHIJXO+1pWYUxwOHsox9D1XVLLCCjVb6hxRe0pVAxtrYCKKW9ctbC5EFI6d2hIoxSS7Ydw==
+  dependencies:
+    axios "^0.21.1"
+    jwt-decode "^3.1.2"
 
 xml-name-validator@^3.0.0:
   version "3.0.0"
