@@ -112,7 +112,6 @@ const OrderCheckout = ({
           </option>
           {[
             Goodrich.PaymentMethod.Swipe,
-            Goodrich.PaymentMethod.Points,
             Goodrich.PaymentMethod.CreditCard,
             Goodrich.PaymentMethod.Cash,
           ].map((t) => {

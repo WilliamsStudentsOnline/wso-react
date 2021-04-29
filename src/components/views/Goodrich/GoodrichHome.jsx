@@ -42,14 +42,17 @@ const GoodrichHome = ({ navigateTo, wso }) => {
         <section>
           <h3>Goodrich Order Online</h3>
           <p>
-            Goodrich is the student-run coffee house on campus. Located right by
-            Currier Quad, it is a hub for all students!{" "}
+            We are excited to announce that Goodrich Coffee Bar is open for
+            curbside pickup for the remainder of the semester!{" "}
             <b>
-              Goodrich will be open for all weekends through the end of the
-              semester from 8:30am-11:30am.
+              We’re open for the first three weekends of May, from 8:30a-11:30a
+              on Saturday and Sunday.{" "}
             </b>
-            &nbsp;You cannot order there and must place an order ahead of time
-            on here.
+            You will not be able to place orders at Goodrich Hall; instead{" "}
+            please order ahead for scheduled pickup using this beautiful new{" "}
+            contact-less ordering system. We accept swipe, cash, and credit.{" "}
+            Feel free to eat your bagels and sip your lattes with your friends{" "}
+            on the WCMA eyes, or take your order to go!
           </p>
           <button
             type="button"

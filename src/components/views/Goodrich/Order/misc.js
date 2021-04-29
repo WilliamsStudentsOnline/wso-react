@@ -32,7 +32,8 @@ export const orderStatusString = (orderStatus) => {
 };
 
 export const formatItemName = (item) => {
-  return `${item.title} (${item.type})`;
+  const itemType = ` (${item.type})`;
+  return `${item.title}${item.type ? itemType : ""}`;
 };
 
 export const formatTimeSlot = (timeSlot) => {

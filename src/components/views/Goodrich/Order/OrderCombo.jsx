@@ -17,8 +17,15 @@ const OrderCombo = ({ goodrichOrderUpdate, navigateTo }) => {
 
   return (
     <>
-      <h4>Would you like to use the combo deal?</h4>
-      <p>The combo order includes a bagel, a spread, and a drink.</p>
+      <h4>Would you like to order the Goodrich Combo?</h4>
+      <p>
+        Would you like to order the Goodrich Combo? Hit ‘yes’ if you’d like to
+        order a bagel, a spread, and a drink (any drink!) for a fixed price of
+        $5. You can pay by swipe, cash, or credit. Hit ‘no’ if you’d like to
+        create your own tab. You’ll be charged the price of each item. You can
+        use a swipe for up to $5 of your total and can pay the rest by cash or
+        credit.
+      </p>
       <div className="goodrich-modal-btn-row">
         <button onClick={() => onSubmit(true)} type="button">
           Yes
