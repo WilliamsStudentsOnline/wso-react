@@ -86,11 +86,13 @@ const PaidTable = ({ orders }) => {
         <div className="goodrich-expand-info">
           <br />
           <h5>Items:</h5>
-          <ul>
-            {row.original.items.map((item) => {
-              return <li>- {formatItemName(item)}</li>;
-            })}
-          </ul>
+          {row.original.items && (
+            <ul>
+              {row.original.items.map((item) => {
+                return <li>- {formatItemName(item)}</li>;
+              })}
+            </ul>
+          )}
 
           <br />
           {row.original.notes && (
@@ -171,11 +173,12 @@ const PaidTable = ({ orders }) => {
                     <div>
                       <span>
                         <b>Items: </b>
-                        {row.original.items
-                          .map((item) => {
-                            return formatItemName(item);
-                          })
-                          .join(", ")}
+                        {row.original.items &&
+                          row.original.items
+                            .map((item) => {
+                              return formatItemName(item);
+                            })
+                            .join(", ")}
                       </span>
                     </div>
                     {row.isExpanded && renderRowSubComponent({ row })}

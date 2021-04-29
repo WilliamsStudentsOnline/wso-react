@@ -79,17 +79,18 @@ const OrderCheckout = ({
           <option value="" disabled hidden>
             Select a Pickup Time Slot
           </option>
-          {slotList.map((t) => {
-            return (
-              <option
-                value={t.formatted}
-                key={t.formatted}
-                disabled={t.openSpots <= 0}
-              >
-                {t.formatted} ({t.openSpots} spots)
-              </option>
-            );
-          })}
+          {slotList &&
+            slotList.map((t) => {
+              return (
+                <option
+                  value={t.formatted}
+                  key={t.formatted}
+                  disabled={t.openSpots <= 0}
+                >
+                  {t.formatted} ({t.openSpots} spots)
+                </option>
+              );
+            })}
         </select>
       </>
     );

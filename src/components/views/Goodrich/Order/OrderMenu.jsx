@@ -131,122 +131,126 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
     <>
       <h4>Drinks</h4>
       <div>
-        {menu
-          .filter((m) => {
-            return m.category === "Drink";
-          })
-          .map((m) => {
-            return (
-              <>
-                <label
-                  htmlFor={`menuitem${m.id}`}
-                  style={{
-                    fontWeight: "normal",
-                    paddingBottom: "0.2em",
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    id={`menuitem${m.id}`}
-                    value={m.id}
-                    defaultChecked={selectedItems.indexOf(m.id) !== -1}
-                    onChange={(e) => onCheckboxChange(e, m.id)}
-                  />
-                  {m.title} {m.type && `(${m.type})`} - ${m.price}
-                </label>
-              </>
-            );
-          })}
+        {menu &&
+          menu
+            .filter((m) => {
+              return m.category === "Drink";
+            })
+            .map((m) => {
+              return (
+                <>
+                  <label
+                    htmlFor={`menuitem${m.id}`}
+                    style={{
+                      fontWeight: "normal",
+                      paddingBottom: "0.2em",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      id={`menuitem${m.id}`}
+                      value={m.id}
+                      defaultChecked={selectedItems.indexOf(m.id) !== -1}
+                      onChange={(e) => onCheckboxChange(e, m.id)}
+                    />
+                    {m.title} {m.type && `(${m.type})`} - ${m.price}
+                  </label>
+                </>
+              );
+            })}
       </div>
 
       <h4>Bagels</h4>
       <div>
-        {menu
-          .filter((m) => {
-            return m.category === "Bagel";
-          })
-          .map((m) => {
-            return (
-              <>
-                <label
-                  htmlFor={`menuitem${m.id}`}
-                  style={{
-                    fontWeight: "normal",
-                    paddingBottom: "0.2em",
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    id={`menuitem${m.id}`}
-                    value={m.id}
-                    defaultChecked={selectedItems.indexOf(m.id) !== -1}
-                    onChange={(e) => onCheckboxChange(e, m.id)}
-                  />
-                  {m.title} {m.type && `(${m.type})`} - ${m.price}
-                </label>
-              </>
-            );
-          })}
+        {menu &&
+          menu
+            .filter((m) => {
+              return m.category === "Bagel";
+            })
+            .map((m) => {
+              return (
+                <>
+                  <label
+                    htmlFor={`menuitem${m.id}`}
+                    style={{
+                      fontWeight: "normal",
+                      paddingBottom: "0.2em",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      id={`menuitem${m.id}`}
+                      value={m.id}
+                      defaultChecked={selectedItems.indexOf(m.id) !== -1}
+                      onChange={(e) => onCheckboxChange(e, m.id)}
+                    />
+                    {m.title} {m.type && `(${m.type})`} - ${m.price}
+                  </label>
+                </>
+              );
+            })}
       </div>
 
       <h4>Spreads</h4>
       <div>
-        {menu
-          .filter((m) => {
-            return m.category === "Spread";
-          })
-          .map((m) => {
-            return (
-              <>
-                <label
-                  htmlFor={`menuitem${m.id}`}
-                  style={{
-                    fontWeight: "normal",
-                    paddingBottom: "0.2em",
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    id={`menuitem${m.id}`}
-                    value={m.id}
-                    defaultChecked={selectedItems.indexOf(m.id) !== -1}
-                    onChange={(e) => onCheckboxChange(e, m.id)}
-                  />
-                  {m.title} {m.type && `(${m.type})`} - ${m.price}
-                </label>
-              </>
-            );
-          })}
+        {menu &&
+          menu
+            .filter((m) => {
+              return m.category === "Spread";
+            })
+            .map((m) => {
+              return (
+                <>
+                  <label
+                    htmlFor={`menuitem${m.id}`}
+                    style={{
+                      fontWeight: "normal",
+                      paddingBottom: "0.2em",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      id={`menuitem${m.id}`}
+                      value={m.id}
+                      defaultChecked={selectedItems.indexOf(m.id) !== -1}
+                      onChange={(e) => onCheckboxChange(e, m.id)}
+                    />
+                    {m.title} {m.type && `(${m.type})`} - ${m.price}
+                  </label>
+                </>
+              );
+            })}
       </div>
 
       <h4>Food Items</h4>
       <div>
-        {menu
-          .filter((m) => {
-            return m.category === "Food";
-          })
-          .map((m) => {
-            return (
-              <>
-                <label
-                  htmlFor={`menuitem${m.id}`}
-                  style={{
-                    fontWeight: "normal",
-                    paddingBottom: "0.2em",
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    id={`menuitem${m.id}`}
-                    value={m.id}
-                    defaultChecked={selectedItems.indexOf(m.id) !== -1}
-                    onChange={(e) => onCheckboxChange(e, m.id)}
-                  />
-                  {m.title} {m.type && `(${m.type})`} - ${m.price}
-                </label>
-              </>
-            );
-          })}
+        {menu &&
+          menu
+            .filter((m) => {
+              return m.category === "Food";
+            })
+            .map((m) => {
+              return (
+                <>
+                  <label
+                    htmlFor={`menuitem${m.id}`}
+                    style={{
+                      fontWeight: "normal",
+                      paddingBottom: "0.2em",
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      id={`menuitem${m.id}`}
+                      value={m.id}
+                      defaultChecked={selectedItems.indexOf(m.id) !== -1}
+                      onChange={(e) => onCheckboxChange(e, m.id)}
+                    />
+                    {m.title} {m.type && `(${m.type})`} - ${m.price}
+                  </label>
+                </>
+              );
+            })}
       </div>
 
       <br />

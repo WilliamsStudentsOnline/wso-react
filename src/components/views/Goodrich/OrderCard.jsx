@@ -25,7 +25,7 @@ const OrderCard = ({ order }) => {
       >
         <h4>Order #{order.id}</h4>
         <ul>
-          <li key="1">{itemNames(order.items)}</li>
+          <li key="1">{itemNames(order.items || [])}</li>
           <li
             style={{
               fontWeight: "600",
