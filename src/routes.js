@@ -74,7 +74,14 @@ export default [
     name: "goodrich",
     path: "/goodrich",
     children: [
-      { name: "manager", path: "/manager" },
+      {
+        name: "manager",
+        path: "/manager",
+        children: [
+          { name: "menu", path: "/menu" },
+          { name: "orders", path: "/orders" },
+        ],
+      },
       {
         name: "order",
         path: "/order",

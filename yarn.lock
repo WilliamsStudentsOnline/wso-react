@@ -3287,6 +3287,11 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
+classnames@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
+  integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
+
 clean-css@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.2.3.tgz#507b5de7d97b48ee53d84adb0160ff6216380f78"
@@ -12256,10 +12261,10 @@ ws@^7.2.3:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.3.tgz#1f9643de34a543b8edb124bdcbc457ae55a6e5cd"
   integrity sha512-hr6vCR76GsossIRsr8OLR9acVVm1jyfEWvhbNjtgPOrfvAlKzvyeg/P6r8RuDjRyrcQoPQT7K0DGEPc7Ae6jzA==
 
-wso-api-client@^21.4.28:
-  version "21.4.28"
-  resolved "https://registry.yarnpkg.com/wso-api-client/-/wso-api-client-21.4.28.tgz#bbcd0ea99fb66a41671a44f2008db9e4904cf84b"
-  integrity sha512-CoKubN7dw+CCbkj+fHIJXO+1pWYUxwOHsox9D1XVLLCCjVb6hxRe0pVAxtrYCKKW9ctbC5EFI6d2hIoxSS7Ydw==
+wso-api-client@^21.4.30:
+  version "21.4.30"
+  resolved "https://registry.yarnpkg.com/wso-api-client/-/wso-api-client-21.4.30.tgz#9b002b7c38af40ba0f412af52604047baadd53a4"
+  integrity sha512-8ySMCGYn2MUz8PDx1MjbKg8NTkLXGcrabnQoKwjiTefJE8eg/F1fwNhX3qzJ41iT/iQP5QEvNJGozZWNnAhlIg==
   dependencies:
     axios "^0.21.1"
     jwt-decode "^3.1.2"

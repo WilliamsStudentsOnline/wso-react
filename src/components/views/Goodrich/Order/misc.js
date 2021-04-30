@@ -17,6 +17,15 @@ export const paymentMethodString = (paymentMethod) => {
   }
 };
 
+const priceFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
+export const formatPrice = (price) => {
+  return priceFormatter.format(price);
+};
+
 export const orderStatusString = (orderStatus) => {
   switch (orderStatus) {
     case Goodrich.OrderStatus.Placed:
@@ -32,8 +41,9 @@ export const orderStatusString = (orderStatus) => {
 };
 
 export const formatItemName = (item) => {
-  const itemType = ` (${item.type})`;
-  return `${item.title}${item.type ? itemType : ""}`;
+  const itemNote = `, ${item.note}`;
+  const itemType = ` (${item.item.type}${item.note ? itemNote : ""})`;
+  return `${item.item.title}${item.item.type ? itemType : ""}`;
 };
 
 export const formatTimeSlot = (timeSlot) => {

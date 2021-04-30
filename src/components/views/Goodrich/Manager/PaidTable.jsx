@@ -12,6 +12,7 @@ import { WSO, Goodrich } from "wso-api-client";
 import { useTable, useExpanded } from "react-table";
 import {
   formatItemName,
+  formatPrice,
   formatTimeSlot,
   paymentMethodString,
 } from "../Order/misc";
@@ -64,8 +65,9 @@ const PaidTable = ({ orders }) => {
       },
       {
         Header: "Price",
-        accessor: (d) => `${d.totalPrice}${d.comboDeal ? " (combo)" : ""}`,
-        Cell: (props) => <div> ${props.value} </div>,
+        accessor: (d) =>
+          `${formatPrice(d.totalPrice)}${d.comboDeal ? " (combo)" : ""}`,
+        Cell: (props) => <div> {props.value} </div>,
       },
       {
         Header: "Payment Method",
@@ -145,7 +147,7 @@ const PaidTable = ({ orders }) => {
 
   return (
     <>
-      <table {...getTableProps()}>
+      <table className="table-dynamic-width" {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>

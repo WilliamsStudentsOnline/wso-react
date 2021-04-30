@@ -21,13 +21,6 @@ const GoodrichMain = ({ route, token }) => {
       return <Redirect to="403" />;
     }
 
-    if (
-      route.name === "goodrich.manager" &&
-      !containsOneOfScopes(token, [scopes.ScopeGoodrichManager])
-    ) {
-      return <Redirect to="403" />;
-    }
-
     const splitRoute = route.name.split(".");
     if (splitRoute.length === 1) return <GoodrichHome />;
 

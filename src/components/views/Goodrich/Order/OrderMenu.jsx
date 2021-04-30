@@ -10,6 +10,8 @@ import { actions } from "redux-router5";
 import Modal from "react-modal";
 import { doGoodrichOrderUpdate } from "../../../../actions/goodrich";
 import { getGoodrichOrder } from "../../../../selectors/goodrich";
+import { formatItemName, formatPrice } from "./misc";
+import MenuItemCard from "./MenuItemCard";
 
 const modalStyles = {
   content: {
@@ -49,8 +51,8 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
       other: 0,
     };
 
-    for (const itemID of selectedItems) {
-      const m = getItemByID(itemID);
+    for (const orderItem of selectedItems) {
+      const m = getItemByID(orderItem.id);
       switch (m.category) {
         case "Bagel":
           numItems.bagels += 1;
@@ -83,32 +85,47 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
 
     goodrichOrderUpdate({
       ...order,
-      itemIDs: selectedItems,
+      items: selectedItems,
     });
     navigateTo("goodrich.order.checkout");
   };
 
-  const onCheckboxChange = (e, menuItemID) => {
-    if (e.target.checked) {
-      updateSelectedItems([...selectedItems, menuItemID]);
+  const onMenuItemClick = (checked, orderItem) => {
+    if (checked) {
+      updateSelectedItems([...selectedItems, orderItem]);
     } else {
       updateSelectedItems((prev) =>
-        prev.filter((currItem) => currItem !== menuItemID)
+        prev.filter((currItem) => currItem.id !== orderItem.id)
       );
     }
   };
 
-  const getSubtotal = () => {
-    if (order.comboDeal) return comboInvalid() ? "n/A" : "5.00";
+  const onMenuItemNoteChanged = (id, value) => {
+    updateSelectedItems((prev) => {
+      const next = [...prev];
+      const idx = next.findIndex((currItem) => currItem.id === id);
+      if (idx !== -1) {
+        next[idx] = { ...next[idx], note: value };
+      }
 
-    return selectedItems.length > 0
-      ? selectedItems
-          .map((id) => {
-            const m = getItemByID(id);
-            return m.price;
-          })
-          .reduce((a, v) => a + v)
-      : 0;
+      return next;
+    });
+  };
+
+  const getSubtotal = () => {
+    if (order.comboDeal) return comboInvalid() ? "n/A" : "$5.00";
+
+    const total =
+      selectedItems.length > 0
+        ? selectedItems
+            .map((oi) => {
+              const m = getItemByID(oi.id);
+              return m.price;
+            })
+            .reduce((a, v) => a + v)
+        : 0;
+
+    return formatPrice(total);
   };
 
   const loadData = async () => {
@@ -124,7 +141,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
     loadData();
   }, [navigateTo, wso]);
   useEffect(() => {
-    updateSelectedItems(order.itemIDs || []);
+    updateSelectedItems(order.items || []);
   }, [order]);
 
   return (
@@ -138,24 +155,21 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
             })
             .map((m) => {
               return (
-                <>
-                  <label
-                    htmlFor={`menuitem${m.id}`}
-                    style={{
-                      fontWeight: "normal",
-                      paddingBottom: "0.2em",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      id={`menuitem${m.id}`}
-                      value={m.id}
-                      defaultChecked={selectedItems.indexOf(m.id) !== -1}
-                      onChange={(e) => onCheckboxChange(e, m.id)}
-                    />
-                    {m.title} {m.type && `(${m.type})`} - ${m.price}
-                  </label>
-                </>
+                <MenuItemCard
+                  menuItem={m}
+                  milkList={menu.filter((n) => n.category === "Milk")}
+                  onToggle={(e, v, note) =>
+                    onMenuItemClick(v, { id: m.id, note })
+                  }
+                  defaultChecked={
+                    selectedItems.findIndex((si) => si.id === m.id) !== -1
+                  }
+                  defaultMilk={
+                    selectedItems.find((si) => si.id === m.id) &&
+                    selectedItems.find((si) => si.id === m.id).note
+                  }
+                  onNoteChanged={(v) => onMenuItemNoteChanged(m.id, v)}
+                />
               );
             })}
       </div>
@@ -169,24 +183,16 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
             })
             .map((m) => {
               return (
-                <>
-                  <label
-                    htmlFor={`menuitem${m.id}`}
-                    style={{
-                      fontWeight: "normal",
-                      paddingBottom: "0.2em",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      id={`menuitem${m.id}`}
-                      value={m.id}
-                      defaultChecked={selectedItems.indexOf(m.id) !== -1}
-                      onChange={(e) => onCheckboxChange(e, m.id)}
-                    />
-                    {m.title} {m.type && `(${m.type})`} - ${m.price}
-                  </label>
-                </>
+                <MenuItemCard
+                  menuItem={m}
+                  onToggle={(e, v, note) =>
+                    onMenuItemClick(v, { id: m.id, note })
+                  }
+                  defaultChecked={
+                    selectedItems.findIndex((si) => si.id === m.id) !== -1
+                  }
+                  onNoteChanged={(v) => onMenuItemNoteChanged(m.id, v)}
+                />
               );
             })}
       </div>
@@ -200,24 +206,16 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
             })
             .map((m) => {
               return (
-                <>
-                  <label
-                    htmlFor={`menuitem${m.id}`}
-                    style={{
-                      fontWeight: "normal",
-                      paddingBottom: "0.2em",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      id={`menuitem${m.id}`}
-                      value={m.id}
-                      defaultChecked={selectedItems.indexOf(m.id) !== -1}
-                      onChange={(e) => onCheckboxChange(e, m.id)}
-                    />
-                    {m.title} {m.type && `(${m.type})`} - ${m.price}
-                  </label>
-                </>
+                <MenuItemCard
+                  menuItem={m}
+                  onToggle={(e, v, note) =>
+                    onMenuItemClick(v, { id: m.id, note })
+                  }
+                  defaultChecked={
+                    selectedItems.findIndex((si) => si.id === m.id) !== -1
+                  }
+                  onNoteChanged={(v) => onMenuItemNoteChanged(m.id, v)}
+                />
               );
             })}
       </div>
@@ -231,24 +229,16 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
             })
             .map((m) => {
               return (
-                <>
-                  <label
-                    htmlFor={`menuitem${m.id}`}
-                    style={{
-                      fontWeight: "normal",
-                      paddingBottom: "0.2em",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      id={`menuitem${m.id}`}
-                      value={m.id}
-                      defaultChecked={selectedItems.indexOf(m.id) !== -1}
-                      onChange={(e) => onCheckboxChange(e, m.id)}
-                    />
-                    {m.title} {m.type && `(${m.type})`} - ${m.price}
-                  </label>
-                </>
+                <MenuItemCard
+                  menuItem={m}
+                  onToggle={(e, v, note) =>
+                    onMenuItemClick(v, { id: m.id, note })
+                  }
+                  defaultChecked={
+                    selectedItems.findIndex((si) => si.id === m.id) !== -1
+                  }
+                  onNoteChanged={(v) => onMenuItemNoteChanged(m.id, v)}
+                />
               );
             })}
       </div>
@@ -259,16 +249,16 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
           <h4>Summary</h4>
           <ul>
             {selectedItems &&
-              selectedItems.map((id) => {
-                const m = getItemByID(id);
+              selectedItems.map((oi) => {
+                const m = getItemByID(oi.id);
                 return (
                   <li key={`subtotal${m.id}`}>
-                    - {m.title} {m.type && `(${m.type})`}
+                    - {formatItemName({ ...oi, item: m })}
                   </li>
                 );
               })}
           </ul>
-          <b>Subtotal: ${getSubtotal()}</b>
+          <b>Subtotal: {getSubtotal()}</b>
           <br />
 
           {order.comboDeal && comboInvalid() && (

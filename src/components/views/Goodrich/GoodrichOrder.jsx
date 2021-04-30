@@ -28,7 +28,7 @@ const GoodrichOrder = ({ route, navigateTo }) => {
 
   const orderBody = () => {
     const splitRoute = route.name.split(".");
-    if (splitRoute.length !== 3) return <OrderCombo />;
+    if (splitRoute.length <= 2) return <OrderCombo />;
 
     switch (splitRoute[2]) {
       case "menu":

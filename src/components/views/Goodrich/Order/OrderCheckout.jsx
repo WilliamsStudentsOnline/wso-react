@@ -152,7 +152,7 @@ const OrderCheckout = ({
         comboDeal: order.comboDeal,
         date: moment().format("YYYY-MM-DD"),
         idNumber: williamsID,
-        itemIDs: order.itemIDs,
+        items: order.items,
         notes,
         paymentMethod,
         phoneNumber,

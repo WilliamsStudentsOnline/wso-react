@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 
 // Component/Stylesheet imports
 import App from "./components/App";
+import "./components/stylesheets/Colors.css";
 import "./index.css";
 import "./components/stylesheets/i.css";
 import "typeface-source-sans-pro";

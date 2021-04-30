@@ -1,4 +1,87 @@
-.expand-col {
-  flex-shrink: 1 !important;
-  min-width: auto !important;
+.goodrich-user-order {
+  text-align: center;
+  justify-content: center;
+}
+
+.goodrich-user-order-card {
+  width: 100%;
+  border: 1px solid #6f4399;
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 15px;
+  text-align: left;
+  margin: 0.5em;
+}
+
+.goodrich-expand-info {
+  width: 70%;
+  float: left;
+}
+.goodrich-expand-btns {
+  width: 30%;
+  float: right;
+}
+
+.goodrich-expand-btns button {
+  margin-bottom: 1em;
+  margin-top: 1em;
+  padding-right: 1em;
+  padding-left: 1em;
+  width: 100%;
+}
+
+.goodrich-expand-btns button.accept {
+  background-color: green;
+}
+.goodrich-expand-btns button.reject {
+  background-color: red;
+}
+
+.goodrich-expand-info h5,
+.small-info-header {
+  margin: 0;
+  font-weight: bold;
+  font-size: 0.75em;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #000000;
+}
+
+.goodrich-modal-btn-row {
+  display: inline;
+}
+
+.table-dynamic-width {
+  table-layout: auto;
+}
+
+.select-menu-item-info {
+  vertical-align: middle;
+  margin-bottom: 0;
+}
+
+.menu-item-collapsable {
+  width: 100%;
+  margin-top: 1em;
+  margin-left: 1em;
+}
+
+.menu-item-card {
+  width: 100%;
+  border: 1px solid #6f4399;
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+  text-align: left;
+  margin-top: 0.75em;
+}
+
+.menu-item-button {
+  padding: 0.5rem 18px;
+  margin-right: 1em;
+  border-radius: 30px;
+  width: 7.1em;
+  min-width: 0;
 }

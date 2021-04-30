@@ -1,0 +1,37 @@
+:root {
+  --color-main: #553871;
+  --color-light-accent: #9796b9;
+  --color-light-accent-pop: #dfaa87;
+  --color-light-shade: #ffffff;
+  --color-dark-accent: #8884a6;
+  --color-dark-accent-pop: #c45182;
+  --color-dark-shade: #282e42;
+
+  --color-primary: #553871;
+  --color-success: #508e5b;
+  --color-info: #2a2f41;
+  --color-warning: #ce7e23;
+  --color-danger: #f44336;
+}
+
+.bg-primary {
+  background-color: #553871;
+}
+.bg-success {
+  background-color: #508e5b;
+}
+.bg-info {
+  background-color: #2a2f41;
+}
+.bg-warning {
+  background-color: #ce7e23;
+}
+.bg-danger {
+  background-color: #f44336;
+}
+.bg-light-accent-pop {
+  background-color: #dfaa87;
+}
+.bg-dark-accent-pop {
+  background-color: #c45182;
+}

@@ -10,6 +10,7 @@ import { actions } from "redux-router5";
 // Additional imports
 import { Link } from "react-router5";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
+import "../../stylesheets/Goodrich.css";
 
 const GoodrichLayout = ({ children, token }) => {
   return (
@@ -29,7 +30,10 @@ const GoodrichLayout = ({ children, token }) => {
             {containsOneOfScopes(token, [scopes.ScopeGoodrichManager]) && (
               <>
                 <li>
-                  <Link routeName="goodrich.manager">Manager</Link>
+                  <Link routeName="goodrich.manager.orders">Manage Orders</Link>
+                </li>
+                <li>
+                  <Link routeName="goodrich.manager.menu">Edit Menu</Link>
                 </li>
               </>
             )}

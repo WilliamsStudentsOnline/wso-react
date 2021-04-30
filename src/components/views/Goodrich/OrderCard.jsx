@@ -9,14 +9,7 @@ const OrderCard = ({ order }) => {
   };
 
   return (
-    <aside
-      key={order.id}
-      className="goodrich-user-order-card"
-      style={{
-        textAlign: "left",
-        marginTop: "1em",
-      }}
-    >
+    <aside key={order.id} className="goodrich-user-order-card">
       <div
         style={{
           width: "80%",
