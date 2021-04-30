@@ -13,7 +13,7 @@ const MenuItemCard = ({
   milkList,
 }) => {
   const [checked, updateChecked] = useState(defaultChecked);
-  const [milk, updateMilk] = useState(defaultMilk || "Regular Milk");
+  const [milk, updateMilk] = useState(defaultMilk || "");
 
   const genNote = () => {
     if (menuItem.category === "Drink") {
@@ -68,6 +68,9 @@ const MenuItemCard = ({
               if (onNoteChanged) onNoteChanged(e.target.value);
             }}
           >
+            <option value="" key="default">
+              No Preference/Usual
+            </option>
             {milkList.map((mi) => (
               <option value={mi.title} key={mi.title}>
                 {mi.title}
