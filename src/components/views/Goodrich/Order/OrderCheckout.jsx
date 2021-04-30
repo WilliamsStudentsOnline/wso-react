@@ -8,7 +8,7 @@ import { Goodrich, WSO } from "wso-api-client";
 import { getCurrUser, getWSO } from "../../../../selectors/auth";
 import { actions } from "redux-router5";
 import Modal from "react-modal";
-import { paymentMethodString } from "./misc";
+import { formatItemName, formatPrice, paymentMethodString } from "./misc";
 import moment from "moment";
 import { doGoodrichOrderUpdate } from "../../../../actions/goodrich";
 import { getGoodrichOrder } from "../../../../selectors/goodrich";
@@ -152,7 +152,7 @@ const OrderCheckout = ({
         comboDeal: order.comboDeal,
         date: moment().format("YYYY-MM-DD"),
         idNumber: williamsID,
-        items: order.items,
+        items: order.items.map((i) => ({ ...i, item: null })),
         notes,
         paymentMethod,
         phoneNumber,
@@ -165,9 +165,63 @@ const OrderCheckout = ({
     }
   };
 
+  const calculatePrice = () => {
+    return order.items && order.items.length > 0
+      ? order.items
+          .map((oi) => {
+            return oi.item.price;
+          })
+          .reduce((a, v) => a + v)
+      : 0;
+  };
+
   return (
     <>
       <form onSubmit={(event) => submitHandler(event)}>
+        <h5>Summary</h5>
+        <div className="summary">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th
+                  style={{
+                    textAlign: "right",
+                  }}
+                >
+                  Amount
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {order.items &&
+                order.items.map((oi) => {
+                  return (
+                    <tr>
+                      <td>{formatItemName(oi)}</td>
+                      <td
+                        style={{
+                          textAlign: "right",
+                        }}
+                      >
+                        {formatPrice(oi.item.price)}
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
+        <ul>
+          {order.items &&
+            order.items.map((oi) => {
+              return <li key={`summary${oi.id}`}>- {formatItemName(oi)}</li>;
+            })}
+        </ul>
+        <b>Subtotal: {formatPrice(calculatePrice())}</b>
+        <br />
+        <b>Paid: {formatPrice(calculatePrice())}</b>
+        <br />
         <h5>Time</h5>
         {renderTimeSlots()}
 

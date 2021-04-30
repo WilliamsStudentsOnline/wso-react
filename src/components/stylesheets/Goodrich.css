@@ -85,3 +85,33 @@
   width: 7.1em;
   min-width: 0;
 }
+
+.summary {
+  width: fit-content;
+}
+
+.summary table {
+  table-layout: auto;
+  border: 0 !important;
+}
+.summary thead tr {
+  border-bottom: 2px solid #d9d9d9;
+}
+.summary thead tr th {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.summary tr th {
+  padding: 0.25em 1em;
+}
+
+.summary tbody tr {
+  border: 0;
+}
+
+.summary tr td {
+  padding: 0.25em 1em;
+  background: #ffffff !important;
+  border: 0;
+}

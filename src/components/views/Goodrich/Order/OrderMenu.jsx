@@ -159,7 +159,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
                   menuItem={m}
                   milkList={menu.filter((n) => n.category === "Milk")}
                   onToggle={(e, v, note) =>
-                    onMenuItemClick(v, { id: m.id, note })
+                    onMenuItemClick(v, { id: m.id, note, item: m })
                   }
                   defaultChecked={
                     selectedItems.findIndex((si) => si.id === m.id) !== -1
@@ -186,7 +186,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
                 <MenuItemCard
                   menuItem={m}
                   onToggle={(e, v, note) =>
-                    onMenuItemClick(v, { id: m.id, note })
+                    onMenuItemClick(v, { id: m.id, note, item: m })
                   }
                   defaultChecked={
                     selectedItems.findIndex((si) => si.id === m.id) !== -1
@@ -209,7 +209,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
                 <MenuItemCard
                   menuItem={m}
                   onToggle={(e, v, note) =>
-                    onMenuItemClick(v, { id: m.id, note })
+                    onMenuItemClick(v, { id: m.id, note, item: m })
                   }
                   defaultChecked={
                     selectedItems.findIndex((si) => si.id === m.id) !== -1
@@ -232,7 +232,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
                 <MenuItemCard
                   menuItem={m}
                   onToggle={(e, v, note) =>
-                    onMenuItemClick(v, { id: m.id, note })
+                    onMenuItemClick(v, { id: m.id, note, item: m })
                   }
                   defaultChecked={
                     selectedItems.findIndex((si) => si.id === m.id) !== -1

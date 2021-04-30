@@ -30,7 +30,7 @@
     "serialize-javascript": "3.1.0",
     "timeago.js": "^4.0.0-beta.2",
     "typeface-source-sans-pro": "^0.0.75",
-    "wso-api-client": "^21.4.30"
+    "wso-api-client": "^21.4.31"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
