@@ -22,9 +22,9 @@ const OrderCombo = ({ goodrichOrderUpdate, navigateTo }) => {
         Would you like to order the Goodrich Combo? Hit ‘yes’ if you’d like to
         order a bagel, a spread, and a drink (any drink!) for a fixed price of
         $5. You can pay by swipe, cash, or credit. Hit ‘no’ if you’d like to
-        create your own tab. You’ll be charged the price of each item. You can
-        use a swipe for up to $5 of your total and can pay the rest by cash or
-        credit.
+        create your own tab. You’ll be charged the price of each item. If it’s
+        under under $5 you can pay your tab with a swipe. If it’s over $5, you
+        have to pay the full tab with cash or credit.
       </p>
       <div className="goodrich-modal-btn-row">
         <button onClick={() => onSubmit(true)} type="button">
