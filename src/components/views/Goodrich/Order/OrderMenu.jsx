@@ -100,12 +100,12 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
     }
   };
 
-  const onMenuItemNoteChanged = (id, value) => {
+  const onMenuItemNoteChanged = (id, value, noteObject) => {
     updateSelectedItems((prev) => {
       const next = [...prev];
       const idx = next.findIndex((currItem) => currItem.id === id);
       if (idx !== -1) {
-        next[idx] = { ...next[idx], note: value };
+        next[idx] = { ...next[idx], note: value, noteObject };
       }
 
       return next;
@@ -154,21 +154,19 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
               return m.category === "Drink";
             })
             .map((m) => {
+              const foundItem = selectedItems.find((si) => si.id === m.id);
               return (
                 <MenuItemCard
                   menuItem={m}
-                  milkList={menu.filter((n) => n.category === "Milk")}
+                  menu={menu}
                   onToggle={(e, v, note) =>
                     onMenuItemClick(v, { id: m.id, note })
                   }
-                  defaultChecked={
-                    selectedItems.findIndex((si) => si.id === m.id) !== -1
+                  defaultChecked={!!foundItem}
+                  defaultNote={foundItem && foundItem.noteObject}
+                  onNoteChanged={(v, noteObj) =>
+                    onMenuItemNoteChanged(m.id, v, noteObj)
                   }
-                  defaultMilk={
-                    selectedItems.find((si) => si.id === m.id) &&
-                    selectedItems.find((si) => si.id === m.id).note
-                  }
-                  onNoteChanged={(v) => onMenuItemNoteChanged(m.id, v)}
                 />
               );
             })}
@@ -182,16 +180,19 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
               return m.category === "Bagel";
             })
             .map((m) => {
+              const foundItem = selectedItems.find((si) => si.id === m.id);
               return (
                 <MenuItemCard
                   menuItem={m}
+                  menu={menu}
                   onToggle={(e, v, note) =>
                     onMenuItemClick(v, { id: m.id, note })
                   }
-                  defaultChecked={
-                    selectedItems.findIndex((si) => si.id === m.id) !== -1
+                  defaultChecked={!!foundItem}
+                  defaultNote={foundItem && foundItem.noteObject}
+                  onNoteChanged={(v, noteObj) =>
+                    onMenuItemNoteChanged(m.id, v, noteObj)
                   }
-                  onNoteChanged={(v) => onMenuItemNoteChanged(m.id, v)}
                 />
               );
             })}
@@ -205,16 +206,19 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
               return m.category === "Spread";
             })
             .map((m) => {
+              const foundItem = selectedItems.find((si) => si.id === m.id);
               return (
                 <MenuItemCard
                   menuItem={m}
+                  menu={menu}
                   onToggle={(e, v, note) =>
                     onMenuItemClick(v, { id: m.id, note })
                   }
-                  defaultChecked={
-                    selectedItems.findIndex((si) => si.id === m.id) !== -1
+                  defaultChecked={!!foundItem}
+                  defaultNote={foundItem && foundItem.noteObject}
+                  onNoteChanged={(v, noteObj) =>
+                    onMenuItemNoteChanged(m.id, v, noteObj)
                   }
-                  onNoteChanged={(v) => onMenuItemNoteChanged(m.id, v)}
                 />
               );
             })}
@@ -228,16 +232,19 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
               return m.category === "Food";
             })
             .map((m) => {
+              const foundItem = selectedItems.find((si) => si.id === m.id);
               return (
                 <MenuItemCard
                   menuItem={m}
+                  menu={menu}
                   onToggle={(e, v, note) =>
                     onMenuItemClick(v, { id: m.id, note })
                   }
-                  defaultChecked={
-                    selectedItems.findIndex((si) => si.id === m.id) !== -1
+                  defaultChecked={!!foundItem}
+                  defaultNote={foundItem && foundItem.noteObject}
+                  onNoteChanged={(v, noteObj) =>
+                    onMenuItemNoteChanged(m.id, v, noteObj)
                   }
-                  onNoteChanged={(v) => onMenuItemNoteChanged(m.id, v)}
                 />
               );
             })}

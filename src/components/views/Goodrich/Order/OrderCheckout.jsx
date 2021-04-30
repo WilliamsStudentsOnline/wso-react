@@ -175,20 +175,6 @@ const OrderCheckout = ({
         {renderPaymentMethods()}
 
         <h5>Notes</h5>
-        <p>
-          If ordering tea, please note your preference here (options: masala
-          chai, assam, peppermint, oolong, earl grey, hibiscus flowers,
-          chamomile flowers, jasmine silver tip, fez green, darjeeling, su cha
-          pu-erh black tea, sencha, rooibos, white peony tea).
-        </p>
-        <p>
-          If you want syrup here, please note what type and number of pumps here
-          (options: vanilla, pumpkin spice, peppermint, hazelnut)
-        </p>
-        <p>
-          If you have ordered a skyr, please select your flavor preference
-          (raspberry maple, cherry almond, blueberry, strawberry)
-        </p>
         <textarea
           value={notes}
           onChange={(event) => updateNotes(event.target.value)}
