@@ -222,7 +222,7 @@ const OrderCheckout = ({
         <br />
         <b>Paid: {formatPrice(calculatePrice())}</b>
         <br />
-        <h5>Time</h5>
+        <h5>Pickup Time</h5>
         {renderTimeSlots()}
 
         <h5>Payment Method</h5>
