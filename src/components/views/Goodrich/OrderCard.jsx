@@ -1,7 +1,14 @@
 import React from "react";
 
 import PropTypes from "prop-types";
-import { formatItemName, orderStatusString } from "./Order/misc";
+import {
+  formatItemName,
+  formatPrice,
+  isPaymentSwipe,
+  orderStatusString,
+  paymentMethodString,
+} from "./Order/misc";
+import { Goodrich } from "wso-api-client";
 
 const OrderCard = ({ order }) => {
   const itemNames = (items) => {
@@ -17,21 +24,40 @@ const OrderCard = ({ order }) => {
         }}
       >
         <h4>Order #{order.id}</h4>
-        <ul>
-          <li key="1">{itemNames(order.items || [])}</li>
-          <li
+        <div>
+          <p>{itemNames(order.items || [])}</p>
+          <p
+            style={{
+              marginBottom: "0",
+            }}
+          >
+            <b>Payment:</b> {paymentMethodString(order.paymentMethod)}
+            {order.paymentMethod !== Goodrich.PaymentMethod.Swipe &&
+              order.paymentMethod !== Goodrich.PaymentMethod.Points && (
+                <>
+                  ,{" "}
+                  {isPaymentSwipe(order.paymentMethod)
+                    ? formatPrice(Math.max(order.totalPrice - 5, 0))
+                    : formatPrice(order.totalPrice)}{" "}
+                  owed
+                  {isPaymentSwipe(order.paymentMethod) &&
+                    ` (${formatPrice(order.totalPrice)} total)`}
+                </>
+              )}
+          </p>
+          <p
             style={{
               fontWeight: "600",
               fontSize: "1em",
               letterSpacing: "1px",
               textTransform: "uppercase",
               color: "darkgrey",
+              marginBottom: "0",
             }}
-            key="2"
           >
             {order.timeSlot} ({order.date})
-          </li>
-        </ul>
+          </p>
+        </div>
       </div>
       <div
         style={{

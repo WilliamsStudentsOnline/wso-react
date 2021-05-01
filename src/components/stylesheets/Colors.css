@@ -35,3 +35,25 @@
 .bg-dark-accent-pop {
   background-color: #c45182;
 }
+
+.cl-primary {
+  color: #553871;
+}
+.cl-success {
+  color: #508e5b;
+}
+.cl-info {
+  color: #2a2f41;
+}
+.cl-warning {
+  color: #ce7e23;
+}
+.cl-danger {
+  color: #f44336;
+}
+.cl-light-accent-pop {
+  color: #dfaa87;
+}
+.cl-dark-accent-pop {
+  color: #c45182;
+}

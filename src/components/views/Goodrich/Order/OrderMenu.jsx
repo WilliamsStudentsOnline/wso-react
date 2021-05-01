@@ -10,7 +10,7 @@ import { actions } from "redux-router5";
 import Modal from "react-modal";
 import { doGoodrichOrderUpdate } from "../../../../actions/goodrich";
 import { getGoodrichOrder } from "../../../../selectors/goodrich";
-import { formatItemName, formatPrice } from "./misc";
+import { calculatePrice, formatItemName, formatPrice } from "./misc";
 import MenuItemCard from "./MenuItemCard";
 
 const modalStyles = {
@@ -39,11 +39,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
     return null;
   };
 
-  const comboInvalid = () => {
-    if (!order.comboDeal) return false;
-
-    if (selectedItems.length !== 3) return true;
-
+  const getNumItemSections = () => {
     const numItems = {
       bagels: 0,
       drinks: 0,
@@ -69,11 +65,33 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
       }
     }
 
+    return numItems;
+  };
+
+  const comboInvalid = () => {
+    if (!order.comboDeal) return false;
+
+    if (selectedItems.length < 3) return true;
+
+    const numItems = getNumItemSections();
+
+    return numItems.bagels < 1 || numItems.drinks < 1 || numItems.spreads < 1;
+  };
+
+  const comboOver = () => {
+    if (!order.comboDeal) return false;
+
+    if (comboInvalid()) return false;
+
+    if (selectedItems.length > 3) return true;
+
+    const numItems = getNumItemSections();
+
     return (
-      numItems.bagels !== 1 ||
-      numItems.drinks !== 1 ||
-      numItems.spreads !== 1 ||
-      numItems.other !== 0
+      numItems.bagels > 1 ||
+      numItems.drinks > 1 ||
+      numItems.spreads > 1 ||
+      numItems.other > 0
     );
   };
 
@@ -113,19 +131,12 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
   };
 
   const getSubtotal = () => {
-    if (order.comboDeal) return comboInvalid() ? "n/A" : "$5.00";
+    if (comboInvalid()) return "n/A";
 
-    const total =
-      selectedItems.length > 0
-        ? selectedItems
-            .map((oi) => {
-              const m = getItemByID(oi.id);
-              return m.price;
-            })
-            .reduce((a, v) => a + v)
-        : 0;
+    const subtotal = calculatePrice({ ...order, items: selectedItems });
+    if (subtotal === null) return "n/A";
 
-    return formatPrice(total);
+    return formatPrice(subtotal);
   };
 
   const loadData = async () => {
@@ -146,7 +157,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
 
   return (
     <>
-      <h4>Drinks</h4>
+      <h4 className="menu-section-header">Drinks</h4>
       <div>
         {menu &&
           menu
@@ -172,7 +183,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
             })}
       </div>
 
-      <h4>Bagels</h4>
+      <h4 className="menu-section-header">Bagels</h4>
       <div>
         {menu &&
           menu
@@ -198,7 +209,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
             })}
       </div>
 
-      <h4>Spreads</h4>
+      <h4 className="menu-section-header">Spreads</h4>
       <div>
         {menu &&
           menu
@@ -224,7 +235,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
             })}
       </div>
 
-      <h4>Food Items</h4>
+      <h4 className="menu-section-header">Food Items</h4>
       <div>
         {menu &&
           menu
@@ -269,13 +280,16 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
           <br />
 
           {order.comboDeal && comboInvalid() && (
-            <p
-              style={{
-                color: "red",
-              }}
-            >
-              Cannot get the combo deal with these items. Please have exactly 1
-              drink, 1 bagel, 1 spread.
+            <p className="cl-danger">
+              Not enough items to make a combo deal! Please have at least 1
+              drink, 1 bagel, and 1 spread.
+            </p>
+          )}
+          {order.comboDeal && comboOver() && (
+            <p className="cl-warning">
+              Your order consists of the combo plus some extra items, so the
+              total will be more than the combo price. You can still pay with a
+              swipe, but you will need to pay part of your order with cash/card.
             </p>
           )}
 
@@ -301,8 +315,8 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
       >
         <h4>Error!</h4>
         <p>
-          This selection of items is invalid for the $5 combo. Please have only
-          1 drink, 1 bagel, 1 spread.
+          This selection of items is invalid for the $5 combo. Please have at
+          least 1 drink, 1 bagel, 1 spread.
         </p>
         <button
           onClick={() => {

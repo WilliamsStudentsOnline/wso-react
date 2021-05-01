@@ -15,6 +15,7 @@ import {
   formatPrice,
   formatTimeSlot,
   paymentMethodString,
+  isPaymentSwipe,
 } from "../Order/misc";
 import { FaCaretRight, FaCaretDown } from "react-icons/fa";
 import { getGoodrichManagerOrders } from "../../../../selectors/goodrich";
@@ -64,15 +65,22 @@ const PaidTable = ({ orders }) => {
         Cell: (props) => <div> {formatTimeSlot(props.value)} </div>,
       },
       {
-        Header: "Price",
+        Header: "Total Price",
         accessor: (d) =>
           `${formatPrice(d.totalPrice)}${d.comboDeal ? " (combo)" : ""}`,
         Cell: (props) => <div> {props.value} </div>,
       },
       {
         Header: "Payment Method",
-        accessor: "paymentMethod",
-        Cell: (props) => <div> {paymentMethodString(props.value)} </div>,
+        accessor: (d) => {
+          return `${paymentMethodString(d.paymentMethod)}${
+            d.paymentMethod === Goodrich.PaymentMethod.SwipePlusCash ||
+            d.paymentMethod === Goodrich.PaymentMethod.SwipePlusCreditCard
+              ? ` (${formatPrice(Math.max(d.totalPrice - 5, 0))} owed)`
+              : ""
+          }`;
+        },
+        Cell: (props) => <div> {props.value} </div>,
       },
       {
         Header: "Unix",
@@ -113,7 +121,7 @@ const PaidTable = ({ orders }) => {
 
           <h5>Payment Method:</h5>
           <p>{paymentMethodString(row.original.paymentMethod)}</p>
-          {(row.original.paymentMethod === Goodrich.PaymentMethod.Swipe ||
+          {(isPaymentSwipe(row.original.paymentMethod) ||
             row.original.paymentMethod === Goodrich.PaymentMethod.Points) && (
             <>
               <h5>Williams ID:</h5>

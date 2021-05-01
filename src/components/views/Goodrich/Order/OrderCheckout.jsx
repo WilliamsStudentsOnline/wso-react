@@ -8,7 +8,12 @@ import { Goodrich, WSO } from "wso-api-client";
 import { getCurrUser, getWSO } from "../../../../selectors/auth";
 import { actions } from "redux-router5";
 import Modal from "react-modal";
-import { formatItemName, formatPrice, paymentMethodString } from "./misc";
+import {
+  calculatePrice,
+  formatItemName,
+  formatPrice,
+  paymentMethodString,
+} from "./misc";
 import moment from "moment";
 import { doGoodrichOrderUpdate } from "../../../../actions/goodrich";
 import { getGoodrichOrder } from "../../../../selectors/goodrich";
@@ -61,6 +66,18 @@ const OrderCheckout = ({
     }
   };
 
+  const paymentIsSwipe = () => {
+    return (
+      paymentMethod === Goodrich.PaymentMethod.Swipe ||
+      paymentMethod === Goodrich.PaymentMethod.SwipePlusCash ||
+      paymentMethod === Goodrich.PaymentMethod.SwipePlusCreditCard
+    );
+  };
+
+  const calculateOwed = () => {
+    return Math.max(calculatePrice(order) - (paymentIsSwipe() ? 5 : 0), 0);
+  };
+
   useEffect(() => {
     loadSlotList();
     updateWilliamsID(currUser.williamsID || "");
@@ -97,8 +114,32 @@ const OrderCheckout = ({
   };
 
   const renderPaymentMethods = () => {
+    const validPaymentMethods =
+      calculatePrice(order) > 5
+        ? [
+            Goodrich.PaymentMethod.SwipePlusCreditCard,
+            Goodrich.PaymentMethod.SwipePlusCash,
+            Goodrich.PaymentMethod.CreditCard,
+            Goodrich.PaymentMethod.Cash,
+          ]
+        : [
+            Goodrich.PaymentMethod.Swipe,
+            Goodrich.PaymentMethod.CreditCard,
+            Goodrich.PaymentMethod.Cash,
+          ];
     return (
       <>
+        {calculatePrice(order) > 5 && (
+          <p
+            className="cl-warning"
+            style={{
+              fontWeight: "600",
+            }}
+          >
+            Your subtotal is more than $5.00, so you cannot pay with exclusively
+            a swipe. But, you can pay part of your order with a swipe!
+          </p>
+        )}
         <select
           className="select-course-info"
           onChange={(event) =>
@@ -110,11 +151,7 @@ const OrderCheckout = ({
           <option value={0} disabled hidden>
             Select a Payment Method Slot
           </option>
-          {[
-            Goodrich.PaymentMethod.Swipe,
-            Goodrich.PaymentMethod.CreditCard,
-            Goodrich.PaymentMethod.Cash,
-          ].map((t) => {
+          {validPaymentMethods.map((t) => {
             return (
               <option value={t} key={t}>
                 {paymentMethodString(t)}
@@ -122,7 +159,7 @@ const OrderCheckout = ({
             );
           })}
         </select>
-        {(paymentMethod === Goodrich.PaymentMethod.Swipe ||
+        {(paymentIsSwipe() ||
           paymentMethod === Goodrich.PaymentMethod.Points) && (
           <>
             <h5>Williams ID Number</h5>
@@ -165,68 +202,11 @@ const OrderCheckout = ({
     }
   };
 
-  const calculatePrice = () => {
-    return order.items && order.items.length > 0
-      ? order.items
-          .map((oi) => {
-            return oi.item.price;
-          })
-          .reduce((a, v) => a + v)
-      : 0;
-  };
-
   return (
     <>
       <form onSubmit={(event) => submitHandler(event)}>
-        <h5>Summary</h5>
-        <div className="summary">
-          <table>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th
-                  style={{
-                    textAlign: "right",
-                  }}
-                >
-                  Amount
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {order.items &&
-                order.items.map((oi) => {
-                  return (
-                    <tr>
-                      <td>{formatItemName(oi)}</td>
-                      <td
-                        style={{
-                          textAlign: "right",
-                        }}
-                      >
-                        {formatPrice(oi.item.price)}
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
-        <ul>
-          {order.items &&
-            order.items.map((oi) => {
-              return <li key={`summary${oi.id}`}>- {formatItemName(oi)}</li>;
-            })}
-        </ul>
-        <b>Subtotal: {formatPrice(calculatePrice())}</b>
-        <br />
-        <b>Paid: {formatPrice(calculatePrice())}</b>
-        <br />
         <h5>Pickup Time</h5>
         {renderTimeSlots()}
-
-        <h5>Payment Method</h5>
-        {renderPaymentMethods()}
 
         <h5>Notes</h5>
         <textarea
@@ -243,6 +223,66 @@ const OrderCheckout = ({
           onChange={(event) => updatePhoneNumber(event.target.value)}
           placeholder="Cell Phone Number"
         />
+
+        <h5
+          style={{
+            marginTop: "2em",
+          }}
+        >
+          Payment Method
+        </h5>
+        {renderPaymentMethods()}
+
+        <h5
+          style={{
+            marginTop: "2em",
+          }}
+        >
+          Summary
+        </h5>
+        <div className="summary">
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th className="price">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {order.items &&
+                order.items.map((oi) => {
+                  return (
+                    <tr>
+                      <td>{formatItemName(oi)}</td>
+                      <td className="price">{formatPrice(oi.item.price)}</td>
+                    </tr>
+                  );
+                })}
+              {paymentIsSwipe() && (
+                <>
+                  <tr className="subtotal">
+                    <td>Subtotal:</td>
+                    <td className="price">
+                      {formatPrice(calculatePrice(order))}
+                    </td>
+                  </tr>
+                  <tr className="">
+                    <td>Meal Swipe</td>
+                    <td className="price">({formatPrice(5.0)})</td>
+                  </tr>
+                </>
+              )}
+              <tr className="subtotal">
+                <td>
+                  <b>Total Owed:</b>
+                </td>
+                <td className="price">
+                  <b>{formatPrice(calculateOwed())}</b>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <button
           style={{
