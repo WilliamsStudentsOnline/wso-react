@@ -73,10 +73,20 @@ const OrderCheckout = ({
   };
 
   useEffect(() => {
-    loadSlotList();
     updateWilliamsID(currUser.williamsID || "");
     updatePhoneNumber(currUser.cellPhone || "");
   }, [navigateTo, wso, currUser]);
+
+  useEffect(() => {
+    loadSlotList();
+    const refreshInterval = setInterval(() => {
+      loadSlotList();
+    }, 3000);
+
+    return () => {
+      clearInterval(refreshInterval);
+    };
+  }, [navigateTo, wso]);
 
   const renderTimeSlots = () => {
     return (

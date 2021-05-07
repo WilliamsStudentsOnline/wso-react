@@ -71,7 +71,8 @@ const OrderWait = ({ goodrichOrderLeaseUpdate, navigateTo, wso }) => {
       <p>
         This page will automatically refresh with when you have an order slot.
         Once in, you will have 2 minutes to choose your order before your time
-        expires.
+        expires. If you see a 2 minute countdown timer (and you place your order
+        within those 2 minutes), your order will go through.
       </p>
       <Modal
         isOpen={openModal}
