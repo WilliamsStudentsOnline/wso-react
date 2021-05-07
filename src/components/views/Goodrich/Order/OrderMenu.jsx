@@ -142,6 +142,11 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
   const loadData = async () => {
     try {
       const menuResp = await wso.goodrichService.listMenu();
+      updateSelectedItems(
+        (order.items || []).filter(
+          (v) => menuResp.data.findIndex((e) => e.id === v.id) !== -1
+        )
+      );
       updateMenu(menuResp.data);
     } catch (error) {
       navigateTo("error", { error });
@@ -150,10 +155,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
 
   useEffect(() => {
     loadData();
-  }, [navigateTo, wso]);
-  useEffect(() => {
-    updateSelectedItems(order.items || []);
-  }, [order]);
+  }, [navigateTo, wso, order]);
 
   return (
     <>
@@ -262,7 +264,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
       </div>
 
       <br />
-      {menu && menu.length && (
+      {menu && menu.length > 0 && (
         <>
           <h4>Summary</h4>
           <ul>

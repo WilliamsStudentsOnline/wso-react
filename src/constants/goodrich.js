@@ -1,9 +1,11 @@
 // eslint-disable-next-line import/prefer-default-export
-export const goodrichDates = [
-  '05/01/2021',
-  '05/02/2021',
-  '05/08/2021',
-  '05/09/2021',
-  '05/15/2021',
-  '05/16/2021',
-]
+export const modalStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+};

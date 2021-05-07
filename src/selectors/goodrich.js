@@ -1,4 +1,6 @@
 const getGoodrichOrder = ({ goodrichState }) => goodrichState.order;
 const getGoodrichManagerOrders = ({ goodrichState }) =>
   goodrichState.managerOrders;
-export { getGoodrichOrder, getGoodrichManagerOrders };
+const getGoodrichOrderLease = ({ goodrichState }) => goodrichState.orderLease;
+
+export { getGoodrichOrder, getGoodrichManagerOrders, getGoodrichOrderLease };

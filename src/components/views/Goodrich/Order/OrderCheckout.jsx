@@ -16,18 +16,11 @@ import {
 } from "./misc";
 import moment from "moment";
 import { doGoodrichOrderUpdate } from "../../../../actions/goodrich";
-import { getGoodrichOrder } from "../../../../selectors/goodrich";
-
-const modalStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
+import {
+  getGoodrichOrder,
+  getGoodrichOrderLease,
+} from "../../../../selectors/goodrich";
+import { modalStyles } from "../../../../constants/goodrich";
 
 const OrderCheckout = ({
   order,
@@ -35,11 +28,12 @@ const OrderCheckout = ({
   wso,
   navigateTo,
   currUser,
+  orderLease,
 }) => {
-  // eslint-disable-next-line no-unused-vars
   const [slotList, updateSlotList] = useState([]);
   const [openModal, updateOpenModal] = useState(false);
   const [openTSModal, updateOpenTSModal] = useState(false);
+  const [openItemsOutModal, updateOpenItemsOutModal] = useState(false);
 
   const [timeSlot, updateTimeSlot] = useState("");
   const [paymentMethod, updatePaymentMethod] = useState(0);
@@ -194,11 +188,17 @@ const OrderCheckout = ({
         paymentMethod,
         phoneNumber,
         timeSlot,
+        leaseID: orderLease.id,
       });
       goodrichOrderUpdate({});
       navigateTo("goodrich");
     } catch (e) {
-      showError(e);
+      if (e.errorCode === 2141 || e.errorCode === 2134) {
+        // If no menu item (out of stock or unavailable), open modal
+        updateOpenItemsOutModal(true);
+      } else {
+        showError(e);
+      }
     }
   };
 
@@ -332,6 +332,30 @@ const OrderCheckout = ({
           Go Back
         </button>
       </Modal>
+      <Modal
+        isOpen={openItemsOutModal}
+        style={modalStyles}
+        contentLabel="Error Out of Menu Item"
+        onRequestClose={() => {
+          updateOpenItemsOutModal(false);
+          navigateTo("goodrich.order.menu");
+        }}
+      >
+        <h4>Error!</h4>
+        <p>
+          One or more of your menu items is out of stock or unavailable. Please
+          go back to the menu and choose again.
+        </p>
+        <button
+          onClick={() => {
+            updateOpenItemsOutModal(false);
+            navigateTo("goodrich.order.menu");
+          }}
+          type="button"
+        >
+          Go Back To Menu
+        </button>
+      </Modal>
     </>
   );
 };
@@ -342,14 +366,18 @@ OrderCheckout.propTypes = {
   navigateTo: PropTypes.func.isRequired,
   goodrichOrderUpdate: PropTypes.func.isRequired,
   order: PropTypes.object.isRequired,
+  orderLease: PropTypes.object,
 };
 
-OrderCheckout.defaultProps = {};
+OrderCheckout.defaultProps = {
+  orderLease: {},
+};
 
 const mapStateToProps = (state) => ({
   wso: getWSO(state),
   currUser: getCurrUser(state),
   order: getGoodrichOrder(state),
+  orderLease: getGoodrichOrderLease(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

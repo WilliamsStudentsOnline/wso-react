@@ -1,4 +1,5 @@
 import {
+  GOODRICH_ORDER_LEASE_UPDATE,
   GOODRICH_ORDER_UPDATE,
   GOODRICH_UPDATE_MANAGER_ORDERS,
 } from "../constants/actionTypes";
@@ -13,4 +14,13 @@ const doGoodrichUpdateManagerOrders = (managerOrders) => ({
   managerOrders,
 });
 
-export { doGoodrichOrderUpdate, doGoodrichUpdateManagerOrders };
+const doGoodrichOrderLeaseUpdate = (orderLease) => ({
+  type: GOODRICH_ORDER_LEASE_UPDATE,
+  orderLease,
+});
+
+export {
+  doGoodrichOrderUpdate,
+  doGoodrichUpdateManagerOrders,
+  doGoodrichOrderLeaseUpdate,
+};

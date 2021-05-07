@@ -24,6 +24,16 @@ const GoodrichEditMenu = ({ navigateTo, wso }) => {
   };
 
   useEffect(() => {
+    const refreshInterval = setInterval(() => {
+      loadData();
+    }, 5000);
+
+    return () => {
+      clearInterval(refreshInterval);
+    };
+  }, []);
+
+  useEffect(() => {
     loadData();
   }, [wso]);
 
