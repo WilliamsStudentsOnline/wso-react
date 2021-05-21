@@ -51,14 +51,6 @@ const EphmatchLayout = ({
               </>
             )}
           </ul>
-
-          <br />
-          <div style={{ background: "#ffc5c5", padding: 20 }}>
-            While Ephmatch aims to facilitate getting to know other Ephs, we
-            strongly discourage meeting up in person. People found to violate
-            local social distancing regulations will have their Ephmatch access
-            revoked!
-          </div>
         </div>
       </header>
       {children}

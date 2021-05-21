@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
-import { getCurrUser, getScopes, getWSO } from "../selectors/auth";
+import { getCurrUser, getWSO } from "../selectors/auth";
 import { connect } from "react-redux";
 import { doRemoveCreds } from "../actions/auth";
 
@@ -14,9 +14,8 @@ import { createRouteNodeSelector } from "redux-router5";
 
 import { removeStateFromStorage } from "../stateStorage";
 import { userTypeStudent } from "../constants/general";
-import { scopes, scopesContainsOneOfScopes } from "../lib/general";
 
-const Nav = ({ currUser, removeCreds, wso, userScopes }) => {
+const Nav = ({ currUser, removeCreds, wso }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
   const [ephmatchVisibility, updateEphmatchVisibility] = useState(false);
@@ -129,14 +128,14 @@ const Nav = ({ currUser, removeCreds, wso, userScopes }) => {
                 </Link>
               </li>
             )}
-            {userScopes &&
+            {/* userScopes &&
               scopesContainsOneOfScopes(userScopes, [scopes.ScopeGoodrich]) && (
                 <>
                   <li>
                     <Link routeName="goodrich">Goodrich</Link>
                   </li>
                 </>
-              )}
+              ) */}
           </ul>
         </span>
 
@@ -175,10 +174,10 @@ Nav.propTypes = {
   currUser: PropTypes.object,
   removeCreds: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
-  userScopes: PropTypes.arrayOf(PropTypes.string),
+  // userScopes: PropTypes.arrayOf(PropTypes.string),
 };
 
-Nav.defaultProps = { currUser: {}, userScopes: [] };
+Nav.defaultProps = { currUser: {} /* userScopes: [] */ };
 
 const mapStateToProps = () => {
   const routeNodeSelector = createRouteNodeSelector("");
@@ -186,7 +185,7 @@ const mapStateToProps = () => {
   return (state) => ({
     currUser: getCurrUser(state),
     wso: getWSO(state),
-    userScopes: getScopes(state),
+    // userScopes: getScopes(state),
     ...routeNodeSelector(state),
   });
 };
