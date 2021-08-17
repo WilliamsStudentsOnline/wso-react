@@ -113,6 +113,9 @@ const BulletinForm = ({ wso, navigateTo, route }) => {
 
     try {
       let response;
+      
+      // add 30s to date so that we wont have error abt too old post.
+      let dateAdjusted =  new Date(startDate.getTime() + 30000)
 
       if (type === bulletinTypeRide) {
         const rideParams = {
@@ -203,6 +206,21 @@ const BulletinForm = ({ wso, navigateTo, route }) => {
     );
   };
 
+  // Generates fields specific to rides
+  const rideDateField = () => {
+    return (
+      <div className="field">
+        <h5>
+          <b>I am offering/requesting a ride on</b>
+        </h5>
+        <DatePicker
+          value={startDate}
+          onChange={(date) => updateStartDate(date)}
+        />
+      </div>
+    );
+  };
+
   // Non-ride specific fields
   const nonRideFields = () => {
     return (
@@ -227,7 +245,7 @@ const BulletinForm = ({ wso, navigateTo, route }) => {
           {generateErrors()}
 
           {type === bulletinTypeRide ? rideSpecificFields() : nonRideFields()}
-          {startDateField()}
+          {type === bulletinTypeRide ? rideDateField() : startDateField()}
 
           <div className="field">
             <h5>
