@@ -117,7 +117,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
             <li>
               <Link routeName="scheduler">Course Scheduler</Link>
             </li>
-            {/* ephmatchVisibility && (
+            {ephmatchVisibility && (
               <li>
                 <Link
                   className="ephmatch-link"
@@ -127,7 +127,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
                   Ephmatch
                 </Link>
               </li>
-            )*/}
+            )}
             {/* userScopes &&
               scopesContainsOneOfScopes(userScopes, [scopes.ScopeGoodrich]) && (
                 <>

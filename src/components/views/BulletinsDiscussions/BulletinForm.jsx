@@ -113,9 +113,9 @@ const BulletinForm = ({ wso, navigateTo, route }) => {
 
     try {
       let response;
-      
+
       // add 30s to date so that we wont have error abt too old post.
-      let dateAdjusted =  new Date(startDate.getTime() + 30000)
+      const dateAdjusted = new Date(startDate.getTime() + 30000);
 
       if (type === bulletinTypeRide) {
         const rideParams = {
@@ -124,7 +124,7 @@ const BulletinForm = ({ wso, navigateTo, route }) => {
           offer,
           destination,
           body,
-          date: startDate,
+          date: dateAdjusted,
         };
         response =
           route.name === "bulletins.edit"
