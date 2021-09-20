@@ -137,7 +137,7 @@ const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
             />
             <br />
             <br />
-            <strong>Home Address:</strong>
+            <strong>Hometown:</strong>
             <br />
             Show&nbsp;
             <input
