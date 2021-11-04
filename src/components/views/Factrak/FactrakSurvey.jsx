@@ -176,7 +176,7 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
     });
     years.unshift({ title: `Spring ${currYear}`, id: `spring.${currYear}` });
 
-    if (new Date().getMonth() === 9) {
+    if (new Date().getMonth() >= 9) {
       years.unshift({ title: `Fall ${currYear}`, id: `fall.${currYear}` });
     }
 
