@@ -48,7 +48,8 @@ const FactrakRatings = ({ ratings, general }) => {
       <li>
         The courses taught are&nbsp;
         <u>{STIMULATING_DESCR[Math.round(ratings.avgCourseStimulating)]}</u>
-        &nbsp;when compared to other courses ({ratings.numCourseStimulating}
+        &nbsp;when compared to other would take another course (
+        {ratings.numCourseStimulating}
         &nbsp;surveys).
       </li>
     );
@@ -97,6 +98,30 @@ const FactrakRatings = ({ ratings, general }) => {
         The professor is&nbsp;
         <u>{LECTURE_DESCR[Math.round(ratings.avgLeadLecture)]}</u>
         &nbsp;at lecturing ({ratings.numLeadLecture}
+        &nbsp;surveys).
+      </li>
+    );
+  };
+
+  // Generates the crowdsourced opinion on how good the professor is at supporting mental health.
+  const profMentalHealth = () => {
+    if (!ratings.numMentalHealthSupport) return null;
+    const MHS_DESCR = [
+      "",
+      "very ineffective",
+      "ineffective",
+      "somewhat ineffective",
+      "somewhat effective",
+      "moderately effective",
+      "effective",
+      "very effective",
+    ];
+    return (
+      <li>
+        The professor is&nbsp;
+        <u>{MHS_DESCR[Math.round(ratings.avgMentalHealthSupport)]}</u>
+        &nbsp;at supporting student mental health (
+        {ratings.numMentalHealthSupport}
         &nbsp;surveys).
       </li>
     );
@@ -163,6 +188,7 @@ const FactrakRatings = ({ ratings, general }) => {
         {profApproachability()}
         {profLecture()}
         {profHelpful()}
+        {profMentalHealth()}
       </ul>
     </div>
   );

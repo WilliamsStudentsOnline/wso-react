@@ -26,6 +26,7 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
   const [lecture, updateLecture] = useState(null);
   const [discussion, updateDiscussion] = useState(null);
   const [helpful, updateHelpful] = useState(null);
+  const [mentalHealthSupport, updateMentalHealthSupport] = useState(null);
   const [courseSemester, updateCourseSemester] = useState("");
   const [courseFormat, updateCourseFormat] = useState("");
 
@@ -58,6 +59,7 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         updateApprochability(surveyData.approachability);
         updateLecture(surveyData.leadLecture);
         updateHelpful(surveyData.outsideHelpfulness);
+        updateMentalHealthSupport(surveyData.mentalHealthSupport);
         updateDiscussion(surveyData.promoteDiscussion);
         updateRecommend(surveyData.wouldRecommendCourse);
         updateTakeAnother(surveyData.wouldTakeAnother);
@@ -121,6 +123,7 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
       leadLecture: parseInt(lecture, 10),
       promoteDiscussion: parseInt(discussion, 10),
       outsideHelpfulness: parseInt(helpful, 10),
+      mentalHealthSupport: parseInt(mentalHealthSupport, 10),
       semesterSeason,
       semesterYear: parseInt(semesterYear, 10),
     };
@@ -427,6 +430,21 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
                     </strong>
                   </td>
                   <td align="left">{optionBuilder(helpful, updateHelpful)}</td>
+                </tr>
+
+                <tr>
+                  <td align="left">
+                    <strong>
+                      If applicable, how good was this professor at supporting
+                      student mental health?
+                    </strong>
+                  </td>
+                  <td align="left">
+                    {optionBuilder(
+                      mentalHealthSupport,
+                      updateMentalHealthSupport
+                    )}
+                  </td>
                 </tr>
 
                 <tr>

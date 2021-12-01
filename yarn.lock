@@ -12262,9 +12262,9 @@ ws@^7.2.3:
   integrity sha512-hr6vCR76GsossIRsr8OLR9acVVm1jyfEWvhbNjtgPOrfvAlKzvyeg/P6r8RuDjRyrcQoPQT7K0DGEPc7Ae6jzA==
 
 wso-api-client@^21.5.5:
-  version "21.5.5"
-  resolved "https://registry.yarnpkg.com/wso-api-client/-/wso-api-client-21.5.5.tgz#de1fad3b73ea0f29295d8196c9f38751a5ef73a4"
-  integrity sha512-+M0f+EJ6IAs8bBBH6Lm2rgGSrhctMkgvM9PBmmtLO96BLppQU9cPVNNdW5r+RX1BxC5kcr3A/+S8IRjDAztpJw==
+  version "21.11.31"
+  resolved "https://registry.yarnpkg.com/wso-api-client/-/wso-api-client-21.11.31.tgz#b067c11ece61b678e0b759d20e3fc1be8900e546"
+  integrity sha512-FyuhSlaf89wb7LnI2fpkKVtwZf1boN0AM6p4bbl2kwoxSlgxc0eqjCl/jj7vm3AGP7xzO2zQSWz0HZ97hXxIoA==
   dependencies:
     axios "^0.21.1"
     jwt-decode "^3.1.2"
