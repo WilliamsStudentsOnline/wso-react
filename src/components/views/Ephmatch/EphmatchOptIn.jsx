@@ -17,10 +17,6 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
   const [description, updateDescription] = useState("");
   const [userInfo, updateUserInfo] = useState(null);
   const [matchMessage, updateMatchMessage] = useState("");
-  const [locationVisible, updateLocationVisible] = useState(true);
-  const [locationTown, updateLocationTown] = useState("");
-  const [locationState, updateLocationState] = useState("");
-  const [locationCountry, updateLocationCountry] = useState("");
   const [messagingPlatform, updateMessagingPlatform] = useState("NONE");
   const [messagingUsername, updateMessagingUsername] = useState("");
   const [unixID, updateUnixID] = useState("");
@@ -36,9 +32,6 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
         if (isMounted) {
           updateUserInfo(ownProfile.data);
           updateUnixID(ownProfile.data.unixID);
-          updateLocationTown(ownProfile.data.homeTown);
-          updateLocationState(ownProfile.data.homeState);
-          updateLocationCountry(ownProfile.data.homeCountry);
         }
       } catch (error) {
         navigateTo("error", { error });
@@ -49,10 +42,6 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
         if (isMounted) {
           updateDescription(ownEphmatchProfile.data.description);
           updateMatchMessage(ownEphmatchProfile.data.matchMessage);
-          updateLocationVisible(ownEphmatchProfile.data.locationVisible);
-          updateLocationTown(ownEphmatchProfile.data.locationTown);
-          updateLocationState(ownEphmatchProfile.data.locationState);
-          updateLocationCountry(ownEphmatchProfile.data.locationCountry);
           updateMessagingPlatform(
             ownEphmatchProfile.data.messagingPlatform
               ? ownEphmatchProfile.data.messagingPlatform
@@ -98,10 +87,6 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
     const params = {
       description,
       matchMessage,
-      locationVisible,
-      locationTown,
-      locationState,
-      locationCountry,
       messagingPlatform,
       messagingUsername:
         messagingUsername === "NONE" ? null : messagingUsername,
@@ -141,10 +126,6 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
     id: 0,
     description,
     matchMessage,
-    locationVisible,
-    locationTown,
-    locationState,
-    locationCountry,
     messagingPlatform,
     messagingUsername,
   };
@@ -166,18 +147,10 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
             submitHandler={submitHandler}
             description={description}
             matchMessage={matchMessage}
-            locationVisible={locationVisible}
-            locationTown={locationTown}
-            locationState={locationState}
-            locationCountry={locationCountry}
             messagingPlatform={messagingPlatform}
             messagingUsername={messagingUsername}
             updateDescription={updateDescription}
             updateMatchMessage={updateMatchMessage}
-            updateLocationVisible={updateLocationVisible}
-            updateLocationTown={updateLocationTown}
-            updateLocationState={updateLocationState}
-            updateLocationCountry={updateLocationCountry}
             updateMessagingPlatform={updateMessagingPlatform}
             updateMessagingUsername={updateMessagingUsername}
             unix={unixID}
