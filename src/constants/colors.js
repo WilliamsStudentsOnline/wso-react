@@ -1,5 +1,6 @@
 export const appColors = {
   primary: '#512698',
+  // for ephmatch 3.0
   like: '#cce7cd',
   dislike: '#ffa9a9',
 };
