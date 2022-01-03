@@ -33,7 +33,7 @@ const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
       try {
         const userResponse = await wso.userService.getUser("me");
         const currTags = userResponse.data.tags;
-        updateTags(currTags.map((tag) => tag.name));
+        if (currTags) updateTags(currTags.map((tag) => tag.name));
       } catch (error) {
         updateErrors([error.message]);
       }
