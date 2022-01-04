@@ -5,7 +5,7 @@ import { Photo } from "../../Skeleton";
 
 // External imports
 import { ConnectedLink } from "react-router5";
-import { IoMdPin, IoMdText } from "react-icons/io";
+import { IoMdText } from "react-icons/io";
 import { FaSnapchatGhost, FaInstagram } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import "../../stylesheets/Ephmatch.css";
@@ -68,29 +68,6 @@ const Ephmatcher = ({
         </ul>
       );
     }
-    return null;
-  };
-
-  const formatLocation = () => {
-    const { locationCountry, locationState, locationTown } = ephmatcherProfile;
-
-    let locations;
-    if (locationCountry === "United States") {
-      locations = [locationTown, locationState];
-    } else {
-      locations = [locationTown, locationState, locationCountry];
-    }
-
-    locations = locations.filter((loc) => loc);
-
-    if (locations.length > 0) {
-      return (
-        <div className="message-icon">
-          <IoMdPin /> {locations.join(", ")}
-        </div>
-      );
-    }
-
     return null;
   };
 
@@ -160,19 +137,13 @@ const Ephmatcher = ({
     return <Photo height="300px" width="100%" />;
   };
 
-  const {
-    description,
-    id,
-    liked,
-    locationVisible,
-    matchMessage,
-  } = ephmatcherProfile;
+  const { description, id, relation, matchMessage } = ephmatcherProfile;
 
   return (
     <aside
       key={id}
       className={
-        liked
+        relation === "like"
           ? "ephmatch-selected ephmatch-select-link"
           : "ephmatch-select-link"
       }
@@ -192,7 +163,6 @@ const Ephmatcher = ({
             <span className="list-headers">{ephmatcher.unixID}</span>
           )}
           {userTags()}
-          {locationVisible && formatLocation()}
           {matched && createMessageField()}
           {description && <div>{description}</div>}
           {matched && matchMessage && (

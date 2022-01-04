@@ -16,10 +16,6 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
   const [profile, updateProfile] = useState(null);
   const [description, updateDescription] = useState("");
   const [matchMessage, updateMatchMessage] = useState("");
-  const [locationVisible, updateLocationVisible] = useState(true);
-  const [locationTown, updateLocationTown] = useState("");
-  const [locationState, updateLocationState] = useState("");
-  const [locationCountry, updateLocationCountry] = useState("");
   const [messagingPlatform, updateMessagingPlatform] = useState("NONE");
   const [messagingUsername, updateMessagingUsername] = useState("");
   const [unixID, updateUnixID] = useState("");
@@ -44,10 +40,6 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
               : []
           );
           updateMatchMessage(ephmatchProfile.matchMessage);
-          updateLocationVisible(ephmatchProfile.locationVisible);
-          updateLocationTown(ephmatchProfile.locationTown);
-          updateLocationState(ephmatchProfile.locationState);
-          updateLocationCountry(ephmatchProfile.locationCountry);
           updateMessagingPlatform(
             ephmatchProfile.messagingPlatform
               ? ephmatchProfile.messagingPlatform
@@ -76,10 +68,6 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
     const params = {
       description,
       matchMessage,
-      locationVisible,
-      locationTown,
-      locationState,
-      locationCountry,
       messagingPlatform,
       messagingUsername:
         messagingUsername === "NONE" ? null : messagingUsername,
@@ -109,10 +97,6 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
     ...profile,
     description,
     matchMessage,
-    locationVisible,
-    locationTown,
-    locationState,
-    locationCountry,
     messagingPlatform,
     messagingUsername,
   };
@@ -132,18 +116,10 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
             submitHandler={submitHandler}
             description={description}
             matchMessage={matchMessage}
-            locationVisible={locationVisible}
-            locationTown={locationTown}
-            locationState={locationState}
-            locationCountry={locationCountry}
             messagingPlatform={messagingPlatform}
             messagingUsername={messagingUsername}
             updateDescription={updateDescription}
             updateMatchMessage={updateMatchMessage}
-            updateLocationVisible={updateLocationVisible}
-            updateLocationTown={updateLocationTown}
-            updateLocationState={updateLocationState}
-            updateLocationCountry={updateLocationCountry}
             updateMessagingPlatform={updateMessagingPlatform}
             updateMessagingUsername={updateMessagingUsername}
             unix={unixID}

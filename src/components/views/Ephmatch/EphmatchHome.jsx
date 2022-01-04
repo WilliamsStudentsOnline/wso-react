@@ -26,7 +26,7 @@ const EphmatchHome = ({ navigateTo, wso }) => {
       const params = {
         limit: perPage,
         offset: newPage * perPage,
-        preload: ["tags", "liked", "matched"],
+        preload: ["tags", "relation", "matched"],
         sort,
       };
 
@@ -58,8 +58,8 @@ const EphmatchHome = ({ navigateTo, wso }) => {
     const target = event.currentTarget;
 
     try {
-      if (ephmatcher.liked) {
-        await wso.ephmatchService.unlikeProfile(ephmatcher.userID);
+      if (ephmatcher.relation === "like" || ephmatcher.relation === "dislike") {
+        await wso.ephmatchService.undoProfileRelation(ephmatcher.userID);
         target.className = "ephmatch-select-link";
       } else {
         await wso.ephmatchService.likeProfile(ephmatcher.userID);

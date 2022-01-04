@@ -6,3 +6,14 @@
   color: #aaa;
   vertical-align: middle;
 }
+
+.circle-button {
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 6em;
+  height: 6em;
+  min-width: 4em;
+  min-height: 4em;
+}

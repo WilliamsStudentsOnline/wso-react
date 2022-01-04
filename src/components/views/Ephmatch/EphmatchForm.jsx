@@ -9,14 +9,6 @@ const EphmatchForm = ({
   updateDescription,
   matchMessage,
   updateMatchMessage,
-  locationVisible,
-  updateLocationVisible,
-  locationTown,
-  updateLocationTown,
-  locationState,
-  updateLocationState,
-  locationCountry,
-  updateLocationCountry,
   messagingPlatform,
   updateMessagingPlatform,
   messagingUsername,
@@ -85,48 +77,6 @@ const EphmatchForm = ({
         />
       </div>
       <br /> <br />
-      <div>
-        <strong>Current Location:</strong>
-        <input
-          type="text"
-          value={locationTown || ""}
-          onChange={(event) => updateLocationTown(event.target.value)}
-          placeholder="Town"
-        />
-        <input
-          type="text"
-          value={locationState || ""}
-          onChange={(event) => updateLocationState(event.target.value)}
-          placeholder="State"
-        />
-        <input
-          type="text"
-          value={locationCountry || ""}
-          onChange={(event) => updateLocationCountry(event.target.value)}
-          placeholder="Country"
-        />
-        <strong>Show Current Location:</strong>&nbsp; Show&nbsp;
-        <input
-          type="radio"
-          name="locationVisible"
-          value="true"
-          checked={locationVisible}
-          onChange={(e) => {
-            updateLocationVisible(e.target.value === "true");
-          }}
-        />
-        Hide&nbsp;
-        <input
-          type="radio"
-          name="locationVisible"
-          value="false"
-          checked={!locationVisible}
-          onChange={(e) => {
-            updateLocationVisible(e.target.value === "true");
-          }}
-        />
-      </div>
-      <br />
       <input type="submit" value="Save" data-disable-with="Save" />
     </form>
   );
@@ -137,19 +87,11 @@ EphmatchForm.propTypes = {
   children: PropTypes.arrayOf(PropTypes.object),
   description: PropTypes.string,
   matchMessage: PropTypes.string,
-  locationVisible: PropTypes.bool,
-  locationTown: PropTypes.string,
-  locationState: PropTypes.string,
-  locationCountry: PropTypes.string,
   messagingPlatform: PropTypes.string,
   messagingUsername: PropTypes.string,
   unix: PropTypes.string,
   updateDescription: PropTypes.func.isRequired,
   updateMatchMessage: PropTypes.func.isRequired,
-  updateLocationVisible: PropTypes.func.isRequired,
-  updateLocationTown: PropTypes.func.isRequired,
-  updateLocationState: PropTypes.func.isRequired,
-  updateLocationCountry: PropTypes.func.isRequired,
   updateMessagingPlatform: PropTypes.func.isRequired,
   updateMessagingUsername: PropTypes.func.isRequired,
 };
@@ -158,10 +100,6 @@ EphmatchForm.defaultProps = {
   children: null,
   description: "",
   matchMessage: "",
-  locationVisible: true,
-  locationTown: "",
-  locationState: "",
-  locationCountry: "",
   messagingPlatform: "NONE",
   messagingUsername: "",
   unix: "",
