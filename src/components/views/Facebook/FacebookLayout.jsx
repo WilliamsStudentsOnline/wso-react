@@ -19,6 +19,7 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
     } else {
       updateQuery("");
     }
+    console.log("DONE");
   }, [route.params.q]);
 
   // Handles submissions

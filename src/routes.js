@@ -35,6 +35,7 @@ export default [
     children: [
       { name: "policy", path: "/policy" },
       { name: "surveys", path: "/surveys" },
+      { name: "rankings", path: "/rankings?:aos?:sortBy" },
       { name: "moderate", path: "/moderate" },
       { name: "areasOfStudy", path: "/areas-of-study/:area" },
       {

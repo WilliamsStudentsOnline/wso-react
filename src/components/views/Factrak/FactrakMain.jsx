@@ -13,6 +13,7 @@ import FactrakAOS from "./FactrakAOS";
 import FactrakCourse from "./FactrakCourse";
 import FactrakProfessor from "./FactrakProfessor";
 import FactrakSearch from "./FactrakSearch";
+import FactrakRankings from "./FactrakRankings";
 import Redirect from "../../Redirect";
 
 // Redux/ Router imports
@@ -48,6 +49,8 @@ const FactrakMain = ({ currUser, route, token }) => {
         return <FactrakProfessor />;
       case "search":
         return <FactrakSearch />;
+      case "rankings":
+        return <FactrakRankings />;
       default:
         return <FactrakHome />;
     }
