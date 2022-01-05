@@ -1,3 +1,10 @@
+/* eslint-disable react/prop-types */
+/*
+TODO: Add prop validation (https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/prop-types.md)
+
+The ESLint CI warnings are disabled for now.
+*/
+
 // React imports
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";

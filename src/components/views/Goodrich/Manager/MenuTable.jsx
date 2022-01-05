@@ -1,3 +1,12 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-alert */
+/*
+TODO: Add prop validation (https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/prop-types.md)
+TODO: remove the 3 alert statements (https://eslint.org/docs/rules/no-alert)
+
+The ESLint CI warnings are disabled for now.
+*/
+
 // React imports
 import React, { useState } from "react";
 import PropTypes from "prop-types";
