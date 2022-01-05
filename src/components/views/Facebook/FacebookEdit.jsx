@@ -174,7 +174,7 @@ const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
                 <strong>Off Cycle:&nbsp;</strong>
                 <input
                   type="checkbox"
-                  value={offCycle}
+                  checked={offCycle}
                   onChange={() => setOffCycle(!offCycle)}
                 />
                 (Checking this box will subtract 0.5 from your class year.)
