@@ -12,7 +12,7 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import { withRouter, Link } from "react-router5";
+import { Link } from "react-router5";
 
 const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
   const [profs, updateProfs] = useState(null);
@@ -182,6 +182,4 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.navigateTo(location, params, opts)),
 });
 
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(FactrakTopProfs)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(FactrakTopProfs);
