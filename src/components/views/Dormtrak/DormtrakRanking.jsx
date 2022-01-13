@@ -35,6 +35,7 @@ const DormtrakRanking = ({ wso }) => {
   }, [wso]);
 
   const times = [0, 0, 0];
+  const numRanked = times.length;
 
   const rankingSkeleton = (key) => (
     <tr key={key}>
@@ -71,6 +72,122 @@ const DormtrakRanking = ({ wso }) => {
   return (
     <article className="dorm-ranks">
       <h3>Rankings</h3>
+      {/* Only add satifaction rankings when at least one dorm is reviewed */}
+      {dormInfo &&
+      dormInfo.bestSatisfaction &&
+      dormInfo.bestSatisfaction.length > 0 ? (
+        <table>
+          <tbody>
+            <tr>
+              <th>Most Satisfactory</th>
+              <th>Least Satisfactory</th>
+            </tr>
+            {/* Only add at most 3 dorms the the rankings list */}
+            {dormInfo.bestSatisfaction.slice(0, numRanked).map((_, index) => {
+              const a = dormInfo.bestSatisfaction[index];
+              const b = dormInfo.worstSatisfaction[index];
+              return (
+                <tr key={a.name}>
+                  <td>
+                    <DormLink dormID={a.id}>{a.name}</DormLink>
+                    {`(${a.satisfaction} / 5)`}
+                  </td>
+                  <td>
+                    <DormLink dormID={b.id}>{b.name}</DormLink>
+                    {`(${b.satisfaction} / 5)`}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      ) : null}
+      {/* Only add location rankings when at least one dorm is reviewed */}
+      {dormInfo && dormInfo.bestLocation && dormInfo.bestLocation.length > 0 ? (
+        <table>
+          <tbody>
+            <tr>
+              <th>Best Location</th>
+              <th>Worst Location</th>
+            </tr>
+            {/* Only add at most 3 dorms the the rankings list */}
+            {dormInfo.bestLocation.slice(0, numRanked).map((_, index) => {
+              const a = dormInfo.bestLocation[index];
+              const b = dormInfo.worstLocation[index];
+              return (
+                <tr key={a.name}>
+                  <td>
+                    <DormLink dormID={a.id}>{a.name}</DormLink>
+                    {`(${a.location} / 5)`}
+                  </td>
+                  <td>
+                    <DormLink dormID={b.id}>{b.name}</DormLink>
+                    {`(${b.location} / 5)`}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      ) : null}
+      {/* Only add loudness rankings when at least one dorm is reviewed */}
+      {dormInfo &&
+      dormInfo.leastLoudness &&
+      dormInfo.leastLoudness.length > 0 ? (
+        <table>
+          <tbody>
+            <tr>
+              <th>Quietest</th>
+              <th>Loudest</th>
+            </tr>
+            {/* Only add at most 3 dorms the the rankings list */}
+            {dormInfo.leastLoudness.slice(0, numRanked).map((_, index) => {
+              const a = dormInfo.leastLoudness[index];
+              const b = dormInfo.mostLoudness[index];
+              return (
+                <tr key={a.name}>
+                  <td>
+                    <DormLink dormID={a.id}>{a.name}</DormLink>
+                    {`(${a.loudness} / 5)`}
+                  </td>
+                  <td>
+                    <DormLink dormID={b.id}>{b.name}</DormLink>
+                    {`(${b.loudness} / 5)`}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      ) : null}
+      {/* Only add wifi rankings when at least one dorm is reviewed */}
+      {dormInfo && dormInfo.bestWifi && dormInfo.bestWifi.length > 0 ? (
+        <table>
+          <tbody>
+            <tr>
+              <th>Best Wifi</th>
+              <th>Worst Wifi</th>
+            </tr>
+            {/* Only add at most 3 dorms the the rankings list */}
+            {dormInfo.bestWifi.slice(0, numRanked).map((_, index) => {
+              const a = dormInfo.bestWifi[index];
+              const b = dormInfo.worstWifi[index];
+              return (
+                <tr key={a.name}>
+                  <td>
+                    <DormLink dormID={a.id}>{a.name}</DormLink>
+                    {`(${a.wifi} / 5)`}
+                  </td>
+                  <td>
+                    <DormLink dormID={b.id}>{b.name}</DormLink>
+                    {`(${b.wifi} / 5)`}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      ) : null}
 
       <table>
         <tbody>
