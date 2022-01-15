@@ -154,6 +154,9 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
               <li>
                 <Link routeName="factrak.surveys">Your Reviews</Link>
               </li>
+              <li>
+                <Link routeName="factrak.rankings">Rankings</Link>
+              </li>
               {currUser.factrakAdmin && (
                 <li>
                   <Link routeName="factrak.moderate">Moderate</Link>
