@@ -86,6 +86,8 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
     if (metric === "avgWouldTakeAnother") {
       rating = `${Math.round(prof.ratingResponseData[metric] * 100)}%`;
     } else {
+      // Currently no API to retrieve the max value of the metric but
+      // it's currently 7. Might need to change later
       rating = `${prof.ratingResponseData[metric]} / 7`;
     }
     return (
