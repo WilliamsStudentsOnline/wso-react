@@ -13,7 +13,7 @@ import { Link } from "react-router5";
 const DormtrakRanking = ({ wso }) => {
   const [dormInfo, updateDormsInfo] = useState(null);
 
-  const roundToTenth = function(num) {
+  const roundToTenth = (num) => {
     return (+`${Math.round(`${num}e+1`)}e-1`).toFixed(1);
   };
 
