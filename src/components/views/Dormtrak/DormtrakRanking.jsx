@@ -185,7 +185,7 @@ const DormtrakRanking = ({ wso }) => {
             {dormInfo.bestWifi.slice(0, numRanked).map((_, index) => {
               const a = dormInfo.bestWifi[index];
               const b = dormInfo.worstWifi[index];
-              // round dorm loudness to nearest tenth
+              // round dorm wifi to nearest tenth
               const aWifi = roundToTenth(a.wifi);
               const bWifi = roundToTenth(b.wifi);
               return (
