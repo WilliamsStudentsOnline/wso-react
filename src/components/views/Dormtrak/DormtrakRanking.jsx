@@ -13,6 +13,10 @@ import { Link } from "react-router5";
 const DormtrakRanking = ({ wso }) => {
   const [dormInfo, updateDormsInfo] = useState(null);
 
+  const roundToTenth = function(num) {
+    return (+`${Math.round(`${num}e+1`)}e-1`).toFixed(1);
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -86,15 +90,18 @@ const DormtrakRanking = ({ wso }) => {
             {dormInfo.bestSatisfaction.slice(0, numRanked).map((_, index) => {
               const a = dormInfo.bestSatisfaction[index];
               const b = dormInfo.worstSatisfaction[index];
+              // round dorm satisfaction to nearest tenth
+              const aSatisfaction = roundToTenth(a.satisfaction);
+              const bSatisfaction = roundToTenth(b.satisfaction);
               return (
                 <tr key={a.name}>
                   <td>
                     <DormLink dormID={a.id}>{a.name}</DormLink>
-                    {`(${a.satisfaction} / 5)`}
+                    {`(${aSatisfaction} / 5.0)`}
                   </td>
                   <td>
                     <DormLink dormID={b.id}>{b.name}</DormLink>
-                    {`(${b.satisfaction} / 5)`}
+                    {`(${bSatisfaction} / 5.0)`}
                   </td>
                 </tr>
               );
@@ -114,15 +121,18 @@ const DormtrakRanking = ({ wso }) => {
             {dormInfo.bestLocation.slice(0, numRanked).map((_, index) => {
               const a = dormInfo.bestLocation[index];
               const b = dormInfo.worstLocation[index];
+              // round dorm locations to nearest tenth
+              const aLocation = roundToTenth(a.location);
+              const bLocation = roundToTenth(b.location);
               return (
                 <tr key={a.name}>
                   <td>
                     <DormLink dormID={a.id}>{a.name}</DormLink>
-                    {`(${a.location} / 5)`}
+                    {`(${aLocation} / 5.0)`}
                   </td>
                   <td>
                     <DormLink dormID={b.id}>{b.name}</DormLink>
-                    {`(${b.location} / 5)`}
+                    {`(${bLocation} / 5.0)`}
                   </td>
                 </tr>
               );
@@ -144,15 +154,18 @@ const DormtrakRanking = ({ wso }) => {
             {dormInfo.leastLoudness.slice(0, numRanked).map((_, index) => {
               const a = dormInfo.leastLoudness[index];
               const b = dormInfo.mostLoudness[index];
+              // round dorm loudness to nearest tenth
+              const aLoudness = roundToTenth(a.loudness);
+              const bLoudness = roundToTenth(b.loudness);
               return (
                 <tr key={a.name}>
                   <td>
                     <DormLink dormID={a.id}>{a.name}</DormLink>
-                    {`(${a.loudness} / 5)`}
+                    {`(${aLoudness} / 5.0)`}
                   </td>
                   <td>
                     <DormLink dormID={b.id}>{b.name}</DormLink>
-                    {`(${b.loudness} / 5)`}
+                    {`(${bLoudness} / 5.0)`}
                   </td>
                 </tr>
               );
@@ -172,15 +185,18 @@ const DormtrakRanking = ({ wso }) => {
             {dormInfo.bestWifi.slice(0, numRanked).map((_, index) => {
               const a = dormInfo.bestWifi[index];
               const b = dormInfo.worstWifi[index];
+              // round dorm loudness to nearest tenth
+              const aWifi = roundToTenth(a.wifi);
+              const bWifi = roundToTenth(b.wifi);
               return (
                 <tr key={a.name}>
                   <td>
                     <DormLink dormID={a.id}>{a.name}</DormLink>
-                    {`(${a.wifi} / 5)`}
+                    {`(${aWifi} / 5.0)`}
                   </td>
                   <td>
                     <DormLink dormID={b.id}>{b.name}</DormLink>
-                    {`(${b.wifi} / 5)`}
+                    {`(${bWifi} / 5.0)`}
                   </td>
                 </tr>
               );
