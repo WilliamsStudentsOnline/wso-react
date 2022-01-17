@@ -88,7 +88,7 @@ const DormtrakFacts = ({ dorm, wso }) => {
         {ratingScores.map(
           (score, index) =>
             score !== 0 && (
-              <div key={score}>
+              <div key={ratingParameters[index]}>
                 {ratingParameters[index]}: {ratingScores[index].toPrecision(2)}
                 <br />
               </div>
