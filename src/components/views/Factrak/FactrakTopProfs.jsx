@@ -60,7 +60,8 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
         const withRanking = await Promise.all(
           profRankedData.map(async (prof) => {
             const ratingResponse = await wso.factrakService.getProfessorRatings(
-              prof.id
+              prof.id,
+              params
             );
             const ratingResponseData = ratingResponse.data;
             return {
@@ -88,7 +89,9 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
     } else {
       // Currently no API to retrieve the max value of the metric but
       // it's currently 7. Might need to change later
-      rating = `${prof.ratingResponseData[metric]} / 7`;
+      rating = `${Math.round(
+        ((prof.ratingResponseData[metric] + Number.EPSILON) * 100) / 100
+      )} / 7`;
     }
     return (
       <tr key={prof.id}>
