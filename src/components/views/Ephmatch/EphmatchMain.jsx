@@ -104,7 +104,8 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
             <h1 className="no-matches-found">
               {availability?.nextOpenTime ? (
                 <>
-                  Ephmatch will open again {format(availability.nextOpenTime)}. {(availability?.seniorOnly || availability?.senior_only) && (<>For Seniors Only</>)}
+                  Ephmatch will open again {format(availability.nextOpenTime)}.{" "}
+                  {availability?.seniorOnly && <>For Seniors Only</>}
                 </>
               ) : (
                 <>Ephmatch has officially closed for this year.</>

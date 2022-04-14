@@ -18,7 +18,8 @@ import { userTypeStudent } from "../constants/general";
 const Nav = ({ currUser, removeCreds, wso }) => {
   const [menuVisible, updateMenuVisibility] = useState(false);
   const [userPhoto, updateUserPhoto] = useState(null);
-  const [ephmatchVisibility, updateEphmatchVisibility] = useState(false);
+  const [ephmatchVisibility, updateEphmatchVisibility] = useState(0);
+  // 0 - off, 1 - on, 2 - senior only
 
   useEffect(() => {
     const loadPhoto = async () => {
@@ -41,9 +42,13 @@ const Nav = ({ currUser, removeCreds, wso }) => {
           (ephmatchAvailabilityResp?.data?.nextOpenTime &&
             new Date(ephmatchAvailabilityResp?.data?.nextOpenTime).valueOf() -
               new Date().valueOf() <
-              5 * 604800000) // used to be 1 week: 604800000. Now 5 weeks: 3024000000
+              4 * 604800000) // used to be 1 week: 604800000. Now 4 weeks: 3024000000
         ) {
-          updateEphmatchVisibility(true);
+          if (ephmatchAvailabilityResp?.data?.seniorOnly) {
+            updateEphmatchVisibility(2);
+          } else {
+            updateEphmatchVisibility(1);
+          }
         }
       } catch {
         // Do nothing - it's okay to gracefully handle this.
@@ -54,7 +59,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
       loadPhoto();
       checkEphmatchVisibility();
     } else {
-      updateEphmatchVisibility(false);
+      updateEphmatchVisibility(0);
     }
 
     updateMenuVisibility(false);
@@ -117,14 +122,14 @@ const Nav = ({ currUser, removeCreds, wso }) => {
             <li>
               <Link routeName="scheduler">Course Scheduler</Link>
             </li>
-            {ephmatchVisibility && (
+            {ephmatchVisibility > 0 && (
               <li>
                 <Link
                   className="ephmatch-link"
                   style={{ color: "#fff238" }}
                   routeName="ephmatch"
                 >
-                  Ephmatch
+                  {ephmatchVisibility === 2 ? "Senior " : ""}Ephmatch
                 </Link>
               </li>
             )}
