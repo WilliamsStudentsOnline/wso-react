@@ -15,6 +15,7 @@ import { format } from "timeago.js";
 
 const DormtrakRecentComments = ({
   wso,
+  updateUserReviewID,
   abridged,
   currUser,
   navigateTo,
@@ -34,6 +35,7 @@ const DormtrakRecentComments = ({
     try {
       await wso.dormtrakService.deleteReview(reviewID);
       updateCurrReviews(currReviews.filter((review) => review.id !== reviewID));
+      updateUserReviewID(null);
     } catch (error) {
       // eslint-disable-next-line no-empty
     }
@@ -42,7 +44,7 @@ const DormtrakRecentComments = ({
   const editDeleteButtons = (review) => {
     if (currUser.type === userTypeStudent && currUser.id === review.userID) {
       return (
-        <p className="comment-detail">
+        <p>
           <Button
             onClick={() =>
               navigateTo("dormtrak.editReview", {
@@ -175,6 +177,7 @@ DormtrakRecentComments.propTypes = {
   navigateTo: PropTypes.func.isRequired,
   reviews: PropTypes.arrayOf(PropTypes.object),
   wso: PropTypes.object.isRequired,
+  updateUserReviewID: PropTypes.func.isRequired,
 };
 
 DormtrakRecentComments.defaultProps = {
