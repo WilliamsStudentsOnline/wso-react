@@ -12,22 +12,23 @@ const FacebookHelp = () => {
               <sup>1</sup>
             </a>{" "}
             is an online campus directory. It is accessible on campus without
-            login and off campus by logging in with your{" "}
-            <abbr title="Office for Information Technology">OIT</abbr> (Unix ID)
-            username and password. Please report any strange behavior (after
-            looking over the info below) to <code>wso-dev</code>{" "}
-            <code>[at]</code> <code>wso.williams.edu</code>. The more
-            descriptive your bug reports are, the easier the bug is to fix.
-            Better yet, come to a meeting (join the{" "}
+            login and off campus by logging in with your Williams Username
+            (previously called Unix, Williams ID, or{" "}
+            <abbr title="Office for Information Technology">OIT</abbr> ID) and
+            password. Please report any strange behavior (after looking over the
+            info below) to <code>wso-dev</code> <code>[at]</code>{" "}
+            <code>wso.williams.edu</code>. The more descriptive your bug reports
+            are, the easier the bug is to fix. Better yet, come to a meeting
+            (join the{" "}
             <a
-              href="http://wso.williams.edu/mailman/listinfo/wso-staff"
+              href="https://wso.williams.edu/mailman/listinfo/wso-general_wso.williams.edu"
               className="urlextern"
-              title="http://wso.williams.edu/mailman/listinfo/wso-staff"
+              title="https://wso.williams.edu/mailman/listinfo/wso-general_wso.williams.edu"
               rel="nofollow"
             >
-              wso-staff
+              wso-general
             </a>{" "}
-            list) and help out!
+            mailing list) and help out!
           </p>
           <br />
 
@@ -265,7 +266,7 @@ const FacebookHelp = () => {
                   {" "}
                   <code>email:</code>{" "}
                 </td>
-                <td> unix style email </td>
+                <td> Williams email </td>
                 <td> everyone </td>
               </tr>
               <tr>
@@ -348,7 +349,7 @@ const FacebookHelp = () => {
                   {" "}
                   <code>unix:</code>{" "}
                 </td>
-                <td> Unix ID </td>
+                <td> Williams Username (previously Unix) </td>
                 <td> everyone </td>
               </tr>
               <tr>
