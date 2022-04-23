@@ -95,7 +95,7 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
           <thead>
             <tr>
               <th>Name</th>
-              <th className="unix-column">Unix</th>
+              <th className="unix-column">Williams Username</th>
               <th>Room/Office</th>
             </tr>
           </thead>

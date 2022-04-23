@@ -67,7 +67,7 @@ const Login = ({
 
     // Guard clause for empty id or password field.
     if (unixID === "" || password === "") {
-      updateErrors(["Please enter a valid unix ID and password."]);
+      updateErrors(["Please enter a valid Williams Username and password."]);
       return;
     }
 
@@ -83,7 +83,7 @@ const Login = ({
       navigateTo("home");
     } catch (error) {
       if (error.errorCode === 401) {
-        updateErrors(["Invalid unix ID or password!"]);
+        updateErrors(["Invalid Williams Username or password!"]);
       }
     }
   };
@@ -110,7 +110,7 @@ const Login = ({
         <input
           type="text"
           id="unixID"
-          placeholder="Enter your unix (eg. abc12) or Williams email (eg. abc12@williams.edu)"
+          placeholder="Enter your Williams Username (previously called Unix, eg. abc12) or email (eg. abc12@williams.edu)"
           onChange={unixHandler}
         />
         <input

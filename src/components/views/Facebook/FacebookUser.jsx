@@ -144,7 +144,7 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
     if (viewPerson.unixID) {
       return (
         <>
-          <h5>Unix:</h5>
+          <h5>Williams Username:</h5>
           <h4>{viewPerson.unixID}</h4>
           <br />
         </>

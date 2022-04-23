@@ -31,7 +31,7 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
     if (user.unixID) {
       return (
         <>
-          <li className="list-headers">UNIX</li>
+          <li className="list-headers">Williams Username</li>
           <li className="list-contents">{user.unixID}</li>
         </>
       );
