@@ -44,7 +44,7 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
           }
         }
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 

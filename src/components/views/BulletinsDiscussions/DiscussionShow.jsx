@@ -26,7 +26,7 @@ const DiscussionShow = ({ currUser, navigateTo, route, wso }) => {
         updateDiscussion(discussionResponse.data);
         updatePosts(discussionResponse.data.posts || []);
       } catch (error) {
-        if (error.errorCode === 404) navigateTo("404");
+        if (error.errorCode === 404) navigateTo("404", {}, { replace: true });
       }
     };
 

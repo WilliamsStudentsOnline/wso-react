@@ -149,7 +149,7 @@ const OrderMenu = ({ order, goodrichOrderUpdate, wso, navigateTo }) => {
       );
       updateMenu(menuResp.data);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 

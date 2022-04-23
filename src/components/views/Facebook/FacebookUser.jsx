@@ -19,7 +19,7 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
   useEffect(() => {
     const loadTarget = async () => {
       if (!route.params.userID) {
-        navigateTo("404");
+        navigateTo("404", {}, { replace: true });
         return;
       }
 
@@ -35,8 +35,10 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
 
         updateUserPhoto(URL.createObjectURL(photoResponse));
       } catch (error) {
-        if (error.errorCode === 1404) {
-          navigateTo("404");
+        // 1404 means user not at williams, 404 means user does not exist in DB
+        if (error.errorCode === 1404 || error.errorCode === 404) {
+          // TODO: display different error (for not on campus)
+          navigateTo("404", { message: "Test" }, { replace: true });
           return;
         }
         updateUserPhoto(null);

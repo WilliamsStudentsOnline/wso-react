@@ -34,7 +34,7 @@ const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
       updateThreads(discussionsResponse.data);
       updateTotal(discussionsResponse.paginationTotal);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 
@@ -129,7 +129,7 @@ const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
 
       loadThreads(page);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 

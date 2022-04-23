@@ -29,7 +29,7 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
       setEdit(false);
       updateCurrPost(response.data);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 
@@ -43,7 +43,7 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
       await wso.bulletinService.deletePost(post.id);
       updateDeleted(true);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 

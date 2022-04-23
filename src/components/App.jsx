@@ -43,11 +43,11 @@ const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
 const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
 const EphmatchMain = lazy(() => import("./views/Ephmatch/EphmatchMain"));
 const GoodrichMain = lazy(() => import("./views/Goodrich/GoodrichMain"));
-const Error404 = lazy(() => import("./views/Errors/Error404"));
+const Error404 = lazy(() => import("./views/Errors/Error404.tsx"));
 const Login = lazy(() => import("./Login"));
 const Error403 = lazy(() => import("./views/Errors/Error403"));
 const Error500 = lazy(() => import("./views/Errors/Error500"));
-const Error = lazy(() => import("./views/Errors/Error"));
+const Error = lazy(() => import("./views/Errors/Error.tsx"));
 const BulletinMain = lazy(() =>
   import("./views/BulletinsDiscussions/BulletinMain")
 );
@@ -77,7 +77,7 @@ const App = ({
       const newIdenToken = tokenResponse.token;
       updateIdenToken(newIdenToken);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 
@@ -134,7 +134,7 @@ const App = ({
             updateWSO(updatedWSO);
           }
         } catch (error) {
-          navigateTo("error", { error });
+          navigateTo("error", { error }, { replace: true });
         }
       } else {
         getIPIdentityToken();
@@ -167,7 +167,7 @@ const App = ({
             }
           }
         } catch (error) {
-          navigateTo("error", { error });
+          navigateTo("error", { error }, { replace: true });
         }
       }
     };

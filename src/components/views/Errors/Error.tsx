@@ -2,7 +2,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Error = ({ error }) => {
+export interface errorProps {
+  error?: {
+    errorCode?: string;
+    message?: string;
+  };
+} /* use `interface` if exporting so that consumers can extend */
+
+const Error = ({ error }: errorProps): React.ReactElement => {
   return (
     <header>
       <h1>Whoops! Something Bad Happened!</h1>
@@ -22,7 +29,7 @@ Error.propTypes = {
 };
 
 Error.defaultProps = {
-  error: null,
+  error: undefined,
 };
 
 export default Error;

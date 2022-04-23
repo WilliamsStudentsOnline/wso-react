@@ -33,7 +33,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
         );
         updateSurveys(surveysResponse.data);
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 
@@ -44,7 +44,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
         const areasOfStudy = areasOfStudyResponse.data;
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
     if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {

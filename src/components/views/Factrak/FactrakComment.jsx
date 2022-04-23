@@ -32,7 +32,7 @@ const FactrakComment = ({
       const surveyResponse = await wso.factrakService.getSurvey(survey.id);
       updateSurvey(surveyResponse.data);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 
@@ -47,7 +47,7 @@ const FactrakComment = ({
       const userResponse = await wso.userService.getUser();
       updateUser(userResponse.data);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 
@@ -71,7 +71,7 @@ const FactrakComment = ({
 
       getAndUpdateSurvey();
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 
@@ -130,7 +130,7 @@ const FactrakComment = ({
 
       getAndUpdateSurvey();
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 
