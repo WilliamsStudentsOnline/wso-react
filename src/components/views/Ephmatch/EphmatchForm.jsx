@@ -45,7 +45,7 @@ const EphmatchForm = ({
             onChange={(event) => updateMessagingPlatform(event.target.value)}
             style={{ marginBottom: "0" }}
           >
-            <option value="NONE">Williams Username</option>
+            <option value="NONE">Williams Email</option>
             <option value="Phone">Phone</option>
             <option value="Snapchat">Snapchat</option>
             <option value="Instagram">Instagram</option>
