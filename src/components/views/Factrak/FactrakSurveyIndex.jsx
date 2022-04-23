@@ -24,7 +24,7 @@ const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
 
         updateSurveys(userSurveyResponse.data);
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 

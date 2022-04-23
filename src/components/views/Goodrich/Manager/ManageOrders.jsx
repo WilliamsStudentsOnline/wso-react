@@ -21,7 +21,7 @@ const ManageOrders = ({ navigateTo, goodrichUpdateManagerOrders, wso }) => {
       });
       goodrichUpdateManagerOrders(ordersResponse.data);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 

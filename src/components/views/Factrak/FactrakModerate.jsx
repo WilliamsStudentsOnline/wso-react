@@ -26,7 +26,7 @@ const FactrakModerate = ({ navigateTo, wso }) => {
 
         updateFlagged(flaggedResponse.data);
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 
@@ -39,7 +39,7 @@ const FactrakModerate = ({ navigateTo, wso }) => {
       await wso.factrakService.unflagSurveyAdmin(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 
@@ -53,7 +53,7 @@ const FactrakModerate = ({ navigateTo, wso }) => {
       await wso.factrakService.deleteSurvey(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 

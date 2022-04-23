@@ -23,7 +23,7 @@ const EphmatchOptOut = ({ navigateTo, wso }) => {
         }
       } catch (error) {
         // There shouldn't be any reason for the submission to be rejected.
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 
@@ -43,7 +43,7 @@ const EphmatchOptOut = ({ navigateTo, wso }) => {
       navigateTo("ephmatch", null, { reload: true });
     } catch (error) {
       // There shouldn't be any reason for the submission to be rejected.
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 

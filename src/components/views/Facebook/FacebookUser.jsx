@@ -19,7 +19,7 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
   useEffect(() => {
     const loadTarget = async () => {
       if (!route.params.userID) {
-        navigateTo("404");
+        navigateTo("404", {}, { replace: true });
         return;
       }
 
@@ -36,7 +36,7 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
         updateUserPhoto(URL.createObjectURL(photoResponse));
       } catch (error) {
         if (error.errorCode === 1404) {
-          navigateTo("404");
+          navigateTo("404", {}, { replace: true });
           return;
         }
         updateUserPhoto(null);

@@ -77,7 +77,7 @@ const App = ({
       const newIdenToken = tokenResponse.token;
       updateIdenToken(newIdenToken);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 
@@ -134,7 +134,7 @@ const App = ({
             updateWSO(updatedWSO);
           }
         } catch (error) {
-          navigateTo("error", { error });
+          navigateTo("error", { error }, { replace: true });
         }
       } else {
         getIPIdentityToken();
@@ -167,7 +167,7 @@ const App = ({
             }
           }
         } catch (error) {
-          navigateTo("error", { error });
+          navigateTo("error", { error }, { replace: true });
         }
       }
     };

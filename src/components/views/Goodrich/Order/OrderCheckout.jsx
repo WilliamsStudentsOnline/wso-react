@@ -56,7 +56,7 @@ const OrderCheckout = ({
 
       updateSlotList(slotListResp.data);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 

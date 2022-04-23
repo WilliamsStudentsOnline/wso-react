@@ -44,7 +44,7 @@ const OrderWait = ({ goodrichOrderLeaseUpdate, navigateTo, wso }) => {
           updateErrorMessage("Goodrich is closed today!");
           updateOpenModal(true);
         } else {
-          navigateTo("error", { error });
+          navigateTo("error", { error }, { replace: true });
         }
       }
     }

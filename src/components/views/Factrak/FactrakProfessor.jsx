@@ -38,7 +38,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
         );
         updateDepartment(departmentResponse.data);
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 
@@ -52,7 +52,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
         if (error.errorCode === 1330) {
           // Do nothing - This should be expected if the user has not fulfilled the 2 surveys
         } else {
-          navigateTo("error", { error });
+          navigateTo("error", { error }, { replace: true });
         }
       }
     };
@@ -71,7 +71,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
         if (error.errorCode === 1330) {
           // Do nothing - This should be expected if the user has not fulfilled the 2 surveys
         } else {
-          navigateTo("error", { error });
+          navigateTo("error", { error }, { replace: true });
         }
       }
     };

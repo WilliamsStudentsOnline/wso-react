@@ -28,7 +28,7 @@ const FactrakPolicy = ({ currUser, navigateTo, wso }) => {
       await wso.userService.updateUser("me", updateParams);
       setUpdated(true);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 

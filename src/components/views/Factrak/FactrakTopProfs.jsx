@@ -72,7 +72,7 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
         );
         updateProfs(withRanking);
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 

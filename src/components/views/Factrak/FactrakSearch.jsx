@@ -29,7 +29,7 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
 
         updateProfs(profsResponse.data.sort((a, b) => a.name > b.name));
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 
@@ -52,7 +52,7 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
           )
         );
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 

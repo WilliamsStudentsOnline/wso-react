@@ -21,7 +21,7 @@ const DormtrakNeighborhood = ({ navigateTo, route, wso }) => {
         );
         updateHoodInfo(hoodResponse.data);
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 

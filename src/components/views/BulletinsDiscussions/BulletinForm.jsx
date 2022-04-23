@@ -62,7 +62,7 @@ const BulletinForm = ({ wso, navigateTo, route }) => {
       } catch (error) {
         // We're only expecting 403 errors here
         if (error.errorCode === 403) {
-          navigateTo("403");
+          navigateTo("403", {}, { replace: true });
         }
         // In any other error, the skeleton will just continue displaying.
       }
@@ -73,7 +73,7 @@ const BulletinForm = ({ wso, navigateTo, route }) => {
       if (route.params.bulletinID) {
         loadBulletin();
       } else {
-        navigateTo("404");
+        navigateTo("404", {}, { replace: true });
       }
     }
 
