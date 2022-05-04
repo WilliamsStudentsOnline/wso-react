@@ -145,6 +145,7 @@ const Ephmatcher = ({
       <div
         style={{
           borderTop: "2px  solid #C86914",
+          textAlign: "center",
         }}
       >
         <em>Looking for {text}</em>
@@ -206,7 +207,7 @@ const Ephmatcher = ({
           {userTags()}
           {matched && createMessageField()}
           {description && <div>{description}</div>}
-          {lookingFor && createLookingForField()}
+          {lookingFor && lookingFor !== "NONE" && createLookingForField()}
           {matched && matchMessage && (
             <div className="match-message">{matchMessage}</div>
           )}
