@@ -114,7 +114,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
               <Link routeName="faq">FAQ</Link>
             </li>
             <li>
-              <a href="/wiki">Wiki</a>
+              <a href="/wiki/">Wiki</a>
             </li>
             <li>
               <Link routeName="about">About</Link>

@@ -35,7 +35,7 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
           updateUnixID(ownProfile.data.unixID);
         }
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
 
       try {
@@ -59,7 +59,7 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
         if (error.errorCode === 404) {
           // This is expected if the user has no profile
         } else {
-          navigateTo("error", { error });
+          navigateTo("error", { error }, { replace: true });
         }
       }
     };
@@ -104,7 +104,7 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
       setUpdated(true);
     } catch (error) {
       // There shouldn't be any reason for the submission to be rejected.
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 

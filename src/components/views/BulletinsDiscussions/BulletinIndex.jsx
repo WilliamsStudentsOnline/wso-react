@@ -30,7 +30,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
       updateBulletins(bulletinsResponse.data);
       updateTotal(bulletinsResponse.paginationTotal);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 
@@ -47,7 +47,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
       updateBulletins(ridesResponse.data);
       updateTotal(ridesResponse.paginationTotal);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 
@@ -97,7 +97,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
       }
       loadNext(page);
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 

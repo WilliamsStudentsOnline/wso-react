@@ -30,7 +30,7 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
         type: bulletin.type || bulletinTypeRide,
       });
     } catch (error) {
-      navigateTo("error", { error });
+      navigateTo("error", { error }, { replace: true });
     }
   };
 
@@ -52,7 +52,7 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
 
         updateBulletin(bulletinResponse.data);
       } catch (error) {
-        if (error.errorCode === 404) navigateTo("404");
+        if (error.errorCode === 404) navigateTo("404", {}, { replace: true });
       }
     };
 

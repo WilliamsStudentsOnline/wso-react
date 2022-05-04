@@ -91,7 +91,7 @@ const DormtrakReviewForm = ({ currUser, navigateTo, route, wso }) => {
         updateThermostat(reviewData.thermostatAccess);
         updateWifi(reviewData.wifi);
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 

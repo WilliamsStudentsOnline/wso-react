@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import DormtrakRanking from "./DormtrakRanking";
 import DormtrakRecentComments from "./DormtrakRecentComments";
+import Button from "../../Components";
 
 // Redux imports
 import { connect } from "react-redux";
@@ -14,25 +15,36 @@ import { Link } from "react-router5";
 
 const DormtrakHome = ({ currUser, navigateTo, wso }) => {
   const [reviews, updateReviews] = useState(null);
-
+  const [userReviewID, updateUserReviewID] = useState(null);
   useEffect(() => {
     let isMounted = true;
-
     const loadReviews = async () => {
-      const queryParams = {
+      const reviewQueryParams = {
         limit: 10,
         preload: ["dormRoom", "dorm"],
         commented: true,
       };
+      const currentUserReviewQueryParams = {
+        userID: currUser.id,
+        dormRoomID: currUser.dormRoomID,
+      };
       try {
         const dormReviewResponse = await wso.dormtrakService.listReviews(
-          queryParams
+          reviewQueryParams
+        );
+        const currentUserReviewResponse = await wso.dormtrakService.listReviews(
+          currentUserReviewQueryParams
         );
         if (isMounted) {
           updateReviews(dormReviewResponse.data);
+          if (currentUserReviewResponse.data.length > 0) {
+            updateUserReviewID(currentUserReviewResponse.data[0].id);
+          } else {
+            updateUserReviewID(null);
+          }
         }
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 
@@ -43,12 +55,46 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
     };
   }, [navigateTo, wso]);
 
+  const deleteHandler = async (reviewID) => {
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    const confirmDelete = confirm("Are you sure?");
+    if (!confirmDelete) return;
+
+    try {
+      await wso.dormtrakService.deleteReview(reviewID);
+      updateReviews(reviews.filter((review) => review.id !== reviewID));
+      updateUserReviewID(null);
+    } catch (error) {
+      // eslint-disable-next-line no-empty
+    }
+  };
+
   // Link to survey.
   const surveyLink = () => {
     if (currUser.dormRoomID) {
-      return (
+      return userReviewID ? (
+        <p>
+          <Button
+            onClick={() =>
+              navigateTo("dormtrak.editReview", {
+                reviewID: userReviewID,
+              })
+            }
+            className="inline-button"
+          >
+            Edit
+          </Button>
+
+          <Button
+            onClick={() => deleteHandler(userReviewID)}
+            className="inline-button"
+          >
+            Delete
+          </Button>
+        </p>
+      ) : (
         <Link routeName="dormtrak.newReview">
-          <button type="button">Click here to review your dorm room!</button>
+          <button type="button">Review Dorm Room</button>
         </Link>
       );
     }
@@ -84,6 +130,7 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
         </section>
         <section>
           <DormtrakRecentComments
+            updateUserReviewID={updateUserReviewID}
             abridged
             currUser={currUser}
             reviews={reviews}

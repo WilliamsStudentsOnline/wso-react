@@ -53,7 +53,7 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
           updateUnixID(ephmatchProfile.user.unixID);
         }
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("error", { error }, { replace: true });
       }
     };
 
