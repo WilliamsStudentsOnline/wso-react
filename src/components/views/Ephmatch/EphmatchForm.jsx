@@ -41,7 +41,7 @@ const EphmatchForm = ({
         <option value="fun">Fun</option>
         <option value="casual">Something Casual</option>
         <option value="love">Love</option>
-        <option value="open">(Open To) Anything</option>
+        {/* <option value="open">(Open To) Anything</option> */}
       </select>
       <br />
       <strong>Seen Only by Your Matches:</strong>

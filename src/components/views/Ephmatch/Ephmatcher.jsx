@@ -148,7 +148,7 @@ const Ephmatcher = ({
           textAlign: "center",
         }}
       >
-        <em>Looking for {text}</em>
+        <em>I&apos;m looking for {text}</em>
       </div>
     );
   };
