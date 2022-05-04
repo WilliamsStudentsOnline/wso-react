@@ -13,6 +13,8 @@ const EphmatchForm = ({
   updateMessagingPlatform,
   messagingUsername,
   updateMessagingUsername,
+  lookingFor,
+  updateLookingFor,
   unix,
 }) => {
   return (
@@ -26,6 +28,21 @@ const EphmatchForm = ({
         placeholder="Add a short description to your profile to help others know you
       better!"
       />
+      <br />
+      <strong>Looking For:</strong>
+      <select
+        id="lookingFor"
+        value={lookingFor}
+        onChange={(event) => updateLookingFor(event.target.value)}
+        style={{ marginBottom: "0" }}
+      >
+        <option value="NONE">Leave field blank</option>
+        <option value="friends">Friends</option>
+        <option value="fun">Fun</option>
+        <option value="casual">Something Casual</option>
+        <option value="love">Love</option>
+        <option value="open">(Open To) Anything</option>
+      </select>
       <br />
       <strong>Seen Only by Your Matches:</strong>
       <br />
@@ -89,11 +106,13 @@ EphmatchForm.propTypes = {
   matchMessage: PropTypes.string,
   messagingPlatform: PropTypes.string,
   messagingUsername: PropTypes.string,
+  lookingFor: PropTypes.string,
   unix: PropTypes.string,
   updateDescription: PropTypes.func.isRequired,
   updateMatchMessage: PropTypes.func.isRequired,
   updateMessagingPlatform: PropTypes.func.isRequired,
   updateMessagingUsername: PropTypes.func.isRequired,
+  updateLookingFor: PropTypes.func.isRequired,
 };
 
 EphmatchForm.defaultProps = {
@@ -102,6 +121,7 @@ EphmatchForm.defaultProps = {
   matchMessage: "",
   messagingPlatform: "NONE",
   messagingUsername: "",
+  lookingFor: "NONE",
   unix: "",
 };
 

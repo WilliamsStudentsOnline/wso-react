@@ -117,6 +117,41 @@ const Ephmatcher = ({
     );
   };
 
+  const createLookingForField = () => {
+    const { lookingFor } = ephmatcherProfile;
+
+    let text;
+    switch (lookingFor) {
+      case "friends":
+        text = "friends";
+        break;
+      case "fun":
+        text = "fun";
+        break;
+      case "casual":
+        text = "something casual";
+        break;
+      case "love":
+        text = "love";
+        break;
+      case "open":
+        text = "anything";
+        break;
+      default:
+        text = "n/A";
+    }
+
+    return (
+      <div
+        style={{
+          borderTop: "2px  solid #C86914",
+        }}
+      >
+        <em>Looking for {text}</em>
+      </div>
+    );
+  };
+
   const renderPhoto = () => {
     if (userPhoto)
       return (
@@ -137,7 +172,13 @@ const Ephmatcher = ({
     return <Photo height="300px" width="100%" />;
   };
 
-  const { description, id, relation, matchMessage } = ephmatcherProfile;
+  const {
+    description,
+    id,
+    relation,
+    matchMessage,
+    lookingFor,
+  } = ephmatcherProfile;
 
   return (
     <aside
@@ -165,6 +206,7 @@ const Ephmatcher = ({
           {userTags()}
           {matched && createMessageField()}
           {description && <div>{description}</div>}
+          {lookingFor && createLookingForField()}
           {matched && matchMessage && (
             <div className="match-message">{matchMessage}</div>
           )}

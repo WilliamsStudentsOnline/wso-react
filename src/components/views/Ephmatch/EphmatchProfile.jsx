@@ -18,6 +18,7 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
   const [matchMessage, updateMatchMessage] = useState("");
   const [messagingPlatform, updateMessagingPlatform] = useState("NONE");
   const [messagingUsername, updateMessagingUsername] = useState("");
+  const [lookingFor, updateLookingFor] = useState("NONE");
   const [unixID, updateUnixID] = useState("");
   const [photo, updatePhoto] = useState(null);
   const [errors, updateErrors] = useState([]);
@@ -46,6 +47,9 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
               : "NONE"
           );
           updateMessagingUsername(ephmatchProfile.messagingUsername);
+          updateLookingFor(
+            ephmatchProfile.lookingFor ? ephmatchProfile.lookingFor : "NONE"
+          );
           updateUnixID(ephmatchProfile.user.unixID);
         }
       } catch (error) {
@@ -71,6 +75,7 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
       messagingPlatform,
       messagingUsername:
         messagingUsername === "NONE" ? null : messagingUsername,
+      lookingFor,
     };
 
     try {
@@ -99,6 +104,7 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
     matchMessage,
     messagingPlatform,
     messagingUsername,
+    lookingFor,
   };
 
   const dummyEphmatcher = profile && {
@@ -118,10 +124,12 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
             matchMessage={matchMessage}
             messagingPlatform={messagingPlatform}
             messagingUsername={messagingUsername}
+            lookingFor={lookingFor}
             updateDescription={updateDescription}
             updateMatchMessage={updateMatchMessage}
             updateMessagingPlatform={updateMessagingPlatform}
             updateMessagingUsername={updateMessagingUsername}
+            updateLookingFor={updateLookingFor}
             unix={unixID}
           >
             <Errors errors={errors} />

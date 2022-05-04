@@ -19,6 +19,7 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
   const [matchMessage, updateMatchMessage] = useState("");
   const [messagingPlatform, updateMessagingPlatform] = useState("NONE");
   const [messagingUsername, updateMessagingUsername] = useState("");
+  const [lookingFor, updateLookingFor] = useState("NONE");
   const [unixID, updateUnixID] = useState("");
 
   const [updated, setUpdated] = useState(false);
@@ -48,6 +49,11 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
               : "NONE"
           );
           updateMessagingUsername(ownEphmatchProfile.data.messagingUsername);
+          updateLookingFor(
+            ownEphmatchProfile.data.lookingFor
+              ? ownEphmatchProfile.data.lookingFor
+              : "NONE"
+          );
         }
       } catch (error) {
         if (error.errorCode === 404) {
@@ -90,6 +96,7 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
       messagingPlatform,
       messagingUsername:
         messagingUsername === "NONE" ? null : messagingUsername,
+      lookingFor,
     };
 
     try {
@@ -128,6 +135,7 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
     matchMessage,
     messagingPlatform,
     messagingUsername,
+    lookingFor,
   };
 
   return (
@@ -149,10 +157,12 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
             matchMessage={matchMessage}
             messagingPlatform={messagingPlatform}
             messagingUsername={messagingUsername}
+            lookingFor={lookingFor}
             updateDescription={updateDescription}
             updateMatchMessage={updateMatchMessage}
             updateMessagingPlatform={updateMessagingPlatform}
             updateMessagingUsername={updateMessagingUsername}
+            updateLookingFor={updateLookingFor}
             unix={unixID}
           >
             <h3>Create your Ephmatch Profile</h3>
