@@ -237,6 +237,19 @@ const Course = ({
     );
   };
 
+  const catalogLink = () => {
+    const baseCatalogLink = "https://catalog.williams.edu";
+
+    return (
+      <a
+        href={`${baseCatalogLink}/${course.department}/detail/?strm=${course.semID}&cn=${course.number}&crsid=${course.courseID}&req_year=0`}
+        style={{ color: "rebeccapurple" }}
+      >
+        View Catalog Information
+      </a>
+    );
+  };
+
   const clickExpand = () => {
     // Addition of &nbsp; prevents div collapse.
     return (
@@ -318,6 +331,9 @@ const Course = ({
         onClick={courseBodyClick}
         role="presentation"
       >
+        {catalogLink()}
+        <br />
+        <br />
         {bookstoreLink()}
         <br />
         <br />
