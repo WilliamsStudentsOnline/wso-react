@@ -15,34 +15,13 @@ import { Link } from "react-router5";
 import FactrakTopProfs from "./FactrakTopProfs";
 
 const FactrakRankings = ({ navigateTo, token, wso, route }) => {
-  const [metric, updateMetric] = useState("");
   const [areas, updateAreas] = useState(null);
-
-  // db_metric names to UI names
-  const metricSwitch = (key) => {
-    switch (key) {
-      case "approachability":
-        return "Approachability";
-      case "course_workload":
-        return "Course Workload";
-      case "lead_lecture":
-        return "Lecture Leading";
-      case "outside_helpfulness":
-        return "Outside Helpfulness";
-      case "promote_discussion":
-        return "Discussion Promotion";
-      default:
-        return "Overall Recommendation";
-    }
-  };
 
   useEffect(() => {
     // Loads in the departments
     const loadAreas = async () => {
-      updateMetric(metricSwitch(route.params.sortBy));
       try {
         const areasOfStudyResponse = await wso.factrakService.listAreasOfStudy();
-
         const areasOfStudy = areasOfStudyResponse.data;
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
       } catch (error) {
@@ -60,89 +39,6 @@ const FactrakRankings = ({ navigateTo, token, wso, route }) => {
   return (
     <article className="dormtrak">
       <div className="container">
-        <header>
-          <div className="page-head">
-            <h3>
-              Ranking by:&nbsp;
-              {metric}
-            </h3>
-            <ul>
-              <li>
-                <Link
-                  routeName="factrak.rankings"
-                  routeParams={{
-                    aos: route.params.aos,
-                    sortBy: "approachability",
-                  }}
-                  onClick={() => updateMetric("Approachability")}
-                >
-                  Approachability
-                </Link>
-              </li>
-              <li>
-                <Link
-                  routeName="factrak.rankings"
-                  routeParams={{
-                    aos: route.params.aos,
-                    sortBy: "course_workload",
-                  }}
-                  onClick={() => updateMetric("Course Workload")}
-                >
-                  Course Workload
-                </Link>
-              </li>
-              <li>
-                <Link
-                  routeName="factrak.rankings"
-                  routeParams={{
-                    aos: route.params.aos,
-                    sortBy: "lead_lecture",
-                  }}
-                  onClick={() => updateMetric("Leacture Leading")}
-                >
-                  Lecture Leading
-                </Link>
-              </li>
-              <li>
-                <Link
-                  routeName="factrak.rankings"
-                  routeParams={{
-                    aos: route.params.aos,
-                    sortBy: "outside_helpfulness",
-                  }}
-                  onClick={() => updateMetric("Outside Helpfulness")}
-                >
-                  Outside Helpfulness
-                </Link>
-              </li>
-              <li>
-                <Link
-                  routeName="factrak.rankings"
-                  routeParams={{
-                    aos: route.params.aos,
-                    sortBy: "promote_discussion",
-                  }}
-                  onClick={() => updateMetric("Discussion Promotion")}
-                >
-                  Discussion Promotion
-                </Link>
-              </li>
-              <li>
-                <Link
-                  routeName="factrak.rankings"
-                  routeParams={{
-                    aos: route.params.aos,
-                    sortBy: "would_take_another",
-                  }}
-                  onClick={() => updateMetric("Overall Recommendation")}
-                >
-                  Overall Recommendation
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </header>
-
         <aside className="sidebar">
           <article className="home">
             <h3>Departments</h3>
