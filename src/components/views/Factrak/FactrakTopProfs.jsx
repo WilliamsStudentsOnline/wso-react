@@ -16,14 +16,7 @@ import { createRouteNodeSelector, actions } from "redux-router5";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { Link } from "react-router5";
 
-const FactrakTopProfs = ({
-  currUser,
-  navigateTo,
-  token,
-  wso,
-  route,
-  // metric,
-}) => {
+const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
   const [profs, updateProfs] = useState(null);
   const [metric, updateMetric] = useState("avgWouldTakeAnother");
   const [ascending, updateAscending] = useState(false);
@@ -45,6 +38,12 @@ const FactrakTopProfs = ({
         return "would_take_another";
     }
   };
+
+  useEffect(() => {
+    if (profs) {
+      updateProfs(profs.reverse());
+    }
+  }, [ascending, profs]);
 
   useEffect(() => {
     const loadProfs = async () => {
@@ -86,7 +85,7 @@ const FactrakTopProfs = ({
     if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
       loadProfs();
     }
-  }, [navigateTo, token, wso, route, metric, ascending]);
+  }, [navigateTo, token, wso, route, metric]);
 
   // Generates a row containing the prof information.
   const generateProfRow = (prof) => {
