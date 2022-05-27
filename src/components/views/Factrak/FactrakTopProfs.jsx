@@ -47,7 +47,6 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
       };
 
       if (route.params.aos) {
-        // updateAos(route.params.aos);
         params.areaOfStudyID = route.params.aos;
       }
 
