@@ -40,12 +40,6 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
   };
 
   useEffect(() => {
-    if (profs) {
-      updateProfs(profs.reverse());
-    }
-  }, [ascending, profs]);
-
-  useEffect(() => {
     const loadProfs = async () => {
       const params = {
         metric: metricSwitch(metric), // default metric
@@ -53,8 +47,8 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
       };
 
       if (route.params.aos) {
-        const aosID = route.params.aos;
-        params.areaOfStudyID = aosID;
+        // updateAos(route.params.aos);
+        params.areaOfStudyID = route.params.aos;
       }
 
       // Loads in professors and the ratings for each one
@@ -85,7 +79,7 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
     if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
       loadProfs();
     }
-  }, [navigateTo, token, wso, route, metric]);
+  }, [navigateTo, token, wso, route.params.aos, metric]);
 
   // Generates a row containing the prof information.
   const generateProfRow = (prof) => {
@@ -149,6 +143,7 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
                     aos: route.params.aos,
                   }}
                   onClick={() => {
+                    updateProfs(profs.reverse());
                     updateAscending(!ascending);
                   }}
                   style={{
