@@ -66,7 +66,7 @@ const hasNecessaryTokenLevel = (token, routeName) => {
  * @param router - The main router controlling the route transitions
  * @param store - The main Redux store.
  */
-export default (router, store) => {
+const configureRouterPermissions = (router, store) => {
   Object.keys(routePermissions).forEach((key) => {
     router.canActivate(key, () => (toState, fromState, done) => {
       const token = store.getState().authState.apiToken;
@@ -100,3 +100,5 @@ export default (router, store) => {
     return true;
   });
 };
+
+export default configureRouterPermissions;

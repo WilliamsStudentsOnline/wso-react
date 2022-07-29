@@ -1,4 +1,4 @@
-export default [
+const routes = [
   { name: "home", path: "/" },
   {
     name: "bulletins",
@@ -102,3 +102,5 @@ export default [
   { name: "500", path: "/500" },
   { name: "error", path: "/error" },
 ];
+
+export default routes;
