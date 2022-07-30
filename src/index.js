@@ -89,7 +89,19 @@ const saveUserData = (store) => {
 // const router = configureRouter();
 // initializeAnalytics(router);
 
-const store = configureStore({ reducer: rootReducer });
+const store = configureStore({
+  reducer: rootReducer,
+  // this is to disable React Toolkit's error message "A non-serializable value was detected in the state"
+  // TODO: stop using non-serializable object `wso` and `authState.wso`
+  // Read https://redux.js.org/faq/organizing-state#can-i-put-functions-promises-or-other-non-serializable-items-in-my-store-state
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActionPaths: ["wso", "gapi"],
+        ignoredPaths: ["authState.wso", "schedulerUtilState.gapi"],
+      },
+    }),
+});
 store.subscribe(throttle(() => saveUserData(store), 1000));
 
 // setUpRouterPermissions(router, store);
