@@ -12,7 +12,8 @@ import "typeface-source-sans-pro";
 // Redux/store imports
 import { Provider } from "react-redux";
 import { saveState } from "./stateStorage";
-import configureStore from "./store";
+import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "./reducers";
 
 // Router imports
 import { RouterProvider } from "react-router5";
@@ -88,7 +89,7 @@ const saveUserData = (store) => {
 const router = configureRouter();
 initializeAnalytics(router);
 
-const store = configureStore(router);
+const store = configureStore({ reducer: rootReducer });
 store.subscribe(throttle(() => saveUserData(store), 1000));
 
 setUpRouterPermissions(router, store);
