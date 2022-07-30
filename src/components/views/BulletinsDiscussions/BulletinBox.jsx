@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
-import { Link } from "react-router5";
+import { Link } from "react-router-dom";
 import {
   bulletinTypeRide,
   bulletinTypeJob,
@@ -102,7 +102,7 @@ const BulletinBox = ({ wso, typeWord }) => {
     if (type === discussionType) {
       return (
         <div className="bulletin-title">
-          <Link className="bulletin-link" routeName="discussions">
+          <Link className="bulletin-link" to="discussions">
             {typeWord}
           </Link>
         </div>
@@ -111,11 +111,7 @@ const BulletinBox = ({ wso, typeWord }) => {
 
     return (
       <div className="bulletin-title">
-        <Link
-          className="bulletin-link"
-          routeName="bulletins"
-          routeParams={{ type }}
-        >
+        <Link className="bulletin-link" to={`bulletins/${type}`}>
           {typeWord}
         </Link>
       </div>
@@ -144,21 +140,14 @@ const BulletinBox = ({ wso, typeWord }) => {
                   {type === discussionType ? (
                     <Link
                       className="thread-link"
-                      routeName="discussions.show"
-                      routeParams={{
-                        discussionID: thread.id,
-                      }}
+                      to={`/discussions/${thread.id}`}
                     >
                       {threadTitle(thread)}
                     </Link>
                   ) : (
                     <Link
                       className="thread-link"
-                      routeName="bulletins.show"
-                      routeParams={{
-                        type,
-                        bulletinID: thread.id,
-                      }}
+                      to={`/bulletins/${type}/${thread.id}`}
                     >
                       {threadTitle(thread)}
                     </Link>

@@ -1,6 +1,6 @@
 // React imports
 import React, { useState } from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 
 // Component imports
 import "./stylesheets/Homepage.css";
@@ -8,9 +8,11 @@ import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 
 // Redux Imports
 import { connect } from "react-redux";
-import { actions } from "redux-router5";
+import { useNavigate } from "react-router-dom";
+// import { actions } from "redux-router5";
 
-const Homepage = ({ navigateTo }) => {
+const Homepage = () => {
+  const navigateTo = useNavigate();
   const bulletinTypeWords = [
     "Discussions",
     "Announcements",
@@ -24,7 +26,7 @@ const Homepage = ({ navigateTo }) => {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    navigateTo("facebook", { q: query }, { reload: true });
+    navigateTo(`/facebook?q=${query}`, { reload: true });
   };
 
   return (
@@ -72,9 +74,9 @@ const Homepage = ({ navigateTo }) => {
   );
 };
 
-Homepage.propTypes = { navigateTo: PropTypes.func.isRequired };
+// Homepage.propTypes = { navigateTo: PropTypes.func.isRequired };
 
-Homepage.defaultProps = {};
+// Homepage.defaultProps = {};
 
 // TODO: is this a chore of router5 that should be removed?
 const mapDispatchToProps = (dispatch) => ({

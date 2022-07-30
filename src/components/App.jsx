@@ -186,12 +186,31 @@ const App = ({
     <Layout>
       <Suspense fallback={null}>
         <Routes>
+          {/* TODO: proper scope checking during routing (router-permissions.js) */}
+          {/* TODO: Google Analytics */}
           <Route index element={<Homepage />} />
-          <Route path="about" element={<About />} />
-          <Route path="schedulecourses" element={<Scheduler />} />
+          {/* Various modules */}
           <Route path="facebook/*" element={<FacebookMain />} />
-          {/* TODO: Add more routes */}
-          {/* catch-all 404 page */}
+          <Route path="bulletins/:type/*" element={<BulletinMain />} />
+          <Route path="discussions/*" element={<DiscussionMain />} />
+          <Route path="factrak/*" element={<FactrakMain />} />
+          <Route path="dormtrak/*" element={<DormtrakMain />} />
+          <Route path="goodrich/*" element={<GoodrichMain />} />
+          <Route path="ephmatch/*" element={<EphmatchMain />} />
+          <Route path="schedulecourses" element={<Scheduler />} />
+          {/* Static Content Pages */}
+          <Route path="about" element={<About />} />
+          <Route path="faq" element={<FAQ />} />
+          <Route
+            path="mobile-privacy-policy"
+            element={<MobilePrivacyPolicy />}
+          />
+          <Route path="login" element={<Login />} />
+          {/* Error-handling Pages */}
+          <Route path="403" element={<Error403 />} />
+          <Route path="404" element={<Error404 />} />
+          <Route path="500" element={<Error500 />} />
+          <Route path="error" element={<Error />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
       </Suspense>

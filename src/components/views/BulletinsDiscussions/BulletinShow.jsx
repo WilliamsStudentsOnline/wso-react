@@ -6,13 +6,15 @@ import { Line, Paragraph } from "../../Skeleton";
 // Redux and Routing imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
-import { createRouteNodeSelector, actions } from "redux-router5";
 
 // Additional Imports
-import { Link } from "react-router5";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { bulletinTypeRide } from "../../../constants/general";
 
-const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
+const BulletinShow = ({ currUser, wso }) => {
+  const params = useParams();
+  const navigateTo = useNavigate();
+
   const [bulletin, updateBulletin] = useState(null);
 
   const deleteHandler = async () => {
@@ -26,38 +28,36 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
       } else {
         await wso.bulletinService.deleteRide(bulletin.id);
       }
-      navigateTo("bulletins", {
-        type: bulletin.type || bulletinTypeRide,
-      });
+      navigateTo(`/bulletins/${bulletin.type || bulletinTypeRide}`);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
   useEffect(() => {
     const loadBulletin = async () => {
-      if (!route.params.bulletinID) return;
+      if (!params.bulletinID) return;
 
       try {
         let bulletinResponse;
-        if (route.params.type === bulletinTypeRide) {
+        if (params.type === bulletinTypeRide) {
           bulletinResponse = await wso.bulletinService.getRide(
-            route.params.bulletinID
+            params.bulletinID
           );
         } else {
           bulletinResponse = await wso.bulletinService.getBulletin(
-            route.params.bulletinID
+            params.bulletinID
           );
         }
 
         updateBulletin(bulletinResponse.data);
       } catch (error) {
-        if (error.errorCode === 404) navigateTo("404", {}, { replace: true });
+        if (error.errorCode === 404) navigateTo("/404", { replace: true });
       }
     };
 
     loadBulletin();
-  }, [navigateTo, route.params.bulletinID, route.params.type, wso]);
+  }, [params.bulletinID, params.type, wso]);
 
   const dateOptions = { year: "numeric", month: "long", day: "numeric" };
 
@@ -92,10 +92,7 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
   const generateBulletinStarter = () => {
     if (bulletin.userID && bulletin.user?.name) {
       return (
-        <Link
-          routeName="facebook.users"
-          routeParams={{ userID: bulletin.userID }}
-        >
+        <Link to={`facebook/users/${bulletin.userID}`}>
           {bulletin.user.name}
         </Link>
       );
@@ -112,12 +109,7 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
       return (
         <button
           type="button"
-          onClick={() =>
-            navigateTo("bulletins.edit", {
-              bulletinID: bulletin.id,
-              type: route.params.type,
-            })
-          }
+          onClick={() => navigateTo("edit")}
           className="inline-button"
         >
           Edit
@@ -195,8 +187,6 @@ const BulletinShow = ({ currUser, route, navigateTo, wso }) => {
 
 BulletinShow.propTypes = {
   currUser: PropTypes.object,
-  route: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -205,18 +195,12 @@ BulletinShow.defaultProps = {
 };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("bulletins.show");
-
   return (state) => ({
     currUser: getCurrUser(state),
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(BulletinShow);

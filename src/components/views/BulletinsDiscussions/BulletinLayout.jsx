@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // Redux and Routing imports
-import { Link } from "react-router5";
+import { Link } from "react-router-dom";
 
 // Additional imports
 import { capitalize } from "../../../lib/general";
@@ -22,11 +22,7 @@ const BulletinLayout = ({ children, type }) => {
   const bulletinLinkGenerator = (bulletinType, title) => {
     return (
       <li>
-        <Link
-          routeName="bulletins"
-          routeParams={{ type: bulletinType }}
-          routeOptions={{ reload: true }}
-        >
+        <Link to={`/bulletins/${bulletinType}`} reloadDocument>
           {title}
         </Link>
       </li>
@@ -38,7 +34,7 @@ const BulletinLayout = ({ children, type }) => {
       <header>
         <div className="page-head">
           <h1>
-            <Link routeName="bulletins" routeParams={{ type }}>
+            <Link to={`/bulletins/${type}`}>
               {type === bulletinTypeLostAndFound
                 ? "Lost + Found"
                 : capitalize(type)}
@@ -46,7 +42,7 @@ const BulletinLayout = ({ children, type }) => {
           </h1>
           <ul>
             <li>
-              <Link routeName="bulletins.new" routeParams={{ type }}>
+              <Link to={`/bulletins/${type}/new`}>
                 {type === bulletinTypeLostAndFound
                   ? "New Lost + Found Post"
                   : `New ${type} Post`}

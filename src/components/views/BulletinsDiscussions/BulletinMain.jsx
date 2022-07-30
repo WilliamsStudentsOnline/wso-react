@@ -1,6 +1,5 @@
 // React imports
 import React from "react";
-import PropTypes from "prop-types";
 import BulletinLayout from "./BulletinLayout";
 import BulletinIndex from "./BulletinIndex";
 import BulletinShow from "./BulletinShow";
@@ -10,7 +9,7 @@ import BulletinForm from "./BulletinForm";
 import { connect } from "react-redux";
 
 // External Imports
-import { createRouteNodeSelector } from "redux-router5";
+import { Routes, Route, useParams } from "react-router-dom";
 import {
   bulletinTypeLostAndFound,
   bulletinTypeJob,
@@ -19,29 +18,12 @@ import {
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
 import { getAPIToken } from "../../../selectors/auth";
+import Error404 from "../Errors/Error404";
 
-const BulletinMain = ({ route }) => {
-  const BulletinBody = (bulletinType) => {
-    const splitRoute = route.name.split(".");
+const BulletinMain = () => {
+  const params = useParams();
 
-    if (splitRoute.length < 2) {
-      return <BulletinIndex type={bulletinType} />;
-    }
-
-    switch (splitRoute[1]) {
-      case "show":
-        return <BulletinShow />;
-      case "new":
-      case "edit":
-        return <BulletinForm />;
-      default:
-        return <BulletinIndex type={bulletinType} />;
-    }
-  };
-
-  // Check that this is a valid route with 'type' params
-  if (route.params && route.params.type) {
-    // Check that the type is valid
+  if (params.type) {
     const validBulletinTypes = [
       bulletinTypeLostAndFound,
       bulletinTypeRide,
@@ -50,30 +32,30 @@ const BulletinMain = ({ route }) => {
       bulletinTypeAnnouncement,
     ];
 
-    if (validBulletinTypes.indexOf(route.params.type) !== -1) {
+    if (validBulletinTypes.indexOf(params.type) !== -1) {
+      // if contains param type and type is valid, then return content
       return (
-        <BulletinLayout type={route.params.type}>
-          {BulletinBody(route.params.type)}
+        <BulletinLayout type={params.type}>
+          <Routes>
+            <Route index element={<BulletinIndex type={params.type} />} />
+            <Route path=":bulletinID" element={<BulletinShow />} />
+            {/* TODO: pass in a boolean prop to tell BulletinForm if it's in edit mode */}
+            <Route path=":bulletinID/edit" element={<BulletinForm />} />
+            <Route path="new" element={<BulletinForm />} />
+            <Route path="*" element={<Error404 />} />
+          </Routes>
         </BulletinLayout>
       );
     }
   }
 
-  return null;
+  // otherwise, return 404 page
+  return <Error404 />;
 };
-
-BulletinMain.propTypes = {
-  route: PropTypes.object.isRequired,
-};
-
-BulletinMain.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("bulletins");
-
   return (state) => ({
     token: getAPIToken(state),
-    ...routeNodeSelector(state),
   });
 };
 

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 // Redux/Routing imports
 import { connect } from "react-redux";
 import { doUpdateIdentityToken, doUpdateRemember } from "../actions/auth";
-import { actions, createRouteNodeSelector } from "redux-router5";
+// import { actions, createRouteNodeSelector } from "redux-router5";
 
 // External imports
 import {
@@ -159,18 +159,18 @@ Login.defaultProps = {
 };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("login");
+  // const routeNodeSelector = createRouteNodeSelector("login");
   return (state) => ({
     currUser: getCurrUser(state),
     scopes: getScopes(state),
     tokenLevel: getTokenLevel(state),
     wso: getWSO(state),
-    ...routeNodeSelector(state),
+    // ...routeNodeSelector(state),
   });
 };
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
+  // navigateTo: (location, params, opts) =>
+  //   dispatch(actions.navigateTo(location, params, opts)),
   updateIdenToken: (token) => dispatch(doUpdateIdentityToken(token)),
   updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
 });

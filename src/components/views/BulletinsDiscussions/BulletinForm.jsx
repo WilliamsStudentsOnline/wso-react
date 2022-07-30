@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 // Redux and routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { createRouteNodeSelector, actions } from "redux-router5";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Additional Imports
 import DatePicker from "react-date-picker";
@@ -16,7 +16,10 @@ import {
 /// Keep this after the "react-date-picker" import so that this css style will take priority.
 import "../../stylesheets/DatePicker.css";
 
-const BulletinForm = ({ wso, navigateTo, route }) => {
+const BulletinForm = ({ wso }) => {
+  const params = useParams();
+  const navigateTo = useNavigate();
+
   // For non-rides bulletins
   const [title, updateTitle] = useState("");
 
@@ -37,20 +40,20 @@ const BulletinForm = ({ wso, navigateTo, route }) => {
       let bulletinResponse;
 
       try {
-        if (route.params.type === bulletinTypeRide) {
+        if (params.type === bulletinTypeRide) {
           bulletinResponse = await wso.bulletinService.getRide(
-            route.params.bulletinID
+            params.bulletinID
           );
         } else {
           bulletinResponse = await wso.bulletinService.getBulletin(
-            route.params.bulletinID
+            params.bulletinID
           );
         }
 
         const bulletinData = bulletinResponse.data;
 
         updateBody(bulletinData.body);
-        if (route.params.type === bulletinTypeRide) {
+        if (params.type === bulletinTypeRide) {
           updateSource(bulletinData.source);
           updateDestination(bulletinData.destination);
           updateOffer(bulletinData.offer);
@@ -62,27 +65,30 @@ const BulletinForm = ({ wso, navigateTo, route }) => {
       } catch (error) {
         // We're only expecting 403 errors here
         if (error.errorCode === 403) {
-          navigateTo("403", {}, { replace: true });
+          navigateTo("/403", { replace: true });
         }
         // In any other error, the skeleton will just continue displaying.
       }
     };
 
     // Load Bulletin if it is a proper path
-    if (route.name === "bulletins.edit") {
-      if (route.params.bulletinID) {
-        loadBulletin();
-      } else {
-        navigateTo("404", {}, { replace: true });
-      }
+    // if (route.name === "bulletins.edit") {
+    // TODO: right now we are figuring if edit by whether an ID has been passed in
+    // can we use a prop?
+    if (params.bulletinID) {
+      loadBulletin();
     }
+    //   else {
+    //     navigateTo("404", {}, { replace: true });
+    //   }
+    // }
 
-    if (route.params.type) {
-      updateType(route.params.type);
+    if (params.type) {
+      updateType(params.type);
     } else {
       updateType(bulletinTypeRide);
     }
-  }, [wso, navigateTo, route.name, route.params.bulletinID, route.params.type]);
+  }, [wso, params.bulletinID, params.type]);
 
   // Date picker for the start date of the announcement
   const startDateField = () => {
@@ -127,24 +133,26 @@ const BulletinForm = ({ wso, navigateTo, route }) => {
           date: dateAdjusted,
         };
         response =
-          route.name === "bulletins.edit"
+          // TODO: right now we are figuring if edit by whether an ID has been passed in
+          params.bulletinID
             ? await wso.bulletinService.updateRide(
-                route.params.bulletinID,
+                params.bulletinID,
                 rideParams
               )
             : await wso.bulletinService.createRide(rideParams);
       } else {
         const bulletinParams = { type, title, body, startDate };
         response =
-          route.name === "bulletins.edit"
+          // TODO: right now we are figuring if edit by whether an ID has been passed in
+          params.bulletinID
             ? await wso.bulletinService.updateBulletin(
-                route.params.bulletinID,
+                params.bulletinID,
                 bulletinParams
               )
             : await wso.bulletinService.createBulletin(bulletinParams);
       }
 
-      navigateTo("bulletins.show", { type, bulletinID: response.data.id });
+      navigateTo(`/bulletins/${type}/${response.data.id}`);
     } catch (error) {
       updateErrors(error.errors);
     }
@@ -271,24 +279,16 @@ const BulletinForm = ({ wso, navigateTo, route }) => {
 
 BulletinForm.propTypes = {
   wso: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
 };
 
 BulletinForm.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("bulletins");
-
   return (state) => ({
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(BulletinForm);
