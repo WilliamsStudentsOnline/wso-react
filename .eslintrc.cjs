@@ -27,6 +27,17 @@ module.exports = {
     sourceType: "module",
   },
   plugins: ["react", "jest", "prettier", "react-hooks"],
+  "settings": {
+    "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
   rules: {
     "react/forbid-prop-types": ["warn", { forbid: ["any", "array"] }],
     "no-restricted-syntax": "off",
@@ -44,6 +55,16 @@ module.exports = {
     "no-use-before-define": ["error", { functions: false }],
     "no-param-reassign": "off",
     "react/prop-types": "warn",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        js: "never",
+        jsx: "never",
+        ts: "never",
+        tsx: "never",
+      },
+    ],
   },
   overrides: [
     {
