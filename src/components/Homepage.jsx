@@ -76,9 +76,10 @@ Homepage.propTypes = { navigateTo: PropTypes.func.isRequired };
 
 Homepage.defaultProps = {};
 
+// TODO: is this a chore of router5 that should be removed?
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
+  // navigateTo: (location, params, opts) =>
+  //   dispatch(actions.navigateTo(location, params, opts)),
 });
 
 export default connect(null, mapDispatchToProps)(Homepage);

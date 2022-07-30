@@ -16,9 +16,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import rootReducer from "./reducers";
 
 // Router imports
-import { RouterProvider } from "react-router5";
-import configureRouter from "./create-router";
-import setUpRouterPermissions from "./router-permissions";
+import { BrowserRouter } from "react-router-dom";
+// import configureRouter from "./create-router";
+// import setUpRouterPermissions from "./router-permissions";
 
 // Serviceworker import
 import * as serviceWorker from "./serviceWorker";
@@ -86,25 +86,24 @@ const saveUserData = (store) => {
 };
 
 /* Router and Store setup */
-const router = configureRouter();
-initializeAnalytics(router);
+// const router = configureRouter();
+// initializeAnalytics(router);
 
 const store = configureStore({ reducer: rootReducer });
 store.subscribe(throttle(() => saveUserData(store), 1000));
 
-setUpRouterPermissions(router, store);
+// setUpRouterPermissions(router, store);
 
-const wrappedApp = (
-  <Provider store={store}>
-    <RouterProvider router={router}>
-      <App />
-    </RouterProvider>
-  </Provider>
+ReactDOM.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </React.StrictMode>,
+  document.getElementById("root")
 );
-
-router.start(() => {
-  ReactDOM.render(wrappedApp, document.getElementById("root"));
-});
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

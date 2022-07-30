@@ -9,8 +9,9 @@ import { doRemoveCreds } from "../actions/auth";
 
 // External imports
 // Connected Link is the same as link, except it re-renders on route changes
-import { ConnectedLink, Link } from "react-router5";
-import { createRouteNodeSelector } from "redux-router5";
+import { Link } from "react-router-dom";
+// import { ConnectedLink, Link } from "react-router5";
+// import { createRouteNodeSelector } from "redux-router5";
 
 import { removeStateFromStorage } from "../stateStorage";
 import { userTypeStudent } from "../constants/general";
@@ -94,40 +95,40 @@ const Nav = ({ currUser, removeCreds, wso }) => {
             style={{ display: menuVisible ? "block" : "" }}
           >
             <li>
-              <ConnectedLink routeName="home">Home</ConnectedLink>
+              <Link to="/">Home</Link>
             </li>
             <li>
-              <Link routeName="facebook">Facebook</Link>
+              <Link to="facebook">Facebook</Link>
             </li>
             {currUser?.type === userTypeStudent && (
               <>
                 <li>
-                  <Link routeName="factrak">Factrak</Link>
+                  <Link to="factrak">Factrak</Link>
                 </li>
                 <li>
-                  <Link routeName="dormtrak">Dormtrak</Link>
+                  <Link to="dormtrak">Dormtrak</Link>
                 </li>
               </>
             )}
 
             <li>
-              <Link routeName="faq">FAQ</Link>
+              <Link to="faq">FAQ</Link>
             </li>
             <li>
               <a href="/wiki/">Wiki</a>
             </li>
             <li>
-              <Link routeName="about">About</Link>
+              <Link to="about">About</Link>
             </li>
             <li>
-              <Link routeName="scheduler">Course Scheduler</Link>
+              <Link to="schedulecourses">Course Scheduler</Link>
             </li>
             {ephmatchVisibility > 0 && (
               <li>
                 <Link
                   className="ephmatch-link"
                   style={{ color: "#fff238" }}
-                  routeName="ephmatch"
+                  to="ephmatch"
                 >
                   {ephmatchVisibility === 2 ? "Senior " : ""}Ephmatch
                 </Link>
@@ -149,22 +150,20 @@ const Nav = ({ currUser, removeCreds, wso }) => {
             {currUser?.id ? (
               <>
                 <li className="avatar">
-                  <Link
-                    routeName="facebook.users"
-                    routeParams={{ userID: currUser.id }}
-                  >
+                  <Link to={`facebook/users/${currUser.id}`}>
                     <img src={userPhoto} alt="avatar" />
                   </Link>
                 </li>
                 <li>
-                  <Link onClick={() => logout()} routeName="home">
+                  {/* TODO: does React Router Link support onClick? */}
+                  <Link onClick={() => logout()} to="/">
                     Logout
                   </Link>
                 </li>
               </>
             ) : (
               <li>
-                <Link routeName="login">Login</Link>
+                <Link to="login">Login</Link>
               </li>
             )}
           </ul>
@@ -185,13 +184,13 @@ Nav.propTypes = {
 Nav.defaultProps = { currUser: {} /* userScopes: [] */ };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("");
+  // const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
     currUser: getCurrUser(state),
     wso: getWSO(state),
     // userScopes: getScopes(state),
-    ...routeNodeSelector(state),
+    // ...routeNodeSelector(state),
   });
 };
 

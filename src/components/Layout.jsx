@@ -18,6 +18,8 @@ const Layout = ({ children, notice, warning }) => {
       </aside>
 
       {children}
+
+      {/* Bottom right button for feedback */}
       <a
         href="https://forms.gle/NqYdAAbZKPQmPq866"
         className="floating-button-link"
@@ -30,6 +32,7 @@ const Layout = ({ children, notice, warning }) => {
           feedback
         </i>
       </a>
+
       <Footer />
     </div>
   );

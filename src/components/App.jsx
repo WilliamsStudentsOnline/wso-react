@@ -9,7 +9,7 @@ import Homepage from "./Homepage";
 
 // Redux/routing
 import { connect } from "react-redux";
-import { createRouteNodeSelector, actions } from "redux-router5";
+// import { createRouteNodeSelector, actions } from "redux-router5";
 import {
   getWSO,
   getExpiry,
@@ -24,6 +24,8 @@ import {
   doUpdateWSO,
 } from "../actions/auth";
 import { doUpdateSchedulerState } from "../actions/schedulerUtils";
+
+import { Routes, Route } from "react-router-dom";
 
 // Additional Imports
 import { SimpleAuthentication } from "wso-api-client";
@@ -43,11 +45,11 @@ const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
 const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
 const EphmatchMain = lazy(() => import("./views/Ephmatch/EphmatchMain"));
 const GoodrichMain = lazy(() => import("./views/Goodrich/GoodrichMain"));
-const Error404 = lazy(() => import("./views/Errors/Error404.tsx"));
+const Error404 = lazy(() => import("./views/Errors/Error404"));
 const Login = lazy(() => import("./Login"));
 const Error403 = lazy(() => import("./views/Errors/Error403"));
 const Error500 = lazy(() => import("./views/Errors/Error500"));
-const Error = lazy(() => import("./views/Errors/Error.tsx"));
+const Error = lazy(() => import("./views/Errors/Error"));
 const BulletinMain = lazy(() =>
   import("./views/BulletinsDiscussions/BulletinMain")
 );
@@ -58,8 +60,8 @@ const DiscussionMain = lazy(() =>
 const App = ({
   apiToken,
   identityToken,
-  navigateTo,
-  route,
+  // navigateTo,
+  // route,
   updateAPIToken,
   updateIdenToken,
   updateSchedulerState,
@@ -77,7 +79,7 @@ const App = ({
       const newIdenToken = tokenResponse.token;
       updateIdenToken(newIdenToken);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      // navigateTo("error", { error }, { replace: true });
     }
   };
 
@@ -134,7 +136,7 @@ const App = ({
             updateWSO(updatedWSO);
           }
         } catch (error) {
-          navigateTo("error", { error }, { replace: true });
+          // navigateTo("error", { error }, { replace: true });
         }
       } else {
         getIPIdentityToken();
@@ -167,7 +169,7 @@ const App = ({
             }
           }
         } catch (error) {
-          navigateTo("error", { error }, { replace: true });
+          // navigateTo("error", { error }, { replace: true });
         }
       }
     };
@@ -180,52 +182,19 @@ const App = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wso]);
 
-  const mainBody = () => {
-    const topRouteName = route?.name?.split(".")[0];
-
-    switch (topRouteName) {
-      case "home":
-        return <Homepage />;
-      case "about":
-        return <About />;
-      case "scheduler":
-        return <Scheduler />;
-      case "facebook":
-        return <FacebookMain />;
-      case "dormtrak":
-        return <DormtrakMain />;
-      case "factrak":
-        return <FactrakMain />;
-      case "faq":
-        return <FAQ />;
-      case "mobile-privacy-policy":
-        return <MobilePrivacyPolicy />;
-      case "login":
-        return <Login />;
-      case "ephmatch":
-        return <EphmatchMain />;
-      case "bulletins":
-        return <BulletinMain />;
-      case "discussions":
-        return <DiscussionMain />;
-      case "goodrich":
-        return <GoodrichMain />;
-      case "403":
-        return <Error403 />;
-      case "404":
-        return <Error404 />;
-      case "500":
-        return <Error500 />;
-      case "error":
-        return <Error />;
-      default:
-        return <Error404 />;
-    }
-  };
-
   return (
     <Layout>
-      <Suspense fallback={null}>{mainBody()}</Suspense>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route index element={<Homepage />} />
+          <Route path="about" element={<About />} />
+          <Route path="schedulecourses" element={<Scheduler />} />
+          <Route path="facebook/*" element={<FacebookMain />} />
+          {/* TODO: Add more routes */}
+          {/* catch-all 404 page */}
+          <Route path="*" element={<Error404 />} />
+        </Routes>
+      </Suspense>
     </Layout>
   );
 };
@@ -233,8 +202,8 @@ const App = ({
 App.propTypes = {
   apiToken: PropTypes.string.isRequired,
   identityToken: PropTypes.string.isRequired,
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
+  // navigateTo: PropTypes.func.isRequired,
+  // route: PropTypes.object.isRequired,
   updateAPIToken: PropTypes.func.isRequired,
   updateIdenToken: PropTypes.func.isRequired,
   updateSchedulerState: PropTypes.func.isRequired,
@@ -244,20 +213,20 @@ App.propTypes = {
 };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("");
+  // const routeNodeSelector = createRouteNodeSelector("");
 
   return (state) => ({
     apiToken: getAPIToken(state),
     expiry: getExpiry(state),
     identityToken: getIdentityToken(state),
     wso: getWSO(state),
-    ...routeNodeSelector(state),
+    // ...routeNodeSelector(state),
   });
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
+  // navigateTo: (location, params, opts) =>
+  //   dispatch(actions.navigateTo(location, params, opts)),
   removeCreds: () => dispatch(doRemoveCreds()),
   updateAPIToken: (token) => dispatch(doUpdateAPIToken(token)),
   updateSchedulerState: (newState) =>
