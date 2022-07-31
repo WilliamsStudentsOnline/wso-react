@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // Additional imports
-import { Link } from "react-router5";
+import { Link } from "react-router-dom";
 
 const DiscussionLayout = ({ children }) => {
   return (
@@ -11,14 +11,14 @@ const DiscussionLayout = ({ children }) => {
       <header>
         <div className="page-head">
           <h1>
-            <Link routeName="discussions">Discussions</Link>
+            <Link to="/discussions">Discussions</Link>
           </h1>
           <ul>
             <li>
-              <Link routeName="discussions">Home</Link>
+              <Link to="/discussions">Home</Link>
             </li>
             <li>
-              <Link routeName="discussions.new">New</Link>
+              <Link to="/discussions/new">New</Link>
             </li>
           </ul>
         </div>

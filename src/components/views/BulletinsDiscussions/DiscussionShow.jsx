@@ -6,10 +6,13 @@ import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { actions, createRouteNodeSelector } from "redux-router5";
+import { useNavigate, useParams } from "react-router-dom";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
 
-const DiscussionShow = ({ currUser, navigateTo, route, wso }) => {
+const DiscussionShow = ({ currUser, wso }) => {
+  const params = useParams();
+  const navigateTo = useNavigate();
+
   const [posts, updatePosts] = useState(null);
   const [reply, updateReply] = useState("");
   const [discussion, updateDiscussion] = useState(null);
@@ -19,29 +22,29 @@ const DiscussionShow = ({ currUser, navigateTo, route, wso }) => {
     const loadDiscussion = async () => {
       try {
         const discussionResponse = await wso.bulletinService.getDiscussion(
-          route.params.discussionID,
+          params.discussionID,
           ["posts", "postsUsers"]
         );
 
         updateDiscussion(discussionResponse.data);
         updatePosts(discussionResponse.data.posts || []);
       } catch (error) {
-        if (error.errorCode === 404) navigateTo("404", {}, { replace: true });
+        if (error.errorCode === 404) navigateTo("/404", { replace: true });
       }
     };
 
     loadDiscussion();
-  }, [navigateTo, route.params.discussionID, wso]);
+  }, [params.discussionID, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
 
     if (!reply) return;
 
-    const params = { content: reply, discussionID: discussion.id };
+    const reqParams = { content: reply, discussionID: discussion.id };
 
     try {
-      const response = await wso.bulletinService.createPost(params);
+      const response = await wso.bulletinService.createPost(reqParams);
       updatePosts(posts.concat([response.data]));
       updateReply("");
     } catch (error) {
@@ -113,8 +116,6 @@ const DiscussionShow = ({ currUser, navigateTo, route, wso }) => {
 
 DiscussionShow.propTypes = {
   currUser: PropTypes.object,
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -123,18 +124,12 @@ DiscussionShow.defaultProps = {
 };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("discussions");
-
   return (state) => ({
     currUser: getCurrUser(state),
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(DiscussionShow);

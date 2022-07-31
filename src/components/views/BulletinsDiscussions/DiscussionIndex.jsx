@@ -9,11 +9,12 @@ import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { connect } from "react-redux";
 
 // Additional Imports
-import { Link } from "react-router5";
+import { Link, useNavigate } from "react-router-dom";
 import { format } from "timeago.js";
-import { actions } from "redux-router5";
 
-const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
+const DiscussionIndex = ({ currUser, wso }) => {
+  const navigateTo = useNavigate();
+
   const perPage = 20;
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -34,7 +35,7 @@ const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
       updateThreads(discussionsResponse.data);
       updateTotal(discussionsResponse.paginationTotal);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -75,12 +76,7 @@ const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
     return (
       <h5>
         <b>
-          <Link
-            routeName="discussions.show"
-            routeParams={{ discussionID: thread.id }}
-          >
-            {thread.title}
-          </Link>
+          <Link to={`/discussions/threads/${thread.id}`}>{thread.title}</Link>
         </b>
       </h5>
     );
@@ -129,7 +125,7 @@ const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
 
       loadThreads(page);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -207,7 +203,6 @@ const DiscussionIndex = ({ currUser, navigateTo, wso }) => {
 
 DiscussionIndex.propTypes = {
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -218,9 +213,6 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(DiscussionIndex);
