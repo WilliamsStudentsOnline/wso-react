@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // External imports
-import { Link } from "react-router5";
+import { Link } from "react-router-dom";
 
 // Additional Imports
 import { userTypeStudent } from "../../../constants/general";
@@ -78,20 +78,14 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
     <aside key={gridUser.id}>
       <div className="third">
         <div className="profile-photo">
-          <Link
-            routeName="facebook.users"
-            routeParams={{ userID: gridUser.id }}
-          >
+          <Link to={`/facebook/users${gridUser.id}`}>
             <img src={userPhoto} alt="avatar" />
           </Link>
         </div>
       </div>
       <div className="two-third">
         <h4>
-          <Link
-            routeName="facebook.users"
-            routeParams={{ userID: gridUser.id }}
-          >
+          <Link to={`/facebook/users${gridUser.id}`}>
             {gridUser.name} {gridUserClassYear}
           </Link>
         </h4>

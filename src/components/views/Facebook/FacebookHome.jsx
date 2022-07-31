@@ -5,15 +5,17 @@ import PropTypes from "prop-types";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { createRouteNodeSelector, actions } from "redux-router5";
-import { Link } from "react-router5";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 // Additional Imports
 import { userTypeStudent } from "../../../constants/general";
 import PaginationButtons from "../../PaginationButtons";
 import FacebookGridUser from "./FacebookGridUser";
 
-const FacebookHome = ({ wso, route, navigateTo }) => {
+const FacebookHome = ({ wso }) => {
+  const navigateTo = useNavigate();
+  const [searchParams] = useSearchParams();
+
   const [results, updateResults] = useState(null);
   const perPage = 20;
   const [page, updatePage] = useState(0);
@@ -22,14 +24,14 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
 
   // loads the next set of users
   const loadUsers = async (newPage) => {
-    if (!route.params.q) {
+    if (!searchParams?.get("q")) {
       updateResults([]);
       updateTotal(0);
       return;
     }
 
     const queryParams = {
-      q: route.params.q,
+      q: searchParams.get("q"),
       limit: perPage,
       offset: perPage * newPage,
       preload: ["dorm", "office"],
@@ -48,14 +50,14 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
   };
 
   useEffect(() => {
-    if (route.params.q) {
+    if (searchParams?.get("q")) {
       updateResultLoadStatus(true);
     }
     updateTotal(0);
     loadUsers(0);
     updatePage(0);
     // eslint-disable-next-line
-  }, [wso, route.params.q]);
+  }, [wso, searchParams?.get("q")]);
 
   // Handles clicking of the next/previous page
   const clickHandler = (number) => {
@@ -104,10 +106,7 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
               return (
                 <tr key={user.id}>
                   <td>
-                    <Link
-                      routeName="facebook.users"
-                      routeParams={{ userID: user.id }}
-                    >
+                    <Link to={`/facebook/users/${user.id}`}>
                       {user.name} {classYear(user)}
                     </Link>
                   </td>
@@ -155,7 +154,7 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
       );
     }
 
-    if (total === 0 && route.params.q)
+    if (total === 0 && searchParams?.get("q"))
       return (
         <>
           <br />
@@ -164,11 +163,7 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
       );
 
     if (total === 1) {
-      navigateTo(
-        "facebook.users",
-        { userID: results[0].id },
-        { replace: true }
-      );
+      navigateTo(`/facebook/users/${results[0].id}`, { replace: true });
     }
 
     if (total < 10) return GridView();
@@ -196,24 +191,16 @@ const FacebookHome = ({ wso, route, navigateTo }) => {
 
 FacebookHome.propTypes = {
   wso: PropTypes.object.isRequired,
-  route: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
 };
 
 FacebookHome.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("facebook");
-
   return (state) => ({
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookHome);

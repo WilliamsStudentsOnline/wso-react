@@ -6,27 +6,27 @@ import { Line, Photo } from "../../Skeleton";
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
-import { createRouteNodeSelector, actions } from "redux-router5";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 // Additional Imports
-import { ConnectedLink } from "react-router5";
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 
-const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
+const FacebookUser = ({ wso, currUser }) => {
+  const navigateTo = useNavigate();
+  const params = useParams();
+
   const [viewPerson, updateTarget] = useState(null);
   const [userPhoto, updateUserPhoto] = useState(undefined);
 
   useEffect(() => {
     const loadTarget = async () => {
-      if (!route.params.userID) {
-        navigateTo("404", {}, { replace: true });
+      if (!params.userID) {
+        navigateTo("/404", { replace: true });
         return;
       }
 
       try {
-        const targetResponse = await wso.userService.getUser(
-          route.params.userID
-        );
+        const targetResponse = await wso.userService.getUser(params.userID);
 
         updateTarget(targetResponse.data);
         const photoResponse = await wso.userService.getUserLargePhoto(
@@ -36,9 +36,12 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
         updateUserPhoto(URL.createObjectURL(photoResponse));
       } catch (error) {
         // 1404 means user not at williams, 404 means user does not exist in DB
-        if (error.errorCode === 1404 || error.errorCode === 404) {
-          // TODO: display different error (for not on campus)
-          navigateTo("404", { message: "Test" }, { replace: true });
+        if (error.errorCode === 404) {
+          navigateTo("/404", { replace: true });
+          return;
+        }
+        if (error.errorCode === 1404) {
+          navigateTo("/error", { replace: true, state: { error } });
           return;
         }
         updateUserPhoto(null);
@@ -46,7 +49,7 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
     };
 
     loadTarget();
-  }, [wso, route.params.userID, navigateTo]);
+  }, [wso, params.userID]);
 
   // Returns the room/ office information of the user.
   const userRoom = () => {
@@ -211,12 +214,7 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
             {viewPerson.tags.map((tag, index) => {
               return (
                 <li className="view-tag" key={tag.name}>
-                  <ConnectedLink
-                    routeName="facebook"
-                    routeParams={{ q: `tag:"${tag.name}"` }}
-                  >
-                    {tag.name}
-                  </ConnectedLink>
+                  <Link to={`/facebook?q=tag:${tag.name}`}>{tag.name}</Link>
                   {index < viewPerson.tags.length - 1 && <span>,&nbsp;</span>}
                 </li>
               );
@@ -342,26 +340,18 @@ const FacebookUser = ({ wso, currUser, route, navigateTo }) => {
 
 FacebookUser.propTypes = {
   wso: PropTypes.object.isRequired,
-  route: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
 };
 
 FacebookUser.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("facebook.users");
-
   return (state) => ({
     wso: getWSO(state),
     currUser: getCurrUser(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookUser);
