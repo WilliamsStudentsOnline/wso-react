@@ -6,14 +6,17 @@ import HoodTableRow, { HoodTableRowSkeleton } from "./HoodTableRow";
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { createRouteNodeSelector, actions } from "redux-router5";
+import { useNavigate, useParams } from "react-router-dom";
 
-const DormtrakNeighborhood = ({ navigateTo, route, wso }) => {
+const DormtrakNeighborhood = ({ wso }) => {
+  const navigateTo = useNavigate();
+  const params = useParams();
+
   const [neighborhood, updateHoodInfo] = useState(null);
 
   useEffect(() => {
     const loadNeighborhood = async () => {
-      const neighborhoodID = route.params.neighborhoodID;
+      const neighborhoodID = params.neighborhoodID;
 
       try {
         const hoodResponse = await wso.dormtrakService.getNeighborhood(
@@ -21,12 +24,12 @@ const DormtrakNeighborhood = ({ navigateTo, route, wso }) => {
         );
         updateHoodInfo(hoodResponse.data);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: error });
       }
     };
 
     loadNeighborhood();
-  }, [navigateTo, route.params.neighborhoodID, wso]);
+  }, [params.neighborhoodID, wso]);
 
   return (
     <article className="facebook-results">
@@ -61,26 +64,18 @@ const DormtrakNeighborhood = ({ navigateTo, route, wso }) => {
 };
 
 DormtrakNeighborhood.propTypes = {
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
 DormtrakNeighborhood.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("dormtrak.neighborhoods");
-
   return (state) => ({
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(
   mapStateToProps,

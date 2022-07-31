@@ -8,73 +8,74 @@ import DormtrakShow from "./DormtrakShow";
 import DormtrakSearch from "./DormtrakSearch";
 import DormtrakNeighborhood from "./DormtrakNeighborhood";
 import DormtrakReviewForm from "./DormtrakReviewForm";
-import Redirect from "../../Redirect";
+import Error404 from "../Errors/Error404";
 
 // Redux/ Routing imports
 import { connect } from "react-redux";
-import { createRouteNodeSelector } from "redux-router5";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import { getAPIToken, getCurrUser } from "../../../selectors/auth";
 
 // Additional Imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { userTypeStudent } from "../../../constants/general";
 
-const DormtrakMain = ({ currUser, route, token }) => {
-  const dormtrakBody = () => {
+const DormtrakMain = ({ currUser, token }) => {
+  const navigateTo = useNavigate();
+
+  // Checks for scope. Redirects to policy page if user has not agreed to policy
+  const guardedRender = (children) => {
     if (
-      route.name !== "dormtrak.policy" &&
       !containsOneOfScopes(token, [
         scopes.ScopeDormtrak,
         scopes.ScopeDormtrakWrite,
       ])
     ) {
-      return <Redirect to="dormtrak.policy" />;
+      return <Navigate to="/dormtrak/policy" replace />;
     }
-
-    const splitRoute = route.name.split(".");
-    if (splitRoute.length === 1) return <DormtrakHome />;
-
-    switch (splitRoute[1]) {
-      case "policy":
-        return <DormtrakPolicy />;
-      case "neighborhoods":
-        return <DormtrakNeighborhood />;
-      case "dorms":
-        return <DormtrakShow />;
-      case "newReview":
-        return <DormtrakReviewForm edit={false} />;
-      case "editReview":
-        return <DormtrakReviewForm edit />;
-      case "search":
-        return <DormtrakSearch />;
-      default:
-        return <DormtrakHome />;
-    }
+    return children;
   };
 
   // If the user is not a student - navigate to 403
   if (currUser?.type !== userTypeStudent) {
-    return <Redirect to="403" />;
+    navigateTo("/403");
   }
 
-  return <DormtrakLayout>{dormtrakBody()}</DormtrakLayout>;
+  return (
+    <DormtrakLayout>
+      <Routes>
+        <Route index element={guardedRender(<DormtrakHome />)} />
+        <Route path="policy" element={<DormtrakPolicy />} />
+        <Route
+          path="neighborhoods/:neighborhoodID"
+          element={guardedRender(<DormtrakNeighborhood />)}
+        />
+        <Route path="dorms/:dormID" element={guardedRender(<DormtrakShow />)} />
+        <Route
+          path="reviews/new"
+          element={guardedRender(<DormtrakReviewForm edit={false} />)}
+        />
+        <Route
+          path="reviews/edit/:reviewID"
+          element={guardedRender(<DormtrakReviewForm edit />)}
+        />
+        <Route path="search" element={guardedRender(<DormtrakSearch />)} />
+        <Route path="*" element={<Error404 />} />
+      </Routes>
+    </DormtrakLayout>
+  );
 };
 
 DormtrakMain.propTypes = {
   currUser: PropTypes.object.isRequired,
-  route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
 };
 
 DormtrakMain.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("dormtrak");
-
   return (state) => ({
     currUser: getCurrUser(state),
     token: getAPIToken(state),
-    ...routeNodeSelector(state),
   });
 };
 

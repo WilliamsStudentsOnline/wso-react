@@ -5,18 +5,17 @@ import PropTypes from "prop-types";
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { createRouteNodeSelector } from "redux-router5";
+import { Link, useSearchParams } from "react-router-dom";
 
-// Additional imports
-import { Link } from "react-router5";
+const DormtrakSearch = ({ wso }) => {
+  const [searchParams] = useSearchParams();
 
-const DormtrakSearch = ({ wso, route }) => {
   const [dorms, updateDorms] = useState(null);
 
   useEffect(() => {
     const loadDorms = async () => {
       const queryParams = {
-        q: route.params.q ? route.params.q : undefined,
+        q: searchParams?.get("q"),
         preload: ["neighborhood"],
       };
 
@@ -29,7 +28,7 @@ const DormtrakSearch = ({ wso, route }) => {
     };
 
     loadDorms();
-  }, [wso, route.params.q]);
+  }, [wso, searchParams?.get("q")]);
 
   return (
     <article className="facebook-results">
@@ -51,18 +50,12 @@ const DormtrakSearch = ({ wso, route }) => {
               {dorms.map((dorm) => (
                 <tr key={dorm.id}>
                   <td>
-                    <Link
-                      routeName="dormtrak.dorms"
-                      routeParams={{ dormID: dorm.id }}
-                    >
-                      {dorm.name}
-                    </Link>
+                    <Link to={`/dormtrak/dorms/${dorm.id}`}>{dorm.name}</Link>
                   </td>
 
                   <td>
                     <Link
-                      routeName="dormtrak.neighborhoods"
-                      routeParams={{ neighborhoodID: dorm.neighborhood.id }}
+                      to={`/dormtrak/neighborhoods/${dorm.neighborhood.id}`}
                     >
                       {dorm.neighborhood.name}
                     </Link>
@@ -79,17 +72,13 @@ const DormtrakSearch = ({ wso, route }) => {
 
 DormtrakSearch.propTypes = {
   wso: PropTypes.object.isRequired,
-  route: PropTypes.object.isRequired,
 };
 
 DormtrakSearch.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("dormtrak.search");
-
   return (state) => ({
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 

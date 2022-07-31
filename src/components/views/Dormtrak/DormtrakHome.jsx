@@ -8,12 +8,13 @@ import Button from "../../Components";
 // Redux imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
-import { actions } from "redux-router5";
 
 // Additional imports
-import { Link } from "react-router5";
+import { Link, useNavigate } from "react-router-dom";
 
-const DormtrakHome = ({ currUser, navigateTo, wso }) => {
+const DormtrakHome = ({ currUser, wso }) => {
+  const navigateTo = useNavigate();
+
   const [reviews, updateReviews] = useState(null);
   const [userReviewID, updateUserReviewID] = useState(null);
   useEffect(() => {
@@ -44,7 +45,7 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
           }
         }
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: error });
       }
     };
 
@@ -53,7 +54,7 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
     return () => {
       isMounted = false;
     };
-  }, [navigateTo, wso]);
+  }, [wso]);
 
   const deleteHandler = async (reviewID) => {
     // eslint-disable-next-line no-restricted-globals, no-alert
@@ -75,11 +76,7 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
       return userReviewID ? (
         <p>
           <Button
-            onClick={() =>
-              navigateTo("dormtrak.editReview", {
-                reviewID: userReviewID,
-              })
-            }
+            onClick={() => navigateTo(`/dormtrak/reviews/edit/${userReviewID}`)}
             className="inline-button"
           >
             Edit
@@ -93,7 +90,7 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
           </Button>
         </p>
       ) : (
-        <Link routeName="dormtrak.newReview">
+        <Link to="/dormtrak/reviews/new">
           <button type="button">Review Dorm Room</button>
         </Link>
       );
@@ -119,7 +116,7 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
           <h3>Welcome to Dormtrak</h3>
           <p>
             Dormtrak is a system where students can
-            <Link routeName="dormtrak.policy">&nbsp;anonymously&nbsp;</Link>
+            <Link to="/dormtrak/policy">&nbsp;anonymously&nbsp;</Link>
             share their thoughts about dorm buildings and rooms, as well as find
             out everything there is to know about housing at Williams. Much of
             our information is pulled from surveys that students fill out, so by
@@ -143,7 +140,6 @@ const DormtrakHome = ({ currUser, navigateTo, wso }) => {
 
 DormtrakHome.propTypes = {
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -154,9 +150,6 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(DormtrakHome);

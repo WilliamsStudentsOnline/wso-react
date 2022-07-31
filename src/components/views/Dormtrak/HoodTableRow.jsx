@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { getAPIToken } from "../../../selectors/auth";
 
 // Additional imports
-import { Link } from "react-router5";
+import { Link } from "react-router-dom";
 
 const HoodTableRow = ({ dorm, wso }) => {
   const [dormInfo, updateDormInfo] = useState(null);
@@ -29,9 +29,7 @@ const HoodTableRow = ({ dorm, wso }) => {
   return (
     <tr key={dorm.id}>
       <td>
-        <Link routeName="dormtrak.dorms" routeParams={{ dormID: dorm.id }}>
-          {dorm.name}
-        </Link>
+        <Link to={`/dormtrak/dorms/${dorm.id}`}>{dorm.name}</Link>
       </td>
       <td>{dorm.numberSingles}</td>
       <td>{dorm.numberDoubles}</td>

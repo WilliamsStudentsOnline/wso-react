@@ -9,8 +9,7 @@ import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
 import { avatarHelper } from "../../../lib/imageHelper";
 import { userTypeStudent } from "../../../constants/general";
-import { Link } from "react-router5";
-import { actions } from "redux-router5";
+import { Link, useNavigate } from "react-router-dom";
 import { format } from "timeago.js";
 
 const DormtrakRecentComments = ({
@@ -18,9 +17,9 @@ const DormtrakRecentComments = ({
   updateUserReviewID,
   abridged,
   currUser,
-  navigateTo,
   reviews,
 }) => {
+  const navigateTo = useNavigate();
   const [currReviews, updateCurrReviews] = useState(null);
 
   useEffect(() => {
@@ -46,11 +45,7 @@ const DormtrakRecentComments = ({
       return (
         <p>
           <Button
-            onClick={() =>
-              navigateTo("dormtrak.editReview", {
-                reviewID: review.id,
-              })
-            }
+            onClick={() => navigateTo(`/reviews/edit/${review.id}`)}
             className="inline-button"
           >
             Edit
@@ -81,10 +76,7 @@ const DormtrakRecentComments = ({
 
         <div className="comment-content">
           <h1>
-            <Link
-              routeName="dormtrak.dorms"
-              routeParams={{ dormID: review.dormRoom.dorm.id }}
-            >
+            <Link to={`dormtrak/dorms/${review.dormRoom.dorm.ID}`}>
               {review.dormRoom.dorm.name}
             </Link>
           </h1>
@@ -174,7 +166,6 @@ const DormtrakRecentComments = ({
 DormtrakRecentComments.propTypes = {
   abridged: PropTypes.bool.isRequired,
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   reviews: PropTypes.arrayOf(PropTypes.object),
   wso: PropTypes.object.isRequired,
   updateUserReviewID: PropTypes.func.isRequired,
@@ -188,10 +179,7 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(
   mapStateToProps,

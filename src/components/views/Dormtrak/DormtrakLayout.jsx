@@ -5,13 +5,14 @@ import PropTypes from "prop-types";
 // Redux imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
-import { actions } from "redux-router5";
 
 // Additional imports
-import { Link } from "react-router5";
+import { Link, useNavigate } from "react-router-dom";
 import Redirect from "../../Redirect";
 
-const DormtrakLayout = ({ children, currUser, navigateTo, wso }) => {
+const DormtrakLayout = ({ children, currUser, wso }) => {
+  const navigateTo = useNavigate();
+
   const [neighborhoods, updateNeighborhoods] = useState([]);
   const [query, updateQuery] = useState("");
 
@@ -38,7 +39,7 @@ const DormtrakLayout = ({ children, currUser, navigateTo, wso }) => {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    navigateTo("dormtrak.search", { q: query }, { reload: true });
+    navigateTo(`/dormtrak/search?q=${query}`, { reload: true });
   };
 
   if (currUser) {
@@ -47,14 +48,14 @@ const DormtrakLayout = ({ children, currUser, navigateTo, wso }) => {
         <header>
           <div className="page-head">
             <h1>
-              <Link routeName="dormtrak">Dormtrak</Link>
+              <Link to="/dormtrak">Dormtrak</Link>
             </h1>
             <ul>
               <li>
-                <Link routeName="dormtrak">Home</Link>
+                <Link to="/dormtrak">Home</Link>
               </li>
               <li>
-                <Link routeName="dormtrak.policy">Policy</Link>
+                <Link to="/dormtrak/policy">Policy</Link>
               </li>
               <li>
                 <a
@@ -69,8 +70,7 @@ const DormtrakLayout = ({ children, currUser, navigateTo, wso }) => {
                 neighborhood.name !== "Co-op" ? (
                   <li key={neighborhood.name}>
                     <Link
-                      routeName="dormtrak.neighborhoods"
-                      routeParams={{ neighborhoodID: neighborhood.id }}
+                      to={`/dormtrak/neighborhoods/${neighborhood.id}`}
                       title={`${neighborhood.name} Neighborhood Dorms`}
                     >
                       {neighborhood.name}
@@ -108,7 +108,6 @@ const DormtrakLayout = ({ children, currUser, navigateTo, wso }) => {
 DormtrakLayout.propTypes = {
   children: PropTypes.object.isRequired,
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -119,9 +118,6 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(DormtrakLayout);
