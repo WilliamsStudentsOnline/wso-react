@@ -25,7 +25,7 @@ import {
 } from "../actions/auth";
 import { doUpdateSchedulerState } from "../actions/schedulerUtils";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 // Additional Imports
 import { SimpleAuthentication } from "wso-api-client";
@@ -69,6 +69,8 @@ const App = ({
   updateWSO,
   wso,
 }) => {
+  const navigateTo = useNavigate();
+
   const [initialized, setInitialized] = useState(false);
 
   const getIPIdentityToken = async () => {
@@ -79,7 +81,7 @@ const App = ({
       const newIdenToken = tokenResponse.token;
       updateIdenToken(newIdenToken);
     } catch (error) {
-      // navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -97,7 +99,9 @@ const App = ({
 
     const initialize = async () => {
       const persistedSchedulerOptions = loadState("schedulerOptions");
-      updateSchedulerState(persistedSchedulerOptions.schedulerUtilState);
+      if (persistedSchedulerOptions != null) {
+        updateSchedulerState(persistedSchedulerOptions.schedulerUtilState);
+      }
       const persistedToken = loadState("state")?.authState?.identityToken;
       if (persistedToken) {
         updateIdenToken(persistedToken);
@@ -136,7 +140,7 @@ const App = ({
             updateWSO(updatedWSO);
           }
         } catch (error) {
-          // navigateTo("error", { error }, { replace: true });
+          navigateTo("/error", { replace: true, state: { error } });
         }
       } else {
         getIPIdentityToken();
@@ -169,7 +173,7 @@ const App = ({
             }
           }
         } catch (error) {
-          // navigateTo("error", { error }, { replace: true });
+          navigateTo("/error", { replace: true, state: { error } });
         }
       }
     };

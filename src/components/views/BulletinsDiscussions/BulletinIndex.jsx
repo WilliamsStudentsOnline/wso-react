@@ -116,11 +116,7 @@ const BulletinIndex = ({ currUser, type, wso }) => {
       title = bulletin.title;
     }
 
-    return (
-      <Link to={`/bulletins/${type}/${bulletin.id}`} reloadDocument>
-        {title}
-      </Link>
-    );
+    return <Link to={`/bulletins/${type}/${bulletin.id}`}>{title}</Link>;
   };
 
   // Generate Bulletin date

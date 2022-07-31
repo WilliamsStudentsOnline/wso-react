@@ -22,9 +22,7 @@ const BulletinLayout = ({ children, type }) => {
   const bulletinLinkGenerator = (bulletinType, title) => {
     return (
       <li>
-        <Link to={`/bulletins/${bulletinType}`} reloadDocument>
-          {title}
-        </Link>
+        <Link to={`/bulletins/${bulletinType}`}>{title}</Link>
       </li>
     );
   };

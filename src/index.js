@@ -102,7 +102,12 @@ const store = configureStore({
       },
     }),
 });
+// TODO: ??? figure out what this does
+window.store = store;
+// TODO: before save, should read first.
+// TODO: it seems that throttling makes it unable to immediately store changes after they are made
 store.subscribe(throttle(() => saveUserData(store), 1000));
+// store.subscribe((() => saveUserData(store)));
 
 // setUpRouterPermissions(router, store);
 
