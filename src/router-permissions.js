@@ -1,3 +1,6 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { Navigate, useLocation } from "react-router-dom";
 import { containsOneOfScopes, getTokenLevel, scopes } from "./lib/general";
 
 /**
@@ -101,4 +104,30 @@ const configureRouterPermissions = (router, store) => {
   });
 };
 
-export default configureRouterPermissions;
+const RequireScope = ({ token, name, children }) => {
+  const location = useLocation();
+
+  if (hasNecessaryScopes(token, name) && hasNecessaryTokenLevel(token, name)) {
+    return children;
+  }
+
+  return (
+    <Navigate
+      to="/login"
+      state={{
+        from: location,
+        requiredScopes: routePermissions[name].scopes || [],
+        requiredLevel: routePermissions[name].tokenLevel || -1,
+      }}
+      replace
+    />
+  );
+};
+
+RequireScope.propTypes = {
+  token: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
+};
+
+export default RequireScope;

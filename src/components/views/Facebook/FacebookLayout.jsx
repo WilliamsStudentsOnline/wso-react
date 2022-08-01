@@ -7,10 +7,11 @@ import { connect } from "react-redux";
 import { getCurrUser } from "../../../selectors/auth";
 
 // Additional imports
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 
 const FacebookLayout = ({ children, currUser }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigateTo = useNavigate();
+  const [searchParams] = useSearchParams();
   const [query, updateQuery] = useState("");
 
   useEffect(() => {
@@ -25,7 +26,7 @@ const FacebookLayout = ({ children, currUser }) => {
   const submitHandler = (event) => {
     event.preventDefault();
     searchParams.set("q", query);
-    setSearchParams(searchParams);
+    navigateTo(`/facebook?${searchParams.toString()}`);
   };
 
   return (

@@ -140,7 +140,7 @@ const BulletinBox = ({ wso, typeWord }) => {
                   {type === discussionType ? (
                     <Link
                       className="thread-link"
-                      to={`/discussions/${thread.id}`}
+                      to={`/discussions/threads/${thread.id}`}
                     >
                       {threadTitle(thread)}
                     </Link>

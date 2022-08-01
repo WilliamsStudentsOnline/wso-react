@@ -9,7 +9,6 @@ import Homepage from "./Homepage";
 
 // Redux/routing
 import { connect } from "react-redux";
-// import { createRouteNodeSelector, actions } from "redux-router5";
 import {
   getWSO,
   getExpiry,
@@ -32,6 +31,7 @@ import { SimpleAuthentication } from "wso-api-client";
 import { loadState } from "../stateStorage";
 import configureInterceptors from "../lib/auth";
 import jwtDecode from "jwt-decode";
+import RequireScope from "../router-permissions";
 
 // More component imports
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
@@ -60,8 +60,6 @@ const DiscussionMain = lazy(() =>
 const App = ({
   apiToken,
   identityToken,
-  // navigateTo,
-  // route,
   updateAPIToken,
   updateIdenToken,
   updateSchedulerState,
@@ -190,17 +188,44 @@ const App = ({
     <Layout>
       <Suspense fallback={null}>
         <Routes>
-          {/* TODO: proper scope checking during routing (router-permissions.js) */}
           {/* TODO: Google Analytics */}
           <Route index element={<Homepage />} />
           {/* Various modules */}
-          <Route path="facebook/*" element={<FacebookMain />} />
+          <Route
+            path="facebook/*"
+            element={
+              <RequireScope token={apiToken} name="facebook">
+                <FacebookMain />
+              </RequireScope>
+            }
+          />
           <Route path="bulletins/:type/*" element={<BulletinMain />} />
           <Route path="discussions/*" element={<DiscussionMain />} />
-          <Route path="factrak/*" element={<FactrakMain />} />
-          <Route path="dormtrak/*" element={<DormtrakMain />} />
+          <Route
+            path="factrak/*"
+            element={
+              <RequireScope token={apiToken} name="factrak">
+                <FactrakMain />
+              </RequireScope>
+            }
+          />
+          <Route
+            path="dormtrak/*"
+            element={
+              <RequireScope token={apiToken} name="dormtrak">
+                <DormtrakMain />
+              </RequireScope>
+            }
+          />
           <Route path="goodrich/*" element={<GoodrichMain />} />
-          <Route path="ephmatch/*" element={<EphmatchMain />} />
+          <Route
+            path="ephmatch/*"
+            element={
+              <RequireScope token={apiToken} name="ephmatch">
+                <EphmatchMain />
+              </RequireScope>
+            }
+          />
           <Route path="schedulecourses" element={<Scheduler />} />
           {/* Static Content Pages */}
           <Route path="about" element={<About />} />
@@ -225,8 +250,6 @@ const App = ({
 App.propTypes = {
   apiToken: PropTypes.string.isRequired,
   identityToken: PropTypes.string.isRequired,
-  // navigateTo: PropTypes.func.isRequired,
-  // route: PropTypes.object.isRequired,
   updateAPIToken: PropTypes.func.isRequired,
   updateIdenToken: PropTypes.func.isRequired,
   updateSchedulerState: PropTypes.func.isRequired,
@@ -236,20 +259,15 @@ App.propTypes = {
 };
 
 const mapStateToProps = () => {
-  // const routeNodeSelector = createRouteNodeSelector("");
-
   return (state) => ({
     apiToken: getAPIToken(state),
     expiry: getExpiry(state),
     identityToken: getIdentityToken(state),
     wso: getWSO(state),
-    // ...routeNodeSelector(state),
   });
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  // navigateTo: (location, params, opts) =>
-  //   dispatch(actions.navigateTo(location, params, opts)),
   removeCreds: () => dispatch(doRemoveCreds()),
   updateAPIToken: (token) => dispatch(doUpdateAPIToken(token)),
   updateSchedulerState: (newState) =>

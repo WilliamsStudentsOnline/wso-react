@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 // Redux/Routing imports
 import { connect } from "react-redux";
 import { doUpdateIdentityToken, doUpdateRemember } from "../actions/auth";
+import { useNavigate, useLocation } from "react-router-dom";
 // import { actions, createRouteNodeSelector } from "redux-router5";
 
 // External imports
@@ -17,44 +18,50 @@ import {
 
 const Login = ({
   currUser,
-  navigateTo,
-  route,
   scopes,
   tokenLevel,
   updateIdenToken,
   updateRemember,
   wso,
 }) => {
+  // TODO: if user already log in, should go back in history or to homepage
+
+  const location = useLocation();
+  const state = location.state;
+  const navigateTo = useNavigate();
+
   const [unixID, setUnix] = useState("");
   const [password, setPassword] = useState("");
   const [errors, updateErrors] = useState([]);
   const [remember, setRemember] = useState(true);
 
   useEffect(() => {
-    if (route.params.previousRoute) {
-      if (route.params.requiredLevel) {
+    if (state?.from) {
+      // if requirements not satisfied, do not go back
+      if (state.requiredLevel) {
         if (
-          tokenLevel < route.params.requiredLevel ||
-          (route.params.requiredLevel > 2 && !currUser)
+          tokenLevel < state.requiredLevel ||
+          (state.requiredLevel > 2 && !currUser)
         ) {
           return;
         }
       }
 
-      if (route.params.requiredScopes) {
-        for (const scope of route.params.requiredScopes) {
+      if (state.requiredScopes) {
+        for (const scope of state.requiredScopes) {
           if (!scopes.includes(scope)) {
             return;
           }
         }
       }
 
-      const { name, params } = route.params.previousRoute;
-      navigateTo(name, params);
+      // TODO: reconsider if we need to recover location.state in the previous page
+      // right now we do not recover it.
+      navigateTo(state.from, { replace: true });
     }
     // Assumes wso, tokenLevel, and scopes are simultaneously updated
     // when token changes.
-  }, [currUser, navigateTo, scopes, tokenLevel, route.params, wso]);
+  }, [currUser, scopes, tokenLevel, state, wso]);
 
   // TODO: this shouldn't be coded this way. - it's better to do the splitting in the sign in.
   const unixHandler = (event) => {
@@ -80,7 +87,7 @@ const Login = ({
 
       updateRemember(remember);
       updateIdenToken(identityToken);
-      navigateTo("home");
+      navigateTo("/");
     } catch (error) {
       if (error.errorCode === 401) {
         updateErrors(["Invalid Williams Username or password!"]);
@@ -143,8 +150,6 @@ const Login = ({
 
 Login.propTypes = {
   currUser: PropTypes.object,
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
   scopes: PropTypes.arrayOf(PropTypes.string),
   tokenLevel: PropTypes.number,
   updateIdenToken: PropTypes.func.isRequired,
@@ -159,18 +164,14 @@ Login.defaultProps = {
 };
 
 const mapStateToProps = () => {
-  // const routeNodeSelector = createRouteNodeSelector("login");
   return (state) => ({
     currUser: getCurrUser(state),
     scopes: getScopes(state),
     tokenLevel: getTokenLevel(state),
     wso: getWSO(state),
-    // ...routeNodeSelector(state),
   });
 };
 const mapDispatchToProps = (dispatch) => ({
-  // navigateTo: (location, params, opts) =>
-  //   dispatch(actions.navigateTo(location, params, opts)),
   updateIdenToken: (token) => dispatch(doUpdateIdentityToken(token)),
   updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
 });
