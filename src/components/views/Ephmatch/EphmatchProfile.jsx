@@ -10,9 +10,11 @@ import EphmatchForm from "./EphmatchForm";
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
-import { actions } from "redux-router5";
+import { useNavigate } from "react-router-dom";
 
-const EphmatchProfile = ({ wso, navigateTo }) => {
+const EphmatchProfile = ({ wso }) => {
+  const navigateTo = useNavigate();
+
   const [profile, updateProfile] = useState(null);
   const [description, updateDescription] = useState("");
   const [matchMessage, updateMatchMessage] = useState("");
@@ -53,7 +55,7 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
           updateUnixID(ephmatchProfile.user.unixID);
         }
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -62,7 +64,7 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
     return () => {
       isMounted = false;
     };
-  }, [navigateTo, wso]);
+  }, [wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -87,7 +89,7 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
         await wso.userService.updateUserPhoto("me", photo);
       }
       // Update succeeded -> redirect them to main ephmatch page.
-      navigateTo("ephmatch");
+      navigateTo("/ephmatch");
     } catch (error) {
       newErrors.push(error.message);
       updateErrors(newErrors);
@@ -171,7 +173,6 @@ const EphmatchProfile = ({ wso, navigateTo }) => {
 };
 
 EphmatchProfile.propTypes = {
-  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -182,8 +183,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 

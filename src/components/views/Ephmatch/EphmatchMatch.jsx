@@ -5,12 +5,13 @@ import PropTypes from "prop-types";
 // Redux/routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { actions } from "redux-router5";
+import { useNavigate } from "react-router-dom";
 
 // Additional imports
 import Ephmatcher from "./Ephmatcher";
 
-const EphmatchMatch = ({ navigateTo, wso }) => {
+const EphmatchMatch = ({ wso }) => {
+  const navigateTo = useNavigate();
   const [matches, updateMatches] = useState([]);
 
   useEffect(() => {
@@ -19,12 +20,12 @@ const EphmatchMatch = ({ navigateTo, wso }) => {
         const ephmatchersResponse = await wso.ephmatchService.listMatches();
         updateMatches(ephmatchersResponse.data);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     loadMatches();
-  }, [navigateTo, wso]);
+  }, [wso]);
 
   const renderMatches = () => {
     if (matches.length === 0)
@@ -54,7 +55,6 @@ const EphmatchMatch = ({ navigateTo, wso }) => {
 };
 
 EphmatchMatch.propTypes = {
-  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -64,9 +64,4 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(EphmatchMatch);
+export default connect(mapStateToProps)(EphmatchMatch);

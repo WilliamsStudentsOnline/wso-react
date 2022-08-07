@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // Additional imports
-import { Link } from "react-router5";
+import { Link } from "react-router-dom";
 import { format } from "timeago.js";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 
@@ -25,11 +25,11 @@ const EphmatchLayout = ({
 
         <div className="page-head">
           <h1>
-            <Link routeName="ephmatch">Ephmatch</Link>
+            <Link to="/ephmatch">Ephmatch</Link>
           </h1>
           <ul>
             <li>
-              <Link routeName="ephmatch">Home</Link>
+              <Link to="/ephmatch">Home</Link>
             </li>
             {containsOneOfScopes(token, [
               scopes.ScopeEphmatchMatches,
@@ -37,16 +37,16 @@ const EphmatchLayout = ({
             ]) && (
               <>
                 <li>
-                  <Link routeName="ephmatch.matches">Matches</Link>
+                  <Link to="/ephmatch/matches">Matches</Link>
                   <span className="ephmatch-badge" title="Matches!">
                     {matchesTotalCount}
                   </span>
                 </li>
                 <li>
-                  <Link routeName="ephmatch.profile">Profile</Link>
+                  <Link to="/ephmatch/profile">Profile</Link>
                 </li>
                 <li>
-                  <Link routeName="ephmatch.optOut">Opt Out</Link>
+                  <Link to="/ephmatch/opt-out">Opt Out</Link>
                 </li>
               </>
             )}

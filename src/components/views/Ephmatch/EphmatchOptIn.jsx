@@ -7,13 +7,15 @@ import EphmatchForm from "./EphmatchForm";
 // Redux/routing imports
 import { connect } from "react-redux";
 import { getWSO, getAPIToken } from "../../../selectors/auth";
-import { actions } from "redux-router5";
+import { useNavigate } from "react-router-dom";
 import { containsAllOfScopes, scopes } from "../../../lib/general";
 
 // Page created to handle both opting in and out.
-const EphmatchOptIn = ({ navigateTo, token, wso }) => {
+const EphmatchOptIn = ({ token, wso }) => {
+  const navigateTo = useNavigate();
+
   // Note that this is different from Ephcatch
-  const [optIn, updateOptIn] = useState(null);
+  const [optIn, updateOptIn] = useState(false);
   const [description, updateDescription] = useState("");
   const [userInfo, updateUserInfo] = useState(null);
   const [matchMessage, updateMatchMessage] = useState("");
@@ -35,7 +37,7 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
           updateUnixID(ownProfile.data.unixID);
         }
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
 
       try {
@@ -59,7 +61,7 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
         if (error.errorCode === 404) {
           // This is expected if the user has no profile
         } else {
-          navigateTo("error", { error }, { replace: true });
+          navigateTo("/error", { replace: true, state: { error } });
         }
       }
     };
@@ -78,14 +80,14 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
 
     if (updated && isMounted) {
       // Update succeeded -> redirect them to main ephmatch page.
-      navigateTo("ephmatch", null, { reload: true });
+      navigateTo("/ephmatch");
     }
 
     return () => {
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigateTo, updated, wso]);
+  }, [updated, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -104,7 +106,7 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
       setUpdated(true);
     } catch (error) {
       // There shouldn't be any reason for the submission to be rejected.
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -191,7 +193,6 @@ const EphmatchOptIn = ({ navigateTo, token, wso }) => {
 };
 
 EphmatchOptIn.propTypes = {
-  navigateTo: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
   wso: PropTypes.object.isRequired,
 };
@@ -203,9 +204,4 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(EphmatchOptIn);
+export default connect(mapStateToProps)(EphmatchOptIn);
