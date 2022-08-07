@@ -1,6 +1,6 @@
 pipeline {
   agent {
-    docker { image 'node:lts-alpine' }
+    docker { image 'node:16.16-alpine' }
   }
   stages {
     stage('Build') {
@@ -18,6 +18,7 @@ pipeline {
     stage('Lint') {
       steps {
         echo 'Linting'
+        sh '''yarn run lint'''
       }
     }
     stage('Deploy for development') {
