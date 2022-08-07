@@ -28,7 +28,7 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 
 // Additional Imports
 import { SimpleAuthentication } from "wso-api-client";
-import { loadState } from "../stateStorage";
+import { loadState, removeStateFromStorage } from "../stateStorage";
 import configureInterceptors from "../lib/auth";
 import jwtDecode from "jwt-decode";
 import RequireScope from "../router-permissions";
@@ -59,6 +59,7 @@ const DiscussionMain = lazy(() =>
 const App = ({
   apiToken,
   identityToken,
+  removeCreds,
   updateAPIToken,
   updateIdenToken,
   updateSchedulerState,
@@ -79,6 +80,33 @@ const App = ({
       updateIdenToken(newIdenToken);
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
+    }
+  };
+
+  const updateAPI = async () => {
+    if (identityToken !== "") {
+      try {
+        const apiTokenResponse = await wso.authService.getAPIToken(
+          identityToken
+        );
+        const newAPIToken = apiTokenResponse.token;
+
+        const auth = new SimpleAuthentication(newAPIToken);
+        const updatedWSO = wso.updateAuth(auth);
+        configureInterceptors(updatedWSO);
+
+        updateAPIToken(newAPIToken);
+        updateWSO(updatedWSO);
+      } catch (error) {
+        // possibly expired token, clear and report error to user
+        removeCreds();
+        // Remove credentials from localStorage, since after logging out the edits will be done in
+        // sessionStorage instead.
+        removeStateFromStorage("state");
+
+        // TODO: should we redirect to login page or get new based on IP?
+        navigateTo("/error", { replace: true, state: { error } });
+      }
     }
   };
 
@@ -119,37 +147,9 @@ const App = ({
    * authentication that we use.
    */
   useEffect(() => {
-    let isMounted = true;
-    const updateAPI = async () => {
-      if (identityToken !== "") {
-        try {
-          const apiTokenResponse = await wso.authService.getAPIToken(
-            identityToken
-          );
-          const newAPIToken = apiTokenResponse.token;
-
-          const auth = new SimpleAuthentication(newAPIToken);
-          const updatedWSO = wso.updateAuth(auth);
-          configureInterceptors(updatedWSO);
-
-          if (isMounted) {
-            updateAPIToken(newAPIToken);
-            updateWSO(updatedWSO);
-          }
-        } catch (error) {
-          navigateTo("/error", { replace: true, state: { error } });
-        }
-      } else {
-        getIPIdentityToken();
-      }
-    };
     if (initialized) {
       updateAPI();
     }
-
-    return () => {
-      isMounted = false;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [identityToken, initialized]);
 
@@ -186,60 +186,64 @@ const App = ({
   return (
     <Layout>
       <Suspense fallback={null}>
-        <Routes>
-          {/* TODO: Google Analytics */}
-          <Route index element={<Homepage />} />
-          {/* Various modules */}
-          <Route
-            path="facebook/*"
-            element={
-              <RequireScope token={apiToken} name="facebook">
-                <FacebookMain />
-              </RequireScope>
-            }
-          />
-          <Route path="bulletins/:type/*" element={<BulletinMain />} />
-          <Route path="discussions/*" element={<DiscussionMain />} />
-          <Route
-            path="factrak/*"
-            element={
-              <RequireScope token={apiToken} name="factrak">
-                <FactrakMain />
-              </RequireScope>
-            }
-          />
-          <Route
-            path="dormtrak/*"
-            element={
-              <RequireScope token={apiToken} name="dormtrak">
-                <DormtrakMain />
-              </RequireScope>
-            }
-          />
-          <Route
-            path="ephmatch/*"
-            element={
-              <RequireScope token={apiToken} name="ephmatch">
-                <EphmatchMain />
-              </RequireScope>
-            }
-          />
-          <Route path="schedulecourses" element={<Scheduler />} />
-          {/* Static Content Pages */}
-          <Route path="about" element={<About />} />
-          <Route path="faq" element={<FAQ />} />
-          <Route
-            path="mobile-privacy-policy"
-            element={<MobilePrivacyPolicy />}
-          />
-          <Route path="login" element={<Login />} />
-          {/* Error-handling Pages */}
-          <Route path="403" element={<Error403 />} />
-          <Route path="404" element={<Error404 />} />
-          <Route path="500" element={<Error500 />} />
-          <Route path="error" element={<Error />} />
-          <Route path="*" element={<Error404 />} />
-        </Routes>
+        {/* TODO: add a loading animation when waiting for apiToken to load */}
+        {// only render the routes when api token has been fetched from server
+        apiToken !== "" && (
+          <Routes>
+            {/* TODO: Google Analytics */}
+            <Route index element={<Homepage />} />
+            {/* Various modules */}
+            <Route
+              path="facebook/*"
+              element={
+                <RequireScope token={apiToken} name="facebook">
+                  <FacebookMain />
+                </RequireScope>
+              }
+            />
+            <Route path="bulletins/:type/*" element={<BulletinMain />} />
+            <Route path="discussions/*" element={<DiscussionMain />} />
+            <Route
+              path="factrak/*"
+              element={
+                <RequireScope token={apiToken} name="factrak">
+                  <FactrakMain />
+                </RequireScope>
+              }
+            />
+            <Route
+              path="dormtrak/*"
+              element={
+                <RequireScope token={apiToken} name="dormtrak">
+                  <DormtrakMain />
+                </RequireScope>
+              }
+            />
+            <Route
+              path="ephmatch/*"
+              element={
+                <RequireScope token={apiToken} name="ephmatch">
+                  <EphmatchMain />
+                </RequireScope>
+              }
+            />
+            <Route path="schedulecourses" element={<Scheduler />} />
+            {/* Static Content Pages */}
+            <Route path="about" element={<About />} />
+            <Route path="faq" element={<FAQ />} />
+            <Route
+              path="mobile-privacy-policy"
+              element={<MobilePrivacyPolicy />}
+            />
+            <Route path="login" element={<Login />} />
+            {/* Error-handling Pages */}
+            <Route path="403" element={<Error403 />} />
+            <Route path="404" element={<Error404 />} />
+            <Route path="500" element={<Error500 />} />
+            <Route path="error" element={<Error />} />
+            <Route path="*" element={<Error404 />} />
+          </Routes>
+        )}
       </Suspense>
     </Layout>
   );
@@ -248,6 +252,7 @@ const App = ({
 App.propTypes = {
   apiToken: PropTypes.string.isRequired,
   identityToken: PropTypes.string.isRequired,
+  removeCreds: PropTypes.func.isRequired,
   updateAPIToken: PropTypes.func.isRequired,
   updateIdenToken: PropTypes.func.isRequired,
   updateSchedulerState: PropTypes.func.isRequired,
