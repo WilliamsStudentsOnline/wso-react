@@ -6,42 +6,44 @@ import { Line } from "../../Skeleton";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { createRouteNodeSelector, actions } from "redux-router5";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-// Additional Imports
-import { Link } from "react-router5";
+const FactrakAOS = ({ wso }) => {
+  const navigateTo = useNavigate();
+  const params = useParams();
 
-const FactrakAOS = ({ navigateTo, route, wso }) => {
   const [courses, updateCourses] = useState(null);
   const [profs, updateProfs] = useState(null);
   const [area, updateArea] = useState({});
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
-    const areaParam = route.params.area;
+    const areaParam = params.area;
 
     // Loads professors of the Area of Study
     const loadProfs = async (areaOfStudyID) => {
-      const params = { areaOfStudyID };
+      const reqParams = { areaOfStudyID };
 
       try {
-        const profsResponse = await wso.factrakService.listProfessors(params);
+        const profsResponse = await wso.factrakService.listProfessors(
+          reqParams
+        );
         updateProfs(profsResponse.data);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     // Loads courses of the Area of Study
     const loadCourses = async (areaOfStudyID) => {
-      const params = { areaOfStudyID, preload: ["professors"] };
+      const reqParams = { areaOfStudyID, preload: ["professors"] };
 
       try {
-        const coursesResponse = await wso.factrakService.listCourses(params);
+        const coursesResponse = await wso.factrakService.listCourses(reqParams);
         const coursesData = coursesResponse.data;
         updateCourses(coursesData.sort((a, b) => a.number > b.number));
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -54,31 +56,26 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
 
         updateArea(areaOfStudyResponse.data);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     loadProfs(areaParam);
     loadCourses(areaParam);
     loadAOS(areaParam);
-  }, [navigateTo, route.params.area, wso]);
+  }, [params?.area, wso]);
 
   // Generates a row containing the prof information.
   const generateProfRow = (prof) => {
     return (
       <tr key={prof.id}>
         <td>
-          <Link
-            routeName="factrak.professors"
-            routeParams={{ profID: prof.id }}
-          >
-            {prof.name}
-          </Link>
+          <Link to={`/factrak/professors/${prof.id}`}>{prof.name}</Link>
         </td>
 
         <td>{prof.title}</td>
         <td>
-          <a href={`mailto:${prof.unixID}@williams.edu`}>{prof.unixID}</a>
+          <Link to={`/facebook/users/${prof.id}`}>{prof.unixID}</Link>
         </td>
       </tr>
     );
@@ -139,14 +136,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
       return course.professors
         .map((prof) => {
           return (
-            <Link
-              routeName="factrak.courses.singleProf"
-              routeParams={{
-                courseID: course.id,
-                profID: prof.id,
-              }}
-              key={prof.id}
-            >
+            <Link to={`/factrak/courses/${course.id}/${prof.id}`} key={prof.id}>
               {prof.name}
             </Link>
           );
@@ -162,10 +152,7 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
     return (
       <tr key={course.id}>
         <td className="col-20">
-          <Link
-            routeName="factrak.courses"
-            routeParams={{ courseID: course.id }}
-          >
+          <Link to={`/factrak/courses/${course.id}`}>
             {`${area.abbreviation} ${course.number}`}
           </Link>
         </td>
@@ -223,23 +210,13 @@ const FactrakAOS = ({ navigateTo, route, wso }) => {
 };
 
 FactrakAOS.propTypes = {
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("factrak.areasOfStudy");
-
   return (state) => ({
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakAOS);
+export default connect(mapStateToProps)(FactrakAOS);

@@ -8,13 +8,13 @@ import FactrakDeficitMessage from "./FactrakUtils";
 // Redux imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
-import { actions } from "redux-router5";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import { Link } from "react-router5";
+import { Link, useNavigate } from "react-router-dom";
 
-const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
+const FactrakHome = ({ currUser, token, wso }) => {
+  const navigateTo = useNavigate();
   const [areas, updateAreas] = useState(null);
   const [surveys, updateSurveys] = useState(null);
 
@@ -33,7 +33,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
         );
         updateSurveys(surveysResponse.data);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -44,7 +44,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
         const areasOfStudy = areasOfStudyResponse.data;
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
     if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
@@ -54,7 +54,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
     }
 
     loadAreas();
-  }, [navigateTo, token, wso]);
+  }, [token, wso]);
 
   return (
     <article className="dormtrak">
@@ -66,10 +66,7 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
               {areas ? (
                 areas.map((area) => (
                   <li key={area.name}>
-                    <Link
-                      routeName="factrak.areasOfStudy"
-                      routeParams={{ area: area.id }}
-                    >
+                    <Link to={`/factrak/areasOfStudy/${area.id}`}>
                       {area.name}
                     </Link>
                   </li>
@@ -116,7 +113,6 @@ const FactrakHome = ({ currUser, navigateTo, token, wso }) => {
 
 FactrakHome.propTypes = {
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
   wso: PropTypes.object.isRequired,
 };
@@ -129,9 +125,6 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(FactrakHome);

@@ -8,29 +8,31 @@ import { Line } from "../../Skeleton";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { createRouteNodeSelector, actions } from "redux-router5";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import { Link } from "react-router5";
 
-const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
+const FactrakCourse = ({ currUser, token, wso }) => {
+  const params = useParams();
+  const navigateTo = useNavigate();
+
   const [course, updateCourse] = useState(null);
   const [courseSurveys, updateSurveys] = useState(null);
   const [courseProfs, updateProfs] = useState([]);
   const [ratings, updateRatings] = useState(null);
 
   useEffect(() => {
-    const courseID = route.params.courseID;
-    const profID = route.params.profID ? route.params.profID : -1;
+    const courseID = params.courseID;
+    const profID = params.profID ? params.profID : -1;
 
     const loadCourse = async () => {
       try {
         const courseResponse = await wso.factrakService.getCourse(courseID);
         updateCourse(courseResponse.data);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -52,7 +54,7 @@ const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
         if (error.errorCode === 1330) {
           // Do nothing - This should be expected if the user has not fulfilled the 2 surveys
         } else {
-          navigateTo("error", { error }, { replace: true });
+          navigateTo("/error", { replace: true, state: { error } });
         }
       }
     };
@@ -68,19 +70,21 @@ const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
         if (error.errorCode === 1330) {
           // Do nothing - This should be expected if the user has not fulfilled the 2 surveys
         } else {
-          navigateTo("error", { error }, { replace: true });
+          navigateTo("/error", { replace: true, state: { error } });
         }
       }
     };
 
     const loadProfs = async () => {
-      const params = { courseID };
+      const queryParams = { courseID };
 
       try {
-        const profResponse = await wso.factrakService.listProfessors(params);
+        const profResponse = await wso.factrakService.listProfessors(
+          queryParams
+        );
         updateProfs(profResponse.data);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -93,14 +97,7 @@ const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
     }
 
     loadProfs();
-  }, [
-    navigateTo,
-    token,
-    route.params.course,
-    route.params.profID,
-    route.params.courseID,
-    wso,
-  ]);
+  }, [token, params.course, params.profID, params.courseID, wso]);
 
   // Generates the list of professors who teach the course
   const professorList = () => {
@@ -112,13 +109,7 @@ const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
         {course?.id ? (
           courseProfs.map((prof) => (
             <React.Fragment key={prof.name}>
-              <Link
-                routeName="factrak.courses.singleProf"
-                routeParams={{
-                  courseID: course.id,
-                  profID: prof.id,
-                }}
-              >
+              <Link to={`/factrak/courses/${course.id}/${prof.id}`}>
                 {prof.name}
               </Link>
               &emsp;
@@ -167,10 +158,10 @@ const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
   };
 
   const selectedProf = () => {
-    if (route.params.profID === null || route.params.profID === -1) return null;
+    if (params.profID === null || params.profID === -1) return null;
 
     const prof = courseProfs.find(
-      (courseProf) => courseProf.id === route.params.profID
+      (courseProf) => courseProf.id === params.profID
     );
 
     if (!prof) {
@@ -230,8 +221,6 @@ const FactrakCourse = ({ currUser, navigateTo, route, token, wso }) => {
 
 FactrakCourse.propTypes = {
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
   wso: PropTypes.object.isRequired,
 };
@@ -239,19 +228,11 @@ FactrakCourse.propTypes = {
 FactrakCourse.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("factrak.courses");
-
   return (state) => ({
     wso: getWSO(state),
     currUser: getCurrUser(state),
     token: getAPIToken(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakCourse);
+export default connect(mapStateToProps)(FactrakCourse);

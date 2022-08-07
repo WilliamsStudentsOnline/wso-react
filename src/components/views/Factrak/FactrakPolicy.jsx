@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
-import { actions } from "redux-router5";
+import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { getCurrUser, getWSO } from "../../../selectors/auth";
 
-const FactrakPolicy = ({ currUser, navigateTo, wso }) => {
+const FactrakPolicy = ({ currUser, wso }) => {
+  const navigateTo = useNavigate();
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
   const [updated, setUpdated] = useState(false);
 
@@ -28,7 +29,7 @@ const FactrakPolicy = ({ currUser, navigateTo, wso }) => {
       await wso.userService.updateUser("me", updateParams);
       setUpdated(true);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -36,13 +37,13 @@ const FactrakPolicy = ({ currUser, navigateTo, wso }) => {
   useEffect(() => {
     let isMounted = true;
     if (updated && isMounted) {
-      navigateTo("factrak", {}, { reload: true });
+      navigateTo("/factrak");
     }
 
     return () => {
       isMounted = false;
     };
-  }, [navigateTo, updated, wso]);
+  }, [updated, wso]);
 
   return (
     <div className="article">
@@ -135,7 +136,6 @@ const FactrakPolicy = ({ currUser, navigateTo, wso }) => {
 
 FactrakPolicy.propTypes = {
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -144,9 +144,4 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakPolicy);
+export default connect(mapStateToProps)(FactrakPolicy);

@@ -6,9 +6,10 @@ import FactrakComment from "./FactrakComment";
 // Redux imports
 import { connect } from "react-redux";
 import { getCurrUser, getWSO } from "../../../selectors/auth";
-import { actions } from "redux-router5";
+import { useNavigate } from "react-router-dom";
 
-const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
+const FactrakSurveyIndex = ({ currUser, wso }) => {
+  const navigateTo = useNavigate();
   const [surveys, updateSurveys] = useState([]);
 
   useEffect(() => {
@@ -24,12 +25,12 @@ const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
 
         updateSurveys(userSurveyResponse.data);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     loadUserSurveys();
-  }, [navigateTo, currUser.id, wso]);
+  }, [currUser.id, wso]);
 
   return (
     <div className="article">
@@ -60,7 +61,6 @@ const FactrakSurveyIndex = ({ currUser, navigateTo, wso }) => {
 
 FactrakSurveyIndex.propTypes = {
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -71,9 +71,4 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakSurveyIndex);
+export default connect(mapStateToProps)(FactrakSurveyIndex);

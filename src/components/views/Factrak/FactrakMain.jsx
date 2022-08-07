@@ -14,53 +14,26 @@ import FactrakCourse from "./FactrakCourse";
 import FactrakProfessor from "./FactrakProfessor";
 import FactrakSearch from "./FactrakSearch";
 import FactrakRankings from "./FactrakRankings";
-import Redirect from "../../Redirect";
+import Error404 from "../Errors/Error404";
 
 // Redux/ Router imports
 import { connect } from "react-redux";
-import { createRouteNodeSelector } from "redux-router5";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { getAPIToken, getCurrUser } from "../../../selectors/auth";
 
 // Additional Imports
 import { scopes, containsOneOfScopes } from "../../../lib/general";
 import { userTypeStudent } from "../../../constants/general";
 
-const FactrakMain = ({ currUser, route, token }) => {
-  const factrakBody = () => {
-    const splitRoute = route.name.split(".");
-    if (splitRoute.length === 1) return <FactrakHome />;
-
-    switch (splitRoute[1]) {
-      case "policy":
-        return <FactrakPolicy />;
-      case "surveys":
-        return <FactrakSurveyIndex />;
-      case "newSurvey":
-        return <FactrakSurvey edit={false} />;
-      case "editSurvey":
-        return <FactrakSurvey edit />;
-      case "moderate":
-        return <FactrakModerate />;
-      case "areasOfStudy":
-        return <FactrakAOS />;
-      case "courses":
-        return <FactrakCourse />;
-      case "professors":
-        return <FactrakProfessor />;
-      case "search":
-        return <FactrakSearch />;
-      case "rankings":
-        return <FactrakRankings />;
-      default:
-        return <FactrakHome />;
-    }
-  };
+const FactrakMain = ({ currUser, token }) => {
+  const navigateTo = useNavigate();
 
   // If the user is not a student - navigate to 403
   if (currUser?.type !== userTypeStudent) {
-    return <Redirect to="403" />;
+    navigateTo("/403");
   }
 
+  // TODO: this is smart, maybe also apply this to DormtrakMain
   // Returns body only if the user has the respective scopes
   if (
     !containsOneOfScopes(token, [
@@ -75,22 +48,40 @@ const FactrakMain = ({ currUser, route, token }) => {
     );
   }
 
-  return <FactrakLayout>{factrakBody()}</FactrakLayout>;
+  return (
+    <FactrakLayout>
+      <Routes>
+        <Route index element={<FactrakHome />} />
+        <Route path="policy" element={<FactrakPolicy />} />
+        <Route path="surveys" element={<FactrakSurveyIndex />} />
+        <Route
+          path="surveys/new/:profID"
+          element={<FactrakSurvey edit={false} />}
+        />
+        <Route path="surveys/edit/:surveyID" element={<FactrakSurvey edit />} />
+        <Route path="moderate" element={<FactrakModerate />} />
+        <Route path="areasOfStudy/:area" element={<FactrakAOS />} />
+        <Route path="courses/:courseID" element={<FactrakCourse />} />
+        <Route path="courses/:courseID/:profID" element={<FactrakCourse />} />
+        <Route path="professors/:profID" element={<FactrakProfessor />} />
+        <Route path="search" element={<FactrakSearch />} />
+        <Route path="rankings" element={<FactrakRankings />} />
+        <Route path="rankings/:aos" element={<FactrakRankings />} />
+        <Route path="*" element={<Error404 />} />
+      </Routes>
+    </FactrakLayout>
+  );
 };
 
 FactrakMain.propTypes = {
   currUser: PropTypes.object.isRequired,
-  route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("factrak");
-
   return (state) => ({
     currUser: getCurrUser(state),
     token: getAPIToken(state),
-    ...routeNodeSelector(state),
   });
 };
 

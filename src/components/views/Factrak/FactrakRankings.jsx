@@ -7,14 +7,14 @@ import { List } from "../../Skeleton";
 // Redux imports
 import { connect } from "react-redux";
 import { getWSO, getAPIToken } from "../../../selectors/auth";
-import { createRouteNodeSelector, actions } from "redux-router5";
+import { Link, useNavigate } from "react-router-dom";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import { Link } from "react-router5";
 import FactrakTopProfs from "./FactrakTopProfs";
 
-const FactrakRankings = ({ navigateTo, token, wso, route }) => {
+const FactrakRankings = ({ token, wso }) => {
+  const navigateTo = useNavigate();
   const [areas, updateAreas] = useState(null);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const FactrakRankings = ({ navigateTo, token, wso, route }) => {
         const areasOfStudy = areasOfStudyResponse.data;
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -34,7 +34,7 @@ const FactrakRankings = ({ navigateTo, token, wso, route }) => {
     } else {
       updateAreas([...Array(10)].map((_, id) => ({ id })));
     }
-  }, [navigateTo, token, wso, route]);
+  }, [token, wso]);
 
   return (
     <article className="dormtrak">
@@ -47,8 +47,7 @@ const FactrakRankings = ({ navigateTo, token, wso, route }) => {
                 areas.map((area) => (
                   <li key={area.name}>
                     <Link
-                      routeName="factrak.rankings"
-                      routeParams={{ aos: area.id }}
+                      to={`/factrak/rankings/${area.id}`}
                       title={`${area.name} Rankings`}
                     >
                       {area.name}
@@ -69,27 +68,17 @@ const FactrakRankings = ({ navigateTo, token, wso, route }) => {
 };
 
 FactrakRankings.propTypes = {
-  navigateTo: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
   wso: PropTypes.object.isRequired,
-  route: PropTypes.object.isRequired,
 };
 
 FactrakRankings.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("factrak.rankings");
-
   return (state) => ({
     token: getAPIToken(state),
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakRankings);
+export default connect(mapStateToProps)(FactrakRankings);
