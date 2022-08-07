@@ -12,11 +12,10 @@ import "typeface-source-sans-pro";
 // Redux/store imports
 import { Provider } from "react-redux";
 import { saveState } from "./stateStorage";
-import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./reducers";
-
+import store from "./lib/store";
 // Router imports
-import { BrowserRouter } from "react-router-dom";
+import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
+import history from "./lib/history";
 // import configureRouter from "./create-router";
 // import setUpRouterPermissions from "./router-permissions";
 
@@ -63,9 +62,10 @@ const initializeAnalytics = (router) => {
  *
  * @param store - The redux store that holds our state.
  */
-const saveUserData = (store) => {
-  const authState = store.getState().authState;
-  const schedulerUtilState = store.getState().schedulerUtilState;
+// TODO: better store persistence
+const saveUserData = (reduxStore) => {
+  const authState = reduxStore.getState().authState;
+  const schedulerUtilState = reduxStore.getState().schedulerUtilState;
   // Using this to override people's current authState
   if (authState.remember) {
     saveState("state", {
@@ -89,21 +89,6 @@ const saveUserData = (store) => {
 // const router = configureRouter();
 // initializeAnalytics(router);
 
-const store = configureStore({
-  reducer: rootReducer,
-  // this is to disable React Toolkit's error message "A non-serializable value was detected in the state"
-  // TODO: stop using non-serializable object `wso` and `authState.wso`
-  // Read https://redux.js.org/faq/organizing-state#can-i-put-functions-promises-or-other-non-serializable-items-in-my-store-state
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActionPaths: ["wso", "gapi"],
-        ignoredPaths: ["authState.wso", "schedulerUtilState.gapi"],
-      },
-    }),
-});
-// TODO: ??? figure out what this does
-window.store = store;
 // TODO: before save, should read first.
 // TODO: it seems that throttling makes it unable to immediately store changes after they are made
 store.subscribe(throttle(() => saveUserData(store), 1000));
@@ -114,9 +99,9 @@ store.subscribe(throttle(() => saveUserData(store), 1000));
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
+      <HistoryRouter history={history}>
         <App />
-      </BrowserRouter>
+      </HistoryRouter>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")
