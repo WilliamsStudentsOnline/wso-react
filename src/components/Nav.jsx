@@ -10,7 +10,6 @@ import { doRemoveCreds } from "../actions/auth";
 // External imports
 import { Link } from "react-router-dom";
 import history from "../lib/history";
-import { removeStateFromStorage } from "../stateStorage";
 import { userTypeStudent } from "../constants/general";
 
 const Nav = ({ currUser, removeCreds, wso }) => {
@@ -65,9 +64,6 @@ const Nav = ({ currUser, removeCreds, wso }) => {
 
   const logout = () => {
     removeCreds();
-    // Remove credentials from localStorage, since after logging out the edits will be done in
-    // sessionStorage instead.
-    removeStateFromStorage("state");
   };
 
   return (

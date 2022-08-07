@@ -28,8 +28,7 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 
 // Additional Imports
 import { SimpleAuthentication } from "wso-api-client";
-import { loadState, removeStateFromStorage } from "../stateStorage";
-import configureInterceptors from "../lib/auth";
+import configureInterceptors, { tokenIsExpired } from "../lib/auth";
 import jwtDecode from "jwt-decode";
 import RequireScope from "../router-permissions";
 import usePageTracking from "../lib/usePageTracking";
@@ -101,10 +100,6 @@ const App = ({
       } catch (error) {
         // possibly expired token, clear and report error to user
         removeCreds();
-        // Remove credentials from localStorage, since after logging out the edits will be done in
-        // sessionStorage instead.
-        removeStateFromStorage("state");
-
         // TODO: should we redirect to login page or get new based on IP?
         navigateTo("/error", { replace: true, state: { error } });
       }
@@ -124,14 +119,7 @@ const App = ({
     };
 
     const initialize = async () => {
-      const persistedSchedulerOptions = loadState("schedulerOptions");
-      if (persistedSchedulerOptions != null) {
-        updateSchedulerState(persistedSchedulerOptions.schedulerUtilState);
-      }
-      const persistedToken = loadState("state")?.authState?.identityToken;
-      if (persistedToken) {
-        updateIdenToken(persistedToken);
-      } else {
+      if (identityToken === "" || tokenIsExpired(identityToken)) {
         await getIPIdentityToken();
       }
 

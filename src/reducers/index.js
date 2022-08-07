@@ -13,3 +13,10 @@ const rootReducer = {
 };
 
 export default rootReducer;
+export {
+  courseReducer,
+  schedulerUtilReducer,
+  authReducer,
+  utilReducer,
+  goodrichReducer,
+};

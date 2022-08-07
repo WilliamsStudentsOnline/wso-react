@@ -64,7 +64,7 @@ const updateAPIToken = async () => {
  *
  * @param {String} token - JWT Token
  */
-const tokenIsExpired = (token) => {
+export const tokenIsExpired = (token) => {
   try {
     const decoded = jwtDecode(token);
     if (decoded?.exp) {
