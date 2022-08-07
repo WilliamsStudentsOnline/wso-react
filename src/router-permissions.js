@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Navigate, useLocation } from "react-router-dom";
+import MoonLoader from "react-spinners/MoonLoader";
 import { containsOneOfScopes, getTokenLevel, scopes } from "./lib/general";
 
 /**
@@ -65,10 +66,33 @@ const hasNecessaryTokenLevel = (token, routeName) => {
 const RequireScope = ({ token, name, children }) => {
   const location = useLocation();
 
+  // API Token is not set yet, display loading screen
+  if (token === "") {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <MoonLoader loading />
+        <div style={{ marginTop: "1em", textAlign: "center" }}>
+          Authenticating you with our server...
+          <br />
+          This may take a few seconds.
+        </div>
+      </div>
+    );
+  }
+
+  // only render children if API Token is set and has the necessary scopes
   if (hasNecessaryScopes(token, name) && hasNecessaryTokenLevel(token, name)) {
     return children;
   }
 
+  // otherwise, redirect to login page
   return (
     <Navigate
       to="/login"

@@ -175,63 +175,59 @@ const App = ({
   return (
     <Layout>
       <Suspense fallback={null}>
-        {/* TODO: add a loading animation when waiting for apiToken to load */}
-        {// only render the routes when api token has been fetched from server
-        apiToken !== "" && (
-          <Routes>
-            <Route index element={<Homepage />} />
-            {/* Various modules */}
-            <Route
-              path="facebook/*"
-              element={
-                <RequireScope token={apiToken} name="facebook">
-                  <FacebookMain />
-                </RequireScope>
-              }
-            />
-            <Route path="bulletins/:type/*" element={<BulletinMain />} />
-            <Route path="discussions/*" element={<DiscussionMain />} />
-            <Route
-              path="factrak/*"
-              element={
-                <RequireScope token={apiToken} name="factrak">
-                  <FactrakMain />
-                </RequireScope>
-              }
-            />
-            <Route
-              path="dormtrak/*"
-              element={
-                <RequireScope token={apiToken} name="dormtrak">
-                  <DormtrakMain />
-                </RequireScope>
-              }
-            />
-            <Route
-              path="ephmatch/*"
-              element={
-                <RequireScope token={apiToken} name="ephmatch">
-                  <EphmatchMain />
-                </RequireScope>
-              }
-            />
-            <Route path="schedulecourses" element={<Scheduler />} />
-            {/* Static Content Pages */}
-            <Route path="about" element={<About />} />
-            <Route path="faq" element={<FAQ />} />
-            <Route
-              path="mobile-privacy-policy"
-              element={<MobilePrivacyPolicy />}
-            />
-            <Route path="login" element={<Login />} />
-            {/* Error-handling Pages */}
-            <Route path="403" element={<Error403 />} />
-            <Route path="404" element={<Error404 />} />
-            <Route path="500" element={<Error500 />} />
-            <Route path="error" element={<Error />} />
-            <Route path="*" element={<Error404 />} />
-          </Routes>
-        )}
+        <Routes>
+          <Route index element={<Homepage />} />
+          {/* Various modules */}
+          <Route
+            path="facebook/*"
+            element={
+              <RequireScope token={apiToken} name="facebook">
+                <FacebookMain />
+              </RequireScope>
+            }
+          />
+          <Route path="bulletins/:type/*" element={<BulletinMain />} />
+          <Route path="discussions/*" element={<DiscussionMain />} />
+          <Route
+            path="factrak/*"
+            element={
+              <RequireScope token={apiToken} name="factrak">
+                <FactrakMain />
+              </RequireScope>
+            }
+          />
+          <Route
+            path="dormtrak/*"
+            element={
+              <RequireScope token={apiToken} name="dormtrak">
+                <DormtrakMain />
+              </RequireScope>
+            }
+          />
+          <Route
+            path="ephmatch/*"
+            element={
+              <RequireScope token={apiToken} name="ephmatch">
+                <EphmatchMain />
+              </RequireScope>
+            }
+          />
+          <Route path="schedulecourses" element={<Scheduler />} />
+          {/* Static Content Pages */}
+          <Route path="about" element={<About />} />
+          <Route path="faq" element={<FAQ />} />
+          <Route
+            path="mobile-privacy-policy"
+            element={<MobilePrivacyPolicy />}
+          />
+          <Route path="login" element={<Login />} />
+          {/* Error-handling Pages */}
+          <Route path="403" element={<Error403 />} />
+          <Route path="404" element={<Error404 />} />
+          <Route path="500" element={<Error500 />} />
+          <Route path="error" element={<Error />} />
+          <Route path="*" element={<Error404 />} />
+        </Routes>
       </Suspense>
     </Layout>
   );
