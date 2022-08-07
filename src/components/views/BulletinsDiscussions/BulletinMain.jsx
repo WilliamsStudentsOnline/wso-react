@@ -42,12 +42,19 @@ const BulletinMain = ({ token }) => {
             <Route
               index
               element={
-                <RequireScope token={token} name="bulletin">
+                <RequireScope token={token} name="bulletins">
                   <BulletinIndex type={params.type} />
                 </RequireScope>
               }
             />
-            <Route path=":bulletinID" element={<BulletinShow />} />
+            <Route
+              path=":bulletinID"
+              element={
+                <RequireScope token={token} name="bulletins">
+                  <BulletinShow />
+                </RequireScope>
+              }
+            />
             {/* TODO: pass in a boolean prop to tell BulletinForm if it's in edit mode */}
             <Route
               path=":bulletinID/edit"
@@ -60,7 +67,7 @@ const BulletinMain = ({ token }) => {
             <Route
               path="new"
               element={
-                <RequireScope token={token} key="bulletins.new">
+                <RequireScope token={token} name="bulletins.new">
                   <BulletinForm />
                 </RequireScope>
               }

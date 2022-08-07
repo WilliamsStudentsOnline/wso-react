@@ -16,7 +16,7 @@ import {
 import { getAddedCourses, getHiddenCourses } from "../../../selectors/course";
 import { getTimeFormat } from "../../../selectors/schedulerUtils";
 import { BORDER_PALETTE } from "../../../constants/constants.json";
-import { Link } from "react-router5";
+import { Link } from "react-router-dom";
 
 // External imports
 import dayjs from "dayjs";
@@ -58,9 +58,8 @@ const Course = ({
 
           return (
             <Link
+              to={`/factrak/professors/${instructor.id}`}
               key={instructor.name}
-              routeName="factrak.professors"
-              routeParams={{ profID: instructor.id }}
             >
               {index === 0 ? instructor.name : `, ${instructor.name}`}
             </Link>

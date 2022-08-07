@@ -62,48 +62,6 @@ const hasNecessaryTokenLevel = (token, routeName) => {
   );
 };
 
-/**
- * Default export that configures the router and the store to enable
- * the checking of user permissions.
- *
- * @param router - The main router controlling the route transitions
- * @param store - The main Redux store.
- */
-const configureRouterPermissions = (router, store) => {
-  Object.keys(routePermissions).forEach((key) => {
-    router.canActivate(key, () => (toState, fromState, done) => {
-      const token = store.getState().authState.apiToken;
-
-      if (
-        hasNecessaryScopes(token, key) &&
-        hasNecessaryTokenLevel(token, key)
-      ) {
-        return true;
-      }
-
-      return done({
-        redirect: {
-          name: "login",
-          params: {
-            previousRoute: toState,
-            requiredScopes: routePermissions[key].scopes || [],
-            requiredLevel: routePermissions[key].tokenLevel || -1,
-          },
-        },
-      });
-    });
-  });
-
-  router.canActivate("login", () => (toState, fromState, done) => {
-    const token = store.getState().authState.token;
-
-    if (getTokenLevel(token) >= 3) {
-      return done({ redirect: { name: "home" } });
-    }
-    return true;
-  });
-};
-
 const RequireScope = ({ token, name, children }) => {
   const location = useLocation();
 

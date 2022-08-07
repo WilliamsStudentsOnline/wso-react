@@ -7,8 +7,7 @@ import { connect } from "react-redux";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
 
 // Additional imports
-import { Link, useNavigate } from "react-router-dom";
-import Redirect from "../../Redirect";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 
 const DormtrakLayout = ({ children, currUser, wso }) => {
   const navigateTo = useNavigate();
@@ -102,7 +101,7 @@ const DormtrakLayout = ({ children, currUser, wso }) => {
     );
   }
 
-  return <Redirect to="login" />;
+  return <Navigate to="/login" />;
 };
 
 DormtrakLayout.propTypes = {

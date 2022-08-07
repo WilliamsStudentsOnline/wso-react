@@ -29,7 +29,14 @@ const DiscussionMain = ({ token }) => {
             </RequireScope>
           }
         />
-        <Route path="threads/:discussionID" element={<DiscussionShow />} />
+        <Route
+          path="threads/:discussionID"
+          element={
+            <RequireScope token={token} name="discussions">
+              <DiscussionShow />
+            </RequireScope>
+          }
+        />
         <Route
           path="new"
           element={

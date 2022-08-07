@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { doUpdateIdentityToken, doUpdateRemember } from "../actions/auth";
 import { useNavigate, useLocation } from "react-router-dom";
-// import { actions, createRouteNodeSelector } from "redux-router5";
 
 // External imports
 import {

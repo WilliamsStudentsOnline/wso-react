@@ -8,11 +8,8 @@ import { connect } from "react-redux";
 import { doRemoveCreds } from "../actions/auth";
 
 // External imports
-// Connected Link is the same as link, except it re-renders on route changes
 import { Link } from "react-router-dom";
-// import { ConnectedLink, Link } from "react-router5";
-// import { createRouteNodeSelector } from "redux-router5";
-
+import history from "../lib/history";
 import { removeStateFromStorage } from "../stateStorage";
 import { userTypeStudent } from "../constants/general";
 
@@ -155,8 +152,13 @@ const Nav = ({ currUser, removeCreds, wso }) => {
                   </Link>
                 </li>
                 <li>
-                  {/* TODO: does React Router Link support onClick? */}
-                  <Link onClick={() => logout()} to="/">
+                  <Link
+                    onClick={() => {
+                      logout();
+                      history.go(0);
+                    }}
+                    to="/"
+                  >
                     Logout
                   </Link>
                 </li>

@@ -32,6 +32,7 @@ import { loadState, removeStateFromStorage } from "../stateStorage";
 import configureInterceptors from "../lib/auth";
 import jwtDecode from "jwt-decode";
 import RequireScope from "../router-permissions";
+import usePageTracking from "../lib/usePageTracking";
 
 // More component imports
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
@@ -68,8 +69,8 @@ const App = ({
   wso,
 }) => {
   const navigateTo = useNavigate();
-
   const [initialized, setInitialized] = useState(false);
+  usePageTracking();
 
   const getIPIdentityToken = async () => {
     try {
@@ -190,7 +191,6 @@ const App = ({
         {// only render the routes when api token has been fetched from server
         apiToken !== "" && (
           <Routes>
-            {/* TODO: Google Analytics */}
             <Route index element={<Homepage />} />
             {/* Various modules */}
             <Route

@@ -16,14 +16,9 @@ import store from "./lib/store";
 // Router imports
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import history from "./lib/history";
-// import configureRouter from "./create-router";
-// import setUpRouterPermissions from "./router-permissions";
 
 // Serviceworker import
 import * as serviceWorker from "./serviceWorker";
-
-// External imports
-import ReactGA from "react-ga";
 
 // This code might not work if "this" is used. Test it.
 function throttle(callback, limit) {
@@ -41,21 +36,6 @@ function throttle(callback, limit) {
     }
   };
 }
-
-const initializeAnalytics = (router) => {
-  // Only set up analytics if we are in production to avoid data contamination
-  if (process.env.NODE_ENV === "production") {
-    ReactGA.initialize("UA-150865220-1");
-    router.usePlugin(() => {
-      return {
-        onTransitionSuccess: (toState) => {
-          ReactGA.set({ page: toState.path });
-          ReactGA.pageview(toState.path);
-        },
-      };
-    });
-  }
-};
 
 /**
  * Saves the user data in the appropriate storage depending on user's preferences.
