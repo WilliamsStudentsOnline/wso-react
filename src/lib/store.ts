@@ -47,7 +47,7 @@ const store = configureStore({
       },
       // otherwise courseSchduler would result in `(InternalError): too much recursion`
       // See https://stackoverflow.com/questions/65217815/
-      immutableCheck: false,  
+      immutableCheck: false,
     }),
   devTools: process.env.NODE_ENV !== "production",
 });

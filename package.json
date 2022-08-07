@@ -48,10 +48,10 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "eslint-utils": "1.4.1",
     "glob-all": "^3.3.0",
-    "husky": "^3.0.0",
+    "husky": "^8.0.1",
     "identity-obj-proxy": "^3.0.0",
     "jest-junit": "^6.4.0",
-    "lint-staged": "^9.0.1",
+    "lint-staged": "^13.0.3",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",
     "progress-bar-webpack-plugin": "^1.12.1",
@@ -68,7 +68,11 @@
     "postbuild": "purgecss --config ./purgecss.config.js --out build/static/css",
     "test": "react-scripts test",
     "test:ci": "CI=true react-scripts test ",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint ./src --ext=js,jsx,ts,tsx",
+    "lint:fix": "eslint ./src --ext=js,jsx,ts,tsx --fix",
+    "format": "prettier --write './src/**/*.{js,jsx,ts,tsx,html,css,json}'",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -101,13 +105,15 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx}": [
-      "./node_modules/.bin/eslint --ext .jsx,js --ignore-path .gitignore --fix",
-      "pretty-quick --staged",
-      "git add"
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --ext=js,jsx,ts,tsx --fix",
+      "prettier --write"
+    ],
+    "*.{html,css,json}": [
+      "prettier --write"
     ]
   },
-  "proxy": "https://wso.williams.edu",
+  "proxy": "https://wso-dev.williams.edu",
   "resolutions": {
     "**/**/dot-prop": ">=5.2.0",
     "**/**/elliptic": ">=6.5.3",

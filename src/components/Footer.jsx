@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const Footer = () => {
   return (
@@ -6,9 +6,7 @@ const Footer = () => {
       <section>
         <small>
           &copy;
-          {new Date().getFullYear()}
-          {' '}
-Williams Students Online
+          {new Date().getFullYear()} Williams Students Online
         </small>
         <small>Contact Us at wso-dev [at] wso.williams.edu</small>
       </section>
