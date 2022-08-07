@@ -7,7 +7,7 @@ import {
   OTHERS,
   LEVELS,
   CLASS_TYPES,
-} from "../../constants/constants.json";
+} from "../../constants/constants";
 import {
   SEARCH_COURSE,
   RESET_LOAD,

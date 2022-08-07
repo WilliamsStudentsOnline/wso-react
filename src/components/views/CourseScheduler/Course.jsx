@@ -15,7 +15,7 @@ import {
 } from "../../../actions/course";
 import { getAddedCourses, getHiddenCourses } from "../../../selectors/course";
 import { getTimeFormat } from "../../../selectors/schedulerUtils";
-import { BORDER_PALETTE } from "../../../constants/constants.json";
+import { BORDER_PALETTE } from "../../../constants/constants";
 import { Link } from "react-router-dom";
 
 // External imports
