@@ -6,12 +6,13 @@ import { Line, Paragraph } from "../../Skeleton";
 // Redux imports
 import { connect } from "react-redux";
 import { getCurrUser, getWSO } from "../../../selectors/auth";
-import { actions } from "redux-router5";
 
 // Additional imports
-import { Link } from "react-router5";
+import { Link, useNavigate } from "react-router-dom";
 
-const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
+const DiscussionPost = ({ currUser, post, wso }) => {
+  const navigateTo = useNavigate();
+
   const [deleted, updateDeleted] = useState(false);
   const [edit, setEdit] = useState(false);
   const [reply, updateReply] = useState(post.content);
@@ -29,7 +30,7 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
       setEdit(false);
       updateCurrPost(response.data);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -43,7 +44,7 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
       await wso.bulletinService.deletePost(post.id);
       updateDeleted(true);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -81,10 +82,7 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
   const generateCommentWriter = () => {
     if (currPost.user) {
       return (
-        <Link
-          routeName="facebook.users"
-          routeParams={{ userID: currPost.userID }}
-        >
+        <Link to={`/facebook/users/${currPost.userID}`}>
           {currPost.user.name}
         </Link>
       );
@@ -138,7 +136,6 @@ const DiscussionPost = ({ currUser, navigateTo, post, wso }) => {
 
 DiscussionPost.propTypes = {
   currUser: PropTypes.object,
-  navigateTo: PropTypes.func.isRequired,
   post: PropTypes.object.isRequired,
   wso: PropTypes.object.isRequired,
 };
@@ -164,10 +161,7 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(DiscussionPost);
 export { DiscussionPostSkeleton };

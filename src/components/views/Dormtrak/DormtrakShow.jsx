@@ -9,27 +9,29 @@ import { Line, Photo, Paragraph } from "../../Skeleton";
 // Redux/ Routing imports
 import { getCurrUser, getWSO } from "../../../selectors/auth";
 import { connect } from "react-redux";
-import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
 import { bannerHelper } from "../../../lib/imageHelper";
-import { Link } from "react-router5";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { userTypeStudent } from "../../../constants/general";
 import floorplanHelper from "./floorplanHelper";
 
-const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
+const DormtrakShow = ({ currUser, wso }) => {
+  const navigateTo = useNavigate();
+  const params = useParams();
+
   const [reviews, updateReviews] = useState(null);
   const [dorm, updateDorm] = useState(null);
 
   useEffect(() => {
-    const dormID = route.params.dormID;
+    const dormID = params.dormID;
 
     const loadDorm = async () => {
       try {
         const dormResponse = await wso.dormtrakService.getDorm(dormID);
         updateDorm(dormResponse.data);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: error });
       }
     };
 
@@ -41,13 +43,13 @@ const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
         );
         updateReviews(dormReviewResponse.data);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: error });
       }
     };
 
     loadDorm();
     loadDormReviews();
-  }, [navigateTo, route.params.dormID, wso]);
+  }, [params.dormID, wso]);
 
   const checkUserCommentRights = () => {
     if (!currUser || !currUser.dorm) return false;
@@ -58,7 +60,7 @@ const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
   const surveyLink = () => {
     if (checkUserCommentRights()) {
       return (
-        <Link routeName="dormtrak.newReview">
+        <Link to="/dormtrak/reviews/new">
           <button type="button">Click here to review your dorm room!</button>
         </Link>
       );
@@ -115,9 +117,7 @@ const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
     return (
       <section className="lead">
         <h2>
-          <Link routeName="dormtrak.dorms" routeParams={{ dormID: dorm.id }}>
-            {dorm.name}
-          </Link>
+          <Link to={`/dormtrak/dorms/${dorm.id}`}>{dorm.name}</Link>
         </h2>
         <div>
           <img alt={`${dorm.name} avatar`} src={bannerHelper(dorm.name)} />
@@ -162,26 +162,18 @@ const DormtrakShow = ({ currUser, navigateTo, route, wso }) => {
 
 DormtrakShow.propTypes = {
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
 DormtrakShow.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("dormtrak.dorms");
-
   return (state) => ({
     currUser: getCurrUser(state),
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(DormtrakShow);

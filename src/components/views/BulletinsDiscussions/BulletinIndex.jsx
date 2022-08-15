@@ -9,11 +9,12 @@ import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { connect } from "react-redux";
 
 // Additional imports
-import { Link } from "react-router5";
-import { actions } from "redux-router5";
+import { Link, useNavigate } from "react-router-dom";
 import { bulletinTypeRide } from "../../../constants/general";
 
-const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
+const BulletinIndex = ({ currUser, type, wso }) => {
+  const navigateTo = useNavigate();
+
   const [bulletins, updateBulletins] = useState(null);
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -30,7 +31,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
       updateBulletins(bulletinsResponse.data);
       updateTotal(bulletinsResponse.paginationTotal);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -47,7 +48,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
       updateBulletins(ridesResponse.data);
       updateTotal(ridesResponse.paginationTotal);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -97,7 +98,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
       }
       loadNext(page);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -115,15 +116,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
       title = bulletin.title;
     }
 
-    return (
-      <Link
-        routeName="bulletins.show"
-        routeParams={{ type, bulletinID: bulletin.id }}
-        routeOptions={{ reload: true }}
-      >
-        {title}
-      </Link>
-    );
+    return <Link to={`/bulletins/${type}/${bulletin.id}`}>{title}</Link>;
   };
 
   // Generate Bulletin date
@@ -143,12 +136,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
     if (currUser?.id === bulletin.user.id) {
       return (
         <>
-          <Link
-            routeName="bulletins.edit"
-            routeParams={{ bulletinID: bulletin.id, type }}
-          >
-            Edit
-          </Link>
+          <Link to={`/bulletins/${type}/${bulletin.id}/edit`}>Edit</Link>
           &nbsp;|&nbsp;
         </>
       );
@@ -167,8 +155,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
           &nbsp;[&nbsp;
           {editLink(bulletin)}
           <Link
-            routeName="bulletins"
-            routeParams={{ type }}
+            to={`/bulletins/${type}`}
             onClick={(event) => deleteHandler(event, bulletin.id)}
           >
             Delete
@@ -266,7 +253,7 @@ const BulletinIndex = ({ currUser, navigateTo, type, wso }) => {
 
 BulletinIndex.propTypes = {
   currUser: PropTypes.object,
-  navigateTo: PropTypes.func.isRequired,
+  // navigateTo: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
   wso: PropTypes.object.isRequired,
 };
@@ -281,8 +268,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
+  // navigateTo: (location, params, opts) =>
+  //   dispatch(actions.navigateTo(location, params, opts)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BulletinIndex);

@@ -177,6 +177,8 @@ const floorplanMap = new Map([
  *
  * @param {String} name - Name of dormitory whose floorplan links we wish to obtain.
  */
-export default (name) => {
+const floorplanHelper = (name) => {
   return floorplanMap.get(name);
 };
+
+export default floorplanHelper;

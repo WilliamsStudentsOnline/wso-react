@@ -4,10 +4,11 @@ import PropTypes from "prop-types";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { actions } from "redux-router5";
+import { useNavigate } from "react-router-dom";
 import { getWSO } from "../../../selectors/auth";
 
-const DiscussionsNew = ({ wso, navigateTo }) => {
+const DiscussionsNew = ({ wso }) => {
+  const navigateTo = useNavigate();
   const [errors, updateErrors] = useState([]);
 
   // Discussion parameters
@@ -50,7 +51,7 @@ const DiscussionsNew = ({ wso, navigateTo }) => {
 
     try {
       const response = await wso.bulletinService.createDiscussion(params);
-      navigateTo("discussions.show", { discussionID: response.data.id });
+      navigateTo(`/discussions/threads/${response.data.id}`);
     } catch (error) {
       if (error.errors) {
         updateErrors(error.errors);
@@ -93,7 +94,6 @@ const DiscussionsNew = ({ wso, navigateTo }) => {
 
 DiscussionsNew.propTypes = {
   wso: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
 };
 
 DiscussionsNew.defaultProps = {};
@@ -102,9 +102,6 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(DiscussionsNew);

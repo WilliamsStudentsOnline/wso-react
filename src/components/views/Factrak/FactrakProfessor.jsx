@@ -9,13 +9,15 @@ import { Line } from "../../Skeleton";
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
-import { actions, createRouteNodeSelector } from "redux-router5";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import { Link } from "react-router5";
 
-const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
+const FactrakProfessor = ({ currUser, token, wso }) => {
+  const params = useParams();
+  const navigateTo = useNavigate();
+
   const [professor, updateProfessor] = useState(null);
   const [department, updateDepartment] = useState(null);
   const [ratings, updateRatings] = useState(null);
@@ -23,7 +25,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
-    const professorParam = route.params.profID;
+    const professorParam = params.profID;
 
     const loadProfs = async (professorID) => {
       try {
@@ -38,7 +40,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
         );
         updateDepartment(departmentResponse.data);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -52,26 +54,28 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
         if (error.errorCode === 1330) {
           // Do nothing - This should be expected if the user has not fulfilled the 2 surveys
         } else {
-          navigateTo("error", { error }, { replace: true });
+          navigateTo("/error", { replace: true, state: { error } });
         }
       }
     };
 
     const loadSurveys = async (professorID) => {
-      const params = {
+      const queryParams = {
         professorID,
         preload: ["course"],
         populateAgreements: true,
         populateClientAgreement: true,
       };
       try {
-        const surveysResponse = await wso.factrakService.listSurveys(params);
+        const surveysResponse = await wso.factrakService.listSurveys(
+          queryParams
+        );
         updateSurveys(surveysResponse.data);
       } catch (error) {
         if (error.errorCode === 1330) {
           // Do nothing - This should be expected if the user has not fulfilled the 2 surveys
         } else {
-          navigateTo("error", { error }, { replace: true });
+          navigateTo("/error", { replace: true, state: { error } });
         }
       }
     };
@@ -84,7 +88,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
     } else {
       updateSurveys([...Array(10)].map((_, id) => ({ id })));
     }
-  }, [navigateTo, route.params.professor, route.params.profID, token, wso]);
+  }, [params.professor, params.profID, token, wso]);
 
   if (!professor)
     return (
@@ -130,10 +134,7 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
           <span>{professor?.title}</span>
         </h5>
         <br />
-        <Link
-          routeName="factrak.newSurvey"
-          routeParams={{ profID: professor.id }}
-        >
+        <Link to={`/factrak/surveys/new/${professor.id}`}>
           <button type="button">Click here to review this professor</button>
         </Link>
         <br />
@@ -176,8 +177,6 @@ const FactrakProfessor = ({ currUser, navigateTo, route, token, wso }) => {
 
 FactrakProfessor.propTypes = {
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
   wso: PropTypes.object.isRequired,
 };
@@ -185,19 +184,11 @@ FactrakProfessor.propTypes = {
 FactrakProfessor.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("factrak.professors");
-
   return (state) => ({
     currUser: getCurrUser(state),
     token: getAPIToken(state),
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakProfessor);
+export default connect(mapStateToProps)(FactrakProfessor);

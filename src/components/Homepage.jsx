@@ -1,6 +1,5 @@
 // React imports
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 
 // Component imports
 import "./stylesheets/Homepage.css";
@@ -8,9 +7,10 @@ import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 
 // Redux Imports
 import { connect } from "react-redux";
-import { actions } from "redux-router5";
+import { useNavigate } from "react-router-dom";
 
-const Homepage = ({ navigateTo }) => {
+const Homepage = () => {
+  const navigateTo = useNavigate();
   const bulletinTypeWords = [
     "Discussions",
     "Announcements",
@@ -24,7 +24,7 @@ const Homepage = ({ navigateTo }) => {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    navigateTo("facebook", { q: query }, { reload: true });
+    navigateTo(`/facebook?q=${query}`, { reload: true });
   };
 
   return (
@@ -72,13 +72,4 @@ const Homepage = ({ navigateTo }) => {
   );
 };
 
-Homepage.propTypes = { navigateTo: PropTypes.func.isRequired };
-
-Homepage.defaultProps = {};
-
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(null, mapDispatchToProps)(Homepage);
+export default connect()(Homepage);

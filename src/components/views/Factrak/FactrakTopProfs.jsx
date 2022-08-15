@@ -10,13 +10,21 @@ import FactrakDeficitMessage from "./FactrakUtils";
 // Redux imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
-import { createRouteNodeSelector, actions } from "redux-router5";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import { Link } from "react-router5";
 
-const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
+const FactrakTopProfs = ({ currUser, token, wso }) => {
+  const navigateTo = useNavigate();
+  const params = useParams();
+  const [searchParams] = useSearchParams();
+
   const [profs, updateProfs] = useState(null);
   const [metric, updateMetric] = useState("avgWouldTakeAnother");
   const [ascending, updateAscending] = useState(false);
@@ -41,26 +49,26 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
 
   useEffect(() => {
     const loadProfs = async () => {
-      const params = {
+      const queryParams = {
         metric: metricSwitch(metric), // default metric
         ascending,
       };
 
-      if (route.params.aos) {
-        params.areaOfStudyID = route.params.aos;
+      if (params.aos) {
+        queryParams.areaOfStudyID = params.aos;
       }
 
       // Loads in professors and the ratings for each one
       try {
         updateProfs(null);
-        const profRanked = await wso.factrakService.listProfessors(params);
+        const profRanked = await wso.factrakService.listProfessors(queryParams);
         const profRankedData = profRanked.data;
-        params.metric = metric;
+        queryParams.metric = metric;
         const withRanking = await Promise.all(
           profRankedData.map(async (prof) => {
             const ratingResponse = await wso.factrakService.getProfessorRatings(
               prof.id,
-              params
+              queryParams
             );
             const ratingResponseData = ratingResponse.data;
             return {
@@ -71,14 +79,14 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
         );
         updateProfs(withRanking);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
       loadProfs();
     }
-  }, [navigateTo, token, wso, route.params.aos, metric]);
+  }, [token, wso, params.aos, metric]);
 
   // Generates a row containing the prof information.
   const generateProfRow = (prof) => {
@@ -95,16 +103,11 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
     return (
       <tr key={prof.id}>
         <td>
-          <Link
-            routeName="factrak.professors"
-            routeParams={{ profID: prof.id }}
-          >
-            {prof.name}
-          </Link>
+          <Link to={`/factrak/professor/${prof.id}`}>{prof.name}</Link>
         </td>
         <td>{rating}</td>
         <td>
-          <a href={`mailto:${prof.unixID}@williams.edu`}>{prof.unixID}</a>
+          <Link to={`/facebook/users/${prof.id}`}>{prof.unixID}</Link>
         </td>
       </tr>
     );
@@ -137,10 +140,9 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
               <th> Name </th>
               <th>
                 <Link
-                  routeName="factrak.rankings"
-                  routeParams={{
-                    aos: route.params.aos,
-                  }}
+                  to={`/factrak/rankings/${
+                    params.aos
+                  }?${searchParams.toString()}`}
                   onClick={() => {
                     updateProfs(profs.reverse());
                     updateAscending(!ascending);
@@ -180,6 +182,7 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
           <Select
             onChange={(event) => {
               updateMetric(event.target.value);
+              // TODO: Update the URL to reflect the new metric
             }}
             options={[
               "Approachability",
@@ -214,28 +217,18 @@ const FactrakTopProfs = ({ currUser, navigateTo, token, wso, route }) => {
 
 FactrakTopProfs.propTypes = {
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   token: PropTypes.string.isRequired,
   wso: PropTypes.object.isRequired,
-  route: PropTypes.object.isRequired,
 };
 
 FactrakTopProfs.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("factrak.rankings");
-
   return (state) => ({
     currUser: getCurrUser(state),
     token: getAPIToken(state),
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakTopProfs);
+export default connect(mapStateToProps)(FactrakTopProfs);

@@ -5,12 +5,11 @@ import PropTypes from "prop-types";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
-import { actions, createRouteNodeSelector } from "redux-router5";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
-// Additional imports
-import { Link } from "react-router5";
-
-const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
+const FactrakLayout = ({ wso, children, currUser }) => {
+  const navigateTo = useNavigate();
+  const [searchParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -19,8 +18,11 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
     let isMounted = true;
 
     const loadQuery = () => {
-      if (route.params.q) setQuery(route.params.q);
-      else setQuery(""); // Needed to reset if user clears the box.
+      if (searchParams?.get("q")) {
+        setQuery(searchParams.get("q"));
+      } else {
+        setQuery("");
+      } // Needed to reset if user clears the box.
     };
 
     if (isMounted) {
@@ -31,7 +33,7 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
     return () => {
       isMounted = false;
     };
-  }, [route.params.q, route.path]);
+  }, [searchParams]);
 
   // Initiates new autocomplete
   const factrakAutocomplete = async (event) => {
@@ -60,7 +62,7 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    navigateTo("factrak.search", { q: query }, { reload: true });
+    navigateTo(`/factrak/search?q=${query}`);
   };
 
   const focusHandler = () => {
@@ -75,10 +77,11 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
     if (suggestion.type && suggestion.type === "area") {
       return (
         <Link
-          routeName="factrak.areasOfStudy"
-          routeParams={{ area: suggestion.id }}
-          onMouseDown={(e) => e.preventDefault()}
-          successCallback={() => setShowSuggestions(false)}
+          to={`/factrak/areasOfStudy/${suggestion.id}`}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            setShowSuggestions(false);
+          }}
         >
           {suggestion.value}
         </Link>
@@ -87,10 +90,11 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
     if (suggestion.type && suggestion.type === "course") {
       return (
         <Link
-          routeName="factrak.courses"
-          routeParams={{ courseID: suggestion.id }}
-          onMouseDown={(e) => e.preventDefault()}
-          successCallback={() => setShowSuggestions(false)}
+          to={`/factrak/courses/${suggestion.id}`}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            setShowSuggestions(false);
+          }}
         >
           {suggestion.value}
         </Link>
@@ -99,10 +103,11 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
     if (suggestion.type && suggestion.type === "professor") {
       return (
         <Link
-          routeName="factrak.professors"
-          routeParams={{ profID: suggestion.id }}
-          onMouseDown={(e) => e.preventDefault()}
-          successCallback={() => setShowSuggestions(false)}
+          to={`/factrak/professors/${suggestion.id}`}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            setShowSuggestions(false);
+          }}
         >
           {suggestion.value}
         </Link>
@@ -141,25 +146,25 @@ const FactrakLayout = ({ wso, children, currUser, navigateTo, route }) => {
         <header>
           <div className="page-head">
             <h1>
-              <Link routeName="factrak">Factrak</Link>
+              <Link to="/factrak">Factrak</Link>
             </h1>
 
             <ul>
               <li>
-                <Link routeName="factrak">Home</Link>
+                <Link to="/factrak">Home</Link>
               </li>
               <li>
-                <Link routeName="factrak.policy">Policy</Link>
+                <Link to="/factrak/policy">Policy</Link>
               </li>
               <li>
-                <Link routeName="factrak.surveys">Your Reviews</Link>
+                <Link to="/factrak/surveys">Your Reviews</Link>
               </li>
               <li>
-                <Link routeName="factrak.rankings">Rankings</Link>
+                <Link to="/factrak/rankings">Rankings</Link>
               </li>
               {currUser.factrakAdmin && (
                 <li>
-                  <Link routeName="factrak.moderate">Moderate</Link>
+                  <Link to="/factrak/moderate">Moderate</Link>
                 </li>
               )}
             </ul>
@@ -199,25 +204,17 @@ FactrakLayout.propTypes = {
   wso: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired,
   currUser: PropTypes.object,
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
 };
 
 FactrakLayout.defaultProps = { currUser: {} };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("");
-
   return (state) => ({
     wso: getWSO(state),
     currUser: getCurrUser(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(FactrakLayout);

@@ -5,9 +5,11 @@ import PropTypes from "prop-types";
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getCurrUser, getWSO } from "../../../selectors/auth";
-import { actions } from "redux-router5";
+import { useNavigate } from "react-router-dom";
 
-const DormtrakPolicy = ({ currUser, navigateTo, wso }) => {
+const DormtrakPolicy = ({ currUser, wso }) => {
+  const navigateTo = useNavigate();
+
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
   const [updated, setUpdated] = useState(false);
 
@@ -25,7 +27,7 @@ const DormtrakPolicy = ({ currUser, navigateTo, wso }) => {
       await wso.userService.updateUser("me", updateParams);
       setUpdated(true);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: error });
     }
   };
 
@@ -33,13 +35,13 @@ const DormtrakPolicy = ({ currUser, navigateTo, wso }) => {
   useEffect(() => {
     let isMounted = true;
     if (updated && isMounted) {
-      navigateTo("dormtrak", {}, { reload: true });
+      navigateTo("dormtrak", { reload: true });
     }
 
     return () => {
       isMounted = false;
     };
-  }, [navigateTo, updated, wso]);
+  }, [updated, wso]);
 
   return (
     <div className="article">
@@ -118,7 +120,6 @@ const DormtrakPolicy = ({ currUser, navigateTo, wso }) => {
 
 DormtrakPolicy.propTypes = {
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -127,9 +128,6 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(DormtrakPolicy);

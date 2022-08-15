@@ -5,56 +5,61 @@ import PropTypes from "prop-types";
 // Component imports
 import DiscussionLayout from "./DiscussionLayout";
 import DiscussionShow from "./DiscussionShow";
-import DiscussionPost from "./DiscussionPost";
 import DiscussionIndex from "./DiscussionIndex";
 import DiscussionNew from "./DiscussionNew";
+import Error404 from "../Errors/Error404";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { createRouteNodeSelector } from "redux-router5";
+import { Routes, Route } from "react-router-dom";
 
 // External Imports
 import { getAPIToken } from "../../../selectors/auth";
+import RequireScope from "../../../router-permissions";
 
-const DiscussionMain = ({ route }) => {
-  const DiscussionBody = () => {
-    const splitRoute = route.name.split(".");
-
-    if (splitRoute.length < 2) {
-      return <DiscussionIndex />;
-    }
-
-    switch (splitRoute[1]) {
-      case "show":
-        return <DiscussionShow />;
-      case "posts":
-        return <DiscussionPost />;
-      case "new":
-        return <DiscussionNew />;
-      default:
-        return <DiscussionIndex />;
-    }
-  };
-
+const DiscussionMain = ({ token }) => {
   return (
-    <DiscussionLayout type={route.params.type}>
-      {DiscussionBody(route.params.type)}
+    <DiscussionLayout>
+      <Routes>
+        <Route
+          index
+          element={
+            <RequireScope token={token} name="discussions">
+              <DiscussionIndex />
+            </RequireScope>
+          }
+        />
+        <Route
+          path="threads/:discussionID"
+          element={
+            <RequireScope token={token} name="discussions">
+              <DiscussionShow />
+            </RequireScope>
+          }
+        />
+        <Route
+          path="new"
+          element={
+            <RequireScope token={token} name="discussions.new">
+              <DiscussionNew />
+            </RequireScope>
+          }
+        />
+        <Route path="*" element={<Error404 />} />
+      </Routes>
     </DiscussionLayout>
   );
 };
 
 DiscussionMain.propTypes = {
-  route: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
 DiscussionMain.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("discussions");
-
   return (state) => ({
     token: getAPIToken(state),
-    ...routeNodeSelector(state),
   });
 };
 

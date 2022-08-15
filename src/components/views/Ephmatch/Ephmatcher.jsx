@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Photo } from "../../Skeleton";
 
 // External imports
-import { ConnectedLink } from "react-router5";
+import { Link } from "react-router-dom";
 import { IoMdText } from "react-icons/io";
 import { FaSnapchatGhost, FaInstagram } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
@@ -55,12 +55,7 @@ const Ephmatcher = ({
           {ephmatcher.tags.map((tag, i) => {
             return (
               <li className="view-tag" key={tag.name}>
-                <ConnectedLink
-                  routeName="facebook"
-                  routeParams={{ q: `tag:"${tag.name}"` }}
-                >
-                  {tag.name}
-                </ConnectedLink>
+                <Link to={`/facebook/?q=${tag.name}`}>{tag.name}</Link>
                 {i < ephmatcher.tags.length - 1 && <span>,&nbsp;</span>}
               </li>
             );

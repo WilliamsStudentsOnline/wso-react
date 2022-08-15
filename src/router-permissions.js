@@ -1,3 +1,7 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { Navigate, useLocation } from "react-router-dom";
+import MoonLoader from "react-spinners/MoonLoader";
 import { containsOneOfScopes, getTokenLevel, scopes } from "./lib/general";
 
 /**
@@ -59,44 +63,53 @@ const hasNecessaryTokenLevel = (token, routeName) => {
   );
 };
 
-/**
- * Default export that configures the router and the store to enable
- * the checking of user permissions.
- *
- * @param router - The main router controlling the route transitions
- * @param store - The main Redux store.
- */
-export default (router, store) => {
-  Object.keys(routePermissions).forEach((key) => {
-    router.canActivate(key, () => (toState, fromState, done) => {
-      const token = store.getState().authState.apiToken;
+const RequireScope = ({ token, name, children }) => {
+  const location = useLocation();
 
-      if (
-        hasNecessaryScopes(token, key) &&
-        hasNecessaryTokenLevel(token, key)
-      ) {
-        return true;
-      }
+  // API Token is not set yet, display loading screen
+  if (token === "") {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <MoonLoader loading />
+        <div style={{ marginTop: "1em", textAlign: "center" }}>
+          Authenticating you with our server...
+          <br />
+          This may take a few seconds.
+        </div>
+      </div>
+    );
+  }
 
-      return done({
-        redirect: {
-          name: "login",
-          params: {
-            previousRoute: toState,
-            requiredScopes: routePermissions[key].scopes || [],
-            requiredLevel: routePermissions[key].tokenLevel || -1,
-          },
-        },
-      });
-    });
-  });
+  // only render children if API Token is set and has the necessary scopes
+  if (hasNecessaryScopes(token, name) && hasNecessaryTokenLevel(token, name)) {
+    return children;
+  }
 
-  router.canActivate("login", () => (toState, fromState, done) => {
-    const token = store.getState().authState.token;
-
-    if (getTokenLevel(token) >= 3) {
-      return done({ redirect: { name: "home" } });
-    }
-    return true;
-  });
+  // otherwise, redirect to login page
+  return (
+    <Navigate
+      to="/login"
+      state={{
+        from: location,
+        requiredScopes: routePermissions[name].scopes || [],
+        requiredLevel: routePermissions[name].tokenLevel || -1,
+      }}
+      replace
+    />
+  );
 };
+
+RequireScope.propTypes = {
+  token: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
+};
+
+export default RequireScope;

@@ -5,26 +5,28 @@ import PropTypes from "prop-types";
 // Redux imports
 import { connect } from "react-redux";
 import { getCurrUser } from "../../../selectors/auth";
-import { actions, createRouteNodeSelector } from "redux-router5";
 
 // Additional imports
-import { Link } from "react-router5";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 
-const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
+const FacebookLayout = ({ children, currUser }) => {
+  const navigateTo = useNavigate();
+  const [searchParams] = useSearchParams();
   const [query, updateQuery] = useState("");
 
   useEffect(() => {
-    if (route.params.q) {
-      updateQuery(route.params.q);
+    if (searchParams?.get("q")) {
+      updateQuery(searchParams.get("q"));
     } else {
       updateQuery("");
     }
-  }, [route.params.q]);
+  }, [searchParams]);
 
   // Handles submissions
   const submitHandler = (event) => {
     event.preventDefault();
-    navigateTo("facebook", { q: query });
+    searchParams.set("q", query);
+    navigateTo(`/facebook?${searchParams.toString()}`);
   };
 
   return (
@@ -32,28 +34,23 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
       <header>
         <div className="page-head">
           <h1>
-            <Link routeName="facebook">Facebook</Link>
+            <Link to="/facebook">Facebook</Link>
           </h1>
           <ul>
             <li>
-              <Link routeName="facebook">Search</Link>
+              <Link to="/facebook">Search</Link>
             </li>
             <li>
-              <Link routeName="facebook.help">Help</Link>
+              <Link to="/facebook/help">Help</Link>
             </li>
             {currUser === null
               ? null
               : [
                   <li key="view">
-                    <Link
-                      routeName="facebook.users"
-                      routeParams={{ userID: currUser.id }}
-                    >
-                      View
-                    </Link>
+                    <Link to={`/facebook/users/${currUser.id}`}>View</Link>
                   </li>,
                   <li key="edit">
-                    <Link routeName="facebook.edit"> Edit </Link>
+                    <Link to="/facebook/edit"> Edit </Link>
                   </li>,
                 ]}
           </ul>
@@ -83,8 +80,6 @@ const FacebookLayout = ({ children, currUser, navigateTo, route }) => {
 FacebookLayout.propTypes = {
   children: PropTypes.object,
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
 };
 
 FacebookLayout.defaultProps = {
@@ -92,17 +87,11 @@ FacebookLayout.defaultProps = {
 };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("facebook");
-
   return (state) => ({
     currUser: getCurrUser(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
+const mapDispatchToProps = (dispatch) => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookLayout);

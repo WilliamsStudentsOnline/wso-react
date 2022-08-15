@@ -2,10 +2,10 @@
 import React from "react";
 
 export interface error404Props {
-  message?: String;
+  message?: string;
 }
 
-const Error404 = ({ message }: error404Props) => {
+const Error404 = ({ message }: error404Props): JSX.Element => {
   return (
     <header>
       <h1>Whoops! Page not found!</h1>

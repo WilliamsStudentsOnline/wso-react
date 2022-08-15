@@ -10,14 +10,22 @@ import EphmatchOptIn from "./EphmatchOptIn";
 
 // Redux/Routing imports
 import { connect } from "react-redux";
-import { actions, createRouteNodeSelector } from "redux-router5";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { getAPIToken, getWSO } from "../../../selectors/auth";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 
 import { format } from "timeago.js";
-import Redirect from "../../Redirect";
 
-const EphmatchMain = ({ navigateTo, route, token, wso }) => {
+const EphmatchMain = ({ token, wso }) => {
+  const navigateTo = useNavigate();
+  const location = useLocation();
+
   const [availability, updateAvailability] = useState(null);
   const [matches, updateMatches] = useState([]);
   const [matchesTotalCount, updateMatchesTotalCount] = useState(0);
@@ -32,7 +40,7 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
           updateAvailability(availabilityResp.data);
         }
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -76,19 +84,15 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigateTo, route, wso]);
+  }, [wso, location.pathname]);
 
   const EphmatchBody = () => {
     // If token doesnt have access to matches, must mean they need to create a new account
-    if (
-      !containsOneOfScopes(token, [scopes.ScopeEphmatchMatches]) &&
-      route.name !== "ephmatch.optIn"
-    ) {
-      return <Redirect to="ephmatch.optIn" />;
+    if (!containsOneOfScopes(token, [scopes.ScopeEphmatchMatches])) {
+      return <EphmatchOptIn />;
     }
 
-    const splitRoute = route.name.split(".");
-    if (splitRoute.length === 1) {
+    const Home = () => {
       // If token doesnt have access to profiles, must mean that ephmatch is closed for the year
       //  || new Date() < ephmatchEndDate
       if (
@@ -114,21 +118,18 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
           </section>
         </article>
       );
-    }
+    };
 
-    switch (splitRoute[1]) {
-      case "profile":
-        return <EphmatchProfile />;
-      case "matches":
-        return <EphmatchMatch matches={matches} />;
-      case "optOut":
-        return <EphmatchOptOut />;
-      case "optIn":
-        return <EphmatchOptIn />;
-      default:
-        navigateTo("ephmatch");
-        return null;
-    }
+    return (
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path="profile" element={<EphmatchProfile />} />
+        <Route path="matches" element={<EphmatchMatch matches={matches} />} />
+        <Route path="opt-out" element={<EphmatchOptOut />} />
+        <Route path="opt-in" element={<EphmatchOptIn />} />
+        <Route path="*" element={<Home />} />
+      </Routes>
+    );
   };
 
   if (
@@ -138,7 +139,7 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
       scopes.ScopeEphmatchProfiles,
     ])
   ) {
-    return <Redirect to="403" />;
+    return <Navigate to="/403" />;
   }
 
   return (
@@ -154,8 +155,6 @@ const EphmatchMain = ({ navigateTo, route, token, wso }) => {
 };
 
 EphmatchMain.propTypes = {
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
   wso: PropTypes.object.isRequired,
 };
@@ -163,18 +162,10 @@ EphmatchMain.propTypes = {
 // EphmatchMain.defaultProps = { profile: null };
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("ephmatch");
-
   return (state) => ({
     token: getAPIToken(state),
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(EphmatchMain);
+export default connect(mapStateToProps)(EphmatchMain);

@@ -41,6 +41,7 @@ const randPercentBetween = (min, max) => {
   return `${randomPercent}%`;
 };
 
+// eslint-disable-next-line react/display-name
 const List = React.memo(({ width, height, center, className, numRows }) => {
   return (
     <div className="skeleton-container">

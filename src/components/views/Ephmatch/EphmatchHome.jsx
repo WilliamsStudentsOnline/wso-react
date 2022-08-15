@@ -7,12 +7,14 @@ import Select from "../../Select";
 // Redux/ routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { actions } from "redux-router5";
+import { useNavigate } from "react-router-dom";
 
 // Additional imports
 import Ephmatcher from "./Ephmatcher";
 
-const EphmatchHome = ({ navigateTo, wso }) => {
+const EphmatchHome = ({ wso }) => {
+  const navigateTo = useNavigate();
+
   const perPage = 20; // Number of results per page
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
@@ -40,7 +42,7 @@ const EphmatchHome = ({ navigateTo, wso }) => {
           updateTotal(ephmatchersResponse.paginationTotal);
         }
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -49,7 +51,7 @@ const EphmatchHome = ({ navigateTo, wso }) => {
     return () => {
       isMounted = false;
     };
-  }, [navigateTo, page, sort, wso]);
+  }, [page, sort, wso]);
 
   const selectEphmatcher = async (event, index) => {
     // Alternatively, use the classname to determine the method to be called.
@@ -71,7 +73,7 @@ const EphmatchHome = ({ navigateTo, wso }) => {
 
       ephmatchers.splice(index, 1, updatedEphmatcher.data);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -175,7 +177,6 @@ const EphmatchHome = ({ navigateTo, wso }) => {
 };
 
 EphmatchHome.propTypes = {
-  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -185,9 +186,4 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(EphmatchHome);
+export default connect(mapStateToProps)(EphmatchHome);

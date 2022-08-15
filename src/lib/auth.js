@@ -1,7 +1,14 @@
-import { doUpdateAPIToken, doUpdateUser, doUpdateWSO } from "../actions/auth";
+import {
+  doUpdateAPIToken,
+  doUpdateUser,
+  doUpdateWSO,
+  doRemoveCreds,
+} from "../actions/auth";
 import jwtDecode from "jwt-decode";
 import { SimpleAuthentication } from "wso-api-client";
-import { actions } from "redux-router5";
+
+import store from "./store";
+import history from "./history";
 
 /**
  * Checks whether the request is made with a token header. We claim that this is
@@ -19,7 +26,7 @@ const hasTokenHeader = (config) => {
  * @returns Updated token
  */
 const updateAPIToken = async () => {
-  const authState = window.store.getState().authState;
+  const authState = store.getState().authState;
 
   let token;
   try {
@@ -36,13 +43,14 @@ const updateAPIToken = async () => {
     const userResponse = await updatedWSO.userService.getUser("me");
     const user = userResponse.data;
 
-    window.store.dispatch(doUpdateAPIToken(token));
-    window.store.dispatch(doUpdateWSO(updatedWSO));
-    window.store.dispatch(doUpdateUser(user));
+    store.dispatch(doUpdateAPIToken(token));
+    store.dispatch(doUpdateWSO(updatedWSO));
+    store.dispatch(doUpdateUser(user));
   } catch (error) {
-    // eslint-disable no-empty
-
-    window.store.dispatch(actions.navigateTo("login"));
+    // on error (likely due to expired identityToken),
+    // remove all credentials and redirect to login
+    store.dispatch(doRemoveCreds());
+    history.push("/login");
     return null;
   }
   return token;
@@ -56,7 +64,7 @@ const updateAPIToken = async () => {
  *
  * @param {String} token - JWT Token
  */
-const tokenIsExpired = (token) => {
+export const tokenIsExpired = (token) => {
   try {
     const decoded = jwtDecode(token);
     if (decoded?.exp) {

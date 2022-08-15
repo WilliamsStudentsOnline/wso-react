@@ -7,10 +7,10 @@ import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
-import { Link } from "react-router5";
-import { actions } from "redux-router5";
+import { Link, useNavigate } from "react-router-dom";
 
-const FactrakModerate = ({ navigateTo, wso }) => {
+const FactrakModerate = ({ wso }) => {
+  const navigateTo = useNavigate();
   const [flagged, updateFlagged] = useState([]);
 
   // Loads all the flagged courses on mount.
@@ -26,12 +26,12 @@ const FactrakModerate = ({ navigateTo, wso }) => {
 
         updateFlagged(flaggedResponse.data);
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     loadFlagged();
-  }, [navigateTo, wso]);
+  }, [wso]);
 
   // Unflag the survey
   const unflag = async (surveyID) => {
@@ -39,7 +39,7 @@ const FactrakModerate = ({ navigateTo, wso }) => {
       await wso.factrakService.unflagSurveyAdmin(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -53,7 +53,7 @@ const FactrakModerate = ({ navigateTo, wso }) => {
       await wso.factrakService.deleteSurvey(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -63,17 +63,11 @@ const FactrakModerate = ({ navigateTo, wso }) => {
       <div className="comment" key={`comment${f.id}`} id={`comment${f.id}`}>
         <div>
           <span>
-            <Link
-              routeName="factrak.professors"
-              routeParams={{ profID: f.professorID }}
-            >
+            <Link to={`/factrak/professors/${f.professorID}`}>
               {f.professor.name}
             </Link>
             &nbsp;
-            <Link
-              routeName="factrak.courses"
-              routeParams={{ courseID: f.course.id }}
-            >
+            <Link to={`/factrak/courses/${f.courseID}`}>
               {`${f.course.areaOfStudy.abbreviation} ${f.course.number}`}
             </Link>{" "}
             (+{f.totalAgree}, -{f.totalDisagree})
@@ -115,7 +109,6 @@ const FactrakModerate = ({ navigateTo, wso }) => {
 };
 
 FactrakModerate.propTypes = {
-  navigateTo: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
@@ -123,9 +116,4 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakModerate);
+export default connect(mapStateToProps)(FactrakModerate);

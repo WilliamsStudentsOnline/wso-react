@@ -6,13 +6,17 @@ import "../../stylesheets/FactrakSurvey.css";
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { createRouteNodeSelector, actions } from "redux-router5";
+import { useNavigate, useParams } from "react-router-dom";
 
-const FactrakSurvey = ({ wso, route, navigateTo }) => {
+const FactrakSurvey = ({ wso }) => {
+  const navigateTo = useNavigate();
+  const params = useParams();
+
   const [survey, updateSurvey] = useState(null);
   const [prof, updateProf] = useState(null);
 
-  const edit = route.name.split(".")[1] === "editSurvey";
+  // TODO: find out if edit can be passed in as a prop
+  const edit = params?.surveyID != null;
 
   const [comment, updateComment] = useState("");
   const [courseAOS, updateCourseAOS] = useState("");
@@ -30,8 +34,8 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
   const [courseSemester, updateCourseSemester] = useState("");
   const [courseFormat, updateCourseFormat] = useState("");
 
-  const professorParam = route.params.profID;
-  const surveyParam = route.params.surveyID;
+  const professorParam = params.profID;
+  const surveyParam = params.surveyID;
   const [areasOfStudy, updateAreasOfStudy] = useState([]);
 
   useEffect(() => {
@@ -40,7 +44,7 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         const profResponse = await wso.factrakService.getProfessor(professorID);
         updateProf(profResponse.data);
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -69,7 +73,7 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         );
         updateCourseFormat(surveyData.courseFormat);
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -78,14 +82,14 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
         const areasOfStudyResponse = await wso.factrakService.listAreasOfStudy();
         updateAreasOfStudy(areasOfStudyResponse.data);
       } catch (error) {
-        navigateTo("error", { error });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     if (surveyParam) loadSurvey(surveyParam);
     if (professorParam) loadProf(professorParam);
     loadAreasOfStudy();
-  }, [navigateTo, professorParam, surveyParam, wso]);
+  }, [professorParam, surveyParam, wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -103,6 +107,11 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
 
     if (courseSemester === "") {
       updateErrors(["Please enter a course semester"]);
+      return;
+    }
+
+    if (comment === "") {
+      updateErrors(["Please enter comment"]);
       return;
     }
 
@@ -136,9 +145,9 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
       } else {
         await wso.factrakService.createSurvey(surveyParams);
       }
-      navigateTo("factrak.surveys");
+      navigateTo("/factrak/surveys");
     } catch (error) {
-      updateErrors([error.message]);
+      updateErrors([error.message, ...(error?.errors || [])]);
     }
   };
 
@@ -475,24 +484,14 @@ const FactrakSurvey = ({ wso, route, navigateTo }) => {
 
 FactrakSurvey.propTypes = {
   wso: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
 };
 
 FactrakSurvey.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("factrak.surveys");
-
   return (state) => ({
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakSurvey);
+export default connect(mapStateToProps)(FactrakSurvey);

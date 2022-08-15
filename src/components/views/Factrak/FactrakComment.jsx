@@ -8,10 +8,9 @@ import Button from "../../Components";
 import { connect } from "react-redux";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
 import { doUpdateUser } from "../../../actions/auth";
-import { actions } from "redux-router5";
 
 // Additional Imports
-import { Link } from "react-router5";
+import { Link, useNavigate } from "react-router-dom";
 import { format } from "timeago.js";
 
 const FactrakComment = ({
@@ -19,10 +18,10 @@ const FactrakComment = ({
   wso,
   comment,
   currUser,
-  navigateTo,
   showProf,
   updateUser,
 }) => {
+  const navigateTo = useNavigate();
   const [survey, updateSurvey] = useState(comment);
   const [isDeleted, updateDeleted] = useState(false);
 
@@ -32,7 +31,7 @@ const FactrakComment = ({
       const surveyResponse = await wso.factrakService.getSurvey(survey.id);
       updateSurvey(surveyResponse.data);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -47,7 +46,7 @@ const FactrakComment = ({
       const userResponse = await wso.userService.getUser();
       updateUser(userResponse.data);
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -71,7 +70,7 @@ const FactrakComment = ({
 
       getAndUpdateSurvey();
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -99,11 +98,7 @@ const FactrakComment = ({
       return (
         <p className="survey-detail">
           <Button
-            onClick={() =>
-              navigateTo("factrak.editSurvey", {
-                surveyID: survey.id,
-              })
-            }
+            onClick={() => navigateTo(`/factrak/surveys/edit/${survey.id}`)}
             className="inline-button"
           >
             Edit
@@ -130,7 +125,7 @@ const FactrakComment = ({
 
       getAndUpdateSurvey();
     } catch (error) {
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -218,10 +213,7 @@ const FactrakComment = ({
           <div className="survey-text">
             {`${survey.comment.substring(0, 145)}...`}
             <div>
-              <Link
-                routeName="factrak.professors"
-                routeParams={{ profID: survey.professorID }}
-              >
+              <Link to={`/factrak/professors/${survey.professorID}`}>
                 See More
               </Link>
             </div>
@@ -248,10 +240,7 @@ const FactrakComment = ({
   const profName = () => {
     if (showProf) {
       return (
-        <Link
-          routeName="factrak.professors"
-          routeParams={{ profID: survey.professorID }}
-        >
+        <Link to={`/factrak/professors/${survey.professorID}`}>
           {`${survey.professor.name} `}
         </Link>
       );
@@ -265,10 +254,7 @@ const FactrakComment = ({
     return (
       <>
         {showProf && survey.course ? ` | ` : ""}
-        <Link
-          routeName="factrak.courses"
-          routeParams={{ courseID: survey.courseID }}
-        >
+        <Link to={`/factrak/courses/${survey.courseID}`}>
           {survey.course
             ? `${survey.course.areaOfStudy.abbreviation} ${survey.course.number}`
             : ""}
@@ -336,7 +322,7 @@ const FactrakComment = ({
         <div className="comment-content blurred">
           <h1>
             {showProf && (
-              <Link routeName="factrak" style={{ color: "transparent" }}>
+              <Link to="/factrak" style={{ color: "transparent" }}>
                 Ephraiem Williams
               </Link>
             )}
@@ -380,7 +366,6 @@ FactrakComment.propTypes = {
   wso: PropTypes.object.isRequired,
   comment: PropTypes.object,
   currUser: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
   showProf: PropTypes.bool.isRequired,
   updateUser: PropTypes.func.isRequired,
 };
@@ -415,8 +400,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 

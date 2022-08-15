@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
 
 // Additional imports
-import { Link } from "react-router5";
+import { Link } from "react-router-dom";
 
 const DormtrakRanking = ({ wso }) => {
   const [dormInfo, updateDormsInfo] = useState(null);
@@ -58,7 +58,7 @@ const DormtrakRanking = ({ wso }) => {
 
   const DormLink = ({ dormID, children }) => {
     return (
-      <Link routeName="dormtrak.dorms" routeParams={{ dormID }}>
+      <Link to={`/dormtrak/dorms/${dormID}`}>
         {children}
         <br />
       </Link>

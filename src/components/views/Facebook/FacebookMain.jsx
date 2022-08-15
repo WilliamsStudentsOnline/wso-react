@@ -1,6 +1,5 @@
 // React Imports
 import React from "react";
-import PropTypes from "prop-types";
 
 // Component Imports
 import FacebookLayout from "./FacebookLayout";
@@ -8,45 +7,30 @@ import FacebookHome from "./FacebookHome";
 import FacebookHelp from "./FacebookHelp";
 import FacebookEdit from "./FacebookEdit";
 import FacebookUser from "./FacebookUser";
+import Error404 from "../Errors/Error404";
 
 // Redux Imports
 import { connect } from "react-redux";
 
 // External Imports
-import { createRouteNodeSelector } from "redux-router5";
+import { Routes, Route } from "react-router-dom";
 
-const FacebookMain = ({ route }) => {
-  const facebookBody = () => {
-    const splitRoute = route.name.split(".");
-    if (splitRoute.length === 1) return <FacebookHome />;
-
-    switch (splitRoute[1]) {
-      case "help":
-        return <FacebookHelp />;
-      case "users":
-        return <FacebookUser />;
-      case "edit":
-        return <FacebookEdit />;
-      default:
-        return <FacebookHome />;
-    }
-  };
-
-  return <FacebookLayout>{facebookBody()}</FacebookLayout>;
+const FacebookMain = () => {
+  return (
+    <FacebookLayout>
+      <Routes>
+        <Route index element={<FacebookHome />} />
+        <Route path="help" element={<FacebookHelp />} />
+        <Route path="users/:userID" element={<FacebookUser />} />
+        <Route path="edit" element={<FacebookEdit />} />
+        <Route path="*" element={<Error404 />} />
+      </Routes>
+    </FacebookLayout>
+  );
 };
-
-FacebookMain.propTypes = {
-  route: PropTypes.object.isRequired,
-};
-
-FacebookMain.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("facebook");
-
-  return (state) => ({
-    ...routeNodeSelector(state),
-  });
+  return (state) => ({});
 };
 
 export default connect(mapStateToProps)(FacebookMain);

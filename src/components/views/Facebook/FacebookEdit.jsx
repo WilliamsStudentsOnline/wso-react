@@ -7,14 +7,16 @@ import { CircularLoader } from "../../Skeleton";
 // Redux/Routing imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
-import { actions } from "redux-router5";
 import { doUpdateUser } from "../../../actions/auth";
+import { useNavigate } from "react-router-dom";
 
 // Additional Imports
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 import TagEdit from "../../TagEdit";
 
-const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
+const FacebookEdit = ({ currUser, updateUser, wso }) => {
+  const navigateTo = useNavigate();
+
   const [tags, updateTags] = useState([]);
   const [pronoun] = useState(currUser?.pronoun);
   const [visible, setVisible] = useState(currUser?.visible);
@@ -28,12 +30,15 @@ const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
   const fileRef = createRef();
 
   useEffect(() => {
+    // Prevent memory leak: Can't perform a React state update on an unmounted component
+    let isMounted = true;
+
     // We need to load tags because tag updating happens with each "Add Tag" button press.
     const loadTags = async () => {
       try {
         const userResponse = await wso.userService.getUser("me");
         const currTags = userResponse.data.tags;
-        if (currTags) updateTags(currTags.map((tag) => tag.name));
+        if (isMounted && currTags) updateTags(currTags.map((tag) => tag.name));
       } catch (error) {
         updateErrors([error.message]);
       }
@@ -45,6 +50,11 @@ const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
 
     loadTags();
     loadUserInfo();
+
+    return () => {
+      // during componentWillUnmount, untoggle the flag to prevent further state changes
+      isMounted = false;
+    };
   }, [currUser, wso]);
 
   const submitHandler = async (event) => {
@@ -73,11 +83,11 @@ const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
       );
 
       updateUser(updateResponse.data);
-      navigateTo("facebook.users", { userID: currUser.id }, { reload: true });
+      updateSubmitting(false); // should be placed before navigateTo, otherwise updating unmounted component
+      navigateTo(`/facebook/users/${currUser.id}`);
     } catch (error) {
       newErrors.push(error.message);
       updateErrors(newErrors);
-    } finally {
       updateSubmitting(false);
     }
   };
@@ -203,7 +213,6 @@ const FacebookEdit = ({ currUser, navigateTo, updateUser, wso }) => {
 
 FacebookEdit.propTypes = {
   currUser: PropTypes.object,
-  navigateTo: PropTypes.func.isRequired,
   updateUser: PropTypes.func.isRequired,
   wso: PropTypes.object.isRequired,
 };
@@ -218,8 +227,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
   updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
 });
 

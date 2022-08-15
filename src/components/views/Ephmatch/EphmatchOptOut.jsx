@@ -5,10 +5,12 @@ import PropTypes from "prop-types";
 // Redux/routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { actions } from "redux-router5";
+import { useNavigate } from "react-router-dom";
 
 // Page created to handle both opting in and out.
-const EphmatchOptOut = ({ navigateTo, wso }) => {
+const EphmatchOptOut = ({ wso }) => {
+  const navigateTo = useNavigate();
+
   // Note that this is different from Ephcatch
   const [optOut, updateOptOut] = useState(false);
 
@@ -23,7 +25,7 @@ const EphmatchOptOut = ({ navigateTo, wso }) => {
         }
       } catch (error) {
         // There shouldn't be any reason for the submission to be rejected.
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -32,7 +34,7 @@ const EphmatchOptOut = ({ navigateTo, wso }) => {
     return () => {
       isMounted = false;
     };
-  }, [navigateTo, wso]);
+  }, [wso]);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -40,10 +42,10 @@ const EphmatchOptOut = ({ navigateTo, wso }) => {
     try {
       await wso.ephmatchService.deleteSelfProfile();
       // Update succeeded -> redirect them to main ephmatch page.
-      navigateTo("ephmatch", null, { reload: true });
+      navigateTo("/ephmatch", { replace: true });
     } catch (error) {
       // There shouldn't be any reason for the submission to be rejected.
-      navigateTo("error", { error }, { replace: true });
+      navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
@@ -80,7 +82,12 @@ const EphmatchOptOut = ({ navigateTo, wso }) => {
             <br />
             <br />
             <br />
-            <input type="submit" value="Save" data-disable-with="Save" />
+            <input
+              type="submit"
+              value="Save"
+              data-disable-with="Save"
+              disabled={!optOut}
+            />
           </form>
         </article>
       </section>
@@ -90,7 +97,6 @@ const EphmatchOptOut = ({ navigateTo, wso }) => {
 
 EphmatchOptOut.propTypes = {
   wso: PropTypes.object.isRequired,
-  navigateTo: PropTypes.func.isRequired,
 };
 
 EphmatchOptOut.defaultProps = {};
@@ -99,9 +105,4 @@ const mapStateToProps = (state) => ({
   wso: getWSO(state),
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(EphmatchOptOut);
+export default connect(mapStateToProps)(EphmatchOptOut);

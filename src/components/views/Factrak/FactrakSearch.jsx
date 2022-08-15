@@ -5,20 +5,20 @@ import PropTypes from "prop-types";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { actions, createRouteNodeSelector } from "redux-router5";
-
-// Additional imports
-import { Link } from "react-router5";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 
 // FactrakSearch refers to the search result page
-const FactrakSearch = ({ route, navigateTo, wso }) => {
+const FactrakSearch = ({ wso }) => {
+  const [searchParams] = useSearchParams();
+  const navigateTo = useNavigate();
+
   const [profs, updateProfs] = useState(null);
   const [courses, updateCourses] = useState(null);
 
   useEffect(() => {
     const loadProfs = async () => {
       const queryParams = {
-        q: route.params.q ? route.params.q : undefined,
+        q: searchParams?.get("q") || undefined,
         preload: ["office"],
       };
 
@@ -35,7 +35,7 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
 
     const loadCourses = async () => {
       const queryParams = {
-        q: route.params.q ? route.params.q : undefined,
+        q: searchParams?.get("q") || undefined,
         preload: ["areaOfStudy", "professors"],
       };
 
@@ -52,26 +52,21 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
           )
         );
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     loadProfs();
     loadCourses();
-  }, [navigateTo, route.params.q, wso]);
+  }, [searchParams?.get("q"), wso]);
 
   // Generates the row for one of the professor results.
   const professorRow = (prof) => {
     // Doesn't check for existence of professor in LDAP.
     return (
-      <tr key={prof.name}>
+      <tr key={prof.id}>
         <td>
-          <Link
-            routeName="factrak.professors"
-            routeParams={{ profID: prof.id }}
-          >
-            {prof.name}
-          </Link>
+          <Link to={`/factrak/professors/${prof.id}`}>{prof.name}</Link>
         </td>
         <td>{prof?.unixID}</td>
         <td>{prof?.office?.number}</td>
@@ -107,11 +102,7 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
         .map((prof) => (
           <Link
             key={`${course.id}?profID=${prof.id}`}
-            routeName="factrak.courses.singleProf"
-            routeParams={{
-              courseID: course.id,
-              profID: prof.id,
-            }}
+            to={`/factrak/courses/${course.id}/${prof.id}`}
           >
             {prof.name}
           </Link>
@@ -127,10 +118,7 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
     return (
       <tr key={course.id}>
         <td className="col-20">
-          <Link
-            routeName="factrak.courses"
-            routeParams={{ courseID: course.id }}
-          >
+          <Link to={`/factrak/courses/${course.id}`}>
             {course.areaOfStudy.abbreviation} {course.number}
           </Link>
         </td>
@@ -181,25 +169,15 @@ const FactrakSearch = ({ route, navigateTo, wso }) => {
 };
 
 FactrakSearch.propTypes = {
-  navigateTo: PropTypes.func.isRequired,
-  route: PropTypes.object.isRequired,
   wso: PropTypes.object.isRequired,
 };
 
 FactrakSearch.defaultProps = {};
 
 const mapStateToProps = () => {
-  const routeNodeSelector = createRouteNodeSelector("factrak.search");
-
   return (state) => ({
     wso: getWSO(state),
-    ...routeNodeSelector(state),
   });
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navigateTo: (location, params, opts) =>
-    dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakSearch);
+export default connect(mapStateToProps)(FactrakSearch);

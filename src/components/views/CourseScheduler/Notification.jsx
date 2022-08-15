@@ -52,7 +52,4 @@ const mapDispatchToProps = (dispatch) => ({
   removeNotification: (notification) => dispatch(removeNotif(notification)),
 });
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Notification);
+export default connect(null, mapDispatchToProps)(Notification);
