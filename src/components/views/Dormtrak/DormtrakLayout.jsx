@@ -19,7 +19,8 @@ const DormtrakLayout = ({ children, currUser, wso }) => {
     let isMounted = true;
     const loadNeighborhoods = async () => {
       try {
-        const neighborhoodsResponse = await wso.dormtrakService.listNeighborhoods();
+        const neighborhoodsResponse =
+          await wso.dormtrakService.listNeighborhoods();
         if (isMounted) {
           updateNeighborhoods(neighborhoodsResponse.data);
         }

@@ -21,7 +21,8 @@ const FactrakRankings = ({ token, wso }) => {
     // Loads in the departments
     const loadAreas = async () => {
       try {
-        const areasOfStudyResponse = await wso.factrakService.listAreasOfStudy();
+        const areasOfStudyResponse =
+          await wso.factrakService.listAreasOfStudy();
         const areasOfStudy = areasOfStudyResponse.data;
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
       } catch (error) {

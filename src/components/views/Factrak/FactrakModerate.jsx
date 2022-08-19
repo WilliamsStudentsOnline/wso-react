@@ -17,12 +17,11 @@ const FactrakModerate = ({ wso }) => {
   useEffect(() => {
     const loadFlagged = async () => {
       try {
-        const flaggedResponse = await wso.factrakService.listFlaggedSurveysAdmin(
-          {
+        const flaggedResponse =
+          await wso.factrakService.listFlaggedSurveysAdmin({
             preload: ["professor", "course"],
             populateAgreements: true,
-          }
-        );
+          });
 
         updateFlagged(flaggedResponse.data);
       } catch (error) {

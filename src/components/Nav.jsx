@@ -32,7 +32,8 @@ const Nav = ({ currUser, removeCreds, wso }) => {
 
     const checkEphmatchVisibility = async () => {
       try {
-        const ephmatchAvailabilityResp = await wso.ephmatchService.getAvailability();
+        const ephmatchAvailabilityResp =
+          await wso.ephmatchService.getAvailability();
 
         if (
           ephmatchAvailabilityResp?.data?.available ||

@@ -168,13 +168,8 @@ const Ephmatcher = ({
     return <Photo height="300px" width="100%" />;
   };
 
-  const {
-    description,
-    id,
-    relation,
-    matchMessage,
-    lookingFor,
-  } = ephmatcherProfile;
+  const { description, id, relation, matchMessage, lookingFor } =
+    ephmatcherProfile;
 
   return (
     <aside

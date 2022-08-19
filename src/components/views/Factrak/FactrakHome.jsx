@@ -39,7 +39,8 @@ const FactrakHome = ({ currUser, token, wso }) => {
 
     const loadAreas = async () => {
       try {
-        const areasOfStudyResponse = await wso.factrakService.listAreasOfStudy();
+        const areasOfStudyResponse =
+          await wso.factrakService.listAreasOfStudy();
 
         const areasOfStudy = areasOfStudyResponse.data;
         updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));

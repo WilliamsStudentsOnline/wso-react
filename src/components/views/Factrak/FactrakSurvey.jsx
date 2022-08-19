@@ -79,7 +79,8 @@ const FactrakSurvey = ({ wso }) => {
 
     const loadAreasOfStudy = async () => {
       try {
-        const areasOfStudyResponse = await wso.factrakService.listAreasOfStudy();
+        const areasOfStudyResponse =
+          await wso.factrakService.listAreasOfStudy();
         updateAreasOfStudy(areasOfStudyResponse.data);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });

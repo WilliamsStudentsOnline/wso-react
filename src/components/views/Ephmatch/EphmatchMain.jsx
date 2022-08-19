@@ -58,7 +58,8 @@ const EphmatchMain = ({ token, wso }) => {
 
     const loadMatchesCount = async () => {
       try {
-        const ephmatchersCountResponse = await wso.ephmatchService.countMatches();
+        const ephmatchersCountResponse =
+          await wso.ephmatchService.countMatches();
         if (isMounted) {
           updateMatchesTotalCount(ephmatchersCountResponse.data.total);
         }
