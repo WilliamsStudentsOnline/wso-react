@@ -10,7 +10,6 @@
     "dom-to-image": "^2.6.0",
     "google-client-api": "^1.0.4",
     "jwt-decode": "^3.1.2",
-    "moment": "^2.29.4",
     "prop-types": "^15.8.1",
     "react": "^16.8.6",
     "react-date-picker": "^7.8.1",
@@ -98,7 +97,6 @@
       "prettier --write"
     ]
   },
-  "proxy": "https://wso-dev.williams.edu",
   "resolutions": {
     "**/**/dot-prop": ">=5.2.0",
     "**/**/elliptic": ">=6.5.3",
