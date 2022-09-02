@@ -92,7 +92,7 @@ const BulletinShow = ({ currUser, wso }) => {
   const generateBulletinStarter = () => {
     if (bulletin.userID && bulletin.user?.name) {
       return (
-        <Link to={`facebook/users/${bulletin.userID}`}>
+        <Link to={`/facebook/users/${bulletin.userID}`}>
           {bulletin.user.name}
         </Link>
       );

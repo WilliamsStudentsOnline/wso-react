@@ -143,7 +143,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
             {currUser?.id ? (
               <>
                 <li className="avatar">
-                  <Link to={`facebook/users/${currUser.id}`}>
+                  <Link to={`/facebook/users/${currUser.id}`}>
                     <img src={userPhoto} alt="avatar" />
                   </Link>
                 </li>

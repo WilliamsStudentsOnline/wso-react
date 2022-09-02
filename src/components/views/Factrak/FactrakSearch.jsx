@@ -29,7 +29,7 @@ const FactrakSearch = ({ wso }) => {
 
         updateProfs(profsResponse.data.sort((a, b) => a.name > b.name));
       } catch (error) {
-        navigateTo("error", { error }, { replace: true });
+        navigateTo("/error", { error }, { replace: true });
       }
     };
 
