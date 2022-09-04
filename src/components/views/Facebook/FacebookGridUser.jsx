@@ -78,14 +78,14 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
     <aside key={gridUser.id}>
       <div className="third">
         <div className="profile-photo">
-          <Link to={`/facebook/users${gridUser.id}`}>
+          <Link to={`/facebook/users/${gridUser.id}`}>
             <img src={userPhoto} alt="avatar" />
           </Link>
         </div>
       </div>
       <div className="two-third">
         <h4>
-          <Link to={`/facebook/users${gridUser.id}`}>
+          <Link to={`/facebook/users/${gridUser.id}`}>
             {gridUser.name} {gridUserClassYear}
           </Link>
         </h4>
