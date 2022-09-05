@@ -5,10 +5,16 @@ import PropTypes from "prop-types";
 // Redux/ Router imports
 import { connect } from "react-redux";
 import { getWSO, getCurrUser } from "../../../selectors/auth";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 
 const FactrakLayout = ({ wso, children, currUser }) => {
   const navigateTo = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -34,6 +40,11 @@ const FactrakLayout = ({ wso, children, currUser }) => {
       isMounted = false;
     };
   }, [searchParams]);
+
+  // When navigated to new page (e.g. by following autosuggestion), hide it
+  useEffect(() => {
+    setShowSuggestions(false);
+  }, [location.pathname]);
 
   // Initiates new autocomplete
   const factrakAutocomplete = async (event) => {
@@ -78,10 +89,8 @@ const FactrakLayout = ({ wso, children, currUser }) => {
       return (
         <Link
           to={`/factrak/areasOfStudy/${suggestion.id}`}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            setShowSuggestions(false);
-          }}
+          // prevent the blur event, which causes the Link to disappear
+          onMouseDown={(e) => e.preventDefault()}
         >
           {suggestion.value}
         </Link>
@@ -91,10 +100,7 @@ const FactrakLayout = ({ wso, children, currUser }) => {
       return (
         <Link
           to={`/factrak/courses/${suggestion.id}`}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            setShowSuggestions(false);
-          }}
+          onMouseDown={(e) => e.preventDefault()}
         >
           {suggestion.value}
         </Link>
@@ -104,10 +110,7 @@ const FactrakLayout = ({ wso, children, currUser }) => {
       return (
         <Link
           to={`/factrak/professors/${suggestion.id}`}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            setShowSuggestions(false);
-          }}
+          onMouseDown={(e) => e.preventDefault()}
         >
           {suggestion.value}
         </Link>
@@ -138,7 +141,7 @@ const FactrakLayout = ({ wso, children, currUser }) => {
 
   if (currUser) {
     if (!currUser.hasAcceptedFactrakPolicy) {
-      navigateTo("factrak.policy");
+      navigateTo("/factrak/policy");
     }
 
     return (
