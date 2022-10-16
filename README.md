@@ -1,5 +1,7 @@
 # WSO-React
 
+### DEMO
+
 This repository contains all the front-end code to the Williams Student Online web-app. Core technologies include [React](https://reactjs.org/) (bootstrapped with [Create React App)](https://github.com/facebook/create-react-app), [Redux](https://redux.js.org/basics/usage-with-react), and [Router5](https://router5.js.org/).
 
 - Production Build: https://wso.williams.edu/
