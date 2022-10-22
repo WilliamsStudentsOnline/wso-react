@@ -24,7 +24,7 @@ const Ephmatcher = ({
   useEffect(() => {
     const loadPhoto = async () => {
       try {
-        const photoResponse = await wso.userService.getUserLargePhoto(
+        const photoResponse = await wso.ephmatchService.getEphmatchPhoto(
           ephmatcher.unixID
         );
         updateUserPhoto(URL.createObjectURL(photoResponse));

@@ -86,7 +86,7 @@ const EphmatchProfile = ({ wso }) => {
 
       // Update Photos
       if (photo) {
-        await wso.userService.updateUserPhoto("me", photo);
+        await wso.ephmatchService.uploadProfilePhoto(photo);
       }
       // Update succeeded -> redirect them to main ephmatch page.
       navigateTo("/ephmatch");
