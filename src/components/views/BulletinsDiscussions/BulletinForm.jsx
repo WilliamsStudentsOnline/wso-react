@@ -57,10 +57,10 @@ const BulletinForm = ({ wso }) => {
           updateSource(bulletinData.source);
           updateDestination(bulletinData.destination);
           updateOffer(bulletinData.offer);
-          updateStartDate(bulletinData.date);
+          updateStartDate(new Date(bulletinData.date));
         } else {
           updateTitle(bulletinData.title);
-          updateStartDate(bulletinData.startDate);
+          updateStartDate(new Date(bulletinData.startDate));
         }
       } catch (error) {
         // We're only expecting 403 errors here
