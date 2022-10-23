@@ -87,12 +87,12 @@ const EphmatchMain = ({ token, wso }) => {
   }, [wso, location.pathname]);
 
   const EphmatchBody = () => {
-    // If token doesnt have access to matches, must mean they need to create a new account
-    if (!containsOneOfScopes(token, [scopes.ScopeEphmatchMatches])) {
-      return <EphmatchOptIn />;
-    }
-
     const Home = () => {
+      // If token doesnt have access to matches, must mean they need to create a new account
+      if (!containsOneOfScopes(token, [scopes.ScopeEphmatchMatches])) {
+        return <Navigate to="/ephmatch/opt-in" />;
+      }
+
       // If token doesnt have access to profiles, must mean that ephmatch is closed for the year
       //  || new Date() < ephmatchEndDate
       if (
