@@ -55,7 +55,7 @@
   },
   "scripts": {
     "analyze": "node scripts/analyze",
-    "start": "react-scripts start",
+    "start": "GENERATE_SOURCEMAP=false react-scripts start",
     "build": "react-scripts build",
     "postbuild": "purgecss --config ./purgecss.config.js --out build/static/css",
     "test": "react-scripts test",
