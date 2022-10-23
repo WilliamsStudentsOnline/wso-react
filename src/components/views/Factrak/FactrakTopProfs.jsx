@@ -103,7 +103,7 @@ const FactrakTopProfs = ({ currUser, token, wso }) => {
     return (
       <tr key={prof.id}>
         <td>
-          <Link to={`/factrak/professor/${prof.id}`}>{prof.name}</Link>
+          <Link to={`/factrak/professors/${prof.id}`}>{prof.name}</Link>
         </td>
         <td>{rating}</td>
         <td>
