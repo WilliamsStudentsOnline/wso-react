@@ -114,7 +114,7 @@
       "prettier --write"
     ]
   },
-  "proxy": "https://localhost:8080",
+  "proxy": "https://wso-dev.williams.edu",
   "resolutions": {
     "**/**/dot-prop": ">=5.2.0",
     "**/**/elliptic": ">=6.5.3",

@@ -6,12 +6,11 @@ import "../../stylesheets/FactrakSurvey.css";
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const FactrakSurvey = ({ wso }) => {
   const navigateTo = useNavigate();
   const params = useParams();
-  const location = useLocation();
 
   const [survey, updateSurvey] = useState(null);
   const [prof, updateProf] = useState(null);
@@ -277,47 +276,20 @@ const FactrakSurvey = ({ wso }) => {
               <tbody>
                 <tr>
                   <td align="left">
-                    <strong>What course is this for?</strong>
+                    <strong>What course is this for?*</strong>
                   </td>
                   <td align="left">
-                    <div
-                      className="survey_course_name"
-                      style={{ display: "flex" }}
-                    >
-                      {location.state != null ? (
-                        <input
-                          placeholder="NUMBER"
-                          type="text"
-                          style={{ height: "48px", marginRight: "5px" }}
-                          value={location.state.courseName}
-                        />
-                      ) : (
-                        deptDropdown()
-                      )}
-
-                      {location.state != null ? (
-                        <input
-                          placeholder="NUMBER"
-                          type="text"
-                          style={{ height: "48px" }}
-                          onChange={(event) =>
-                            updateCourseNumber(event.target.value)
-                          }
-                          value={location.state.courseNumber}
-                          id="factrak_survey_course_num"
-                        />
-                      ) : (
-                        <input
-                          placeholder="NUMBER"
-                          type="text"
-                          style={{ height: "48px" }}
-                          onChange={(event) =>
-                            updateCourseNumber(event.target.value)
-                          }
-                          value={courseNumber}
-                          id="factrak_survey_course_num"
-                        />
-                      )}
+                    <div className="survey_course_name">
+                      {deptDropdown()}
+                      <input
+                        placeholder="NUMBER"
+                        type="text"
+                        onChange={(event) =>
+                          updateCourseNumber(event.target.value)
+                        }
+                        value={courseNumber}
+                        id="factrak_survey_course_num"
+                      />
                     </div>
                   </td>
                 </tr>
