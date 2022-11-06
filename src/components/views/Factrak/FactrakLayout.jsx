@@ -140,10 +140,6 @@ const FactrakLayout = ({ wso, children, currUser }) => {
   };
 
   if (currUser) {
-    if (!currUser.hasAcceptedFactrakPolicy) {
-      navigateTo("/factrak/policy");
-    }
-
     return (
       <>
         <header>
