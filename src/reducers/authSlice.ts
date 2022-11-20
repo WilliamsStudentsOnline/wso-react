@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import jwtDecode from "jwt-decode";
 import type { User, WSOToken } from "../lib/types";
 import { RootState } from "../lib/store";
+import { ResponsesGetUserResponseUser } from "wso-api-client/lib/services/types";
 
 // const API_ADDRESS = "http://localhost:8080";
 
@@ -62,14 +63,20 @@ const authSlice = createSlice({
       state.expiry = (decoded.exp as number) * 1000; // Convert to milliseconds. Note that exp should always be defined.
       state.tokenLevel = decoded.tokenLevel;
     },
-    updateUser: (state, action: PayloadAction<User>) => {
+    updateUser: (
+      state,
+      action: PayloadAction<User | ResponsesGetUserResponseUser | undefined>
+    ) => {
       const newUser = action.payload;
+      if (!newUser) {
+        return;
+      }
 
       // Extract only certain fields
       state.currUser = {
-        id: newUser.id,
+        id: newUser.id ?? -1, // if undefined, set to -1
         admin: newUser.admin,
-        unixID: newUser.unixID,
+        unixID: newUser.unixID ?? "",
         dormRoomID: newUser.dormRoomID,
         hasAcceptedDormtrakPolicy: newUser.hasAcceptedDormtrakPolicy,
         type: newUser.type,

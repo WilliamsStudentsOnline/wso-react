@@ -1,9 +1,9 @@
 import { JwtPayload } from "jwt-decode";
 
 export interface User {
-  id?: number;
+  id: number;
   admin?: boolean;
-  unixID?: string;
+  unixID: string;
   dormRoomID?: number;
   hasAcceptedDormtrakPolicy?: boolean;
   type?: string;

@@ -1,37 +1,37 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 
 // Redux/Routing imports
-import { connect } from "react-redux";
-import { doUpdateIdentityToken, doUpdateRemember } from "../actions/auth";
-import { useNavigate, useLocation } from "react-router-dom";
-
-// External imports
 import {
+  getWSO,
   getCurrUser,
   getScopes,
   getTokenLevel,
-  getWSO,
-} from "../selectors/auth";
+} from "../reducers/authSlice";
+import { updateIdentityToken, updateRemember } from "../reducers/authSlice";
+import { useAppSelector, useAppDispatch } from "../lib/store";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const Login = ({
-  currUser,
-  scopes,
-  tokenLevel,
-  updateIdenToken,
-  updateRemember,
-  wso,
-}) => {
+// External imports
+
+const Login = () => {
+  const dispatch = useAppDispatch();
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
+  const scopes = useAppSelector(getScopes);
+  const tokenLevel = useAppSelector(getTokenLevel);
+
   // TODO: if user already log in, should go back in history or to homepage
 
   const location = useLocation();
-  const state = location.state;
+  // TODO: set type of location.state during redirect
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const state = location.state as any;
   const navigateTo = useNavigate();
 
   const [unixID, setUnix] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, updateErrors] = useState([]);
+  const [errors, updateErrors] = useState<string[] | never>([]);
   const [remember, setRemember] = useState(true);
 
   useEffect(() => {
@@ -63,12 +63,14 @@ const Login = ({
   }, [currUser, scopes, tokenLevel, state, wso]);
 
   // TODO: this shouldn't be coded this way. - it's better to do the splitting in the sign in.
-  const unixHandler = (event) => {
+  const unixHandler: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const splitValue = event.target.value.split("@");
     setUnix(splitValue[0]);
   };
 
-  const submitHandler = async (event) => {
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = async (
+    event
+  ) => {
     event.preventDefault();
 
     // Guard clause for empty id or password field.
@@ -84,11 +86,13 @@ const Login = ({
       });
       const identityToken = tokenResponse.token;
 
-      updateRemember(remember);
-      updateIdenToken(identityToken);
+      dispatch(updateRemember(remember));
+      dispatch(updateIdentityToken(identityToken));
       navigateTo("/");
     } catch (error) {
-      if (error.errorCode === 401) {
+      // TODO: error type => should be defined by wso-api-client
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((error as any).errorCode === 401) {
         updateErrors(["Invalid Williams Username or password!"]);
       }
     }
@@ -147,32 +151,4 @@ const Login = ({
   );
 };
 
-Login.propTypes = {
-  currUser: PropTypes.object,
-  scopes: PropTypes.arrayOf(PropTypes.string),
-  tokenLevel: PropTypes.number,
-  updateIdenToken: PropTypes.func.isRequired,
-  updateRemember: PropTypes.func.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-Login.defaultProps = {
-  currUser: null,
-  scopes: [],
-  tokenLevel: 0,
-};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    currUser: getCurrUser(state),
-    scopes: getScopes(state),
-    tokenLevel: getTokenLevel(state),
-    wso: getWSO(state),
-  });
-};
-const mapDispatchToProps = (dispatch) => ({
-  updateIdenToken: (token) => dispatch(doUpdateIdentityToken(token)),
-  updateRemember: (remember) => dispatch(doUpdateRemember(remember)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login;
