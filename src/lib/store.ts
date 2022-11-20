@@ -37,13 +37,21 @@ const store = configureStore({
     utilState: utilReducer,
   },
   // this is to disable React Toolkit's error message "A non-serializable value was detected in the state"
-  // TODO: stop using non-serializable object `wso` and `authState.wso`
+  // TODO: stop using non-serializable object `authState.wso` and `schedulerUtilState.gapi`
   // Read https://redux.js.org/faq/organizing-state#can-i-put-functions-promises-or-other-non-serializable-items-in-my-store-state
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER], // redux-persist actions
-        ignoredActionPaths: ["wso", "gapi"],
+        ignoredActions: [
+          FLUSH,
+          REHYDRATE,
+          PAUSE,
+          PERSIST,
+          PURGE,
+          REGISTER, // all above are redux-persist actions
+          "auth/updateWSO",
+        ],
+        ignoredActionPaths: ["gapi"],
         ignoredPaths: ["authState.wso", "schedulerUtilState.gapi"],
       },
       // otherwise courseSchduler would result in `(InternalError): too much recursion`
