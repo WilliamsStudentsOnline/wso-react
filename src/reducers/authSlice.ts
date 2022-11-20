@@ -1,13 +1,5 @@
-import {
-  UPDATE_API_TOKEN,
-  REMOVE_CREDS,
-  UPDATE_IDEN_TOKEN,
-  UPDATE_REMEMBER,
-  UPDATE_USER,
-  UPDATE_WSO,
-} from "../constants/actionTypes";
 import { API, NoAuthentication, WSO } from "wso-api-client";
-import { createReducer } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import jwtDecode from "jwt-decode";
 import type { User, WSOToken } from "../lib/types";
@@ -48,44 +40,34 @@ const parseToken = (token: string) => {
   }
 };
 
-const authReducer = createReducer(INITIAL_STATE, (builder) => {
-  builder
-    // Remove authentication credentials from storage
-    .addCase(REMOVE_CREDS, () => {
-      return INITIAL_STATE;
-    })
-    // Updates the identity token
-    .addCase(UPDATE_IDEN_TOKEN, (state, action) => {
-      const token = action.payload;
-
-      return {
-        ...state,
-        identityToken: token,
-      };
-    })
-    // Updates the token in the store. Checking of a error-free response should be done before this function call.
-    .addCase(UPDATE_API_TOKEN, (state, action) => {
+const authSlice = createSlice({
+  name: "auth",
+  initialState: INITIAL_STATE,
+  reducers: {
+    removeCredentials: (state) => {
+      state = INITIAL_STATE;
+    },
+    updateIdentityToken: (state, action: PayloadAction<string>) => {
+      state.identityToken = action.payload;
+    },
+    updateAPIToken: (state, action: PayloadAction<string>) => {
       const token = action.payload;
       const decoded = parseToken(token);
 
       if (decoded === null) {
-        return state;
+        return; // do not change state
       }
 
-      return {
-        ...state,
-        scope: decoded.scope,
-        apiToken: token,
-        expiry: (decoded.exp as number) * 1000, // Convert to milliseconds. Note that exp should always be defined.
-        tokenLevel: decoded.tokenLevel,
-      };
-    })
-    // Updates the user
-    .addCase(UPDATE_USER, (state, action) => {
+      state.scope = decoded.scope;
+      state.apiToken = token;
+      state.expiry = (decoded.exp as number) * 1000; // Convert to milliseconds. Note that exp should always be defined.
+      state.tokenLevel = decoded.tokenLevel;
+    },
+    updateUser: (state, action: PayloadAction<User>) => {
       const newUser = action.payload;
 
       // Extract only certain fields
-      const currUser = {
+      state.currUser = {
         id: newUser.id,
         admin: newUser.admin,
         unixID: newUser.unixID,
@@ -103,17 +85,34 @@ const authReducer = createReducer(INITIAL_STATE, (builder) => {
         williamsID: newUser.williamsID,
         cellPhone: newUser.cellPhone,
       };
-
-      return { ...state, currUser };
-    })
-    // Updates the boolean indicating if user info should be stored
-    .addCase(UPDATE_REMEMBER, (state, action) => {
-      return { ...state, remember: action.payload };
-    })
-    // Updates the WSO object used for wso calls
-    .addCase(UPDATE_WSO, (state, action) => {
-      return { ...state, wso: action.payload };
-    });
+    },
+    updateRemember: (state, action: PayloadAction<boolean>) => {
+      state.remember = action.payload;
+    },
+    updateWSO: (state, action: PayloadAction<WSO>) => {
+      state.wso = action.payload;
+    },
+  },
 });
 
-export default authReducer;
+// actions
+export const {
+  removeCredentials,
+  updateIdentityToken,
+  updateAPIToken,
+  updateUser,
+  updateRemember,
+  updateWSO,
+} = authSlice.actions;
+
+// selectors
+export const getAPIToken = (state: AuthState) => state.apiToken;
+export const getCurrUser = (state: AuthState) => state.currUser;
+export const getExpiry = (state: AuthState) => state.expiry;
+export const getIdentityToken = (state: AuthState) => state.identityToken;
+export const getScopes = (state: AuthState) => state.scope;
+export const getTokenLevel = (state: AuthState) => state.tokenLevel;
+export const getWSO = (state: AuthState) => state.wso;
+
+// reducer
+export default authSlice.reducer;

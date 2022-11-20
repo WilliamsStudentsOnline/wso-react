@@ -1,8 +1,3 @@
-import { createAction } from "@reduxjs/toolkit";
-import { WSO } from "wso-api-client";
-import { User } from "../lib/types";
-import { AuthState } from "../reducers/auth";
-
 // Course Reducer
 export const COURSE_ADD = "COURSE_ADD";
 export const COURSE_REMOVE = "COURSE_REMOVE";
@@ -36,19 +31,7 @@ export const REMOVE_SEMESTER_COURSES = "REMOVE_SEMESTER_COURSES";
 export const TOGGLE_TYPE = "TOGGLE_TYPE";
 export const UPDATE_STATE = "UPDATE_STATE";
 
-// Authentication Reducer
-export const UPDATE_API_TOKEN = createAction<string, "UPDATE_API_TOKEN">(
-  "UPDATE_API_TOKEN"
-);
-export const REMOVE_CREDS = createAction<void, "REMOVE_CREDS">("REMOVE_CREDS");
-export const UPDATE_IDEN_TOKEN = createAction<string, "UPDATE_TOKEN">(
-  "UPDATE_TOKEN"
-);
-export const UPDATE_REMEMBER = createAction<boolean, "UPDATE_REMEMBER">(
-  "UPDATE_REMEMBER"
-);
-export const UPDATE_USER = createAction<User, "UPDATE_USER">("UPDATE_USER");
-export const UPDATE_WSO = createAction<WSO, "UPDATE_WSO">("UPDATE_WSO");
+// Auth Reducer: See authSlice
 
 // Util Reducer
 export const UPDATE_WARNING = "UPDATE_WARNING";

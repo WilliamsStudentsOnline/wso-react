@@ -1,6 +1,6 @@
 import courseReducer from "./course";
 import schedulerUtilReducer from "./schedulerUtils";
-import authReducer from "./auth";
+import authReducer from "./authSlice";
 import utilReducer from "./utils";
 import goodrichReducer from "./goodrich";
 
