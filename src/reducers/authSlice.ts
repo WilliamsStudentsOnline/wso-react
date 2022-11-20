@@ -45,9 +45,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState: INITIAL_STATE,
   reducers: {
-    removeCredentials: (state) => {
-      state = INITIAL_STATE;
-    },
+    removeCredentials: () => INITIAL_STATE,
     updateIdentityToken: (state, action: PayloadAction<string>) => {
       state.identityToken = action.payload;
     },
