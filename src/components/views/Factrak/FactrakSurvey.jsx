@@ -7,7 +7,6 @@ import "../../stylesheets/FactrakSurvey.css";
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { MdLocationSearching } from "react-icons/md";
 
 const FactrakSurvey = ({ wso }) => {
   const navigateTo = useNavigate();
