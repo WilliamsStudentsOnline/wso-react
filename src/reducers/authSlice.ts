@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import jwtDecode from "jwt-decode";
 import type { User, WSOToken } from "../lib/types";
+import { RootState } from "../lib/store";
 
 // const API_ADDRESS = "http://localhost:8080";
 
@@ -106,13 +107,14 @@ export const {
 } = authSlice.actions;
 
 // selectors
-export const getAPIToken = (state: AuthState) => state.apiToken;
-export const getCurrUser = (state: AuthState) => state.currUser;
-export const getExpiry = (state: AuthState) => state.expiry;
-export const getIdentityToken = (state: AuthState) => state.identityToken;
-export const getScopes = (state: AuthState) => state.scope;
-export const getTokenLevel = (state: AuthState) => state.tokenLevel;
-export const getWSO = (state: AuthState) => state.wso;
+export const getAPIToken = (state: RootState) => state.authState.apiToken;
+export const getCurrUser = (state: RootState) => state.authState.currUser;
+export const getExpiry = (state: RootState) => state.authState.expiry;
+export const getIdentityToken = (state: RootState) =>
+  state.authState.identityToken;
+export const getScopes = (state: RootState) => state.authState.scope;
+export const getTokenLevel = (state: RootState) => state.authState.tokenLevel;
+export const getWSO = (state: RootState) => state.authState.wso;
 
 // reducer
 export default authSlice.reducer;
