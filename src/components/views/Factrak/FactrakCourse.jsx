@@ -22,7 +22,7 @@ const FactrakCourse = ({ currUser, token, wso }) => {
   const [courseSurveys, updateSurveys] = useState(null);
   const [courseProfs, updateProfs] = useState([]);
   const [ratings, updateRatings] = useState(null);
-  const [profClicked, updateProfClicked] = useState(null);
+  const [profClicked, updateProfClicked] = useState("");
 
   useEffect(() => {
     const courseID = params.courseID;
@@ -113,10 +113,10 @@ const FactrakCourse = ({ currUser, token, wso }) => {
               <Link
                 to={`/factrak/courses/${course.id}/${prof.id}`}
                 onClick={() => {
-                  updateProfClicked(true);
+                  updateProfClicked(prof.name);
                 }}
               >
-                {profClicked ? <b>{prof.name}</b> : prof.name}
+                {profClicked === prof.name ? <b>{prof.name}</b> : prof.name}
               </Link>
               &emsp;
             </React.Fragment>
