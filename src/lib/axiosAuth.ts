@@ -1,14 +1,20 @@
 import {
-  doUpdateAPIToken,
-  doUpdateUser,
-  doUpdateWSO,
-  doRemoveCreds,
-} from "../actions/auth";
+  updateAPIToken,
+  updateUser,
+  updateWSO,
+  removeCredentials,
+} from "../reducers/authSlice";
 import jwtDecode from "jwt-decode";
-import { SimpleAuthentication } from "wso-api-client";
+import { SimpleAuthentication, WSO } from "wso-api-client";
 
 import store from "./store";
 import history from "./history";
+import { AxiosInstance, AxiosRequestConfig } from "axios";
+import { WSOToken } from "./types";
+
+function isText(data: unknown): data is string {
+  return typeof data === "string";
+}
 
 /**
  * Checks whether the request is made with a token header. We claim that this is
@@ -16,8 +22,12 @@ import history from "./history";
  *
  * @param {AxiosRequestConfig} config
  */
-const hasTokenHeader = (config) => {
-  return config?.headers?.Authorization?.length > 7;
+const hasTokenHeader = (config: AxiosRequestConfig) => {
+  const auth = config?.headers?.Authorization;
+  if (!isText(auth)) {
+    return false;
+  }
+  return auth.length > 7;
 };
 
 /**
@@ -25,7 +35,7 @@ const hasTokenHeader = (config) => {
  *
  * @returns Updated token
  */
-const updateAPIToken = async () => {
+const fetchAPIToken = async () => {
   const authState = store.getState().authState;
 
   let token;
@@ -43,13 +53,13 @@ const updateAPIToken = async () => {
     const userResponse = await updatedWSO.userService.getUser("me");
     const user = userResponse.data;
 
-    store.dispatch(doUpdateAPIToken(token));
-    store.dispatch(doUpdateWSO(updatedWSO));
-    store.dispatch(doUpdateUser(user));
+    store.dispatch(updateAPIToken(token));
+    store.dispatch(updateWSO(updatedWSO));
+    store.dispatch(updateUser(user));
   } catch (error) {
     // on error (likely due to expired identityToken),
     // remove all credentials and redirect to login
-    store.dispatch(doRemoveCreds());
+    store.dispatch(removeCredentials());
     history.push("/login");
     return null;
   }
@@ -64,9 +74,9 @@ const updateAPIToken = async () => {
  *
  * @param {String} token - JWT Token
  */
-export const tokenIsExpired = (token) => {
+export const tokenIsExpired = (token: string) => {
   try {
-    const decoded = jwtDecode(token);
+    const decoded = jwtDecode<WSOToken>(token);
     if (decoded?.exp) {
       return new Date().getTime() > decoded.exp * 1000;
     }
@@ -84,16 +94,18 @@ export const tokenIsExpired = (token) => {
  *
  * @param api - the WSO API object used to make our requests.
  */
-const configureRequestInterceptors = (api) => {
+const configureRequestInterceptors = (api: AxiosInstance) => {
   api.interceptors.request.use(async (config) => {
-    if (hasTokenHeader(config) && !config.url.includes("auth")) {
-      const token = config.headers.Authorization.substring(7);
+    if (hasTokenHeader(config) && !config.url?.includes("auth")) {
+      const token = (config.headers?.Authorization as string).substring(7);
 
       if (tokenIsExpired(token)) {
-        const newToken = await updateAPIToken();
+        const newToken = await fetchAPIToken();
 
         const updatedConfig = { ...config };
-        updatedConfig.headers.Authorization = `Bearer ${newToken}`;
+        // disable because we know headers are not null
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        updatedConfig.headers!.Authorization = `Bearer ${newToken}`;
         return updatedConfig;
       }
     }
@@ -107,20 +119,20 @@ const configureRequestInterceptors = (api) => {
  *
  * @param api - the WSO API object used to make our requests.
  */
-const configureResponseInterceptors = (api) => {
+const configureResponseInterceptors = (api: AxiosInstance) => {
   api.interceptors.response.use(async (response) => {
     if (
       response.config.url !== "/api/v2/auth/api/refresh" &&
       response.data.updateToken
     )
-      await updateAPIToken();
+      await fetchAPIToken();
 
     return response;
   });
 };
 
 // Declared in this manner to let it be hoisted
-function configureInterceptors(wso) {
+function configureInterceptors(wso: WSO) {
   const api = wso.api.api;
   configureRequestInterceptors(api);
   configureResponseInterceptors(api);

@@ -21,7 +21,7 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 
 // Additional Imports
 import { SimpleAuthentication } from "wso-api-client";
-import configureInterceptors, { tokenIsExpired } from "../lib/auth";
+import configureInterceptors, { tokenIsExpired } from "../lib/axiosAuth";
 import jwtDecode from "jwt-decode";
 import RequireScope from "../router-permissions";
 import usePageTracking from "../lib/usePageTracking";
