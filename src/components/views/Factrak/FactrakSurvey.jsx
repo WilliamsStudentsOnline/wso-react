@@ -6,11 +6,12 @@ import "../../stylesheets/FactrakSurvey.css";
 // Redux/ Routing imports
 import { connect } from "react-redux";
 import { getWSO } from "../../../selectors/auth";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 const FactrakSurvey = ({ wso }) => {
   const navigateTo = useNavigate();
   const params = useParams();
+  const location = useLocation();
 
   const [survey, updateSurvey] = useState(null);
   const [prof, updateProf] = useState(null);
@@ -19,10 +20,12 @@ const FactrakSurvey = ({ wso }) => {
   const edit = params?.surveyID != null;
 
   const [comment, updateComment] = useState("");
-  const [courseAOS, updateCourseAOS] = useState("");
+  const [courseAOS, updateCourseAOS] = useState(location.state?.courseName);
   const [errors, updateErrors] = useState([]);
   // Use string to accomodate tutorial course numbers
-  const [courseNumber, updateCourseNumber] = useState("");
+  const [courseNumber, updateCourseNumber] = useState(
+    location.state?.courseNumber
+  );
   const [wouldRecommendCourse, updateRecommend] = useState(null);
   const [wouldTakeAnother, updateTakeAnother] = useState(null);
   const [workload, updateWorkload] = useState(null);
@@ -276,14 +279,19 @@ const FactrakSurvey = ({ wso }) => {
               <tbody>
                 <tr>
                   <td align="left">
-                    <strong>What course is this for?*</strong>
+                    <strong>What course is this for?</strong>
                   </td>
                   <td align="left">
-                    <div className="survey_course_name">
+                    <div
+                      className="survey_course_name"
+                      style={{ display: "flex" }}
+                    >
                       {deptDropdown()}
+
                       <input
                         placeholder="NUMBER"
                         type="text"
+                        style={{ height: "48px" }}
                         onChange={(event) =>
                           updateCourseNumber(event.target.value)
                         }

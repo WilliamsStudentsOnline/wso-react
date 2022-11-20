@@ -15,6 +15,7 @@ const FactrakAOS = ({ wso }) => {
   const [courses, updateCourses] = useState(null);
   const [profs, updateProfs] = useState(null);
   const [area, updateArea] = useState({});
+  // const [pro]
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
@@ -103,15 +104,17 @@ const FactrakAOS = ({ wso }) => {
     return (
       <>
         <br />
-        <h4>
-          {area?.name ? (
-            `Professors in ${area.name}`
-          ) : (
-            <>
-              Professors in <Line width="20%" />
-            </>
-          )}
-        </h4>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <h4>
+            {area?.name ? (
+              `Professors in ${area.name}`
+            ) : (
+              <>
+                Professors in <Line width="20%" />
+              </>
+            )}
+          </h4>
+        </div>
         <table>
           <thead>
             <tr>

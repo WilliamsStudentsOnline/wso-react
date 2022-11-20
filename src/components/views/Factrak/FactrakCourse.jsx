@@ -22,6 +22,7 @@ const FactrakCourse = ({ currUser, token, wso }) => {
   const [courseSurveys, updateSurveys] = useState(null);
   const [courseProfs, updateProfs] = useState([]);
   const [ratings, updateRatings] = useState(null);
+  const [profClicked, updateProfClicked] = useState("");
 
   useEffect(() => {
     const courseID = params.courseID;
@@ -109,8 +110,13 @@ const FactrakCourse = ({ currUser, token, wso }) => {
         {course?.id ? (
           courseProfs.map((prof) => (
             <React.Fragment key={prof.name}>
-              <Link to={`/factrak/courses/${course.id}/${prof.id}`}>
-                {prof.name}
+              <Link
+                to={`/factrak/courses/${course.id}/${prof.id}`}
+                onClick={() => {
+                  updateProfClicked(prof.name);
+                }}
+              >
+                {profClicked === prof.name ? <b>{prof.name}</b> : prof.name}
               </Link>
               &emsp;
             </React.Fragment>
@@ -207,7 +213,25 @@ const FactrakCourse = ({ currUser, token, wso }) => {
   return (
     <article className="facebook-profile">
       <section className="info">
-        <h3>{courseTitle()}</h3>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <h3>{courseTitle()}</h3>
+          <input
+            type="submit"
+            value="Review Class"
+            onClick={() => {
+              navigateTo(`/factrak/surveys/new/${params.profID}`, {
+                replace: true,
+                state: {
+                  courseName: course.areaOfStudy.abbreviation,
+                  courseNumber: course.number,
+                },
+              });
+            }}
+            className="submit"
+            disabled={!profClicked}
+          />
+        </div>
+
         <br />
         {professorList()}
         {selectedProf()}
