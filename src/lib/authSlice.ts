@@ -21,7 +21,7 @@ export interface AuthState {
   wso: WSO;
 }
 
-const INITIAL_STATE: AuthState = {
+export const INITIAL_STATE: AuthState = {
   scope: [],
   identityToken: "",
   apiToken: "",
