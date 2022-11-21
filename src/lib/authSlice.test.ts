@@ -3,7 +3,6 @@ import authReducer, { DEFAULT_API_CLIENT, INITIAL_STATE } from "./authSlice";
 import type { AuthState } from "./authSlice";
 import type { User } from "./types";
 import type { RootState } from "./store";
-import { API, SimpleAuthentication, WSO } from "wso-api-client";
 
 // reducers
 import {
