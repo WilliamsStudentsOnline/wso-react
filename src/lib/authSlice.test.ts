@@ -3,7 +3,7 @@ import authReducer, { DEFAULT_API_CLIENT, INITIAL_STATE } from "./authSlice";
 import type { AuthState } from "./authSlice";
 import type { User } from "./types";
 import type { RootState } from "./store";
-import type { WSO } from "wso-api-client";
+import { API, SimpleAuthentication, WSO } from "wso-api-client";
 
 // reducers
 import {
@@ -12,7 +12,6 @@ import {
   updateAPIToken,
   updateUser,
   updateRemember,
-  updateWSO,
 } from "./authSlice";
 
 // actions
@@ -121,7 +120,13 @@ describe("Authentication Reducer", () => {
         "service:factrak:admin",
       ],
     };
-    expect(changedState).toEqual(expectedNewState);
+
+    // Check that the API instance has been updated
+    expect(changedState.wso).not.toEqual(INITIAL_STATE.wso);
+    const changedStateWithOutWSO = { ...changedState, wso: INITIAL_STATE.wso };
+
+    // Check that the token is correctly parsed and stored into state
+    expect(changedStateWithOutWSO).toEqual(expectedNewState);
   });
 
   it("updates whether to remember user", () => {
@@ -132,20 +137,6 @@ describe("Authentication Reducer", () => {
     const changedState = authReducer(previousState, action);
 
     const expectedNewState = { ...INITIAL_STATE, remember: true };
-    expect(changedState).toEqual(expectedNewState);
-  });
-
-  it("updates wso client", () => {
-    const previousState: AuthState = {
-      ...INITIAL_STATE,
-      wso: null as unknown as WSO,
-    };
-    // deepFreeze(previousState);
-
-    const action = updateWSO(DEFAULT_API_CLIENT);
-    const changedState = authReducer(previousState, action);
-
-    const expectedNewState = { ...INITIAL_STATE, wso: DEFAULT_API_CLIENT };
     expect(changedState).toEqual(expectedNewState);
   });
 

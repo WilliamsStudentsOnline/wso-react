@@ -1,20 +1,24 @@
-import {
-  updateAPIToken,
-  updateUser,
-  updateWSO,
-  removeCredentials,
-} from "./authSlice";
+import { updateAPIToken, removeCredentials } from "./authSlice";
 import jwtDecode from "jwt-decode";
-import { SimpleAuthentication, WSO } from "wso-api-client";
+import { WSO } from "wso-api-client";
 
-import store from "./store";
 import history from "./history";
 import { AxiosInstance, AxiosRequestConfig } from "axios";
 import { WSOToken } from "./types";
+import type rootStore from "./store";
 
 function isText(data: unknown): data is string {
   return typeof data === "string";
 }
+
+type RootStore = typeof rootStore;
+
+// prevent circular dependency
+// see https://redux.js.org/faq/code-structure#how-can-i-use-the-redux-store-in-non-component-files
+let store: RootStore;
+export const injectStore = (_store: RootStore) => {
+  store = _store;
+};
 
 /**
  * Checks whether the request is made with a token header. We claim that this is
@@ -32,10 +36,11 @@ const hasTokenHeader = (config: AxiosRequestConfig) => {
 
 /**
  * Gets a new API token and updates it in store.
+ * The reducer will then automatically update the axios instance.
  *
  * @returns Updated token
  */
-const fetchAPIToken = async () => {
+const refreshAPIToken = async () => {
   const authState = store.getState().authState;
 
   let token;
@@ -44,18 +49,7 @@ const fetchAPIToken = async () => {
       authState.identityToken
     );
     token = tokenResponse.token;
-    const wso = authState.wso;
-
-    const auth = new SimpleAuthentication(token);
-    const updatedWSO = wso.updateAuth(auth);
-    configureInterceptors(updatedWSO);
-
-    const userResponse = await updatedWSO.userService.getUser("me");
-    const user = userResponse.data;
-
     store.dispatch(updateAPIToken(token));
-    store.dispatch(updateWSO(updatedWSO));
-    store.dispatch(updateUser(user));
   } catch (error) {
     // on error (likely due to expired identityToken),
     // remove all credentials and redirect to login
@@ -95,17 +89,18 @@ export const tokenIsExpired = (token: string) => {
  * @param api - the WSO API object used to make our requests.
  */
 const configureRequestInterceptors = (api: AxiosInstance) => {
-  api.interceptors.request.use(async (config) => {
+  api.interceptors.request.use((config) => {
     if (hasTokenHeader(config) && !config.url?.includes("auth")) {
       const token = (config.headers?.Authorization as string).substring(7);
 
       if (tokenIsExpired(token)) {
-        const newToken = await fetchAPIToken();
+        // If the token is expired, do not send the request
+        const controller = new AbortController();
+        const updatedConfig = { ...config, signal: controller.signal };
+        controller.abort();
 
-        const updatedConfig = { ...config };
-        // disable because we know headers are not null
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        updatedConfig.headers!.Authorization = `Bearer ${newToken}`;
+        refreshAPIToken();
+
         return updatedConfig;
       }
     }
@@ -120,12 +115,12 @@ const configureRequestInterceptors = (api: AxiosInstance) => {
  * @param api - the WSO API object used to make our requests.
  */
 const configureResponseInterceptors = (api: AxiosInstance) => {
-  api.interceptors.response.use(async (response) => {
+  api.interceptors.response.use((response) => {
     if (
       response.config.url !== "/api/v2/auth/api/refresh" &&
       response.data.updateToken
     )
-      await fetchAPIToken();
+      refreshAPIToken();
 
     return response;
   });

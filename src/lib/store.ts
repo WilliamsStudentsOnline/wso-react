@@ -43,7 +43,6 @@ const store = configureStore({
           PERSIST,
           PURGE,
           REGISTER, // all above are redux-persist actions
-          "auth/updateWSO",
         ],
         ignoredActionPaths: ["gapi"],
         ignoredPaths: ["authState.wso", "schedulerUtilState.gapi"],

@@ -1,10 +1,16 @@
-import { API, NoAuthentication, WSO } from "wso-api-client";
+import {
+  API,
+  NoAuthentication,
+  SimpleAuthentication,
+  WSO,
+} from "wso-api-client";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import jwtDecode from "jwt-decode";
 import type { User, WSOToken } from "./types";
 import { RootState } from "./store";
 import { ResponsesGetUserResponseUser } from "wso-api-client/lib/services/types";
+import configureInterceptors from "./axiosAuth";
 
 // const API_ADDRESS = "http://localhost:8080";
 
@@ -62,6 +68,13 @@ const authSlice = createSlice({
       state.apiToken = token;
       state.expiry = (decoded.exp as number) * 1000; // Convert to milliseconds. Note that exp should always be defined.
       state.tokenLevel = decoded.tokenLevel;
+
+      // Update the WSO client.
+      const auth = new SimpleAuthentication(token);
+      const updatedWSO = state.wso.updateAuth(auth);
+      configureInterceptors(updatedWSO);
+
+      state.wso = updatedWSO;
     },
     updateUser: (
       state,
@@ -95,9 +108,6 @@ const authSlice = createSlice({
     updateRemember: (state, action: PayloadAction<boolean>) => {
       state.remember = action.payload;
     },
-    updateWSO: (state, action: PayloadAction<WSO>) => {
-      state.wso = action.payload;
-    },
   },
 });
 
@@ -108,7 +118,6 @@ export const {
   updateAPIToken,
   updateUser,
   updateRemember,
-  updateWSO,
 } = authSlice.actions;
 
 // selectors

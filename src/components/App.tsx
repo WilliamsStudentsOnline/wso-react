@@ -13,7 +13,6 @@ import {
   updateAPIToken,
   updateIdentityToken,
   updateUser,
-  updateWSO,
 } from "../lib/authSlice";
 import { useAppSelector, useAppDispatch } from "../lib/store";
 
@@ -79,13 +78,7 @@ const App = () => {
           identityToken
         );
         const newAPIToken = apiTokenResponse.token;
-
-        const auth = new SimpleAuthentication(newAPIToken);
-        const updatedWSO = wso.updateAuth(auth);
-        configureInterceptors(updatedWSO);
-
         dispatch(updateAPIToken(newAPIToken));
-        dispatch(updateWSO(updatedWSO));
       } catch (error) {
         // possibly expired token, clear and report error to user
         dispatch(removeCredentials());
