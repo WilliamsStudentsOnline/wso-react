@@ -8,16 +8,13 @@ import { useNavigate, useParams } from "react-router-dom";
 
 // Additional Imports
 import DatePicker from "react-date-picker";
-import {
-  bulletinTypeRide,
-  bulletinTypeAnnouncement,
-} from "../../../constants/general";
 /// Keep this after the "react-date-picker" import so that this css style will take priority.
 import "../../stylesheets/DatePicker.css";
-import {
+import type {
   ModelsBulletinRide,
   ModelsBulletin,
 } from "wso-api-client/lib/services/types";
+import { PostType } from "../../../lib/types";
 
 const BulletinForm = () => {
   const wso = useAppSelector(getWSO);
@@ -47,7 +44,7 @@ const BulletinForm = () => {
       const bulletinID = Number(params.bulletinID);
 
       try {
-        if (params.type === bulletinTypeRide) {
+        if (params.type === PostType.Rides) {
           bulletinResponse = await wso.bulletinService.getRide(bulletinID);
         } else {
           bulletinResponse = await wso.bulletinService.getBulletin(bulletinID);
@@ -56,7 +53,7 @@ const BulletinForm = () => {
         const bulletinData = bulletinResponse.data;
 
         updateBody(bulletinData?.body ?? "");
-        if (params.type === bulletinTypeRide) {
+        if (params.type === PostType.Rides) {
           const rideData = bulletinData as ModelsBulletinRide;
           updateSource(rideData.source ?? "");
           updateDestination(rideData.destination ?? "");
@@ -102,14 +99,13 @@ const BulletinForm = () => {
     if (params.type) {
       updateType(params.type);
     } else {
-      updateType(bulletinTypeRide);
+      updateType(PostType.Rides);
     }
   }, [wso, params.bulletinID, params.type]);
 
   // Date picker for the start date of the announcement
   const startDateField = () => {
-    if (type !== bulletinTypeAnnouncement && type !== bulletinTypeRide)
-      return null;
+    if (type !== PostType.Announcements && type !== PostType.Rides) return null;
 
     return (
       <div className="field">
@@ -141,14 +137,14 @@ const BulletinForm = () => {
       // add 30s to date so that we wont have error abt too old post.
       const dateAdjusted = new Date(startDate.getTime() + 30000);
 
-      if (type === bulletinTypeRide) {
+      if (type === PostType.Rides) {
         const rideParams = {
           type,
           source,
           offer,
           destination,
           body,
-          date: dateAdjusted.toString(),
+          date: dateAdjusted.toISOString(),
         };
         response =
           // TODO: right now we are figuring if edit by whether an ID has been passed in
@@ -163,7 +159,7 @@ const BulletinForm = () => {
           type,
           title,
           body,
-          startDate: startDate.toString(),
+          startDate: startDate.toISOString(),
         };
         response =
           // TODO: right now we are figuring if edit by whether an ID has been passed in
@@ -178,8 +174,15 @@ const BulletinForm = () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       navigateTo(`/bulletins/${type}/${response!.data!.id}`);
     } catch (error) {
+      console.log(error);
+      // TODO: better type for errors
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      updateErrors((error as any).errors);
+      const e = error as any;
+      if ("errors" in e) {
+        updateErrors(e.errors);
+      } else {
+        updateErrors([e.message]);
+      }
     }
   };
 
@@ -275,10 +278,11 @@ const BulletinForm = () => {
       <section>
         <form onSubmit={submitHandler}>
           <br />
+          {console.log(errors)}
           {generateErrors()}
 
-          {type === bulletinTypeRide ? rideSpecificFields() : nonRideFields()}
-          {type === bulletinTypeRide ? rideDateField() : startDateField()}
+          {type === PostType.Rides ? rideSpecificFields() : nonRideFields()}
+          {type === PostType.Rides ? rideDateField() : startDateField()}
 
           <div className="field">
             <h5>

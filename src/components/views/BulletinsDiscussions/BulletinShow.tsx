@@ -8,7 +8,12 @@ import { getCurrUser, getWSO } from "../../../lib/authSlice";
 
 // Additional Imports
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { bulletinTypeRide } from "../../../constants/general";
+import { PostType } from "../../../lib/types";
+import type {
+  ModelsBulletinRide,
+  ModelsBulletin,
+} from "wso-api-client/lib/services/types";
+import { generateBulletinDate, generateBulletinTitle } from "./BulletinUtils";
 
 const BulletinShow = () => {
   const wso = useAppSelector(getWSO);
@@ -17,7 +22,9 @@ const BulletinShow = () => {
   const params = useParams();
   const navigateTo = useNavigate();
 
-  const [bulletin, updateBulletin] = useState(null);
+  const [bulletin, updateBulletin] = useState<
+    ModelsBulletinRide | ModelsBulletin | undefined
+  >(undefined);
 
   const deleteHandler = async () => {
     // eslint-disable-next-line no-restricted-globals, no-alert
@@ -25,12 +32,16 @@ const BulletinShow = () => {
     if (!confirmDelete) return;
 
     try {
-      if (bulletin.type) {
+      if (!bulletin?.id) {
+        throw new Error("No bulletin ID found. Fail to delete.");
+      }
+      if ("type" in bulletin) {
         await wso.bulletinService.deleteBulletin(bulletin.id);
+        navigateTo(`/bulletins/${bulletin.type}`);
       } else {
         await wso.bulletinService.deleteRide(bulletin.id);
+        navigateTo(`/bulletins/${PostType.Rides}`);
       }
-      navigateTo(`/bulletins/${bulletin.type || bulletinTypeRide}`);
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
     }
@@ -42,57 +53,30 @@ const BulletinShow = () => {
 
       try {
         let bulletinResponse;
-        if (params.type === bulletinTypeRide) {
+        if (params.type === PostType.Rides) {
           bulletinResponse = await wso.bulletinService.getRide(
-            params.bulletinID
+            Number(params.bulletinID)
           );
         } else {
           bulletinResponse = await wso.bulletinService.getBulletin(
-            params.bulletinID
+            Number(params.bulletinID)
           );
         }
 
         updateBulletin(bulletinResponse.data);
       } catch (error) {
-        if (error.errorCode === 404) navigateTo("/404", { replace: true });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((error as any).errorCode === 404)
+          navigateTo("/404", { replace: true });
       }
     };
 
     loadBulletin();
   }, [params.bulletinID, params.type, wso]);
 
-  const dateOptions = { year: "numeric", month: "long", day: "numeric" };
-
-  // Creates the Bulletin Title link
-  const generateBulletinTitle = () => {
-    let title;
-
-    if (bulletin.type) {
-      title = bulletin.title;
-    } else if (bulletin.offer) {
-      title = `${bulletin.source} to ${bulletin.destination} (Offer)`;
-    } else {
-      title = `${bulletin.source} to ${bulletin.destination} (Request)`;
-    }
-
-    return title;
-  };
-
-  // Create the bulletin date
-  const generateBulletinDate = () => {
-    if (bulletin.type) {
-      return new Date(bulletin.startDate).toLocaleDateString(
-        "en-US",
-        dateOptions
-      );
-    }
-
-    return new Date(bulletin.date).toLocaleDateString("en-US", dateOptions);
-  };
-
   // Generate bulletin creator name
   const generateBulletinStarter = () => {
-    if (bulletin.userID && bulletin.user?.name) {
+    if (bulletin?.userID && bulletin.user?.name) {
       return (
         <Link to={`/facebook/users/${bulletin.userID}`}>
           {bulletin.user.name}
@@ -100,14 +84,14 @@ const BulletinShow = () => {
       );
     }
 
-    if (bulletin.user?.name) return bulletin.user.name;
+    if (bulletin?.user?.name) return bulletin.user.name;
 
     return "WSO User";
   };
 
   // Generate the edit button only if the current user is the bulletin starter
   const editButton = () => {
-    if (currUser && currUser.id === bulletin.user.id) {
+    if (currUser && currUser.id === bulletin?.user?.id) {
       return (
         <button
           type="button"
@@ -124,7 +108,7 @@ const BulletinShow = () => {
 
   // Generate the edit + delete buttons
   const editDeleteButtons = () => {
-    if (currUser && (currUser.id === bulletin.user.id || currUser.admin)) {
+    if (currUser && (currUser.id === bulletin?.user?.id || currUser.admin)) {
       return (
         <>
           <br />
@@ -169,11 +153,11 @@ const BulletinShow = () => {
         <div className="field">
           <h3>
             <br />
-            {generateBulletinTitle()}
+            {generateBulletinTitle(bulletin)}
             <br />
             <br />
           </h3>
-          {`${generateBulletinDate()} by `}
+          {`${generateBulletinDate(bulletin)} by `}
           {generateBulletinStarter()}
 
           {editDeleteButtons()}

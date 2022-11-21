@@ -10,19 +10,26 @@ import { useAppSelector } from "../../../lib/store";
 
 // Additional imports
 import { Link, useNavigate } from "react-router-dom";
-import { bulletinTypeRide } from "../../../constants/general";
+import { PostType } from "../../../lib/types";
+import {
+  Bulletin,
+  generateBulletinDate,
+  generateBulletinTitle,
+} from "./BulletinUtils";
 
-const BulletinIndex = ({ type }) => {
+const BulletinIndex = ({ type }: { type: PostType }) => {
   const wso = useAppSelector(getWSO);
   const currUser = useAppSelector(getCurrUser);
 
   const navigateTo = useNavigate();
 
-  const [bulletins, updateBulletins] = useState(null);
+  const [bulletins, updateBulletins] = useState<Bulletin[] | undefined>(
+    undefined
+  );
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
   const perPage = 20;
-  const loadBulletins = async (newPage) => {
+  const loadBulletins = async (newPage: number) => {
     const params = {
       type,
       preload: ["user"],
@@ -32,13 +39,13 @@ const BulletinIndex = ({ type }) => {
     try {
       const bulletinsResponse = await wso.bulletinService.listBulletins(params);
       updateBulletins(bulletinsResponse.data);
-      updateTotal(bulletinsResponse.paginationTotal);
+      updateTotal(bulletinsResponse.paginationTotal ?? 0);
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
-  const loadRides = async (newPage) => {
+  const loadRides = async (newPage: number) => {
     const params = {
       preload: ["user"],
       limit: 20,
@@ -49,21 +56,21 @@ const BulletinIndex = ({ type }) => {
     try {
       const ridesResponse = await wso.bulletinService.listRides(params);
       updateBulletins(ridesResponse.data);
-      updateTotal(ridesResponse.paginationTotal);
+      updateTotal(ridesResponse.paginationTotal ?? 0);
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
   // Loads the next page appropriately
-  const loadNext = (newPage) => {
+  const loadNext = (newPage: number) => {
     // Different because the wso endpoints are different
-    if (type === bulletinTypeRide) loadRides(newPage);
+    if (type === PostType.Rides) loadRides(newPage);
     else loadBulletins(newPage);
   };
 
   // Handles clicking of the next/previous page
-  const clickHandler = (number) => {
+  const clickHandler = (number: number) => {
     if (number === -1 && page > 0) {
       loadNext(page - 1);
       updatePage(page - 1);
@@ -74,7 +81,7 @@ const BulletinIndex = ({ type }) => {
   };
 
   // Handles selection of page
-  const selectionHandler = (newPage) => {
+  const selectionHandler = (newPage: number) => {
     updatePage(newPage);
     loadNext(newPage);
   };
@@ -84,17 +91,21 @@ const BulletinIndex = ({ type }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, wso]);
 
-  const dateOptions = { year: "numeric", month: "long", day: "numeric" };
-
   // Handles deletion
-  const deleteHandler = async (event, bulletinID) => {
+  const deleteHandler = async (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    bulletinID?: number
+  ) => {
     event.preventDefault();
     // eslint-disable-next-line no-restricted-globals, no-alert
     const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
 
     try {
-      if (type === bulletinTypeRide) {
+      if (!bulletinID) {
+        throw new Error("No bulletin ID could be found. Fail to delete.");
+      }
+      if (type === PostType.Rides) {
         await wso.bulletinService.deleteRide(bulletinID);
       } else {
         await wso.bulletinService.deleteBulletin(bulletinID);
@@ -106,37 +117,15 @@ const BulletinIndex = ({ type }) => {
   };
 
   // Creates the Bulletin Title link
-  const generateBulletinTitle = (bulletin) => {
-    let title;
-
-    if (type === bulletinTypeRide) {
-      if (bulletin.offer) {
-        title = `${bulletin.source} to ${bulletin.destination} (Offer)`;
-      } else {
-        title = `${bulletin.source} to ${bulletin.destination} (Request)`;
-      }
-    } else {
-      title = bulletin.title;
-    }
+  const generateBulletinTitleLink = (bulletin: Bulletin) => {
+    const title = generateBulletinTitle(bulletin);
 
     return <Link to={`/bulletins/${type}/${bulletin.id}`}>{title}</Link>;
   };
 
-  // Generate Bulletin date
-  const generateBulletinDate = (bulletin) => {
-    if (type === bulletinTypeRide) {
-      return new Date(bulletin.date).toLocaleDateString("en-US", dateOptions);
-    }
-
-    return new Date(bulletin.startDate).toLocaleDateString(
-      "en-US",
-      dateOptions
-    );
-  };
-
   // Link to edit bulletin
-  const editLink = (bulletin) => {
-    if (currUser?.id === bulletin.user.id) {
+  const editLink = (bulletin: Bulletin) => {
+    if (currUser && currUser?.id === bulletin?.user?.id) {
       return (
         <>
           <Link to={`/bulletins/${type}/${bulletin.id}/edit`}>Edit</Link>
@@ -148,7 +137,7 @@ const BulletinIndex = ({ type }) => {
   };
 
   // Edit/Delete Links
-  const editDeleteLinks = (bulletin) => {
+  const editDeleteLinks = (bulletin: Bulletin) => {
     if (
       (bulletin.user && currUser?.id === bulletin.user.id) ||
       currUser?.admin
@@ -171,18 +160,18 @@ const BulletinIndex = ({ type }) => {
   };
 
   // Returns the name of the bulletin user
-  const bulletinUser = (bulletin) => {
+  const bulletinUser = (bulletin: Bulletin) => {
     if (bulletin.user) return bulletin.user.name;
 
     return "WSO User";
   };
 
   // Populate Bulletin
-  const generateBulletin = (bulletin) => {
+  const generateBulletin = (bulletin: Bulletin) => {
     return (
       <tr key={bulletin.id}>
         <td className="col-60">
-          {generateBulletinTitle(bulletin)}
+          {generateBulletinTitleLink(bulletin)}
           {editDeleteLinks(bulletin)}
         </td>
         <td className="col-20">{bulletinUser(bulletin)}</td>
@@ -191,7 +180,7 @@ const BulletinIndex = ({ type }) => {
     );
   };
 
-  const bulletinSkeleton = (key) => (
+  const bulletinSkeleton = (key: React.Key) => (
     <tr key={key}>
       <td className="col-60">
         <Line width="70%" />
