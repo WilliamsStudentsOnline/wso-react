@@ -1,6 +1,5 @@
 // React imports
 import React from "react";
-import PropTypes from "prop-types";
 
 // Component imports
 import FactrakHome from "./FactrakHome";
@@ -18,7 +17,7 @@ import Error404 from "../Errors/Error404";
 
 // Redux/ Router imports
 import { useAppSelector } from "../../../lib/store";
-import { getCurrUser, getAPIToken } from "../../../reducers/authSlice";
+import { getCurrUser, getAPIToken } from "../../../lib/authSlice";
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 // Additional Imports

@@ -7,7 +7,7 @@ import { Line } from "../../Skeleton";
 
 // Redux/ Router imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO, getCurrUser, getAPIToken } from "../../../reducers/authSlice";
+import { getWSO, getCurrUser, getAPIToken } from "../../../lib/authSlice";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 // Additional imports

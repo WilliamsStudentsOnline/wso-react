@@ -6,7 +6,7 @@ import FactrakDeficitMessage from "./FactrakUtils";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO, getCurrUser, getAPIToken } from "../../../reducers/authSlice";
+import { getWSO, getCurrUser, getAPIToken } from "../../../lib/authSlice";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";

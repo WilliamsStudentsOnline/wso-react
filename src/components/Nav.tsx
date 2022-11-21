@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from "react";
 
 // Redux imports
-import { getWSO, getCurrUser } from "../reducers/authSlice";
-import { removeCredentials } from "../reducers/authSlice";
+import { getWSO, getCurrUser } from "../lib/authSlice";
+import { removeCredentials } from "../lib/authSlice";
 import { useAppSelector, useAppDispatch } from "../lib/store";
 
 // External imports

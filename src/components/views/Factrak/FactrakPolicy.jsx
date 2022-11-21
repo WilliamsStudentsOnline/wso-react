@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO, getCurrUser } from "../../../reducers/authSlice";
+import { getWSO, getCurrUser } from "../../../lib/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const FactrakPolicy = () => {

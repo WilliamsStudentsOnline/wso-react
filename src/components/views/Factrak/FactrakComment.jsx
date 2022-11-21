@@ -6,7 +6,7 @@ import Button from "../../Components";
 
 // Redux/ Router imports
 import { useAppSelector, useAppDispatch } from "../../../lib/store";
-import { getWSO, getCurrUser, updateUser } from "../../../reducers/authSlice";
+import { getWSO, getCurrUser, updateUser } from "../../../lib/authSlice";
 
 // Additional Imports
 import { Link, useNavigate } from "react-router-dom";

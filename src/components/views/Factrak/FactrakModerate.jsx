@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO } from "../../../reducers/authSlice";
+import { getWSO } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link, useNavigate } from "react-router-dom";

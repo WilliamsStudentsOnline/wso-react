@@ -9,7 +9,7 @@ import EphmatchOptIn from "./EphmatchOptIn";
 
 // Redux/Routing imports
 import { useAppSelector } from "../../../lib/store";
-import { getAPIToken, getWSO } from "../../../reducers/authSlice";
+import { getAPIToken, getWSO } from "../../../lib/authSlice";
 import {
   Routes,
   Route,

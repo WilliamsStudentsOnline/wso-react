@@ -8,7 +8,7 @@ import FactrakDeficitMessage from "./FactrakUtils";
 
 // Redux/Routing imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO, getCurrUser, getAPIToken } from "../../../reducers/authSlice";
+import { getWSO, getCurrUser, getAPIToken } from "../../../lib/authSlice";
 import {
   Link,
   useNavigate,

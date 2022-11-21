@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 // Redux/ Router imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO } from "../../../reducers/authSlice";
+import { getWSO } from "../../../lib/authSlice";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 
 // FactrakSearch refers to the search result page

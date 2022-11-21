@@ -4,7 +4,7 @@ import { Line, Paragraph } from "../../Skeleton";
 
 // Redux and Routing imports
 import { useAppSelector } from "../../../lib/store";
-import { getCurrUser, getWSO } from "../../../reducers/authSlice";
+import { getCurrUser, getWSO } from "../../../lib/authSlice";
 
 // Additional Imports
 import { Link, useNavigate, useParams } from "react-router-dom";

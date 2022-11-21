@@ -5,7 +5,7 @@ import { Line } from "../../Skeleton";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO } from "../../../reducers/authSlice";
+import { getWSO } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link } from "react-router-dom";

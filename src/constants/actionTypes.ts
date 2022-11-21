@@ -33,9 +33,7 @@ export const UPDATE_STATE = "UPDATE_STATE";
 
 // Auth Reducer: See authSlice
 
-// Util Reducer
-export const UPDATE_WARNING = "UPDATE_WARNING";
-export const UPDATE_NOTICE = "UPDATE_NOTICE";
+// Util Reducer: removed because not used
 
 // Goodrich Reducer
 export const GOODRICH_ORDER_UPDATE = "GOODRICH_ORDER_UPDATE";

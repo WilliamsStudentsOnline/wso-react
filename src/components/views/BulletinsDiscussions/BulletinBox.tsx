@@ -4,7 +4,7 @@ import "../../stylesheets/BulletinBox.css";
 import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
-import { getWSO } from "../../../reducers/authSlice";
+import { getWSO } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
 
 // Additional imports

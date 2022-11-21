@@ -5,7 +5,7 @@ import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
 import { useAppSelector } from "../../../lib/store";
-import { getCurrUser, getWSO } from "../../../reducers/authSlice";
+import { getCurrUser, getWSO } from "../../../lib/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 
 const DiscussionShow = () => {

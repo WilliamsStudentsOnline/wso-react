@@ -1,5 +1,5 @@
 import deepFreeze from "deep-freeze";
-import utilReducer, { DEFAULT_API_CLIENT } from "../../reducers/authSlice";
+import authReducer, { DEFAULT_API_CLIENT } from "../../lib/authSlice";
 import {
   REMOVE_CREDS,
   UPDATE_API_TOKEN,
@@ -49,7 +49,7 @@ describe("Authentication reducer", () => {
     };
 
     deepFreeze(previousState);
-    const changedState = utilReducer(previousState, action);
+    const changedState = authReducer(previousState, action);
 
     expect(changedState).toEqual(expectedNewState);
   });
@@ -65,7 +65,7 @@ describe("Authentication reducer", () => {
     const expectedNewState = { remember: true };
 
     deepFreeze(previousState);
-    const changedState = utilReducer(previousState, action);
+    const changedState = authReducer(previousState, action);
 
     expect(changedState).toEqual(expectedNewState);
   });
@@ -81,7 +81,7 @@ describe("Authentication reducer", () => {
     const expectedNewState = { wso: DEFAULT_API_CLIENT };
 
     deepFreeze(previousState);
-    const changedState = utilReducer(previousState, action);
+    const changedState = authReducer(previousState, action);
 
     expect(changedState).toEqual(expectedNewState);
   });
@@ -97,7 +97,7 @@ describe("Authentication reducer", () => {
     const expectedNewState = { identityToken: newIdentityToken };
 
     deepFreeze(previousState);
-    const changedState = utilReducer(previousState, action);
+    const changedState = authReducer(previousState, action);
 
     expect(changedState).toEqual(expectedNewState);
   });
@@ -131,7 +131,7 @@ describe("Authentication reducer", () => {
     };
 
     deepFreeze(previousState);
-    const changedState = utilReducer(previousState, action);
+    const changedState = authReducer(previousState, action);
 
     expect(changedState).toEqual(expectedNewState);
   });
@@ -186,7 +186,7 @@ describe("Authentication reducer", () => {
     };
 
     deepFreeze(previousState);
-    const changedState = utilReducer(previousState, action);
+    const changedState = authReducer(previousState, action);
 
     expect(changedState).toEqual(expectedNewState);
   });

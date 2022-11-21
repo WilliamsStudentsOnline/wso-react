@@ -10,7 +10,7 @@ import Error404 from "../Errors/Error404";
 
 // Redux/Routing imports
 import { useAppSelector } from "../../../lib/store";
-import { getAPIToken } from "../../../reducers/authSlice";
+import { getAPIToken } from "../../../lib/authSlice";
 import { Routes, Route } from "react-router-dom";
 
 // External Imports

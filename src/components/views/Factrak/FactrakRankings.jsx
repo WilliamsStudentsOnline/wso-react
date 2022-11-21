@@ -5,7 +5,7 @@ import { List } from "../../Skeleton";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO, getAPIToken } from "../../../reducers/authSlice";
+import { getWSO, getAPIToken } from "../../../lib/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 // Additional imports

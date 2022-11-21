@@ -2,8 +2,8 @@ import { API, NoAuthentication, WSO } from "wso-api-client";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import jwtDecode from "jwt-decode";
-import type { User, WSOToken } from "../lib/types";
-import { RootState } from "../lib/store";
+import type { User, WSOToken } from "./types";
+import { RootState } from "./store";
 import { ResponsesGetUserResponseUser } from "wso-api-client/lib/services/types";
 
 // const API_ADDRESS = "http://localhost:8080";

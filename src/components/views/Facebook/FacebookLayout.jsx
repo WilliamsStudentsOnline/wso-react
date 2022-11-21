@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
-import { getCurrUser } from "../../../reducers/authSlice";
+import { getCurrUser } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link, useSearchParams, useNavigate } from "react-router-dom";

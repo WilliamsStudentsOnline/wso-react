@@ -7,8 +7,8 @@ import {
   getCurrUser,
   getScopes,
   getTokenLevel,
-} from "../reducers/authSlice";
-import { updateIdentityToken, updateRemember } from "../reducers/authSlice";
+} from "../lib/authSlice";
+import { updateIdentityToken, updateRemember } from "../lib/authSlice";
 import { useAppSelector, useAppDispatch } from "../lib/store";
 import { useNavigate, useLocation } from "react-router-dom";
 

@@ -7,7 +7,7 @@ import EphmatchForm from "./EphmatchForm";
 
 // Redux/routing imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO } from "../../../reducers/authSlice";
+import { getWSO } from "../../../lib/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const EphmatchProfile = () => {

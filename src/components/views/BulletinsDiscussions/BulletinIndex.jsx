@@ -5,7 +5,7 @@ import PaginationButtons from "../../PaginationButtons";
 import { Line } from "../../Skeleton";
 
 // Redux and routing imports
-import { getWSO, getCurrUser } from "../../../reducers/authSlice";
+import { getWSO, getCurrUser } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
 
 // Additional imports

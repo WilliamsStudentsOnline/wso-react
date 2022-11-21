@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 
 // Redux and routing imports
-import { getWSO } from "../../../reducers/authSlice";
+import { getWSO } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
 import { useNavigate, useParams } from "react-router-dom";
 

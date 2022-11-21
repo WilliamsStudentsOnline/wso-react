@@ -7,14 +7,14 @@ import Layout from "./Layout";
 import Homepage from "./Homepage";
 
 // Redux/routing
-import { getWSO, getIdentityToken, getAPIToken } from "../reducers/authSlice";
+import { getWSO, getIdentityToken, getAPIToken } from "../lib/authSlice";
 import {
   removeCredentials,
   updateAPIToken,
   updateIdentityToken,
   updateUser,
   updateWSO,
-} from "../reducers/authSlice";
+} from "../lib/authSlice";
 import { useAppSelector, useAppDispatch } from "../lib/store";
 
 import { Routes, Route, useNavigate } from "react-router-dom";

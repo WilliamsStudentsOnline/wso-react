@@ -4,7 +4,7 @@ import HoodTableRow, { HoodTableRowSkeleton } from "./HoodTableRow";
 
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO } from "../../../reducers/authSlice";
+import { getWSO } from "../../../lib/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 
 const DormtrakNeighborhood = () => {

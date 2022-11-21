@@ -5,7 +5,7 @@ import EphmatchForm from "./EphmatchForm";
 
 // Redux/routing imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO, getAPIToken } from "../../../reducers/authSlice";
+import { getWSO, getAPIToken } from "../../../lib/authSlice";
 import { useNavigate } from "react-router-dom";
 import { containsAllOfScopes, scopes } from "../../../lib/general";
 

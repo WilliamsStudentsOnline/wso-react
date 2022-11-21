@@ -5,7 +5,7 @@ import { CircularLoader } from "../../Skeleton";
 
 // Redux/Routing imports
 import { useAppSelector, useAppDispatch } from "../../../lib/store";
-import { getCurrUser, getWSO, updateUser } from "../../../reducers/authSlice";
+import { getCurrUser, getWSO, updateUser } from "../../../lib/authSlice";
 import { useNavigate } from "react-router-dom";
 
 // Additional Imports

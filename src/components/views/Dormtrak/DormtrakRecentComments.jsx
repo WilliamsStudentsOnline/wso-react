@@ -6,7 +6,7 @@ import Button from "../../Components";
 
 // redux imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO } from "../../../reducers/authSlice";
+import { getWSO } from "../../../lib/authSlice";
 
 // Additional imports
 import { avatarHelper } from "../../../lib/imageHelper";

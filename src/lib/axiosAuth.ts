@@ -3,7 +3,7 @@ import {
   updateUser,
   updateWSO,
   removeCredentials,
-} from "../reducers/authSlice";
+} from "./authSlice";
 import jwtDecode from "jwt-decode";
 import { SimpleAuthentication, WSO } from "wso-api-client";
 

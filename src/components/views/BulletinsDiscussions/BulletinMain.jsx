@@ -6,7 +6,7 @@ import BulletinShow from "./BulletinShow";
 import BulletinForm from "./BulletinForm";
 
 // Redux imports
-import { getAPIToken } from "../../../reducers/authSlice";
+import { getAPIToken } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
 
 // External Imports

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 // Redux/Routing imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO } from "../../../reducers/authSlice";
+import { getWSO } from "../../../lib/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const DiscussionsNew = () => {
