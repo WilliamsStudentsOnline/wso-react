@@ -1,17 +1,18 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import Ephmatcher from "./Ephmatcher";
 import EphmatchForm from "./EphmatchForm";
 
 // Redux/routing imports
-import { connect } from "react-redux";
-import { getWSO, getAPIToken } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO, getAPIToken } from "../../../reducers/authSlice";
 import { useNavigate } from "react-router-dom";
 import { containsAllOfScopes, scopes } from "../../../lib/general";
 
 // Page created to handle both opting in and out.
-const EphmatchOptIn = ({ token, wso }) => {
+const EphmatchOptIn = () => {
+  const token = useAppSelector(getAPIToken);
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
   // Note that this is different from Ephcatch
@@ -192,16 +193,4 @@ const EphmatchOptIn = ({ token, wso }) => {
   );
 };
 
-EphmatchOptIn.propTypes = {
-  token: PropTypes.string.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-EphmatchOptIn.defaultProps = {};
-
-const mapStateToProps = (state) => ({
-  token: getAPIToken(state),
-  wso: getWSO(state),
-});
-
-export default connect(mapStateToProps)(EphmatchOptIn);
+export default EphmatchOptIn;

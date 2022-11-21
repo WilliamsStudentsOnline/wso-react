@@ -1,6 +1,5 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import EphmatchHome from "./EphmatchHome";
 import EphmatchLayout from "./EphmatchLayout";
 import EphmatchMatch from "./EphmatchMatch";
@@ -9,7 +8,8 @@ import EphmatchOptOut from "./EphmatchOptOut";
 import EphmatchOptIn from "./EphmatchOptIn";
 
 // Redux/Routing imports
-import { connect } from "react-redux";
+import { useAppSelector } from "../../../lib/store";
+import { getAPIToken, getWSO } from "../../../reducers/authSlice";
 import {
   Routes,
   Route,
@@ -17,12 +17,14 @@ import {
   useNavigate,
   useLocation,
 } from "react-router-dom";
-import { getAPIToken, getWSO } from "../../../selectors/auth";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 
 import { format } from "timeago.js";
 
-const EphmatchMain = ({ token, wso }) => {
+const EphmatchMain = () => {
+  const wso = useAppSelector(getWSO);
+  const token = useAppSelector(getAPIToken);
+
   const navigateTo = useNavigate();
   const location = useLocation();
 
@@ -155,18 +157,4 @@ const EphmatchMain = ({ token, wso }) => {
   );
 };
 
-EphmatchMain.propTypes = {
-  token: PropTypes.string.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-// EphmatchMain.defaultProps = { profile: null };
-
-const mapStateToProps = () => {
-  return (state) => ({
-    token: getAPIToken(state),
-    wso: getWSO(state),
-  });
-};
-
-export default connect(mapStateToProps)(EphmatchMain);
+export default EphmatchMain;

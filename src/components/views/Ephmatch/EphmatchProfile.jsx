@@ -1,18 +1,17 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import Ephmatcher from "./Ephmatcher";
 import Errors from "../../Errors";
 import TagEdit from "../../TagEdit";
 import EphmatchForm from "./EphmatchForm";
 
 // Redux/routing imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
-import { doUpdateUser } from "../../../actions/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../reducers/authSlice";
 import { useNavigate } from "react-router-dom";
 
-const EphmatchProfile = ({ wso }) => {
+const EphmatchProfile = () => {
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
   const [profile, updateProfile] = useState(null);
@@ -172,18 +171,4 @@ const EphmatchProfile = ({ wso }) => {
   );
 };
 
-EphmatchProfile.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-EphmatchProfile.defaultProps = {};
-
-const mapStateToProps = (state) => ({
-  wso: getWSO(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(EphmatchProfile);
+export default EphmatchProfile;

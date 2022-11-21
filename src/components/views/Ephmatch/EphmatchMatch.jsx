@@ -1,16 +1,16 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 
 // Redux/routing imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../reducers/authSlice";
 import { useNavigate } from "react-router-dom";
 
 // Additional imports
 import Ephmatcher from "./Ephmatcher";
 
-const EphmatchMatch = ({ wso }) => {
+const EphmatchMatch = () => {
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const [matches, updateMatches] = useState([]);
 
@@ -54,14 +54,4 @@ const EphmatchMatch = ({ wso }) => {
   return <article className="facebook-results">{renderMatches()}</article>;
 };
 
-EphmatchMatch.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-EphmatchMatch.defaultProps = {};
-
-const mapStateToProps = (state) => ({
-  wso: getWSO(state),
-});
-
-export default connect(mapStateToProps)(EphmatchMatch);
+export default EphmatchMatch;
