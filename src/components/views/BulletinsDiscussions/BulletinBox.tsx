@@ -14,7 +14,7 @@ import {
   ModelsBulletinRide,
   ModelsDiscussion,
 } from "wso-api-client/lib/services/types";
-import { PostType } from "../../../lib/types";
+import { PostType, PostTypeName } from "../../../lib/types";
 
 type NonRideThread = ModelsDiscussion | ModelsBulletin;
 type Thread = NonRideThread | ModelsBulletinRide;
@@ -99,7 +99,7 @@ const BulletinBox = ({ type }: { type: PostType }) => {
       return (
         <div className="bulletin-title">
           <Link className="bulletin-link" to="discussions">
-            {type}
+            {PostTypeName.get(type)}
           </Link>
         </div>
       );
@@ -108,7 +108,7 @@ const BulletinBox = ({ type }: { type: PostType }) => {
     return (
       <div className="bulletin-title">
         <Link className="bulletin-link" to={`bulletins/${type}`}>
-          {type}
+          {PostTypeName.get(type)}
         </Link>
       </div>
     );

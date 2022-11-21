@@ -4,13 +4,15 @@ import PropTypes from "prop-types";
 import { Line, Paragraph } from "../../Skeleton";
 
 // Redux imports
-import { connect } from "react-redux";
-import { getCurrUser, getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getCurrUser, getWSO } from "../../../reducers/authSlice";
 
 // Additional imports
 import { Link, useNavigate } from "react-router-dom";
 
-const DiscussionPost = ({ currUser, post, wso }) => {
+const DiscussionPost = ({ post }) => {
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
   const [deleted, updateDeleted] = useState(false);
@@ -135,13 +137,7 @@ const DiscussionPost = ({ currUser, post, wso }) => {
 };
 
 DiscussionPost.propTypes = {
-  currUser: PropTypes.object,
   post: PropTypes.object.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-DiscussionPost.defaultProps = {
-  currUser: null,
 };
 
 const DiscussionPostSkeleton = () => (
@@ -156,12 +152,5 @@ const DiscussionPostSkeleton = () => (
   </div>
 );
 
-const mapStateToProps = (state) => ({
-  currUser: getCurrUser(state),
-  wso: getWSO(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DiscussionPost);
+export default DiscussionPost;
 export { DiscussionPostSkeleton };

@@ -6,8 +6,8 @@ import BulletinShow from "./BulletinShow";
 import BulletinForm from "./BulletinForm";
 
 // Redux imports
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import { getAPIToken } from "../../../reducers/authSlice";
+import { useAppSelector } from "../../../lib/store";
 
 // External Imports
 import { Routes, Route, useParams } from "react-router-dom";
@@ -18,11 +18,11 @@ import {
   bulletinTypeExchange,
   bulletinTypeAnnouncement,
 } from "../../../constants/general";
-import { getAPIToken } from "../../../selectors/auth";
 import Error404 from "../Errors/Error404";
 import RequireScope from "../../../router-permissions";
 
-const BulletinMain = ({ token }) => {
+const BulletinMain = () => {
+  const token = useAppSelector(getAPIToken);
   const params = useParams();
 
   if (params.type) {
@@ -83,14 +83,4 @@ const BulletinMain = ({ token }) => {
   return <Error404 />;
 };
 
-BulletinMain.propTypes = {
-  token: PropTypes.string.isRequired,
-};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    token: getAPIToken(state),
-  });
-};
-
-export default connect(mapStateToProps)(BulletinMain);
+export default BulletinMain;

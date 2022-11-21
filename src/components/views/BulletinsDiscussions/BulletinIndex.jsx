@@ -5,14 +5,17 @@ import PaginationButtons from "../../PaginationButtons";
 import { Line } from "../../Skeleton";
 
 // Redux and routing imports
-import { getWSO, getCurrUser } from "../../../selectors/auth";
-import { connect } from "react-redux";
+import { getWSO, getCurrUser } from "../../../reducers/authSlice";
+import { useAppSelector } from "../../../lib/store";
 
 // Additional imports
 import { Link, useNavigate } from "react-router-dom";
 import { bulletinTypeRide } from "../../../constants/general";
 
-const BulletinIndex = ({ currUser, type, wso }) => {
+const BulletinIndex = ({ type }) => {
+  const wso = useAppSelector(getWSO);
+  const currUser = useAppSelector(getCurrUser);
+
   const navigateTo = useNavigate();
 
   const [bulletins, updateBulletins] = useState(null);
@@ -252,24 +255,7 @@ const BulletinIndex = ({ currUser, type, wso }) => {
 };
 
 BulletinIndex.propTypes = {
-  currUser: PropTypes.object,
-  // navigateTo: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
-  wso: PropTypes.object.isRequired,
 };
 
-BulletinIndex.defaultProps = {
-  currUser: null,
-};
-
-const mapStateToProps = (state) => ({
-  currUser: getCurrUser(state),
-  wso: getWSO(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  // navigateTo: (location, params, opts) =>
-  //   dispatch(actions.navigateTo(location, params, opts)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(BulletinIndex);
+export default BulletinIndex;

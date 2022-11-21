@@ -1,18 +1,20 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import PaginationButtons from "../../PaginationButtons";
 import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
-import { getWSO, getCurrUser } from "../../../selectors/auth";
-import { connect } from "react-redux";
+import { useAppSelector } from "../../../lib/store";
+import { getCurrUser, getWSO } from "../../../reducers/authSlice";
 
 // Additional Imports
 import { Link, useNavigate } from "react-router-dom";
 import { format } from "timeago.js";
 
-const DiscussionIndex = ({ currUser, wso }) => {
+const DiscussionIndex = () => {
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
+
   const navigateTo = useNavigate();
 
   const perPage = 20;
@@ -201,18 +203,4 @@ const DiscussionIndex = ({ currUser, wso }) => {
   );
 };
 
-DiscussionIndex.propTypes = {
-  currUser: PropTypes.object.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-DiscussionIndex.defaultProps = {};
-
-const mapStateToProps = (state) => ({
-  currUser: getCurrUser(state),
-  wso: getWSO(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DiscussionIndex);
+export default DiscussionIndex;

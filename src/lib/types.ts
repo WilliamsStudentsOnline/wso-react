@@ -27,10 +27,19 @@ export interface WSOToken extends JwtPayload {
 // all types of posts that you can see on the homepage
 // including bulletins, discussions, and rides
 export enum PostType {
-  Discussions = "Discussions",
-  Announcements = "Announcements",
-  Exchanges = "Exchanges",
-  LostAndFound = "Lost And Found",
-  Jobs = "Jobs",
-  Rides = "Rides",
+  Discussions = "discussions",
+  Announcements = "announcement",
+  Exchanges = "exchange",
+  LostAndFound = "lostAndFound",
+  Jobs = "job",
+  Rides = "ride",
 }
+
+export const PostTypeName: Map<PostType, string> = new Map([
+  [PostType.Discussions, "Discussions"],
+  [PostType.Announcements, "Announcements"],
+  [PostType.Exchanges, "Exchanges"],
+  [PostType.LostAndFound, "Lost and Found"],
+  [PostType.Jobs, "Jobs"],
+  [PostType.Rides, "Rides"],
+]);

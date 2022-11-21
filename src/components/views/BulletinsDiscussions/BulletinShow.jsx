@@ -1,17 +1,19 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import { Line, Paragraph } from "../../Skeleton";
 
 // Redux and Routing imports
-import { connect } from "react-redux";
-import { getWSO, getCurrUser } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getCurrUser, getWSO } from "../../../reducers/authSlice";
 
 // Additional Imports
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { bulletinTypeRide } from "../../../constants/general";
 
-const BulletinShow = ({ currUser, wso }) => {
+const BulletinShow = () => {
+  const wso = useAppSelector(getWSO);
+  const currUser = useAppSelector(getCurrUser);
+
   const params = useParams();
   const navigateTo = useNavigate();
 
@@ -185,22 +187,4 @@ const BulletinShow = ({ currUser, wso }) => {
   );
 };
 
-BulletinShow.propTypes = {
-  currUser: PropTypes.object,
-  wso: PropTypes.object.isRequired,
-};
-
-BulletinShow.defaultProps = {
-  currUser: null,
-};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    currUser: getCurrUser(state),
-    wso: getWSO(state),
-  });
-};
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(BulletinShow);
+export default BulletinShow;

@@ -1,10 +1,9 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 
 // Redux and routing imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { getWSO } from "../../../reducers/authSlice";
+import { useAppSelector } from "../../../lib/store";
 import { useNavigate, useParams } from "react-router-dom";
 
 // Additional Imports
@@ -16,7 +15,9 @@ import {
 /// Keep this after the "react-date-picker" import so that this css style will take priority.
 import "../../stylesheets/DatePicker.css";
 
-const BulletinForm = ({ wso }) => {
+const BulletinForm = () => {
+  const wso = useAppSelector(getWSO);
+
   const params = useParams();
   const navigateTo = useNavigate();
 
@@ -277,18 +278,4 @@ const BulletinForm = ({ wso }) => {
   );
 };
 
-BulletinForm.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-BulletinForm.defaultProps = {};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    wso: getWSO(state),
-  });
-};
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(BulletinForm);
+export default BulletinForm;
