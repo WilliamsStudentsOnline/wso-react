@@ -1,17 +1,19 @@
 // React Imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import { Line, Photo } from "../../Skeleton";
 
 // Redux/ Routing imports
-import { connect } from "react-redux";
-import { getWSO, getCurrUser } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getCurrUser, getWSO } from "../../../reducers/authSlice";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 // Additional Imports
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 
-const FacebookUser = ({ wso, currUser }) => {
+const FacebookUser = () => {
+  const wso = useAppSelector(getWSO);
+  const currUser = useAppSelector(getCurrUser);
+
   const navigateTo = useNavigate();
   const params = useParams();
 
@@ -338,20 +340,4 @@ const FacebookUser = ({ wso, currUser }) => {
   );
 };
 
-FacebookUser.propTypes = {
-  wso: PropTypes.object.isRequired,
-  currUser: PropTypes.object.isRequired,
-};
-
-FacebookUser.defaultProps = {};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    wso: getWSO(state),
-    currUser: getCurrUser(state),
-  });
-};
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FacebookUser);
+export default FacebookUser;

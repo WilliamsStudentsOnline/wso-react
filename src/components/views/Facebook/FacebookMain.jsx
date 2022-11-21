@@ -9,9 +9,6 @@ import FacebookEdit from "./FacebookEdit";
 import FacebookUser from "./FacebookUser";
 import Error404 from "../Errors/Error404";
 
-// Redux Imports
-import { connect } from "react-redux";
-
 // External Imports
 import { Routes, Route } from "react-router-dom";
 
@@ -29,8 +26,4 @@ const FacebookMain = () => {
   );
 };
 
-const mapStateToProps = () => {
-  return (state) => ({});
-};
-
-export default connect(mapStateToProps)(FacebookMain);
+export default FacebookMain;

@@ -1,20 +1,22 @@
 // React Imports
 import React, { useState, useEffect, createRef } from "react";
-import PropTypes from "prop-types";
 import Errors from "../../Errors";
 import { CircularLoader } from "../../Skeleton";
 
 // Redux/Routing imports
-import { connect } from "react-redux";
-import { getWSO, getCurrUser } from "../../../selectors/auth";
-import { doUpdateUser } from "../../../actions/auth";
+import { useAppSelector, useAppDispatch } from "../../../lib/store";
+import { getCurrUser, getWSO, updateUser } from "../../../reducers/authSlice";
 import { useNavigate } from "react-router-dom";
 
 // Additional Imports
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 import TagEdit from "../../TagEdit";
 
-const FacebookEdit = ({ currUser, updateUser, wso }) => {
+const FacebookEdit = () => {
+  const dispatch = useAppDispatch();
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
+
   const navigateTo = useNavigate();
 
   const [tags, updateTags] = useState([]);
@@ -82,7 +84,7 @@ const FacebookEdit = ({ currUser, updateUser, wso }) => {
         updatedUser
       );
 
-      updateUser(updateResponse.data);
+      dispatch(updateUser(updateResponse.data));
       updateSubmitting(false); // should be placed before navigateTo, otherwise updating unmounted component
       navigateTo(`/facebook/users/${currUser.id}`);
     } catch (error) {
@@ -211,23 +213,4 @@ const FacebookEdit = ({ currUser, updateUser, wso }) => {
   );
 };
 
-FacebookEdit.propTypes = {
-  currUser: PropTypes.object,
-  updateUser: PropTypes.func.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-FacebookEdit.defaultProps = {
-  currUser: null,
-};
-
-const mapStateToProps = (state) => ({
-  currUser: getCurrUser(state),
-  wso: getWSO(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FacebookEdit);
+export default FacebookEdit;

@@ -1,10 +1,9 @@
 // React Imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 
 // Redux/ Router imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../reducers/authSlice";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 // Additional Imports
@@ -12,7 +11,9 @@ import { userTypeStudent } from "../../../constants/general";
 import PaginationButtons from "../../PaginationButtons";
 import FacebookGridUser from "./FacebookGridUser";
 
-const FacebookHome = ({ wso }) => {
+const FacebookHome = () => {
+  const wso = useAppSelector(getWSO);
+
   const navigateTo = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -189,18 +190,4 @@ const FacebookHome = ({ wso }) => {
   );
 };
 
-FacebookHome.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-FacebookHome.defaultProps = {};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    wso: getWSO(state),
-  });
-};
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FacebookHome);
+export default FacebookHome;
