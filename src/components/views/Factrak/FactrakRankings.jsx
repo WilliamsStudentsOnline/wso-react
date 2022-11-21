@@ -1,20 +1,22 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 // import FactrakComment, { FactrakCommentSkeleton } from "./FactrakComment";
 import { List } from "../../Skeleton";
 
 // Redux imports
-import { connect } from "react-redux";
-import { getWSO, getAPIToken } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO, getAPIToken } from "../../../reducers/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import FactrakTopProfs from "./FactrakTopProfs";
 
-const FactrakRankings = ({ token, wso }) => {
+const FactrakRankings = () => {
+  const token = useAppSelector(getAPIToken);
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
+
   const [areas, updateAreas] = useState(null);
 
   useEffect(() => {
@@ -68,18 +70,4 @@ const FactrakRankings = ({ token, wso }) => {
   );
 };
 
-FactrakRankings.propTypes = {
-  token: PropTypes.string.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-FactrakRankings.defaultProps = {};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    token: getAPIToken(state),
-    wso: getWSO(state),
-  });
-};
-
-export default connect(mapStateToProps)(FactrakRankings);
+export default FactrakRankings;

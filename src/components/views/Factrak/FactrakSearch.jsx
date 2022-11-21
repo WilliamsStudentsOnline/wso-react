@@ -1,14 +1,15 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 
 // Redux/ Router imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../reducers/authSlice";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 
 // FactrakSearch refers to the search result page
-const FactrakSearch = ({ wso }) => {
+const FactrakSearch = () => {
+  const wso = useAppSelector(getWSO);
+
   const [searchParams] = useSearchParams();
   const navigateTo = useNavigate();
 
@@ -168,16 +169,4 @@ const FactrakSearch = ({ wso }) => {
   );
 };
 
-FactrakSearch.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-FactrakSearch.defaultProps = {};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    wso: getWSO(state),
-  });
-};
-
-export default connect(mapStateToProps)(FactrakSearch);
+export default FactrakSearch;

@@ -1,14 +1,14 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import { Line } from "../../Skeleton";
 
 // Redux/ Router imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../reducers/authSlice";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-const FactrakAOS = ({ wso }) => {
+const FactrakAOS = () => {
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const params = useParams();
 
@@ -209,14 +209,4 @@ const FactrakAOS = ({ wso }) => {
   );
 };
 
-FactrakAOS.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    wso: getWSO(state),
-  });
-};
-
-export default connect(mapStateToProps)(FactrakAOS);
+export default FactrakAOS;

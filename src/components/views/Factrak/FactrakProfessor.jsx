@@ -1,20 +1,24 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import FactrakComment, { FactrakCommentSkeleton } from "./FactrakComment";
 import FactrakRatings, { FactrakRatingsSkeleton } from "./FactrakRatings";
 import FactrakDeficitMessage from "./FactrakUtils";
 import { Line } from "../../Skeleton";
 
 // Redux/ Routing imports
-import { connect } from "react-redux";
-import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO, getCurrUser, getAPIToken } from "../../../reducers/authSlice";
+
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 
-const FactrakProfessor = ({ currUser, token, wso }) => {
+const FactrakProfessor = () => {
+  const currUser = useAppSelector(getCurrUser);
+  const token = useAppSelector(getAPIToken);
+  const wso = useAppSelector(getWSO);
+
   const params = useParams();
   const navigateTo = useNavigate();
 
@@ -175,20 +179,4 @@ const FactrakProfessor = ({ currUser, token, wso }) => {
   );
 };
 
-FactrakProfessor.propTypes = {
-  currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-FactrakProfessor.defaultProps = {};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    currUser: getCurrUser(state),
-    token: getAPIToken(state),
-    wso: getWSO(state),
-  });
-};
-
-export default connect(mapStateToProps)(FactrakProfessor);
+export default FactrakProfessor;

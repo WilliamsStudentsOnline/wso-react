@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // Redux/ Router imports
-import { connect } from "react-redux";
-import { getWSO, getCurrUser } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO, getCurrUser } from "../../../reducers/authSlice";
 import {
   Link,
   useNavigate,
@@ -12,8 +12,11 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
-const FactrakLayout = ({ wso, children, currUser }) => {
+const FactrakLayout = ({ children }) => {
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
+
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState("");
@@ -204,20 +207,7 @@ const FactrakLayout = ({ wso, children, currUser }) => {
 };
 
 FactrakLayout.propTypes = {
-  wso: PropTypes.object.isRequired,
   children: PropTypes.object.isRequired,
-  currUser: PropTypes.object,
 };
 
-FactrakLayout.defaultProps = { currUser: {} };
-
-const mapStateToProps = () => {
-  return (state) => ({
-    wso: getWSO(state),
-    currUser: getCurrUser(state),
-  });
-};
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakLayout);
+export default FactrakLayout;

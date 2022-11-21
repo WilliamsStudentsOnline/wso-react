@@ -5,23 +5,19 @@ import { Paragraph, Line } from "../../Skeleton";
 import Button from "../../Components";
 
 // Redux/ Router imports
-import { connect } from "react-redux";
-import { getWSO, getCurrUser } from "../../../selectors/auth";
-import { doUpdateUser } from "../../../actions/auth";
+import { useAppSelector, useAppDispatch } from "../../../lib/store";
+import { getWSO, getCurrUser, updateUser } from "../../../reducers/authSlice";
 
 // Additional Imports
 import { Link, useNavigate } from "react-router-dom";
 import { format } from "timeago.js";
 
-const FactrakComment = ({
-  abridged,
-  wso,
-  comment,
-  currUser,
-  showProf,
-  updateUser,
-}) => {
+const FactrakComment = ({ abridged, comment, showProf }) => {
+  const dispatch = useAppDispatch();
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
+
   const [survey, updateSurvey] = useState(comment);
   const [isDeleted, updateDeleted] = useState(false);
 
@@ -44,7 +40,7 @@ const FactrakComment = ({
       await wso.factrakService.deleteSurvey(survey.id);
       updateDeleted(true);
       const userResponse = await wso.userService.getUser();
-      updateUser(userResponse.data);
+      dispatch(updateUser(userResponse.data));
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
     }
@@ -363,11 +359,8 @@ const FactrakComment = ({
 
 FactrakComment.propTypes = {
   abridged: PropTypes.bool.isRequired,
-  wso: PropTypes.object.isRequired,
   comment: PropTypes.object,
-  currUser: PropTypes.object.isRequired,
   showProf: PropTypes.bool.isRequired,
-  updateUser: PropTypes.func.isRequired,
 };
 
 FactrakComment.defaultProps = {
@@ -394,14 +387,5 @@ const FactrakCommentSkeleton = () => (
   </div>
 );
 
-const mapStateToProps = (state) => ({
-  wso: getWSO(state),
-  currUser: getCurrUser(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  updateUser: (updatedUser) => dispatch(doUpdateUser(updatedUser)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakComment);
+export default FactrakComment;
 export { FactrakCommentSkeleton };

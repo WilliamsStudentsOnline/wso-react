@@ -1,20 +1,23 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import FactrakComment, { FactrakCommentSkeleton } from "./FactrakComment";
 import { List } from "../../Skeleton";
 import FactrakDeficitMessage from "./FactrakUtils";
 
 // Redux imports
-import { connect } from "react-redux";
-import { getWSO, getCurrUser, getAPIToken } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO, getCurrUser, getAPIToken } from "../../../reducers/authSlice";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { Link, useNavigate } from "react-router-dom";
 
-const FactrakHome = ({ currUser, token, wso }) => {
+const FactrakHome = () => {
+  const currUser = useAppSelector(getCurrUser);
+  const token = useAppSelector(getAPIToken);
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
+
   const [areas, updateAreas] = useState(null);
   const [surveys, updateSurveys] = useState(null);
 
@@ -112,20 +115,4 @@ const FactrakHome = ({ currUser, token, wso }) => {
   );
 };
 
-FactrakHome.propTypes = {
-  currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-FactrakHome.defaultProps = {};
-
-const mapStateToProps = (state) => ({
-  currUser: getCurrUser(state),
-  token: getAPIToken(state),
-  wso: getWSO(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FactrakHome);
+export default FactrakHome;
