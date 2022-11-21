@@ -11,39 +11,26 @@ import { useAppSelector } from "../../../lib/store";
 
 // External Imports
 import { Routes, Route, useParams } from "react-router-dom";
-import {
-  bulletinTypeLostAndFound,
-  bulletinTypeJob,
-  bulletinTypeRide,
-  bulletinTypeExchange,
-  bulletinTypeAnnouncement,
-} from "../../../constants/general";
 import Error404 from "../Errors/Error404";
 import RequireScope from "../../../router-permissions";
+import { PostType } from "../../../lib/types";
 
 const BulletinMain = () => {
   const token = useAppSelector(getAPIToken);
   const params = useParams();
 
   if (params.type) {
-    const validBulletinTypes = [
-      bulletinTypeLostAndFound,
-      bulletinTypeRide,
-      bulletinTypeJob,
-      bulletinTypeExchange,
-      bulletinTypeAnnouncement,
-    ];
-
-    if (validBulletinTypes.indexOf(params.type) !== -1) {
+    if (Object.values<string>(PostType).includes(params.type)) {
       // if contains param type and type is valid, then return content
+      const type = params.type as PostType;
       return (
-        <BulletinLayout type={params.type}>
+        <BulletinLayout type={type}>
           <Routes>
             <Route
               index
               element={
                 <RequireScope token={token} name="bulletins">
-                  <BulletinIndex type={params.type} />
+                  <BulletinIndex type={type} />
                 </RequireScope>
               }
             />

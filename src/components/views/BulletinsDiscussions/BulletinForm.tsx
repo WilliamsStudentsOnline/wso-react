@@ -14,6 +14,10 @@ import {
 } from "../../../constants/general";
 /// Keep this after the "react-date-picker" import so that this css style will take priority.
 import "../../stylesheets/DatePicker.css";
+import {
+  ModelsBulletinRide,
+  ModelsBulletin,
+} from "wso-api-client/lib/services/types";
 
 const BulletinForm = () => {
   const wso = useAppSelector(getWSO);
@@ -32,40 +36,51 @@ const BulletinForm = () => {
   // Common to all bulletins
   const [startDate, updateStartDate] = useState(new Date());
   const [type, updateType] = useState("");
-  const [body, updateBody] = useState("");
-  const [errors, updateErrors] = useState([]);
+  const [body, updateBody] = useState<string>("");
+  const [errors, updateErrors] = useState<string[]>([]);
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadBulletin = async () => {
       let bulletinResponse;
 
+      const bulletinID = Number(params.bulletinID);
+
       try {
         if (params.type === bulletinTypeRide) {
-          bulletinResponse = await wso.bulletinService.getRide(
-            params.bulletinID
-          );
+          bulletinResponse = await wso.bulletinService.getRide(bulletinID);
         } else {
-          bulletinResponse = await wso.bulletinService.getBulletin(
-            params.bulletinID
-          );
+          bulletinResponse = await wso.bulletinService.getBulletin(bulletinID);
         }
 
         const bulletinData = bulletinResponse.data;
 
-        updateBody(bulletinData.body);
+        updateBody(bulletinData?.body ?? "");
         if (params.type === bulletinTypeRide) {
-          updateSource(bulletinData.source);
-          updateDestination(bulletinData.destination);
-          updateOffer(bulletinData.offer);
-          updateStartDate(new Date(bulletinData.date));
+          const rideData = bulletinData as ModelsBulletinRide;
+          updateSource(rideData.source ?? "");
+          updateDestination(rideData.destination ?? "");
+          updateOffer(rideData.offer ?? false);
+          updateStartDate(() => {
+            if (rideData.date) {
+              return new Date(rideData.date);
+            }
+            return new Date();
+          });
         } else {
-          updateTitle(bulletinData.title);
-          updateStartDate(new Date(bulletinData.startDate));
+          const data = bulletinData as ModelsBulletin;
+          updateTitle(data.title ?? "");
+          updateStartDate(() => {
+            if (data.startDate) {
+              return new Date(data.startDate);
+            }
+            return new Date();
+          });
         }
       } catch (error) {
         // We're only expecting 403 errors here
-        if (error.errorCode === 403) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((error as any).errorCode === 403) {
           navigateTo("/403", { replace: true });
         }
         // In any other error, the skeleton will just continue displaying.
@@ -103,14 +118,16 @@ const BulletinForm = () => {
         </h5>
         <DatePicker
           value={startDate}
-          onChange={(date) => updateStartDate(date)}
+          onChange={(date: Date) => updateStartDate(date)}
         />
       </div>
     );
   };
 
   // Handles submissions
-  const submitHandler = async (event) => {
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = async (
+    event
+  ) => {
     event.preventDefault();
 
     if (!body.trim()) {
@@ -131,31 +148,38 @@ const BulletinForm = () => {
           offer,
           destination,
           body,
-          date: dateAdjusted,
+          date: dateAdjusted.toString(),
         };
         response =
           // TODO: right now we are figuring if edit by whether an ID has been passed in
           params.bulletinID
             ? await wso.bulletinService.updateRide(
-                params.bulletinID,
+                Number(params.bulletinID),
                 rideParams
               )
             : await wso.bulletinService.createRide(rideParams);
       } else {
-        const bulletinParams = { type, title, body, startDate };
+        const bulletinParams = {
+          type,
+          title,
+          body,
+          startDate: startDate.toString(),
+        };
         response =
           // TODO: right now we are figuring if edit by whether an ID has been passed in
           params.bulletinID
             ? await wso.bulletinService.updateBulletin(
-                params.bulletinID,
+                Number(params.bulletinID),
                 bulletinParams
               )
             : await wso.bulletinService.createBulletin(bulletinParams);
       }
 
-      navigateTo(`/bulletins/${type}/${response.data.id}`);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      navigateTo(`/bulletins/${type}/${response!.data!.id}`);
     } catch (error) {
-      updateErrors(error.errors);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      updateErrors((error as any).errors);
     }
   };
 
@@ -224,7 +248,7 @@ const BulletinForm = () => {
         </h5>
         <DatePicker
           value={startDate}
-          onChange={(date) => updateStartDate(date)}
+          onChange={(date: Date) => updateStartDate(date)}
         />
       </div>
     );

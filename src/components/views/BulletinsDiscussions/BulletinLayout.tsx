@@ -1,5 +1,5 @@
 // React imports
-import React from "react";
+import React, { ReactNode } from "react";
 import PropTypes from "prop-types";
 
 // Redux and Routing imports
@@ -15,11 +15,17 @@ import {
   bulletinTypeRide,
 } from "../../../constants/general";
 
-const BulletinLayout = ({ children, type }) => {
+const BulletinLayout = ({
+  children,
+  type,
+}: {
+  children: ReactNode;
+  type: string;
+}) => {
   if (!type) return null;
 
   // Generator for bulletin links
-  const bulletinLinkGenerator = (bulletinType, title) => {
+  const bulletinLinkGenerator = (bulletinType: string, title: string) => {
     return (
       <li>
         <Link to={`/bulletins/${bulletinType}`}>{title}</Link>
