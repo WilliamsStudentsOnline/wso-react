@@ -6,25 +6,17 @@ import "./stylesheets/Homepage.css";
 import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 
 // Redux Imports
-import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { PostType } from "../lib/types";
 
 const Homepage = () => {
   const navigateTo = useNavigate();
-  const bulletinTypeWords = [
-    "Discussions",
-    "Announcements",
-    "Exchanges",
-    "Lost And Found",
-    "Jobs",
-    "Rides",
-  ];
   const [query, updateQuery] = useState("");
 
-  const submitHandler = (event) => {
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    navigateTo(`/facebook?q=${query}`, { reload: true });
+    navigateTo(`/facebook?q=${query}`);
   };
 
   return (
@@ -35,10 +27,10 @@ const Homepage = () => {
         </div>
         <header>
           <div className="logo">
-            <h2 align="center" id="logotype">
+            <h2 className="text-center" id="logotype">
               WSO
             </h2>
-            <h4 align="center" id="tagline">
+            <h4 className="text-center" id="tagline">
               By Students, For Students!
             </h4>
           </div>
@@ -61,9 +53,9 @@ const Homepage = () => {
         <article>
           <section>
             <div className="bulletin-list">
-              {bulletinTypeWords.map((bulletin) => {
-                return <BulletinBox typeWord={bulletin} key={bulletin} />;
-              })}
+              {Object.values(PostType).map((type) => (
+                <BulletinBox type={type} key={type} />
+              ))}
             </div>
           </section>
         </article>
@@ -72,4 +64,4 @@ const Homepage = () => {
   );
 };
 
-export default connect()(Homepage);
+export default Homepage;

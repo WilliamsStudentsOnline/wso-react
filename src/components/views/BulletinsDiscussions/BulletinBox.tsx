@@ -1,49 +1,38 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import "../../stylesheets/BulletinBox.css";
 import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { getWSO } from "../../../reducers/authSlice";
+import { useAppSelector } from "../../../lib/store";
 
 // Additional imports
 import { Link } from "react-router-dom";
 import {
-  bulletinTypeRide,
-  bulletinTypeJob,
-  discussionType,
-  bulletinTypeLostAndFound,
-  bulletinTypeExchange,
-  bulletinTypeAnnouncement,
-} from "../../../constants/general";
+  ModelsBulletin,
+  ModelsBulletinRide,
+  ModelsDiscussion,
+} from "wso-api-client/lib/services/types";
+import { PostType } from "../../../lib/types";
 
-const BulletinBox = ({ wso, typeWord }) => {
-  const [threads, updateThreads] = useState(null);
+type NonRideThread = ModelsDiscussion | ModelsBulletin;
+type Thread = NonRideThread | ModelsBulletinRide;
 
-  // Converts the typeWord to the type of bulletin/discussion to be obtained.
-  const linkMap = new Map([
-    ["Announcements", bulletinTypeAnnouncement],
-    ["Exchanges", bulletinTypeExchange],
-    ["Lost And Found", bulletinTypeLostAndFound],
-    ["Jobs", bulletinTypeJob],
-    ["Rides", bulletinTypeRide],
-    ["Discussions", discussionType],
-  ]);
-
-  const type = linkMap.get(typeWord);
+const BulletinBox = ({ type }: { type: PostType }) => {
+  const wso = useAppSelector(getWSO);
+  const [threads, updateThreads] = useState<Thread[] | undefined>(undefined);
 
   // Load the appropriate discussions/bulletins
   useEffect(() => {
     let isMounted = true;
-    const loadParams = { limit: 5, type };
+    const loadParams = { limit: 5, type: type };
 
     const getThreads = async () => {
       let response;
-      if (type === discussionType) {
+      if (type === PostType.Discussions) {
         response = await wso.bulletinService.listDiscussions(loadParams);
-      } else if (type === bulletinTypeRide) {
+      } else if (type === PostType.Rides) {
         response = await wso.bulletinService.listRides(loadParams);
       } else {
         response = await wso.bulletinService.listBulletins(loadParams);
@@ -67,8 +56,12 @@ const BulletinBox = ({ wso, typeWord }) => {
     };
   }, [wso, type]);
 
-  const formatDate = (showDate) => {
-    const options = {
+  const formatDate = (showDate: string | undefined) => {
+    if (!showDate) {
+      return "";
+    }
+
+    const options: Intl.DateTimeFormatOptions = {
       weekday: "short",
       month: "short",
       day: "numeric",
@@ -78,32 +71,35 @@ const BulletinBox = ({ wso, typeWord }) => {
   };
 
   // Generates the threadTitle
-  const threadTitle = (thread) => {
-    if (type === bulletinTypeRide) {
-      const threadOffer = thread.offer ? "Offer" : "Request";
-      return `${thread.source} to ${thread.destination} [${threadOffer}]`;
+  const threadTitle = (thread: Thread) => {
+    if (type === PostType.Rides) {
+      const rideThread = thread as ModelsBulletinRide;
+      const threadOffer = rideThread.offer ? "Offer" : "Request";
+      return `${rideThread.source} to ${rideThread.destination} [${threadOffer}]`;
     }
-    return thread.title;
+
+    const otherThread = thread as NonRideThread;
+    return otherThread.title;
   };
 
   // Generates thread Date
-  const threadDate = (thread) => {
-    if (type === bulletinTypeRide) {
-      return thread.date;
+  const threadDate = (thread: Thread) => {
+    if (type === PostType.Rides) {
+      return (thread as ModelsBulletinRide).date;
     }
-    if (type === discussionType) {
-      return thread.lastActive;
+    if (type === PostType.Discussions) {
+      return (thread as ModelsDiscussion).lastActive;
     }
-    return thread.startDate;
+    return (thread as ModelsBulletin).startDate;
   };
 
   // Generate bulletin title link
   const bulletinTitle = () => {
-    if (type === discussionType) {
+    if (type === PostType.Discussions) {
       return (
         <div className="bulletin-title">
           <Link className="bulletin-link" to="discussions">
-            {typeWord}
+            {type}
           </Link>
         </div>
       );
@@ -112,7 +108,7 @@ const BulletinBox = ({ wso, typeWord }) => {
     return (
       <div className="bulletin-title">
         <Link className="bulletin-link" to={`bulletins/${type}`}>
-          {typeWord}
+          {type}
         </Link>
       </div>
     );
@@ -137,7 +133,7 @@ const BulletinBox = ({ wso, typeWord }) => {
           ? threads.map((thread) => {
               return (
                 <div className="bulletin-children" key={thread.id}>
-                  {type === discussionType ? (
+                  {type === PostType.Discussions ? (
                     <Link
                       className="thread-link"
                       to={`/discussions/threads/${thread.id}`}
@@ -172,15 +168,4 @@ const BulletinBox = ({ wso, typeWord }) => {
   );
 };
 
-BulletinBox.propTypes = {
-  wso: PropTypes.object.isRequired,
-  typeWord: PropTypes.string.isRequired,
-};
-
-BulletinBox.defaultProps = {};
-
-const mapStateToProps = (state) => ({
-  wso: getWSO(state),
-});
-
-export default connect(mapStateToProps)(BulletinBox);
+export default BulletinBox;

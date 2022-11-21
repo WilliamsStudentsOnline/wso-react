@@ -23,3 +23,14 @@ export interface WSOToken extends JwtPayload {
   scope: string[];
   tokenLevel: number;
 }
+
+// all types of posts that you can see on the homepage
+// including bulletins, discussions, and rides
+export enum PostType {
+  Discussions = "Discussions",
+  Announcements = "Announcements",
+  Exchanges = "Exchanges",
+  LostAndFound = "Lost And Found",
+  Jobs = "Jobs",
+  Rides = "Rides",
+}
