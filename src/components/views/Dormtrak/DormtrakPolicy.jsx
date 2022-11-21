@@ -1,13 +1,14 @@
 // React imports
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 
 // Redux/ Routing imports
-import { connect } from "react-redux";
-import { getCurrUser, getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO, getCurrUser } from "../../../reducers/authSlice";
 import { useNavigate } from "react-router-dom";
 
-const DormtrakPolicy = ({ currUser, wso }) => {
+const DormtrakPolicy = () => {
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
@@ -118,16 +119,4 @@ const DormtrakPolicy = ({ currUser, wso }) => {
   );
 };
 
-DormtrakPolicy.propTypes = {
-  currUser: PropTypes.object.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-  currUser: getCurrUser(state),
-  wso: getWSO(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DormtrakPolicy);
+export default DormtrakPolicy;

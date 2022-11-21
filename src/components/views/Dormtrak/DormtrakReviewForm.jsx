@@ -1,13 +1,14 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 
 // Redux / Routing imports
-import { connect } from "react-redux";
-import { getWSO, getCurrUser } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO, getCurrUser } from "../../../reducers/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 
-const DormtrakReviewForm = ({ currUser, wso }) => {
+const DormtrakReviewForm = () => {
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const params = useParams();
 
@@ -372,18 +373,4 @@ const DormtrakReviewForm = ({ currUser, wso }) => {
   );
 };
 
-DormtrakReviewForm.propTypes = {
-  currUser: PropTypes.object.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    currUser: getCurrUser(state),
-    wso: getWSO(state),
-  });
-};
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DormtrakReviewForm);
+export default DormtrakReviewForm;

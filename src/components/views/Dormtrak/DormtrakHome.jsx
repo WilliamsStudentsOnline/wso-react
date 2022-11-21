@@ -1,18 +1,19 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import DormtrakRanking from "./DormtrakRanking";
 import DormtrakRecentComments from "./DormtrakRecentComments";
 import Button from "../../Components";
 
 // Redux imports
-import { connect } from "react-redux";
-import { getWSO, getCurrUser } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO, getCurrUser } from "../../../reducers/authSlice";
 
 // Additional imports
 import { Link, useNavigate } from "react-router-dom";
 
-const DormtrakHome = ({ currUser, wso }) => {
+const DormtrakHome = () => {
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
   const [reviews, updateReviews] = useState(null);
@@ -138,18 +139,4 @@ const DormtrakHome = ({ currUser, wso }) => {
   );
 };
 
-DormtrakHome.propTypes = {
-  currUser: PropTypes.object.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-DormtrakHome.defaultProps = {};
-
-const mapStateToProps = (state) => ({
-  currUser: getCurrUser(state),
-  wso: getWSO(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DormtrakHome);
+export default DormtrakHome;

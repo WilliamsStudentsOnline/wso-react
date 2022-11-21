@@ -4,13 +4,14 @@ import PropTypes from "prop-types";
 import { Line } from "../../Skeleton";
 
 // Redux imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../reducers/authSlice";
 
 // Additional imports
 import { Link } from "react-router-dom";
 
-const DormtrakRanking = ({ wso }) => {
+const DormtrakRanking = () => {
+  const wso = useAppSelector(getWSO);
   const [dormInfo, updateDormsInfo] = useState(null);
 
   const roundToTenth = (num) => {
@@ -381,14 +382,4 @@ const DormtrakRanking = ({ wso }) => {
   );
 };
 
-DormtrakRanking.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-DormtrakRanking.defaultProps = {};
-
-const mapStateToProps = (state) => ({
-  wso: getWSO(state),
-});
-
-export default connect(mapStateToProps)(DormtrakRanking);
+export default DormtrakRanking;

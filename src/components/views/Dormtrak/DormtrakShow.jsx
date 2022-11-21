@@ -1,22 +1,23 @@
 // React imports
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import DormtrakFacts from "./DormtrakFacts";
 import DormtrakRooms from "./DormtrakRooms";
 import DormtrakRecentComments from "./DormtrakRecentComments";
 import { Line, Photo, Paragraph } from "../../Skeleton";
 
 // Redux/ Routing imports
-import { getCurrUser, getWSO } from "../../../selectors/auth";
-import { connect } from "react-redux";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO, getCurrUser } from "../../../reducers/authSlice";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 // Additional imports
 import { bannerHelper } from "../../../lib/imageHelper";
-import { Link, useNavigate, useParams } from "react-router-dom";
 import { userTypeStudent } from "../../../constants/general";
 import floorplanHelper from "./floorplanHelper";
 
-const DormtrakShow = ({ currUser, wso }) => {
+const DormtrakShow = () => {
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const params = useParams();
 
@@ -160,20 +161,4 @@ const DormtrakShow = ({ currUser, wso }) => {
   );
 };
 
-DormtrakShow.propTypes = {
-  currUser: PropTypes.object.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-DormtrakShow.defaultProps = {};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    currUser: getCurrUser(state),
-    wso: getWSO(state),
-  });
-};
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DormtrakShow);
+export default DormtrakShow;
