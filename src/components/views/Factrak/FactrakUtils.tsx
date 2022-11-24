@@ -1,10 +1,14 @@
 // React imports
 import React from "react";
-import PropTypes from "prop-types";
+import { User } from "../../../lib/types";
 
 // Generates the factrak survey deficit message if necessary
-const FactrakDeficitMessage = ({ currUser }) => {
-  if (currUser.factrakSurveyDeficit > 0) {
+const FactrakDeficitMessage = ({ currUser }: { currUser: User | null }) => {
+  if (
+    currUser &&
+    currUser.factrakSurveyDeficit &&
+    currUser.factrakSurveyDeficit > 0
+  ) {
     return (
       <>
         <strong>
@@ -23,10 +27,6 @@ const FactrakDeficitMessage = ({ currUser }) => {
   }
 
   return null;
-};
-
-FactrakDeficitMessage.propTypes = {
-  currUser: PropTypes.object.isRequired,
 };
 
 export default FactrakDeficitMessage;

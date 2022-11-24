@@ -1,6 +1,5 @@
 // React imports
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { Paragraph, Line } from "../../Skeleton";
 import Button from "../../Components";
 
@@ -11,27 +10,50 @@ import { getWSO, getCurrUser, updateUser } from "../../../lib/authSlice";
 // Additional Imports
 import { Link, useNavigate } from "react-router-dom";
 import { format } from "timeago.js";
+import { ModelsFactrakSurvey } from "wso-api-client/lib/services/types";
 
-const FactrakComment = ({ abridged, comment, showProf }) => {
+const FactrakComment = ({
+  abridged,
+  comment = {
+    id: 1,
+    comment:
+      "Hi! Good job on using the web inspector to attempt to find out what the survey is. Consider joining WSO!",
+    professorID: 1,
+    wouldRecommendCourse: true,
+    wouldTakeAnother: false,
+    userID: -1,
+  },
+  showProf,
+}: {
+  abridged: boolean;
+  comment?: ModelsFactrakSurvey;
+  showProf: boolean;
+}) => {
   const dispatch = useAppDispatch();
   const currUser = useAppSelector(getCurrUser);
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
-  const [survey, updateSurvey] = useState(comment);
+  const [survey, updateSurvey] = useState<ModelsFactrakSurvey>(comment);
   const [isDeleted, updateDeleted] = useState(false);
 
   // Get the survey and update it after editing.
   const getAndUpdateSurvey = async () => {
     try {
+      if (!survey?.id) {
+        throw new Error("No survey ID found.");
+      }
       const surveyResponse = await wso.factrakService.getSurvey(survey.id);
-      updateSurvey(surveyResponse.data);
+      updateSurvey(surveyResponse.data ?? survey);
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
     }
   };
 
   const deleteHandler = async () => {
+    if (!survey?.id) {
+      throw new Error("No survey ID found.");
+    }
     // eslint-disable-next-line no-restricted-globals, no-alert
     const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
@@ -47,10 +69,13 @@ const FactrakComment = ({ abridged, comment, showProf }) => {
   };
 
   // Handles survey agreement
-  const agreeHandler = async (agree) => {
+  const agreeHandler = async (agree: boolean) => {
     const agreeParams = { agree };
 
     try {
+      if (!survey?.id) {
+        throw new Error("No survey ID found.");
+      }
       if (survey && survey.clientAgreement !== undefined) {
         if (survey.clientAgreement === agree) {
           await wso.factrakService.deleteSurveyAgreement(survey.id);
@@ -90,7 +115,7 @@ const FactrakComment = ({ abridged, comment, showProf }) => {
   // Generates all the survey details
   const surveyDetail = () => {
     // If the current user was the one who made the survey
-    if (currUser.id === survey.userID) {
+    if (currUser?.id === survey.userID) {
       return (
         <p className="survey-detail">
           <Button
@@ -108,17 +133,21 @@ const FactrakComment = ({ abridged, comment, showProf }) => {
     }
 
     return (
-      <p className="comment-detail">{`posted about ${format(
-        new Date(survey.createdTime)
-      )}`}</p>
+      survey.createdTime && (
+        <p className="comment-detail">{`posted about ${format(
+          new Date(survey.createdTime)
+        )}`}</p>
+      )
     );
   };
 
   // Handling flagging
   const flagHandler = async () => {
     try {
+      if (!survey?.id) {
+        throw new Error("No survey ID found.");
+      }
       await wso.factrakService.flagSurvey(survey.id);
-
       getAndUpdateSurvey();
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
@@ -165,7 +194,7 @@ const FactrakComment = ({ abridged, comment, showProf }) => {
 
   // Generate the agree/disagree buttons.
   const agree = () => {
-    if (survey.lorem || survey.userID === currUser.id) return null;
+    if (survey.userID === -1 || survey.userID === currUser?.id) return null;
 
     return (
       <>
@@ -204,10 +233,10 @@ const FactrakComment = ({ abridged, comment, showProf }) => {
   // Generate the survey text.
   const surveyText = () => {
     if (abridged) {
-      if (survey.comment.length > 145) {
+      if (survey.comment?.length && survey.comment.length > 145) {
         return (
           <div className="survey-text">
-            {`${survey.comment.substring(0, 145)}...`}
+            {`${survey.comment?.substring(0, 145)}...`}
             <div>
               <Link to={`/factrak/professors/${survey.professorID}`}>
                 See More
@@ -237,7 +266,7 @@ const FactrakComment = ({ abridged, comment, showProf }) => {
     if (showProf) {
       return (
         <Link to={`/factrak/professors/${survey.professorID}`}>
-          {`${survey.professor.name} `}
+          {`${survey.professor?.name} `}
         </Link>
       );
     }
@@ -252,7 +281,7 @@ const FactrakComment = ({ abridged, comment, showProf }) => {
         {showProf && survey.course ? ` | ` : ""}
         <Link to={`/factrak/courses/${survey.courseID}`}>
           {survey.course
-            ? `${survey.course.areaOfStudy.abbreviation} ${survey.course.number}`
+            ? `${survey.course.areaOfStudy?.abbreviation} ${survey.course.number}`
             : ""}
         </Link>
       </>
@@ -312,7 +341,7 @@ const FactrakComment = ({ abridged, comment, showProf }) => {
 
   if (isDeleted) return null;
 
-  if (survey.lorem)
+  if (survey.userID === -1)
     return (
       <div className="comment">
         <div className="comment-content blurred">
@@ -355,26 +384,6 @@ const FactrakComment = ({ abridged, comment, showProf }) => {
       </div>
     </div>
   );
-};
-
-FactrakComment.propTypes = {
-  abridged: PropTypes.bool.isRequired,
-  comment: PropTypes.object,
-  showProf: PropTypes.bool.isRequired,
-};
-
-FactrakComment.defaultProps = {
-  comment: {
-    id: 1,
-    comment:
-      "Hi! Good job on using the web inspector to attempt to find out what the survey is. Consider joining WSO!",
-    lorem: true,
-    professorID: 1,
-    wouldRecommendCourse: true,
-    wouldTakeAnother: false,
-    userID: -1,
-    Button,
-  },
 };
 
 const FactrakCommentSkeleton = () => (

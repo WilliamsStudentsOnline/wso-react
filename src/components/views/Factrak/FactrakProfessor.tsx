@@ -13,6 +13,12 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
+import {
+  ModelsDepartment,
+  ModelsFactrakSurvey,
+  ModelsFactrakSurveyAvgRatings,
+  ModelsUser,
+} from "wso-api-client/lib/services/types";
 
 const FactrakProfessor = () => {
   const currUser = useAppSelector(getCurrUser);
@@ -22,16 +28,25 @@ const FactrakProfessor = () => {
   const params = useParams();
   const navigateTo = useNavigate();
 
-  const [professor, updateProfessor] = useState(null);
-  const [department, updateDepartment] = useState(null);
-  const [ratings, updateRatings] = useState(null);
-  const [surveys, updateSurveys] = useState([]);
+  const [professor, updateProfessor] = useState<ModelsUser | undefined>(
+    undefined
+  );
+  const [department, updateDepartment] = useState<ModelsDepartment | undefined>(
+    undefined
+  );
+  const [ratings, updateRatings] = useState<
+    ModelsFactrakSurveyAvgRatings | undefined
+  >(undefined);
+  const [surveys, updateSurveys] = useState<ModelsFactrakSurvey[]>([]);
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
-    const professorParam = params.profID;
+    if (!params.profID) {
+      return;
+    }
+    const professorParam = parseInt(params.profID);
 
-    const loadProfs = async (professorID) => {
+    const loadProfs = async (professorID: number) => {
       try {
         const professorResponse = await wso.factrakService.getProfessor(
           professorID
@@ -40,7 +55,7 @@ const FactrakProfessor = () => {
 
         updateProfessor(professorData);
         const departmentResponse = await wso.factrakService.getDepartment(
-          professorData.departmentID
+          professorData?.departmentID as number
         );
         updateDepartment(departmentResponse.data);
       } catch (error) {
@@ -48,14 +63,16 @@ const FactrakProfessor = () => {
       }
     };
 
-    const loadRatings = async (professorID) => {
+    const loadRatings = async (professorID: number) => {
       try {
         const ratingsResponse = await wso.factrakService.getProfessorRatings(
           professorID
         );
         updateRatings(ratingsResponse.data);
       } catch (error) {
-        if (error.errorCode === 1330) {
+        // TODO: add error type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((error as any).errorCode === 1330) {
           // Do nothing - This should be expected if the user has not fulfilled the 2 surveys
         } else {
           navigateTo("/error", { replace: true, state: { error } });
@@ -63,10 +80,11 @@ const FactrakProfessor = () => {
       }
     };
 
-    const loadSurveys = async (professorID) => {
+    const loadSurveys = async (professorID: number) => {
+      const preload = ["course"] as "course"[];
       const queryParams = {
         professorID,
-        preload: ["course"],
+        preload: preload,
         populateAgreements: true,
         populateClientAgreement: true,
       };
@@ -74,9 +92,10 @@ const FactrakProfessor = () => {
         const surveysResponse = await wso.factrakService.listSurveys(
           queryParams
         );
-        updateSurveys(surveysResponse.data);
+        updateSurveys(surveysResponse.data ?? []);
       } catch (error) {
-        if (error.errorCode === 1330) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((error as any).errorCode === 1330) {
           // Do nothing - This should be expected if the user has not fulfilled the 2 surveys
         } else {
           navigateTo("/error", { replace: true, state: { error } });

@@ -6,33 +6,38 @@ import FactrakComment from "./FactrakComment";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
 import { useNavigate } from "react-router-dom";
+import { ModelsFactrakSurvey } from "wso-api-client/lib/services/types";
 
 const FactrakSurveyIndex = () => {
   const currUser = useAppSelector(getCurrUser);
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
-  const [surveys, updateSurveys] = useState([]);
+  const [surveys, updateSurveys] = useState<ModelsFactrakSurvey[]>([]);
 
   useEffect(() => {
+    if (!currUser) {
+      return;
+    }
     const loadUserSurveys = async () => {
+      const preload = ["professor", "course"] as ("professor" | "course")[];
       const params = {
         userID: currUser.id,
-        preload: ["professor", "course"],
+        preload: preload,
         populateAgreements: true,
       };
 
       try {
         const userSurveyResponse = await wso.factrakService.listSurveys(params);
 
-        updateSurveys(userSurveyResponse.data);
+        updateSurveys(userSurveyResponse.data ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     loadUserSurveys();
-  }, [currUser.id, wso]);
+  }, [currUser?.id, wso]);
 
   return (
     <div className="article">

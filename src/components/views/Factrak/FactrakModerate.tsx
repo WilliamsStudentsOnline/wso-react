@@ -7,12 +7,13 @@ import { getWSO } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link, useNavigate } from "react-router-dom";
+import { ModelsFactrakSurvey } from "wso-api-client/lib/services/types";
 
 const FactrakModerate = () => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
-  const [flagged, updateFlagged] = useState([]);
+  const [flagged, updateFlagged] = useState<ModelsFactrakSurvey[]>([]);
 
   // Loads all the flagged courses on mount.
   useEffect(() => {
@@ -24,7 +25,7 @@ const FactrakModerate = () => {
             populateAgreements: true,
           });
 
-        updateFlagged(flaggedResponse.data);
+        updateFlagged(flaggedResponse.data ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
@@ -34,7 +35,7 @@ const FactrakModerate = () => {
   }, [wso]);
 
   // Unflag the survey
-  const unflag = async (surveyID) => {
+  const unflag = async (surveyID: number) => {
     try {
       await wso.factrakService.unflagSurveyAdmin(surveyID);
       updateFlagged(flagged.filter((survey) => survey.id !== surveyID));
@@ -44,7 +45,7 @@ const FactrakModerate = () => {
   };
 
   // Handles the deletion of the survey
-  const deleteHandler = async (surveyID) => {
+  const deleteHandler = async (surveyID: number) => {
     // eslint-disable-next-line no-restricted-globals
     const confirmDelete = confirm("Are you sure?"); // eslint-disable-line no-alert
     if (!confirmDelete) return;
@@ -58,17 +59,17 @@ const FactrakModerate = () => {
   };
 
   // Generate a flagged survey.
-  const generateFlaggedSurvey = (f) => {
+  const generateFlaggedSurvey = (f: ModelsFactrakSurvey) => {
     return (
       <div className="comment" key={`comment${f.id}`} id={`comment${f.id}`}>
         <div>
           <span>
             <Link to={`/factrak/professors/${f.professorID}`}>
-              {f.professor.name}
+              {f.professor?.name}
             </Link>
             &nbsp;
             <Link to={`/factrak/courses/${f.courseID}`}>
-              {`${f.course.areaOfStudy.abbreviation} ${f.course.number}`}
+              {`${f.course?.areaOfStudy?.abbreviation} ${f.course?.number}`}
             </Link>{" "}
             (+{f.totalAgree}, -{f.totalDisagree})
           </span>
@@ -76,14 +77,14 @@ const FactrakModerate = () => {
           <button
             className="inline-button"
             type="button"
-            onClick={() => unflag(f.id)}
+            onClick={() => (f.id ? unflag(f.id) : undefined)}
           >
             Unflag
           </button>
           &ensp;
           <button
             className="inline-button"
-            onClick={() => deleteHandler(f.id)}
+            onClick={() => (f.id ? deleteHandler(f.id) : undefined)}
             type="button"
           >
             Delete

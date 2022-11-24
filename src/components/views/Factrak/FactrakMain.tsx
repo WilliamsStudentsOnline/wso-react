@@ -1,6 +1,5 @@
 // React imports
-import React from "react";
-import PropTypes from "prop-types";
+import React, { ReactElement } from "react";
 
 // Component imports
 import FactrakHome from "./FactrakHome";
@@ -26,7 +25,13 @@ import { scopes, containsOneOfScopes } from "../../../lib/general";
 import { userTypeStudent } from "../../../constants/general";
 
 // Returns body only if the user has the respective scopes
-const RequirePolicy = ({ token, children }) => {
+const RequirePolicy = ({
+  token,
+  children,
+}: {
+  token: string;
+  children: ReactElement;
+}) => {
   // only render children if API Token has the necessary scopes
   // by here token should not be empty (checked in App.jsx)
   if (
@@ -40,11 +45,6 @@ const RequirePolicy = ({ token, children }) => {
 
   // otherwise, redirect to policy page
   return <Navigate to="/factrak/policy" replace />;
-};
-
-RequirePolicy.propTypes = {
-  token: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
 };
 
 const FactrakMain = () => {
