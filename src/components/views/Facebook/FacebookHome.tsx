@@ -10,6 +10,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { userTypeStudent } from "../../../constants/general";
 import PaginationButtons from "../../PaginationButtons";
 import FacebookGridUser from "./FacebookGridUser";
+import { ResponsesGetUserResponseUser } from "wso-api-client/lib/services/types";
 
 const FacebookHome = () => {
   const wso = useAppSelector(getWSO);
@@ -17,14 +18,14 @@ const FacebookHome = () => {
   const navigateTo = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [results, updateResults] = useState(null);
+  const [results, updateResults] = useState<ResponsesGetUserResponseUser[]>([]);
   const perPage = 20;
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
   const [isResultsLoading, updateResultLoadStatus] = useState(false);
 
   // loads the next set of users
-  const loadUsers = async (newPage) => {
+  const loadUsers = async (newPage: number) => {
     if (!searchParams?.get("q")) {
       updateResults([]);
       updateTotal(0);
@@ -32,7 +33,7 @@ const FacebookHome = () => {
     }
 
     const queryParams = {
-      q: searchParams.get("q"),
+      q: searchParams.get("q") ?? undefined,
       limit: perPage,
       offset: perPage * newPage,
       preload: ["dorm", "office"],
@@ -40,7 +41,7 @@ const FacebookHome = () => {
     try {
       const resultsResponse = await wso.userService.listUsers(queryParams);
 
-      updateResults(resultsResponse.data);
+      updateResults(resultsResponse.data ?? []);
       updateTotal(resultsResponse.paginationTotal || 0);
     } catch {
       updateResults([]);
@@ -61,7 +62,7 @@ const FacebookHome = () => {
   }, [wso, searchParams?.get("q")]);
 
   // Handles clicking of the next/previous page
-  const clickHandler = (number) => {
+  const clickHandler = (number: number) => {
     if (number === -1 && page > 0) {
       loadUsers(page - 1);
       updatePage(page - 1);
@@ -72,9 +73,9 @@ const FacebookHome = () => {
   };
 
   // Generates the user's room
-  const listUserRoom = (user) => {
+  const listUserRoom = (user: ResponsesGetUserResponseUser) => {
     if (user.type === userTypeStudent && user.dormVisible && user.dormRoom) {
-      return `${user.dormRoom.dorm.name} ${user.dormRoom.number}`;
+      return `${user.dormRoom?.dorm?.name} ${user.dormRoom.number}`;
     }
     if (user.type !== userTypeStudent && user.office) {
       return user.office.number;
@@ -83,8 +84,8 @@ const FacebookHome = () => {
   };
 
   // Generates the user's class year
-  const classYear = (user) => {
-    if (!user.classYear || user.type !== userTypeStudent) return null;
+  const classYear = (user: ResponsesGetUserResponseUser) => {
+    if (!user.classYear || user.type !== userTypeStudent) return "";
     if (user.offCycle) return `'${(user.classYear - 1) % 100}.5`;
 
     return `'${user.classYear % 100}`;
@@ -103,19 +104,20 @@ const FacebookHome = () => {
             </tr>
           </thead>
           <tbody>
-            {results.map((user) => {
-              return (
-                <tr key={user.id}>
-                  <td>
-                    <Link to={`/facebook/users/${user.id}`}>
-                      {user.name} {classYear(user)}
-                    </Link>
-                  </td>
-                  <td>{user.unixID}</td>
-                  <td>{listUserRoom(user)}</td>
-                </tr>
-              );
-            })}
+            {results &&
+              results.map((user) => {
+                return (
+                  <tr key={user.id}>
+                    <td>
+                      <Link to={`/facebook/users/${user.id}`}>
+                        {user.name} {classYear(user)}
+                      </Link>
+                    </td>
+                    <td>{user.unixID}</td>
+                    <td>{listUserRoom(user)}</td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
         <PaginationButtons
@@ -137,7 +139,6 @@ const FacebookHome = () => {
             gridUser={user}
             gridUserClassYear={classYear(user)}
             key={user.id}
-            wso={wso}
           />
         ))}
       </div>
