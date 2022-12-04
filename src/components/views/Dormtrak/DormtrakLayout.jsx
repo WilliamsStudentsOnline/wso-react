@@ -3,13 +3,15 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
-import { connect } from "react-redux";
-import { getWSO, getCurrUser } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO, getCurrUser } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link, useNavigate, Navigate } from "react-router-dom";
 
-const DormtrakLayout = ({ children, currUser, wso }) => {
+const DormtrakLayout = ({ children }) => {
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
   const [neighborhoods, updateNeighborhoods] = useState([]);
@@ -19,7 +21,8 @@ const DormtrakLayout = ({ children, currUser, wso }) => {
     let isMounted = true;
     const loadNeighborhoods = async () => {
       try {
-        const neighborhoodsResponse = await wso.dormtrakService.listNeighborhoods();
+        const neighborhoodsResponse =
+          await wso.dormtrakService.listNeighborhoods();
         if (isMounted) {
           updateNeighborhoods(neighborhoodsResponse.data);
         }
@@ -106,17 +109,6 @@ const DormtrakLayout = ({ children, currUser, wso }) => {
 
 DormtrakLayout.propTypes = {
   children: PropTypes.object.isRequired,
-  currUser: PropTypes.object.isRequired,
-  wso: PropTypes.object.isRequired,
 };
 
-DormtrakLayout.defaultProps = {};
-
-const mapStateToProps = (state) => ({
-  currUser: getCurrUser(state),
-  wso: getWSO(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DormtrakLayout);
+export default DormtrakLayout;

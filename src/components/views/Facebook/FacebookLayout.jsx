@@ -3,13 +3,14 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // Redux imports
-import { connect } from "react-redux";
-import { getCurrUser } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getCurrUser } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 
-const FacebookLayout = ({ children, currUser }) => {
+const FacebookLayout = ({ children }) => {
+  const currUser = useAppSelector(getCurrUser);
   const navigateTo = useNavigate();
   const [searchParams] = useSearchParams();
   const [query, updateQuery] = useState("");
@@ -79,19 +80,10 @@ const FacebookLayout = ({ children, currUser }) => {
 
 FacebookLayout.propTypes = {
   children: PropTypes.object,
-  currUser: PropTypes.object.isRequired,
 };
 
 FacebookLayout.defaultProps = {
   children: {},
 };
 
-const mapStateToProps = () => {
-  return (state) => ({
-    currUser: getCurrUser(state),
-  });
-};
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FacebookLayout);
+export default FacebookLayout;

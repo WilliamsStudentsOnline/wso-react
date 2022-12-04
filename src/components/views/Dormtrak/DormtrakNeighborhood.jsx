@@ -1,14 +1,14 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import HoodTableRow, { HoodTableRowSkeleton } from "./HoodTableRow";
 
 // Redux/ Routing imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../lib/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 
-const DormtrakNeighborhood = ({ wso }) => {
+const DormtrakNeighborhood = () => {
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const params = useParams();
 
@@ -63,21 +63,4 @@ const DormtrakNeighborhood = ({ wso }) => {
   );
 };
 
-DormtrakNeighborhood.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-DormtrakNeighborhood.defaultProps = {};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    wso: getWSO(state),
-  });
-};
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DormtrakNeighborhood);
+export default DormtrakNeighborhood;

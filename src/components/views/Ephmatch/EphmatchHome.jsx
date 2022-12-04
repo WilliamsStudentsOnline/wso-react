@@ -1,18 +1,18 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import PaginationButtons from "../../PaginationButtons";
 import Select from "../../Select";
 
 // Redux/ routing imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../lib/authSlice";
 import { useNavigate } from "react-router-dom";
 
 // Additional imports
 import Ephmatcher from "./Ephmatcher";
 
-const EphmatchHome = ({ wso }) => {
+const EphmatchHome = () => {
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
   const perPage = 20; // Number of results per page
@@ -176,14 +176,4 @@ const EphmatchHome = ({ wso }) => {
   );
 };
 
-EphmatchHome.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-EphmatchHome.defaultProps = {};
-
-const mapStateToProps = (state) => ({
-  wso: getWSO(state),
-});
-
-export default connect(mapStateToProps)(EphmatchHome);
+export default EphmatchHome;

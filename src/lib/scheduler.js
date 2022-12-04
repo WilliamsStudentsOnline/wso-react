@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { DATES } from "../constants/constants.json";
+import { DATES } from "../constants/constants";
 
 /**
  * Adds `days` to `date`.

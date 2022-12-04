@@ -1,25 +1,31 @@
 // React Imports
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 
 // Redux imports
-import { getCurrUser, getWSO } from "../selectors/auth";
-import { connect } from "react-redux";
-import { doRemoveCreds } from "../actions/auth";
+import { getWSO, getCurrUser } from "../lib/authSlice";
+import { removeCredentials } from "../lib/authSlice";
+import { useAppSelector, useAppDispatch } from "../lib/store";
 
 // External imports
 import { Link } from "react-router-dom";
 import history from "../lib/history";
 import { userTypeStudent } from "../constants/general";
 
-const Nav = ({ currUser, removeCreds, wso }) => {
+const Nav = () => {
+  const dispatch = useAppDispatch();
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
+
   const [menuVisible, updateMenuVisibility] = useState(false);
-  const [userPhoto, updateUserPhoto] = useState(null);
+  const [userPhoto, updateUserPhoto] = useState<string | undefined>(undefined);
   const [ephmatchVisibility, updateEphmatchVisibility] = useState(0);
   // 0 - off, 1 - on, 2 - senior only
 
   useEffect(() => {
     const loadPhoto = async () => {
+      if (!currUser) {
+        return;
+      }
       try {
         const photoResponse = await wso.userService.getUserThumbPhoto(
           currUser.unixID
@@ -32,7 +38,8 @@ const Nav = ({ currUser, removeCreds, wso }) => {
 
     const checkEphmatchVisibility = async () => {
       try {
-        const ephmatchAvailabilityResp = await wso.ephmatchService.getAvailability();
+        const ephmatchAvailabilityResp =
+          await wso.ephmatchService.getAvailability();
 
         if (
           ephmatchAvailabilityResp?.data?.available ||
@@ -63,7 +70,7 @@ const Nav = ({ currUser, removeCreds, wso }) => {
   }, [currUser, wso]);
 
   const logout = () => {
-    removeCreds();
+    dispatch(removeCredentials());
   };
 
   return (
@@ -171,29 +178,4 @@ const Nav = ({ currUser, removeCreds, wso }) => {
   );
 };
 
-Nav.propTypes = {
-  // No isRequired because it must work for non-authenticated users too
-  currUser: PropTypes.object,
-  removeCreds: PropTypes.func.isRequired,
-  wso: PropTypes.object.isRequired,
-  // userScopes: PropTypes.arrayOf(PropTypes.string),
-};
-
-Nav.defaultProps = { currUser: {} /* userScopes: [] */ };
-
-const mapStateToProps = () => {
-  // const routeNodeSelector = createRouteNodeSelector("");
-
-  return (state) => ({
-    currUser: getCurrUser(state),
-    wso: getWSO(state),
-    // userScopes: getScopes(state),
-    // ...routeNodeSelector(state),
-  });
-};
-
-const mapDispatchToProps = (dispatch) => ({
-  removeCreds: () => dispatch(doRemoveCreds()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Nav);
+export default Nav;

@@ -36,7 +36,7 @@ import {
   // updateSignIn,
 } from "../../../actions/schedulerUtils";
 import { FAILURE, SUCCESS } from "../../../constants/actionTypes";
-import { DATES, SEMESTERS } from "../../../constants/constants.json";
+import { DATES, SEMESTERS } from "../../../constants/constants";
 
 const Timetable = ({
   added,

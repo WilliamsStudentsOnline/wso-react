@@ -13,6 +13,7 @@ import "typeface-source-sans-pro";
 import { Provider } from "react-redux";
 import store, { persistor } from "./lib/store";
 import { PersistGate } from "redux-persist/integration/react";
+import { injectStore } from "./lib/axiosAuth";
 
 // Router imports
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
@@ -20,6 +21,8 @@ import history from "./lib/history";
 
 // Serviceworker import
 import * as serviceWorker from "./serviceWorker";
+
+injectStore(store);
 
 ReactDOM.render(
   <React.StrictMode>

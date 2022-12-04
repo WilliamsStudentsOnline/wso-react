@@ -1,14 +1,16 @@
 // React imports
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 
 // Redux imports
+import { useAppSelector } from "../../../lib/store";
+import { getWSO, getCurrUser } from "../../../lib/authSlice";
 import { useNavigate } from "react-router-dom";
-import { connect } from "react-redux";
-import { getCurrUser, getWSO } from "../../../selectors/auth";
 
-const FactrakPolicy = ({ currUser, wso }) => {
+const FactrakPolicy = () => {
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
+
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
   const [updated, setUpdated] = useState(false);
 
@@ -134,14 +136,4 @@ const FactrakPolicy = ({ currUser, wso }) => {
   );
 };
 
-FactrakPolicy.propTypes = {
-  currUser: PropTypes.object.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-  currUser: getCurrUser(state),
-  wso: getWSO(state),
-});
-
-export default connect(mapStateToProps)(FactrakPolicy);
+export default FactrakPolicy;

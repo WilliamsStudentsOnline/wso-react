@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import {
   persistStore,
   persistReducer,
@@ -11,12 +12,7 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import {
-  courseReducer,
-  schedulerUtilReducer,
-  authReducer,
-  utilReducer,
-} from "../reducers";
+import { courseReducer, schedulerUtilReducer, authReducer } from "../reducers";
 
 const persistedAuthReducer = persistReducer(
   { key: "auth", storage, whitelist: ["identityToken"] },
@@ -33,16 +29,22 @@ const store = configureStore({
     courseState: courseReducer,
     schedulerUtilState: persistedCourseSchedulerReducer,
     authState: persistedAuthReducer,
-    utilState: utilReducer,
   },
   // this is to disable React Toolkit's error message "A non-serializable value was detected in the state"
-  // TODO: stop using non-serializable object `wso` and `authState.wso`
+  // TODO: stop using non-serializable object `authState.wso` and `schedulerUtilState.gapi`
   // Read https://redux.js.org/faq/organizing-state#can-i-put-functions-promises-or-other-non-serializable-items-in-my-store-state
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER], // redux-persist actions
-        ignoredActionPaths: ["wso", "gapi"],
+        ignoredActions: [
+          FLUSH,
+          REHYDRATE,
+          PAUSE,
+          PERSIST,
+          PURGE,
+          REGISTER, // all above are redux-persist actions
+        ],
+        ignoredActionPaths: ["gapi"],
         ignoredPaths: ["authState.wso", "schedulerUtilState.gapi"],
       },
       // otherwise courseSchduler would result in `(InternalError): too much recursion`
@@ -54,3 +56,10 @@ const store = configureStore({
 
 export default store;
 export const persistor = persistStore(store);
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+// Use throughout your app instead of plain `useDispatch` and `useSelector`
+export const useAppDispatch: () => AppDispatch = useDispatch;
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

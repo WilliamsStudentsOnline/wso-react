@@ -4,21 +4,23 @@ import PropTypes from "prop-types";
 import { Line, Paragraph, Photo } from "../../Skeleton";
 import Button from "../../Components";
 
+// redux imports
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../lib/authSlice";
+
 // Additional imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
 import { avatarHelper } from "../../../lib/imageHelper";
 import { userTypeStudent } from "../../../constants/general";
 import { Link, useNavigate } from "react-router-dom";
 import { format } from "timeago.js";
 
 const DormtrakRecentComments = ({
-  wso,
   updateUserReviewID,
   abridged,
   currUser,
   reviews,
 }) => {
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const [currReviews, updateCurrReviews] = useState(null);
 
@@ -175,13 +177,4 @@ DormtrakRecentComments.defaultProps = {
   reviews: null,
 };
 
-const mapStateToProps = (state) => ({
-  wso: getWSO(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DormtrakRecentComments);
+export default DormtrakRecentComments;

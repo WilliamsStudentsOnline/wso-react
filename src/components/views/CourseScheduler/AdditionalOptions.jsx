@@ -25,7 +25,7 @@ import {
   END_TIMES,
   END_TIMES12,
   CLASS_TYPES,
-} from "../../../constants/constants.json";
+} from "../../../constants/constants";
 import {
   doToggleConflict,
   doToggleOthers,

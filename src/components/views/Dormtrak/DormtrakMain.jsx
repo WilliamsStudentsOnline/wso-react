@@ -1,6 +1,5 @@
 // React imports
 import React from "react";
-import PropTypes from "prop-types";
 import DormtrakHome from "./DormtrakHome";
 import DormtrakLayout from "./DormtrakLayout";
 import DormtrakPolicy from "./DormtrakPolicy";
@@ -11,15 +10,17 @@ import DormtrakReviewForm from "./DormtrakReviewForm";
 import Error404 from "../Errors/Error404";
 
 // Redux/ Routing imports
-import { connect } from "react-redux";
+import { useAppSelector } from "../../../lib/store";
+import { getCurrUser, getAPIToken } from "../../../lib/authSlice";
 import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
-import { getAPIToken, getCurrUser } from "../../../selectors/auth";
 
 // Additional Imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { userTypeStudent } from "../../../constants/general";
 
-const DormtrakMain = ({ currUser, token }) => {
+const DormtrakMain = () => {
+  const currUser = useAppSelector(getCurrUser);
+  const token = useAppSelector(getAPIToken);
   const navigateTo = useNavigate();
 
   // Checks for scope. Redirects to policy page if user has not agreed to policy
@@ -65,18 +66,4 @@ const DormtrakMain = ({ currUser, token }) => {
   );
 };
 
-DormtrakMain.propTypes = {
-  currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
-};
-
-DormtrakMain.defaultProps = {};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    currUser: getCurrUser(state),
-    token: getAPIToken(state),
-  });
-};
-
-export default connect(mapStateToProps)(DormtrakMain);
+export default DormtrakMain;

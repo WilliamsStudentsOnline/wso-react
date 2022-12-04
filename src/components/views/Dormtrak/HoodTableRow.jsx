@@ -4,13 +4,15 @@ import PropTypes from "prop-types";
 import { Line } from "../../Skeleton";
 
 // Redux imports
-import { connect } from "react-redux";
-import { getAPIToken } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link } from "react-router-dom";
 
-const HoodTableRow = ({ dorm, wso }) => {
+const HoodTableRow = ({ dorm }) => {
+  const wso = useAppSelector(getWSO);
+
   const [dormInfo, updateDormInfo] = useState(null);
 
   useEffect(() => {
@@ -75,10 +77,6 @@ const HoodTableRowSkeleton = () => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  token: getAPIToken(state),
-});
-
-export default connect(mapStateToProps)(HoodTableRow);
+export default HoodTableRow;
 
 export { HoodTableRowSkeleton };

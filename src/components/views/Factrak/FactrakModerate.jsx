@@ -1,28 +1,28 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 
 // Redux imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link, useNavigate } from "react-router-dom";
 
-const FactrakModerate = ({ wso }) => {
+const FactrakModerate = () => {
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
+
   const [flagged, updateFlagged] = useState([]);
 
   // Loads all the flagged courses on mount.
   useEffect(() => {
     const loadFlagged = async () => {
       try {
-        const flaggedResponse = await wso.factrakService.listFlaggedSurveysAdmin(
-          {
+        const flaggedResponse =
+          await wso.factrakService.listFlaggedSurveysAdmin({
             preload: ["professor", "course"],
             populateAgreements: true,
-          }
-        );
+          });
 
         updateFlagged(flaggedResponse.data);
       } catch (error) {
@@ -108,12 +108,4 @@ const FactrakModerate = ({ wso }) => {
   );
 };
 
-FactrakModerate.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-  wso: getWSO(state),
-});
-
-export default connect(mapStateToProps)(FactrakModerate);
+export default FactrakModerate;

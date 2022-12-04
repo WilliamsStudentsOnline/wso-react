@@ -17,9 +17,9 @@ import FactrakRankings from "./FactrakRankings";
 import Error404 from "../Errors/Error404";
 
 // Redux/ Router imports
-import { connect } from "react-redux";
+import { useAppSelector } from "../../../lib/store";
+import { getCurrUser, getAPIToken } from "../../../lib/authSlice";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { getAPIToken, getCurrUser } from "../../../selectors/auth";
 
 // Additional Imports
 import { scopes, containsOneOfScopes } from "../../../lib/general";
@@ -47,7 +47,9 @@ RequirePolicy.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const FactrakMain = ({ currUser, token }) => {
+const FactrakMain = () => {
+  const currUser = useAppSelector(getCurrUser);
+  const token = useAppSelector(getAPIToken);
   const navigateTo = useNavigate();
 
   // If the user is not a student - navigate to 403
@@ -161,16 +163,4 @@ const FactrakMain = ({ currUser, token }) => {
   );
 };
 
-FactrakMain.propTypes = {
-  currUser: PropTypes.object.isRequired,
-  token: PropTypes.string.isRequired,
-};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    currUser: getCurrUser(state),
-    token: getAPIToken(state),
-  });
-};
-
-export default connect(mapStateToProps)(FactrakMain);
+export default FactrakMain;

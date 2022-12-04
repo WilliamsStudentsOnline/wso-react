@@ -1,13 +1,14 @@
 // React imports
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 
 // Redux/Routing imports
-import { connect } from "react-redux";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../lib/authSlice";
 import { useNavigate } from "react-router-dom";
-import { getWSO } from "../../../selectors/auth";
 
-const DiscussionsNew = ({ wso }) => {
+const DiscussionsNew = () => {
+  const wso = useAppSelector(getWSO);
+
   const navigateTo = useNavigate();
   const [errors, updateErrors] = useState([]);
 
@@ -92,16 +93,4 @@ const DiscussionsNew = ({ wso }) => {
   );
 };
 
-DiscussionsNew.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-DiscussionsNew.defaultProps = {};
-
-const mapStateToProps = (state) => ({
-  wso: getWSO(state),
-});
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DiscussionsNew);
+export default DiscussionsNew;

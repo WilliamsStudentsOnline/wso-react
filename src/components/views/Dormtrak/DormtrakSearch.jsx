@@ -1,13 +1,13 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 
 // Redux/ Routing imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../lib/authSlice";
 import { Link, useSearchParams } from "react-router-dom";
 
-const DormtrakSearch = ({ wso }) => {
+const DormtrakSearch = () => {
+  const wso = useAppSelector(getWSO);
   const [searchParams] = useSearchParams();
 
   const [dorms, updateDorms] = useState(null);
@@ -70,16 +70,4 @@ const DormtrakSearch = ({ wso }) => {
   );
 };
 
-DormtrakSearch.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-DormtrakSearch.defaultProps = {};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    wso: getWSO(state),
-  });
-};
-
-export default connect(mapStateToProps)(DormtrakSearch);
+export default DormtrakSearch;

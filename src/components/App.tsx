@@ -1,6 +1,5 @@
 // React imports
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import PropTypes from "prop-types";
 
 // Component Imports
 import "./stylesheets/Application.css";
@@ -8,37 +7,30 @@ import Layout from "./Layout";
 import Homepage from "./Homepage";
 
 // Redux/routing
-import { connect } from "react-redux";
+import { getWSO, getIdentityToken, getAPIToken } from "../lib/authSlice";
 import {
-  getWSO,
-  getExpiry,
-  getIdentityToken,
-  getAPIToken,
-} from "../selectors/auth";
-import {
-  doRemoveCreds,
-  doUpdateAPIToken,
-  doUpdateIdentityToken,
-  doUpdateUser,
-  doUpdateWSO,
-} from "../actions/auth";
-import { doUpdateSchedulerState } from "../actions/schedulerUtils";
+  removeCredentials,
+  updateAPIToken,
+  updateIdentityToken,
+  updateUser,
+} from "../lib/authSlice";
+import { useAppSelector, useAppDispatch } from "../lib/store";
 
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 // Additional Imports
-import { SimpleAuthentication } from "wso-api-client";
-import configureInterceptors, { tokenIsExpired } from "../lib/auth";
+import { tokenIsExpired } from "../lib/axiosAuth";
 import jwtDecode from "jwt-decode";
 import RequireScope from "../router-permissions";
 import usePageTracking from "../lib/usePageTracking";
+import { WSOToken } from "../lib/types";
 
 // More component imports
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
 const About = lazy(() => import("./views/Misc/About"));
 const FAQ = lazy(() => import("./views/Misc/FAQ"));
-const MobilePrivacyPolicy = lazy(() =>
-  import("./views/Misc/MobilePrivacyPolicy")
+const MobilePrivacyPolicy = lazy(
+  () => import("./views/Misc/MobilePrivacyPolicy")
 );
 const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
 const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
@@ -49,24 +41,19 @@ const Login = lazy(() => import("./Login"));
 const Error403 = lazy(() => import("./views/Errors/Error403"));
 const Error500 = lazy(() => import("./views/Errors/Error500"));
 const Error = lazy(() => import("./views/Errors/Error"));
-const BulletinMain = lazy(() =>
-  import("./views/BulletinsDiscussions/BulletinMain")
+const BulletinMain = lazy(
+  () => import("./views/BulletinsDiscussions/BulletinMain")
 );
-const DiscussionMain = lazy(() =>
-  import("./views/BulletinsDiscussions/DiscussionMain")
+const DiscussionMain = lazy(
+  () => import("./views/BulletinsDiscussions/DiscussionMain")
 );
 
-const App = ({
-  apiToken,
-  identityToken,
-  removeCreds,
-  updateAPIToken,
-  updateIdenToken,
-  updateSchedulerState,
-  updateUser,
-  updateWSO,
-  wso,
-}) => {
+const App = () => {
+  const dispatch = useAppDispatch();
+  const apiToken = useAppSelector(getAPIToken);
+  const identityToken = useAppSelector(getIdentityToken);
+  const wso = useAppSelector(getWSO);
+
   const navigateTo = useNavigate();
   const [initialized, setInitialized] = useState(false);
   usePageTracking();
@@ -77,7 +64,7 @@ const App = ({
         useIP: true,
       });
       const newIdenToken = tokenResponse.token;
-      updateIdenToken(newIdenToken);
+      dispatch(updateIdentityToken(newIdenToken));
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
     }
@@ -90,16 +77,10 @@ const App = ({
           identityToken
         );
         const newAPIToken = apiTokenResponse.token;
-
-        const auth = new SimpleAuthentication(newAPIToken);
-        const updatedWSO = wso.updateAuth(auth);
-        configureInterceptors(updatedWSO);
-
-        updateAPIToken(newAPIToken);
-        updateWSO(updatedWSO);
+        dispatch(updateAPIToken(newAPIToken));
       } catch (error) {
         // possibly expired token, clear and report error to user
-        removeCreds();
+        dispatch(removeCredentials());
         // TODO: should we redirect to login page or get new based on IP?
         navigateTo("/error", { replace: true, state: { error } });
       }
@@ -151,11 +132,11 @@ const App = ({
     const updateUserInfo = async () => {
       if (apiToken !== "") {
         try {
-          const decoded = jwtDecode(apiToken);
+          const decoded = jwtDecode<WSOToken>(apiToken);
           if (decoded?.tokenLevel === 3) {
             const userResponse = await wso.userService.getUser("me");
             if (isMounted) {
-              updateUser(userResponse.data);
+              dispatch(updateUser(userResponse.data));
             }
           }
         } catch (error) {
@@ -233,35 +214,4 @@ const App = ({
   );
 };
 
-App.propTypes = {
-  apiToken: PropTypes.string.isRequired,
-  identityToken: PropTypes.string.isRequired,
-  removeCreds: PropTypes.func.isRequired,
-  updateAPIToken: PropTypes.func.isRequired,
-  updateIdenToken: PropTypes.func.isRequired,
-  updateSchedulerState: PropTypes.func.isRequired,
-  updateUser: PropTypes.func.isRequired,
-  updateWSO: PropTypes.func.isRequired,
-  wso: PropTypes.object.isRequired,
-};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    apiToken: getAPIToken(state),
-    expiry: getExpiry(state),
-    identityToken: getIdentityToken(state),
-    wso: getWSO(state),
-  });
-};
-
-const mapDispatchToProps = (dispatch) => ({
-  removeCreds: () => dispatch(doRemoveCreds()),
-  updateAPIToken: (token) => dispatch(doUpdateAPIToken(token)),
-  updateSchedulerState: (newState) =>
-    dispatch(doUpdateSchedulerState(newState)),
-  updateIdenToken: (token) => dispatch(doUpdateIdentityToken(token)),
-  updateUser: (newUser) => dispatch(doUpdateUser(newUser)),
-  updateWSO: (wso) => dispatch(doUpdateWSO(wso)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

@@ -29,8 +29,8 @@ import {
   LEVELS,
   CLASS_TYPES,
   REMOTE,
-} from "../constants/constants.json";
-import { DEPARTMENT } from "../constants/departments.json";
+} from "../constants/constants";
+import { DEPARTMENT } from "../constants/departments";
 import { DEFAULT_SEMESTER_INDEX } from "../lib/scheduler";
 
 const INITIAL_STATE = {};

@@ -1,15 +1,17 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import DiscussionPost, { DiscussionPostSkeleton } from "./DiscussionPost";
 import { Line } from "../../Skeleton";
 
 // Redux/Routing imports
-import { connect } from "react-redux";
+import { useAppSelector } from "../../../lib/store";
+import { getCurrUser, getWSO } from "../../../lib/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import { getWSO, getCurrUser } from "../../../selectors/auth";
 
-const DiscussionShow = ({ currUser, wso }) => {
+const DiscussionShow = () => {
+  const currUser = useAppSelector(getCurrUser);
+  const wso = useAppSelector(getWSO);
+
   const params = useParams();
   const navigateTo = useNavigate();
 
@@ -114,22 +116,4 @@ const DiscussionShow = ({ currUser, wso }) => {
   );
 };
 
-DiscussionShow.propTypes = {
-  currUser: PropTypes.object,
-  wso: PropTypes.object.isRequired,
-};
-
-DiscussionShow.defaultProps = {
-  currUser: null,
-};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    currUser: getCurrUser(state),
-    wso: getWSO(state),
-  });
-};
-
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DiscussionShow);
+export default DiscussionShow;

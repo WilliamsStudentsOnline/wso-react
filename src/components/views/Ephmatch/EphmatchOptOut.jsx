@@ -1,14 +1,14 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 
 // Redux/routing imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../lib/authSlice";
 import { useNavigate } from "react-router-dom";
 
 // Page created to handle both opting in and out.
-const EphmatchOptOut = ({ wso }) => {
+const EphmatchOptOut = () => {
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
   // Note that this is different from Ephcatch
@@ -95,14 +95,4 @@ const EphmatchOptOut = ({ wso }) => {
   );
 };
 
-EphmatchOptOut.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-EphmatchOptOut.defaultProps = {};
-
-const mapStateToProps = (state) => ({
-  wso: getWSO(state),
-});
-
-export default connect(mapStateToProps)(EphmatchOptOut);
+export default EphmatchOptOut;

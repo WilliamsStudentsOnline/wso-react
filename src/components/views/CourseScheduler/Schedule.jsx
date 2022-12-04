@@ -17,7 +17,7 @@ import {
   PALETTE,
   BORDER_PALETTE,
   SEMESTERS,
-} from "../../../constants/constants.json";
+} from "../../../constants/constants";
 
 // External imports
 import dayjs from "dayjs";

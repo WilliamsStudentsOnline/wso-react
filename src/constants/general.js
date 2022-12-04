@@ -1,12 +1,4 @@
-// List of General constants. 
-
-// Bulletin/Discussion Constants
-export const bulletinTypeAnnouncement = "announcement";
-export const bulletinTypeRide = "ride";
-export const bulletinTypeExchange = "exchange";
-export const bulletinTypeLostAndFound = "lostAndFound";
-export const bulletinTypeJob = "job";
-export const discussionType = "discussions";
+// List of General constants.
 
 // Facebook Constants
 export const userTypeStudent = "student";

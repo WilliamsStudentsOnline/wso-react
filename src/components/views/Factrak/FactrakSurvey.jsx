@@ -1,14 +1,14 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import "../../stylesheets/FactrakSurvey.css";
 
 // Redux/ Routing imports
-import { connect } from "react-redux";
-import { getWSO } from "../../../selectors/auth";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../lib/authSlice";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-const FactrakSurvey = ({ wso }) => {
+const FactrakSurvey = () => {
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const params = useParams();
   const location = useLocation();
@@ -82,7 +82,8 @@ const FactrakSurvey = ({ wso }) => {
 
     const loadAreasOfStudy = async () => {
       try {
-        const areasOfStudyResponse = await wso.factrakService.listAreasOfStudy();
+        const areasOfStudyResponse =
+          await wso.factrakService.listAreasOfStudy();
         updateAreasOfStudy(areasOfStudyResponse.data);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
@@ -490,16 +491,4 @@ const FactrakSurvey = ({ wso }) => {
   );
 };
 
-FactrakSurvey.propTypes = {
-  wso: PropTypes.object.isRequired,
-};
-
-FactrakSurvey.defaultProps = {};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    wso: getWSO(state),
-  });
-};
-
-export default connect(mapStateToProps)(FactrakSurvey);
+export default FactrakSurvey;

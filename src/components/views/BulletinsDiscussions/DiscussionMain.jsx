@@ -1,6 +1,5 @@
 // React imports
 import React from "react";
-import PropTypes from "prop-types";
 
 // Component imports
 import DiscussionLayout from "./DiscussionLayout";
@@ -10,14 +9,16 @@ import DiscussionNew from "./DiscussionNew";
 import Error404 from "../Errors/Error404";
 
 // Redux/Routing imports
-import { connect } from "react-redux";
+import { useAppSelector } from "../../../lib/store";
+import { getAPIToken } from "../../../lib/authSlice";
 import { Routes, Route } from "react-router-dom";
 
 // External Imports
-import { getAPIToken } from "../../../selectors/auth";
 import RequireScope from "../../../router-permissions";
 
-const DiscussionMain = ({ token }) => {
+const DiscussionMain = () => {
+  const token = useAppSelector(getAPIToken);
+
   return (
     <DiscussionLayout>
       <Routes>
@@ -51,16 +52,4 @@ const DiscussionMain = ({ token }) => {
   );
 };
 
-DiscussionMain.propTypes = {
-  token: PropTypes.string.isRequired,
-};
-
-DiscussionMain.defaultProps = {};
-
-const mapStateToProps = () => {
-  return (state) => ({
-    token: getAPIToken(state),
-  });
-};
-
-export default connect(mapStateToProps)(DiscussionMain);
+export default DiscussionMain;

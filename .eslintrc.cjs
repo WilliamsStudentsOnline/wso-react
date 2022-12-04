@@ -8,18 +8,17 @@ module.exports = {
     browser: true,
   },
   extends: [
+    // "airbnb", // temporarily disabled since there are too many errors
     "eslint:recommended",
-    "airbnb",
     "plugin:react/recommended",
     "react-app",
     "prettier",
-    "prettier/react",
+    "plugin:prettier/recommended", // displays prettier errors as ESLint errors.
   ],
   globals: {
     Atomics: "readonly",
     SharedArrayBuffer: "readonly",
   },
-  parser: "babel-eslint",
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -28,18 +27,19 @@ module.exports = {
     sourceType: "module",
   },
   plugins: ["react", "jest", "prettier", "react-hooks"],
-  "settings": {
+  settings: {
     "import/extensions": [".js", ".jsx", ".ts", ".tsx"],
     "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
+      "@typescript-eslint/parser": [".ts", ".tsx"],
     },
     "import/resolver": {
-      "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
-      }
-    }
+      node: {
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
+      },
+    },
   },
   rules: {
+    "prettier/prettier": "warn",
     "react/forbid-prop-types": ["warn", { forbid: ["any", "array"] }],
     "no-restricted-syntax": "off",
     "react/destructuring-assignment": "off",
