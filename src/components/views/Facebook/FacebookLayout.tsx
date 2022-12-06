@@ -1,6 +1,5 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
