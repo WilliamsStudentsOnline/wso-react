@@ -48,6 +48,16 @@ export enum PostType {
   Rides = "ride",
 }
 
+export enum FactrakMetrics {
+  Approachability = "approachability",
+  CourseWorkload = "course_workload",
+  LeadLecture = "lead_lecture",
+  OutsideHelpfulness = "outside_helpfulness",
+  PromoteDiscussion = "promote_discussion",
+  WouldTakeAnother = "would_take_another",
+  CourseStimulating = "course_stimulating",
+}
+
 export const PostTypeName: Map<PostType, string> = new Map([
   [PostType.Discussions, "Discussions"],
   [PostType.Announcements, "Announcements"],
