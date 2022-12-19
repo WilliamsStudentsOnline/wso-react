@@ -4,7 +4,7 @@ import "../../stylesheets/FactrakSurvey.css";
 
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO } from "../../../lib/authSlice";
+import { getCurrUser, getWSO } from "../../../lib/authSlice";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   FactrakSurveyCreateParams,
@@ -20,6 +20,7 @@ type FactrakSurveyState = {
 
 const FactrakSurvey = ({ edit }: { edit: boolean }) => {
   const wso = useAppSelector(getWSO);
+  const currUser = useAppSelector(getCurrUser);
   const navigateTo = useNavigate();
   const params = useParams();
   const location = useLocation();
@@ -75,6 +76,11 @@ const FactrakSurvey = ({ edit }: { edit: boolean }) => {
       try {
         const surveyResponse = await wso.factrakService.getSurvey(surveyID);
         const surveyData = surveyResponse.data;
+
+        // User trying to edit someone else's survey
+        if (edit && surveyData?.userID !== currUser?.id) {
+          navigateTo("/403");
+        }
 
         // Could use a defaultSurvey and update that object, but will hardly save any lines.
         updateSurvey(surveyData ?? null);
