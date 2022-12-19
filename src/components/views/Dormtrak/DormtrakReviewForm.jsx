@@ -75,9 +75,12 @@ const DormtrakReviewForm = () => {
     const loadReview = async (reviewID) => {
       try {
         const reviewResponse = await wso.dormtrakService.getReview(reviewID);
-
         const reviewData = reviewResponse.data;
 
+        // User trying to edit someone else's review
+        if (edit && reviewData?.userID !== currUser?.id) {
+          navigateTo("/403");
+        }
         // TODO: some of them might be null, consider or with empty string
         updateComment(reviewData.comment);
         updateRoom(reviewData.dormRoom);
