@@ -1,6 +1,5 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import { Line } from "../../Skeleton";
 
 // Redux imports
@@ -47,11 +46,6 @@ const HoodTableRow = ({ dorm }: { dorm: ModelsDorm }) => {
       <td>{dormInfo?.sophomoreCount}</td>
     </tr>
   );
-};
-
-HoodTableRow.propTypes = {
-  dorm: PropTypes.object.isRequired,
-  wso: PropTypes.object.isRequired,
 };
 
 const HoodTableRowSkeleton = () => {
