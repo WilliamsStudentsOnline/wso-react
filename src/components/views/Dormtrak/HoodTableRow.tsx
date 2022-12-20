@@ -9,17 +9,22 @@ import { getWSO } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link } from "react-router-dom";
+import { ModelsDorm, ModelsDormFacts } from "wso-api-client/lib/services/types";
 
-const HoodTableRow = ({ dorm }) => {
+const HoodTableRow = ({ dorm }: { dorm: ModelsDorm }) => {
   const wso = useAppSelector(getWSO);
 
-  const [dormInfo, updateDormInfo] = useState(null);
+  const [dormInfo, updateDormInfo] = useState<ModelsDormFacts | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const loadDormInfo = async () => {
       try {
-        const dormResponse = await wso.dormtrakService.getDormFacts(dorm.id);
-        updateDormInfo(dormResponse.data);
+        if (dorm.id) {
+          const dormResponse = await wso.dormtrakService.getDormFacts(dorm.id);
+          updateDormInfo(dormResponse.data);
+        }
       } catch {
         // Let this be handled by the loading state for now
       }

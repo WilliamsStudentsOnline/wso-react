@@ -1,5 +1,6 @@
 import { JwtPayload } from "jwt-decode";
 import React from "react";
+import { ModelsDormRoom } from "wso-api-client/lib/services/types";
 
 export interface ButtonProps {
   className?: string;
@@ -18,6 +19,7 @@ export interface User {
   admin?: boolean;
   unixID: string;
   dormRoomID?: number;
+  dormRoom?: ModelsDormRoom;
   hasAcceptedDormtrakPolicy?: boolean;
   type?: string;
   pronoun?: string;

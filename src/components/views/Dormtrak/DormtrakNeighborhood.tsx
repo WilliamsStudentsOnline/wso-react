@@ -6,25 +6,29 @@ import HoodTableRow, { HoodTableRowSkeleton } from "./HoodTableRow";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
+import { ModelsNeighborhood } from "wso-api-client/lib/services/types";
 
 const DormtrakNeighborhood = () => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const params = useParams();
 
-  const [neighborhood, updateHoodInfo] = useState(null);
+  const [neighborhood, updateHoodInfo] = useState<
+    ModelsNeighborhood | undefined
+  >(undefined);
 
   useEffect(() => {
     const loadNeighborhood = async () => {
-      const neighborhoodID = params.neighborhoodID;
-
-      try {
-        const hoodResponse = await wso.dormtrakService.getNeighborhood(
-          neighborhoodID
-        );
-        updateHoodInfo(hoodResponse.data);
-      } catch (error) {
-        navigateTo("/error", { replace: true, state: error });
+      if (params.neighborhoodID) {
+        try {
+          const neighborhoodID = parseInt(params.neighborhoodID, 10);
+          const hoodResponse = await wso.dormtrakService.getNeighborhood(
+            neighborhoodID
+          );
+          updateHoodInfo(hoodResponse.data);
+        } catch (error) {
+          navigateTo("/error", { replace: true, state: error });
+        }
       }
     };
 
@@ -49,7 +53,7 @@ const DormtrakNeighborhood = () => {
           </thead>
           <tbody>
             {neighborhood
-              ? neighborhood.dorms.map((dorm) => (
+              ? neighborhood.dorms?.map((dorm) => (
                   <HoodTableRow wso={wso} dorm={dorm} key={dorm.id} />
                 ))
               : [...Array(5)].map((_, i) => (

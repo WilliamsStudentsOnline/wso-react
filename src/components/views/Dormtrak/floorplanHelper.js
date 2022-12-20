@@ -1,175 +1,37 @@
 const floorplanMap = new Map([
+  ["Agard", ["https://campus-life.williams.edu/files/2022/04/Agard.pdf"]],
+  ["Brooks", ["https://campus-life.williams.edu/files/2022/04/Brooks.pdf"]],
+  ["Bryant", ["https://campus-life.williams.edu/files/2022/04/Bryant.pdf"]],
+  ["Carter", ["https://campus-life.williams.edu/files/2022/04/Carter.pdf"]],
+  ["Currier", ["https://campus-life.williams.edu/files/2022/04/Currier.pdf"]],
+  ["Dodd", ["https://campus-life.williams.edu/files/2022/04/Dodd.pdf"]],
+  ["East", ["https://campus-life.williams.edu/files/2022/04/East.pdf"]],
+  ["Faye", ["https://campus-life.williams.edu/files/2022/04/Faye.pdf"]],
+  ["Fitch", ["https://campus-life.williams.edu/files/2022/04/Fitch.pdf"]],
+  ["Garfield", ["https://campus-life.williams.edu/files/2022/04/Garfield.pdf"]],
+  ["Gladden", ["https://campus-life.williams.edu/files/2022/04/Gladden.pdf"]],
+  ["Goodrich", ["https://campus-life.williams.edu/files/2022/04/Goodrich.pdf"]],
+  ["Horn", ["https://campus-life.williams.edu/files/2022/04/Horn.pdf"]],
+  ["Hubbell", ["https://campus-life.williams.edu/files/2022/04/Hubbell.pdf"]],
+  ["Lehman", ["https://campus-life.williams.edu/files/2022/04/Lehman.pdf"]],
   [
-    "Agard",
-    [
-      "https://student-life.williams.edu/files/2016/03/Agard-Floorplans-2016.pdf",
-    ],
+    "Mark-Hopkins",
+    ["https://campus-life.williams.edu/files/2022/04/Mark-Hopkins.pdf"],
   ],
+  ["Morgan", ["https://campus-life.williams.edu/files/2022/04/Morgan.pdf"]],
+  ["Parsons", ["https://campus-life.williams.edu/files/2022/04/Parsons.pdf"]],
+  ["Perry", ["https://campus-life.williams.edu/files/2022/04/Perry.pdf"]],
+  ["Prospect", ["https://campus-life.williams.edu/files/2022/04/Prospect.pdf"]],
+  ["Sewall", ["https://campus-life.williams.edu/files/2022/04/Sewall.pdf"]],
+  ["Spencer", ["https://campus-life.williams.edu/files/2022/04/Spencer.pdf"]],
+  ["Thompson", ["https://campus-life.williams.edu/files/2022/05/Thompson.pdf"]],
+  ["Tyler", ["https://campus-life.williams.edu/files/2022/04/Tyler.pdf"]],
   [
-    "Brooks",
-    [
-      "https://student-life.williams.edu/files/2016/03/Brooks-Floorplans-2016.pdf",
-    ],
+    "Tyler-Annex",
+    ["https://campus-life.williams.edu/files/2022/04/Tyler-Annex.pdf"],
   ],
-  [
-    "Bryant",
-    [
-      "https://student-life.williams.edu/files/2019/08/Bryant-Floorplans-2019.pdf",
-    ],
-  ],
-  [
-    "Carter",
-    [
-      "https://student-life.williams.edu/files/2019/08/Carter-Floorplans-2019.pdf",
-    ],
-  ],
-  ["Chadbourne", []],
-  [
-    "Currier",
-    [
-      "https://student-life.williams.edu/files/2019/08/Currier-Floorplans-2019.pdf",
-    ],
-  ],
-  [
-    "Dodd",
-    [
-      "https://student-life.williams.edu/files/2016/03/Dodd-Floorplans-2016.pdf",
-    ],
-  ],
-  ["Doughty", []],
-  [
-    "East",
-    [
-      "https://student-life.williams.edu/files/2019/08/East-Floorplans-2019.pdf",
-    ],
-  ],
-  [
-    "Fayerweather",
-    [
-      "https://student-life.williams.edu/files/2019/08/Fayerweather-Floorplans-2019.pdf",
-    ],
-  ],
-  [
-    "Fitch",
-    [
-      "https://student-life.williams.edu/files/2016/03/Fitch-Floorplans-2016.pdf",
-    ],
-  ],
-  [
-    "Garfield",
-    [
-      "https://student-life.williams.edu/files/2019/08/Garfield-1st-Floor.png",
-      "https://student-life.williams.edu/files/2019/08/Garfield-2nd-Floor.png",
-    ],
-  ],
-  [
-    "Gladden",
-    [
-      "https://student-life.williams.edu/files/2019/08/Gladden-Floorplans-2019.pdf",
-    ],
-  ],
-  [
-    "Goodrich",
-    [
-      "https://student-life.williams.edu/files/2014/04/Goodrich-Floorplans-2014.pdf",
-    ],
-  ],
-  [
-    "Horn",
-    [
-      "https://student-life.williams.edu/files/2017/04/Horn-Hall-1st-Floor-2017.pdf",
-      "https://student-life.williams.edu/files/2017/04/Horn-Hall-2nd-Floor-2017.pdf",
-    ],
-  ],
-  [
-    "Hubbell",
-    [
-      "https://student-life.williams.edu/files/2016/03/Hubbell-Floorplans-2016.pdf",
-    ],
-  ],
-  ["Lambert", []],
-  [
-    "Lehman",
-    [
-      "https://student-life.williams.edu/files/2014/04/Lehman-Floorplans-2014.pdf",
-    ],
-  ],
-  [
-    "Mark Hopkins",
-    [
-      "https://student-life.williams.edu/files/2019/08/Mark-Hopkins-Floorplans-2019.pdf",
-    ],
-  ],
-  ["Milham", []],
-  [
-    "Morgan",
-    [
-      "https://student-life.williams.edu/files/2016/03/Morgan-Floorplans-2016.pdf",
-    ],
-  ],
-  [
-    "Parsons",
-    [
-      "https://student-life.williams.edu/files/2015/04/Parsons-Floorplans-2015.pdf",
-    ],
-  ],
-  [
-    "Perry",
-    [
-      "https://student-life.williams.edu/files/2016/03/Perry-Floorplans-2016.pdf",
-    ],
-  ],
-  ["Poker Flat", []],
-  [
-    "Prospect",
-    [
-      "https://student-life.williams.edu/files/2014/04/Prospect-Floorplans-2014.pdf",
-    ],
-  ],
-  [
-    "Sewall",
-    [
-      "https://student-life.williams.edu/files/2016/03/Sewall-Floorplans-2016.pdf",
-    ],
-  ],
-  [
-    "Spencer",
-    [
-      "https://student-life.williams.edu/files/2014/04/Spencer-Floorplans-2014.pdf",
-    ],
-  ],
-  ["Susie Hopkins", []],
-  [
-    "Thompson",
-    [
-      "https://student-life.williams.edu/files/2016/03/Thompson-Floorplans-2016.pdf",
-    ],
-  ],
-  [
-    "Tyler",
-    [
-      "https://student-life.williams.edu/files/2015/04/Tyler-Floorplans-2015.pdf",
-    ],
-  ],
-  [
-    "Tyler Annex",
-    [
-      "https://student-life.williams.edu/files/2014/04/Tyler-Annex-Floorplans-2014.pdf",
-    ],
-  ],
-  [
-    "West",
-    [
-      "https://student-life.williams.edu/files/2016/03/West-Floorplans-2016.pdf",
-    ],
-  ],
-  [
-    "Wood",
-    [
-      "https://student-life.williams.edu/files/2016/03/Wood-Floorplans-2016.pdf",
-    ],
-  ],
-  ["Woodbridge", []],
+  ["West", ["https://campus-life.williams.edu/files/2022/04/West.pdf"]],
+  ["Wood", ["https://campus-life.williams.edu/files/2022/04/Wood.pdf"]],
 ]);
 
 /**
