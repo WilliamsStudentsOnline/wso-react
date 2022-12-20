@@ -175,7 +175,7 @@ const FactrakTopProfs = () => {
               <th>
                 <Link
                   to={`/factrak/rankings/${
-                    params.aos
+                    params.aos ? params.aos : ""
                   }?${searchParams.toString()}`}
                   onClick={() => {
                     updateProfs(profs.reverse());
