@@ -1,4 +1,4 @@
-const floorplanMap = new Map([
+const floorplanMap: Map<string, string[]> = new Map([
   ["Agard", ["https://campus-life.williams.edu/files/2022/04/Agard.pdf"]],
   ["Brooks", ["https://campus-life.williams.edu/files/2022/04/Brooks.pdf"]],
   ["Bryant", ["https://campus-life.williams.edu/files/2022/04/Bryant.pdf"]],
@@ -39,7 +39,7 @@ const floorplanMap = new Map([
  *
  * @param {String} name - Name of dormitory whose floorplan links we wish to obtain.
  */
-const floorplanHelper = (name) => {
+const floorplanHelper = (name: string) => {
   return floorplanMap.get(name);
 };
 
