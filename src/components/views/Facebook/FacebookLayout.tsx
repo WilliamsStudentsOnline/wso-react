@@ -1,6 +1,5 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
@@ -9,7 +8,7 @@ import { getCurrUser } from "../../../lib/authSlice";
 // Additional imports
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 
-const FacebookLayout = ({ children }) => {
+const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
   const navigateTo = useNavigate();
   const [searchParams] = useSearchParams();
@@ -17,14 +16,14 @@ const FacebookLayout = ({ children }) => {
 
   useEffect(() => {
     if (searchParams?.get("q")) {
-      updateQuery(searchParams.get("q"));
+      updateQuery(searchParams.get("q") ?? "");
     } else {
       updateQuery("");
     }
   }, [searchParams]);
 
   // Handles submissions
-  const submitHandler = (event) => {
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     searchParams.set("q", query);
     navigateTo(`/facebook?${searchParams.toString()}`);
@@ -76,14 +75,6 @@ const FacebookLayout = ({ children }) => {
       {children}
     </div>
   );
-};
-
-FacebookLayout.propTypes = {
-  children: PropTypes.object,
-};
-
-FacebookLayout.defaultProps = {
-  children: {},
 };
 
 export default FacebookLayout;

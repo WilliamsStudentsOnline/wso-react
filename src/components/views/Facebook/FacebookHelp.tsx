@@ -8,7 +8,7 @@ const FacebookHelp = () => {
         <article>
           <p className="intro-paragraph">
             The <abbr title="Williams Students Online">WSO</abbr> Facebook
-            <a href="#fn__1" name="fnt__1" id="fnt__1" className="fn_top">
+            <a href="#fn__1" id="fnt__1" className="fn_top">
               <sup>1</sup>
             </a>{" "}
             is an online campus directory. It is accessible on campus without
@@ -426,7 +426,7 @@ const FacebookHelp = () => {
           <hr />
           <div className="footnotes">
             <div className="fn">
-              <a href="#fnt__1" id="fn__1" name="fn__1" className="fn_bot">
+              <a href="#fnt__1" id="fn__1" className="fn_bot">
                 1)
               </a>
               The <abbr title="Williams Students Online">WSO</abbr> Facebook

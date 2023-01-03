@@ -1,23 +1,34 @@
 // React Imports
 import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 
 // External imports
 import { Link } from "react-router-dom";
 
 // Additional Imports
 import { userTypeStudent } from "../../../constants/general";
+import { getWSO } from "../../../lib/authSlice";
+import { useAppSelector } from "../../../lib/store";
+import { ResponsesGetUserResponseUser } from "wso-api-client/lib/services/types";
 
-const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
-  const [userPhoto, updateUserPhoto] = useState(null);
+const FacebookGridUser = ({
+  gridUser,
+  gridUserClassYear = "",
+}: {
+  gridUser: ResponsesGetUserResponseUser;
+  gridUserClassYear: string;
+}) => {
+  const wso = useAppSelector(getWSO);
+  const [userPhoto, updateUserPhoto] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const loadPhoto = async () => {
       try {
-        const photoResponse = await wso.userService.getUserLargePhoto(
-          gridUser.unixID
-        );
-        updateUserPhoto(URL.createObjectURL(photoResponse));
+        if (gridUser.unixID) {
+          const photoResponse = await wso.userService.getUserLargePhoto(
+            gridUser.unixID
+          );
+          updateUserPhoto(URL.createObjectURL(photoResponse));
+        }
       } catch (error) {
         // eslint-disable-next-line no-empty
       }
@@ -27,7 +38,7 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
   }, [wso, gridUser.unixID]);
 
   // Generates the unix id field in grid view
-  const gridUnixID = (user) => {
+  const gridUnixID = (user: ResponsesGetUserResponseUser) => {
     if (user.unixID) {
       return (
         <>
@@ -40,13 +51,13 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
   };
 
   // Generates the user's room in grid view
-  const gridUserRoom = (user) => {
+  const gridUserRoom = (user: ResponsesGetUserResponseUser) => {
     if (user.type === userTypeStudent && user.dormVisible && user.dormRoom) {
       return (
         <>
           <li className="list-headers"> Room</li>
           <li className="list-contents">
-            {user.dormRoom.dorm.name} {user.dormRoom.number}
+            {user.dormRoom?.dorm?.name} {user.dormRoom.number}
           </li>
         </>
       );
@@ -96,16 +107,6 @@ const FacebookGridUser = ({ wso, gridUser, gridUserClassYear }) => {
       </div>
     </aside>
   );
-};
-
-FacebookGridUser.propTypes = {
-  wso: PropTypes.object.isRequired,
-  gridUser: PropTypes.object.isRequired,
-  gridUserClassYear: PropTypes.string,
-};
-
-FacebookGridUser.defaultProps = {
-  gridUserClassYear: "",
 };
 
 export default FacebookGridUser;

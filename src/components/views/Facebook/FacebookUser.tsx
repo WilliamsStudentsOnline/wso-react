@@ -9,6 +9,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 // Additional Imports
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
+import { ResponsesGetUserResponseUser } from "wso-api-client/lib/services/types";
 
 const FacebookUser = () => {
   const wso = useAppSelector(getWSO);
@@ -17,8 +18,10 @@ const FacebookUser = () => {
   const navigateTo = useNavigate();
   const params = useParams();
 
-  const [viewPerson, updateTarget] = useState(null);
-  const [userPhoto, updateUserPhoto] = useState(undefined);
+  const [viewPerson, updateTarget] = useState<
+    ResponsesGetUserResponseUser | undefined
+  >(undefined);
+  const [userPhoto, updateUserPhoto] = useState("");
 
   useEffect(() => {
     const loadTarget = async () => {
@@ -26,27 +29,32 @@ const FacebookUser = () => {
         navigateTo("/404", { replace: true });
         return;
       }
-
+      const userID =
+        params.userID === "me" ? params.userID : parseInt(params.userID, 10);
       try {
-        const targetResponse = await wso.userService.getUser(params.userID);
+        const targetResponse = await wso.userService.getUser(userID);
 
         updateTarget(targetResponse.data);
-        const photoResponse = await wso.userService.getUserLargePhoto(
-          targetResponse.data.unixID
-        );
+        if (targetResponse.data?.unixID) {
+          const photoResponse = await wso.userService.getUserLargePhoto(
+            targetResponse.data.unixID
+          );
 
-        updateUserPhoto(URL.createObjectURL(photoResponse));
+          updateUserPhoto(URL.createObjectURL(photoResponse));
+        }
       } catch (error) {
         // 1404 means user not at williams, 404 means user does not exist in DB
-        if (error.errorCode === 404) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const e = error as any;
+        if (e.errorCode === 404) {
           navigateTo("/404", { replace: true });
           return;
         }
-        if (error.errorCode === 1404) {
+        if (e.errorCode === 1404) {
           navigateTo("/error", { replace: true, state: { error } });
           return;
         }
-        updateUserPhoto(null);
+        updateUserPhoto("");
       }
     };
 
@@ -77,7 +85,7 @@ const FacebookUser = () => {
         <>
           <h5>Room:</h5>
           <h4>
-            {viewPerson.dormRoom.dorm.name} {viewPerson.dormRoom.number}
+            {viewPerson?.dormRoom?.dorm?.name} {viewPerson.dormRoom.number}
           </h4>
           <br />
         </>
@@ -217,7 +225,8 @@ const FacebookUser = () => {
               return (
                 <li className="view-tag" key={tag.name}>
                   <Link to={`/facebook?q=tag:${tag.name}`}>{tag.name}</Link>
-                  {index < viewPerson.tags.length - 1 && <span>,&nbsp;</span>}
+                  {viewPerson?.tags?.length &&
+                    index < viewPerson.tags.length - 1 && <span>,&nbsp;</span>}
                 </li>
               );
             })}
@@ -293,7 +302,8 @@ const FacebookUser = () => {
 
   // Generates the user's class year
   const classYear = () => {
-    if (!viewPerson.classYear || viewPerson.type !== userTypeStudent) return "";
+    if (!viewPerson?.classYear || viewPerson.type !== userTypeStudent)
+      return "";
     if (viewPerson.offCycle) return `'${(viewPerson.classYear - 1) % 100}.5`;
 
     return `'${viewPerson.classYear % 100}`;

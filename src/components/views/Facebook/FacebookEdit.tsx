@@ -19,17 +19,17 @@ const FacebookEdit = () => {
 
   const navigateTo = useNavigate();
 
-  const [tags, updateTags] = useState([]);
+  const [tags, updateTags] = useState<string[]>([]);
   const [pronoun] = useState(currUser?.pronoun);
   const [visible, setVisible] = useState(currUser?.visible);
   const [homeVisible, setHomeVisible] = useState(currUser?.homeVisible);
   const [dormVisible, setDormVisible] = useState(currUser?.dormVisible);
   const [offCycle, setOffCycle] = useState(currUser?.offCycle);
 
-  const [errors, updateErrors] = useState([]);
+  const [errors, updateErrors] = useState<string[]>([]);
   const [submitting, updateSubmitting] = useState(false);
 
-  const fileRef = createRef();
+  const fileRef = createRef<HTMLInputElement>();
 
   useEffect(() => {
     // Prevent memory leak: Can't perform a React state update on an unmounted component
@@ -39,19 +39,17 @@ const FacebookEdit = () => {
     const loadTags = async () => {
       try {
         const userResponse = await wso.userService.getUser("me");
-        const currTags = userResponse.data.tags;
-        if (isMounted && currTags) updateTags(currTags.map((tag) => tag.name));
+        const currTags = userResponse?.data?.tags;
+        if (isMounted && currTags) {
+          updateTags(currTags.map((tag) => tag.name ?? ""));
+        }
       } catch (error) {
-        updateErrors([error.message]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        updateErrors([(error as any).message]);
       }
     };
 
-    // Necessary because the user might refresh into this page, and currUser might not have
-    // been initialized.
-    const loadUserInfo = async () => {};
-
     loadTags();
-    loadUserInfo();
 
     return () => {
       // during componentWillUnmount, untoggle the flag to prevent further state changes
@@ -59,7 +57,9 @@ const FacebookEdit = () => {
     };
   }, [currUser, wso]);
 
-  const submitHandler = async (event) => {
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = async (
+    event
+  ) => {
     event.preventDefault();
 
     const newErrors = [];
@@ -67,7 +67,7 @@ const FacebookEdit = () => {
 
     try {
       // Update Photos
-      if (fileRef.current?.files[0]) {
+      if (fileRef.current?.files && fileRef.current.files[0]) {
         await wso.userService.updateUserPhoto("me", fileRef.current.files[0]);
       }
 
@@ -86,9 +86,10 @@ const FacebookEdit = () => {
 
       dispatch(updateUser(updateResponse.data));
       updateSubmitting(false); // should be placed before navigateTo, otherwise updating unmounted component
-      navigateTo(`/facebook/users/${currUser.id}`);
+      navigateTo(`/facebook/users/${currUser?.id}`);
     } catch (error) {
-      newErrors.push(error.message);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      newErrors.push((error as any).message);
       updateErrors(newErrors);
       updateSubmitting(false);
     }
