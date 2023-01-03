@@ -202,7 +202,7 @@ const FactrakLayout = ({ children }: { children: ReactElement }) => {
     );
   }
 
-  // Just to handle weird cases
+  // Just to handle weird cases (when API Token is loaded, but user is not)
   return null;
 };
 

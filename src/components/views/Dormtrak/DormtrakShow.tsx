@@ -14,6 +14,10 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { bannerHelper } from "../../../lib/imageHelper";
 import { userTypeStudent } from "../../../constants/general";
 import floorplanHelper from "./floorplanHelper";
+import {
+  ModelsDorm,
+  ModelsDormtrakReview,
+} from "wso-api-client/lib/services/types";
 
 const DormtrakShow = () => {
   const currUser = useAppSelector(getCurrUser);
@@ -21,16 +25,18 @@ const DormtrakShow = () => {
   const navigateTo = useNavigate();
   const params = useParams();
 
-  const [reviews, updateReviews] = useState(null);
-  const [dorm, updateDorm] = useState(null);
+  const [reviews, updateReviews] = useState<ModelsDormtrakReview[]>([]);
+  const [dorm, updateDorm] = useState<ModelsDorm | undefined>(undefined);
 
   useEffect(() => {
-    const dormID = params.dormID;
+    const dormID = params.dormID ? parseInt(params.dormID, 10) : undefined;
 
     const loadDorm = async () => {
       try {
-        const dormResponse = await wso.dormtrakService.getDorm(dormID);
-        updateDorm(dormResponse.data);
+        if (dormID) {
+          const dormResponse = await wso.dormtrakService.getDorm(dormID);
+          updateDorm(dormResponse.data);
+        }
       } catch (error) {
         navigateTo("/error", { replace: true, state: error });
       }
@@ -42,7 +48,7 @@ const DormtrakShow = () => {
         const dormReviewResponse = await wso.dormtrakService.listReviews(
           queryParams
         );
-        updateReviews(dormReviewResponse.data);
+        updateReviews(dormReviewResponse.data ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: error });
       }
@@ -53,8 +59,8 @@ const DormtrakShow = () => {
   }, [params.dormID, wso]);
 
   const checkUserCommentRights = () => {
-    if (!currUser || !currUser.dorm) return false;
-    return currUser.type === userTypeStudent && currUser.dorm.id === dorm.id;
+    if (!currUser || !currUser.dormRoomID || !dorm) return false;
+    return currUser.type === userTypeStudent && currUser.dormRoomID === dorm.id;
   };
 
   // Link to survey.
@@ -69,9 +75,11 @@ const DormtrakShow = () => {
     return null;
   };
 
-  const dormFloorplanLinks = (dormName) => {
+  const dormFloorplanLinks = (dormName: string) => {
     const floorplanLinks = floorplanHelper(dormName);
-
+    if (!floorplanLinks) {
+      return <strong>Floorplan not available.</strong>;
+    }
     if (floorplanLinks.length === 1) {
       return (
         <strong>
@@ -95,8 +103,6 @@ const DormtrakShow = () => {
         </strong>
       );
     }
-
-    return <strong>Floorplan not available.</strong>;
   };
 
   const dormInfo = () => {
@@ -116,25 +122,27 @@ const DormtrakShow = () => {
       );
 
     return (
-      <section className="lead">
-        <h2>
-          <Link to={`/dormtrak/dorms/${dorm.id}`}>{dorm.name}</Link>
-        </h2>
-        <div>
-          <img alt={`${dorm.name} avatar`} src={bannerHelper(dorm.name)} />
-        </div>
+      dorm.name && (
+        <section className="lead">
+          <h2>
+            <Link to={`/dormtrak/dorms/${dorm.id}`}>{dorm.name}</Link>
+          </h2>
+          <div>
+            <img alt={`${dorm.name} avatar`} src={bannerHelper(dorm.name)} />
+          </div>
 
-        <strong>Summary</strong>
-        <p>{dorm.description}</p>
-        {dormFloorplanLinks(dorm.name)}
-      </section>
+          <strong>Summary</strong>
+          <p>{dorm.description}</p>
+          {dormFloorplanLinks(dorm.name)}
+        </section>
+      )
     );
   };
 
   return (
     <div className="container">
       <aside className="sidebar">
-        <DormtrakFacts dorm={dorm || undefined} wso={wso} />
+        {dorm && <DormtrakFacts dorm={dorm} />}
         <hr />
 
         <section className="building-rooms">
@@ -150,11 +158,7 @@ const DormtrakShow = () => {
         <section>
           {surveyLink()}
 
-          <DormtrakRecentComments
-            reviews={reviews}
-            abridged={false}
-            currUser={currUser}
-          />
+          <DormtrakRecentComments reviews={reviews} abridged={false} />
         </section>
       </article>
     </div>

@@ -1,13 +1,13 @@
 // React imports
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import PaginationButtons from "../../PaginationButtons";
 import { Line } from "../../Skeleton";
 
 // Additional imports
 import { capitalize } from "../../../lib/general";
+import { ModelsDormRoom } from "wso-api-client/lib/services/types";
 
-const DormtrakRooms = ({ rooms }) => {
+const DormtrakRooms = ({ rooms }: { rooms?: ModelsDormRoom[] }) => {
   const perPage = 15; // Number of results per page
 
   const [page, updatePage] = useState(0);
@@ -16,7 +16,7 @@ const DormtrakRooms = ({ rooms }) => {
     : null;
 
   // Returns Private bathroom descriptions
-  const privateBathrooms = (room) => {
+  const privateBathrooms = (room: ModelsDormRoom) => {
     if (!room.privateBathroom) return null;
     let bathroomDesc = "Yes. ";
     if (room.bathroomDesc) bathroomDesc += room.bathroomDesc;
@@ -31,16 +31,20 @@ const DormtrakRooms = ({ rooms }) => {
   };
 
   // Handles clicking of the next/previous page
-  const clickHandler = (number) => {
+  const clickHandler = (number: number) => {
     if (number === -1 && page > 0) {
       updatePage(page - 1);
-    } else if (number === 1 && rooms.length - (page + 1) * perPage > 0) {
+    } else if (
+      number === 1 &&
+      rooms &&
+      rooms.length - (page + 1) * perPage > 0
+    ) {
       updatePage(page + 1);
     }
   };
 
   // Generates the description of the common room.
-  const commonRooms = (room) => {
+  const commonRooms = (room: ModelsDormRoom) => {
     let crDesc = "";
     if (room.commonRoomAccess) {
       crDesc = "Yes. ";
@@ -61,7 +65,7 @@ const DormtrakRooms = ({ rooms }) => {
   };
 
   // Generates descriptions for whether the beds are adjustable
-  const adjustableBeds = (room) => {
+  const adjustableBeds = (room: ModelsDormRoom) => {
     if (!room.bedAdjustable) return null;
     return (
       <div>
@@ -74,17 +78,20 @@ const DormtrakRooms = ({ rooms }) => {
   };
 
   if (!rooms)
-    return [...Array(perPage)].map((_, i) => (
-      // eslint-disable-next-line react/no-array-index-key
-      <div key={i}>
-        {["15%", "12%", "25%", "13%", "30%"].map((width) => (
-          <div key={width}>
-            <Line width={width} />
+    return (
+      <>
+        {[...Array(perPage)].map((_, i) => (
+          <div key={i}>
+            {["15%", "12%", "25%", "13%", "30%"].map((width) => (
+              <div key={width}>
+                <Line width={width} />
+              </div>
+            ))}
+            <br />
           </div>
         ))}
-        <br />
-      </div>
-    ));
+      </>
+    );
 
   return (
     <>
@@ -94,7 +101,7 @@ const DormtrakRooms = ({ rooms }) => {
         total={rooms.length}
         perPage={perPage}
       />
-      {rooms.length > 0
+      {rooms.length > 0 && displayRooms
         ? displayRooms.map((room) => {
             return (
               <div key={room.number}>
@@ -110,7 +117,14 @@ const DormtrakRooms = ({ rooms }) => {
                 </small>
                 {`${room.area} sq. ft.`}
                 <br />
-                {["faces", "noise", "closet", "flooring"].map((attr) => {
+                {(
+                  [
+                    "faces",
+                    "noise",
+                    "closet",
+                    "flooring",
+                  ] as (keyof typeof room)[]
+                ).map((attr) => {
                   if (room[attr] !== undefined && room[attr] !== null) {
                     return (
                       <div key={attr}>
@@ -140,13 +154,6 @@ const DormtrakRooms = ({ rooms }) => {
       />
     </>
   );
-};
-
-DormtrakRooms.propTypes = {
-  rooms: PropTypes.arrayOf(PropTypes.object),
-};
-DormtrakRooms.defaultProps = {
-  rooms: null,
 };
 
 export default DormtrakRooms;

@@ -10,14 +10,17 @@ import { getWSO, getCurrUser } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link, useNavigate } from "react-router-dom";
+import { ModelsDormtrakReview } from "wso-api-client/lib/services/types";
 
 const DormtrakHome = () => {
   const currUser = useAppSelector(getCurrUser);
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
-  const [reviews, updateReviews] = useState(null);
-  const [userReviewID, updateUserReviewID] = useState(null);
+  const [reviews, updateReviews] = useState<ModelsDormtrakReview[]>([]);
+  const [userReviewID, updateUserReviewID] = useState<number | undefined>(
+    undefined
+  );
   useEffect(() => {
     let isMounted = true;
     const loadReviews = async () => {
@@ -27,8 +30,8 @@ const DormtrakHome = () => {
         commented: true,
       };
       const currentUserReviewQueryParams = {
-        userID: currUser.id,
-        dormRoomID: currUser.dormRoomID,
+        userID: currUser?.id,
+        dormRoomID: currUser?.dormRoomID,
       };
       try {
         const dormReviewResponse = await wso.dormtrakService.listReviews(
@@ -38,11 +41,14 @@ const DormtrakHome = () => {
           currentUserReviewQueryParams
         );
         if (isMounted) {
-          updateReviews(dormReviewResponse.data);
-          if (currentUserReviewResponse.data.length > 0) {
+          updateReviews(dormReviewResponse.data ?? []);
+          if (
+            currentUserReviewResponse.data?.length &&
+            currentUserReviewResponse.data.length > 0
+          ) {
             updateUserReviewID(currentUserReviewResponse.data[0].id);
           } else {
-            updateUserReviewID(null);
+            updateUserReviewID(undefined);
           }
         }
       } catch (error) {
@@ -57,7 +63,7 @@ const DormtrakHome = () => {
     };
   }, [wso]);
 
-  const deleteHandler = async (reviewID) => {
+  const deleteHandler = async (reviewID: number) => {
     // eslint-disable-next-line no-restricted-globals, no-alert
     const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
@@ -65,7 +71,7 @@ const DormtrakHome = () => {
     try {
       await wso.dormtrakService.deleteReview(reviewID);
       updateReviews(reviews.filter((review) => review.id !== reviewID));
-      updateUserReviewID(null);
+      updateUserReviewID(undefined);
     } catch (error) {
       // eslint-disable-next-line no-empty
     }
@@ -73,7 +79,7 @@ const DormtrakHome = () => {
 
   // Link to survey.
   const surveyLink = () => {
-    if (currUser.dormRoomID) {
+    if (currUser?.dormRoomID) {
       return userReviewID ? (
         <p>
           <Button
@@ -130,7 +136,6 @@ const DormtrakHome = () => {
           <DormtrakRecentComments
             updateUserReviewID={updateUserReviewID}
             abridged
-            currUser={currUser}
             reviews={reviews}
           />
         </section>

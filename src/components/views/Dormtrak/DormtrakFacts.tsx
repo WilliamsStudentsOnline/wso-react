@@ -1,23 +1,27 @@
 // React imports
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import { Circle } from "../../Skeleton";
 
 // External Imports
 import { Chart } from "react-google-charts";
+import { useAppSelector } from "../../../lib/store";
+import { getWSO } from "../../../lib/authSlice";
+import { ModelsDorm, ModelsDormFacts } from "wso-api-client/lib/services/types";
 
-const DormtrakFacts = ({ dorm, wso }) => {
-  const [facts, updateFacts] = useState(null);
+const DormtrakFacts = ({ dorm }: { dorm: ModelsDorm }) => {
+  const wso = useAppSelector(getWSO);
+  const [facts, updateFacts] = useState<ModelsDormFacts | undefined>(undefined);
 
   useEffect(() => {
     let isMounted = true;
 
     const loadFacts = async () => {
       try {
-        const factResponse = await wso.dormtrakService.getDormFacts(dorm.id);
-
-        if (isMounted) {
-          updateFacts(factResponse.data);
+        if (dorm.id) {
+          const factResponse = await wso.dormtrakService.getDormFacts(dorm.id);
+          if (isMounted) {
+            updateFacts(factResponse.data);
+          }
         }
       } catch {
         // It's okay to not have a response here because there is a loading state
@@ -47,10 +51,12 @@ const DormtrakFacts = ({ dorm, wso }) => {
         <div>
           <strong>Class breakdown</strong>:
           <div id="dormtrak-piechart">
-            {facts.seniorCount + facts.juniorCount + facts.sophomoreCount >
+            {(facts.seniorCount ?? 0) +
+              (facts.juniorCount ?? 0) +
+              (facts.sophomoreCount ?? 0) >
               0 && (
               <Chart
-                id="piechart"
+                // graph_id="piechart"
                 chartType="PieChart"
                 data={[
                   ["Class", "% of residents"],
@@ -76,9 +82,9 @@ const DormtrakFacts = ({ dorm, wso }) => {
     if (!facts) return "N/A";
 
     const ratingParameters = ["Wifi", "Location", "Loudness", "Satisfaction"];
-    const ratingScores = ratingParameters.map(
-      (attr) => facts[`average${attr}`]
-    );
+    const ratingScores = ratingParameters
+      .map((attr) => facts[`average${attr}` as keyof typeof facts])
+      .map((val) => val as number);
 
     if (ratingScores.filter((e) => e).length === 0) return null;
 
@@ -89,7 +95,8 @@ const DormtrakFacts = ({ dorm, wso }) => {
           (score, index) =>
             score !== 0 && (
               <div key={ratingParameters[index]}>
-                {ratingParameters[index]}: {ratingScores[index].toPrecision(2)}
+                {ratingParameters[index]}:{" "}
+                {ratingScores[index] ? ratingScores[index].toPrecision(2) : 0}
                 <br />
               </div>
             )
@@ -163,7 +170,7 @@ const DormtrakFacts = ({ dorm, wso }) => {
         <br />
       </div>
 
-      {dorm?.numberDoubles > 0 && (
+      {dorm?.numberDoubles && dorm.numberDoubles > 0 && (
         <>
           <div>
             <strong>Mean Double Size</strong>
@@ -194,18 +201,22 @@ const DormtrakFacts = ({ dorm, wso }) => {
         <br />
       </div>
 
-      <div>
-        <strong>Student-bathroom ratio</strong>
-        {`: ${dorm?.bathroomRatio.toPrecision(3)} : 1`}
-        <br />
-      </div>
-      <div>
-        <strong>Common rooms</strong>
-        {facts
-          ? `: ${facts.commonRoomAccessRatio.toPrecision(3)} : 1`
-          : ": N/A"}
-        <br />
-      </div>
+      {dorm?.bathroomRatio && (
+        <div>
+          <strong>Student-bathroom ratio</strong>
+          {`: ${dorm?.bathroomRatio.toPrecision(3)} : 1`}
+          <br />
+        </div>
+      )}
+      {facts?.commonRoomAccessRatio && (
+        <div>
+          <strong>Common rooms</strong>
+          {facts
+            ? `: ${facts.commonRoomAccessRatio.toPrecision(3)} : 1`
+            : ": N/A"}
+          <br />
+        </div>
+      )}
       <div>
         <strong>Washers</strong>
         {`: ${dorm?.numberWashers}`}
@@ -214,15 +225,6 @@ const DormtrakFacts = ({ dorm, wso }) => {
       <div>{ratings()}</div>
     </article>
   );
-};
-
-DormtrakFacts.propTypes = {
-  dorm: PropTypes.object,
-  wso: PropTypes.object.isRequired,
-};
-
-DormtrakFacts.defaultProps = {
-  dorm: null,
 };
 
 export default DormtrakFacts;
