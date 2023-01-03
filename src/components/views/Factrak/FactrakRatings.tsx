@@ -1,14 +1,19 @@
 // React imports
 import React from "react";
-import PropTypes from "prop-types";
 import { Line } from "../../Skeleton";
+import { ModelsFactrakSurveyAvgRatings } from "wso-api-client/lib/services/types";
 
-const FactrakRatings = ({ ratings, general }) => {
+const FactrakRatings = ({
+  ratings,
+  general = false,
+}: {
+  ratings: ModelsFactrakSurveyAvgRatings | undefined;
+  general?: boolean;
+}) => {
   if (!ratings) return null;
-
   // Generates the crowdsourced opinion on the professor's courses' workload
   const courseWorkload = () => {
-    if (!ratings.numCourseWorkload) return null;
+    if (!ratings.numCourseWorkload || !ratings.avgCourseWorkload) return null;
 
     const WORKLOAD_DESCRIPTIONS = [
       "",
@@ -32,7 +37,8 @@ const FactrakRatings = ({ ratings, general }) => {
 
   // Generates the crowdsourced opinion on how stimulating the professor's courses are.
   const courseStimulating = () => {
-    if (!ratings.numCourseStimulating) return null;
+    if (!ratings.numCourseStimulating || !ratings.avgCourseStimulating)
+      return null;
     const STIMULATING_DESCR = [
       "",
       "very boring",
@@ -82,7 +88,7 @@ const FactrakRatings = ({ ratings, general }) => {
 
   // Generates the crowdsourced opinion on how good the professor is at lecturing.
   const profLecture = () => {
-    if (!ratings.numLeadLecture) return null;
+    if (!ratings.numLeadLecture || !ratings.avgLeadLecture) return null;
     const LECTURE_DESCR = [
       "",
       "very ineffective",
@@ -105,7 +111,8 @@ const FactrakRatings = ({ ratings, general }) => {
 
   // Generates the crowdsourced opinion on how good the professor is at supporting mental health.
   const profMentalHealth = () => {
-    if (!ratings.numMentalHealthSupport) return null;
+    if (!ratings.numMentalHealthSupport || !ratings.avgMentalHealthSupport)
+      return null;
     const MHS_DESCR = [
       "",
       "very ineffective",
@@ -129,7 +136,8 @@ const FactrakRatings = ({ ratings, general }) => {
 
   // Generates the crowdsourced opinion on how helpful the professor is.
   const profHelpful = () => {
-    if (!ratings.numOutsideHelpfulness) return null;
+    if (!ratings.numOutsideHelpfulness || !ratings.avgOutsideHelpfulness)
+      return null;
     const HELP_DESCR = [
       "",
       "very unhelpful",
@@ -151,7 +159,8 @@ const FactrakRatings = ({ ratings, general }) => {
   };
 
   const wouldTakeAnother = () => {
-    if (!ratings.numWouldTakeAnother) return null;
+    if (!ratings.numWouldTakeAnother || !ratings.avgWouldTakeAnother)
+      return null;
 
     return (
       <li>
@@ -166,7 +175,8 @@ const FactrakRatings = ({ ratings, general }) => {
   };
 
   const wouldRecommendCourse = () => {
-    if (!ratings.numWouldRecommendCourse) return null;
+    if (!ratings.numWouldRecommendCourse || !ratings.avgWouldRecommendCourse)
+      return null;
     return (
       <li>
         <u>{`${Math.round(ratings.avgWouldRecommendCourse * 100)}%`}</u>
@@ -192,15 +202,6 @@ const FactrakRatings = ({ ratings, general }) => {
       </ul>
     </div>
   );
-};
-
-FactrakRatings.propTypes = {
-  general: PropTypes.bool,
-  ratings: PropTypes.object.isRequired,
-};
-
-FactrakRatings.defaultProps = {
-  general: false,
 };
 
 const FactrakRatingsSkeleton = () => (

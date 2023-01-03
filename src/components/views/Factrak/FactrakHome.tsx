@@ -11,6 +11,10 @@ import { getWSO, getCurrUser, getAPIToken } from "../../../lib/authSlice";
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  ModelsAreaOfStudy,
+  ModelsFactrakSurvey,
+} from "wso-api-client/lib/services/types";
 
 const FactrakHome = () => {
   const currUser = useAppSelector(getCurrUser);
@@ -18,14 +22,16 @@ const FactrakHome = () => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
-  const [areas, updateAreas] = useState(null);
-  const [surveys, updateSurveys] = useState(null);
+  const [areas, updateAreas] = useState<ModelsAreaOfStudy[]>([]);
+  const [surveys, updateSurveys] = useState<ModelsFactrakSurvey[]>([]);
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
     const loadSurveys = async () => {
+      // TODO: We should define this differntly so we don't have to do this hack
+      const preload = ["professor", "course"] as ("professor" | "course")[];
       const queryParams = {
-        preload: ["professor", "course"],
+        preload: preload,
         limit: 10,
         start: new Date(),
       };
@@ -34,7 +40,7 @@ const FactrakHome = () => {
         const surveysResponse = await wso.factrakService.listSurveys(
           queryParams
         );
-        updateSurveys(surveysResponse.data);
+        updateSurveys(surveysResponse.data ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
@@ -46,7 +52,7 @@ const FactrakHome = () => {
           await wso.factrakService.listAreasOfStudy();
 
         const areasOfStudy = areasOfStudyResponse.data;
-        updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
+        updateAreas(areasOfStudy ? areasOfStudy.sort() : []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }

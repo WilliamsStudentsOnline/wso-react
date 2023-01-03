@@ -1,4 +1,17 @@
 import { JwtPayload } from "jwt-decode";
+import React from "react";
+
+export interface ButtonProps {
+  className?: string;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  children?: string;
+}
+export interface CommonPropTypes {
+  width?: string;
+  height?: string;
+  center?: boolean;
+  className?: string;
+}
 
 export interface User {
   id: number;

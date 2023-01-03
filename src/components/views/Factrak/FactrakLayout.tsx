@@ -1,6 +1,5 @@
 // React imports
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect, ReactElement } from "react";
 
 // Redux/ Router imports
 import { useAppSelector } from "../../../lib/store";
@@ -12,7 +11,9 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
-const FactrakLayout = ({ children }) => {
+import { AutocompleteACEntry } from "wso-api-client/lib/services/types";
+
+const FactrakLayout = ({ children }: { children: ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
@@ -20,7 +21,7 @@ const FactrakLayout = ({ children }) => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState<AutocompleteACEntry[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const FactrakLayout = ({ children }) => {
 
     const loadQuery = () => {
       if (searchParams?.get("q")) {
-        setQuery(searchParams.get("q"));
+        setQuery(searchParams.get("q") ?? "");
       } else {
         setQuery("");
       } // Needed to reset if user clears the box.
@@ -50,16 +51,19 @@ const FactrakLayout = ({ children }) => {
   }, [location.pathname]);
 
   // Initiates new autocomplete
-  const factrakAutocomplete = async (event) => {
+  const factrakAutocomplete: React.ChangeEventHandler<
+    HTMLInputElement
+  > = async (event) => {
     setQuery(event.target.value);
-    let suggestData = [];
+    let suggestData: AutocompleteACEntry[] = [];
 
     try {
       const factrakResponse = await wso.autocompleteService.autocompleteFactrak(
         query
       );
-
-      suggestData = factrakResponse.data;
+      if (factrakResponse.data) {
+        suggestData = factrakResponse.data;
+      }
     } catch {
       // No need to do anything - it's alright if we don't have autocomplete.
     }
@@ -73,10 +77,10 @@ const FactrakLayout = ({ children }) => {
     setShowSuggestions(true);
   };
 
-  const submitHandler = (event) => {
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    navigateTo(`/factrak/search?q=${query}`);
+    navigateTo(`/factrak/serch?q=${query}`);
   };
 
   const focusHandler = () => {
@@ -87,7 +91,7 @@ const FactrakLayout = ({ children }) => {
     setShowSuggestions(false);
   };
 
-  const suggestionRow = (suggestion) => {
+  const suggestionRow = (suggestion: AutocompleteACEntry) => {
     if (suggestion.type && suggestion.type === "area") {
       return (
         <Link
@@ -200,10 +204,6 @@ const FactrakLayout = ({ children }) => {
 
   // Just to handle weird cases
   return null;
-};
-
-FactrakLayout.propTypes = {
-  children: PropTypes.object.isRequired,
 };
 
 export default FactrakLayout;

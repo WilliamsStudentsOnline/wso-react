@@ -6,75 +6,99 @@ import "../../stylesheets/FactrakSurvey.css";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import {
+  FactrakSurveyCreateParams,
+  ModelsAreaOfStudy,
+  ModelsFactrakSurvey,
+  ModelsUser,
+} from "wso-api-client/lib/services/types";
 
-const FactrakSurvey = () => {
+type FactrakSurveyState = {
+  courseNumber: string;
+  courseName: string;
+};
+
+const FactrakSurvey = ({ edit }: { edit: boolean }) => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const params = useParams();
   const location = useLocation();
-
-  const [survey, updateSurvey] = useState(null);
-  const [prof, updateProf] = useState(null);
-
-  // TODO: find out if edit can be passed in as a prop
-  const edit = params?.surveyID != null;
+  const state = location.state as FactrakSurveyState;
+  const [survey, updateSurvey] = useState<ModelsFactrakSurvey | null>(null);
+  const [prof, updateProf] = useState<ModelsUser | null>(null);
 
   const [comment, updateComment] = useState("");
-  const [courseAOS, updateCourseAOS] = useState(location.state?.courseName);
-  const [errors, updateErrors] = useState([]);
-  // Use string to accomodate tutorial course numbers
-  const [courseNumber, updateCourseNumber] = useState(
-    location.state?.courseNumber
+  const [courseAOS, updateCourseAOS] = useState<string>(
+    state ? state.courseName : ""
   );
-  const [wouldRecommendCourse, updateRecommend] = useState(null);
-  const [wouldTakeAnother, updateTakeAnother] = useState(null);
-  const [workload, updateWorkload] = useState(null);
-  const [approachability, updateApprochability] = useState(null);
-  const [lecture, updateLecture] = useState(null);
-  const [discussion, updateDiscussion] = useState(null);
-  const [helpful, updateHelpful] = useState(null);
-  const [mentalHealthSupport, updateMentalHealthSupport] = useState(null);
+  const [errors, updateErrors] = useState<string[]>([]);
+  // Use string to accomodate tutorial course numbers
+  const [courseNumber, updateCourseNumber] = useState<string>(
+    state ? state.courseNumber : ""
+  );
+  const [wouldRecommendCourse, updateRecommend] = useState<boolean | undefined>(
+    undefined
+  );
+  const [wouldTakeAnother, updateTakeAnother] = useState<boolean | undefined>(
+    undefined
+  );
+  const [workload, updateWorkload] = useState<number | undefined>(undefined);
+  const [approachability, updateApprochability] = useState<number | undefined>(
+    undefined
+  );
+  const [lecture, updateLecture] = useState<number | undefined>(undefined);
+  const [discussion, updateDiscussion] = useState<number | undefined>(
+    undefined
+  );
+  const [helpful, updateHelpful] = useState<number | undefined>(undefined);
+  const [mentalHealthSupport, updateMentalHealthSupport] = useState<
+    number | undefined
+  >(undefined);
   const [courseSemester, updateCourseSemester] = useState("");
   const [courseFormat, updateCourseFormat] = useState("");
 
   const professorParam = params.profID;
   const surveyParam = params.surveyID;
-  const [areasOfStudy, updateAreasOfStudy] = useState([]);
+  const [areasOfStudy, updateAreasOfStudy] = useState<ModelsAreaOfStudy[]>([]);
 
   useEffect(() => {
-    const loadProf = async (professorID) => {
+    const loadProf = async (professorID: number) => {
       try {
         const profResponse = await wso.factrakService.getProfessor(professorID);
-        updateProf(profResponse.data);
+        updateProf(profResponse.data ?? null);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
-    const loadSurvey = async (surveyID) => {
+    const loadSurvey = async (surveyID: number) => {
       try {
         const surveyResponse = await wso.factrakService.getSurvey(surveyID);
         const surveyData = surveyResponse.data;
 
         // Could use a defaultSurvey and update that object, but will hardly save any lines.
-        updateSurvey(surveyData);
-        updateProf(surveyData.professor);
-        updateCourseNumber(surveyData.course.number);
-        updateCourseAOS(surveyData.course.areaOfStudy.abbreviation);
-        updateRecommend(surveyData.wouldRecommendCourse);
-        updateWorkload(surveyData.courseWorkload);
-        updateApprochability(surveyData.approachability);
-        updateLecture(surveyData.leadLecture);
-        updateHelpful(surveyData.outsideHelpfulness);
-        updateMentalHealthSupport(surveyData.mentalHealthSupport);
-        updateDiscussion(surveyData.promoteDiscussion);
-        updateRecommend(surveyData.wouldRecommendCourse);
-        updateTakeAnother(surveyData.wouldTakeAnother);
-        updateComment(surveyData.comment);
-        updateCourseSemester(
-          `${surveyData.semesterSeason}.${surveyData.semesterYear}`
+        updateSurvey(surveyData ?? null);
+        updateProf(surveyData?.professor ?? null);
+        updateCourseNumber(surveyData?.course?.number ?? courseNumber);
+        updateCourseAOS(
+          surveyData?.course?.areaOfStudy?.abbreviation ?? courseAOS
         );
-        updateCourseFormat(surveyData.courseFormat);
+        updateRecommend(surveyData?.wouldRecommendCourse);
+        updateWorkload(surveyData?.courseWorkload);
+        updateApprochability(surveyData?.approachability);
+        updateLecture(surveyData?.leadLecture);
+        updateHelpful(surveyData?.outsideHelpfulness);
+        updateMentalHealthSupport(surveyData?.mentalHealthSupport);
+        updateDiscussion(surveyData?.promoteDiscussion);
+        updateRecommend(surveyData?.wouldRecommendCourse);
+        updateTakeAnother(surveyData?.wouldTakeAnother);
+        updateComment(surveyData?.comment ?? "");
+        updateCourseSemester(
+          surveyData?.semesterSeason && surveyData?.semesterYear
+            ? `${surveyData?.semesterSeason}.${surveyData?.semesterYear}`
+            : ""
+        );
+        updateCourseFormat(surveyData?.courseFormat ?? "");
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
@@ -84,18 +108,20 @@ const FactrakSurvey = () => {
       try {
         const areasOfStudyResponse =
           await wso.factrakService.listAreasOfStudy();
-        updateAreasOfStudy(areasOfStudyResponse.data);
+        updateAreasOfStudy(areasOfStudyResponse.data ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
-    if (surveyParam) loadSurvey(surveyParam);
-    if (professorParam) loadProf(professorParam);
+    if (surveyParam) loadSurvey(parseInt(surveyParam));
+    if (professorParam) loadProf(parseInt(professorParam));
     loadAreasOfStudy();
   }, [professorParam, surveyParam, wso]);
 
-  const submitHandler = async (event) => {
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = async (
+    event
+  ) => {
     event.preventDefault();
 
     // Some error checking
@@ -124,34 +150,37 @@ const FactrakSurvey = () => {
     // Parse integers here rather than below to minimize the expensive operation
     const surveyParams = {
       areaOfStudyAbbreviation: courseAOS,
-      professorID: prof.id,
+      professorID: prof?.id,
       courseNumber,
       comment,
       wouldRecommendCourse,
       wouldTakeAnother,
       // Parse ints should work without errors here since users do not have access to these
       // variables
-      courseWorkload: parseInt(workload, 10),
-      approachability: parseInt(approachability, 10),
-      leadLecture: parseInt(lecture, 10),
-      promoteDiscussion: parseInt(discussion, 10),
-      outsideHelpfulness: parseInt(helpful, 10),
-      mentalHealthSupport: parseInt(mentalHealthSupport, 10),
+      courseWorkload: workload,
+      approachability: approachability,
+      leadLecture: lecture,
+      promoteDiscussion: discussion,
+      outsideHelpfulness: helpful,
+      mentalHealthSupport: mentalHealthSupport,
       semesterSeason,
-      semesterYear: parseInt(semesterYear, 10),
+      semesterYear: parseInt(semesterYear),
+      courseFormat: courseFormat ? courseFormat : undefined,
     };
-    if (courseFormat && courseFormat !== "")
-      surveyParams.courseFormat = courseFormat;
 
     try {
-      if (edit) {
+      if (edit && survey?.id) {
         await wso.factrakService.updateSurvey(survey.id, surveyParams);
       } else {
-        await wso.factrakService.createSurvey(surveyParams);
+        await wso.factrakService.createSurvey(
+          surveyParams as FactrakSurveyCreateParams
+        );
       }
       navigateTo("/factrak/surveys");
     } catch (error) {
-      updateErrors([error.message, ...(error?.errors || [])]);
+      // TODO: Add error type from wso-api-client
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      updateErrors([(error as any).message, ...((error as any)?.errors || [])]);
     }
   };
 
@@ -227,7 +256,10 @@ const FactrakSurvey = () => {
   };
 
   // Constructor which helps us build the option bubbles for each option
-  const optionBuilder = (type, changeHandler) => {
+  const optionBuilder = (
+    type: number | undefined,
+    changeHandler: React.Dispatch<React.SetStateAction<number | undefined>>
+  ) => {
     return [1, 2, 3, 4, 5, 6, 7].map((ans) => {
       return (
         <React.Fragment key={ans}>
@@ -254,7 +286,7 @@ const FactrakSurvey = () => {
             <h3>
               Editing review on
               {survey.course
-                ? ` ${survey.course.areaOfStudy.abbreviation} ${survey.course.number} with `
+                ? ` ${survey.course.areaOfStudy?.abbreviation} ${survey.course.number} with `
                 : " "}
               {prof.name}
             </h3>
@@ -466,7 +498,7 @@ const FactrakSurvey = () => {
                 </tr>
 
                 <tr>
-                  <td colSpan="2">
+                  <td colSpan={2}>
                     <br />
                     <strong>Comments*</strong>
                     <textarea

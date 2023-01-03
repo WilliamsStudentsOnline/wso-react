@@ -11,13 +11,14 @@ import { Link, useNavigate } from "react-router-dom";
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import FactrakTopProfs from "./FactrakTopProfs";
+import { ModelsAreaOfStudy } from "wso-api-client/lib/services/types";
 
 const FactrakRankings = () => {
   const token = useAppSelector(getAPIToken);
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
-  const [areas, updateAreas] = useState(null);
+  const [areas, updateAreas] = useState<ModelsAreaOfStudy[]>([]);
 
   useEffect(() => {
     // Loads in the departments
@@ -26,7 +27,13 @@ const FactrakRankings = () => {
         const areasOfStudyResponse =
           await wso.factrakService.listAreasOfStudy();
         const areasOfStudy = areasOfStudyResponse.data;
-        updateAreas(areasOfStudy.sort((a, b) => a.name > b.name));
+        updateAreas(
+          areasOfStudy
+            ? areasOfStudy.sort((a, b) =>
+                a.name && b.name ? a.name.localeCompare(b.name) : 1
+              )
+            : []
+        );
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }

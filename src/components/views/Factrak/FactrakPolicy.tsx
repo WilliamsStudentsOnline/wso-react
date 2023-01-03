@@ -15,12 +15,14 @@ const FactrakPolicy = () => {
   const [updated, setUpdated] = useState(false);
 
   // Handles clicking of the accept policy checkbox
-  const clickHandler = (event) => {
+  const clickHandler: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     updateAcceptPolicy(event.target.checked);
   };
 
   // Handles submission of the survey
-  const submitHandler = async (event) => {
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = async (
+    event
+  ) => {
     event.preventDefault();
 
     const updateParams = {
@@ -107,7 +109,7 @@ const FactrakPolicy = () => {
             </a>
             .
           </p>
-          {currUser.hasAcceptedFactrakPolicy ? (
+          {currUser && currUser.hasAcceptedFactrakPolicy ? (
             <p>
               <b>You have already accepted the Factrak policy.</b>
             </p>

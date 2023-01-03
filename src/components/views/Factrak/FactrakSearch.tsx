@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { ModelsCourse, ModelsUser } from "wso-api-client/lib/services/types";
 
 // FactrakSearch refers to the search result page
 const FactrakSearch = () => {
@@ -13,8 +14,8 @@ const FactrakSearch = () => {
   const [searchParams] = useSearchParams();
   const navigateTo = useNavigate();
 
-  const [profs, updateProfs] = useState(null);
-  const [courses, updateCourses] = useState(null);
+  const [profs, updateProfs] = useState<ModelsUser[]>([]);
+  const [courses, updateCourses] = useState<ModelsCourse[]>([]);
 
   useEffect(() => {
     const loadProfs = async () => {
@@ -27,10 +28,16 @@ const FactrakSearch = () => {
         const profsResponse = await wso.factrakService.listProfessors(
           queryParams
         );
-
-        updateProfs(profsResponse.data.sort((a, b) => a.name > b.name));
+        const profsData = profsResponse.data;
+        updateProfs(
+          profsData
+            ? profsData.sort((a, b) =>
+                a.name && b.name ? a.name.localeCompare(b.name) : 1
+              )
+            : []
+        );
       } catch (error) {
-        navigateTo("/error", { error }, { replace: true });
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -44,13 +51,20 @@ const FactrakSearch = () => {
         const coursesResponse = await wso.factrakService.listCourses(
           queryParams
         );
-
+        const coursesData = coursesResponse.data;
         updateCourses(
-          coursesResponse.data.sort(
-            (a, b) =>
-              a.areaOfStudy.abbreviation + a.number >
-              b.areaOfStudy.abbreviation + b.number
-          )
+          coursesData
+            ? coursesData.sort((a, b) =>
+                a.areaOfStudy?.abbreviation &&
+                b.areaOfStudy?.abbreviation &&
+                a.number &&
+                b.number
+                  ? (a.areaOfStudy.abbreviation + a.number).localeCompare(
+                      b.areaOfStudy.abbreviation + b.number
+                    )
+                  : 1
+              )
+            : []
         );
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
@@ -62,7 +76,7 @@ const FactrakSearch = () => {
   }, [searchParams?.get("q"), wso]);
 
   // Generates the row for one of the professor results.
-  const professorRow = (prof) => {
+  const professorRow = (prof: ModelsUser) => {
     // Doesn't check for existence of professor in LDAP.
     return (
       <tr key={prof.id}>
@@ -97,10 +111,10 @@ const FactrakSearch = () => {
   };
 
   // Generate the links to the course's professors.
-  const courseRowProfs = (course) => {
+  const courseRowProfs = (course: ModelsCourse) => {
     if (course.professors) {
       return course.professors
-        .map((prof) => (
+        .map<React.ReactNode>((prof) => (
           <Link
             key={`${course.id}?profID=${prof.id}`}
             to={`/factrak/courses/${course.id}/${prof.id}`}
@@ -115,12 +129,12 @@ const FactrakSearch = () => {
   };
 
   // Generates one row of course results.
-  const courseRow = (course) => {
+  const courseRow = (course: ModelsCourse) => {
     return (
       <tr key={course.id}>
         <td className="col-20">
           <Link to={`/factrak/courses/${course.id}`}>
-            {course.areaOfStudy.abbreviation} {course.number}
+            {course.areaOfStudy?.abbreviation} {course.number}
           </Link>
         </td>
         <td className="col-80">{courseRowProfs(course)}</td>

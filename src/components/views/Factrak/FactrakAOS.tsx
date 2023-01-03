@@ -6,50 +6,66 @@ import { Line } from "../../Skeleton";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  ModelsAreaOfStudy,
+  ModelsCourse,
+  ModelsUser,
+} from "wso-api-client/lib/services/types";
 
 const FactrakAOS = () => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const params = useParams();
 
-  const [courses, updateCourses] = useState(null);
-  const [profs, updateProfs] = useState(null);
-  const [area, updateArea] = useState({});
+  const [courses, updateCourses] = useState<ModelsCourse[]>([]);
+  const [profs, updateProfs] = useState<ModelsUser[]>([]);
+  const [area, updateArea] = useState<ModelsAreaOfStudy | undefined>(undefined);
   // const [pro]
 
   // Equivalent to ComponentDidMount
   useEffect(() => {
-    const areaParam = params.area;
+    if (!params.area) {
+      return;
+    }
+    const areaParam = parseInt(params.area);
 
     // Loads professors of the Area of Study
-    const loadProfs = async (areaOfStudyID) => {
+    const loadProfs = async (areaOfStudyID: number) => {
       const reqParams = { areaOfStudyID };
 
       try {
         const profsResponse = await wso.factrakService.listProfessors(
           reqParams
         );
-        updateProfs(profsResponse.data);
+        updateProfs(profsResponse.data ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     // Loads courses of the Area of Study
-    const loadCourses = async (areaOfStudyID) => {
+    const loadCourses = async (areaOfStudyID: number) => {
       const reqParams = { areaOfStudyID, preload: ["professors"] };
 
       try {
         const coursesResponse = await wso.factrakService.listCourses(reqParams);
         const coursesData = coursesResponse.data;
-        updateCourses(coursesData.sort((a, b) => a.number > b.number));
+        updateCourses(
+          coursesData
+            ? coursesData.sort((a, b) =>
+                a.number && b.number
+                  ? parseInt(a.number) - parseInt(b.number)
+                  : 1
+              )
+            : []
+        );
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     // Loads additional information regarding the area of study
-    const loadAOS = async (areaID) => {
+    const loadAOS = async (areaID: number) => {
       try {
         const areaOfStudyResponse = await wso.factrakService.getAreaOfStudy(
           areaID
@@ -67,7 +83,7 @@ const FactrakAOS = () => {
   }, [params?.area, wso]);
 
   // Generates a row containing the prof information.
-  const generateProfRow = (prof) => {
+  const generateProfRow = (prof: ModelsUser) => {
     return (
       <tr key={prof.id}>
         <td>
@@ -83,7 +99,7 @@ const FactrakAOS = () => {
   };
 
   // Generate a skeleton of prof information
-  const profSkeleton = (key) => (
+  const profSkeleton = (key: number) => (
     <tr key={key}>
       <td>
         <Line width="30%" />
@@ -134,10 +150,10 @@ const FactrakAOS = () => {
   };
 
   // Generate a course's professors' information
-  const generateCourseProfessors = (course) => {
+  const generateCourseProfessors = (course: ModelsCourse) => {
     if (course.professors) {
       return course.professors
-        .map((prof) => {
+        .map<React.ReactNode>((prof) => {
           return (
             <Link to={`/factrak/courses/${course.id}/${prof.id}`} key={prof.id}>
               {prof.name}
@@ -151,12 +167,12 @@ const FactrakAOS = () => {
   };
 
   // Generates a row containing the course information.
-  const generateCourseRow = (course) => {
+  const generateCourseRow = (course: ModelsCourse) => {
     return (
       <tr key={course.id}>
         <td className="col-20">
           <Link to={`/factrak/courses/${course.id}`}>
-            {`${area.abbreviation} ${course.number}`}
+            {`${area?.abbreviation} ${course.number}`}
           </Link>
         </td>
         <td className="col-80">{generateCourseProfessors(course)}</td>
@@ -165,7 +181,7 @@ const FactrakAOS = () => {
   };
 
   // Generates a skeleton for the course
-  const courseSkeleton = (key) => (
+  const courseSkeleton = (key: number) => (
     <tr key={key}>
       <td className="col-20">
         <Line width="30%" />

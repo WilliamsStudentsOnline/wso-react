@@ -18,6 +18,10 @@ import {
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
+import {
+  ModelsFactrakSurveyAvgRatings,
+  ModelsUser,
+} from "wso-api-client/lib/services/types";
 
 const FactrakTopProfs = () => {
   const currUser = useAppSelector(getCurrUser);
@@ -28,12 +32,14 @@ const FactrakTopProfs = () => {
   const params = useParams();
   const [searchParams] = useSearchParams();
 
-  const [profs, updateProfs] = useState(null);
+  const [profs, updateProfs] = useState<
+    ModelsUser & { ratingResponseData: ModelsFactrakSurveyAvgRatings }[]
+  >([]);
   const [metric, updateMetric] = useState("avgWouldTakeAnother");
   const [ascending, updateAscending] = useState(false);
 
   // Map Ratings API names to listProfessors API metrics
-  const metricSwitch = (key) => {
+  const metricSwitch = (key: string) => {
     switch (key) {
       case "avgApproachability":
         return "approachability";
@@ -49,31 +55,51 @@ const FactrakTopProfs = () => {
         return "would_take_another";
     }
   };
-
+  // TODO: Clean this up hack and change backend API
   useEffect(() => {
     const loadProfs = async () => {
       const queryParams = {
-        metric: metricSwitch(metric), // default metric
+        metric: metricSwitch(metric) as
+          | "approachability"
+          | "course_workload"
+          | "lead_lecture"
+          | "outside_helpfulness"
+          | "promote_discussion"
+          | "would_take_another"
+          | "course_stimulating", // default metric
         ascending,
+        areaOfStudyID: params.aos ? parseInt(params.aos) : undefined,
       };
-
-      if (params.aos) {
-        queryParams.areaOfStudyID = params.aos;
-      }
 
       // Loads in professors and the ratings for each one
       try {
-        updateProfs(null);
+        updateProfs([]);
         const profRanked = await wso.factrakService.listProfessors(queryParams);
         const profRankedData = profRanked.data;
-        queryParams.metric = metric;
+        if (!profRankedData) {
+          throw new Error("No ranked data returned");
+        }
+        queryParams.metric = metric as
+          | "approachability"
+          | "course_workload"
+          | "lead_lecture"
+          | "outside_helpfulness"
+          | "promote_discussion"
+          | "would_take_another"
+          | "course_stimulating";
         const withRanking = await Promise.all(
           profRankedData.map(async (prof) => {
+            if (!prof.id) {
+              throw new Error("Missing prof ID");
+            }
             const ratingResponse = await wso.factrakService.getProfessorRatings(
               prof.id,
               queryParams
             );
             const ratingResponseData = ratingResponse.data;
+            if (!ratingResponseData) {
+              throw new Error("Missing rating data");
+            }
             return {
               ...prof,
               ratingResponseData,
@@ -92,16 +118,21 @@ const FactrakTopProfs = () => {
   }, [token, wso, params.aos, metric]);
 
   // Generates a row containing the prof information.
-  const generateProfRow = (prof) => {
+  const generateProfRow = (
+    prof: ModelsUser & { ratingResponseData: ModelsFactrakSurveyAvgRatings }
+  ) => {
+    const index = metric as keyof ModelsFactrakSurveyAvgRatings;
+    if (!prof.ratingResponseData[index]) {
+      return null;
+    }
+    const val = prof.ratingResponseData[index] as number;
     let rating = "";
     if (metric === "avgWouldTakeAnother") {
-      rating = `${Math.round(prof.ratingResponseData[metric] * 100)}%`;
+      rating = `${Math.round(val * 100)}%`;
     } else {
       // Currently no API to retrieve the max value of the metric but
       // it's currently 7. Might need to change later
-      rating = `${Math.round(
-        ((prof.ratingResponseData[metric] + Number.EPSILON) * 100) / 100
-      )} / 7`;
+      rating = `${Math.round(((val + Number.EPSILON) * 100) / 100)} / 7`;
     }
     return (
       <tr key={prof.id}>
@@ -117,7 +148,7 @@ const FactrakTopProfs = () => {
   };
 
   // Generate a skeleton of prof information
-  const profSkeleton = (key) => (
+  const profSkeleton = (key: number) => (
     <tr key={key}>
       <td>
         <Line width="30%" />
@@ -133,7 +164,6 @@ const FactrakTopProfs = () => {
 
   // Generates the component which holds the list of professors
   const generateProfs = () => {
-    if (profs?.length === 0) return null;
     return (
       <>
         <br />
@@ -144,7 +174,7 @@ const FactrakTopProfs = () => {
               <th>
                 <Link
                   to={`/factrak/rankings/${
-                    params.aos
+                    params.aos ? params.aos : ""
                   }?${searchParams.toString()}`}
                   onClick={() => {
                     updateProfs(profs.reverse());
@@ -162,7 +192,7 @@ const FactrakTopProfs = () => {
             </tr>
           </thead>
           <tbody>
-            {profs
+            {profs.length > 0
               ? profs.map((prof) => generateProfRow(prof))
               : [...Array(5)].map((_, i) => profSkeleton(i))}
           </tbody>
