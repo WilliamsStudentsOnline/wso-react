@@ -56,7 +56,7 @@ const DormtrakFacts = ({ dorm }: { dorm: ModelsDorm }) => {
               (facts.sophomoreCount ?? 0) >
               0 && (
               <Chart
-                graph_id="piechart"
+                // graph_id="piechart"
                 chartType="PieChart"
                 data={[
                   ["Class", "% of residents"],

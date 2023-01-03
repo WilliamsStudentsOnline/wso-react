@@ -6,7 +6,7 @@ import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
 
 // Additional imports
-import { Link, useNavigate, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ModelsNeighborhood } from "wso-api-client/lib/services/types";
 
 const DormtrakLayout = ({ children }: { children: ReactElement }) => {
@@ -106,7 +106,8 @@ const DormtrakLayout = ({ children }: { children: ReactElement }) => {
     );
   }
 
-  return <Navigate to="/login" />;
+  // Just to handle weird cases (when API Token is loaded, but user is not)
+  return null;
 };
 
 export default DormtrakLayout;

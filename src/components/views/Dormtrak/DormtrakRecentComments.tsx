@@ -54,7 +54,7 @@ const DormtrakRecentComments = ({
       return (
         <p>
           <Button
-            onClick={() => navigateTo(`/reviews/edit/${review.id}`)}
+            onClick={() => navigateTo(`/dormtrak/reviews/edit/${review.id}`)}
             className="inline-button"
           >
             Edit
@@ -92,7 +92,7 @@ const DormtrakRecentComments = ({
 
           <div className="comment-content">
             <h1>
-              <Link to={`dormtrak/dorms/${review.dormRoom.dorm.id}`}>
+              <Link to={`/dormtrak/dorms/${review.dormRoom.dorm.id}`}>
                 {review.dormRoom.dorm.name}
               </Link>
             </h1>
@@ -162,7 +162,7 @@ const DormtrakRecentComments = ({
   };
 
   const renderCommentList = () => {
-    if (!currReviews) {
+    if (currReviews.length === 0) {
       if (abridged)
         return [...Array(15)].map((_, i) => abridgedCommentSkeleton(i));
       return [...Array(15)].map((_, i) => fullCommentSkeleton(i));
