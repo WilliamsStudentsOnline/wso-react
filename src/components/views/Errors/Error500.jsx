@@ -12,7 +12,7 @@ const Error500 = ({ error }) => {
       <br />
       Try waiting for a few minutes and trying what you did again to see if your
       issue is resolved! Otherwise, contact us at{" "}
-      <a href="mailto:wso-dev@williams.edu">wso-dev@williams.edu</a>
+      <a href="mailto:wso-dev@wso.williams.edu">wso-dev@wso.williams.edu</a>
     </header>
   );
 };
