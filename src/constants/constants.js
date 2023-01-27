@@ -32,7 +32,7 @@ export const DATES = {
   },
   Spring: {
     START: "20230201",
-    END: "20220512",
+    END: "20230512",
   },
   PREREG: {
     SPRING: "2022-10-30",
