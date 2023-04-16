@@ -54,10 +54,14 @@ const FactrakProfessor = () => {
         const professorData = professorResponse.data;
 
         updateProfessor(professorData);
-        const departmentResponse = await wso.factrakService.getDepartment(
-          professorData?.departmentID as number
-        );
-        updateDepartment(departmentResponse.data);
+        if (professorData?.departmentID) {
+          const departmentResponse = await wso.factrakService.getDepartment(
+            professorData?.departmentID
+          );
+          updateDepartment(departmentResponse.data);
+        } else {
+          updateDepartment(undefined);
+        }
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
