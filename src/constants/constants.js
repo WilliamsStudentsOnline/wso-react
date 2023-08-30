@@ -24,20 +24,20 @@ export const LEVELS = [0, 1, 2, 3, 4];
 export const DATES = {
   Fall: {
     START: "20230907",
-    END: "20221208",
+    END: "20231208",
   },
   Winter: {
-    START: "20230103",
-    END: "20230126",
+    START: "20240103",
+    END: "20240126",
   },
   Spring: {
-    START: "20230131",
-    END: "20230510",
+    START: "20240131",
+    END: "20240510",
   },
   PREREG: {
-    SPRING: "2022-10-30",
-    WINTER: "2022-11-08",
-    FALL: "2022-08-01",
+    SPRING: "2023-10-30",
+    WINTER: "2023-11-08",
+    FALL: "2024-04-24",
   },
 };
 export const START_TIMES = [
