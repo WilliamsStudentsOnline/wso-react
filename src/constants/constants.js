@@ -37,7 +37,7 @@ export const DATES = {
   PREREG: {
     SPRING: "2023-10-30",
     WINTER: "2023-11-08",
-    FALL: "2024-04-24",
+    FALL: "2023-04-26",
   },
 };
 export const START_TIMES = [
