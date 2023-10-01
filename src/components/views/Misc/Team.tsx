@@ -11,6 +11,7 @@ const BoardMap = {
 const ContributorMap = {
   "Max Enis": 12516,
   "Max Kan": 12406,
+  "Henrique Rodrigues": 13670,
 };
 
 const constructFacebookLink = (userID: number) => {
