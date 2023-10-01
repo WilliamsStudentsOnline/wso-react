@@ -22,6 +22,7 @@ const ContributorMap = {
   "Jon Carl": 12125,
   "Lesley Iazzag": 14147,
   "Nathan Vosburg": 14656,
+  "Charlie Tharas": 14774,
 };
 
 const constructFacebookLink = (userID: number) => {
