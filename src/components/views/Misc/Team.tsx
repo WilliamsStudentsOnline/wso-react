@@ -12,6 +12,10 @@ const ContributorMap = {
   "Max Enis": 12516,
   "Max Kan": 12406,
   "Henrique Rodrigues": 13670,
+  "Christopher Brown": 12444,
+  "Milo Chang": 12365,
+  "Kevin Zhuo": 13052,
+  "Jon Carl": 12125,
 };
 
 const constructFacebookLink = (userID: number) => {
