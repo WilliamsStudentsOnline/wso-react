@@ -12,6 +12,16 @@ const ContributorMap = {
   "Max Enis": 12516,
   "Max Kan": 12406,
   "Matt Laws": 13268,
+  "Himal Pandey": 12851,
+  "Tim Kim": 14087,
+  "Henrique Rodrigues": 13670,
+  "Christopher Brown": 12444,
+  "Milo Chang": 12365,
+  "Emma Li": 14916,
+  "Kevin Zhuo": 13052,
+  "Jon Carl": 12125,
+  "Lesley Iazzag": 14147,
+  "Nathan Vosburg": 14656,
 };
 
 const constructFacebookLink = (userID: number) => {
