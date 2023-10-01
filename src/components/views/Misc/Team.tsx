@@ -13,6 +13,7 @@ const ContributorMap = {
   "Max Kan": 12406,
   "Milo Chang": 12365,
   "Kevin Zhuo": 13052,
+  "Jon Carl": 12125,
 };
 
 const constructFacebookLink = (userID: number) => {
