@@ -14,6 +14,7 @@ const ContributorMap = {
 
   "Serah Park": 13923,
   "Evelyn Chou": 12515,
+  "Kevin Zhuo": 13052,
 };
 
 const constructFacebookLink = (userID: number) => {
