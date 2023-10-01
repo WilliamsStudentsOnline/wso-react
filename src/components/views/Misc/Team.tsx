@@ -19,6 +19,8 @@ const ContributorMap = {
   "Milo Chang": 12365,
   "Emma Li": 14916,
   "Kevin Zhuo": 13052,
+  "Serah Park": 13923,
+  "Evelyn Chou": 12515,
   "Jon Carl": 12125,
   "Lesley Iazzag": 14147,
   "Nathan Vosburg": 14656,
