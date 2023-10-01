@@ -106,6 +106,9 @@ const Nav = () => {
                   <Link to="factrak">Factrak</Link>
                 </li>
                 <li>
+                  <Link to="booktrak">Booktrak</Link>
+                </li>
+                <li>
                   <Link to="dormtrak">Dormtrak</Link>
                 </li>
               </>

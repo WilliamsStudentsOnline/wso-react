@@ -24,6 +24,7 @@ import jwtDecode from "jwt-decode";
 import RequireScope from "../router-permissions";
 import usePageTracking from "../lib/usePageTracking";
 import { WSOToken } from "../lib/types";
+import BooktrakMain from "./views/Booktrak/BooktrakMain";
 
 // More component imports
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
@@ -177,6 +178,7 @@ const App = () => {
               </RequireScope>
             }
           />
+          <Route path="booktrak/*" element={<BooktrakMain />} />
           <Route
             path="dormtrak/*"
             element={
