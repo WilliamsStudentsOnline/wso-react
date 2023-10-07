@@ -16,6 +16,7 @@ const ContributorMap = {
   "Matt Laws": 13268,
   "Himal Pandey": 12851,
   "Tim Kim": 14087,
+  "Will Pachus": 13101,
   "Henrique Rodrigues": 13670,
   "Christopher Brown": 12444,
   "Milo Chang": 12365,
