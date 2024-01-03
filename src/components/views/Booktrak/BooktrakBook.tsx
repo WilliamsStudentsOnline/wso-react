@@ -36,8 +36,8 @@ const BooktrakBook = () => {
         }
         try {
           const bookResponse = await wso.booktrakService.listBooks({
-            isbn10: isbn.length === 10 ? isbn : undefined,
-            isbn13: isbn.length === 13 ? isbn : undefined,
+            isbn_10: isbn.length === 10 ? isbn : undefined,
+            isbn_13: isbn.length === 13 ? isbn : undefined,
           });
           const books = bookResponse.data;
           console.log(books);

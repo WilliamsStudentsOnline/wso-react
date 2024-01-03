@@ -73,6 +73,7 @@ const BooktrakHome = () => {
           <tbody>
             {results &&
               results.map((book, i) => {
+                console.log(book.imageLink);
                 if (book)
                   return (
                     <tr key={i}>
@@ -85,9 +86,9 @@ const BooktrakHome = () => {
                       <td>{book.isbn13 ?? book.isbn10}</td>
                       <td style={{ textAlign: "center" }}>
                         <a href={book.infoLink}>
-                          {!book.imageLinks ? (
+                          {book.imageLink ? (
                             <img
-                              src={book.imageLinks}
+                              src={book.imageLink}
                               alt="No cover available"
                               style={{
                                 cursor: "pointer",
