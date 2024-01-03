@@ -9,6 +9,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 // Additional Imports
 import { ModelsBook } from "wso-api-client/lib/services/types";
 import Button from "../../Components";
+import "../../stylesheets/Booktrak.css";
 
 const BooktrakHome = () => {
   const wso = useAppSelector(getWSO);
@@ -202,9 +203,10 @@ const BooktrakHome = () => {
   };
 
   return (
-    <>
-      <form onSubmit={submitHandler}>
+    <div className="booktrak-page-container">
+      <form onSubmit={submitHandler} className="booktrak-search-form">
         <input
+          className="search-bar"
           id="search"
           type="search"
           placeholder="Search Booktrak"
@@ -232,7 +234,7 @@ const BooktrakHome = () => {
             </section>
           </article>
         ))}
-    </>
+    </div>
   );
 };
 
