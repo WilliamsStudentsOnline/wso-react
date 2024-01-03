@@ -21,23 +21,28 @@ export const DIVISIONS = ["div1", "div2", "div3"];
 export const OTHERS = ["passFail", "fifthCourse"];
 export const REMOTE = ["hybrid", "remote", "in-person"];
 export const LEVELS = [0, 1, 2, 3, 4];
+let now = new Date();
+let year = now.getFullYear();
+if (now.getMonth() >= 5) {
+  year++;
+}
 export const DATES = {
   Fall: {
-    START: "20230907",
-    END: "20231208",
+    START: year - 1 + "-09-07",
+    END: year - 1 + "-12-08",
   },
   Winter: {
-    START: "20240103",
-    END: "20240126",
+    START: year + "-01-03",
+    END: year + "-01-26",
   },
   Spring: {
-    START: "20240131",
-    END: "20240510",
+    START: year + "01-31",
+    END: year + "-05-10",
   },
   PREREG: {
-    SPRING: "2023-10-30",
-    WINTER: "2023-11-08",
-    FALL: "2023-04-26",
+    SPRING: year - 1 + "-10-30",
+    WINTER: year - 1 + "-11-08",
+    FALL: year + "-04-26",
   },
 };
 export const START_TIMES = [
