@@ -119,6 +119,7 @@ const getDefaultSemesterIndex = () => {
   let result = 0;
 
   const now = new Date();
+  console.log(now);
   // Check if Winter (Period 3, above)
   if (
     new Date(DATES.PREREG.WINTER) < now &&
@@ -134,6 +135,8 @@ const getDefaultSemesterIndex = () => {
   } else {
     result = 0;
   }
+
+  console.log(result);
 
   return result;
 };
