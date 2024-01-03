@@ -139,9 +139,9 @@ const BooktrakBook = () => {
   };
 
   const picture = (book?: ModelsBook) => {
-    if (book?.imageLinks === undefined) return <Photo />;
+    if (book?.imageLink === undefined) return <Photo />;
 
-    return <img src={book?.imageLinks} alt="avatar" />;
+    return <img src={book?.imageLink} alt="avatar" />;
   };
 
   const bookTitle = (book?: ModelsBook) => {
