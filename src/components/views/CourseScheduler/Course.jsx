@@ -208,19 +208,22 @@ const Course = ({
   };
 
   const semesterInNumber = () => {
+    // this is currently only stable for 2024 Winter/Spring (NOT 2023 Fall, which is part of same academic year)
+    // this controls the termID flag in the HTTP request, which Follett changed recently and may change again
+    const yearVal = 100080547 + course.year;
     switch (course.semester) {
       case "Fall":
-        return 1001 + 10 * (course.year % 100);
+        return yearVal - 2; // this does not currently work!
       case "Winter":
-        return 1002 + 10 * (course.year % 100);
+        return yearVal;
       default:
-        return 1003 + 10 * (course.year % 100);
+        return yearVal + 1;
     }
   };
 
   const bookstoreLink = () => {
     const baseBookstoreLink =
-      "https://www.bkstr.com/williamsstore/follett-discover-view/booklook?shopBy=discoverViewCourse&bookstoreId=506&divisionDisplayName=";
+      "https://www.bkstr.com/williamsstore/course-materials-results?shopBy=course&divisionDisplayName=&bookstoreId=506&programID=912";
 
     return (
       <a
