@@ -9,11 +9,13 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 // Additional Imports
 import { ModelsBook } from "wso-api-client/lib/services/types";
 import Button from "../../Components";
+import "../../stylesheets/Booktrak.css";
 
 const BooktrakHome = () => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const [searchParams] = useSearchParams();
+  const [query, updateQuery] = useState("");
 
   const [results, updateResults] = useState<ModelsBook[]>([]);
   const perPage = 20;
@@ -23,6 +25,14 @@ const BooktrakHome = () => {
   const [selectedBook, updatedSelectedBook] = useState<ModelsBook | undefined>(
     undefined
   );
+
+  useEffect(() => {
+    if (searchParams?.get("q")) {
+      updateQuery(searchParams.get("q") ?? "");
+    } else {
+      updateQuery("");
+    }
+  }, [searchParams]);
 
   const loadBooks = async () => {
     if (!searchParams?.get("q")) {
@@ -186,25 +196,45 @@ const BooktrakHome = () => {
     return ListView();
   };
 
-  if (!searchParams?.get("q")) {
-    return null;
-  }
-  // This will act as a loading buffer
-  if (!results) {
-    return (
-      <article className="facebook-results">
-        <section>
-          <br />
-          <h1 className="no-matches-found">Loading...</h1>
-        </section>
-      </article>
-    );
-  }
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+    searchParams.set("q", query);
+    navigateTo(`/booktrak?${searchParams.toString()}`);
+  };
 
   return (
-    <article className="facebook-results">
-      <section>{BooktrakResults()}</section>
-    </article>
+    <div className="booktrak-page-container">
+      <form onSubmit={submitHandler} className="booktrak-search-form">
+        <input
+          className="search-bar"
+          id="search"
+          type="search"
+          placeholder="Search Booktrak"
+          autoFocus
+          onChange={(event) => updateQuery(event.target.value)}
+          value={query}
+        />
+        <input
+          data-disable-with="Search"
+          type="submit"
+          value="Search"
+          className="submit"
+        />
+      </form>
+      {searchParams?.get("q") &&
+        (results ? (
+          <article className="facebook-results">
+            <section>{BooktrakResults()}</section>
+          </article>
+        ) : (
+          <article className="facebook-results">
+            <section>
+              <br />
+              <h1 className="no-matches-found">Loading...</h1>
+            </section>
+          </article>
+        ))}
+    </div>
   );
 };
 

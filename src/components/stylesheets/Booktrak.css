@@ -1,0 +1,17 @@
+.booktrak-page-container {
+  max-width: 68em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.booktrak-search-form {
+  margin-left: 8.5298042998%;
+  width: 82.5%;
+  display: flex;
+  flex-direction: row;
+
+  .search-bar {
+    margin-bottom: 0;
+    margin-right: 15px;
+  }
+}
