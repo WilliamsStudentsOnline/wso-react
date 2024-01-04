@@ -4,12 +4,12 @@ import React, { useState, useEffect } from "react";
 // Redux/ Router imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 // Additional Imports
 import { ModelsBook } from "wso-api-client/lib/services/types";
-import Button from "../../Components";
 import "../../stylesheets/Booktrak.css";
+import BooktrakResultsListView from "./BooktrakResultsListView";
 
 const BooktrakHome = () => {
   const wso = useAppSelector(getWSO);
@@ -60,114 +60,6 @@ const BooktrakHome = () => {
     loadBooks();
   }, [wso, searchParams?.get(urlQueryName)]);
 
-  // Displays results in a list view when there are too many results
-  const ListView = () => {
-    return (
-      <>
-        <table>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Authors</th>
-              <th className="unix-column">ISBN</th>
-              <th>Cover</th>
-              <th>Buy/Sell</th>
-            </tr>
-          </thead>
-          <tbody>
-            {results &&
-              results.map((book, i) => {
-                console.log(book.imageLink);
-                if (book)
-                  return (
-                    <tr key={i}>
-                      <td>
-                        <Link to={"/booktrak/books"} state={{ book: book }}>
-                          {book.title}
-                        </Link>
-                      </td>
-                      <td>{book.authors?.join(", ")}</td>
-                      <td>{book.isbn13 ?? book.isbn10}</td>
-                      <td style={{ textAlign: "center" }}>
-                        <a href={book.infoLink}>
-                          {book.imageLink ? (
-                            <img
-                              src={book.imageLink}
-                              alt="No cover available"
-                              style={{
-                                cursor: "pointer",
-                                borderRadius: "5px",
-                                transition: "transform 0.3s, box-shadow 0.3s",
-                                boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
-                              }}
-                              onMouseDown={(event) => {
-                                event.currentTarget.style.transform =
-                                  "translateY(2px)";
-                                event.currentTarget.style.boxShadow =
-                                  "0 0 5px rgba(0, 0, 0, 0.3)";
-                              }}
-                              onMouseUp={(event) => {
-                                event.currentTarget.style.transform =
-                                  "translateY(0)";
-                                event.currentTarget.style.boxShadow =
-                                  "0 2px 5px rgba(0, 0, 0, 0.3)";
-                              }}
-                            />
-                          ) : (
-                            <div
-                              style={{
-                                display: "inline-block",
-                                cursor: "pointer",
-                                borderRadius: "5px",
-                                padding: "10px",
-                                border: "1px solid #ccc",
-                                backgroundColor: "#f9f9f9",
-                                color: "#999",
-                                fontWeight: "bold",
-                                textTransform: "uppercase",
-                              }}
-                            >
-                              No Cover Available
-                            </div>
-                          )}
-                        </a>
-                      </td>
-                      <td>
-                        <Button
-                          onClick={() =>
-                            navigateTo(`/booktrak/listings/create`, {
-                              state: {
-                                book: book,
-                              },
-                            })
-                          }
-                          className="inline-button"
-                        >
-                          Buy
-                        </Button>{" "}
-                        <Button
-                          onClick={() =>
-                            navigateTo(`/booktrak/listings/create`, {
-                              state: {
-                                book: book,
-                              },
-                            })
-                          }
-                          className="inline-button"
-                        >
-                          Sell
-                        </Button>{" "}
-                      </td>
-                    </tr>
-                  );
-                else return null;
-              })}
-          </tbody>
-        </table>
-      </>
-    );
-  };
-
   // Returns the results of the search
   const BooktrakResults = () => {
     if (isResultsLoading) {
@@ -187,7 +79,7 @@ const BooktrakHome = () => {
         </>
       );
 
-    return ListView();
+    return BooktrakResultsListView({ results, navigateTo });
   };
 
   const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
