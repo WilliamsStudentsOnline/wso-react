@@ -30,6 +30,7 @@ import BooktrakMain from "./views/Booktrak/BooktrakMain";
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
 const About = lazy(() => import("./views/Misc/About"));
 const FAQ = lazy(() => import("./views/Misc/FAQ"));
+const Team = lazy(() => import("./views/Misc/Team"));
 const MobilePrivacyPolicy = lazy(
   () => import("./views/Misc/MobilePrivacyPolicy")
 );
@@ -199,6 +200,7 @@ const App = () => {
           {/* Static Content Pages */}
           <Route path="about" element={<About />} />
           <Route path="faq" element={<FAQ />} />
+          <Route path="team" element={<Team />} />
           <Route
             path="mobile-privacy-policy"
             element={<MobilePrivacyPolicy />}

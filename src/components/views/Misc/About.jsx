@@ -1,6 +1,7 @@
 // React imports
 import React from "react";
 import DoughtyBanner from "../../../assets/images/banners/Doughty.jpg";
+import { Link } from "react-router-dom";
 
 const About = () => {
   return (
@@ -21,8 +22,11 @@ const About = () => {
             creating innovative and useful computer-based services and offering
             them to the Williams College community. WSO was founded in 1995 and
             continues to play an important role in the campus community today.
+            <br />
+            <br />
+            Check out the list of students currently working on WSO{" "}
+            <Link to="/team">here!</Link>
           </p>
-
           <br />
           <h3>Services</h3>
           <p>
