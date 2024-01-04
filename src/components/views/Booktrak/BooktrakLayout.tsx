@@ -28,9 +28,6 @@ const BooktrakLayout = ({ children }: { children: React.ReactElement }) => {
             <li>
               <Link to="/booktrak/sell">Sell Listings</Link>
             </li>
-            <li>
-              <Link to="/booktrak/create">Create Listings</Link>
-            </li>
             {currUser === null
               ? null
               : [
