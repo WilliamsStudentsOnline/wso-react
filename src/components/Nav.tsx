@@ -1,5 +1,7 @@
 // React Imports
 import React, { useEffect, useState } from "react";
+import { featureFlags } from "./featureFlags";
+import "./stylesheets/Nav.css";
 
 // Redux imports
 import { getWSO, getCurrUser } from "../lib/authSlice";
@@ -10,6 +12,15 @@ import { useAppSelector, useAppDispatch } from "../lib/store";
 import { Link } from "react-router-dom";
 import history from "../lib/history";
 import { userTypeStudent } from "../constants/general";
+
+const featureFlagElement = (
+  element: React.ReactElement,
+  flag: boolean
+): React.ReactElement => {
+  return (
+    <div className="nav_feature_div">{flag ? <li>{element}</li> : null}</div>
+  );
+};
 
 const Nav = () => {
   const dispatch = useAppDispatch();
@@ -117,11 +128,16 @@ const Nav = () => {
             <li>
               <a href="/wiki/">Wiki</a>
             </li>
-            <li>
-              <Link to="about">About</Link>
-            </li>
+
+            {featureFlagElement(
+              <Link to="about">About</Link>,
+              featureFlags.enableAbout
+            )}
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
+            </li>
+            <li>
+              <Link to="admin">Admin Dashboard</Link>
             </li>
             {ephmatchVisibility > 0 && (
               <li>

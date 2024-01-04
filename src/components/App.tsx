@@ -28,6 +28,8 @@ import { WSOToken } from "../lib/types";
 // More component imports
 const Scheduler = lazy(() => import("./views/CourseScheduler/Scheduler"));
 const About = lazy(() => import("./views/Misc/About"));
+const Dashboard = lazy(() => import("./views/AdminTools/dashboard"));
+
 const FAQ = lazy(() => import("./views/Misc/FAQ"));
 const Team = lazy(() => import("./views/Misc/Team"));
 const MobilePrivacyPolicy = lazy(
@@ -194,15 +196,20 @@ const App = () => {
               </RequireScope>
             }
           />
+
           <Route path="schedulecourses" element={<Scheduler />} />
           {/* Static Content Pages */}
+
           <Route path="about" element={<About />} />
           <Route path="faq" element={<FAQ />} />
           <Route path="team" element={<Team />} />
+          <Route path="admin" element={<Dashboard />} />
+
           <Route
             path="mobile-privacy-policy"
             element={<MobilePrivacyPolicy />}
           />
+
           <Route path="login" element={<Login />} />
           {/* Error-handling Pages */}
           <Route path="403" element={<Error403 />} />

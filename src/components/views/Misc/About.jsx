@@ -2,8 +2,11 @@
 import React from "react";
 import DoughtyBanner from "../../../assets/images/banners/Doughty.jpg";
 import { Link } from "react-router-dom";
+import { featureFlags } from "../../featureFlags";
+// const FeatureFlagsProvider = require("react-feature-flags")
+import { useFeatureFlags } from "react-feature-flags";
 
-const About = () => {
+const AboutNoFeatureFlag = () => {
   return (
     <div className="article">
       <div className="about-banner">
@@ -118,4 +121,15 @@ const About = () => {
   );
 };
 
+const About = () => {
+  return (
+    <div>
+      {featureFlags.enableAbout ? (
+        <AboutNoFeatureFlag />
+      ) : (
+        <p>Feature not available</p>
+      )}
+    </div>
+  );
+};
 export default About;
