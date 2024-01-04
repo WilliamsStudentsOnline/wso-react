@@ -18,49 +18,46 @@ const BooktrakHome = () => {
   const [query, updateQuery] = useState("");
 
   const [results, updateResults] = useState<ModelsBook[]>([]);
-  const perPage = 20;
+  const resultsPerPage = 20;
   const [total, updateTotal] = useState(0);
-  const [isResultsLoading, updateResultLoadStatus] = useState(false);
+  const [isResultsLoading, updateIsResultsLoading] = useState(false);
   const urlQueryName = "book_query";
 
-  useEffect(() => {
-    // update book query based on url query
-    if (searchParams?.get(urlQueryName)) {
-      updateQuery(searchParams.get(urlQueryName) ?? "");
-    } else {
-      updateQuery("");
-    }
-  }, [searchParams]);
-
   const loadBooks = async () => {
-    if (!searchParams?.get(urlQueryName)) {
+    const bookQuery = searchParams?.get(urlQueryName);
+    if (!bookQuery) {
       updateResults([]);
       updateTotal(0);
       return;
     }
+
     const queryParams = {
-      q: searchParams.get(urlQueryName) ?? undefined,
-      limit: perPage,
+      q: bookQuery,
+      limit: resultsPerPage,
     };
+
     try {
       const resultsResponse = await wso.booktrakService.searchBooks(
         queryParams
       );
       updateResults(resultsResponse.data ?? []);
       updateTotal(resultsResponse.data?.length ?? 0);
-      updateResultLoadStatus(false);
+      updateIsResultsLoading(false);
     } catch {
       updateResults([]);
+      updateTotal(0);
     }
   };
 
   useEffect(() => {
     if (searchParams?.get(urlQueryName)) {
-      updateResultLoadStatus(true);
+      updateQuery(searchParams.get(urlQueryName) ?? "");
+      updateIsResultsLoading(true);
+    } else {
+      updateQuery("");
     }
-    updateTotal(0);
+
     loadBooks();
-    // eslint-disable-next-line
   }, [wso, searchParams?.get(urlQueryName)]);
 
   // Displays results in a list view when there are too many results
