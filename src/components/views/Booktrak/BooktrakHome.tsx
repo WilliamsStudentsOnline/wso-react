@@ -21,28 +21,25 @@ const BooktrakHome = () => {
   const perPage = 20;
   const [total, updateTotal] = useState(0);
   const [isResultsLoading, updateResultLoadStatus] = useState(false);
-
-  const [selectedBook, updatedSelectedBook] = useState<ModelsBook | undefined>(
-    undefined
-  );
+  const urlQueryName = "book_query";
 
   useEffect(() => {
-    if (searchParams?.get("q")) {
-      updateQuery(searchParams.get("q") ?? "");
+    // update book query based on url query
+    if (searchParams?.get(urlQueryName)) {
+      updateQuery(searchParams.get(urlQueryName) ?? "");
     } else {
       updateQuery("");
     }
   }, [searchParams]);
 
   const loadBooks = async () => {
-    if (!searchParams?.get("q")) {
+    if (!searchParams?.get(urlQueryName)) {
       updateResults([]);
       updateTotal(0);
       return;
     }
-    updatedSelectedBook(undefined);
     const queryParams = {
-      q: searchParams.get("q") ?? undefined,
+      q: searchParams.get(urlQueryName) ?? undefined,
       limit: perPage,
     };
     try {
@@ -58,13 +55,13 @@ const BooktrakHome = () => {
   };
 
   useEffect(() => {
-    if (searchParams?.get("q")) {
+    if (searchParams?.get(urlQueryName)) {
       updateResultLoadStatus(true);
     }
     updateTotal(0);
     loadBooks();
     // eslint-disable-next-line
-  }, [wso, searchParams?.get("q")]);
+  }, [wso, searchParams?.get(urlQueryName)]);
 
   // Displays results in a list view when there are too many results
   const ListView = () => {
@@ -185,7 +182,7 @@ const BooktrakHome = () => {
       );
     }
 
-    if (total === 0 && searchParams?.get("q"))
+    if (total === 0 && searchParams?.get(urlQueryName))
       return (
         <>
           <br />
@@ -198,7 +195,7 @@ const BooktrakHome = () => {
 
   const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    searchParams.set("q", query);
+    searchParams.set(urlQueryName, query);
     navigateTo(`/booktrak?${searchParams.toString()}`);
   };
 
@@ -221,7 +218,7 @@ const BooktrakHome = () => {
           className="submit"
         />
       </form>
-      {searchParams?.get("q") &&
+      {searchParams?.get(urlQueryName) &&
         (results ? (
           <article className="facebook-results">
             <section>{BooktrakResults()}</section>
