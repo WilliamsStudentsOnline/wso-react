@@ -18,53 +18,47 @@ const BooktrakHome = () => {
   const [query, updateQuery] = useState("");
 
   const [results, updateResults] = useState<ModelsBook[]>([]);
-  const perPage = 20;
+  const resultsPerPage = 20;
   const [total, updateTotal] = useState(0);
-  const [isResultsLoading, updateResultLoadStatus] = useState(false);
-
-  const [selectedBook, updatedSelectedBook] = useState<ModelsBook | undefined>(
-    undefined
-  );
-
-  useEffect(() => {
-    if (searchParams?.get("q")) {
-      updateQuery(searchParams.get("q") ?? "");
-    } else {
-      updateQuery("");
-    }
-  }, [searchParams]);
+  const [isResultsLoading, updateIsResultsLoading] = useState(false);
+  const urlQueryName = "book_query";
 
   const loadBooks = async () => {
-    if (!searchParams?.get("q")) {
+    const bookQuery = searchParams?.get(urlQueryName);
+    if (!bookQuery) {
       updateResults([]);
       updateTotal(0);
       return;
     }
-    updatedSelectedBook(undefined);
+
     const queryParams = {
-      q: searchParams.get("q") ?? undefined,
-      limit: perPage,
+      q: bookQuery,
+      limit: resultsPerPage,
     };
+
     try {
       const resultsResponse = await wso.booktrakService.searchBooks(
         queryParams
       );
       updateResults(resultsResponse.data ?? []);
       updateTotal(resultsResponse.data?.length ?? 0);
-      updateResultLoadStatus(false);
+      updateIsResultsLoading(false);
     } catch {
       updateResults([]);
+      updateTotal(0);
     }
   };
 
   useEffect(() => {
-    if (searchParams?.get("q")) {
-      updateResultLoadStatus(true);
+    if (searchParams?.get(urlQueryName)) {
+      updateQuery(searchParams.get(urlQueryName) ?? "");
+      updateIsResultsLoading(true);
+    } else {
+      updateQuery("");
     }
-    updateTotal(0);
+
     loadBooks();
-    // eslint-disable-next-line
-  }, [wso, searchParams?.get("q")]);
+  }, [wso, searchParams?.get(urlQueryName)]);
 
   // Displays results in a list view when there are too many results
   const ListView = () => {
@@ -185,7 +179,7 @@ const BooktrakHome = () => {
       );
     }
 
-    if (total === 0 && searchParams?.get("q"))
+    if (total === 0 && searchParams?.get(urlQueryName))
       return (
         <>
           <br />
@@ -198,7 +192,7 @@ const BooktrakHome = () => {
 
   const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    searchParams.set("q", query);
+    searchParams.set(urlQueryName, query);
     navigateTo(`/booktrak?${searchParams.toString()}`);
   };
 
@@ -221,7 +215,7 @@ const BooktrakHome = () => {
           className="submit"
         />
       </form>
-      {searchParams?.get("q") &&
+      {searchParams?.get(urlQueryName) &&
         (results ? (
           <article className="facebook-results">
             <section>{BooktrakResults()}</section>
