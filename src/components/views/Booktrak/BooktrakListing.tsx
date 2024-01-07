@@ -109,7 +109,8 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
     }
 
     let bookID = book?.id;
-    if (bookID === undefined) {
+    if (!bookID) {
+      console.log("works?");
       const resp = await createBook(
         book,
         courses.map((course) => course.id ?? -1)
@@ -118,7 +119,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
     }
 
     // Make sure we created a book in DB
-    if (bookID === undefined) {
+    if (!bookID) {
       navigateTo("/error", { replace: true });
       return;
     }
