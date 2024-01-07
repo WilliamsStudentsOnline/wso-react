@@ -110,7 +110,6 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
 
     let bookID = book?.id;
     if (!bookID) {
-      console.log("works?");
       const resp = await createBook(
         book,
         courses.map((course) => course.id ?? -1)
