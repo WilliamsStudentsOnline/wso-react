@@ -83,6 +83,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
         courseIDs: courseIDs,
       });
       updateBook(resp.data ?? {});
+      return resp;
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
     }
@@ -107,14 +108,17 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
       return;
     }
 
-    if (book?.id === undefined) {
-      createBook(
+    let bookID = book?.id;
+    if (bookID === undefined) {
+      const resp = await createBook(
         book,
         courses.map((course) => course.id ?? -1)
       );
+      bookID = resp?.data?.id;
     }
+
     // Make sure we created a book in DB
-    if (book?.id === undefined) {
+    if (bookID === undefined) {
       navigateTo("/error", { replace: true });
       return;
     }
@@ -124,7 +128,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
         // TODO: Update listing
       } else {
         const listingParams: BooktrakCreateBookListingParams = {
-          bookID: book.id,
+          bookID,
           condition: condition,
           description: description,
           isBuyListing: isBuyListing,
