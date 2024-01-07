@@ -18,7 +18,7 @@ import {
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import { FactrakMetrics } from "../../../lib/types";
+import { FactrakMetric } from "wso-api-client/lib/services/factrak";
 import { ModelsUser } from "wso-api-client/lib/services/types";
 
 const FactrakTopProfs = () => {
@@ -31,8 +31,8 @@ const FactrakTopProfs = () => {
   const [searchParams] = useSearchParams();
 
   const [profs, updateProfs] = useState<ModelsUser[]>([]);
-  const [metric, updateMetric] = useState<FactrakMetrics>(
-    FactrakMetrics.WouldTakeAnother
+  const [metric, updateMetric] = useState<FactrakMetric>(
+    FactrakMetric.WouldTakeAnother
   );
   const [ascending, updateAscending] = useState(false);
 
@@ -65,12 +65,12 @@ const FactrakTopProfs = () => {
 
   // Generates a row containing the prof information.
   const generateProfRow = (prof: ModelsUser) => {
-    if (!prof.factrakScore) {
+    if (prof.factrakScore === undefined) {
       return null;
     }
     const val = prof.factrakScore;
     let rating = "";
-    if (metric === FactrakMetrics.WouldTakeAnother) {
+    if (metric === FactrakMetric.WouldTakeAnother) {
       rating = `${Math.round(val * 100)}%`;
     } else {
       // Currently no API to retrieve the max value of the metric but
@@ -118,7 +118,7 @@ const FactrakTopProfs = () => {
               <th>
                 <Link
                   to={`/factrak/rankings/${
-                    params.aos
+                    params.aos ?? ""
                   }?${searchParams.toString()}`}
                   onClick={() => {
                     updateProfs(profs.reverse());
@@ -171,12 +171,12 @@ const FactrakTopProfs = () => {
             ]}
             value={metric}
             valueList={[
-              FactrakMetrics.Approachability,
-              FactrakMetrics.CourseWorkload,
-              FactrakMetrics.PromoteDiscussion,
-              FactrakMetrics.LeadLecture,
-              FactrakMetrics.OutsideHelpfulness,
-              FactrakMetrics.WouldTakeAnother,
+              FactrakMetric.Approachability,
+              FactrakMetric.CourseWorkload,
+              FactrakMetric.PromoteDiscussion,
+              FactrakMetric.LeadLecture,
+              FactrakMetric.OutsideHelpfulness,
+              FactrakMetric.WouldTakeAnother,
             ]}
             style={{
               display: "inline",
