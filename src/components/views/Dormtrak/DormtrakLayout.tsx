@@ -1,20 +1,22 @@
 // React imports
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect, ReactElement } from "react";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
 
 // Additional imports
-import { Link, useNavigate, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ModelsNeighborhood } from "wso-api-client/lib/services/types";
 
-const DormtrakLayout = ({ children }) => {
+const DormtrakLayout = ({ children }: { children: ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
 
-  const [neighborhoods, updateNeighborhoods] = useState([]);
+  const [neighborhoods, updateNeighborhoods] = useState<ModelsNeighborhood[]>(
+    []
+  );
   const [query, updateQuery] = useState("");
 
   useEffect(() => {
@@ -23,7 +25,7 @@ const DormtrakLayout = ({ children }) => {
       try {
         const neighborhoodsResponse =
           await wso.dormtrakService.listNeighborhoods();
-        if (isMounted) {
+        if (isMounted && neighborhoodsResponse.data) {
           updateNeighborhoods(neighborhoodsResponse.data);
         }
       } catch {
@@ -38,10 +40,10 @@ const DormtrakLayout = ({ children }) => {
     };
   }, [wso]);
 
-  const submitHandler = (event) => {
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
-    navigateTo(`/dormtrak/search?q=${query}`, { reload: true });
+    navigateTo(`/dormtrak/search?q=${query}`, { replace: true });
   };
 
   if (currUser) {
@@ -104,11 +106,8 @@ const DormtrakLayout = ({ children }) => {
     );
   }
 
-  return <Navigate to="/login" />;
-};
-
-DormtrakLayout.propTypes = {
-  children: PropTypes.object.isRequired,
+  // Just to handle weird cases (when API Token is loaded, but user is not)
+  return null;
 };
 
 export default DormtrakLayout;

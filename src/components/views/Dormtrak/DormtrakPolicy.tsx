@@ -14,11 +14,13 @@ const DormtrakPolicy = () => {
   const [acceptPolicy, updateAcceptPolicy] = useState(false);
   const [updated, setUpdated] = useState(false);
 
-  const clickHandler = (event) => {
+  const clickHandler: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     updateAcceptPolicy(event.target.checked);
   };
 
-  const submitHandler = async (event) => {
+  const submitHandler: React.FormEventHandler<HTMLFormElement> = async (
+    event
+  ) => {
     event.preventDefault();
 
     const updateParams = {
@@ -36,7 +38,7 @@ const DormtrakPolicy = () => {
   useEffect(() => {
     let isMounted = true;
     if (updated && isMounted) {
-      navigateTo("dormtrak", { reload: true });
+      navigateTo("dormtrak", { replace: true });
     }
 
     return () => {
@@ -49,7 +51,7 @@ const DormtrakPolicy = () => {
       <section>
         <article>
           <h3>Policy</h3>
-          {!currUser.hasAcceptedDormtrakPolicy && (
+          {!currUser?.hasAcceptedDormtrakPolicy && (
             <p className="intro-paragraph">
               To proceed, read the policy below, then click Agree
             </p>
@@ -90,7 +92,7 @@ const DormtrakPolicy = () => {
           </p>
           <p>By using Dormtrak, you agree to abide by this policy.</p>
 
-          {currUser.hasAcceptedDormtrakPolicy ? (
+          {currUser?.hasAcceptedDormtrakPolicy ? (
             <p>
               <b>You have already accepted the Dormtrak policy.</b>
             </p>

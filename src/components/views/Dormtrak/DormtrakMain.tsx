@@ -1,5 +1,5 @@
 // React imports
-import React from "react";
+import React, { ReactElement } from "react";
 import DormtrakHome from "./DormtrakHome";
 import DormtrakLayout from "./DormtrakLayout";
 import DormtrakPolicy from "./DormtrakPolicy";
@@ -24,7 +24,7 @@ const DormtrakMain = () => {
   const navigateTo = useNavigate();
 
   // Checks for scope. Redirects to policy page if user has not agreed to policy
-  const guardedRender = (children) => {
+  const guardedRender = (children: ReactElement) => {
     if (
       !containsOneOfScopes(token, [
         scopes.ScopeDormtrak,

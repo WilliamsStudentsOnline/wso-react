@@ -107,7 +107,6 @@ const FactrakTopProfs = () => {
 
   // Generates the component which holds the list of professors
   const generateProfs = () => {
-    if (profs?.length === 0) return null;
     return (
       <>
         <br />
@@ -136,7 +135,7 @@ const FactrakTopProfs = () => {
             </tr>
           </thead>
           <tbody>
-            {profs
+            {profs.length > 0
               ? profs.map((prof) => generateProfRow(prof))
               : [...Array(5)].map((_, i) => profSkeleton(i))}
           </tbody>
