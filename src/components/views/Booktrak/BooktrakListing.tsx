@@ -92,6 +92,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
       navigateTo("/error", { replace: true, state: { error } });
     }
   };
+
   const submitHandler: React.FormEventHandler<HTMLFormElement> = async (
     event
   ) => {
@@ -126,6 +127,18 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
       navigateTo("/error", { replace: true });
       return;
     }
+
+    // update book's associated courses
+    courses.forEach((course) => {
+      if (course.id === undefined) {
+        updateErrors([
+          "Please reenter your courses, ensuring each course exists",
+        ]);
+        return;
+      }
+    });
+    const courseIDs = courses.map((course) => course.id ?? 0);
+    wso.booktrakService.updateBook(bookID, { courseIDs });
 
     try {
       if (edit && listing?.id) {
