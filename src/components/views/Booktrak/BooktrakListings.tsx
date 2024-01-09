@@ -13,6 +13,7 @@ import {
 } from "wso-api-client/lib/services/types";
 import PaginationButtons from "../../PaginationButtons";
 import BooktrakListingsTable from "./BooktrakListingsTable";
+import "../../stylesheets/Booktrak.css";
 
 type ServerError = {
   errorCode: number;
@@ -95,14 +96,7 @@ const BooktrakListings = ({
 
   if (displayBuyAndSell) {
     return (
-      <div
-        style={{
-          display: "flex",
-          paddingLeft: "10%",
-          paddingRight: "10%",
-          gap: "5%",
-        }}
-      >
+      <div className="booktrak-listings-dual-display-container">
         <div>
           <h3>Buy Listings</h3>
           <BooktrakListingsTable listings={buyListings} reducedListing />
@@ -116,8 +110,10 @@ const BooktrakListings = ({
   }
 
   return (
-    <>
-      <h2>{onlyShowBuyListings ? "Buy Listings" : "Sell Listings"}</h2>
+    <div className="booktrak-listings-container">
+      <h3 className="booktrak-inner-page-title">
+        {onlyShowBuyListings ? "Buy Listings" : "Sell Listings"}
+      </h3>
       <PaginationButtons
         selectionHandler={(newPage: number) => {
           updateCurrentPage(newPage);
@@ -137,22 +133,13 @@ const BooktrakListings = ({
         perPage={maxListingsPerPage}
         showPages
       />
-      <div
-        style={{
-          display: "flex",
-          paddingLeft: "10%",
-          paddingRight: "10%",
-          gap: "5%",
-        }}
-      >
-        <BooktrakListingsTable
-          listings={listings.slice(
-            maxListingsPerPage * currentPage,
-            maxListingsPerPage * currentPage + maxListingsPerPage
-          )}
-        />
-      </div>
-    </>
+      <BooktrakListingsTable
+        listings={listings.slice(
+          maxListingsPerPage * currentPage,
+          maxListingsPerPage * currentPage + maxListingsPerPage
+        )}
+      />
+    </div>
   );
 };
 
