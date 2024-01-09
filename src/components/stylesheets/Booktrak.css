@@ -4,6 +4,12 @@
   margin-right: auto;
 }
 
+.booktrak-active-link {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
 .booktrak-search-form {
   margin-left: 8.5298042998%;
   width: 82.5%;

@@ -6,33 +6,51 @@ import { useAppSelector } from "../../../lib/store";
 import { getCurrUser } from "../../../lib/authSlice";
 
 // Additional imports
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import "../../stylesheets/Booktrak.css";
 
 const BooktrakLayout = ({ children }: { children: React.ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
+
+  const applyActiveLinkStyling = ({
+    isActive,
+  }: {
+    isActive: boolean;
+  }): string => (isActive ? "booktrak-active-link" : "");
 
   return (
     <div className="facebook">
       <header>
         <div className="page-head">
           <h1>
-            <Link to="/booktrak">Booktrak</Link>
+            <NavLink to="/booktrak">Booktrak</NavLink>
           </h1>
           <ul>
             <li>
-              <Link to="/booktrak">Search Books</Link>
+              <NavLink to="/booktrak" className={applyActiveLinkStyling} end>
+                Search Books
+              </NavLink>
             </li>
             <li>
-              <Link to="/booktrak/buy">Buy Listings</Link>
+              <NavLink to="/booktrak/buy" className={applyActiveLinkStyling}>
+                Buy Listings
+              </NavLink>
             </li>
             <li>
-              <Link to="/booktrak/sell">Sell Listings</Link>
+              <NavLink to="/booktrak/sell" className={applyActiveLinkStyling}>
+                Sell Listings
+              </NavLink>
             </li>
             {currUser === null
               ? null
               : [
                   <li key="edit">
-                    <Link to="/booktrak/edit"> My Listings </Link>
+                    <NavLink
+                      to="/booktrak/edit"
+                      className={applyActiveLinkStyling}
+                    >
+                      My Listings
+                    </NavLink>
                   </li>,
                 ]}
           </ul>
