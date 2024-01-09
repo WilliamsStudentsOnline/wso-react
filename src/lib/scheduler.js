@@ -104,6 +104,10 @@ export const dayConversionGCal = (days) => {
   return result.join(",");
 };
 
+function toValidDateString(str) {
+  return str.slice(0, 5) + "-" + str.slice(4, 6) + "-" + str.slice(6, 8);
+}
+
 /* 
   Returns default semester based on date. 
   
@@ -111,7 +115,7 @@ export const dayConversionGCal = (days) => {
 
   1. Start of Fall Semester - 2 Weeks before Spring Preregistration: FALL (0)
   2. 2 Weeks before Spring Pre-registration to Winter Registration: SPRING (2)
-  3. Winter Registration to 1 week before Winter ends: WINTER (1)
+  3. Winter Registration to the beginning of Winter Study: WINTER (1)
   4. 1 week before Winter ends to 2 Weeks before Fall Pre-registration: SPRING (2)
   5. 2 Weeks before Fall Pre-registration to next year: FALL (0)
 */
@@ -119,24 +123,21 @@ const getDefaultSemesterIndex = () => {
   let result = 0;
 
   const now = new Date();
-  console.log(now);
   // Check if Winter (Period 3, above)
   if (
-    new Date(DATES.PREREG.WINTER) < now &&
-    now < addDays(new Date(DATES.Winter.START))
+    new Date(toValidDateString(DATES.PREREG.WINTER)) < now &&
+    now < new Date(toValidDateString(DATES.Winter.START))
   ) {
     result = 1;
   } else if (
     // Check if Spring (Periods 2 and 4, above)
-    addDays(new Date(DATES.PREREG.SPRING), -14) < now &&
-    now < addDays(new Date(DATES.PREREG.FALL), -14)
+    addDays(new Date(toValidDateString(DATES.PREREG.SPRING)), -14) < now &&
+    now < addDays(new Date(toValidDateString(DATES.PREREG.FALL)), -14)
   ) {
     result = 2;
   } else {
     result = 0;
   }
-
-  console.log(result);
 
   return result;
 };
