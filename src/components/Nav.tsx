@@ -1,6 +1,9 @@
 // React Imports
 import React, { useEffect, useState } from "react";
-import { featureFlags } from "./featureFlags";
+import { FeatureFlags } from "./FeatureFlags";
+
+// import { useFeatureFlags } from "react-feature-flags";
+
 import "./stylesheets/Nav.css";
 
 // Redux imports
@@ -18,7 +21,9 @@ const featureFlagElement = (
   flag: boolean
 ): React.ReactElement => {
   return (
-    <div className="nav_feature_div">{flag ? <li>{element}</li> : null}</div>
+    <div className="nav_feature_div">
+      {flag ? <li className="nav_feature_item">{element}</li> : null}
+    </div>
   );
 };
 
@@ -84,6 +89,9 @@ const Nav = () => {
     dispatch(removeCredentials());
   };
 
+  // feature flags
+  const { features } = React.useContext(FeatureFlags);
+
   return (
     <nav>
       <div className="nav-container">
@@ -122,16 +130,19 @@ const Nav = () => {
               </>
             )}
 
-            <li>
-              <Link to="faq">FAQ</Link>
-            </li>
-            <li>
-              <a href="/wiki/">Wiki</a>
-            </li>
+            {featureFlagElement(
+              <Link to="faq">FAQ</Link>,
+              features["enableFAQ"]
+            )}
+
+            {featureFlagElement(
+              <a href="/wiki/">Wiki</a>,
+              features["enableWiki"]
+            )}
 
             {featureFlagElement(
               <Link to="about">About</Link>,
-              featureFlags.enableAbout
+              features["enableAbout"]
             )}
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>

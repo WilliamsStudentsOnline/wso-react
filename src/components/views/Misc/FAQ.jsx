@@ -1,7 +1,8 @@
 // React imports
 import React from "react";
+import { FeatureFlags } from "../../FeatureFlags";
 
-const FAQ = () => {
+const FAQPreRelease = () => {
   return (
     <div className="article">
       <section>
@@ -123,6 +124,16 @@ const FAQ = () => {
           </article>
         </article>
       </section>
+    </div>
+  );
+};
+
+const FAQ = () => {
+  const { features } = React.useContext(FeatureFlags);
+
+  return (
+    <div>
+      {features.enableFAQ ? <FAQPreRelease /> : <p>Feature not available</p>}
     </div>
   );
 };

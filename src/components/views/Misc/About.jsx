@@ -2,11 +2,9 @@
 import React from "react";
 import DoughtyBanner from "../../../assets/images/banners/Doughty.jpg";
 import { Link } from "react-router-dom";
-import { featureFlags } from "../../featureFlags";
-// const FeatureFlagsProvider = require("react-feature-flags")
-import { useFeatureFlags } from "react-feature-flags";
+import { FeatureFlags } from "../../FeatureFlags";
 
-const AboutNoFeatureFlag = () => {
+const AboutPreRelease = () => {
   return (
     <div className="article">
       <div className="about-banner">
@@ -122,10 +120,12 @@ const AboutNoFeatureFlag = () => {
 };
 
 const About = () => {
+  const { features } = React.useContext(FeatureFlags);
+
   return (
     <div>
-      {featureFlags.enableAbout ? (
-        <AboutNoFeatureFlag />
+      {features.enableAbout ? (
+        <AboutPreRelease />
       ) : (
         <p>Feature not available</p>
       )}
