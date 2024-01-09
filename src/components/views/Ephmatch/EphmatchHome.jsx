@@ -16,7 +16,7 @@ const EphmatchHome = () => {
   const navigateTo = useNavigate();
 
   const perPage = 20; // Number of results per page
-  const [page, updatePage] = useState(0);
+  const [page, updatePage] = useState(0); // 0-indexed page number (i.e. 0 represents the first page)
   const [total, updateTotal] = useState(0);
   const [ephmatchers, updateEphmatchers] = useState([]);
   const [sort, updateSort] = useState("recommended");
@@ -89,7 +89,7 @@ const EphmatchHome = () => {
 
   // Handles selection of page
   const selectionHandler = (newPage) => {
-    updatePage(newPage - 1);
+    updatePage(newPage);
   };
 
   return (
