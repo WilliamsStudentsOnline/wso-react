@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { FeatureFlags } from "./FeatureFlags";
 
-// import { useFeatureFlags } from "react-feature-flags";
-
 import "./stylesheets/Nav.css";
 
 // Redux imports
