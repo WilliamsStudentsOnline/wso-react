@@ -10,7 +10,7 @@ export interface PaginationButtonsProps {
   page: number; // 0-indexed page number (i.e. 0 is the first page)
   perPage: number;
   showPages?: boolean;
-  selectionHandler?: (page: number) => void;
+  selectionHandler?: (page: number) => void; // setter for page, a 0-indexed page number
 }
 
 const PaginationButtons: React.FC<PaginationButtonsProps> = ({
