@@ -104,10 +104,6 @@ export const dayConversionGCal = (days) => {
   return result.join(",");
 };
 
-function toValidDateString(str) {
-  return str.slice(0, 5) + "-" + str.slice(4, 6) + "-" + str.slice(6, 8);
-}
-
 /* 
   Returns default semester based on date. 
   
@@ -125,14 +121,14 @@ const getDefaultSemesterIndex = () => {
   const now = new Date();
   // Check if Winter (Period 3, above)
   if (
-    new Date(toValidDateString(DATES.PREREG.WINTER)) < now &&
-    now < new Date(toValidDateString(DATES.Winter.START))
+    new Date(gcalFormattedDate(DATES.PREREG.WINTER)) < now &&
+    now < new Date(gcalFormattedDate(DATES.Winter.START))
   ) {
     result = 1;
   } else if (
     // Check if Spring (Periods 2 and 4, above)
-    addDays(new Date(toValidDateString(DATES.PREREG.SPRING)), -14) < now &&
-    now < addDays(new Date(toValidDateString(DATES.PREREG.FALL)), -14)
+    addDays(new Date(gcalFormattedDate(DATES.PREREG.SPRING)), -14) < now &&
+    now < addDays(new Date(gcalFormattedDate(DATES.PREREG.FALL)), -14)
   ) {
     result = 2;
   } else {
