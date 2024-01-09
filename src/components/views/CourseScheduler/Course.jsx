@@ -207,18 +207,12 @@ const Course = ({
     );
   };
 
+  // this function name is a little misleading, this now returns a UUID for Follett links
   const semesterInNumber = () => {
-    // this is currently only stable for 2024 Winter/Spring (NOT 2023 Fall, which is part of same academic year)
+    // NOTE: this is currently only stable for 2024 Spring (!!)
     // this controls the termID flag in the HTTP request, which Follett changed recently and may change again
-    const yearVal = 100080547 + course.year;
-    switch (course.semester) {
-      case "Fall":
-        return yearVal - 2; // this does not currently work!
-      case "Winter":
-        return yearVal;
-      default:
-        return yearVal + 1;
-    }
+    const yearVal = 100082572;
+    return yearVal;
   };
 
   const bookstoreLink = () => {
