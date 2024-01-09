@@ -10,6 +10,7 @@ import BooktrakLayout from "./BooktrakLayout";
 import BooktrakHome from "./BooktrakHome";
 import BooktrakBook from "./BooktrakBook";
 import BooktrakListing from "./BooktrakListing";
+import BooktrakListings from "./BooktrakListings";
 
 const BooktrakMain = () => {
   return (
@@ -17,6 +18,14 @@ const BooktrakMain = () => {
       <Routes>
         <Route index element={<BooktrakHome />} />
         <Route path="books" element={<BooktrakBook />} />
+        <Route
+          path="buy"
+          element={<BooktrakListings onlyShowBuyListings={true} />}
+        />
+        <Route
+          path="sell"
+          element={<BooktrakListings onlyShowBuyListings={false} />}
+        />
         <Route path="books/:bookID" element={<BooktrakBook />} />
         <Route
           path="listings/:bookListingID"

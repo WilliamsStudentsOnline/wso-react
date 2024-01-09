@@ -4,99 +4,155 @@ import React, { useState, useEffect } from "react";
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Additional Imports
 import {
   ModelsBook,
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
-import { BookConditionEnumToString } from "./BooktrakUtils";
+import PaginationButtons from "../../PaginationButtons";
+import BooktrakListingsTable from "./BooktrakListingsTable";
 
-const BooktrakListings = ({ book }: { book: ModelsBook }) => {
+type ServerError = {
+  errorCode: number;
+  message: string;
+};
+
+function isServerError(error: unknown): error is ServerError {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "errorCode" in error &&
+    "message" in error
+  );
+}
+
+const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
+const BooktrakListings = ({
+  book,
+  onlyShowBuyListings,
+  displayBuyAndSell,
+}: {
+  book?: ModelsBook;
+  onlyShowBuyListings?: boolean;
+  displayBuyAndSell?: boolean;
+}) => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
+  const [listings, updateListings] = useState<ModelsBookListing[]>([]);
   const [buyListings, updateBuyListings] = useState<ModelsBookListing[]>([]);
   const [sellListings, updateSellListings] = useState<ModelsBookListing[]>([]);
 
+  const [currentPage, updateCurrentPage] = useState(0);
+  const maxListingsPerPage = 2;
+
   useEffect(() => {
     const loadListings = async () => {
-      if (!book.id) {
-        return;
+      const params: {
+        bookID?: number;
+        listingType?: ModelsBookListing.ListingTypeEnum;
+      } = {};
+      if (book?.id) {
+        params.bookID = book.id;
       }
+      if (onlyShowBuyListings !== undefined) {
+        params.listingType = onlyShowBuyListings
+          ? ListingTypeEnum.BUY
+          : ListingTypeEnum.SELL;
+      }
+
       try {
-        const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
-        const buyListingsResponse = await wso.booktrakService.listBookListings({
-          bookID: book.id,
-          listingType: ListingTypeEnum.BUY,
-        });
-        const sellListingsResponse = await wso.booktrakService.listBookListings(
-          {
-            bookID: book.id,
-            listingType: ListingTypeEnum.SELL,
-          }
-        );
-        updateBuyListings(buyListingsResponse.data ?? []);
-        updateSellListings(sellListingsResponse.data ?? []);
+        if (displayBuyAndSell) {
+          const buyListingsResponse =
+            await wso.booktrakService.listBookListings({
+              ...params,
+              listingType: ListingTypeEnum.BUY,
+            });
+          const sellListingsResponse =
+            await wso.booktrakService.listBookListings({
+              ...params,
+              listingType: ListingTypeEnum.SELL,
+            });
+          updateBuyListings(buyListingsResponse.data ?? []);
+          updateSellListings(sellListingsResponse.data ?? []);
+        } else {
+          const listingsResponse = await wso.booktrakService.listBookListings({
+            ...params,
+          });
+          updateListings(listingsResponse.data ?? []);
+        }
       } catch (error) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        navigateTo("/404", { replace: true });
+        if (isServerError(error)) {
+          console.log(error.message, error.errorCode);
+        } else {
+          navigateTo("/404", { replace: true });
+        }
       }
     };
     loadListings();
   }, [wso]);
 
-  const listingsTable = (listings: ModelsBookListing[]) => {
+  if (displayBuyAndSell) {
     return (
-      <table>
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Condition</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          {listings &&
-            listings.map((listing, i) => {
-              return (
-                <tr key={i}>
-                  <td>
-                    <Link to={`/facebook/users/${listing.userID}`}>
-                      {listing.user?.name}
-                    </Link>
-                  </td>
-                  <td>
-                    {BookConditionEnumToString(
-                      listing.condition ?? ModelsBookListing.ConditionEnum.Empty
-                    )}
-                  </td>
-                  <td>{listing.description}</td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </table>
+      <div
+        style={{
+          display: "flex",
+          paddingLeft: "10%",
+          paddingRight: "10%",
+          gap: "5%",
+        }}
+      >
+        <div>
+          <h3>Buy Listings</h3>
+          <BooktrakListingsTable listings={buyListings} reducedListing />
+        </div>
+        <div>
+          <h3>Sell Listings</h3>
+          <BooktrakListingsTable listings={sellListings} reducedListing />
+        </div>
+      </div>
     );
-  };
+  }
+
   return (
-    <div
-      style={{
-        display: "flex",
-        paddingLeft: "10%",
-        paddingRight: "10%",
-        gap: "5%",
-      }}
-    >
-      <div>
-        <h3>Buy Listings</h3>
-        {listingsTable(buyListings)}
+    <>
+      <h2>{onlyShowBuyListings ? "Buy Listings" : "Sell Listings"}</h2>
+      <PaginationButtons
+        selectionHandler={(newPage: number) => {
+          updateCurrentPage(newPage);
+        }}
+        clickHandler={(increment: number) => {
+          if (increment === -1 && currentPage > 0) {
+            updateCurrentPage(currentPage - 1);
+          } else if (
+            increment === 1 &&
+            listings.length - (currentPage + 1) * maxListingsPerPage > 0
+          ) {
+            updateCurrentPage(currentPage + 1);
+          }
+        }}
+        page={currentPage}
+        total={listings.length}
+        perPage={maxListingsPerPage}
+        showPages
+      />
+      <div
+        style={{
+          display: "flex",
+          paddingLeft: "10%",
+          paddingRight: "10%",
+          gap: "5%",
+        }}
+      >
+        <BooktrakListingsTable
+          listings={listings.slice(
+            maxListingsPerPage * currentPage,
+            maxListingsPerPage * currentPage + maxListingsPerPage
+          )}
+        />
       </div>
-      <div>
-        <h3>Sell Listings</h3>
-        {listingsTable(sellListings)}
-      </div>
-    </div>
+    </>
   );
 };
 
