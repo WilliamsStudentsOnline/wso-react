@@ -29,7 +29,7 @@ const PaginationButtons = ({
           Page&nbsp;&nbsp;&nbsp;
           <Select
             onChange={(event) => {
-              selectionHandler(parseInt(event.target.value, 10));
+              selectionHandler(parseInt(event.target.value - 1, 10));
             }}
             options={Array.from(
               Array(Math.ceil(total / perPage)),
