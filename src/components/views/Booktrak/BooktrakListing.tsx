@@ -10,30 +10,33 @@ import {
   AutocompleteACEntry,
   BooktrakCreateBookListingParams,
   ModelsBook,
-  ModelsBookCondition,
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
 import { BooktrakBookState } from "./BooktrakBook";
 import CourseEdit from "./BooktrakCourseEdit";
-import { pascalToTitleCase } from "../../../lib/general";
+import {
+  BookConditionEnumToString,
+  BookConditionStringToEnum,
+} from "./BooktrakUtils";
 
 const BooktrakListing = ({ edit }: { edit: boolean }) => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const params = useParams();
   const bookState = useLocation().state as BooktrakBookState | null;
+  const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
+  const ListingConditionEnum = ModelsBookListing.ConditionEnum;
+
   const [listing, updateListing] = useState<ModelsBookListing | undefined>(
     undefined
   );
   const [book, updateBook] = useState<ModelsBook>(bookState?.book ?? {});
   const [courses, updateCourses] = useState<AutocompleteACEntry[]>([]);
   const [description, updateDescription] = useState("");
-  const [condition, updateCondition] = useState<ModelsBookCondition>(
-    ModelsBookCondition.MAX
-  );
-  const [isBuyListing, updateIsBuyListing] = useState<boolean | undefined>(
-    undefined
-  );
+  const [condition, updateCondition] =
+    useState<ModelsBookListing.ConditionEnum>(ListingConditionEnum.Empty);
+  const [listingType, updateListingType] =
+    useState<ModelsBookListing.ListingTypeEnum>(ListingTypeEnum.Empty);
 
   const [errors, updateErrors] = useState<string[]>([]);
 
@@ -49,8 +52,8 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
 
         updateListing(listingData ?? undefined);
         updateDescription(listingData?.description ?? "");
-        updateCondition(listingData?.condition ?? ModelsBookCondition.MAX);
-        updateIsBuyListing(listingData?.isBuyListing);
+        updateCondition(listingData?.condition ?? ListingConditionEnum.Empty);
+        updateListingType(listingData?.listingType ?? ListingTypeEnum.Empty);
         updateBook(listingData?.book ?? {});
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
@@ -59,17 +62,13 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
 
     if (bookListingIDParam) loadListing(parseInt(bookListingIDParam, 10));
 
-    if (
-      book?.id === undefined &&
-      book?.isbn10 === undefined &&
-      book?.isbn13 === undefined
-    ) {
+    if (book?.id === undefined && book?.isbn13 === undefined) {
       navigateTo("/error", { replace: true });
     }
   }, [bookListingIDParam, wso]);
 
   const createBook = async (book: ModelsBook, courseIDs: number[]) => {
-    const isbn = book.isbn13 ?? book.isbn10 ?? undefined;
+    const isbn = book.isbn13 ?? undefined;
 
     // Should never be reached
     if (isbn === undefined || !courseIDs) {
@@ -78,11 +77,17 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
     }
 
     try {
-      const resp = await wso.booktrakService.createOrUpdateBook({
+      const resp = await wso.booktrakService.createBook({
         isbn: isbn,
-        courseIDs: courseIDs,
       });
       updateBook(resp.data ?? {});
+
+      const bookID = resp.data?.id;
+      if (bookID && courses) {
+        const courseIDs = courses.map((course) => course.id ?? 0);
+        wso.booktrakService.updateBookCourses(bookID, { courseIDs });
+      }
+
       return resp;
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
@@ -94,11 +99,11 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
     event.preventDefault();
 
     // Some error checking
-    if (condition >= ModelsBookCondition.MAX || condition < 0) {
+    if (condition === ListingConditionEnum.Empty) {
       updateErrors(["Please enter the condition of the book!"]);
       return;
     }
-    if (isBuyListing === undefined) {
+    if (listingType === ListingTypeEnum.Empty) {
       updateErrors(["Please enter the type of listing!"]);
       return;
     }
@@ -131,7 +136,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
           bookID,
           condition: condition,
           description: description,
-          isBuyListing: isBuyListing,
+          listingType: listingType,
         };
         await wso.booktrakService.createBookListing(listingParams);
       }
@@ -191,26 +196,34 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
                     <div>
                       <select
                         className="select-course-info"
-                        onChange={(event) =>
+                        onChange={(event) => {
                           updateCondition(
-                            parseInt(
-                              event.target.value,
-                              10
-                            ) as ModelsBookCondition
-                          )
-                        }
-                        value={
-                          condition === ModelsBookCondition.MAX ? "" : condition
-                        }
+                            BookConditionStringToEnum(event.target.value)
+                          );
+                        }}
+                        value={BookConditionEnumToString(condition)}
                       >
                         <option value="" disabled hidden>
                           Select book condition
                         </option>
-                        {[...Array(ModelsBookCondition.MAX)].map((_, i) => (
-                          <option value={i} key={i}>
-                            {pascalToTitleCase(ModelsBookCondition[i])}
-                          </option>
-                        ))}
+                        <option value="Poor" key="Poor">
+                          Poor
+                        </option>
+                        <option value="Fair" key="Fair">
+                          Fair
+                        </option>
+                        <option value="Good" key="Good">
+                          Good
+                        </option>
+                        <option value="Very Good" key="Very Good">
+                          Very Good
+                        </option>
+                        <option value="Like New" key="Like New">
+                          Like New
+                        </option>
+                        <option value="New" key="New">
+                          New
+                        </option>
                       </select>
                     </div>
                   </td>
@@ -225,12 +238,16 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
                       <select
                         className="select-course-info"
                         onChange={(event) =>
-                          updateIsBuyListing(event.target.value === "Buy")
+                          updateListingType(
+                            event.target.value === "Buy"
+                              ? ListingTypeEnum.BUY
+                              : ListingTypeEnum.SELL
+                          )
                         }
                         value={
-                          isBuyListing === undefined
+                          listingType === ListingTypeEnum.Empty
                             ? ""
-                            : isBuyListing
+                            : listingType === ListingTypeEnum.BUY
                             ? "Buy"
                             : "Sell"
                         }

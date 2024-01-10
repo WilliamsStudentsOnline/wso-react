@@ -29,18 +29,15 @@ const BooktrakBook = () => {
     const loadTarget = async () => {
       // Check if current book is in DB
       if (viewBook) {
-        const isbn = viewBook.isbn13 ?? viewBook.isbn10 ?? null;
-        console.log(viewBook);
+        const isbn = viewBook.isbn13 ?? null;
         if (!isbn) {
           return;
         }
         try {
           const bookResponse = await wso.booktrakService.listBooks({
-            isbn_10: isbn.length === 10 ? isbn : undefined,
-            isbn_13: isbn.length === 13 ? isbn : undefined,
+            isbn: isbn,
           });
           const books = bookResponse.data;
-          console.log(books);
           if (books) {
             navigateTo(`/booktrak/books/${books[0].id}`);
             updateViewBook(books[0]);
@@ -120,20 +117,13 @@ const BooktrakBook = () => {
 
     return (
       <>
-        {book.isbn10 ? (
-          <>
-            <h5>ISBN-10:</h5>
-            <h4>{book.isbn10}</h4>
-            <br />
-          </>
-        ) : null}
-        {book?.isbn13 ? (
+        {book?.isbn13 && (
           <>
             <h5>ISBN-13:</h5>
             <h4>{book.isbn13}</h4>
             <br />
           </>
-        ) : null}{" "}
+        )}
       </>
     );
   };
