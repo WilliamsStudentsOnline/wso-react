@@ -32,7 +32,7 @@ const BooktrakResultsListView = ({
                 </Link>
               </td>
               <td>{book.authors?.join(", ")}</td>
-              <td>{book.isbn13 ?? book.isbn10}</td>
+              <td>{book.isbn13}</td>
               <td style={{ textAlign: "center" }}>
                 <a href={book.infoLink}>
                   {book.imageLink ? (

@@ -9,10 +9,9 @@ import { Link, useNavigate } from "react-router-dom";
 // Additional Imports
 import {
   ModelsBook,
-  ModelsBookCondition,
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
-import { pascalToTitleCase } from "../../../lib/general";
+import { BookConditionEnumToString } from "./BooktrakUtils";
 
 const BooktrakListings = ({ book }: { book: ModelsBook }) => {
   const wso = useAppSelector(getWSO);
@@ -26,14 +25,15 @@ const BooktrakListings = ({ book }: { book: ModelsBook }) => {
         return;
       }
       try {
+        const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
         const buyListingsResponse = await wso.booktrakService.listBookListings({
           bookID: book.id,
-          isBuyListing: true,
+          listingType: ListingTypeEnum.BUY,
         });
         const sellListingsResponse = await wso.booktrakService.listBookListings(
           {
             bookID: book.id,
-            isBuyListing: false,
+            listingType: ListingTypeEnum.SELL,
           }
         );
         updateBuyListings(buyListingsResponse.data ?? []);
@@ -67,8 +67,8 @@ const BooktrakListings = ({ book }: { book: ModelsBook }) => {
                     </Link>
                   </td>
                   <td>
-                    {pascalToTitleCase(
-                      ModelsBookCondition[listing.condition ?? 0]
+                    {BookConditionEnumToString(
+                      listing.condition ?? ModelsBookListing.ConditionEnum.Empty
                     )}
                   </td>
                   <td>{listing.description}</td>
