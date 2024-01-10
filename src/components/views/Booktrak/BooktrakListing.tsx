@@ -19,13 +19,13 @@ import {
   BookConditionStringToEnum,
 } from "./BooktrakUtils";
 
+const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
+const ListingConditionEnum = ModelsBookListing.ConditionEnum;
 const BooktrakListing = ({ edit }: { edit: boolean }) => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const params = useParams();
   const bookState = useLocation().state as BooktrakBookState | null;
-  const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
-  const ListingConditionEnum = ModelsBookListing.ConditionEnum;
 
   const [listing, updateListing] = useState<ModelsBookListing | undefined>(
     undefined
@@ -83,8 +83,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
       updateBook(resp.data ?? {});
 
       const bookID = resp.data?.id;
-      if (bookID && courses) {
-        const courseIDs = courses.map((course) => course.id ?? 0);
+      if (bookID && courseIDs) {
         wso.booktrakService.updateBookCourses(bookID, { courseIDs });
       }
 

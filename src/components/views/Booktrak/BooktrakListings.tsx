@@ -66,7 +66,11 @@ const BooktrakListings = ({ book }: { book: ModelsBook }) => {
                       {listing.user?.name}
                     </Link>
                   </td>
-                  <td>{BookConditionEnumToString(listing.condition ?? 0)}</td>
+                  <td>
+                    {BookConditionEnumToString(
+                      listing.condition ?? ModelsBookListing.ConditionEnum.Empty
+                    )}
+                  </td>
                   <td>{listing.description}</td>
                 </tr>
               );

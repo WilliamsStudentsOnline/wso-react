@@ -1,12 +1,10 @@
 import { ModelsBookListing } from "wso-api-client/lib/services/types";
 
+const ListingConditionEnum = ModelsBookListing.ConditionEnum;
 export const BookConditionEnumToString = (
   condition: ModelsBookListing.ConditionEnum
 ): string => {
-  const ListingConditionEnum = ModelsBookListing.ConditionEnum;
   switch (condition) {
-    case ListingConditionEnum.Empty:
-      return "";
     case ListingConditionEnum.POOR:
       return "Poor";
     case ListingConditionEnum.FAIR:
@@ -19,6 +17,7 @@ export const BookConditionEnumToString = (
       return "Like New";
     case ListingConditionEnum.NEW:
       return "New";
+    case ListingConditionEnum.Empty:
     default:
       return "";
   }
@@ -27,10 +26,7 @@ export const BookConditionEnumToString = (
 export const BookConditionStringToEnum = (
   condition: string
 ): ModelsBookListing.ConditionEnum => {
-  const ListingConditionEnum = ModelsBookListing.ConditionEnum;
   switch (condition) {
-    case "":
-      return ListingConditionEnum.Empty;
     case "Poor":
       return ListingConditionEnum.POOR;
     case "Fair":
@@ -43,6 +39,7 @@ export const BookConditionStringToEnum = (
       return ListingConditionEnum.LIKENEW;
     case "New":
       return ListingConditionEnum.NEW;
+    case "":
     default:
       return ListingConditionEnum.Empty;
   }
