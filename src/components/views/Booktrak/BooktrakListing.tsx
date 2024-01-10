@@ -128,18 +128,6 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
       return;
     }
 
-    // update book's associated courses
-    courses.forEach((course) => {
-      if (course.id === undefined) {
-        updateErrors([
-          "Please reenter your courses, ensuring each course exists",
-        ]);
-        return;
-      }
-    });
-    const courseIDs = courses.map((course) => course.id ?? 0);
-    wso.booktrakService.updateBook(bookID, { courseIDs });
-
     try {
       if (edit && listing?.id) {
         // TODO: Update listing
