@@ -1,17 +1,25 @@
 // React imports
 import React from "react";
-import PropTypes from "prop-types";
 
 // Component Imports
 import Select from "./Select";
 
-const PaginationButtons = ({
+export interface PaginationButtonsProps {
+  clickHandler: (direction: number) => void; // direction: -1 for previous, 1 for next
+  total: number;
+  page: number; // 0-indexed page number (i.e. 0 is the first page)
+  perPage: number;
+  showPages?: boolean;
+  selectionHandler?: (page: number) => void; // setter for page, a 0-indexed page number
+}
+
+const PaginationButtons: React.FC<PaginationButtonsProps> = ({
   clickHandler,
-  total,
+  total = 0,
   page,
   perPage,
-  showPages,
-  selectionHandler,
+  showPages = true,
+  selectionHandler = undefined,
 }) => {
   if (total <= perPage) return null;
 
@@ -29,7 +37,8 @@ const PaginationButtons = ({
           Page&nbsp;&nbsp;&nbsp;
           <Select
             onChange={(event) => {
-              selectionHandler(parseInt(event.target.value, 10));
+              // subtract 1 because the page number is 0-indexed, whereas value is 1-indexed
+              selectionHandler(parseInt(event.target.value, 10) - 1);
             }}
             options={Array.from(
               Array(Math.ceil(total / perPage)),
@@ -72,21 +81,6 @@ const PaginationButtons = ({
       </button>
     </div>
   );
-};
-
-PaginationButtons.propTypes = {
-  clickHandler: PropTypes.func.isRequired,
-  total: PropTypes.number,
-  page: PropTypes.number.isRequired,
-  perPage: PropTypes.number.isRequired,
-  showPages: PropTypes.bool,
-  selectionHandler: PropTypes.func,
-};
-
-PaginationButtons.defaultProps = {
-  total: 0,
-  showPages: true,
-  selectionHandler: null,
 };
 
 export default PaginationButtons;
