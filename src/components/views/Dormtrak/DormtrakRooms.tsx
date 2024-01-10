@@ -10,7 +10,7 @@ import { ModelsDormRoom } from "wso-api-client/lib/services/types";
 const DormtrakRooms = ({ rooms }: { rooms?: ModelsDormRoom[] }) => {
   const perPage = 15; // Number of results per page
 
-  const [page, updatePage] = useState(0);
+  const [page, updatePage] = useState(0); // 0-indexed page number (i.e. 0 represents the first page)
   const displayRooms = rooms
     ? rooms.slice(page * perPage, (page + 1) * perPage)
     : null;
