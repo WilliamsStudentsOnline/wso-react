@@ -1,6 +1,6 @@
 // React imports
 import React from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../lib/store";
 
 const FAQPreRelease = () => {
   return (
@@ -129,7 +129,9 @@ const FAQPreRelease = () => {
 };
 
 const FAQ = () => {
-  const enableFAQ = useSelector((state) => state.featureFlagState["enableFAQ"]);
+  const enableFAQ = useAppSelector(
+    (state) => state.featureFlagState["enableFAQ"]
+  );
 
   return (
     <div>{enableFAQ ? <FAQPreRelease /> : <p>Feature not available</p>}</div>
