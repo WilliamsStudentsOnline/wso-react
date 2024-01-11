@@ -13,14 +13,6 @@ const rootReducer = {
   featureFlagState: featureFlagReducer,
 };
 
-export interface RootState {
-  courseState: ReturnType<typeof courseReducer>;
-  schedulerUtilState: ReturnType<typeof schedulerUtilReducer>;
-  authState: ReturnType<typeof authReducer>;
-  goodrichState: ReturnType<typeof goodrichReducer>;
-  featureFlagState: ReturnType<typeof featureFlagReducer>;
-}
-
 export default rootReducer;
 export {
   courseReducer,

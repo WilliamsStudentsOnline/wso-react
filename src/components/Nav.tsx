@@ -15,7 +15,7 @@ import { userTypeStudent } from "../constants/general";
 
 // Feature flag imports
 import { useSelector } from "react-redux";
-import { RootState } from "../reducers/index";
+import { RootState } from "../lib/store";
 
 interface FeatureFlagElementProps {
   element: React.ReactElement;
@@ -168,9 +168,11 @@ const Nav = () => {
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
             </li>
-            <li>
-              <Link to="admin">Admin Dashboard</Link>
-            </li>
+            {(currUser?.admin || currUser?.id === 13268) && (
+              <li>
+                <Link to="admin">Admin Dashboard</Link>
+              </li>
+            )}
             {ephmatchVisibility > 0 && (
               <li>
                 <Link
