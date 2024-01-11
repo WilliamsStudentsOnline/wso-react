@@ -14,6 +14,7 @@ const Dashboard = () => {
   );
   const currUser = useAppSelector(getCurrUser);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleToggle = (flag: any) => {
     dispatch(toggleFeatureFlag(flag));
   };
