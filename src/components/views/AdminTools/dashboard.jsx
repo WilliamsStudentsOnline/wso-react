@@ -9,9 +9,6 @@ const Dashboard = () => {
 
   const handleToggle = (flag) => {
     dispatch(toggleFeatureFlag(flag));
-    {
-      console.log(flag);
-    }
   };
 
   return (
