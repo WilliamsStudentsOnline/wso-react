@@ -8,6 +8,7 @@ import { getWSO, getCurrUser } from "../../../lib/authSlice";
 // Additional imports
 import { Link, useNavigate } from "react-router-dom";
 import { ModelsNeighborhood } from "wso-api-client/lib/services/types";
+import StylizedLink from "../Misc/StylizedLink";
 
 const DormtrakLayout = ({ children }: { children: ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
@@ -56,10 +57,12 @@ const DormtrakLayout = ({ children }: { children: ReactElement }) => {
             </h1>
             <ul>
               <li>
-                <Link to="/dormtrak">Home</Link>
+                <StylizedLink to="/dormtrak" end>
+                  Home
+                </StylizedLink>
               </li>
               <li>
-                <Link to="/dormtrak/policy">Policy</Link>
+                <StylizedLink to="/dormtrak/policy">Policy</StylizedLink>
               </li>
               <li>
                 <a
@@ -73,12 +76,12 @@ const DormtrakLayout = ({ children }: { children: ReactElement }) => {
                 neighborhood.name !== "First-year" &&
                 neighborhood.name !== "Co-op" ? (
                   <li key={neighborhood.name}>
-                    <Link
+                    <StylizedLink
                       to={`/dormtrak/neighborhoods/${neighborhood.id}`}
                       title={`${neighborhood.name} Neighborhood Dorms`}
                     >
                       {neighborhood.name}
-                    </Link>
+                    </StylizedLink>
                   </li>
                 ) : null
               )}

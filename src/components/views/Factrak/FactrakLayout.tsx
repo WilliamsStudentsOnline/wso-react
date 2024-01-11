@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 
 import { AutocompleteACEntry } from "wso-api-client/lib/services/types";
+import StylizedLink from "../Misc/StylizedLink";
 
 const FactrakLayout = ({ children }: { children: ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
@@ -157,20 +158,22 @@ const FactrakLayout = ({ children }: { children: ReactElement }) => {
 
             <ul>
               <li>
-                <Link to="/factrak">Home</Link>
+                <StylizedLink to="/factrak" end>
+                  Home
+                </StylizedLink>
               </li>
               <li>
-                <Link to="/factrak/policy">Policy</Link>
+                <StylizedLink to="/factrak/policy">Policy</StylizedLink>
               </li>
               <li>
-                <Link to="/factrak/surveys">Your Reviews</Link>
+                <StylizedLink to="/factrak/surveys">Your Reviews</StylizedLink>
               </li>
               <li>
-                <Link to="/factrak/rankings">Rankings</Link>
+                <StylizedLink to="/factrak/rankings">Rankings</StylizedLink>
               </li>
               {currUser.factrakAdmin && (
                 <li>
-                  <Link to="/factrak/moderate">Moderate</Link>
+                  <StylizedLink to="/factrak/moderate">Moderate</StylizedLink>
                 </li>
               )}
             </ul>
