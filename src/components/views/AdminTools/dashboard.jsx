@@ -1,20 +1,41 @@
 // React imports
 import React from "react";
-import { FeatureFlags } from "../../FeatureFlags"; // Import the context, not the provider
+import { useDispatch, useSelector } from "react-redux";
+import { toggleFeatureFlag } from "../../../lib/featureFlagSlice";
 
 const Dashboard = () => {
-  const { features, toggleFlag } = React.useContext(FeatureFlags); // Extract toggleFlag
+  const dispatch = useDispatch();
+  const featureFlagState = useSelector((state) => state.featureFlagState);
+
+  const handleToggle = (flag) => {
+    dispatch(toggleFeatureFlag(flag));
+    {
+      console.log(flag);
+    }
+  };
 
   return (
     <div>
       <p>dashboard</p>
-      {Object.entries(features).map(([key, value]) => (
-        <button key={key} onClick={() => toggleFlag(key)}>
-          {value ? "Toggle " + key + " Off" : "Toggle " + key + " On"}
-        </button>
-      ))}
+      {Object.entries(featureFlagState).map(([key, value]) =>
+        key[0] === "_" ? null : (
+          <button key={key} onClick={() => handleToggle(key)}>
+            {value
+              ? "Toggle " + key.slice(6, key.length) + " Off"
+              : "Toggle " + key.slice(6, key.length) + " On"}
+          </button>
+        )
+      )}
     </div>
   );
 };
+
+// return (
+//   <div>
+//     <p>Enable About: {String(enableAbout)}</p>
+//     <button onClick={handleToggleAbout}>Toggle Enable About</button>
+//   </div>
+// );
+// };
 
 export default Dashboard;

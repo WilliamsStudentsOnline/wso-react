@@ -1,6 +1,5 @@
 // React Imports
 import React, { useEffect, useState } from "react";
-import { FeatureFlags } from "./FeatureFlags";
 
 import "./stylesheets/Nav.css";
 
@@ -14,13 +13,26 @@ import { Link } from "react-router-dom";
 import history from "../lib/history";
 import { userTypeStudent } from "../constants/general";
 
-const featureFlagElement = (
-  element: React.ReactElement,
-  flag: boolean
-): React.ReactElement => {
+// Feature flag imports
+import { useSelector } from "react-redux";
+import { RootState } from "../reducers/index";
+
+interface FeatureFlagElementProps {
+  element: React.ReactElement;
+  flag: keyof RootState["featureFlagState"];
+}
+
+const FeatureFlagElement: React.FC<FeatureFlagElementProps> = ({
+  element,
+  flag,
+}) => {
+  const enabled = useSelector(
+    (state: RootState) => state.featureFlagState[flag]
+  );
+
   return (
     <div className="nav_feature_div">
-      {flag ? <li className="nav_feature_item">{element}</li> : null}
+      {enabled ? <li className="nav_feature_item">{element}</li> : null}
     </div>
   );
 };
@@ -87,9 +99,6 @@ const Nav = () => {
     dispatch(removeCredentials());
   };
 
-  // feature flags
-  const { features } = React.useContext(FeatureFlags);
-
   return (
     <nav>
       <div className="nav-container">
@@ -128,20 +137,34 @@ const Nav = () => {
               </>
             )}
 
-            {featureFlagElement(
-              <Link to="faq">FAQ</Link>,
-              features["enableFAQ"]
-            )}
+            <FeatureFlagElement
+              element={<Link to="faq">FAQ</Link>}
+              flag="enableFAQ"
+            />
+            <FeatureFlagElement
+              element={<a href="/wiki/">Wiki</a>}
+              flag="enableWiki"
+            />
+            <FeatureFlagElement
+              element={<Link to="about">About</Link>}
+              flag="enableAbout"
+            />
 
-            {featureFlagElement(
+            {/* {featureFlagElement(
               <a href="/wiki/">Wiki</a>,
-              features["enableWiki"]
+              "enableWiki",
+
+
+              // getFeatureFlag(currentState, "enableWiki")
             )}
 
             {featureFlagElement(
               <Link to="about">About</Link>,
-              features["enableAbout"]
-            )}
+              "enableAbout",
+              
+
+              // getFeatureFlag(currentState, "enableAbout")
+            )} */}
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
             </li>

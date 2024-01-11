@@ -2,7 +2,7 @@
 import React from "react";
 import DoughtyBanner from "../../../assets/images/banners/Doughty.jpg";
 import { Link } from "react-router-dom";
-import { FeatureFlags } from "../../FeatureFlags";
+import { useSelector } from "react-redux";
 
 const AboutPreRelease = () => {
   return (
@@ -120,15 +120,13 @@ const AboutPreRelease = () => {
 };
 
 const About = () => {
-  const { features } = React.useContext(FeatureFlags);
+  const enableAbout = useSelector(
+    (state) => state.featureFlagState["enableAbout"]
+  );
 
   return (
     <div>
-      {features.enableAbout ? (
-        <AboutPreRelease />
-      ) : (
-        <p>Feature not available</p>
-      )}
+      {enableAbout ? <AboutPreRelease /> : <p>Feature not available</p>}
     </div>
   );
 };

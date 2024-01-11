@@ -22,9 +22,6 @@ import history from "./lib/history";
 // Serviceworker import
 import * as serviceWorker from "./serviceWorker";
 
-// FeatureFlag imports
-import { FeatureFlagsProvider } from "./components/FeatureFlags";
-
 injectStore(store);
 
 ReactDOM.render(
@@ -32,9 +29,7 @@ ReactDOM.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <HistoryRouter history={history}>
-          <FeatureFlagsProvider>
-            <App />
-          </FeatureFlagsProvider>
+          <App />
         </HistoryRouter>
       </PersistGate>
     </Provider>

@@ -1,6 +1,6 @@
 // React imports
 import React from "react";
-import { FeatureFlags } from "../../FeatureFlags";
+import { useSelector } from "react-redux";
 
 const FAQPreRelease = () => {
   return (
@@ -129,12 +129,10 @@ const FAQPreRelease = () => {
 };
 
 const FAQ = () => {
-  const { features } = React.useContext(FeatureFlags);
+  const enableFAQ = useSelector((state) => state.featureFlagState["enableFAQ"]);
 
   return (
-    <div>
-      {features.enableFAQ ? <FAQPreRelease /> : <p>Feature not available</p>}
-    </div>
+    <div>{enableFAQ ? <FAQPreRelease /> : <p>Feature not available</p>}</div>
   );
 };
 
