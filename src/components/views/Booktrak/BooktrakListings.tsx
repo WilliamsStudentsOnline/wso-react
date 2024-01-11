@@ -18,10 +18,12 @@ import "../../stylesheets/Booktrak.css";
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const BooktrakListings = ({
   book,
+  courseID,
   showBuyListings,
   showSellListings,
 }: {
   book?: ModelsBook;
+  courseID?: number;
   showBuyListings?: boolean;
   showSellListings?: boolean;
 }) => {
@@ -39,6 +41,7 @@ const BooktrakListings = ({
     const params: {
       bookID?: number;
       listingType?: ModelsBookListing.ListingTypeEnum;
+      courseID?: number;
       preload?: string[];
       limit: number;
       offset: number;
@@ -49,6 +52,9 @@ const BooktrakListings = ({
     };
     if (book?.id) {
       params.bookID = book.id;
+    }
+    if (courseID) {
+      params.courseID = courseID;
     }
 
     // if only one type of listing should be displayed
