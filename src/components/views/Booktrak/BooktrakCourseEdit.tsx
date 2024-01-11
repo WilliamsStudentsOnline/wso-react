@@ -23,7 +23,7 @@ const CourseEdit = ({
 }: {
   courses: AutocompleteACEntry[];
   updateCourses: React.Dispatch<React.SetStateAction<AutocompleteACEntry[]>>;
-  updateErrors: React.Dispatch<React.SetStateAction<string[]>>;
+  updateErrors?: React.Dispatch<React.SetStateAction<string[]>>;
 }) => {
   const wso = useAppSelector(getWSO);
   const [newCourseString, updateNewCourseString] = useState("");
@@ -49,26 +49,11 @@ const CourseEdit = ({
     }
   };
 
-  //   // Unsure if this is the best way to implement this.
-  //   const updateCourses = async (updatedCourses) => {
-  //     const params = {
-  //       tags: updatedTags,
-  //     };
-
-  //     try {
-  //       await wso.userService.updateUserTags("me", params);
-  //       updateTags(updatedTags);
-  //       updateNewTag("");
-  //       updateErrors([]);
-  //     } catch (error) {
-  //       updateErrors([error.message]);
-  //     }
-  //   };
-
   const addCourseHandler = () => {
     if (newCourse) {
-      if (courses.filter((course) => course === newCourse).length) {
-        updateErrors(["Unable to add the same course twice."]);
+      if (courses.filter((course) => course.id === newCourse.id).length) {
+        if (updateErrors)
+          updateErrors(["Unable to add the same course twice."]);
         return;
       }
 
@@ -78,7 +63,7 @@ const CourseEdit = ({
       updateNewCourseString("");
       updateNewCourse(undefined);
     } else {
-      updateErrors([]);
+      if (updateErrors) updateErrors([]);
     }
   };
 

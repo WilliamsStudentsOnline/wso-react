@@ -8,22 +8,22 @@ import { useNavigate } from "react-router-dom";
 
 // Additional Imports
 import {
+  AutocompleteACEntry,
   ModelsBook,
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
 import PaginationButtons from "../../PaginationButtons";
 import BooktrakListingsTable from "./BooktrakListingsTable";
 import "../../stylesheets/Booktrak.css";
+import CourseEdit from "./BooktrakCourseEdit";
 
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const BooktrakListings = ({
   book,
-  courseID,
   showBuyListings,
   showSellListings,
 }: {
   book?: ModelsBook;
-  courseID?: number;
   showBuyListings?: boolean;
   showSellListings?: boolean;
 }) => {
@@ -32,6 +32,7 @@ const BooktrakListings = ({
   const [listings, updateListings] = useState<ModelsBookListing[]>([]);
   const [buyListings, updateBuyListings] = useState<ModelsBookListing[]>([]);
   const [sellListings, updateSellListings] = useState<ModelsBookListing[]>([]);
+  const [courses, updateCourses] = useState<AutocompleteACEntry[]>([]);
 
   const [total, updateTotal] = useState(0);
   const [currentPage, updateCurrentPage] = useState(0);
@@ -53,8 +54,8 @@ const BooktrakListings = ({
     if (book?.id) {
       params.bookID = book.id;
     }
-    if (courseID) {
-      params.courseID = courseID;
+    if (courses.length > 0) {
+      params.courseID = courses[0].id;
     }
 
     // if only one type of listing should be displayed
@@ -99,7 +100,7 @@ const BooktrakListings = ({
 
   useEffect(() => {
     loadListings();
-  }, [book, showBuyListings, showSellListings, currentPage, wso]);
+  }, [book, courses, showBuyListings, showSellListings, currentPage, wso]);
 
   if (!showBuyListings && !showSellListings) return <></>;
   if (showBuyListings && showSellListings) {
@@ -122,6 +123,7 @@ const BooktrakListings = ({
       <h3 className="booktrak-inner-page-title">
         {showBuyListings ? "Buy Listings" : "Sell Listings"}
       </h3>
+      <CourseEdit courses={courses} updateCourses={updateCourses} />
       <PaginationButtons
         selectionHandler={(newPage: number) => {
           updateCurrentPage(newPage);
