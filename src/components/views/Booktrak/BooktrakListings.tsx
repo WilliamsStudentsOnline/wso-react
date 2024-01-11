@@ -14,6 +14,7 @@ import {
 import PaginationButtons from "../../PaginationButtons";
 import BooktrakListingsTable from "./BooktrakListingsTable";
 import "../../stylesheets/Booktrak.css";
+import { ModelsBookListingWithTitle } from "./BooktrakUtils";
 
 type ServerError = {
   errorCode: number;
@@ -41,12 +42,16 @@ const BooktrakListings = ({
 }) => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
-  const [listings, updateListings] = useState<ModelsBookListing[]>([]);
-  const [buyListings, updateBuyListings] = useState<ModelsBookListing[]>([]);
-  const [sellListings, updateSellListings] = useState<ModelsBookListing[]>([]);
+  const [listings, updateListings] = useState<ModelsBookListingWithTitle[]>([]);
+  const [buyListings, updateBuyListings] = useState<
+    ModelsBookListingWithTitle[]
+  >([]);
+  const [sellListings, updateSellListings] = useState<
+    ModelsBookListingWithTitle[]
+  >([]);
 
   const [currentPage, updateCurrentPage] = useState(0);
-  const maxListingsPerPage = 2;
+  const maxListingsPerPage = 20;
 
   useEffect(() => {
     const loadListings = async () => {
@@ -75,13 +80,25 @@ const BooktrakListings = ({
               ...params,
               listingType: ListingTypeEnum.SELL,
             });
+
           updateBuyListings(buyListingsResponse.data ?? []);
           updateSellListings(sellListingsResponse.data ?? []);
         } else {
           const listingsResponse = await wso.booktrakService.listBookListings({
             ...params,
           });
-          updateListings(listingsResponse.data ?? []);
+
+          const newListings: ModelsBookListingWithTitle[] = [];
+          for (const listing of listingsResponse.data ?? []) {
+            const bookData = await wso.booktrakService.getBook(
+              listing.bookID ?? 0
+            );
+            newListings.push({
+              ...listing,
+              bookTitle: bookData.data?.title ?? "",
+            });
+          }
+          updateListings(newListings ?? []);
         }
       } catch (error) {
         if (isServerError(error)) {
@@ -92,7 +109,7 @@ const BooktrakListings = ({
       }
     };
     loadListings();
-  }, [wso]);
+  }, [book, onlyShowBuyListings, displayBuyAndSell, wso]);
 
   if (displayBuyAndSell) {
     return (

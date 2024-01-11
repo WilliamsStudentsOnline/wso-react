@@ -1,25 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ModelsBookListing } from "wso-api-client/lib/services/types";
-import { BookConditionEnumToString } from "./BooktrakUtils";
+import {
+  BookConditionEnumToString,
+  ModelsBookListingWithTitle,
+} from "./BooktrakUtils";
 
 const BooktrakListingsTable = ({
   listings,
   reducedListing,
 }: {
-  listings: ModelsBookListing[];
+  listings: ModelsBookListingWithTitle[];
   reducedListing?: boolean;
 }) => {
   return (
     <table>
       <thead>
         <tr>
-          {!reducedListing && (
-            <>
-              <th>Book Name</th>
-              <th>Listing Type</th>
-            </>
-          )}
+          {!reducedListing && <th>Title</th>}
           <th>Condition</th>
           <th>Description</th>
           <th>User</th>
@@ -31,10 +29,11 @@ const BooktrakListingsTable = ({
             return (
               <tr key={i}>
                 {!reducedListing && (
-                  <>
-                    <td>Placeholder Bookname</td>
-                    <td>Placeholder Listing Type</td>
-                  </>
+                  <td>
+                    <Link to={`/booktrak/books/${listing.bookID}`}>
+                      {listing.bookTitle ?? ""}
+                    </Link>
+                  </td>
                 )}
                 <td>
                   {BookConditionEnumToString(

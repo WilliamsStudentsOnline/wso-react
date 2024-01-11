@@ -1,5 +1,9 @@
 import { ModelsBookListing } from "wso-api-client/lib/services/types";
 
+export interface ModelsBookListingWithTitle extends ModelsBookListing {
+  bookTitle?: string;
+}
+
 const ListingConditionEnum = ModelsBookListing.ConditionEnum;
 export const BookConditionEnumToString = (
   condition: ModelsBookListing.ConditionEnum
