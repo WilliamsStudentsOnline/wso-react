@@ -2,7 +2,7 @@
 import React from "react";
 import DoughtyBanner from "../../../assets/images/banners/Doughty.jpg";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../../lib/store";
 
 const AboutPreRelease = () => {
   return (
@@ -120,7 +120,7 @@ const AboutPreRelease = () => {
 };
 
 const About = () => {
-  const enableAbout = useSelector(
+  const enableAbout = useAppSelector(
     (state) => state.featureFlagState["enableAbout"]
   );
 

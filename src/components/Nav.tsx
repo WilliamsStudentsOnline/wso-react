@@ -14,7 +14,6 @@ import history from "../lib/history";
 import { userTypeStudent } from "../constants/general";
 
 // Feature flag imports
-import { useSelector } from "react-redux";
 import { RootState } from "../lib/store";
 
 interface FeatureFlagElementProps {
@@ -26,7 +25,7 @@ const FeatureFlagElement: React.FC<FeatureFlagElementProps> = ({
   element,
   flag,
 }) => {
-  const enabled = useSelector(
+  const enabled = useAppSelector(
     (state: RootState) => state.featureFlagState[flag]
   );
 

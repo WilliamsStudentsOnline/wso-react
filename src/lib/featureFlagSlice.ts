@@ -11,11 +11,9 @@ interface FeatureFlagsState {
 }
 
 export const initialState: FeatureFlagsState = {
-  enableAbout: false,
-  enableWiki: false,
-  enableFAQ: false,
-
-  // Initialize other feature flags
+  enableAbout: true,
+  enableWiki: true,
+  enableFAQ: true,
 };
 
 const featureFlagSlice = createSlice({

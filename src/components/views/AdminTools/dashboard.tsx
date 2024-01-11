@@ -1,15 +1,15 @@
 // React imports
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 import { toggleFeatureFlag } from "../../../lib/featureFlagSlice";
 import { RootState } from "../../../lib/store";
 import Error403 from "../Errors/Error403";
 import { getCurrUser } from "../../../lib/authSlice";
-import { useAppSelector } from "../../../lib/store";
+import { useAppDispatch, useAppSelector } from "../../../lib/store";
 
 const Dashboard = () => {
-  const dispatch = useDispatch();
-  const featureFlagState = useSelector(
+  const dispatch = useAppDispatch();
+  const featureFlagState = useAppSelector(
     (state: RootState) => state.featureFlagState
   );
   const currUser = useAppSelector(getCurrUser);
