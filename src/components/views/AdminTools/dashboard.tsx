@@ -3,8 +3,6 @@ import React from "react";
 // import { useDispatch, useSelector } from "react-redux";
 import { toggleFeatureFlag } from "../../../lib/featureFlagSlice";
 import { RootState } from "../../../lib/store";
-import Error403 from "../Errors/Error403";
-import { getCurrUser } from "../../../lib/authSlice";
 import { useAppDispatch, useAppSelector } from "../../../lib/store";
 
 const Dashboard = () => {
@@ -12,7 +10,6 @@ const Dashboard = () => {
   const featureFlagState = useAppSelector(
     (state: RootState) => state.featureFlagState
   );
-  const currUser = useAppSelector(getCurrUser);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleToggle = (flag: any) => {
