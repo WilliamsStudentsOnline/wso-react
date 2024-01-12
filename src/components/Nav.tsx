@@ -167,7 +167,7 @@ const Nav = () => {
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
             </li>
-            {(currUser?.admin || currUser?.id === 13268) && (
+            {currUser?.admin && (
               <li>
                 <Link to="admin">Admin Dashboard</Link>
               </li>

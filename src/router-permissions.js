@@ -35,6 +35,10 @@ const routePermissions = {
     tokenLevel: 3,
     scopes: [scopes.ScopeGoodrich, scopes.ScopeGoodrichManager],
   },
+  "admin.dashboard": {
+    tokenLevel: 3,
+    scopes: [scopes.ScopeAdminAll],
+  },
 };
 
 /**

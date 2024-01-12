@@ -21,21 +21,15 @@ const Dashboard = () => {
 
   return (
     <div>
-      {currUser?.admin || currUser?.id === 13268 ? (
-        <div>
-          <p>Dashboard</p>
-          {Object.entries(featureFlagState).map(([key, value]) =>
-            key[0] === "_" ? null : (
-              <button key={key} onClick={() => handleToggle(key)}>
-                {value
-                  ? "Toggle " + key.slice(6, key.length) + " Off"
-                  : "Toggle " + key.slice(6, key.length) + " On"}
-              </button>
-            )
-          )}
-        </div>
-      ) : (
-        <Error403 />
+      <p>Dashboard</p>
+      {Object.entries(featureFlagState).map(([key, value]) =>
+        key[0] === "_" ? null : (
+          <button key={key} onClick={() => handleToggle(key)}>
+            {value
+              ? "Toggle " + key.slice(6, key.length) + " Off"
+              : "Toggle " + key.slice(6, key.length) + " On"}
+          </button>
+        )
       )}
     </div>
   );

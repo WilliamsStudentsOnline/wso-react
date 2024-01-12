@@ -203,7 +203,14 @@ const App = () => {
           <Route path="about" element={<About />} />
           <Route path="faq" element={<FAQ />} />
           <Route path="team" element={<Team />} />
-          <Route path="admin" element={<Dashboard />} />
+          <Route
+            path="admin"
+            element={
+              <RequireScope token={apiToken} name="admin.dashboard">
+                <Dashboard />
+              </RequireScope>
+            }
+          />
 
           <Route
             path="mobile-privacy-policy"
