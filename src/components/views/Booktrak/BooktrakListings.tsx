@@ -14,20 +14,7 @@ import {
 import PaginationButtons from "../../PaginationButtons";
 import BooktrakListingsTable from "./BooktrakListingsTable";
 import "../../stylesheets/Booktrak.css";
-
-type ServerError = {
-  errorCode: number;
-  message: string;
-};
-
-function isServerError(error: unknown): error is ServerError {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "errorCode" in error &&
-    "message" in error
-  );
-}
+import { isServerError } from "../../../lib/general";
 
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const BooktrakListings = ({
@@ -91,7 +78,7 @@ const BooktrakListings = ({
         }
       } catch (error) {
         if (isServerError(error)) {
-          console.log(error.message, error.errorCode);
+          console.log(error);
         } else {
           navigateTo("/404", { replace: true });
         }

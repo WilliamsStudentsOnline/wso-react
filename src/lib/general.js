@@ -143,3 +143,12 @@ export const capitalize = (string) => {
 export const pascalToTitleCase = (string) => {
   return string.replace(/([a-z])([A-Z])/g, "$1 $2");
 };
+
+export const isServerError = (error) => {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "errorCode" in error &&
+    "message" in error
+  );
+};
