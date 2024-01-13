@@ -33,12 +33,12 @@ function isServerError(error: unknown): error is ServerError {
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const BooktrakListings = ({
   book,
-  onlyShowBuyListings,
-  displayBuyAndSell,
+  showBuyListings,
+  showSellListings,
 }: {
   book?: ModelsBook;
-  onlyShowBuyListings?: boolean;
-  displayBuyAndSell?: boolean;
+  showBuyListings?: boolean;
+  showSellListings?: boolean;
 }) => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
@@ -62,14 +62,16 @@ const BooktrakListings = ({
       if (book?.id) {
         params.bookID = book.id;
       }
-      if (onlyShowBuyListings !== undefined) {
-        params.listingType = onlyShowBuyListings
+
+      // if only one type of listing should be displayed
+      if (!showBuyListings || !showSellListings) {
+        params.listingType = showBuyListings
           ? ListingTypeEnum.BUY
           : ListingTypeEnum.SELL;
       }
 
       try {
-        if (displayBuyAndSell) {
+        if (showBuyListings && showSellListings) {
           const buyListingsResponse =
             await wso.booktrakService.listBookListings({
               ...params,
@@ -109,9 +111,10 @@ const BooktrakListings = ({
       }
     };
     loadListings();
-  }, [book, onlyShowBuyListings, displayBuyAndSell, wso]);
+  }, [book, showBuyListings, showSellListings, wso]);
 
-  if (displayBuyAndSell) {
+  if (!showBuyListings && !showSellListings) return <></>;
+  if (showBuyListings && showSellListings) {
     return (
       <div className="booktrak-listings-dual-display-container">
         <div>
@@ -129,7 +132,7 @@ const BooktrakListings = ({
   return (
     <div className="booktrak-listings-container">
       <h3 className="booktrak-inner-page-title">
-        {onlyShowBuyListings ? "Buy Listings" : "Sell Listings"}
+        {showBuyListings ? "Buy Listings" : "Sell Listings"}
       </h3>
       <PaginationButtons
         selectionHandler={(newPage: number) => {

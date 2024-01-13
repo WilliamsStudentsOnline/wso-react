@@ -144,7 +144,7 @@ const BooktrakBook = () => {
 
   const bookListings = (book?: ModelsBook) => {
     if (book && book.id) {
-      return <BooktrakListings book={book} displayBuyAndSell />;
+      return <BooktrakListings book={book} showBuyListings showSellListings />;
     }
     return null;
   };

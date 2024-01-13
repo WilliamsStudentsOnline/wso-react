@@ -18,14 +18,8 @@ const BooktrakMain = () => {
       <Routes>
         <Route index element={<BooktrakHome />} />
         <Route path="books" element={<BooktrakBook />} />
-        <Route
-          path="buy"
-          element={<BooktrakListings onlyShowBuyListings={true} />}
-        />
-        <Route
-          path="sell"
-          element={<BooktrakListings onlyShowBuyListings={false} />}
-        />
+        <Route path="buy" element={<BooktrakListings showBuyListings />} />
+        <Route path="sell" element={<BooktrakListings showSellListings />} />
         <Route path="books/:bookID" element={<BooktrakBook />} />
         <Route
           path="listings/:bookListingID"
