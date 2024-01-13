@@ -1,16 +1,6 @@
-// React imports
 import React from "react";
-import { ButtonProps } from "../lib/types";
 import { NavLink } from "react-router-dom";
 import "./stylesheets/StylizedLink.css";
-
-export const Button = ({ children, ...other }: ButtonProps) => {
-  return (
-    <button type="button" {...other}>
-      {children}
-    </button>
-  );
-};
 
 export const StylizedLink = ({
   to,

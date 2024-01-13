@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { format } from "timeago.js";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import { StylizedLink } from "../../Components";
+import { StylizedLink } from "../../StylizedLink";
 
 const EphmatchLayout = ({
   available,

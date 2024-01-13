@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import DormtrakRanking from "./DormtrakRanking";
 import DormtrakRecentComments from "./DormtrakRecentComments";
-import { Button } from "../../Components";
+import Button from "../../Button";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
