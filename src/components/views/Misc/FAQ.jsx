@@ -134,7 +134,9 @@ const FAQ = () => {
   );
 
   return (
-    <div>{enableFAQ ? <FAQPreRelease /> : <p>Feature not available</p>}</div>
+    <div>
+      {enableFAQ === "Enabled" ? <FAQPreRelease /> : <p>Feature {enableFAQ}</p>}
+    </div>
   );
 };
 

@@ -1,7 +1,7 @@
 // React imports
 import React from "react";
 // import { useDispatch, useSelector } from "react-redux";
-import { toggleFeatureFlag } from "../../../lib/featureFlagSlice";
+import { FFState, toggleFeatureFlag } from "../../../lib/featureFlagSlice";
 import { RootState } from "../../../lib/store";
 import { useAppDispatch, useAppSelector } from "../../../lib/store";
 
@@ -12,21 +12,27 @@ const Dashboard = () => {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleToggle = (flag: any) => {
-    dispatch(toggleFeatureFlag(flag));
+  const handleToggle = (myflag: any, newState: FFState) => {
+    dispatch(toggleFeatureFlag({ flag: myflag, value: newState }));
   };
 
   return (
     <div>
       <p>Dashboard</p>
-      {Object.entries(featureFlagState).map(([key, value]) =>
-        key[0] === "_" ? null : (
-          <button key={key} onClick={() => handleToggle(key)}>
-            {value
-              ? "Toggle " + key.slice(6, key.length) + " Off"
-              : "Toggle " + key.slice(6, key.length) + " On"}
-          </button>
-        )
+      {Object.entries(featureFlagState).map(
+        ([key, value]) =>
+          !(key[0] === "_") && (
+            <div key={key}>
+              {Object.entries(FFState).map(([stateKey, stateValue]) => (
+                <button
+                  key={key + stateKey}
+                  onClick={() => handleToggle(key, stateKey as FFState)}
+                >
+                  {"Set " + key.slice(6, key.length) + " to " + stateKey}
+                </button>
+              ))}
+            </div>
+          )
       )}
     </div>
   );

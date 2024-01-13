@@ -2,18 +2,24 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // const API_ADDRESS = "http://localhost:8080";
 
+export enum FFState {
+  Enabled = "Enabled",
+  Disabled = "Disabled",
+  Pending = "Pending",
+}
+
 interface FeatureFlagsState {
-  enableAbout: boolean;
-  enableWiki: boolean;
-  enableFAQ: boolean;
+  enableAbout: FFState;
+  enableWiki: FFState;
+  enableFAQ: FFState;
 
   // Add more feature flags as needed
 }
 
 export const initialState: FeatureFlagsState = {
-  enableAbout: true,
-  enableWiki: true,
-  enableFAQ: true,
+  enableAbout: FFState.Enabled,
+  enableWiki: FFState.Enabled,
+  enableFAQ: FFState.Enabled,
 };
 
 const featureFlagSlice = createSlice({
@@ -22,11 +28,11 @@ const featureFlagSlice = createSlice({
   reducers: {
     toggleFeatureFlag: (
       state,
-      action: PayloadAction<keyof FeatureFlagsState>
+      action: PayloadAction<{ flag: keyof FeatureFlagsState; value: FFState }>
     ) => {
-      const flagKey = action.payload;
-      if (flagKey in state) {
-        state[flagKey] = !state[flagKey];
+      const { flag, value } = action.payload;
+      if (flag in state) {
+        state[flag] = value;
       }
     },
   },

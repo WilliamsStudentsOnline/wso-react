@@ -126,7 +126,11 @@ const About = () => {
 
   return (
     <div>
-      {enableAbout ? <AboutPreRelease /> : <p>Feature not available</p>}
+      {enableAbout === "Enabled" ? (
+        <AboutPreRelease />
+      ) : (
+        <p>Feature {enableAbout}</p>
+      )}
     </div>
   );
 };

@@ -31,7 +31,10 @@ const FeatureFlagElement: React.FC<FeatureFlagElementProps> = ({
 
   return (
     <div className="nav_feature_div">
-      {enabled ? <li className="nav_feature_item">{element}</li> : null}
+      {console.log(enabled)}
+      {enabled === "Enabled" ? (
+        <li className="nav_feature_item">{element}</li>
+      ) : null}
     </div>
   );
 };
