@@ -1,7 +1,7 @@
 // React imports
 import React, { useState } from "react";
 import { Paragraph, Line } from "../../Skeleton";
-import Button from "../../Components";
+import { Button } from "../../Components";
 
 // Redux/ Router imports
 import { useAppSelector, useAppDispatch } from "../../../lib/store";

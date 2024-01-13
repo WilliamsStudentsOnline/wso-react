@@ -7,7 +7,7 @@ import { getCurrUser } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import StylizedLink from "../Misc/StylizedLink";
+import { StylizedLink } from "../../Components";
 
 const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);

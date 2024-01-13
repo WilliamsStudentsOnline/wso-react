@@ -1,7 +1,7 @@
 // React imports
 import React, { useEffect, useState } from "react";
 import { Line, Paragraph, Photo } from "../../Skeleton";
-import Button from "../../Components";
+import { Button } from "../../Components";
 
 // redux imports
 import { useAppSelector } from "../../../lib/store";

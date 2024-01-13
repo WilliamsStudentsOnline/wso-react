@@ -8,7 +8,7 @@ import { getWSO, getCurrUser } from "../../../lib/authSlice";
 // Additional imports
 import { Link, useNavigate } from "react-router-dom";
 import { ModelsNeighborhood } from "wso-api-client/lib/services/types";
-import StylizedLink from "../Misc/StylizedLink";
+import { StylizedLink } from "../../Components";
 
 const DormtrakLayout = ({ children }: { children: ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);

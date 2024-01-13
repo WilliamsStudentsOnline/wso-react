@@ -12,7 +12,7 @@ import {
 } from "react-router-dom";
 
 import { AutocompleteACEntry } from "wso-api-client/lib/services/types";
-import StylizedLink from "../Misc/StylizedLink";
+import { StylizedLink } from "../../Components";
 
 const FactrakLayout = ({ children }: { children: ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
