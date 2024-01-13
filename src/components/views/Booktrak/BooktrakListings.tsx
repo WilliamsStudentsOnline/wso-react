@@ -14,7 +14,6 @@ import {
 import PaginationButtons from "../../PaginationButtons";
 import BooktrakListingsTable from "./BooktrakListingsTable";
 import "../../stylesheets/Booktrak.css";
-import { ModelsBookListingWithTitle } from "./BooktrakUtils";
 
 type ServerError = {
   errorCode: number;
@@ -42,13 +41,9 @@ const BooktrakListings = ({
 }) => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
-  const [listings, updateListings] = useState<ModelsBookListingWithTitle[]>([]);
-  const [buyListings, updateBuyListings] = useState<
-    ModelsBookListingWithTitle[]
-  >([]);
-  const [sellListings, updateSellListings] = useState<
-    ModelsBookListingWithTitle[]
-  >([]);
+  const [listings, updateListings] = useState<ModelsBookListing[]>([]);
+  const [buyListings, updateBuyListings] = useState<ModelsBookListing[]>([]);
+  const [sellListings, updateSellListings] = useState<ModelsBookListing[]>([]);
 
   const [currentPage, updateCurrentPage] = useState(0);
   const maxListingsPerPage = 20;
@@ -58,7 +53,8 @@ const BooktrakListings = ({
       const params: {
         bookID?: number;
         listingType?: ModelsBookListing.ListingTypeEnum;
-      } = {};
+        preload?: string[];
+      } = { preload: ["user"] };
       if (book?.id) {
         params.bookID = book.id;
       }
@@ -68,6 +64,7 @@ const BooktrakListings = ({
         params.listingType = showBuyListings
           ? ListingTypeEnum.BUY
           : ListingTypeEnum.SELL;
+        params.preload = ["user", "book"];
       }
 
       try {
@@ -90,17 +87,7 @@ const BooktrakListings = ({
             ...params,
           });
 
-          const newListings: ModelsBookListingWithTitle[] = [];
-          for (const listing of listingsResponse.data ?? []) {
-            const bookData = await wso.booktrakService.getBook(
-              listing.bookID ?? 0
-            );
-            newListings.push({
-              ...listing,
-              bookTitle: bookData.data?.title ?? "",
-            });
-          }
-          updateListings(newListings ?? []);
+          updateListings(listingsResponse.data ?? []);
         }
       } catch (error) {
         if (isServerError(error)) {
