@@ -1,6 +1,9 @@
 pipeline {
   agent {
-    docker { image 'node:16.16-alpine' }
+    docker { image 'node:20.11-alpine' }
+  }
+  environment {
+    WSO_REACT_DISCORD_WEBHOOK_URL = credentials('WSO_REACT_DISCORD_WEBHOOK_URL')
   }
   stages {
     stage('Deploy for development') {
@@ -37,6 +40,10 @@ pipeline {
       post {
         success {
           slackSend (color: '#00FF00', message: "WSO-React Deployed on Development\n Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+          discordSend (title: "WSO-React Deployed on Development", description: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", link: env.BUILD_URL, result: currentBuild.currentResult, webhookURL: "${env.WSO_REACT_DISCORD_WEBHOOK_URL}")
+        }
+        failure {
+          discordSend (title: "WSO-React Fail to Deploy on Development", description: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", link: env.BUILD_URL, result: currentBuild.currentResult, webhookURL: "${env.WSO_REACT_DISCORD_WEBHOOK_URL}")
         }
       }
     }
@@ -74,6 +81,10 @@ pipeline {
       post {
         success {
           slackSend (color: '#00FF00', message: "WSO-React Deployed on Production\n Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+          discordSend (title: "WSO-React Deployed on Production", description: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", link: env.BUILD_URL, result: currentBuild.currentResult, webhookURL: "${env.WSO_REACT_DISCORD_WEBHOOK_URL}")
+        }
+        failure {
+          discordSend (title: "WSO-React Failed to Deploy on Production", description: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", link: env.BUILD_URL, result: currentBuild.currentResult, webhookURL: "${env.WSO_REACT_DISCORD_WEBHOOK_URL}")
         }
       }
     }
