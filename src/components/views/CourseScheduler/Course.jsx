@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 // External imports
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { FOLLETT_SEMESTER_UUID } from "../../../constants/constants";
 
 dayjs.extend(customParseFormat);
 
@@ -211,8 +212,7 @@ const Course = ({
   const semesterInNumber = () => {
     // NOTE: this is currently only stable for 2024 Spring (!!)
     // this controls the termID flag in the HTTP request, which Follett changed recently and may change again
-    const yearVal = 100082572;
-    return yearVal;
+    return FOLLETT_SEMESTER_UUID;
   };
 
   const bookstoreLink = () => {

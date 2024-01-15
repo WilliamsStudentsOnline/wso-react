@@ -21,6 +21,7 @@ export const DIVISIONS = ["div1", "div2", "div3"];
 export const OTHERS = ["passFail", "fifthCourse"];
 export const REMOTE = ["hybrid", "remote", "in-person"];
 export const LEVELS = [0, 1, 2, 3, 4];
+export const FOLLETT_SEMESTER_UUID = 100082572;
 let now = new Date();
 // year represents the higher end of academic year
 // e.g. 2024 represents the AY 2023-2024
