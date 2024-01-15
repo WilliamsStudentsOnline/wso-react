@@ -32,60 +32,73 @@ const BooktrakListings = ({
   const [buyListings, updateBuyListings] = useState<ModelsBookListing[]>([]);
   const [sellListings, updateSellListings] = useState<ModelsBookListing[]>([]);
 
+  const [total, updateTotal] = useState(0);
   const [currentPage, updateCurrentPage] = useState(0);
   const maxListingsPerPage = 20;
 
-  useEffect(() => {
-    const loadListings = async () => {
-      const params: {
-        bookID?: number;
-        listingType?: ModelsBookListing.ListingTypeEnum;
-        preload?: string[];
-      } = { preload: ["user"] };
-      if (book?.id) {
-        params.bookID = book.id;
-      }
-
-      // if only one type of listing should be displayed
-      if (!showBuyListings || !showSellListings) {
-        params.listingType = showBuyListings
-          ? ListingTypeEnum.BUY
-          : ListingTypeEnum.SELL;
-        params.preload = ["user", "book"];
-      }
-
-      try {
-        if (showBuyListings && showSellListings) {
-          const buyListingsResponse =
-            await wso.booktrakService.listBookListings({
-              ...params,
-              listingType: ListingTypeEnum.BUY,
-            });
-          const sellListingsResponse =
-            await wso.booktrakService.listBookListings({
-              ...params,
-              listingType: ListingTypeEnum.SELL,
-            });
-
-          updateBuyListings(buyListingsResponse.data ?? []);
-          updateSellListings(sellListingsResponse.data ?? []);
-        } else {
-          const listingsResponse = await wso.booktrakService.listBookListings({
-            ...params,
-          });
-
-          updateListings(listingsResponse.data ?? []);
-        }
-      } catch (error) {
-        if (isServerError(error)) {
-          console.log(error);
-        } else {
-          navigateTo("/404", { replace: true });
-        }
-      }
+  const loadListings = async () => {
+    const params: {
+      bookID?: number;
+      listingType?: ModelsBookListing.ListingTypeEnum;
+      preload?: string[];
+      limit: number;
+      offset: number;
+    } = {
+      preload: ["user"],
+      limit: maxListingsPerPage,
+      offset: maxListingsPerPage * currentPage,
     };
+    if (book?.id) {
+      params.bookID = book.id;
+    }
+
+    // if only one type of listing should be displayed
+    if (!showBuyListings || !showSellListings) {
+      params.listingType = showBuyListings
+        ? ListingTypeEnum.BUY
+        : ListingTypeEnum.SELL;
+      params.preload = ["user", "book"];
+    }
+
+    try {
+      if (showBuyListings && showSellListings) {
+        const buyListingsResponse = await wso.booktrakService.listBookListings({
+          ...params,
+          listingType: ListingTypeEnum.BUY,
+        });
+        const sellListingsResponse = await wso.booktrakService.listBookListings(
+          {
+            ...params,
+            listingType: ListingTypeEnum.SELL,
+          }
+        );
+
+        updateBuyListings(buyListingsResponse.data ?? []);
+        updateSellListings(sellListingsResponse.data ?? []);
+        updateTotal(
+          (buyListingsResponse.paginationTotal ?? 0) +
+            (sellListingsResponse.paginationTotal ?? 0)
+        );
+      } else {
+        const listingsResponse = await wso.booktrakService.listBookListings({
+          ...params,
+        });
+
+        updateListings(listingsResponse.data ?? []);
+        updateTotal(listingsResponse.paginationTotal ?? 0);
+      }
+    } catch (error) {
+      if (isServerError(error)) {
+        console.log(error);
+      } else {
+        navigateTo("/404", { replace: true });
+      }
+    }
+  };
+
+  useEffect(() => {
     loadListings();
-  }, [book, showBuyListings, showSellListings, wso]);
+  }, [book, showBuyListings, showSellListings, currentPage, wso]);
 
   if (!showBuyListings && !showSellListings) return <></>;
   if (showBuyListings && showSellListings) {
@@ -117,22 +130,17 @@ const BooktrakListings = ({
             updateCurrentPage(currentPage - 1);
           } else if (
             increment === 1 &&
-            listings.length - (currentPage + 1) * maxListingsPerPage > 0
+            total - (currentPage + 1) * maxListingsPerPage > 0
           ) {
             updateCurrentPage(currentPage + 1);
           }
         }}
         page={currentPage}
-        total={listings.length}
+        total={total}
         perPage={maxListingsPerPage}
         showPages
       />
-      <BooktrakListingsTable
-        listings={listings.slice(
-          maxListingsPerPage * currentPage,
-          maxListingsPerPage * currentPage + maxListingsPerPage
-        )}
-      />
+      <BooktrakListingsTable listings={listings} />
     </div>
   );
 };
