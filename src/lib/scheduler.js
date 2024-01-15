@@ -22,7 +22,7 @@ export const addDays = (date, days) => {
  * @param {string} date - Date String to be converted.
  * @return {string} `dateString` in "YYYY-MM-DD" format.
  */
-export const gcalFormattedDate = (dateString) => {
+export const RFC3339FormattedDate = (dateString) => {
   return dayjs(dateString).format("YYYY-MM-DD");
 };
 
@@ -121,14 +121,14 @@ const getDefaultSemesterIndex = () => {
   const now = new Date();
   // Check if Winter (Period 3, above)
   if (
-    new Date(gcalFormattedDate(DATES.PREREG.WINTER)) < now &&
-    now < new Date(gcalFormattedDate(DATES.Winter.START))
+    new Date(RFC3339FormattedDate(DATES.PREREG.WINTER)) < now &&
+    now < new Date(RFC3339FormattedDate(DATES.Winter.START))
   ) {
     result = 1;
   } else if (
     // Check if Spring (Periods 2 and 4, above)
-    addDays(new Date(gcalFormattedDate(DATES.PREREG.SPRING)), -14) < now &&
-    now < addDays(new Date(gcalFormattedDate(DATES.PREREG.FALL)), -14)
+    addDays(new Date(RFC3339FormattedDate(DATES.PREREG.SPRING)), -14) < now &&
+    now < addDays(new Date(RFC3339FormattedDate(DATES.PREREG.FALL)), -14)
   ) {
     result = 2;
   } else {
