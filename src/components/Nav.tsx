@@ -15,6 +15,7 @@ import { userTypeStudent } from "../constants/general";
 
 // Feature flag imports
 import { RootState } from "../lib/store";
+import { FFState } from "../lib/featureFlagSlice";
 
 interface FeatureFlagElementProps {
   element: React.ReactElement;
@@ -32,7 +33,7 @@ const FeatureFlagElement: React.FC<FeatureFlagElementProps> = ({
   return (
     <div className="nav_feature_div">
       {console.log(enabled)}
-      {enabled === "Enabled" ? (
+      {enabled === FFState.Enabled ? (
         <li className="nav_feature_item">{element}</li>
       ) : null}
     </div>

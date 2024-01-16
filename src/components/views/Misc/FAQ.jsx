@@ -1,6 +1,8 @@
 // React imports
 import React from "react";
 import { useAppSelector } from "../../../lib/store";
+import { FFState } from "../../../lib/featureFlagSlice";
+import Error403 from "../Errors/Error403";
 
 const FAQPreRelease = () => {
   return (
@@ -135,7 +137,7 @@ const FAQ = () => {
 
   return (
     <div>
-      {enableFAQ === "Enabled" ? <FAQPreRelease /> : <p>Feature {enableFAQ}</p>}
+      {enableFAQ === FFState.Enabled ? <FAQPreRelease /> : <Error403 />}
     </div>
   );
 };

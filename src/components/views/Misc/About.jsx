@@ -3,6 +3,8 @@ import React from "react";
 import DoughtyBanner from "../../../assets/images/banners/Doughty.jpg";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../../lib/store";
+import { FFState } from "../../../lib/featureFlagSlice";
+import Error403 from "../Errors/Error403";
 
 const AboutPreRelease = () => {
   return (
@@ -126,11 +128,7 @@ const About = () => {
 
   return (
     <div>
-      {enableAbout === "Enabled" ? (
-        <AboutPreRelease />
-      ) : (
-        <p>Feature {enableAbout}</p>
-      )}
+      {enableAbout === FFState.Enabled ? <AboutPreRelease /> : <Error403 />}
     </div>
   );
 };

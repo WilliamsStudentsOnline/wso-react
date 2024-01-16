@@ -5,7 +5,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export enum FFState {
   Enabled = "Enabled",
   Disabled = "Disabled",
-  Pending = "Pending",
 }
 
 interface FeatureFlagsState {
