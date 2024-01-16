@@ -206,7 +206,7 @@ const App = () => {
           <Route
             path="admin"
             element={
-              <RequireScope token={apiToken} name="admin.dashboard">
+              <RequireScope token={apiToken} name="admin">
                 <Dashboard />
               </RequireScope>
             }
