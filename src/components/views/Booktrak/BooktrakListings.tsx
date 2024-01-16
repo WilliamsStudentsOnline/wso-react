@@ -14,7 +14,6 @@ import {
 import PaginationButtons from "../../PaginationButtons";
 import BooktrakListingsTable from "./BooktrakListingsTable";
 import "../../stylesheets/Booktrak.css";
-import { isServerError } from "../../../lib/general";
 
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const BooktrakListings = ({
@@ -88,11 +87,7 @@ const BooktrakListings = ({
         updateTotal(listingsResponse.paginationTotal ?? 0);
       }
     } catch (error) {
-      if (isServerError(error)) {
-        console.log(error);
-      } else {
-        navigateTo("/404", { replace: true });
-      }
+      navigateTo("/404", { replace: true, state: { error } });
     }
   };
 
