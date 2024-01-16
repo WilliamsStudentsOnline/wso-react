@@ -15,11 +15,11 @@ import { userTypeStudent } from "../constants/general";
 
 // Feature flag imports
 import { RootState } from "../lib/store";
-import { FFState } from "../lib/featureFlagSlice";
+import { FeatureFlag, FFState } from "../lib/featureFlagSlice";
 
 interface FeatureFlagElementProps {
   element: React.ReactElement;
-  flag: keyof RootState["featureFlagState"];
+  flag: keyof FeatureFlag;
 }
 
 const FeatureFlagElement: React.FC<FeatureFlagElementProps> = ({

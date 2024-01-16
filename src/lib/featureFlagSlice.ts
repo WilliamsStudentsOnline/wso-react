@@ -7,7 +7,7 @@ export enum FFState {
   Disabled = "Disabled",
 }
 
-interface FeatureFlagsState {
+export interface FeatureFlag {
   enableAbout: FFState;
   enableWiki: FFState;
   enableFAQ: FFState;
@@ -15,7 +15,7 @@ interface FeatureFlagsState {
   // Add more feature flags as needed
 }
 
-export const initialState: FeatureFlagsState = {
+export const initialState: FeatureFlag = {
   enableAbout: FFState.Enabled,
   enableWiki: FFState.Enabled,
   enableFAQ: FFState.Enabled,
@@ -27,7 +27,7 @@ const featureFlagSlice = createSlice({
   reducers: {
     toggleFeatureFlag: (
       state,
-      action: PayloadAction<{ flag: keyof FeatureFlagsState; value: FFState }>
+      action: PayloadAction<{ flag: keyof FeatureFlag; value: FFState }>
     ) => {
       const { flag, value } = action.payload;
       if (flag in state) {
