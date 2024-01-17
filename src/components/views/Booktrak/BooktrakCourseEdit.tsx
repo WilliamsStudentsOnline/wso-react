@@ -23,10 +23,12 @@ const CourseEdit = ({
   courses,
   updateCourses,
   updateErrors,
+  placeholder,
 }: {
   courses: AutocompleteACEntry[];
   updateCourses: React.Dispatch<React.SetStateAction<AutocompleteACEntry[]>>;
   updateErrors?: React.Dispatch<React.SetStateAction<string[]>>;
+  placeholder?: string;
 }) => {
   const wso = useAppSelector(getWSO);
   const [newCourseString, updateNewCourseString] = useState("");
@@ -113,7 +115,7 @@ const CourseEdit = ({
             className="input"
             type="text"
             onChange={courseAutocomplete}
-            placeholder="New Course"
+            placeholder={placeholder ?? "Add New Course..."}
             maxLength={255}
             size={20}
             value={newCourseString}

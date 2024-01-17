@@ -121,7 +121,11 @@ const BooktrakListings = ({
   return (
     <div className="booktrak-listings-page-container">
       <h3>{showBuyListings ? "Buy Listings" : "Sell Listings"}</h3>
-      <CourseEdit courses={courses} updateCourses={updateCourses} />
+      <CourseEdit
+        courses={courses}
+        updateCourses={updateCourses}
+        placeholder="Filter By Course..."
+      />
       <PaginationButtons
         selectionHandler={(newPage: number) => {
           updateCurrentPage(newPage);
