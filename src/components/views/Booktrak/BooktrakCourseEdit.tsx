@@ -5,7 +5,7 @@ import { AutocompleteACEntry } from "wso-api-client/lib/services/types";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
 
-import "../../stylesheets/Booktrak.css";
+import "../../stylesheets/BooktrakCourseEdit.css";
 
 const CourseRemove = ({
   onClick,
