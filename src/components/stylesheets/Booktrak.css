@@ -52,6 +52,7 @@
 .course-edit-container {
   margin: 15px;
   margin-left: 0px;
+  padding-left: 0px !important;
   display: flex;
   flex-direction: column;
 
