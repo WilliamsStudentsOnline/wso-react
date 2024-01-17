@@ -20,6 +20,7 @@ const BooktrakMain = () => {
         <Route path="books" element={<BooktrakBook />} />
         <Route path="buy" element={<BooktrakListings showBuyListings />} />
         <Route path="sell" element={<BooktrakListings showSellListings />} />
+        <Route path="edit" element={<BooktrakListings showMyListings />} />
         <Route path="books/:bookID" element={<BooktrakBook />} />
         <Route
           path="listings/:bookListingID"
