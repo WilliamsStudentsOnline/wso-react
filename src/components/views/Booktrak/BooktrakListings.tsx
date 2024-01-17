@@ -119,10 +119,8 @@ const BooktrakListings = ({
   }
 
   return (
-    <div className="booktrak-listings-container">
-      <h3 className="booktrak-inner-page-title">
-        {showBuyListings ? "Buy Listings" : "Sell Listings"}
-      </h3>
+    <div className="booktrak-listings-page-container">
+      <h3>{showBuyListings ? "Buy Listings" : "Sell Listings"}</h3>
       <CourseEdit courses={courses} updateCourses={updateCourses} />
       <PaginationButtons
         selectionHandler={(newPage: number) => {

@@ -1,41 +1,41 @@
-.booktrak-page-container {
+.booktrak-home-page-container {
   max-width: 68em;
   margin-left: auto;
   margin-right: auto;
-}
 
-.booktrak-search-form {
-  margin-left: 8.5298042998%;
-  width: 82.5%;
-  display: flex;
-  flex-direction: row;
+  .search-form {
+    margin-left: 8.5298042998%;
+    width: 82.5%;
+    display: flex;
+    flex-direction: row;
 
-  .search-bar {
-    margin-bottom: 0;
-    margin-right: 15px;
+    .search-bar {
+      margin-bottom: 0;
+      margin-right: 15px;
+    }
+  }
+
+  .book-image {
+    cursor: pointer;
+    border-radius: 5px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
+
+  .book-missing-image {
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: #999;
+    font-weight: bold;
+    text-transform: uppercase;
   }
 }
 
-.booktrak-book-image {
-  cursor: pointer;
-  border-radius: 5px;
-  transition: transform 0.3s, box-shadow 0.3s;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-.booktrak-book-missing-image {
-  display: inline-block;
-  cursor: pointer;
-  border-radius: 5px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  background-color: #f9f9f9;
-  color: #999;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.booktrak-listings-container {
+.booktrak-listings-page-container {
   margin-left: auto;
   margin-right: auto;
   padding-bottom: 10px;
@@ -49,83 +49,83 @@
   gap: 5%;
 }
 
-.booktrak-course-edit-container {
+.course-edit-container {
   margin: 15px;
   margin-left: 0px;
   display: flex;
   flex-direction: column;
-}
 
-.booktrak-course-edit-search-container {
-  display: flex;
-  flex-direction: row;
-}
+  .course-edit-search-container {
+    display: flex;
+    flex-direction: row;
+  }
 
-.booktrak-course-edit-input-container {
-  position: relative;
-  border: solid 2px #6f4993;
-  border-radius: 5px;
-  padding: 5px;
-  margin: 5px;
-  margin-left: 0px;
-  color: #444;
-  display: flex;
-  flex-grow: 1;
-}
+  .input-container {
+    position: relative;
+    border: solid 2px #6f4993;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    margin-left: 0px;
+    color: #444;
+    display: flex;
+    flex-grow: 1;
 
-.booktrak-course-edit-input {
-  margin: 0 !important;
-  padding: 0 !important;
-  width: 100% !important;
-  display: inline;
-  border: none !important;
-}
+    .input {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      display: inline;
+      border: none !important;
+    }
 
-.booktrak-course-edit-course-container {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-}
+    .course-suggestions {
+      position: absolute;
+      color: #6f4993;
+      cursor: pointer;
+      width: 100%;
+      border: 2px solid #d9d9d9;
+      z-index: 999 !important;
+      left: 0px;
+      top: 14px;
 
-.booktrak-course-suggestions {
-  position: absolute;
-  color: #6f4993;
-  cursor: pointer;
-  width: 100%;
-  border: 2px solid #d9d9d9;
-  z-index: 999 !important;
-  left: 0px;
-  top: 14px;
-}
+      .course-suggestion-option {
+        background: none;
+        color: #6f4399;
+        padding: 0;
+        min-width: 0;
+        white-space: normal;
+        text-align: left;
+      }
 
-.booktrak-course-suggestions-body *:not(:first-child) {
-  border-top: 2px solid #d9d9d9 !important;
-}
+      *:not(:first-child) {
+        border-top: 2px solid #d9d9d9 !important;
+      }
+    }
+  }
 
-.booktrak-course-suggestion-option {
-  background: none;
-  color: #6f4399;
-  padding: 0;
-  min-width: 0;
-  white-space: normal;
-  text-align: left;
-}
+  .course-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 
-.booktrak-course-edit-course {
-  position: relative;
-  border: solid 2px #6f4993;
-  border-radius: 5px;
-  padding: 5px;
-  margin: 5px 0px 5px 0px;
-  color: #444;
-  display: inline-block;
-}
+    .course {
+      position: relative;
+      border: solid 2px #6f4993;
+      border-radius: 5px;
+      padding: 5px;
+      margin: 5px 0px 5px 0px;
+      color: #444;
+      display: inline-block;
+    }
+  }
 
-.booktrak-course-edit-remove-course {
-  display: inline;
-  padding: 0px 5px 0px 5px;
-  margin: 0px;
-  background: rgb(255, 255, 255);
-  color: rgb(111, 73, 51);
-  min-width: 0px;
+  .remove-course {
+    display: inline;
+    padding: 0px 5px 0px 5px;
+    margin: 0px;
+    background: rgb(255, 255, 255);
+    color: rgb(111, 73, 51);
+    min-width: 0px;
+  }
 }

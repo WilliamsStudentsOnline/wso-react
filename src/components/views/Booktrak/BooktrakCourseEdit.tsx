@@ -13,11 +13,7 @@ const CourseRemove = ({
   onClick: React.MouseEventHandler<HTMLButtonElement>;
 }) => {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="booktrak-course-edit-remove-course"
-    >
+    <button type="button" onClick={onClick} className="remove-course">
       X
     </button>
   );
@@ -83,14 +79,14 @@ const CourseEdit = ({
   const courseSuggestions = () => {
     if (suggestions && suggestions.length > 0) {
       return (
-        <table className="booktrak-course-suggestions">
-          <tbody className="booktrak-course-suggestions-body">
+        <table className="course-suggestions">
+          <tbody>
             {suggestions.map((suggestion) => (
               <tr key={suggestion.id}>
                 <td>
                   <button
                     type="button"
-                    className="booktrak-course-suggestion-option"
+                    className="course-suggestion-option"
                     onClick={() => {
                       setSuggestions([]);
                       updateNewCourseString(suggestion.value ?? "");
@@ -110,11 +106,11 @@ const CourseEdit = ({
   };
 
   return (
-    <ul className="booktrak-course-edit-container">
-      <div className="booktrak-course-edit-search-container">
-        <li className="booktrak-course-edit-input-container">
+    <ul className="course-edit-container">
+      <div className="course-edit-search-container">
+        <li className="input-container">
           <input
-            className="booktrak-course-edit-input"
+            className="input"
             type="text"
             onChange={courseAutocomplete}
             placeholder="New Course"
@@ -133,9 +129,9 @@ const CourseEdit = ({
           Add Course
         </button>
       </div>
-      <div className="booktrak-course-edit-course-container">
+      <div className="course-container">
         {courses.map((course, i) => (
-          <li className="booktrak-course-edit-course" key={i}>
+          <li className="course" key={i}>
             {course.value}
             <CourseRemove onClick={() => removeCourseHandler(i)} />
           </li>

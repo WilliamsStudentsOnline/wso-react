@@ -89,8 +89,8 @@ const BooktrakHome = () => {
   };
 
   return (
-    <div className="booktrak-page-container">
-      <form onSubmit={submitHandler} className="booktrak-search-form">
+    <div className="booktrak-home-page-container">
+      <form onSubmit={submitHandler} className="search-form">
         <input
           className="search-bar"
           id="search"
