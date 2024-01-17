@@ -1,8 +1,11 @@
 // React imports
 import React, { useState } from "react";
+
 import { AutocompleteACEntry } from "wso-api-client/lib/services/types";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
+
+import "../../stylesheets/Booktrak.css";
 
 const CourseRemove = ({
   onClick,
@@ -10,7 +13,11 @@ const CourseRemove = ({
   onClick: React.MouseEventHandler<HTMLButtonElement>;
 }) => {
   return (
-    <button type="button" onClick={onClick} className="tag-remove">
+    <button
+      type="button"
+      onClick={onClick}
+      className="booktrak-course-edit-remove-course"
+    >
       X
     </button>
   );
@@ -76,14 +83,14 @@ const CourseEdit = ({
   const courseSuggestions = () => {
     if (suggestions && suggestions.length > 0) {
       return (
-        <table className="tag-suggestions">
-          <tbody>
+        <table className="booktrak-course-suggestions">
+          <tbody className="booktrak-course-suggestions-body">
             {suggestions.map((suggestion) => (
               <tr key={suggestion.id}>
                 <td>
                   <button
                     type="button"
-                    className="autocomplete-option"
+                    className="booktrak-course-suggestion-option"
                     onClick={() => {
                       setSuggestions([]);
                       updateNewCourseString(suggestion.value ?? "");
@@ -103,38 +110,37 @@ const CourseEdit = ({
   };
 
   return (
-    <ul
-      id="tag-list"
-      style={{
-        padding: 0,
-      }}
-    >
-      <li className="fb-tag" style={{ display: "flex", marginLeft: 0 }}>
-        <input
-          className="tag-input"
-          type="text"
-          onChange={courseAutocomplete}
-          placeholder="New Course"
-          maxLength={255}
-          size={20}
-          value={newCourseString}
-        />
-        <CourseRemove onClick={() => updateNewCourseString("")} />
-        {courseSuggestions()}
-      </li>
-      <button
-        type="button"
-        onClick={addCourseHandler}
-        disabled={newCourse === undefined}
-      >
-        Add Course
-      </button>
-      {courses.map((course, i) => (
-        <li className="fb-tag" key={i}>
-          {course.value}
-          <CourseRemove onClick={() => removeCourseHandler(i)} />
+    <ul className="booktrak-course-edit-container">
+      <div className="booktrak-course-edit-search-container">
+        <li className="booktrak-course-edit-input-container">
+          <input
+            className="booktrak-course-edit-input"
+            type="text"
+            onChange={courseAutocomplete}
+            placeholder="New Course"
+            maxLength={255}
+            size={20}
+            value={newCourseString}
+          />
+          <CourseRemove onClick={() => updateNewCourseString("")} />
+          {courseSuggestions()}
         </li>
-      ))}
+        <button
+          type="button"
+          onClick={addCourseHandler}
+          disabled={newCourse === undefined}
+        >
+          Add Course
+        </button>
+      </div>
+      <div className="booktrak-course-edit-course-container">
+        {courses.map((course, i) => (
+          <li className="booktrak-course-edit-course" key={i}>
+            {course.value}
+            <CourseRemove onClick={() => removeCourseHandler(i)} />
+          </li>
+        ))}
+      </div>
     </ul>
   );
 };
