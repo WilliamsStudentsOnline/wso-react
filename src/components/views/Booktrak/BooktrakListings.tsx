@@ -148,6 +148,7 @@ const BooktrakListings = ({
           courses={courses}
           updateCourses={updateCourses}
           placeholder="Filter By Course..."
+          courseLimit={1}
         />
       )}
       <PaginationButtons
