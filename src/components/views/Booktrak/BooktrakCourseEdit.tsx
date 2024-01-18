@@ -24,11 +24,13 @@ const CourseEdit = ({
   updateCourses,
   updateErrors,
   placeholder,
+  courseLimit,
 }: {
   courses: AutocompleteACEntry[];
   updateCourses: React.Dispatch<React.SetStateAction<AutocompleteACEntry[]>>;
   updateErrors?: React.Dispatch<React.SetStateAction<string[]>>;
   placeholder?: string;
+  courseLimit?: number;
 }) => {
   const wso = useAppSelector(getWSO);
   const [newCourseString, updateNewCourseString] = useState("");
@@ -107,6 +109,8 @@ const CourseEdit = ({
     return null;
   };
 
+  const atCourseLimit = (): boolean =>
+    courseLimit !== undefined && courses.length >= courseLimit;
   return (
     <ul className="course-edit-container">
       <div className="course-edit-search-container">
@@ -115,10 +119,17 @@ const CourseEdit = ({
             className="input"
             type="text"
             onChange={courseAutocomplete}
-            placeholder={placeholder ?? "Add New Course..."}
+            placeholder={
+              atCourseLimit()
+                ? `Limited to ${courseLimit} course${
+                    (courseLimit ?? 0) > 1 ? "s" : ""
+                  }. Delete a course to search.`
+                : placeholder ?? "Add New Course..."
+            }
             maxLength={255}
             size={20}
             value={newCourseString}
+            disabled={atCourseLimit()}
           />
           <CourseRemove onClick={() => updateNewCourseString("")} />
           {courseSuggestions()}
