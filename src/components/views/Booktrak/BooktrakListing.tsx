@@ -103,17 +103,16 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
     event.preventDefault();
 
     // Some error checking
+    if (!courses || courses.length === 0) {
+      updateErrors(["Please add at least one course!"]);
+      return;
+    }
     if (condition === ListingConditionEnum.Empty) {
       updateErrors(["Please enter the condition of the book!"]);
       return;
     }
     if (listingType === ListingTypeEnum.Empty) {
       updateErrors(["Please enter the type of listing!"]);
-      return;
-    }
-
-    if (!courses || courses.length === 0) {
-      updateErrors(["Please add at least one course!"]);
       return;
     }
 
