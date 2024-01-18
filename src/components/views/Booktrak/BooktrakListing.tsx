@@ -92,6 +92,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
       navigateTo("/error", { replace: true, state: { error } });
     }
   };
+
   const submitHandler: React.FormEventHandler<HTMLFormElement> = async (
     event
   ) => {

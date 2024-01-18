@@ -4,98 +4,138 @@ import React, { useState, useEffect } from "react";
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Additional Imports
 import {
   ModelsBook,
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
-import { BookConditionEnumToString } from "./BooktrakUtils";
+import PaginationButtons from "../../PaginationButtons";
+import BooktrakListingsTable from "./BooktrakListingsTable";
+import "../../stylesheets/Booktrak.css";
 
-const BooktrakListings = ({ book }: { book: ModelsBook }) => {
+const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
+const BooktrakListings = ({
+  book,
+  showBuyListings,
+  showSellListings,
+}: {
+  book?: ModelsBook;
+  showBuyListings?: boolean;
+  showSellListings?: boolean;
+}) => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
+  const [listings, updateListings] = useState<ModelsBookListing[]>([]);
   const [buyListings, updateBuyListings] = useState<ModelsBookListing[]>([]);
   const [sellListings, updateSellListings] = useState<ModelsBookListing[]>([]);
 
-  useEffect(() => {
-    const loadListings = async () => {
-      if (!book.id) {
-        return;
-      }
-      try {
-        const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
+  const [total, updateTotal] = useState(0);
+  const [currentPage, updateCurrentPage] = useState(0);
+  const maxListingsPerPage = 20;
+
+  const loadListings = async () => {
+    const params: {
+      bookID?: number;
+      listingType?: ModelsBookListing.ListingTypeEnum;
+      preload?: string[];
+      limit: number;
+      offset: number;
+    } = {
+      preload: ["user"],
+      limit: maxListingsPerPage,
+      offset: maxListingsPerPage * currentPage,
+    };
+    if (book?.id) {
+      params.bookID = book.id;
+    }
+
+    // if only one type of listing should be displayed
+    if (!showBuyListings || !showSellListings) {
+      params.listingType = showBuyListings
+        ? ListingTypeEnum.BUY
+        : ListingTypeEnum.SELL;
+      params.preload = ["user", "book"];
+    }
+
+    try {
+      if (showBuyListings && showSellListings) {
         const buyListingsResponse = await wso.booktrakService.listBookListings({
-          bookID: book.id,
+          ...params,
           listingType: ListingTypeEnum.BUY,
         });
         const sellListingsResponse = await wso.booktrakService.listBookListings(
           {
-            bookID: book.id,
+            ...params,
             listingType: ListingTypeEnum.SELL,
           }
         );
+
         updateBuyListings(buyListingsResponse.data ?? []);
         updateSellListings(sellListingsResponse.data ?? []);
-      } catch (error) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        navigateTo("/404", { replace: true });
-      }
-    };
-    loadListings();
-  }, [wso]);
+        updateTotal(
+          (buyListingsResponse.paginationTotal ?? 0) +
+            (sellListingsResponse.paginationTotal ?? 0)
+        );
+      } else {
+        const listingsResponse = await wso.booktrakService.listBookListings({
+          ...params,
+        });
 
-  const listingsTable = (listings: ModelsBookListing[]) => {
-    return (
-      <table>
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Condition</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          {listings &&
-            listings.map((listing, i) => {
-              return (
-                <tr key={i}>
-                  <td>
-                    <Link to={`/facebook/users/${listing.userID}`}>
-                      {listing.user?.name}
-                    </Link>
-                  </td>
-                  <td>
-                    {BookConditionEnumToString(
-                      listing.condition ?? ModelsBookListing.ConditionEnum.Empty
-                    )}
-                  </td>
-                  <td>{listing.description}</td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </table>
-    );
+        updateListings(listingsResponse.data ?? []);
+        updateTotal(listingsResponse.paginationTotal ?? 0);
+      }
+    } catch (error) {
+      navigateTo("/404", { replace: true, state: { error } });
+    }
   };
+
+  useEffect(() => {
+    loadListings();
+  }, [book, showBuyListings, showSellListings, currentPage, wso]);
+
+  if (!showBuyListings && !showSellListings) return <></>;
+  if (showBuyListings && showSellListings) {
+    return (
+      <div className="booktrak-listings-dual-display-container">
+        <div>
+          <h3>Buy Listings</h3>
+          <BooktrakListingsTable listings={buyListings} reducedListing />
+        </div>
+        <div>
+          <h3>Sell Listings</h3>
+          <BooktrakListingsTable listings={sellListings} reducedListing />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div
-      style={{
-        display: "flex",
-        paddingLeft: "10%",
-        paddingRight: "10%",
-        gap: "5%",
-      }}
-    >
-      <div>
-        <h3>Buy Listings</h3>
-        {listingsTable(buyListings)}
-      </div>
-      <div>
-        <h3>Sell Listings</h3>
-        {listingsTable(sellListings)}
-      </div>
+    <div className="booktrak-listings-container">
+      <h3 className="booktrak-inner-page-title">
+        {showBuyListings ? "Buy Listings" : "Sell Listings"}
+      </h3>
+      <PaginationButtons
+        selectionHandler={(newPage: number) => {
+          updateCurrentPage(newPage);
+        }}
+        clickHandler={(increment: number) => {
+          if (increment === -1 && currentPage > 0) {
+            updateCurrentPage(currentPage - 1);
+          } else if (
+            increment === 1 &&
+            total - (currentPage + 1) * maxListingsPerPage > 0
+          ) {
+            updateCurrentPage(currentPage + 1);
+          }
+        }}
+        page={currentPage}
+        total={total}
+        perPage={maxListingsPerPage}
+        showPages
+      />
+      <BooktrakListingsTable listings={listings} />
     </div>
   );
 };

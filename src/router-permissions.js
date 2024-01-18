@@ -12,6 +12,7 @@ import { containsOneOfScopes, getTokenLevel, scopes } from "./lib/general";
 
 // ! It is very important to update this with every new policy change
 const routePermissions = {
+  booktrak: { tokenLevel: 3 },
   bulletins: { scopes: [scopes.ScopeBulletin, scopes.ScopeUsers] },
   "bulletins.edit": {
     scopes: [scopes.ScopeBulletin, scopes.ScopeUsers],
