@@ -13,6 +13,7 @@ import FactrakCourse from "./FactrakCourse";
 import FactrakProfessor from "./FactrakProfessor";
 import FactrakSearch from "./FactrakSearch";
 import FactrakProfessorRankings from "./FactrakProfessorRankings";
+import FactrakCourseRankings from "./FactrakCourseRankings";
 import Error404 from "../Errors/Error404";
 
 // Redux/ Router imports
@@ -154,6 +155,22 @@ const FactrakMain = () => {
           element={
             <RequirePolicy token={token}>
               <FactrakProfessorRankings />
+            </RequirePolicy>
+          }
+        />
+        <Route
+          path="course-rankings"
+          element={
+            <RequirePolicy token={token}>
+              <FactrakCourseRankings />
+            </RequirePolicy>
+          }
+        />
+        <Route
+          path="course-rankings/:aos"
+          element={
+            <RequirePolicy token={token}>
+              <FactrakCourseRankings />
             </RequirePolicy>
           }
         />
