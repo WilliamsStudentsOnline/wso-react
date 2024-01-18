@@ -35,6 +35,12 @@
   text-transform: uppercase;
 }
 
+.info-blurb {
+  margin-left: 8.5298042998%;
+  width: 82.5%;
+  padding-bottom: 40px;
+}
+
 .booktrak-listings-page-container {
   margin-left: auto;
   margin-right: auto;
