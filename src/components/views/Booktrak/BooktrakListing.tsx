@@ -50,19 +50,28 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
         );
         const listingData = listingResponse.data;
 
+        const bookResponse = await wso.booktrakService.getBook(
+          listingData?.bookID ?? 0
+        );
+        if (
+          bookResponse.data?.id === undefined &&
+          bookResponse.data?.isbn13 === undefined
+        ) {
+          navigateTo("/error", { replace: true });
+        }
+
         updateListing(listingData ?? undefined);
         updateDescription(listingData?.description ?? "");
         updateCondition(listingData?.condition ?? ListingConditionEnum.Empty);
         updateListingType(listingData?.listingType ?? ListingTypeEnum.Empty);
-        updateBook(listingData?.book ?? {});
+        updateBook(bookResponse.data ?? {});
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     if (bookListingIDParam) loadListing(parseInt(bookListingIDParam, 10));
-
-    if (book?.id === undefined && book?.isbn13 === undefined) {
+    else if (book?.id === undefined && book?.isbn13 === undefined) {
       navigateTo("/error", { replace: true });
     }
   }, [bookListingIDParam, wso]);
@@ -129,18 +138,18 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
     }
 
     try {
+      const listingParams: BooktrakCreateBookListingParams = {
+        bookID,
+        condition: condition,
+        description: description,
+        listingType: listingType,
+      };
       if (edit && listing?.id) {
-        // TODO: Update listing
+        await wso.booktrakService.updateBookListing(listingParams, listing?.id);
       } else {
-        const listingParams: BooktrakCreateBookListingParams = {
-          bookID,
-          condition: condition,
-          description: description,
-          listingType: listingType,
-        };
         await wso.booktrakService.createBookListing(listingParams);
       }
-      navigateTo("/factrak/surveys");
+      navigateTo("/booktrak/edit");
     } catch (error) {
       // TODO: Add error type from wso-api-client
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -152,13 +161,9 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
   const listingTitle = () => {
     return (
       <>
-        {edit && listing ? (
-          <h3>
-            Editing listing of
-            {book.title}
-          </h3>
-        ) : null}
-        <h3>{`Creating listing for ${book.title}`}</h3>
+        <h3>{`${edit ? "Edit listing of " : "Creating listing for"} ${
+          book.title
+        }`}</h3>
       </>
     );
   };

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
-import { getWSO } from "../../../lib/authSlice";
+import { getCurrUser, getWSO } from "../../../lib/authSlice";
 import { useNavigate } from "react-router-dom";
 
 // Additional Imports
@@ -22,12 +22,15 @@ const BooktrakListings = ({
   book,
   showBuyListings,
   showSellListings,
+  showMyListings,
 }: {
   book?: ModelsBook;
   showBuyListings?: boolean;
   showSellListings?: boolean;
+  showMyListings?: boolean;
 }) => {
   const wso = useAppSelector(getWSO);
+  const currUser = useAppSelector(getCurrUser);
   const navigateTo = useNavigate();
   const [listings, updateListings] = useState<ModelsBookListing[]>([]);
   const [buyListings, updateBuyListings] = useState<ModelsBookListing[]>([]);
@@ -43,6 +46,7 @@ const BooktrakListings = ({
       bookID?: number;
       listingType?: ModelsBookListing.ListingTypeEnum;
       courseID?: number;
+      userID?: number;
       preload?: string[];
       limit: number;
       offset: number;
@@ -58,12 +62,20 @@ const BooktrakListings = ({
       params.courseID = courses[0].id;
     }
 
-    // if only one type of listing should be displayed
-    if (!showBuyListings || !showSellListings) {
-      params.listingType = showBuyListings
-        ? ListingTypeEnum.BUY
-        : ListingTypeEnum.SELL;
-      params.preload = ["user", "book"];
+    if (showMyListings) {
+      // showing current user's listings
+      params.userID = currUser?.id;
+      params.preload = ["book"];
+    } else {
+      params.preload = ["user"];
+
+      // only one type of listing is being displayed
+      if (!showBuyListings || !showSellListings) {
+        params.listingType = showBuyListings
+          ? ListingTypeEnum.BUY
+          : ListingTypeEnum.SELL;
+        params.preload.push("book");
+      }
     }
 
     try {
@@ -102,30 +114,42 @@ const BooktrakListings = ({
     loadListings();
   }, [book, courses, showBuyListings, showSellListings, currentPage, wso]);
 
-  if (!showBuyListings && !showSellListings) return <></>;
+  // return empty component when no options are given
+  if (!showBuyListings && !showSellListings && !showMyListings) return <></>;
+
+  // show book's buy & sell listings (on book page)
   if (showBuyListings && showSellListings) {
     return (
       <div className="booktrak-listings-dual-display-container">
         <div>
           <h3>Buy Listings</h3>
-          <BooktrakListingsTable listings={buyListings} reducedListing />
+          <BooktrakListingsTable listings={buyListings} includeUser />
         </div>
         <div>
           <h3>Sell Listings</h3>
-          <BooktrakListingsTable listings={sellListings} reducedListing />
+          <BooktrakListingsTable listings={sellListings} includeUser />
         </div>
       </div>
     );
   }
 
+  // buy/sell/my listings page
   return (
     <div className="booktrak-listings-page-container">
-      <h3>{showBuyListings ? "Buy Listings" : "Sell Listings"}</h3>
-      <CourseEdit
-        courses={courses}
-        updateCourses={updateCourses}
-        placeholder="Filter By Course..."
-      />
+      <h3>
+        {showMyListings
+          ? "My Listings"
+          : showBuyListings
+          ? "Buy Listings"
+          : "Sell Listings"}
+      </h3>
+      {!showMyListings && (
+        <CourseEdit
+          courses={courses}
+          updateCourses={updateCourses}
+          placeholder="Filter By Course..."
+        />
+      )}
       <PaginationButtons
         selectionHandler={(newPage: number) => {
           updateCurrentPage(newPage);
@@ -145,7 +169,13 @@ const BooktrakListings = ({
         perPage={maxListingsPerPage}
         showPages
       />
-      <BooktrakListingsTable listings={listings} />
+      <BooktrakListingsTable
+        listings={listings}
+        includeUser={!showMyListings}
+        includeEditButtons={showMyListings}
+        loadListings={() => loadListings()}
+        includeTitle
+      />
     </div>
   );
 };
