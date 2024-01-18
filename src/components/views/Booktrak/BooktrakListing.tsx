@@ -76,11 +76,11 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
     }
   }, [bookListingIDParam, wso]);
 
-  const createBook = async (book: ModelsBook, courseIDs: number[]) => {
+  const createBook = async (book: ModelsBook) => {
     const isbn = book.isbn13 ?? undefined;
 
     // Should never be reached
-    if (isbn === undefined || !courseIDs) {
+    if (isbn === undefined) {
       navigateTo("/error", { replace: true });
       return;
     }
@@ -90,11 +90,6 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
         isbn: isbn,
       });
       updateBook(resp.data ?? {});
-
-      const bookID = resp.data?.id;
-      if (bookID && courseIDs) {
-        wso.booktrakService.updateBookCourses(bookID, { courseIDs });
-      }
 
       return resp;
     } catch (error) {
@@ -124,10 +119,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
 
     let bookID = book?.id;
     if (!bookID) {
-      const resp = await createBook(
-        book,
-        courses.map((course) => course.id ?? -1)
-      );
+      const resp = await createBook(book);
       bookID = resp?.data?.id;
     }
 
@@ -138,6 +130,11 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
     }
 
     try {
+      const courseIDs = courses.map((course) => course.id ?? -1);
+      if (courseIDs) {
+        await wso.booktrakService.updateBookCourses(bookID, { courseIDs });
+      }
+
       const listingParams: BooktrakCreateBookListingParams = {
         bookID,
         condition: condition,
@@ -236,7 +233,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
 
                 <tr>
                   <td align="left">
-                    <strong>Are you offering to buy or sell this book?</strong>
+                    <strong>Are you offering to buy or sell this book?*</strong>
                   </td>
                   <td align="left">
                     <div>

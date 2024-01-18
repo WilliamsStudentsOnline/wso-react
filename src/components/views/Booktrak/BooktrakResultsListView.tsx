@@ -24,66 +24,71 @@ const BooktrakResultsListView = ({
       </thead>
       <tbody>
         {results &&
-          results.map((book, i) => (
-            <tr key={i}>
-              <td>
-                <Link to={"/booktrak/books"} state={{ book }}>
-                  {book.title}
-                </Link>
-              </td>
-              <td>{book.authors?.join(", ")}</td>
-              <td>{book.isbn13}</td>
-              <td style={{ textAlign: "center" }}>
-                <a href={book.infoLink}>
-                  {book.imageLink ? (
-                    <img
-                      src={book.imageLink}
-                      alt="No cover available"
-                      className="book-image"
-                      onMouseDown={(event) => {
-                        event.currentTarget.style.transform = "translateY(2px)";
-                        event.currentTarget.style.boxShadow =
-                          "0 0 5px rgba(0, 0, 0, 0.3)";
-                      }}
-                      onMouseUp={(event) => {
-                        event.currentTarget.style.transform = "translateY(0)";
-                        event.currentTarget.style.boxShadow =
-                          "0 2px 5px rgba(0, 0, 0, 0.3)";
-                      }}
-                    />
-                  ) : (
-                    <div className="book-missing-image">No Cover Available</div>
-                  )}
-                </a>
-              </td>
-              <td>
-                <Button
-                  onClick={() =>
-                    navigateTo(`/booktrak/listings/create`, {
-                      state: {
-                        book,
-                      },
-                    })
-                  }
-                  className="inline-button"
-                >
-                  Buy
-                </Button>{" "}
-                <Button
-                  onClick={() =>
-                    navigateTo(`/booktrak/listings/create`, {
-                      state: {
-                        book,
-                      },
-                    })
-                  }
-                  className="inline-button"
-                >
-                  Sell
-                </Button>{" "}
-              </td>
-            </tr>
-          ))}
+          results
+            .filter((book) => book.isbn13)
+            .map((book, i) => (
+              <tr key={i}>
+                <td>
+                  <Link to={"/booktrak/books"} state={{ book }}>
+                    {book.title}
+                  </Link>
+                </td>
+                <td>{book.authors?.join(", ")}</td>
+                <td>{book.isbn13}</td>
+                <td style={{ textAlign: "center" }}>
+                  <a href={book.infoLink}>
+                    {book.imageLink ? (
+                      <img
+                        src={book.imageLink}
+                        alt="No cover available"
+                        className="book-image"
+                        onMouseDown={(event) => {
+                          event.currentTarget.style.transform =
+                            "translateY(2px)";
+                          event.currentTarget.style.boxShadow =
+                            "0 0 5px rgba(0, 0, 0, 0.3)";
+                        }}
+                        onMouseUp={(event) => {
+                          event.currentTarget.style.transform = "translateY(0)";
+                          event.currentTarget.style.boxShadow =
+                            "0 2px 5px rgba(0, 0, 0, 0.3)";
+                        }}
+                      />
+                    ) : (
+                      <div className="book-missing-image">
+                        No Cover Available
+                      </div>
+                    )}
+                  </a>
+                </td>
+                <td>
+                  <Button
+                    onClick={() =>
+                      navigateTo(`/booktrak/listings/create`, {
+                        state: {
+                          book,
+                        },
+                      })
+                    }
+                    className="inline-button"
+                  >
+                    Buy
+                  </Button>{" "}
+                  <Button
+                    onClick={() =>
+                      navigateTo(`/booktrak/listings/create`, {
+                        state: {
+                          book,
+                        },
+                      })
+                    }
+                    className="inline-button"
+                  >
+                    Sell
+                  </Button>{" "}
+                </td>
+              </tr>
+            ))}
       </tbody>
     </table>
   );
