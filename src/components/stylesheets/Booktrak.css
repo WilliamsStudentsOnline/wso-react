@@ -1,10 +1,10 @@
-.booktrak-page-container {
+.booktrak-home-page-container {
   max-width: 68em;
   margin-left: auto;
   margin-right: auto;
 }
 
-.booktrak-search-form {
+.search-form {
   margin-left: 8.5298042998%;
   width: 82.5%;
   display: flex;
@@ -16,14 +16,14 @@
   }
 }
 
-.booktrak-book-image {
+.book-image {
   cursor: pointer;
   border-radius: 5px;
   transition: transform 0.3s, box-shadow 0.3s;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.booktrak-book-missing-image {
+.book-missing-image {
   display: inline-block;
   cursor: pointer;
   border-radius: 5px;
@@ -35,7 +35,7 @@
   text-transform: uppercase;
 }
 
-.booktrak-listings-container {
+.booktrak-listings-page-container {
   margin-left: auto;
   margin-right: auto;
   padding-bottom: 10px;

@@ -1,8 +1,11 @@
 // React imports
 import React, { useState } from "react";
+
 import { AutocompleteACEntry } from "wso-api-client/lib/services/types";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
+
+import "../../stylesheets/BooktrakCourseEdit.css";
 
 const CourseRemove = ({
   onClick,
@@ -10,7 +13,7 @@ const CourseRemove = ({
   onClick: React.MouseEventHandler<HTMLButtonElement>;
 }) => {
   return (
-    <button type="button" onClick={onClick} className="tag-remove">
+    <button type="button" onClick={onClick} className="remove-course">
       X
     </button>
   );
@@ -20,10 +23,12 @@ const CourseEdit = ({
   courses,
   updateCourses,
   updateErrors,
+  placeholder,
 }: {
   courses: AutocompleteACEntry[];
   updateCourses: React.Dispatch<React.SetStateAction<AutocompleteACEntry[]>>;
-  updateErrors: React.Dispatch<React.SetStateAction<string[]>>;
+  updateErrors?: React.Dispatch<React.SetStateAction<string[]>>;
+  placeholder?: string;
 }) => {
   const wso = useAppSelector(getWSO);
   const [newCourseString, updateNewCourseString] = useState("");
@@ -49,26 +54,11 @@ const CourseEdit = ({
     }
   };
 
-  //   // Unsure if this is the best way to implement this.
-  //   const updateCourses = async (updatedCourses) => {
-  //     const params = {
-  //       tags: updatedTags,
-  //     };
-
-  //     try {
-  //       await wso.userService.updateUserTags("me", params);
-  //       updateTags(updatedTags);
-  //       updateNewTag("");
-  //       updateErrors([]);
-  //     } catch (error) {
-  //       updateErrors([error.message]);
-  //     }
-  //   };
-
   const addCourseHandler = () => {
     if (newCourse) {
-      if (courses.filter((course) => course === newCourse).length) {
-        updateErrors(["Unable to add the same course twice."]);
+      if (courses.filter((course) => course.id === newCourse.id).length) {
+        if (updateErrors)
+          updateErrors(["Unable to add the same course twice."]);
         return;
       }
 
@@ -78,7 +68,7 @@ const CourseEdit = ({
       updateNewCourseString("");
       updateNewCourse(undefined);
     } else {
-      updateErrors([]);
+      if (updateErrors) updateErrors([]);
     }
   };
 
@@ -91,14 +81,14 @@ const CourseEdit = ({
   const courseSuggestions = () => {
     if (suggestions && suggestions.length > 0) {
       return (
-        <table className="tag-suggestions">
+        <table className="course-suggestions">
           <tbody>
             {suggestions.map((suggestion) => (
               <tr key={suggestion.id}>
                 <td>
                   <button
                     type="button"
-                    className="autocomplete-option"
+                    className="course-suggestion-option"
                     onClick={() => {
                       setSuggestions([]);
                       updateNewCourseString(suggestion.value ?? "");
@@ -118,38 +108,37 @@ const CourseEdit = ({
   };
 
   return (
-    <ul
-      id="tag-list"
-      style={{
-        padding: 0,
-      }}
-    >
-      <li className="fb-tag" style={{ display: "flex", marginLeft: 0 }}>
-        <input
-          className="tag-input"
-          type="text"
-          onChange={courseAutocomplete}
-          placeholder="New Course"
-          maxLength={255}
-          size={20}
-          value={newCourseString}
-        />
-        <CourseRemove onClick={() => updateNewCourseString("")} />
-        {courseSuggestions()}
-      </li>
-      <button
-        type="button"
-        onClick={addCourseHandler}
-        disabled={newCourse === undefined}
-      >
-        Add Course
-      </button>
-      {courses.map((course, i) => (
-        <li className="fb-tag" key={i}>
-          {course.value}
-          <CourseRemove onClick={() => removeCourseHandler(i)} />
+    <ul className="course-edit-container">
+      <div className="course-edit-search-container">
+        <li className="input-container">
+          <input
+            className="input"
+            type="text"
+            onChange={courseAutocomplete}
+            placeholder={placeholder ?? "Add New Course..."}
+            maxLength={255}
+            size={20}
+            value={newCourseString}
+          />
+          <CourseRemove onClick={() => updateNewCourseString("")} />
+          {courseSuggestions()}
         </li>
-      ))}
+        <button
+          type="button"
+          onClick={addCourseHandler}
+          disabled={newCourse === undefined}
+        >
+          Add Course
+        </button>
+      </div>
+      <div className="course-container">
+        {courses.map((course, i) => (
+          <li className="course" key={i}>
+            {course.value}
+            <CourseRemove onClick={() => removeCourseHandler(i)} />
+          </li>
+        ))}
+      </div>
     </ul>
   );
 };

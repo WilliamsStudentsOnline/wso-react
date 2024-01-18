@@ -39,7 +39,7 @@ const BooktrakResultsListView = ({
                     <img
                       src={book.imageLink}
                       alt="No cover available"
-                      className="booktrak-book-image"
+                      className="book-image"
                       onMouseDown={(event) => {
                         event.currentTarget.style.transform = "translateY(2px)";
                         event.currentTarget.style.boxShadow =
@@ -52,9 +52,7 @@ const BooktrakResultsListView = ({
                       }}
                     />
                   ) : (
-                    <div className="booktrak-book-missing-image">
-                      No Cover Available
-                    </div>
+                    <div className="book-missing-image">No Cover Available</div>
                   )}
                 </a>
               </td>
