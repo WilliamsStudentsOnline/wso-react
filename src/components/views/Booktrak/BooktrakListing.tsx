@@ -112,7 +112,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
       return;
     }
 
-    if (!courses) {
+    if (!courses || courses.length === 0) {
       updateErrors(["Please add at least one course!"]);
       return;
     }
