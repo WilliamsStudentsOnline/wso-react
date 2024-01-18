@@ -182,7 +182,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
               <tbody>
                 <tr>
                   <td align="left">
-                    <strong>What courses use this book?*</strong>
+                    <strong>What courses use this book?</strong>
                   </td>
                   <td align="left">
                     <CourseEdit
