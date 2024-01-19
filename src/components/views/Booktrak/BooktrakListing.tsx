@@ -18,6 +18,7 @@ import {
   BookConditionEnumToString,
   BookConditionStringToEnum,
 } from "./BooktrakUtils";
+import Tooltip from "../../Tooltip";
 
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const ListingConditionEnum = ModelsBookListing.ConditionEnum;
@@ -179,6 +180,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
                 <tr>
                   <td align="left">
                     <strong>What courses use this book?*</strong>
+                    <Tooltip message="Select the course(s) that you originally bought this book for (and that others might want to buy this book for in the future)" />
                   </td>
                   <td align="left">
                     <CourseEdit
@@ -192,6 +194,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
                 <tr>
                   <td align="left">
                     <strong>What is the condition of the book?*</strong>
+                    <Tooltip message="Select a book condition ranging from poor to new. This is somewhat subjective, but use your best judgement and please be honest." />
                   </td>
                   <td align="left">
                     <div>
