@@ -9,7 +9,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 // Additional Imports
 import { ModelsBook } from "wso-api-client/lib/services/types";
 import "../../stylesheets/Booktrak.css";
-import BooktrakResultsListView from "./BooktrakResultsListView";
+import BooktrakResultsListView from "./BooktrakBookSearchResults";
 
 const BooktrakHome = () => {
   const wso = useAppSelector(getWSO);

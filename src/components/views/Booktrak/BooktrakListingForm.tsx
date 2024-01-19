@@ -13,7 +13,7 @@ import {
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
 import { BooktrakBookState } from "./BooktrakBook";
-import CourseEdit from "./BooktrakCourseEdit";
+import CourseEdit from "./BooktrakCourseSearch";
 import {
   BookConditionEnumToString,
   BookConditionStringToEnum,

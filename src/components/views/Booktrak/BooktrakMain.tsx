@@ -7,9 +7,9 @@ import Error404 from "../Errors/Error404";
 // External Imports
 import { Routes, Route } from "react-router-dom";
 import BooktrakLayout from "./BooktrakLayout";
-import BooktrakHome from "./BooktrakHome";
+import BooktrakHome from "./BooktrakSearch";
 import BooktrakBook from "./BooktrakBook";
-import BooktrakListing from "./BooktrakListing";
+import BooktrakListing from "./BooktrakListingForm";
 import BooktrakListings from "./BooktrakListings";
 
 const BooktrakMain = () => {

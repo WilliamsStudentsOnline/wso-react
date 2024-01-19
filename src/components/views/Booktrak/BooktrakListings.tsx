@@ -15,7 +15,7 @@ import {
 import PaginationButtons from "../../PaginationButtons";
 import BooktrakListingsTable from "./BooktrakListingsTable";
 import "../../stylesheets/Booktrak.css";
-import CourseEdit from "./BooktrakCourseEdit";
+import CourseEdit from "./BooktrakCourseSearch";
 
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const BooktrakListings = ({
