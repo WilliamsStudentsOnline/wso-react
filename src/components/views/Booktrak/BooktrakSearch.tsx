@@ -9,9 +9,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 // Additional Imports
 import { ModelsBook } from "wso-api-client/lib/services/types";
 import "../../stylesheets/Booktrak.css";
-import BooktrakResultsListView from "./BooktrakBookSearchResults";
+import BooktrakBookSearchResults from "./BooktrakBookSearchResults";
 
-const BooktrakHome = () => {
+const BooktrakSearch = () => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const [searchParams] = useSearchParams();
@@ -79,7 +79,7 @@ const BooktrakHome = () => {
         </>
       );
 
-    return BooktrakResultsListView({ results, navigateTo });
+    return BooktrakBookSearchResults({ results, navigateTo });
   };
 
   const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
@@ -131,4 +131,4 @@ const BooktrakHome = () => {
   );
 };
 
-export default BooktrakHome;
+export default BooktrakSearch;

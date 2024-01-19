@@ -15,7 +15,7 @@ import {
 import PaginationButtons from "../../PaginationButtons";
 import BooktrakListingsTable from "./BooktrakListingsTable";
 import "../../stylesheets/Booktrak.css";
-import CourseEdit from "./BooktrakCourseSearch";
+import BooktrakCourseSearch from "./BooktrakCourseSearch";
 
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const BooktrakListings = ({
@@ -144,7 +144,7 @@ const BooktrakListings = ({
           : "Sell Listings"}
       </h3>
       {!showMyListings && (
-        <CourseEdit
+        <BooktrakCourseSearch
           courses={courses}
           updateCourses={updateCourses}
           placeholder="Filter By Course..."
