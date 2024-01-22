@@ -21,6 +21,7 @@ import {
   BookConditionStringToEnum,
 } from "./BooktrakUtils";
 import Tooltip from "../../Tooltip";
+import BooktrakConditionSelection from "./BooktrakConditionSelection";
 
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const BooktrakListings = ({
@@ -187,74 +188,20 @@ const BooktrakListings = ({
                 Minimum Condition
                 <Tooltip message="The worst book condition that you would still consider buying" />
               </h3>
-              <select
-                className="select-course-info"
-                onChange={(event) => {
-                  updateMinCondition(
-                    BookConditionStringToEnum(event.target.value)
-                  );
-                }}
-                value={BookConditionEnumToString(minCondition)}
-              >
-                <option value="" disabled hidden>
-                  Select condition
-                </option>
-                <option value="Poor" key="Poor">
-                  Poor
-                </option>
-                <option value="Fair" key="Fair">
-                  Fair
-                </option>
-                <option value="Good" key="Good">
-                  Good
-                </option>
-                <option value="Very Good" key="Very Good">
-                  Very Good
-                </option>
-                <option value="Like New" key="Like New">
-                  Like New
-                </option>
-                <option value="New" key="New">
-                  New
-                </option>
-              </select>
+              <BooktrakConditionSelection
+                condition={minCondition}
+                updateCondition={updateMinCondition}
+              />
             </div>
             <div className="inner-container">
               <h3>
                 Maximum Condition
                 <Tooltip message="The best book condition that you would still consider buying (books with worse conditions may be less expensive)" />
               </h3>
-              <select
-                className="select-course-info"
-                onChange={(event) => {
-                  updateMaxCondition(
-                    BookConditionStringToEnum(event.target.value)
-                  );
-                }}
-                value={BookConditionEnumToString(maxCondition)}
-              >
-                <option value="" disabled hidden>
-                  Select condition
-                </option>
-                <option value="Poor" key="Poor">
-                  Poor
-                </option>
-                <option value="Fair" key="Fair">
-                  Fair
-                </option>
-                <option value="Good" key="Good">
-                  Good
-                </option>
-                <option value="Very Good" key="Very Good">
-                  Very Good
-                </option>
-                <option value="Like New" key="Like New">
-                  Like New
-                </option>
-                <option value="New" key="New">
-                  New
-                </option>
-              </select>
+              <BooktrakConditionSelection
+                condition={maxCondition}
+                updateCondition={updateMaxCondition}
+              />
             </div>
           </div>
         </div>
