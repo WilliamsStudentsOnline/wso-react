@@ -54,3 +54,31 @@
   padding-right: 10%;
   gap: 5%;
 }
+
+.condition-selection-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+
+  .inner-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .tooltip {
+    line-height: 9px;
+    padding: 0px;
+  }
+
+  .select-course-info {
+    margin-right: 5px;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: normal;
+    margin-right: 5px;
+  }
+}
