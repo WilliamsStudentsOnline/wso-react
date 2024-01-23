@@ -13,7 +13,7 @@ import {
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
 import { BooktrakBookState } from "./BooktrakBook";
-import CourseEdit from "./BooktrakCourseEdit";
+import BooktrakCourseSearch from "./BooktrakCourseSearch";
 import {
   BookConditionEnumToString,
   BookConditionStringToEnum,
@@ -22,7 +22,7 @@ import Tooltip from "../../Tooltip";
 
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const ListingConditionEnum = ModelsBookListing.ConditionEnum;
-const BooktrakListing = ({ edit }: { edit: boolean }) => {
+const BooktrakListingForm = ({ edit }: { edit: boolean }) => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const params = useParams();
@@ -183,7 +183,7 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
                     <Tooltip message="Select the course(s) that you originally bought this book for (and that others might want to buy this book for in the future)" />
                   </td>
                   <td align="left">
-                    <CourseEdit
+                    <BooktrakCourseSearch
                       courses={courses}
                       updateCourses={updateCourses}
                       updateErrors={updateErrors}
@@ -298,4 +298,4 @@ const BooktrakListing = ({ edit }: { edit: boolean }) => {
   );
 };
 
-export default BooktrakListing;
+export default BooktrakListingForm;

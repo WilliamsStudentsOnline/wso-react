@@ -4,7 +4,7 @@ import { ModelsBook } from "wso-api-client/lib/services/types";
 import Button from "../../Components";
 import "../../stylesheets/Booktrak.css";
 
-const BooktrakResultsListView = ({
+const BooktrakBookSearchResults = ({
   results,
   navigateTo,
 }: {
@@ -94,4 +94,4 @@ const BooktrakResultsListView = ({
   );
 };
 
-export default BooktrakResultsListView;
+export default BooktrakBookSearchResults;
