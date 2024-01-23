@@ -16,6 +16,12 @@ import PaginationButtons from "../../PaginationButtons";
 import BooktrakListingsTable from "./BooktrakListingsTable";
 import "../../stylesheets/Booktrak.css";
 import BooktrakCourseSearch from "./BooktrakCourseSearch";
+import {
+  BookConditionEnumToString,
+  BookConditionStringToEnum,
+} from "./BooktrakUtils";
+import Tooltip from "../../Tooltip";
+import BooktrakConditionSelection from "./BooktrakConditionSelection";
 
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const BooktrakListings = ({
@@ -36,6 +42,14 @@ const BooktrakListings = ({
   const [buyListings, updateBuyListings] = useState<ModelsBookListing[]>([]);
   const [sellListings, updateSellListings] = useState<ModelsBookListing[]>([]);
   const [courses, updateCourses] = useState<AutocompleteACEntry[]>([]);
+  const [minCondition, updateMinCondition] =
+    useState<ModelsBookListing.ConditionEnum>(
+      ModelsBookListing.ConditionEnum.Empty
+    );
+  const [maxCondition, updateMaxCondition] =
+    useState<ModelsBookListing.ConditionEnum>(
+      ModelsBookListing.ConditionEnum.Empty
+    );
 
   const [total, updateTotal] = useState(0);
   const [currentPage, updateCurrentPage] = useState(0);
@@ -48,6 +62,8 @@ const BooktrakListings = ({
       courseID?: number;
       userID?: number;
       preload?: string[];
+      minCondition?: ModelsBookListing.ConditionEnum;
+      maxCondition?: ModelsBookListing.ConditionEnum;
       limit: number;
       offset: number;
     } = {
@@ -57,6 +73,12 @@ const BooktrakListings = ({
     };
     if (book?.id) {
       params.bookID = book.id;
+    }
+    if (minCondition !== ModelsBookListing.ConditionEnum.Empty) {
+      params.minCondition = minCondition;
+    }
+    if (maxCondition !== ModelsBookListing.ConditionEnum.Empty) {
+      params.maxCondition = maxCondition;
     }
     if (courses.length > 0) {
       params.courseID = courses[0].id;
@@ -112,7 +134,16 @@ const BooktrakListings = ({
 
   useEffect(() => {
     loadListings();
-  }, [book, courses, showBuyListings, showSellListings, currentPage, wso]);
+  }, [
+    book,
+    minCondition,
+    maxCondition,
+    courses,
+    showBuyListings,
+    showSellListings,
+    currentPage,
+    wso,
+  ]);
 
   // return empty component when no options are given
   if (!showBuyListings && !showSellListings && !showMyListings) return <></>;
@@ -144,12 +175,36 @@ const BooktrakListings = ({
           : "Sell Listings"}
       </h3>
       {!showMyListings && (
-        <BooktrakCourseSearch
-          courses={courses}
-          updateCourses={updateCourses}
-          placeholder="Filter By Course..."
-          courseLimit={1}
-        />
+        <div>
+          <BooktrakCourseSearch
+            courses={courses}
+            updateCourses={updateCourses}
+            placeholder="Filter By Course..."
+            courseLimit={1}
+          />
+          <div className="condition-selection-container">
+            <div className="inner-container">
+              <h3>
+                Minimum Condition
+                <Tooltip message="The worst book condition that you would still consider buying" />
+              </h3>
+              <BooktrakConditionSelection
+                condition={minCondition}
+                updateCondition={updateMinCondition}
+              />
+            </div>
+            <div className="inner-container">
+              <h3>
+                Maximum Condition
+                <Tooltip message="The best book condition that you would still consider buying (books with worse conditions may be less expensive)" />
+              </h3>
+              <BooktrakConditionSelection
+                condition={maxCondition}
+                updateCondition={updateMaxCondition}
+              />
+            </div>
+          </div>
+        </div>
       )}
       <PaginationButtons
         selectionHandler={(newPage: number) => {
