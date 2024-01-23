@@ -7,6 +7,7 @@ import {
 } from "../../../lib/featureFlagSlice";
 import { RootState } from "../../../lib/store";
 import { useAppDispatch, useAppSelector } from "../../../lib/store";
+import "../../stylesheets/Dashboard.css";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -18,23 +19,45 @@ const Dashboard = () => {
     dispatch(updateFeatureFlag({ flag: myflag, value: newState }));
   };
 
+  // const enableFAQ = useAppSelector(
+  //   (state) => state.featureFlagState["enableFAQ"]
+  // );
+
   return (
-    <div>
-      <p>Dashboard</p>
-      {Object.entries(featureFlagState).map(([key, value]) => (
-        <div key={key}>
-          {Object.entries(FFState).map(([stateKey, stateValue]) => (
-            <button
-              key={key + stateKey}
-              onClick={() =>
-                setFeatureFlag(key as keyof FeatureFlag, stateKey as FFState)
-              }
-            >
-              {"Set " + key.slice(6, key.length) + " to " + stateKey}
-            </button>
-          ))}
-        </div>
-      ))}
+    <div className="dash-body">
+      <h2 className="text-center" id="logotype">
+        Admin Dashboard
+      </h2>
+      <div className="dash-button-container">
+        <h4 className="dash-section" id="tagline">
+          Feature Flags
+        </h4>
+
+        {Object.entries(featureFlagState).map(
+          ([key, value]) =>
+            key[0] !== "_" && (
+              <div key={key} className="dash-flag">
+                <p className="feature-lab">{key.slice(6, key.length)}:</p>
+                {Object.entries(FFState).map(([stateKey, stateValue]) => (
+                  <button
+                    key={key + stateKey}
+                    id={value === stateValue ? "dash-hot" : "dash-cold"}
+                    className={"dash-button"}
+                    onClick={() =>
+                      // console.log(value, stateValue)
+                      setFeatureFlag(
+                        key as keyof FeatureFlag,
+                        stateKey as FFState
+                      )
+                    }
+                  >
+                    {"Set " + stateKey}
+                  </button>
+                ))}
+              </div>
+            )
+        )}
+      </div>
     </div>
   );
 };

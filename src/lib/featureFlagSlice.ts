@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// const API_ADDRESS = "http://localhost:8080";
-
 export enum FFState {
   Enabled = "Enabled",
   Disabled = "Disabled",
@@ -38,7 +36,5 @@ const featureFlagSlice = createSlice({
 });
 
 export const { updateFeatureFlag } = featureFlagSlice.actions;
-
-// export const getFeatureFlag = (state: FeatureFlagsState, flag: keyof FeatureFlagsState) => featureFlagsState[flag];
 
 export default featureFlagSlice.reducer;
