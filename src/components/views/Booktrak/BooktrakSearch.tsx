@@ -7,7 +7,10 @@ import { getWSO } from "../../../lib/authSlice";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 // Additional Imports
-import { ModelsBook } from "wso-api-client/lib/services/types";
+import {
+  ModelsBook,
+  ModelsBookListing,
+} from "wso-api-client/lib/services/types";
 import "../../stylesheets/Booktrak.css";
 import BooktrakBookSearchResults from "./BooktrakBookSearchResults";
 
@@ -18,6 +21,9 @@ const BooktrakSearch = () => {
   const [query, updateQuery] = useState("");
 
   const [results, updateResults] = useState<ModelsBook[]>([]);
+  const [listingResults, updateListingResults] = useState<
+    (ModelsBookListing[] | undefined)[]
+  >(new Array(20));
   const resultsPerPage = 20;
   const [total, updateTotal] = useState(0);
   const [isResultsLoading, updateIsResultsLoading] = useState(false);
@@ -40,8 +46,26 @@ const BooktrakSearch = () => {
       const resultsResponse = await wso.booktrakService.searchBooks(
         queryParams
       );
-      updateResults(resultsResponse.data ?? []);
-      updateTotal(resultsResponse.data?.length ?? 0);
+      const responseData =
+        resultsResponse.data?.filter((book) => book.isbn13) ?? [];
+
+      // get listings associated with books
+      for (let i = 0; i < responseData.length; i++) {
+        wso.booktrakService
+          .listBookListings({
+            isbn: responseData[i].isbn13,
+          })
+          .then((response) => {
+            updateListingResults((prevResults) => {
+              const newResults = [...prevResults];
+              newResults[i] = response.data ?? [];
+              return newResults;
+            });
+          });
+      }
+
+      updateResults(responseData);
+      updateTotal(responseData.length ?? 0);
       updateIsResultsLoading(false);
     } catch {
       updateResults([]);
@@ -79,7 +103,7 @@ const BooktrakSearch = () => {
         </>
       );
 
-    return BooktrakBookSearchResults({ results, navigateTo });
+    return BooktrakBookSearchResults({ results, listingResults, navigateTo });
   };
 
   const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
@@ -95,7 +119,7 @@ const BooktrakSearch = () => {
           className="search-bar"
           id="search"
           type="search"
-          placeholder="Search Booktrak"
+          placeholder="Search for a book..."
           autoFocus
           onChange={(event) => updateQuery(event.target.value)}
           value={query}

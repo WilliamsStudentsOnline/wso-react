@@ -1,16 +1,29 @@
 import React from "react";
 import { Link, NavigateFunction } from "react-router-dom";
-import { ModelsBook } from "wso-api-client/lib/services/types";
+import {
+  ModelsBook,
+  ModelsBookListing,
+} from "wso-api-client/lib/services/types";
 import Button from "../../Components";
 import "../../stylesheets/Booktrak.css";
 
 const BooktrakBookSearchResults = ({
   results,
+  listingResults,
   navigateTo,
 }: {
   results: ModelsBook[];
+  listingResults: (ModelsBookListing[] | undefined)[];
   navigateTo: NavigateFunction;
 }) => {
+  const filterListings = (
+    listings: ModelsBookListing[] | undefined,
+    listingType: ModelsBookListing.ListingTypeEnum
+  ) => {
+    if (!listings || listings.length === 0) return [];
+    return listings.filter((listing) => listing.listingType === listingType);
+  };
+
   return (
     <table>
       <thead>
@@ -19,7 +32,8 @@ const BooktrakBookSearchResults = ({
           <th>Authors</th>
           <th className="unix-column">ISBN</th>
           <th>Cover</th>
-          <th>Buy/Sell</th>
+          <th>Buy/Sell Listings</th>
+          <th>Create Buy/Sell Listing</th>
         </tr>
       </thead>
       <tbody>
@@ -62,6 +76,29 @@ const BooktrakBookSearchResults = ({
                   </a>
                 </td>
                 <td>
+                  {(listingResults[i]?.length ?? 0) > 0 ? (
+                    <Link to={"/booktrak/books"} state={{ book }}>
+                      Browse{" "}
+                      {
+                        filterListings(
+                          listingResults[i],
+                          ModelsBookListing.ListingTypeEnum.BUY
+                        ).length
+                      }{" "}
+                      buy listings and{" "}
+                      {
+                        filterListings(
+                          listingResults[i],
+                          ModelsBookListing.ListingTypeEnum.SELL
+                        ).length
+                      }{" "}
+                      sell listings
+                    </Link>
+                  ) : (
+                    "This book currently has no listings"
+                  )}
+                </td>
+                <td>
                   <Button
                     onClick={() =>
                       navigateTo(`/booktrak/listings/create`, {
@@ -70,10 +107,10 @@ const BooktrakBookSearchResults = ({
                         },
                       })
                     }
-                    className="inline-button"
+                    className="inline-button create-listing-button"
                   >
                     Buy
-                  </Button>{" "}
+                  </Button>
                   <Button
                     onClick={() =>
                       navigateTo(`/booktrak/listings/create`, {
@@ -82,10 +119,10 @@ const BooktrakBookSearchResults = ({
                         },
                       })
                     }
-                    className="inline-button"
+                    className="inline-button create-listing-button"
                   >
                     Sell
-                  </Button>{" "}
+                  </Button>
                 </td>
               </tr>
             ))}

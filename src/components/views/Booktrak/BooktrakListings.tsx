@@ -16,10 +16,6 @@ import PaginationButtons from "../../PaginationButtons";
 import BooktrakListingsTable from "./BooktrakListingsTable";
 import "../../stylesheets/Booktrak.css";
 import BooktrakCourseSearch from "./BooktrakCourseSearch";
-import {
-  BookConditionEnumToString,
-  BookConditionStringToEnum,
-} from "./BooktrakUtils";
 import Tooltip from "../../Tooltip";
 import BooktrakConditionSelection from "./BooktrakConditionSelection";
 
