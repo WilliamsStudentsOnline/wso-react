@@ -25,7 +25,7 @@ const featureFlagSlice = createSlice({
   name: "featureFlags",
   initialState,
   reducers: {
-    toggleFeatureFlag: (
+    updateFeatureFlag: (
       state,
       action: PayloadAction<{ flag: keyof FeatureFlag; value: FFState }>
     ) => {
@@ -37,7 +37,7 @@ const featureFlagSlice = createSlice({
   },
 });
 
-export const { toggleFeatureFlag } = featureFlagSlice.actions;
+export const { updateFeatureFlag } = featureFlagSlice.actions;
 
 // export const getFeatureFlag = (state: FeatureFlagsState, flag: keyof FeatureFlagsState) => featureFlagsState[flag];
 

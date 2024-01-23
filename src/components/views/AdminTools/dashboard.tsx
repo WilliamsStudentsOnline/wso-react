@@ -2,7 +2,7 @@
 import React from "react";
 import {
   FFState,
-  toggleFeatureFlag,
+  updateFeatureFlag,
   FeatureFlag,
 } from "../../../lib/featureFlagSlice";
 import { RootState } from "../../../lib/store";
@@ -15,7 +15,7 @@ const Dashboard = () => {
   );
 
   const setFeatureFlag = (myflag: keyof FeatureFlag, newState: FFState) => {
-    dispatch(toggleFeatureFlag({ flag: myflag, value: newState }));
+    dispatch(updateFeatureFlag({ flag: myflag, value: newState }));
   };
 
   return (

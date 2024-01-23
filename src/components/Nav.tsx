@@ -32,7 +32,6 @@ const FeatureFlagElement: React.FC<FeatureFlagElementProps> = ({
 
   return (
     <div className="nav_feature_div">
-      {console.log(enabled)}
       {enabled === FFState.Enabled ? (
         <li className="nav_feature_item">{element}</li>
       ) : null}
@@ -152,22 +151,6 @@ const Nav = () => {
               element={<Link to="about">About</Link>}
               flag="enableAbout"
             />
-
-            {/* {featureFlagElement(
-              <a href="/wiki/">Wiki</a>,
-              "enableWiki",
-
-
-              // getFeatureFlag(currentState, "enableWiki")
-            )}
-
-            {featureFlagElement(
-              <Link to="about">About</Link>,
-              "enableAbout",
-              
-
-              // getFeatureFlag(currentState, "enableAbout")
-            )} */}
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
             </li>
