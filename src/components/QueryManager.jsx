@@ -34,35 +34,35 @@ const QueryManager = ({
   // name
   if (name.trim() !== "") {
     str += prior ? " AND (" : "(";
-    str += 'name: "${name}")';
+    str += `name: "${name}")`;
     prior = true;
   }
 
   // unix
   if (unix.trim() !== "") {
     str += prior ? " AND (" : "(";
-    str += 'unix: "${unix}")';
+    str += `unix: "${unix}")`;
     prior = true;
   }
 
   // country
   if (country.trim() !== "") {
     str += prior ? " AND (" : "(";
-    str += 'country: "${country}")';
+    str += `country: "${country}")`;
     prior = true;
   }
 
   // state
   if (state !== "") {
     str += prior ? " AND (" : "(";
-    str += 'state: "${state}")';
+    str += `state: "${state}")`;
     prior = true;
   }
 
   // town
   if (city.trim() !== "") {
     str += prior ? " AND (" : "(";
-    str += 'city: "${city}")';
+    str += `city: "${city}")`;
     prior = true;
   }
 
@@ -111,7 +111,7 @@ const QueryManager = ({
   // building
   if (building.trim() !== "") {
     str += prior ? " AND (" : "(";
-    str += 'bldg: "${building}")';
+    str += `bldg: "${building}")`;
   }
 
   // warning conditions
