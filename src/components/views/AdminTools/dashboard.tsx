@@ -19,10 +19,6 @@ const Dashboard = () => {
     dispatch(updateFeatureFlag({ flag: myflag, value: newState }));
   };
 
-  // const enableFAQ = useAppSelector(
-  //   (state) => state.featureFlagState["enableFAQ"]
-  // );
-
   return (
     <div className="dash-body">
       <h2 className="text-center" id="logotype">
@@ -44,7 +40,6 @@ const Dashboard = () => {
                     id={value === stateValue ? "dash-hot" : "dash-cold"}
                     className={"dash-button"}
                     onClick={() =>
-                      // console.log(value, stateValue)
                       setFeatureFlag(
                         key as keyof FeatureFlag,
                         stateKey as FFState
