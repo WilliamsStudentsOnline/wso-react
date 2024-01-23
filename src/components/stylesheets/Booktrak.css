@@ -46,6 +46,11 @@
   margin-right: auto;
   padding-bottom: 10px;
   max-width: 57em;
+
+  .title-container {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .booktrak-listings-dual-display-container {
