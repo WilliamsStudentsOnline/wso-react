@@ -18,6 +18,7 @@ import "../../stylesheets/Booktrak.css";
 import BooktrakCourseSearch from "./BooktrakCourseSearch";
 import Tooltip from "../../Tooltip";
 import BooktrakConditionSelection from "./BooktrakConditionSelection";
+import Button from "../../Button";
 
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const BooktrakListings = ({
@@ -149,11 +150,41 @@ const BooktrakListings = ({
     return (
       <div className="booktrak-listings-dual-display-container">
         <div>
-          <h3>Buy Listings</h3>
+          <div className="title-container">
+            <h3>Buy Listings</h3>
+            <Button
+              onClick={() =>
+                navigateTo(`/booktrak/listings/create`, {
+                  state: {
+                    book,
+                    listingType: ModelsBookListing.ListingTypeEnum.BUY,
+                  },
+                })
+              }
+              className="inline-button"
+            >
+              Create Buy Listing
+            </Button>
+          </div>
           <BooktrakListingsTable listings={buyListings} includeUser />
         </div>
         <div>
-          <h3>Sell Listings</h3>
+          <div className="title-container">
+            <h3>Sell Listings</h3>
+            <Button
+              onClick={() =>
+                navigateTo(`/booktrak/listings/create`, {
+                  state: {
+                    book,
+                    listingType: ModelsBookListing.ListingTypeEnum.SELL,
+                  },
+                })
+              }
+              className="inline-button"
+            >
+              Create Sell Listing
+            </Button>
+          </div>
           <BooktrakListingsTable listings={sellListings} includeUser />
         </div>
       </div>

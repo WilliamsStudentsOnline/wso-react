@@ -105,6 +105,7 @@ const BooktrakBookSearchResults = ({
                       navigateTo(`/booktrak/listings/create`, {
                         state: {
                           book,
+                          listingType: ModelsBookListing.ListingTypeEnum.BUY,
                         },
                       })
                     }
@@ -117,6 +118,7 @@ const BooktrakBookSearchResults = ({
                       navigateTo(`/booktrak/listings/create`, {
                         state: {
                           book,
+                          listingType: ModelsBookListing.ListingTypeEnum.SELL,
                         },
                       })
                     }
