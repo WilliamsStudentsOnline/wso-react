@@ -23,13 +23,18 @@ const BooktrakBookSearchResults = ({
     if (!listings || listings.length === 0) return [];
     return listings.filter((listing) => listing.listingType === listingType);
   };
+  const buyListings = listingResults.map((listing) =>
+    filterListings(listing, ModelsBookListing.ListingTypeEnum.BUY)
+  );
+  const sellListings = listingResults.map((listing) =>
+    filterListings(listing, ModelsBookListing.ListingTypeEnum.SELL)
+  );
 
   return (
     <table>
       <thead>
         <tr>
           <th>Title</th>
-          <th>Authors</th>
           <th className="unix-column">ISBN</th>
           <th>Cover</th>
           <th>Buy/Sell Listings</th>
@@ -46,8 +51,9 @@ const BooktrakBookSearchResults = ({
                   <Link to={"/booktrak/books"} state={{ book }}>
                     {book.title}
                   </Link>
+                  <br />
+                  by {book.authors?.join(", ")}
                 </td>
-                <td>{book.authors?.join(", ")}</td>
                 <td>{book.isbn13}</td>
                 <td style={{ textAlign: "center" }}>
                   <a href={book.infoLink}>
@@ -78,21 +84,16 @@ const BooktrakBookSearchResults = ({
                 <td>
                   {(listingResults[i]?.length ?? 0) > 0 ? (
                     <Link to={"/booktrak/books"} state={{ book }}>
-                      Browse{" "}
-                      {
-                        filterListings(
-                          listingResults[i],
-                          ModelsBookListing.ListingTypeEnum.BUY
-                        ).length
-                      }{" "}
-                      buy listings and{" "}
-                      {
-                        filterListings(
-                          listingResults[i],
-                          ModelsBookListing.ListingTypeEnum.SELL
-                        ).length
-                      }{" "}
-                      sell listings
+                      {buyListings[i].length}{" "}
+                      {buyListings[i].length === 1 ? "person is" : "people are"}{" "}
+                      offering to buy this book
+                      <br />
+                      <br />
+                      {sellListings[i].length}{" "}
+                      {sellListings[i].length === 1
+                        ? "person is"
+                        : "people are"}{" "}
+                      offering to sell this book
                     </Link>
                   ) : (
                     "This book currently has no listings"
@@ -107,7 +108,7 @@ const BooktrakBookSearchResults = ({
                         },
                       })
                     }
-                    className="inline-button create-listing-button"
+                    className="inline-button"
                   >
                     Buy
                   </Button>
