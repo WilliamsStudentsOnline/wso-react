@@ -167,13 +167,20 @@ const BooktrakListings = ({
   // buy/sell/my listings page
   return (
     <div className="booktrak-listings-page-container">
-      <h3>
-        {showMyListings
-          ? "My Listings"
-          : showBuyListings
-          ? "Buy Listings"
-          : "Sell Listings"}
-      </h3>
+      {showMyListings ? (
+        <h3>My Listings</h3>
+      ) : (
+        <div className="title-container">
+          <h3>{showBuyListings ? "Buy Listings" : "Sell Listings"}</h3>
+          <Tooltip
+            message={`This page shows posts from people who want to ${
+              showBuyListings ? "buy" : "sell"
+            } a book. Reach out if you see a listing that matches a book that you want to ${
+              showBuyListings ? "sell" : "buy"
+            }`}
+          />
+        </div>
+      )}
       {!showMyListings && (
         <div>
           <BooktrakCourseSearch
@@ -186,7 +193,13 @@ const BooktrakListings = ({
             <div className="inner-container">
               <h3>
                 Minimum Condition
-                <Tooltip message="The worst book condition that you would still consider buying" />
+                <Tooltip
+                  message={`The worst book condition that you ${
+                    showBuyListings
+                      ? "could sell"
+                      : "would still consider buying"
+                  }`}
+                />
               </h3>
               <BooktrakConditionSelection
                 condition={minCondition}
@@ -196,7 +209,13 @@ const BooktrakListings = ({
             <div className="inner-container">
               <h3>
                 Maximum Condition
-                <Tooltip message="The best book condition that you would still consider buying (books with worse conditions may be less expensive)" />
+                <Tooltip
+                  message={`The best book condition that you ${
+                    showBuyListings
+                      ? "could sell"
+                      : "would still consider buying"
+                  } (books with worse conditions may be less expensive)`}
+                />
               </h3>
               <BooktrakConditionSelection
                 condition={maxCondition}
