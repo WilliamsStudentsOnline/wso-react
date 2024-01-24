@@ -4,7 +4,7 @@ import {
   ModelsBook,
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
-import Button from "../../Components";
+import Button from "../../Button";
 import "../../stylesheets/Booktrak.css";
 
 const BooktrakBookSearchResults = ({
