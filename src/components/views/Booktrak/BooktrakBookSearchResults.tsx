@@ -37,8 +37,8 @@ const BooktrakBookSearchResults = ({
           <th>Title</th>
           <th className="unix-column">ISBN</th>
           <th>Cover</th>
-          <th>Buy/Sell Listings</th>
-          <th>Create Buy/Sell Listing</th>
+          <th>Listings</th>
+          <th>Create Listing</th>
         </tr>
       </thead>
       <tbody>
