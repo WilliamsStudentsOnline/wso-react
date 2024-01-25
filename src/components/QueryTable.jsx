@@ -63,7 +63,7 @@ const QueryTable = ({
             />
           </td>
           <td align="right">
-            <strong>state</strong>
+            <strong>state (US)</strong>
           </td>
           <td align="center">
             <div className="vertical">
@@ -137,7 +137,7 @@ const QueryTable = ({
         </tr>
         <tr>
           <td align="right">
-            <strong>user type</strong>
+            <strong>type</strong>
           </td>
           <td align="left">
             <Button

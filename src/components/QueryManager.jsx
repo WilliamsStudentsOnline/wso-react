@@ -140,7 +140,6 @@ const QueryManager = ({
         <div className="active-filters">
           <div id="italic">empty query</div>
         </div>
-        <br />
       </div>
     );
   } else {
@@ -149,7 +148,6 @@ const QueryManager = ({
       return (
         <div>
           <div className="active-filters">{str}</div>
-          <br />
         </div>
       );
     else
