@@ -4,3 +4,69 @@
   place-content: center;
   grid-gap: 30px;
 }
+
+.search-bar {
+  display: flex;
+  align-content: flex-start;
+  margin-right: 80px;
+  height: 80px;
+}
+
+.advanced-query {
+  border: 3px solid #6f4399;
+  border-radius: 20px;
+}
+
+.advanced-query-facebook {
+  border: 3px solid #6f4399;
+  border-radius: 20px;
+  margin-top: 290px;
+}
+
+.button-default {
+  background: none;
+  color: #6f4993;
+  border: 1px solid #6f4399;
+}
+.button-toggled {
+  border: 1px solid #6f4399;
+}
+
+.invisible {
+  display: none;
+  visibility: hidden;
+}
+
+.vertical {
+  margin-top: 15px;
+}
+
+#homepage-table,
+#homepage-table tr,
+#homepage-table td {
+  background-color: #fcfcfc;
+  border: none;
+}
+
+#italic {
+  font-style: italic;
+}
+
+.warning {
+  width: fit-content;
+  margin: auto;
+  color: red;
+}
+
+.active-filters {
+  background-color: #fff6bf;
+  color: #6f4399;
+  border-radius: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  width: fit-content;
+  height: fit-content;
+  margin: auto;
+}
