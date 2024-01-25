@@ -4,7 +4,7 @@ import {
   ModelsBook,
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
-import Button from "../../Components";
+import Button from "../../Button";
 import "../../stylesheets/Booktrak.css";
 
 const BooktrakBookSearchResults = ({
@@ -105,6 +105,7 @@ const BooktrakBookSearchResults = ({
                       navigateTo(`/booktrak/listings/create`, {
                         state: {
                           book,
+                          listingType: ModelsBookListing.ListingTypeEnum.BUY,
                         },
                       })
                     }
@@ -117,6 +118,7 @@ const BooktrakBookSearchResults = ({
                       navigateTo(`/booktrak/listings/create`, {
                         state: {
                           book,
+                          listingType: ModelsBookListing.ListingTypeEnum.SELL,
                         },
                       })
                     }

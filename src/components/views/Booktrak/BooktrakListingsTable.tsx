@@ -4,7 +4,7 @@ import { ModelsBookListing } from "wso-api-client/lib/services/types";
 import { BookConditionEnumToString } from "./BooktrakUtils";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
-import Button from "../../Components";
+import Button from "../../Button";
 
 const BooktrakListingsTable = ({
   listings,

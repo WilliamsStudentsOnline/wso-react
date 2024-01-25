@@ -3,10 +3,10 @@ on:
   push:
     branches:
       - '**' # matches every branch
-      - '!master' # excludes master (we should rename to main some time)
+      - '!production' # excludes production (handled by Jenkins for deployment)
   pull_request:
 env:
-  NODE_VERSION: '16'
+  NODE_VERSION: '20'
 
 jobs:
   lint:
@@ -18,6 +18,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
       - name: Test Build

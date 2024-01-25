@@ -58,6 +58,16 @@
   padding-left: 10%;
   padding-right: 10%;
   gap: 5%;
+
+  .title-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .inline-button {
+      padding: 0.5rem;
+    }
+  }
 }
 
 .condition-selection-container {

@@ -7,6 +7,7 @@ import { getCurrUser } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link } from "react-router-dom";
+import { StylizedLink } from "../../StylizedLink";
 
 const BooktrakLayout = ({ children }: { children: React.ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
@@ -20,19 +21,21 @@ const BooktrakLayout = ({ children }: { children: React.ReactElement }) => {
           </h1>
           <ul>
             <li>
-              <Link to="/booktrak">Search Books</Link>
+              <StylizedLink to="/booktrak" end>
+                Search Books
+              </StylizedLink>
             </li>
             <li>
-              <Link to="/booktrak/buy">Buy Listings</Link>
+              <StylizedLink to="/booktrak/buy">Buy Listings</StylizedLink>
             </li>
             <li>
-              <Link to="/booktrak/sell">Sell Listings</Link>
+              <StylizedLink to="/booktrak/sell">Sell Listings</StylizedLink>
             </li>
             {currUser === null
               ? null
               : [
                   <li key="edit">
-                    <Link to="/booktrak/edit"> My Listings </Link>
+                    <StylizedLink to="/booktrak/edit">My Listings</StylizedLink>
                   </li>,
                 ]}
           </ul>

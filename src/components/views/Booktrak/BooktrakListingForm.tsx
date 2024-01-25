@@ -12,14 +12,14 @@ import {
   ModelsBook,
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
-import { BooktrakBookState } from "./BooktrakBook";
 import BooktrakCourseSearch from "./BooktrakCourseSearch";
-import {
-  BookConditionEnumToString,
-  BookConditionStringToEnum,
-} from "./BooktrakUtils";
 import Tooltip from "../../Tooltip";
 import BooktrakConditionSelection from "./BooktrakConditionSelection";
+
+type BooktrakListingFormState = {
+  book: ModelsBook;
+  listingType?: ModelsBookListing.ListingTypeEnum;
+};
 
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const ListingConditionEnum = ModelsBookListing.ConditionEnum;
@@ -27,18 +27,21 @@ const BooktrakListingForm = ({ edit }: { edit: boolean }) => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const params = useParams();
-  const bookState = useLocation().state as BooktrakBookState | null;
+  const listingFormState = useLocation()
+    .state as BooktrakListingFormState | null;
 
   const [listing, updateListing] = useState<ModelsBookListing | undefined>(
     undefined
   );
-  const [book, updateBook] = useState<ModelsBook>(bookState?.book ?? {});
+  const [book, updateBook] = useState<ModelsBook>(listingFormState?.book ?? {});
   const [courses, updateCourses] = useState<AutocompleteACEntry[]>([]);
   const [description, updateDescription] = useState("");
   const [condition, updateCondition] =
     useState<ModelsBookListing.ConditionEnum>(ListingConditionEnum.Empty);
   const [listingType, updateListingType] =
-    useState<ModelsBookListing.ListingTypeEnum>(ListingTypeEnum.Empty);
+    useState<ModelsBookListing.ListingTypeEnum>(
+      listingFormState?.listingType ?? ListingTypeEnum.Empty
+    );
 
   const [errors, updateErrors] = useState<string[]>([]);
 
