@@ -19,7 +19,7 @@ import {
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { FactrakCourseMetric } from "wso-api-client/lib/services/factrak";
-import { ModelsUser } from "wso-api-client/lib/services/types";
+import { ModelsCourse } from "wso-api-client/lib/services/types";
 
 const FactrakCourseRankingsTable = () => {
   const currUser = useAppSelector(getCurrUser);
@@ -30,7 +30,7 @@ const FactrakCourseRankingsTable = () => {
   const params = useParams();
   const [searchParams] = useSearchParams();
 
-  const [courses, updateCourses] = useState<ModelsUser[]>([]);
+  const [courses, updateCourses] = useState<ModelsCourse[]>([]);
   const [metric, updateMetric] = useState<FactrakCourseMetric>(
     FactrakCourseMetric.WouldRecommendCourse
   );
@@ -42,6 +42,7 @@ const FactrakCourseRankingsTable = () => {
         metric: metric,
         ascending,
         areaOfStudyID: params.aos ? parseInt(params.aos) : undefined,
+        preload: ["areaOfStudy"],
       };
 
       // Loads in courses and the ratings for each one
@@ -64,7 +65,7 @@ const FactrakCourseRankingsTable = () => {
   }, [token, wso, params.aos, metric]);
 
   // Generates a row containing the course information.
-  const generateCourseRow = (course: ModelsUser) => {
+  const generateCourseRow = (course: ModelsCourse) => {
     if (course.factrakScore === undefined) {
       return null;
     }
@@ -80,12 +81,11 @@ const FactrakCourseRankingsTable = () => {
     return (
       <tr key={course.id}>
         <td>
-          <Link to={`/factrak/professors/${course.id}`}>{course.name}</Link>
+          <Link
+            to={`/factrak/courses/${course.id}`}
+          >{`${course.areaOfStudy?.abbreviation} ${course.number}`}</Link>
         </td>
         <td>{rating}</td>
-        <td>
-          <Link to={`/facebook/users/${course.id}`}>{course.unixID}</Link>
-        </td>
       </tr>
     );
   };
@@ -94,13 +94,10 @@ const FactrakCourseRankingsTable = () => {
   const courseSkeleton = (key: number) => (
     <tr key={key}>
       <td>
-        <Line width="30%" />
+        <Line width="50%" />
       </td>
       <td>
-        <Line width="80%" />
-      </td>
-      <td>
-        <Line width="30%" />
+        <Line width="50%" />
       </td>
     </tr>
   );
@@ -116,7 +113,7 @@ const FactrakCourseRankingsTable = () => {
               <th> Name </th>
               <th>
                 <Link
-                  to={`/factrak/rankings/${
+                  to={`/factrak/course-rankings/${
                     params.aos ?? ""
                   }?${searchParams.toString()}`}
                   onClick={() => {
@@ -131,7 +128,6 @@ const FactrakCourseRankingsTable = () => {
                   Average Ratings {ascending ? "▲" : "▼"}
                 </Link>
               </th>
-              <th className="unix-column">Unix</th>
             </tr>
           </thead>
           <tbody>
@@ -161,9 +157,9 @@ const FactrakCourseRankingsTable = () => {
               // TODO: Update the URL to reflect the new metric
             }}
             options={[
-              "would_recommend_course",
-              "course_workload",
-              "course_stimulating",
+              "Overall Recommendation",
+              "Course Workload",
+              "Course Stimulating",
             ]}
             value={metric}
             valueList={[

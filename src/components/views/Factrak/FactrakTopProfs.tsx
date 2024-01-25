@@ -116,7 +116,7 @@ const FactrakTopProfs = () => {
               <th> Name </th>
               <th>
                 <Link
-                  to={`/factrak/rankings/${
+                  to={`/factrak/professor-rankings/${
                     params.aos ?? ""
                   }?${searchParams.toString()}`}
                   onClick={() => {
