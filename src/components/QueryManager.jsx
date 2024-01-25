@@ -46,6 +46,7 @@ const QueryManager = ({
   }
 
   // country
+  if (state !== "") country = "United States";
   if (country.trim() !== "") {
     str += prior ? " AND (" : "(";
     str += `country: "${country}")`;
