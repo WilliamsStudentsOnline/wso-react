@@ -97,3 +97,11 @@
     margin-right: 5px;
   }
 }
+
+.booktrak-unavailable-container {
+  margin-top: 10%;
+  h1 {
+    color: #ccc;
+    text-align: center;
+  }
+}
