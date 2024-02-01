@@ -81,7 +81,9 @@ const BooktrakMain = () => {
     </BooktrakLayout>
   ) : (
     <section className="booktrak-unavailable-container">
-      <h1>BookTrak is currently unavailable.</h1>
+      <h1 className="booktrak-unavailable-container-h1">
+        BookTrak is currently unavailable.
+      </h1>
     </section>
   );
 };

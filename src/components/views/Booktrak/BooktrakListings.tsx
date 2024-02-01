@@ -220,8 +220,8 @@ const BooktrakListings = ({
           )}
 
           <div className="condition-selection-container">
-            <div className="inner-container">
-              <h3>
+            <div className="condition-selection-container-inner-container">
+              <h3 className="condition-selection-container-h3">
                 Minimum Condition
                 <Tooltip
                   message={`The worst book condition that you ${
@@ -236,8 +236,8 @@ const BooktrakListings = ({
                 updateCondition={updateMinCondition}
               />
             </div>
-            <div className="inner-container">
-              <h3>
+            <div className="condition-selection-container-inner-container">
+              <h3 className="condition-selection-container-h3">
                 Maximum Condition
                 <Tooltip
                   message={`The best book condition that you ${
@@ -247,10 +247,12 @@ const BooktrakListings = ({
                   } (books with worse conditions may be less expensive)`}
                 />
               </h3>
-              <BooktrakConditionSelection
-                condition={maxCondition}
-                updateCondition={updateMaxCondition}
-              />
+              <div>
+                <BooktrakConditionSelection
+                  condition={maxCondition}
+                  updateCondition={updateMaxCondition}
+                />
+              </div>
             </div>
           </div>
         </div>

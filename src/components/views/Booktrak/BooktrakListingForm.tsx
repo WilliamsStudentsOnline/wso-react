@@ -201,12 +201,10 @@ const BooktrakListingForm = ({ edit }: { edit: boolean }) => {
                     <Tooltip message="Select a book condition ranging from poor to new. This is somewhat subjective, but use your best judgement and please be honest." />
                   </td>
                   <td align="left">
-                    <div>
-                      <BooktrakConditionSelection
-                        condition={condition}
-                        updateCondition={updateCondition}
-                      />
-                    </div>
+                    <BooktrakConditionSelection
+                      condition={condition}
+                      updateCondition={updateCondition}
+                    />
                   </td>
                 </tr>
 
@@ -217,7 +215,7 @@ const BooktrakListingForm = ({ edit }: { edit: boolean }) => {
                   <td align="left">
                     <div>
                       <select
-                        className="select-course-info"
+                        className="condition-selection-container-select-course-info"
                         onChange={(event) =>
                           updateListingType(
                             event.target.value === "Buy"

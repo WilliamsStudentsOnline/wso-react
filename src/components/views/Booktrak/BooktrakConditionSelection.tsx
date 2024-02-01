@@ -16,7 +16,7 @@ const BooktrakConditionSelection = ({
 }) => (
   <div>
     <select
-      className="select-course-info"
+      className="condition-selection-container-select-course-info"
       onChange={(event) => {
         updateCondition(BookConditionStringToEnum(event.target.value));
       }}
