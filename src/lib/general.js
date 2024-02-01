@@ -45,6 +45,12 @@ export const scopes = {
   ScopeGoodrich: "service:goodrich",
   // Allows access to read/write all goodrich orders and read/write goodrich menu
   ScopeGoodrichManager: "service:goodrich:manager",
+
+  // Service: Booktrak
+  // Allows access to read booktrak listings
+  ScopeBooktrak: "service:booktrak",
+  // Allows access to create/modify booktrak listings
+  ScopeBooktrakWrite: "service:booktrak:write",
 };
 
 /**

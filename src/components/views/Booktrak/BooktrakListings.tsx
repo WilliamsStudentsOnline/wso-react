@@ -210,12 +210,15 @@ const BooktrakListings = ({
       )}
       {!showMyListings && (
         <div>
-          <BooktrakCourseSearch
-            courses={courses}
-            updateCourses={updateCourses}
-            placeholder="Filter By Course..."
-            courseLimit={1}
-          />
+          {currUser && (
+            <BooktrakCourseSearch
+              courses={courses}
+              updateCourses={updateCourses}
+              placeholder="Filter By Course..."
+              courseLimit={1}
+            />
+          )}
+
           <div className="condition-selection-container">
             <div className="inner-container">
               <h3>
