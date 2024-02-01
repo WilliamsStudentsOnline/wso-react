@@ -145,11 +145,11 @@ const BooktrakSearch = () => {
           </article>
         )
       ) : (
-        <h5 className="info-blurb">
+        <p className="info-blurb">
           {
             "BookTrak is where students connect to buy and sell used books with ease. We link courses to their textbooks, so you can quickly find what you need and see who's selling. Listing your books is straightforward too: just search for the title or the ISBN of the book you want to list, make sure the ISBN matches your book, and you're ready to go. It's a simple, student-friendly way to keep those textbooks circulating."
           }
-        </h5>
+        </p>
       )}
     </div>
   );
