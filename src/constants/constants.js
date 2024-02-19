@@ -21,23 +21,33 @@ export const DIVISIONS = ["div1", "div2", "div3"];
 export const OTHERS = ["passFail", "fifthCourse"];
 export const REMOTE = ["hybrid", "remote", "in-person"];
 export const LEVELS = [0, 1, 2, 3, 4];
+export const FOLLETT_SEMESTER_UUID = 100082572;
+let now = new Date();
+// year represents the higher end of academic year
+// e.g. 2024 represents the AY 2023-2024
+let year = now.getFullYear();
+if (now.getMonth() >= 5) {
+  year++;
+}
+// these month dates were manually set for the academic year 2023-2024
+// if not manually updated, they may be slightly off for future years
 export const DATES = {
   Fall: {
-    START: "20230907",
-    END: "20231208",
+    START: year - 1 + "0907",
+    END: year - 1 + "1208",
   },
   Winter: {
-    START: "20240103",
-    END: "20240126",
+    START: year + "0103",
+    END: year + "0126",
   },
   Spring: {
-    START: "20240131",
-    END: "20240510",
+    START: year + "0131",
+    END: year + "0510",
   },
   PREREG: {
-    SPRING: "2023-10-30",
-    WINTER: "2023-11-08",
-    FALL: "2023-04-26",
+    SPRING: year - 1 + "1030",
+    WINTER: year - 1 + "1108",
+    FALL: year + "0426",
   },
 };
 export const START_TIMES = [

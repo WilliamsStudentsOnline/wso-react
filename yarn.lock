@@ -5617,15 +5617,10 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.4.tgz#28d9969ea90661b5134259f312ab6aa7929ac5e2"
   integrity sha512-8/sOawo8tJ4QOBX8YlQBMxL8+RLZfxMQOif9o0KUKTNTjMYElWPE0r/m5VNFxTRd0NSw8qSy8dajrwX4RYI1Hw==
 
-follow-redirects@^1.0.0:
-  version "1.14.8"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.8.tgz#016996fb9a11a100566398b1c6839337d7bfa8fc"
-  integrity sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA==
-
-follow-redirects@^1.14.8:
-  version "1.15.1"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.1.tgz#0ca6a452306c9b276e4d3127483e29575e207ad5"
-  integrity sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==
+follow-redirects@^1.0.0, follow-redirects@^1.14.8:
+  version "1.15.4"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.4.tgz#cdc7d308bf6493126b17ea2191ea0ccf3e535adf"
+  integrity sha512-Cr4D/5wlrb0z9dgERpUL3LrmPKVDsETIJhaCMeDfuFYcqa5bldGV6wBsAN6X/vxlXQtFBMrXdXxdL8CbDTGniw==
 
 fork-ts-checker-webpack-plugin@^6.5.0:
   version "6.5.2"
@@ -11089,10 +11084,10 @@ ws@^8.4.2:
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.8.1.tgz#5dbad0feb7ade8ecc99b830c1d77c913d4955ff0"
   integrity sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==
 
-wso-api-client@24.1.7:
-  version "24.1.7"
-  resolved "https://registry.yarnpkg.com/wso-api-client/-/wso-api-client-24.1.7.tgz#6433a548ba984a353bb265f443be9017fcba1178"
-  integrity sha512-AoBTH+lg2Fc0EOpOQJvS2RwOyZXWqfBxSl6cW5/ma9UYmFkB7MQWinv+wLDg4mGx/DYf0/fVvOeyjMjl+jvf2g==
+wso-api-client@24.02.19:
+  version "24.2.19"
+  resolved "https://registry.yarnpkg.com/wso-api-client/-/wso-api-client-24.2.19.tgz#b1ed94c13b4eaf579a9613235c4589ad9041aff2"
+  integrity sha512-h/6FeNeH5JSE7Qeh+RQE89NPb835ZxC/A/wwFqq0VUgO23S7k/p4/law4vsGD8lRVx2KCIW6+W3r8K3FwYlfSQ==
   dependencies:
     axios "^0.26.1"
     jwt-decode "^3.1.2"
