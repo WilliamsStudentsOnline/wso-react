@@ -30,7 +30,7 @@ const FactrakTopProfs = () => {
   const params = useParams();
   const [searchParams] = useSearchParams();
 
-  const [profs, updateProfs] = useState<ModelsUser[]>([]);
+  const [profs, updateProfs] = useState<ModelsUser[] | undefined>(undefined);
   const [metric, updateMetric] = useState<FactrakProfessorMetric>(
     FactrakProfessorMetric.WouldTakeAnother
   );
@@ -46,13 +46,9 @@ const FactrakTopProfs = () => {
 
       // Loads in professors and the ratings for each one
       try {
-        updateProfs([]);
         const profRanked = await wso.factrakService.listProfessors(queryParams);
         const profRankedData = profRanked.data;
-        if (!profRankedData) {
-          throw new Error("No ranked data returned");
-        }
-        updateProfs(profRankedData);
+        updateProfs(profRankedData ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
@@ -120,8 +116,11 @@ const FactrakTopProfs = () => {
                     params.aos ?? ""
                   }?${searchParams.toString()}`}
                   onClick={() => {
-                    updateProfs(profs.reverse());
                     updateAscending(!ascending);
+                    if (profs === undefined) {
+                      return;
+                    }
+                    updateProfs(profs.reverse());
                   }}
                   style={{
                     color: "#FFFFFF",
@@ -135,7 +134,7 @@ const FactrakTopProfs = () => {
             </tr>
           </thead>
           <tbody>
-            {profs.length > 0
+            {profs !== undefined
               ? profs.map((prof) => generateProfRow(prof))
               : [...Array(5)].map((_, i) => profSkeleton(i))}
           </tbody>

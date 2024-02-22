@@ -29,7 +29,9 @@ const FactrakCourseRankingsTable = () => {
   const params = useParams();
   const [searchParams] = useSearchParams();
 
-  const [courses, updateCourses] = useState<ModelsCourse[]>([]);
+  const [courses, updateCourses] = useState<ModelsCourse[] | undefined>(
+    undefined
+  );
   const [metric, updateMetric] = useState<FactrakCourseMetric>(
     FactrakCourseMetric.WouldRecommendCourse
   );
@@ -46,13 +48,9 @@ const FactrakCourseRankingsTable = () => {
 
       // Loads in courses and the ratings for each one
       try {
-        updateCourses([]);
         const courseRanked = await wso.factrakService.listCourses(queryParams);
         const courseRankedData = courseRanked.data;
-        if (!courseRankedData) {
-          throw new Error("No ranked data returned");
-        }
-        updateCourses(courseRankedData);
+        updateCourses(courseRankedData ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
@@ -116,8 +114,11 @@ const FactrakCourseRankingsTable = () => {
                     params.aos ?? ""
                   }?${searchParams.toString()}`}
                   onClick={() => {
-                    updateCourses(courses.reverse());
                     updateAscending(!ascending);
+                    if (courses === undefined) {
+                      return;
+                    }
+                    updateCourses(courses.reverse());
                   }}
                   style={{
                     color: "#FFFFFF",
@@ -130,7 +131,7 @@ const FactrakCourseRankingsTable = () => {
             </tr>
           </thead>
           <tbody>
-            {courses.length > 0
+            {courses !== undefined
               ? courses.map((course) => generateCourseRow(course))
               : [...Array(5)].map((_, i) => courseSkeleton(i))}
           </tbody>
