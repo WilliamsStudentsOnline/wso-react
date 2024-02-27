@@ -13,7 +13,7 @@ import { containsOneOfScopes, scopes } from "../../../lib/general";
 import FactrakTopProfs from "./FactrakTopProfs";
 import { ModelsAreaOfStudy } from "wso-api-client/lib/services/types";
 
-const FactrakRankings = () => {
+const FactrakProfessorRankings = () => {
   const token = useAppSelector(getAPIToken);
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
@@ -57,8 +57,8 @@ const FactrakRankings = () => {
                 areas.map((area) => (
                   <li key={area.name}>
                     <Link
-                      to={`/factrak/rankings/${area.id}`}
-                      title={`${area.name} Rankings`}
+                      to={`/factrak/professor-rankings/${area.id}`}
+                      title={`${area.name} Professor Rankings`}
                     >
                       {area.name}
                     </Link>
@@ -77,4 +77,4 @@ const FactrakRankings = () => {
   );
 };
 
-export default FactrakRankings;
+export default FactrakProfessorRankings;

@@ -169,7 +169,14 @@ const FactrakLayout = ({ children }: { children: ReactElement }) => {
                 <StylizedLink to="/factrak/surveys">Your Reviews</StylizedLink>
               </li>
               <li>
-                <StylizedLink to="/factrak/rankings">Rankings</StylizedLink>
+                <StylizedLink to="/factrak/professor-rankings">
+                  Professor Rankings
+                </StylizedLink>
+              </li>
+              <li>
+                <StylizedLink to="/factrak/course-rankings">
+                  Course Rankings
+                </StylizedLink>
               </li>
               {currUser.factrakAdmin && (
                 <li>

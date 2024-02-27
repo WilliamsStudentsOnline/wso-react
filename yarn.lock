@@ -11084,10 +11084,10 @@ ws@^8.4.2:
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.8.1.tgz#5dbad0feb7ade8ecc99b830c1d77c913d4955ff0"
   integrity sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==
 
-wso-api-client@24.1.31:
-  version "24.1.31"
-  resolved "https://registry.yarnpkg.com/wso-api-client/-/wso-api-client-24.1.31.tgz#2722a82936ba4d95a8996f2ad9dacee01503f7d7"
-  integrity sha512-6r8GTwHIBFq6q+0ZBJSTTD0JG7cFXokGYEmyhuZHKJnY4vv66alhBppSXbJXcrMJn/Mp2rqMYn0t9IpdgyZyGA==
+wso-api-client@24.02.19:
+  version "24.2.19"
+  resolved "https://registry.yarnpkg.com/wso-api-client/-/wso-api-client-24.2.19.tgz#b1ed94c13b4eaf579a9613235c4589ad9041aff2"
+  integrity sha512-h/6FeNeH5JSE7Qeh+RQE89NPb835ZxC/A/wwFqq0VUgO23S7k/p4/law4vsGD8lRVx2KCIW6+W3r8K3FwYlfSQ==
   dependencies:
     axios "^0.26.1"
     jwt-decode "^3.1.2"
