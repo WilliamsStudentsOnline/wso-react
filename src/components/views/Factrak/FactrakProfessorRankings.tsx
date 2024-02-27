@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import FactrakTopProfs from "./FactrakTopProfs";
+import FactrakProfessorRankingsTable from "./FactrakProfessorRankingsTable";
 import { ModelsAreaOfStudy } from "wso-api-client/lib/services/types";
 
 const FactrakProfessorRankings = () => {
@@ -71,7 +71,7 @@ const FactrakProfessorRankings = () => {
           </article>
         </aside>
 
-        <FactrakTopProfs />
+        <FactrakProfessorRankingsTable />
       </div>
     </article>
   );

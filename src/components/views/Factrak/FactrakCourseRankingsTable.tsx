@@ -154,6 +154,7 @@ const FactrakCourseRankingsTable = () => {
           <Select
             onChange={(event) => {
               updateMetric(event.target.value);
+              updateCourses(undefined);
               // TODO: Update the URL to reflect the new metric
             }}
             options={[

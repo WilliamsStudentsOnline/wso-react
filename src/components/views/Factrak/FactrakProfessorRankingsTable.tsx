@@ -21,7 +21,7 @@ import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { FactrakProfessorMetric } from "wso-api-client/lib/services/factrak";
 import { ModelsUser } from "wso-api-client/lib/services/types";
 
-const FactrakTopProfs = () => {
+const FactrakProfessorRankingsTable = () => {
   const currUser = useAppSelector(getCurrUser);
   const token = useAppSelector(getAPIToken);
   const wso = useAppSelector(getWSO);
@@ -157,6 +157,7 @@ const FactrakTopProfs = () => {
           <Select
             onChange={(event) => {
               updateMetric(event.target.value);
+              updateProfs(undefined);
               // TODO: Update the URL to reflect the new metric
             }}
             options={[
@@ -190,4 +191,4 @@ const FactrakTopProfs = () => {
   );
 };
 
-export default FactrakTopProfs;
+export default FactrakProfessorRankingsTable;
