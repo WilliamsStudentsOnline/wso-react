@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 // External imports
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { FOLLETT_SEMESTER_UUID } from "../../../constants/constants";
 
 dayjs.extend(customParseFormat);
 
@@ -207,20 +208,16 @@ const Course = ({
     );
   };
 
+  // this function name is a little misleading, this now returns a UUID for Follett links
   const semesterInNumber = () => {
-    switch (course.semester) {
-      case "Fall":
-        return 1001 + 10 * (course.year % 100);
-      case "Winter":
-        return 1002 + 10 * (course.year % 100);
-      default:
-        return 1003 + 10 * (course.year % 100);
-    }
+    // NOTE: this is currently only stable for 2024 Spring (!!)
+    // this controls the termID flag in the HTTP request, which Follett changed recently and may change again
+    return FOLLETT_SEMESTER_UUID;
   };
 
   const bookstoreLink = () => {
     const baseBookstoreLink =
-      "https://www.bkstr.com/williamsstore/follett-discover-view/booklook?shopBy=discoverViewCourse&bookstoreId=506&divisionDisplayName=";
+      "https://www.bkstr.com/williamsstore/course-materials-results?shopBy=course&divisionDisplayName=&bookstoreId=506&programID=912";
 
     return (
       <a

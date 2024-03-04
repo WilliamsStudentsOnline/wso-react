@@ -18,7 +18,7 @@ const DiscussionIndex = () => {
   const navigateTo = useNavigate();
 
   const perPage = 20;
-  const [page, updatePage] = useState(0);
+  const [page, updatePage] = useState(0); // 0-indexed page number (i.e. 0 represents the first page)
   const [total, updateTotal] = useState(0);
   const [threads, updateThreads] = useState(null);
 

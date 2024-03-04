@@ -36,6 +36,7 @@ const MobilePrivacyPolicy = lazy(
 const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
 const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
 const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
+const BooktrakMain = lazy(() => import("./views/Booktrak/BooktrakMain"));
 const EphmatchMain = lazy(() => import("./views/Ephmatch/EphmatchMain"));
 const Error404 = lazy(() => import("./views/Errors/Error404"));
 const Login = lazy(() => import("./Login"));
@@ -175,6 +176,14 @@ const App = () => {
             element={
               <RequireScope token={apiToken} name="factrak">
                 <FactrakMain />
+              </RequireScope>
+            }
+          />
+          <Route
+            path="booktrak/*"
+            element={
+              <RequireScope token={apiToken} name="booktrak">
+                <BooktrakMain />
               </RequireScope>
             }
           />

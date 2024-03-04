@@ -26,7 +26,7 @@ const BulletinIndex = ({ type }: { type: PostType }) => {
   const [bulletins, updateBulletins] = useState<Bulletin[] | undefined>(
     undefined
   );
-  const [page, updatePage] = useState(0);
+  const [page, updatePage] = useState(0); // 0-indexed page number (i.e. 0 represents the first page)
   const [total, updateTotal] = useState(0);
   const perPage = 20;
   const loadBulletins = async (newPage: number) => {

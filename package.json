@@ -28,7 +28,7 @@
     "serialize-javascript": "3.1.0",
     "timeago.js": "^4.0.0-beta.2",
     "typeface-source-sans-pro": "^0.0.75",
-    "wso-api-client": "^22.11.22"
+    "wso-api-client": "24.02.19"
   },
   "devDependencies": {
     "@types/jest": "^27.5.1",
@@ -58,6 +58,7 @@
   "scripts": {
     "analyze": "node scripts/analyze",
     "start": "GENERATE_SOURCEMAP=false react-scripts start",
+    "start-windows": "set GENERATE_SOURCEMAP=false && npx react-scripts start",
     "build": "react-scripts build",
     "postbuild": "purgecss --config ./purgecss.config.js --out build/static/css",
     "test": "react-scripts test",
