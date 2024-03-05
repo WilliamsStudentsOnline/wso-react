@@ -11,6 +11,7 @@ const BoardMap = {
 const ContributorMap = {
   "Max Enis": 12516,
   "Max Kan": 12406,
+  "Abel Mesfin": 14016,
   "Satya Benson": 14059,
   "Santiago Ferris": 14145,
   "Matt Laws": 13268,
