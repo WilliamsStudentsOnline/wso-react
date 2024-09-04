@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import domtoimage from "dom-to-image";
 import {
   dayConversionGCal,
-  gcalFormattedDate,
+  RFC3339FormattedDate,
   nextDateWithDay,
   toDayArray,
 } from "../../../lib/scheduler";
@@ -171,7 +171,7 @@ const Timetable = ({
   };
 
   const createGCalEvent = (course, meeting) => {
-    const gcalStartDate = gcalFormattedDate(
+    const gcalStartDate = RFC3339FormattedDate(
       nextDateWithDay(DATES[course.semester].START, toDayArray(meeting.days))
     );
 

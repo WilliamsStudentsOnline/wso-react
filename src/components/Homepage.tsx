@@ -24,8 +24,8 @@ const Homepage = () => {
       <div className="full-width">
         <div id="join-header">
           {/* <a href="https://forms.gle/7EcorfSMSuLQw5XW8">Join WSO today!</a> */}
-          <a href="https://wso.williams.edu/bulletins/announcement/6021">
-            Click to read updates on recent WSO bugs and activities!
+          <a href="https://wso.williams.edu/bulletins/announcement/6880">
+            [1/31/24] BookTrak and bugfixes coming to WSO!
           </a>
         </div>
         <header>

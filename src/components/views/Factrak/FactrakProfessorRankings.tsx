@@ -10,10 +10,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import FactrakTopProfs from "./FactrakTopProfs";
+import FactrakProfessorRankingsTable from "./FactrakProfessorRankingsTable";
 import { ModelsAreaOfStudy } from "wso-api-client/lib/services/types";
 
-const FactrakRankings = () => {
+const FactrakProfessorRankings = () => {
   const token = useAppSelector(getAPIToken);
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
@@ -57,8 +57,8 @@ const FactrakRankings = () => {
                 areas.map((area) => (
                   <li key={area.name}>
                     <Link
-                      to={`/factrak/rankings/${area.id}`}
-                      title={`${area.name} Rankings`}
+                      to={`/factrak/professor-rankings/${area.id}`}
+                      title={`${area.name} Professor Rankings`}
                     >
                       {area.name}
                     </Link>
@@ -71,10 +71,10 @@ const FactrakRankings = () => {
           </article>
         </aside>
 
-        <FactrakTopProfs />
+        <FactrakProfessorRankingsTable />
       </div>
     </article>
   );
 };
 
-export default FactrakRankings;
+export default FactrakProfessorRankings;
