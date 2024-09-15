@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 
 const BoardMap = {
   "Matt Laws": 13268,
+  "Charlie Tharas": 14774,
+  "Nathan Vosburg": 14656,
 };
 
 const ContributorMap = {
@@ -17,8 +19,6 @@ const ContributorMap = {
   "Kevin Zhuo": 13052,
   "Serah Park": 13923,
   "Lesley Iazzag": 14147,
-  "Nathan Vosburg": 14656,
-  "Charlie Tharas": 14774,
 };
 
 const constructFacebookLink = (userID: number) => {
