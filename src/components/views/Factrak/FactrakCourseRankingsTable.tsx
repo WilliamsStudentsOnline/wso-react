@@ -1,6 +1,5 @@
 // React imports
 import React, { useState, useEffect } from "react";
-// import FactrakComment, { FactrakCommentSkeleton } from "./FactrakComment";
 import { Line } from "../../Skeleton";
 import Select from "../../Select";
 
@@ -18,10 +17,10 @@ import {
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import { FactrakMetric } from "wso-api-client/lib/services/factrak";
-import { ModelsUser } from "wso-api-client/lib/services/types";
+import { FactrakCourseMetric } from "wso-api-client/lib/services/factrak";
+import { ModelsCourse } from "wso-api-client/lib/services/types";
 
-const FactrakTopProfs = () => {
+const FactrakCourseRankingsTable = () => {
   const currUser = useAppSelector(getCurrUser);
   const token = useAppSelector(getAPIToken);
   const wso = useAppSelector(getWSO);
@@ -30,47 +29,46 @@ const FactrakTopProfs = () => {
   const params = useParams();
   const [searchParams] = useSearchParams();
 
-  const [profs, updateProfs] = useState<ModelsUser[]>([]);
-  const [metric, updateMetric] = useState<FactrakMetric>(
-    FactrakMetric.WouldTakeAnother
+  const [courses, updateCourses] = useState<ModelsCourse[] | undefined>(
+    undefined
+  );
+  const [metric, updateMetric] = useState<FactrakCourseMetric>(
+    FactrakCourseMetric.WouldRecommendCourse
   );
   const [ascending, updateAscending] = useState(false);
 
   useEffect(() => {
-    const loadProfs = async () => {
+    const loadCourses = async () => {
       const queryParams = {
         metric: metric,
         ascending,
         areaOfStudyID: params.aos ? parseInt(params.aos) : undefined,
+        preload: ["areaOfStudy"],
       };
 
-      // Loads in professors and the ratings for each one
+      // Loads in courses and the ratings for each one
       try {
-        updateProfs([]);
-        const profRanked = await wso.factrakService.listProfessors(queryParams);
-        const profRankedData = profRanked.data;
-        if (!profRankedData) {
-          throw new Error("No ranked data returned");
-        }
-        updateProfs(profRankedData);
+        const courseRanked = await wso.factrakService.listCourses(queryParams);
+        const courseRankedData = courseRanked.data;
+        updateCourses(courseRankedData ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
     if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
-      loadProfs();
+      loadCourses();
     }
   }, [token, wso, params.aos, metric]);
 
-  // Generates a row containing the prof information.
-  const generateProfRow = (prof: ModelsUser) => {
-    if (prof.factrakScore === undefined) {
+  // Generates a row containing the course information.
+  const generateCourseRow = (course: ModelsCourse) => {
+    if (course.factrakScore === undefined) {
       return null;
     }
-    const val = prof.factrakScore;
+    const val = course.factrakScore;
     let rating = "";
-    if (metric === FactrakMetric.WouldTakeAnother) {
+    if (metric === FactrakCourseMetric.WouldRecommendCourse) {
       rating = `${Math.round(val * 100)}%`;
     } else {
       // Currently no API to retrieve the max value of the metric but
@@ -78,35 +76,31 @@ const FactrakTopProfs = () => {
       rating = `${Math.round(((val + Number.EPSILON) * 100) / 100)} / 7`;
     }
     return (
-      <tr key={prof.id}>
+      <tr key={course.id}>
         <td>
-          <Link to={`/factrak/professors/${prof.id}`}>{prof.name}</Link>
+          <Link
+            to={`/factrak/courses/${course.id}`}
+          >{`${course.areaOfStudy?.abbreviation} ${course.number}`}</Link>
         </td>
         <td>{rating}</td>
-        <td>
-          <Link to={`/facebook/users/${prof.id}`}>{prof.unixID}</Link>
-        </td>
       </tr>
     );
   };
 
-  // Generate a skeleton of prof information
-  const profSkeleton = (key: number) => (
+  // Generate a skeleton of course information
+  const courseSkeleton = (key: number) => (
     <tr key={key}>
       <td>
-        <Line width="30%" />
+        <Line width="50%" />
       </td>
       <td>
-        <Line width="80%" />
-      </td>
-      <td>
-        <Line width="30%" />
+        <Line width="50%" />
       </td>
     </tr>
   );
 
-  // Generates the component which holds the list of professors
-  const generateProfs = () => {
+  // Generates the component which holds the list of courses
+  const generateCourses = () => {
     return (
       <>
         <br />
@@ -116,12 +110,15 @@ const FactrakTopProfs = () => {
               <th> Name </th>
               <th>
                 <Link
-                  to={`/factrak/rankings/${
+                  to={`/factrak/course-rankings/${
                     params.aos ?? ""
                   }?${searchParams.toString()}`}
                   onClick={() => {
-                    updateProfs(profs.reverse());
                     updateAscending(!ascending);
+                    if (courses === undefined) {
+                      return;
+                    }
+                    updateCourses(courses.reverse());
                   }}
                   style={{
                     color: "#FFFFFF",
@@ -131,13 +128,12 @@ const FactrakTopProfs = () => {
                   Average Ratings {ascending ? "▲" : "▼"}
                 </Link>
               </th>
-              <th className="unix-column">Unix</th>
             </tr>
           </thead>
           <tbody>
-            {profs.length > 0
-              ? profs.map((prof) => generateProfRow(prof))
-              : [...Array(5)].map((_, i) => profSkeleton(i))}
+            {courses !== undefined
+              ? courses.map((course) => generateCourseRow(course))
+              : [...Array(5)].map((_, i) => courseSkeleton(i))}
           </tbody>
         </table>
       </>
@@ -147,7 +143,7 @@ const FactrakTopProfs = () => {
   return (
     <article className="main">
       <section className="margin-vertical-small">
-        <h3>Top Professors</h3>
+        <h3>Top Courses</h3>
         <div
           className="added-sort"
           style={{
@@ -158,24 +154,19 @@ const FactrakTopProfs = () => {
           <Select
             onChange={(event) => {
               updateMetric(event.target.value);
+              updateCourses(undefined);
               // TODO: Update the URL to reflect the new metric
             }}
             options={[
-              "Approachability",
-              "Course Workload",
-              "Discussion Promotion",
-              "Lecture Ability",
-              "Outside Helpfulness",
               "Overall Recommendation",
+              "Course Workload",
+              "Course Stimulating",
             ]}
             value={metric}
             valueList={[
-              FactrakMetric.Approachability,
-              FactrakMetric.CourseWorkload,
-              FactrakMetric.PromoteDiscussion,
-              FactrakMetric.LeadLecture,
-              FactrakMetric.OutsideHelpfulness,
-              FactrakMetric.WouldTakeAnother,
+              FactrakCourseMetric.WouldRecommendCourse,
+              FactrakCourseMetric.CourseWorkload,
+              FactrakCourseMetric.CourseStimulating,
             ]}
             style={{
               display: "inline",
@@ -185,10 +176,10 @@ const FactrakTopProfs = () => {
           />
         </div>
         <FactrakDeficitMessage currUser={currUser} />
-        {generateProfs()}
+        {generateCourses()}
       </section>
     </article>
   );
 };
 
-export default FactrakTopProfs;
+export default FactrakCourseRankingsTable;
