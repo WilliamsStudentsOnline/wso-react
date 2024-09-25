@@ -23,9 +23,8 @@ const Homepage = () => {
     <div className="home">
       <div className="full-width">
         <div id="join-header">
-          {/* <a href="https://forms.gle/7EcorfSMSuLQw5XW8">Join WSO today!</a> */}
-          <a href="https://wso.williams.edu/bulletins/announcement/6880">
-            [1/31/24] BookTrak and bugfixes coming to WSO!
+          <a href="https://wso.williams.edu/bulletins/announcement/7680">
+            Want to join WSO?
           </a>
         </div>
         <header>
