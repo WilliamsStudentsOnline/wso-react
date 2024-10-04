@@ -22,11 +22,6 @@ const Homepage = () => {
   return (
     <div className="home">
       <div className="full-width">
-        <div id="join-header">
-          <a href="https://wso.williams.edu/bulletins/announcement/7680">
-            Want to join WSO?
-          </a>
-        </div>
         <header>
           <div className="logo">
             <h2 className="text-center" id="logotype">
