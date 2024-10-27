@@ -49,6 +49,7 @@ const BulletinMain = lazy(
 const DiscussionMain = lazy(
   () => import("./views/BulletinsDiscussions/DiscussionMain")
 );
+const FoodtrakMain = lazy(() => import("./views/Foodtrak/FoodtrakMain"));
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -204,6 +205,7 @@ const App = () => {
             }
           />
           <Route path="schedulecourses" element={<Scheduler />} />
+          <Route path="foodtrak" element={<FoodtrakMain />} />
           {/* Static Content Pages */}
           <Route path="about" element={<About />} />
           <Route path="faq" element={<FAQ />} />

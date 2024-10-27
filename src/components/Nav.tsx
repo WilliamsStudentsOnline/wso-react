@@ -103,6 +103,9 @@ const Nav = () => {
             <li>
               <Link to="booktrak">Booktrak</Link>
             </li>
+            <li>
+              <Link to="foodtrak">Foodtrak</Link>
+            </li>
             {currUser?.type === userTypeStudent && (
               <>
                 <li>
