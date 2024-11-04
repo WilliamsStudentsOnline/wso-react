@@ -221,7 +221,7 @@ const AdditionalOptions = ({
                 onClick={() => clickLoader(distClick, 2)}
                 checked={filters.distributions[2]}
               />
-              {`Writing Skills (WS) (${counts.distributions[2]})`}
+              {`Writing Intensive (WI) (${counts.distributions[2]})`}
             </li>
           </ul>
         </Accordion>
