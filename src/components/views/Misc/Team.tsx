@@ -24,6 +24,8 @@ const ContributorMap = {
   "Jaskaran Singh": 13126,
   "Jasper Li": 14874,
   "Jeeyon Kang": 13262,
+  "Lauren Hall": 14661,
+  "Leila Salken": 14941,
   "Lola Casenave": 13239,
   "Matthew Chin": 15568,
   "Melanie Wang": 14710,
