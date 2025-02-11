@@ -2,9 +2,24 @@
 import React, { useState, useEffect } from "react";
 import "../../stylesheets/Dining.css";
 
+interface MealHours {
+  open: string;
+  close: string;
+}
+
+interface Meal {
+  name: string;
+  hours: MealHours | null;
+}
+
+interface Vendor {
+  name: string;
+  meals: Record<string, Meal>;
+}
+
 const DiningHours = () => {
   // Variables for Dining JSON and Loading state
-  const [diningData, setDiningData] = useState<any[]>([]);
+  const [diningData, setDiningData] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Fetches Dining JSON, sets diningData to JSON object
@@ -25,7 +40,7 @@ const DiningHours = () => {
 
   // Returns style class name for color and open/close/opening/closing message
   const findClosestTime = (
-    vendorMeals: Record<string, any>
+    vendorMeals: Record<string, Meal>
   ): { style: string; message: string } => {
     const currentTime = new Date();
     let timeStr = "";
@@ -42,7 +57,7 @@ const DiningHours = () => {
 
       let newHours = hours;
 
-      if (modifier == "pm" && hours != 12) {
+      if (modifier === "pm" && hours !== 12) {
         newHours += 12;
       }
 
@@ -55,7 +70,7 @@ const DiningHours = () => {
 
       let newOpenHours = openHours;
 
-      if (openModifier == "pm" && openHours != 12) {
+      if (openModifier === "pm" && openHours !== 12) {
         newOpenHours += 12;
       }
 
@@ -149,18 +164,16 @@ const DiningHours = () => {
                   </thead>
                   <tbody>
                     {Object.keys(vendor.meals).length > 0 ? (
-                      Object.entries(vendor.meals).map(
-                        ([key, meal]: [string, any], j) => (
-                          <tr key={j} className="dining-children">
-                            <td>{capitalizeMeal(meal.name)}</td>
-                            <td>
-                              {meal.hours
-                                ? `${meal.hours.open} - ${meal.hours.close}`
-                                : "No Times."}
-                            </td>
-                          </tr>
-                        )
-                      )
+                      Object.entries(vendor.meals).map(([key, meal], j) => (
+                        <tr key={j} className="dining-children">
+                          <td>{capitalizeMeal(meal.name)}</td>
+                          <td>
+                            {meal.hours
+                              ? `${meal.hours.open} - ${meal.hours.close}`
+                              : "No Times."}
+                          </td>
+                        </tr>
+                      ))
                     ) : (
                       <tr>
                         <td colSpan={2}>No meals to show.</td>
