@@ -62,6 +62,11 @@ const DiningHours = () => {
       }
 
       const closeDateTime = new Date();
+
+      if (newHours === 1 && modifier === "am") {
+        closeDateTime.setDate(closeDateTime.getDate() + 1);
+      }
+
       closeDateTime.setHours(newHours, minutes, 0);
 
       const openTimeStr = meal.hours.open;
