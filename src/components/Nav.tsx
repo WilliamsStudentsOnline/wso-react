@@ -129,6 +129,9 @@ const Nav = () => {
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
             </li>
+            <li>
+              <Link to="dining">Dining</Link>
+            </li>
             {ephmatchVisibility > 0 && (
               <li>
                 <Link
