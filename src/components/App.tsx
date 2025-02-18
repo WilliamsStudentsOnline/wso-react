@@ -35,6 +35,7 @@ const MobilePrivacyPolicy = lazy(
 );
 const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
 const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
+const ClubtrakMain = lazy(() => import("./views/Clubtrak/ClubtrakMain"));
 const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
 const BooktrakMain = lazy(() => import("./views/Booktrak/BooktrakMain"));
 const EphmatchMain = lazy(() => import("./views/Ephmatch/EphmatchMain"));
@@ -195,6 +196,7 @@ const App = () => {
               </RequireScope>
             }
           />
+          <Route path="clubtrak/*" element={<ClubtrakMain />} />
           <Route
             path="ephmatch/*"
             element={
