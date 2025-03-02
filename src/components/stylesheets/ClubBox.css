@@ -1,0 +1,56 @@
+.club-box {
+  display: grid;
+  grid-template-rows: 3fr 1fr; /* Top (initials) bigger, Bottom (name) smaller */
+  width: 300px;
+  height: 300px;
+  background: #6f4993; /* Dark purple, similar to bulletin */
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.club-box:hover {
+  transform: scale(1.05);
+  background-color: #573a78;
+}
+
+.club-initials {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 5em;
+  font-weight: lighter;
+  background: #fcfcfc;
+  color: #6f4993;
+}
+
+.club-name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1em;
+  font-weight: bold;
+  border-top: 2px solid #d9d9d9;
+  padding: 0.5rem;
+}
+
+.club-link {
+  color: white;
+  text-decoration: none;
+}
+
+.club-link:hover {
+  text-decoration: underline;
+}
+
+.club-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+  padding: 10px;
+}

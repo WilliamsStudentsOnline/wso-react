@@ -6,6 +6,19 @@ import { getCurrUser } from "../../../lib/authSlice";
 // Additional imports
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { StylizedLink } from "../../StylizedLink";
+import { PostType } from "../../../lib/types";
+
+// Component imports
+import ClubBox from "./ClubBox";
+
+// List of clubs (delete later and link to database/API)
+const clubs = [
+  { name: "Robotics", initials: "R" },
+  { name: "Debate", initials: "D" },
+  { name: "Williams Outing Club", initials: "WOC" },
+  { name: "Williams Students Online", initials: "WSO" },
+  { name: "Ritmo", initials: "R" },
+];
 
 const ClubtrakLayout = ({ children }: { children: React.ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
@@ -46,6 +59,15 @@ const ClubtrakLayout = ({ children }: { children: React.ReactElement }) => {
           />
         </form>
       </header>
+      <article>
+        <section>
+          <div className="club-list">
+            {clubs.map((club) => (
+              <ClubBox key={club.name} club={club} />
+            ))}
+          </div>
+        </section>
+      </article>
       {children}
     </div>
   );

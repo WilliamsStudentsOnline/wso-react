@@ -208,6 +208,7 @@ const App = () => {
           />
           <Route path="schedulecourses" element={<Scheduler />} />
           <Route path="dining/*" element={<DiningMain />} />
+          <Route path="clubtrak" element={<ClubtrakMain />} />
           {/* Static Content Pages */}
           <Route path="about" element={<About />} />
           <Route path="faq" element={<FAQ />} />
