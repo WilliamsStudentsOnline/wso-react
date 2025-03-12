@@ -2,8 +2,11 @@
 import React from "react";
 import DoughtyBanner from "../../../assets/images/banners/Doughty.jpg";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../../../lib/store";
+import { FFState } from "../../../lib/featureFlagSlice";
+import Error403 from "../Errors/Error403";
 
-const About = () => {
+const AboutPreRelease = () => {
   return (
     <div className="article">
       <div className="about-banner">
@@ -118,4 +121,15 @@ const About = () => {
   );
 };
 
+const About = () => {
+  const enableAbout = useAppSelector(
+    (state) => state.featureFlagState["enableAbout"]
+  );
+
+  return (
+    <div>
+      {enableAbout === FFState.Enabled ? <AboutPreRelease /> : <Error403 />}
+    </div>
+  );
+};
 export default About;
