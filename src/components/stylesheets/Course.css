@@ -9,6 +9,7 @@
   background-color: #ffffff;
   box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
   max-width: 850px;
+  position: relative; /* added to accomodate factrak ratings and tooltip */
 }
 
 .course:hover {
@@ -160,10 +161,6 @@
 .no-url:hover {
   transition: none;
   opacity: 1;
-}
-
-.course {
-  position: relative;
 }
 
 .factrak-rating {
