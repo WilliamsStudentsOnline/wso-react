@@ -48,7 +48,7 @@
   font-size: 24px;
   font-weight: 600;
   flex: 9.2;
-  padding: 30px 0px 10px 0px;
+  padding: 30px 45px 10px 0px;
   box-sizing: border-box;
   border-bottom: 2px solid #c3c3d0;
 }
@@ -160,4 +160,55 @@
 .no-url:hover {
   transition: none;
   opacity: 1;
+}
+
+.course {
+  position: relative;
+}
+
+.factrak-rating {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 35px;
+  height: 35px;
+  background-color: #8a3b37;
+  color: white;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  z-index: 9;
+}
+
+.factrak-rating:hover {
+  background-color: #6a2b27;
+}
+
+.rating-tooltip {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background-color: #333;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.rating-tooltip:after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 15px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #333;
 }

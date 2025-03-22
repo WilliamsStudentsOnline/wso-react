@@ -38,12 +38,34 @@ const Course = ({
 }) => {
   // State of body visibiity
   const [bodyHidden, setHidden] = useState(true);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
 
   const addedIds = added.map((addedCourse) => addedCourse.peoplesoftNumber);
   const addIndex = addedIds.indexOf(course.peoplesoftNumber);
   const isAdded = addIndex !== -1;
 
   const isHidden = hidden.indexOf(course) !== -1;
+
+  const getFactrakRating = () => {
+    return (course.number % 100).toFixed(0);
+  };
+
+  // DBID is not yet a real value
+  const getFactrakUrl = () => {
+    course.courseDBID = 0;
+    if (course.instructors.length === 1) {
+      return `/factrak/courses/${course.courseDBID}/${course.instructors[0].id}`;
+    } else {
+      return `/factrak/courses/${course.courseDBID}`;
+    }
+  };
+
+  const getRatingColor = (rating) => {
+    if (rating >= 80) return "#1a8754";
+    if (rating >= 60) return "#ffc107";
+    if (rating >= 40) return "#fd7e14";
+    return "#dc3545";
+  };
 
   const instructors = () => {
     return (
@@ -290,6 +312,21 @@ const Course = ({
       onClick={toggleBody}
       role="presentation"
     >
+      <div
+        className="factrak-rating"
+        style={{ backgroundColor: getRatingColor(getFactrakRating()) }}
+        onClick={(e) => {
+          e.stopPropagation();
+          window.location.href = getFactrakUrl();
+        }}
+        onMouseEnter={() => setTooltipVisible(true)}
+        onMouseLeave={() => setTooltipVisible(false)}
+      >
+        <span className="rating-value">{getFactrakRating()}</span>
+        {tooltipVisible && (
+          <div className="rating-tooltip">CUSTOM TOOLTIP TEXT</div>
+        )}
+      </div>
       <div className="course-header">
         <div className="row course-title">
           <div className="row title">
