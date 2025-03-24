@@ -50,9 +50,8 @@ const Course = ({
     return (course.number % 100).toFixed(0);
   };
 
-  // DBID is not yet a real value
   const getFactrakUrl = () => {
-    course.courseDBID = 0;
+    course.courseDBID = 0; // temporarily set to 0 until courses-factrak successfully generated on prod
     if (course.instructors.length === 1) {
       return `/factrak/courses/${course.courseDBID}/${course.instructors[0].id}`;
     } else {
