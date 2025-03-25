@@ -610,6 +610,7 @@ const applyLoadCatalog = (state, catalog) => {
   Object.assign(INITIAL_STATE, {
     queried: INITIAL_CATALOG,
     added: parseAddedCourses(),
+    crossListings: catalog.crossListings,
     updateTime: catalog.updateTime,
   });
 

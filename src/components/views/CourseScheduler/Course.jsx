@@ -47,11 +47,24 @@ const Course = ({
   const isHidden = hidden.indexOf(course) !== -1;
 
   const getFactrakRating = () => {
-    return (course.number % 100).toFixed(0);
+    if (course.factrakScore == -1) {
+      return "N/A";
+    }
+    return (course.factrakScore * 100).toFixed(0);
+  };
+
+  const getRatingsVisible = () => {
+    if (!course.factrakScore || course.factrakScore === -1) {
+      return "hidden";
+    }
+    return "visible";
+  };
+
+  const getTooltipText = () => {
+    return `${course.recommendReviews} out of ${course.totalReviews} would recommend`;
   };
 
   const getFactrakUrl = () => {
-    course.courseDBID = 0; // temporarily set to 0 until courses-factrak successfully generated on prod
     if (course.instructors.length === 1) {
       return `/factrak/courses/${course.courseDBID}/${course.instructors[0].id}`;
     } else {
@@ -313,7 +326,10 @@ const Course = ({
     >
       <div
         className="factrak-rating"
-        style={{ backgroundColor: getRatingColor(getFactrakRating()) }}
+        style={{
+          backgroundColor: getRatingColor(getFactrakRating()),
+          visibility: getRatingsVisible(),
+        }}
         onClick={(e) => {
           e.stopPropagation();
           window.location.href = getFactrakUrl();
@@ -323,7 +339,7 @@ const Course = ({
       >
         <span className="rating-value">{getFactrakRating()}</span>
         {tooltipVisible && (
-          <div className="rating-tooltip">CUSTOM TOOLTIP TEXT</div>
+          <div className="rating-tooltip">{getTooltipText()}</div>
         )}
       </div>
       <div className="course-header">
