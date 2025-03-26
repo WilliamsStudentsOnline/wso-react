@@ -47,7 +47,7 @@ const Course = ({
   const isHidden = hidden.indexOf(course) !== -1;
 
   const getFactrakRating = () => {
-    if (course.factrakScore == -1) {
+    if (course.factrakScore === -1) {
       return "N/A";
     }
     return (course.factrakScore * 100).toFixed(0);
