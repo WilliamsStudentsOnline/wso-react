@@ -71,13 +71,13 @@ const Scheduler = ({
       // if logged in as student, fetch catalog with factrak reviews
       let jsonURL = "/courses.json";
       if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
-        jsonURL = "/courses-factrak/courses.json";
+        jsonURL = "/courses-factrak.json";
       }
 
       axios({
         url: jsonURL,
         headers: {
-          "X-Requested-With": "XMLHttpRequest",
+          Authorization: "Bearer " + token,
         },
       }).then((response) => {
         loadCatalog(response.data);
