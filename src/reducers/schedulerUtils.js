@@ -7,7 +7,27 @@ import {
   CHANGE_TIME_FORMAT,
   CHANGE_ORIENTATION,
   UPDATE_STATE,
+  UPDATE_MAJOR_BUILDER_STATE,
 } from "../constants/actionTypes";
+
+import {
+  MAJOR_BUILDER_SEMESTERS,
+  MAJOR_BUILDER_COURSES_PER_SEM,
+} from "../constants/constants";
+
+const initialMajorBuilderGrid = Array(MAJOR_BUILDER_SEMESTERS)
+  .fill(null)
+  .map(() =>
+    Array(MAJOR_BUILDER_COURSES_PER_SEM)
+      .fill(null)
+      .map(() => ({ course: null, input: "" }))
+  );
+
+const initialMajorBuilderYears = Array(MAJOR_BUILDER_SEMESTERS).fill(
+  new Date().getMonth() >= 2 // March
+    ? new Date().getFullYear()
+    : new Date().getFullYear() + 1
+);
 
 const INITIAL_STATE = {
   active: "Timetable",
@@ -16,6 +36,12 @@ const INITIAL_STATE = {
   semester: 0,
   twelveHour: true,
   horizontal: false,
+  majorBuilderGrid: initialMajorBuilderGrid,
+  majorBuilderYears: initialMajorBuilderYears,
+};
+
+const updateMajorBuilderState = (state, action) => {
+  return { ...state, ...action.newState };
 };
 
 const changeActive = (state, action) => {
@@ -79,6 +105,8 @@ function schedulerUtilReducer(state = INITIAL_STATE, action) {
       return changeOrientation(state, action);
     case UPDATE_STATE:
       return updateState(state, action);
+    case UPDATE_MAJOR_BUILDER_STATE:
+      return updateMajorBuilderState(state, action);
     default:
       return state;
   }

@@ -19,6 +19,7 @@ import {
   UPDATE_START,
   RESET_FILTERS,
   REMOVE_SEMESTER_COURSES,
+  LOAD_HISTORICAL_CATALOG_YEAR,
 } from "../constants/actionTypes";
 
 import {
@@ -36,7 +37,7 @@ import { DEFAULT_SEMESTER_INDEX } from "../lib/scheduler";
 const INITIAL_STATE = {};
 let INITIAL_CATALOG = [];
 
-// Gets the added courses attributes from WebStorage and add the relevant courses.
+// Gets the added courses attributes from LocalStorage and add the relevant courses.
 // TODO: binary search?
 const parseAddedCourses = () => {
   const addedCourses = localStorage.getItem("added");
@@ -101,6 +102,7 @@ Object.assign(INITIAL_STATE, {
   hidden: [],
   filters: INITIAL_FILTER_STATE,
   counts: INITIAL_COUNT_STATE,
+  historicalCatalogs: {}, // will be { 2025: [], 2024: [], 2023: [], ... }
 });
 
 // Writing this rather than using regex for speed reasons
@@ -480,7 +482,7 @@ const applyAddCourse = (state, action) => {
 };
 
 const applyRemoveCourse = (state, action) => {
-  // Update WebStorage
+  // Update LocalStorage
   let addedCourses = localStorage.getItem("added");
   if (!addedCourses) addedCourses = "";
 
@@ -617,6 +619,17 @@ const applyLoadCatalog = (state, catalog) => {
   return { ...state, ...applySearchCourse(INITIAL_STATE) };
 };
 
+const applyLoadHistoricalCatalogYear = (state, action) => {
+  const { year, catalog } = action;
+  return {
+    ...state,
+    historicalCatalogs: {
+      ...state.historicalCatalogs,
+      [year]: catalog.courses,
+    },
+  };
+};
+
 const toggleRemote = (state, action) => {
   const final = state.filters.remote.slice();
 
@@ -642,6 +655,8 @@ const courseReducer = (state = INITIAL_STATE, action) => {
       break;
     case LOAD_CATALOG:
       return applyLoadCatalog(state, action.catalog);
+    case LOAD_HISTORICAL_CATALOG_YEAR:
+      return applyLoadHistoricalCatalogYear(state, action);
     case LOAD_COURSES:
       return applyLoadCourses(state, action);
     case RESET_FILTERS:

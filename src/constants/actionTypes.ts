@@ -31,6 +31,10 @@ export const REMOVE_SEMESTER_COURSES = "REMOVE_SEMESTER_COURSES";
 export const TOGGLE_TYPE = "TOGGLE_TYPE";
 export const UPDATE_STATE = "UPDATE_STATE";
 
+// New Major Builder features
+export const LOAD_HISTORICAL_CATALOG_YEAR = "LOAD_HISTORICAL_CATALOG_YEAR";
+export const UPDATE_MAJOR_BUILDER_STATE = "UPDATE_MAJOR_BUILDER_STATE";
+
 // Auth Reducer: See authSlice
 
 // Util Reducer: removed because not used

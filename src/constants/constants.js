@@ -188,3 +188,9 @@ export const CLASS_TYPES = [
   "Independent Study",
   "Laboratory",
 ];
+
+// New Major Builder constants
+export const COURSE_HISTORY_START_YEAR = 2022; // do not fetch courses before 2022, since THEY DO NOT EXIST
+export const MAJOR_BUILDER_SEMESTERS = 8;
+export const MAJOR_BUILDER_COURSES_PER_SEM = 5; // allow for 5th course inputs
+export const MAJOR_BUILDER_LS_KEY = "majorBuilderState";
