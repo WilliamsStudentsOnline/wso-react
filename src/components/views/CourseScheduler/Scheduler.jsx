@@ -15,6 +15,7 @@ import SubMenu from "./SubMenu";
 import Search from "./Search";
 import Timetable from "./Timetable";
 import AdditionalOptions from "./AdditionalOptions";
+import MajorBuilder from "./MajorBuilder";
 
 // Redux (Selector, Reducer, Actions) imports
 import { getCurrSubMenu } from "../../../selectors/schedulerUtils";
@@ -49,7 +50,7 @@ const Scheduler = ({
         const DISCOVERY_DOCS = [
           "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
         ];
-        const API_KEY = "AIzaSyAxGwi55Zk2mg-Hs-O3qLBcoEMx__cceD0";
+        const API_KEY = "AIzaSyAxGwi55Zk2mg-Hs-O3qLBcoEMx__cceD0"; // yeppp
 
         gapiClient.client.init({
           clientId: CLIENT_ID,
@@ -111,6 +112,12 @@ const Scheduler = ({
         return (
           <div className="row">
             <Timetable />
+          </div>
+        );
+      case "Major Builder":
+        return (
+          <div className="row">
+            <MajorBuilder />
           </div>
         );
       default:

@@ -1,0 +1,119 @@
+.major-builder-container {
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fff;
+  margin: 50px;
+  box-shadow: 0 4px 6px hsla(0, 10%, 42%, 0.2);
+}
+
+.major-builder-container h2 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #4b2771; /* WSO Purple */
+}
+
+.major-builder-grid {
+  overflow-x: auto; /* Allow horizontal scrolling for the table */
+}
+
+.major-builder-grid table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px; /* Ensure table is wide enough to show semesters */
+}
+
+.major-builder-grid th,
+.major-builder-grid td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+  min-width: 150px; /* Give columns a minimum width */
+}
+
+.major-builder-grid th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  font-size: 1em;
+  position: sticky; /* Make header sticky */
+  top: 0;
+  z-index: 1;
+}
+
+.major-builder-grid td:first-child, /* Course number column */
+  .major-builder-grid th:first-child {
+  min-width: 80px;
+  text-align: center;
+  font-weight: bold;
+  position: sticky;
+  left: 0;
+  background-color: #f2f2f2; /* Match header background */
+  z-index: 2; /* Above regular header */
+}
+
+.year-header {
+  cursor: pointer;
+  font-weight: bold;
+  color: #4b2771;
+  padding: 5px;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+.year-header:hover {
+  background-color: #e0d8eb;
+}
+
+.major-builder-grid input[type="text"] {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box; /* Include padding and border in element's total width */
+}
+
+.input-container {
+  position: relative; /* Needed for absolute positioning of autocomplete */
+}
+
+.autocomplete-results {
+  position: absolute;
+  top: 100%; /* Position below the input */
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 200px;
+  width: 200%;
+  overflow-y: auto;
+  z-index: 10; /* Ensure it's above other elements */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.autocomplete-results li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.autocomplete-results li:hover {
+  background-color: #eee;
+}
+
+.autocomplete-results li.no-results {
+  padding: 8px 12px;
+  color: #888;
+  cursor: default;
+}
+
+.major-requirements-placeholder {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px dashed #ccc;
+  color: #888;
+  text-align: center;
+}
