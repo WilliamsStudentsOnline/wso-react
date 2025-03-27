@@ -298,6 +298,66 @@ const MajorBuilder = ({
     return {};
   };
 
+  // Tally Div Reqs (like an APR)
+  const getAPRInfo = () => {
+    const apr = {
+      div1: [],
+      div2: [],
+      div3: [],
+      dpe: 0,
+      qfr: 0,
+      ws: 0,
+    };
+    for (let semIdx = 0; semIdx < MAJOR_BUILDER_SEMESTERS; semIdx++) {
+      for (
+        let courseIdx = 0;
+        courseIdx < MAJOR_BUILDER_COURSES_PER_SEM;
+        courseIdx++
+      ) {
+        if (grid[semIdx]?.[courseIdx]?.course) {
+          const course = grid[semIdx][courseIdx].course;
+          if (course.courseAttributes.div1) {
+            apr.div1.push(course.department);
+          }
+          if (course.courseAttributes.div2) {
+            apr.div2.push(course.department);
+          }
+          if (course.courseAttributes.div3) {
+            apr.div3.push(course.department);
+          }
+          if (course.courseAttributes.dpe) {
+            apr.dpe++;
+          }
+          if (course.courseAttributes.qfr) {
+            apr.qfr++;
+          }
+          if (course.courseAttributes.wac) {
+            apr.ws++;
+          }
+        }
+      }
+    }
+
+    function getDistinctPrefixCourses(arr) {
+      const counts = {};
+      return arr.filter((x) => {
+        counts[x] = (counts[x] || 0) + 1;
+        return counts[x] <= 2;
+      }).length;
+    }
+
+    /* eslint-disable */
+    return (
+      <p>
+        Div 1: {getDistinctPrefixCourses(apr.div1)}/3, Div 2:{" "}
+        {getDistinctPrefixCourses(apr.div2)}/3, Div 3:{" "}
+        {getDistinctPrefixCourses(apr.div3)}/3, WS: {apr.ws}, QFR: {apr.qfr},
+        DPE: {apr.dpe}
+      </p>
+    );
+    /* eslint-enable */
+  };
+
   // Ensure grid is initialized before rendering
   if (!grid || grid.length !== MAJOR_BUILDER_SEMESTERS) {
     // Or return a loading indicator
@@ -398,11 +458,13 @@ const MajorBuilder = ({
           </tbody>
         </table>
       </div>
+      <div className="aprInfo">
+        Your APR at a glance:<br></br>
+        {getAPRInfo()}
+      </div>
       <h2>Major Builder</h2>
       <p>Check your requirements and progress toward your major(s).</p>
-      <div className="major-requirements-placeholder">
-        {/* TODO Major requirements info will go here later */}
-      </div>
+      <div className="major-requirements-placeholder"> {/* TODO */}</div>
     </div>
   );
 };
