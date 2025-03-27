@@ -13,7 +13,11 @@ import {
   doHideCourse,
   doUnhideCourse,
 } from "../../../actions/course";
-import { getAddedCourses, getHiddenCourses } from "../../../selectors/course";
+import {
+  getAddedCourses,
+  getHiddenCourses,
+  getShowFactrakScore,
+} from "../../../selectors/course";
 import { getTimeFormat } from "../../../selectors/schedulerUtils";
 import { BORDER_PALETTE } from "../../../constants/constants";
 import { Link } from "react-router-dom";
@@ -35,6 +39,7 @@ const Course = ({
   onHide,
   onUnhide,
   twelveHour,
+  showFactrakScore,
 }) => {
   // State of body visibiity
   const [bodyHidden, setHidden] = useState(true);
@@ -54,7 +59,11 @@ const Course = ({
   };
 
   const getRatingsVisible = () => {
-    if (!course.factrakScore || course.factrakScore === -1) {
+    if (
+      !showFactrakScore ||
+      !course.factrakScore ||
+      course.factrakScore === -1
+    ) {
       return "hidden";
     }
     return "visible";
@@ -431,6 +440,7 @@ Course.propTypes = {
   onUnhide: PropTypes.func.isRequired,
   location: PropTypes.string,
   course: PropTypes.object.isRequired,
+  showFactrakScore: PropTypes.bool.isRequired,
 };
 
 Course.defaultProps = {
@@ -441,6 +451,7 @@ const mapStateToProps = (state) => ({
   hidden: getHiddenCourses(state),
   added: getAddedCourses(state),
   twelveHour: getTimeFormat(state),
+  showFactrakScore: getShowFactrakScore(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

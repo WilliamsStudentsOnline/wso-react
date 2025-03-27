@@ -28,6 +28,13 @@ const getEndTimes = ({ courseState }) => courseState.endTimes;
 const getCounts = ({ courseState }) => courseState.counts;
 const getQuery = ({ courseState }) => courseState.query;
 
+const getShowFactrakScore = ({ courseState }) =>
+  courseState.filters.showFactrakScore;
+const getIncludeFactrakNoScores = ({ courseState }) =>
+  courseState.filters.includeFactrakNoScores;
+const getMinFactrakScore = ({ courseState }) =>
+  courseState.filters.minFactrakScore;
+
 export {
   getAddedCourses,
   getHiddenCourses,
@@ -40,4 +47,7 @@ export {
   getCounts,
   getQuery,
   getCatalogUpdateTime,
+  getShowFactrakScore,
+  getIncludeFactrakNoScores,
+  getMinFactrakScore,
 };

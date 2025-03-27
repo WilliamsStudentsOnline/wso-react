@@ -19,6 +19,9 @@ import {
   RESET_FILTERS,
   REMOVE_SEMESTER_COURSES,
   LOAD_CATALOG,
+  TOGGLE_FACTRAK_SCORE_DISPLAY,
+  TOGGLE_INCLUDE_FACTRAK_NO_SCORES,
+  SET_MIN_FACTRAK_SCORE,
 } from "../constants/actionTypes";
 
 /**
@@ -119,6 +122,19 @@ const doToggleType = (index) => ({
   index,
 });
 
+const doToggleFactrakScoreDisplay = () => ({
+  type: TOGGLE_FACTRAK_SCORE_DISPLAY,
+});
+
+const doToggleIncludeFactrakNoScores = () => ({
+  type: TOGGLE_INCLUDE_FACTRAK_NO_SCORES,
+});
+
+const doSetMinFactrakScore = (score) => ({
+  type: SET_MIN_FACTRAK_SCORE,
+  score,
+});
+
 const doUpdateStart = (time) => ({
   type: UPDATE_START,
   time,
@@ -154,9 +170,12 @@ export {
   doToggleSem,
   doToggleType,
   doToggleRemote,
+  doToggleFactrakScoreDisplay,
+  doToggleIncludeFactrakNoScores,
   doUpdateEnd,
   doUpdateStart,
   doResetFilters,
   doRemoveSemesterCourses,
   doLoadCatalog,
+  doSetMinFactrakScore,
 };
