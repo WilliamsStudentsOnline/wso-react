@@ -28,7 +28,15 @@ module.exports = function (app) {
     })
   );
   app.use(
-    createProxyMiddleware("/courses-factrak", {
+    createProxyMiddleware("/courses-*.json", {
+      target: "https://wso.williams.edu",
+      changeOrigin: true,
+      secure: false,
+    })
+  );
+  // in case the above does not work
+  app.use(
+    createProxyMiddleware("/courses-factrak.json", {
       target: "https://wso.williams.edu",
       changeOrigin: true,
       secure: false,

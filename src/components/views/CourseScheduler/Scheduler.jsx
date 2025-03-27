@@ -68,16 +68,17 @@ const Scheduler = ({
       }
     };
 
-    const loadCatalogCourses = async () => {
+    const loadCatalogCourses = () => {
       // if logged in as student, fetch catalog with factrak reviews
       let jsonURL = "/courses.json";
-      if (containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
-        jsonURL = "/courses-factrak/courses.json";
+      if (token && containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
+        jsonURL = "/courses-factrak.json";
       }
 
       axios({
         url: jsonURL,
         headers: {
+          Authorization: "Bearer " + token,
           "X-Requested-With": "XMLHttpRequest",
         },
       }).then((response) => {
@@ -94,6 +95,7 @@ const Scheduler = ({
     // doUpdateSignIn,
     loadCatalog,
     doAddNotification,
+    token,
   ]);
 
   const getActive = () => {
