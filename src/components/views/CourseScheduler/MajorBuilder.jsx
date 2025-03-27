@@ -11,7 +11,7 @@ import Select from "../../Select";
 // Redux  imports
 import {
   getMajorBuilderGrid,
-  getMajorBuilderYears,
+  getMajorBuilderSemesters,
 } from "../../../selectors/schedulerUtils";
 import { getHistoricalCatalogs } from "../../../selectors/course";
 import { doUpdateMajorBuilderState } from "../../../actions/schedulerUtils";
@@ -21,11 +21,12 @@ import {
   MAJOR_BUILDER_COURSES_PER_SEM,
   MAJOR_BUILDER_LS_KEY,
   COURSE_HISTORY_START_YEAR,
+  CURRENT_ACADEMIC_YEAR,
 } from "../../../constants/constants";
 
 const MajorBuilder = ({
   grid,
-  years,
+  semesters,
   historicalCatalogs,
   updateMajorBuilderState,
   loadHistoricalCatalog,
@@ -50,18 +51,27 @@ const MajorBuilder = ({
         // Basic validation
         if (
           savedState.grid &&
-          savedState.years &&
+          savedState.semesters &&
           savedState.grid.length === MAJOR_BUILDER_SEMESTERS &&
-          savedState.years.length === MAJOR_BUILDER_SEMESTERS &&
+          savedState.semesters.length === MAJOR_BUILDER_SEMESTERS &&
           // Check if grid structure matches expected shape
           savedState.grid.every(
             (sem) =>
               Array.isArray(sem) && sem.length === MAJOR_BUILDER_COURSES_PER_SEM
+          ) &&
+          savedState.semesters.every(
+            (s) =>
+              typeof s === "object" &&
+              s !== null &&
+              "year" in s &&
+              "term" in s &&
+              s.term !== null &&
+              s.year !== null
           )
         ) {
           updateMajorBuilderState({
             majorBuilderGrid: savedState.grid,
-            majorBuilderYears: savedState.years,
+            majorBuilderSemesters: savedState.semesters,
           });
         } else {
           console.warn(
@@ -76,22 +86,6 @@ const MajorBuilder = ({
         );
         localStorage.removeItem(MAJOR_BUILDER_LS_KEY); // Remove corrupted state
       }
-    }
-    // If no saved state, ensure years are initialized (e.g., based on current year)
-    else if (years.every((y) => y === new Date().getFullYear())) {
-      // Basic check if using default placeholder
-      const currentAcademicYearStart =
-        new Date().getMonth() >= 6
-          ? new Date().getFullYear()
-          : new Date().getFullYear() - 1; // Crude check for academic year start (July+)
-      const initialYears = [];
-      for (let i = 0; i < MAJOR_BUILDER_SEMESTERS / 2; i++) {
-        initialYears.push(currentAcademicYearStart + i); // Fall Year X
-        initialYears.push(currentAcademicYearStart + i + 1); // Spring Year X+1
-      }
-      updateMajorBuilderState({
-        majorBuilderYears: initialYears.slice(0, MAJOR_BUILDER_SEMESTERS),
-      });
     }
   }, [updateMajorBuilderState]); // Run only once on mount
 
@@ -130,21 +124,21 @@ const MajorBuilder = ({
           );
       });
     }
-  }, [historicalCatalogs, loadHistoricalCatalog]); // Depend on catalogs and the action dispatcher
+  }, [loadHistoricalCatalog]); // Depend on catalogs and the action dispatcher
 
   // Save state to LocalStorage whenever it changes
   useEffect(() => {
-    // Only save if grid and years are properly initialized (not the default placeholder)
+    // Only save if grid and semesters are properly initialized
     if (
       grid &&
-      years &&
+      semesters &&
       grid.length === MAJOR_BUILDER_SEMESTERS &&
-      years.length === MAJOR_BUILDER_SEMESTERS
+      semesters.length === MAJOR_BUILDER_SEMESTERS
     ) {
-      const stateToSave = JSON.stringify({ grid, years });
+      const stateToSave = JSON.stringify({ grid, semesters });
       localStorage.setItem(MAJOR_BUILDER_LS_KEY, stateToSave);
     }
-  }, [grid, years]);
+  }, [grid, semesters]);
 
   const handleInputChange = (semesterIndex, courseIndex, event) => {
     const newGrid = JSON.parse(JSON.stringify(grid)); // Deep copy
@@ -156,14 +150,15 @@ const MajorBuilder = ({
     updateMajorBuilderState({ majorBuilderGrid: newGrid });
 
     // AUTOCOMPLETE
-    const year =
-      semesterIndex % 2 === 0 ? years[semesterIndex] + 1 : years[semesterIndex];
+    const semester = semesters[semesterIndex];
+    const year = semester.year;
+    const targetTerm = semester.term;
     const catalogForYear = historicalCatalogs[year] || [];
-    const targetSemester = semesterIndex % 2 === 0 ? "Fall" : "Spring";
+
     if (inputValue.length > 1 && catalogForYear.length > 0) {
       const lowerInput = inputValue.toLowerCase();
       const semesterFilteredCourses = catalogForYear.filter(
-        (course) => course.semester === targetSemester
+        (course) => course.semester === targetTerm
       );
       const queryFilteredCourses = semesterFilteredCourses.filter(
         (course) =>
@@ -224,55 +219,80 @@ const MajorBuilder = ({
     }, 200);
   };
 
-  const handleYearHeaderClick = (index) => {
-    setEditingYearIndex(index);
+  const generateSemesterOptions = () => {
+    const opts = [];
+    const startYear = COURSE_HISTORY_START_YEAR;
+    const endYear = CURRENT_ACADEMIC_YEAR + 3;
+    for (let year = startYear; year <= endYear; year++) {
+      opts.push({
+        label: `Fall ${year - 1}`,
+        value: `Fall-${year - 1}`,
+        term: "Fall",
+        year: year,
+      });
+      opts.push({
+        label: `Spring ${year}`,
+        value: `Spring-${year}`,
+        term: "Spring",
+        year: year,
+      });
+    }
+    return opts.sort((a, b) => {
+      // Sort chronologically
+      if (a.year !== b.year) return a.year - b.year;
+      return a.term === "Spring" ? 1 : -1; // Fall before Spring
+    });
   };
 
-  const handleYearChange = (event) => {
-    if (editingYearIndex !== null) {
-      const newYears = [...years];
-      newYears[editingYearIndex] = parseInt(event.target.value, 10);
-      updateMajorBuilderState({ majorBuilderYears: newYears });
-      setEditingYearIndex(null); // Finish editing
+  const semesterOptions = generateSemesterOptions();
+
+  const handleSemesterSelectionChange = (event) => {
+    const selectedValue = event.target.value; // e.g. Fall-2024
+    const selectedOption = semesterOptions.find(
+      (opt) => opt.value === selectedValue
+    );
+
+    if (selectedOption && editingYearIndex !== null) {
+      const newSemesters = [...semesters];
+      newSemesters[editingYearIndex] = {
+        term: selectedOption.term,
+        year: selectedOption.year,
+      };
+      updateMajorBuilderState({ majorBuilderSemesters: newSemesters });
+      setEditingYearIndex(null);
+    } else {
+      console.error("Selected semester option not found: ", selectedValue);
+      setEditingYearIndex(null);
     }
   };
 
   const renderSemesterHeader = (index) => {
-    const year = years[index];
-    const term = index % 2 === 0 ? "Fall" : "Spring";
-    // Fall semester is in year YYYY, Spring semester is in year YYYY+1 but belongs to the YYYY-(YYYY+1) academic year
-    // But displaying the calendar year makes more sense for fetching historical data
-    const displayYear = year;
+    const semester = semesters[index];
 
     if (editingYearIndex === index) {
-      const currentYear = new Date().getFullYear();
-      const availableYears = [];
-      // Allow selecting current year + next year for planning, and past years
-      // Allow one year ahead, up to 4 years back
-      for (let i = -3; i <= 4; i++) {
-        const y = currentYear - i;
-        if (y >= COURSE_HISTORY_START_YEAR) {
-          availableYears.push(y);
-        }
-      }
-      // Ensure years are sorted correctly if needed, though loop order should be descending
-      availableYears.sort((a, b) => b - a);
-
       return (
         <Select
-          value={year}
-          onChange={handleYearChange}
-          onBlur={() => setEditingYearIndex(null)} // Hide select on blur
-          options={availableYears}
-          valueList={availableYears}
-          autoFocus // Focus the select when it appears
+          value={`${semester.term}-${
+            semester.term === "Fall" ? semester.year - 1 : semester.year
+          }`}
+          onBlur={() => setEditingYearIndex(null)} // Close dropdown on blur if no selection made
+          onChange={handleSemesterSelectionChange}
+          options={semesterOptions.map((opt) => opt.label)} // Display "Term Year"
+          valueList={semesterOptions.map((opt) => opt.value)} // Use "Term-Year" as value
+          className="semester-edit-select single"
+          autoFocus
         />
       );
     }
 
     return (
-      <div onClick={() => handleYearHeaderClick(index)} className="year-header">
-        {`${term} ${displayYear}`}
+      <div
+        onClick={() => setEditingYearIndex(index)}
+        className="semester-header"
+      >
+        {`${semester.term} ${
+          semester.term === "Fall" ? semester.year - 1 : semester.year
+        }`}
       </div>
     );
   };
@@ -298,16 +318,20 @@ const MajorBuilder = ({
     return {};
   };
 
-  // Tally Div Reqs (like an APR)
+  // Tally division requirements
   const getAPRInfo = () => {
     const apr = {
       div1: [],
+      div1_count: 0,
       div2: [],
+      div2_count: 0,
       div3: [],
+      div3_count: 0,
       dpe: 0,
       qfr: 0,
       ws: 0,
     };
+
     for (let semIdx = 0; semIdx < MAJOR_BUILDER_SEMESTERS; semIdx++) {
       for (
         let courseIdx = 0;
@@ -316,23 +340,26 @@ const MajorBuilder = ({
       ) {
         if (grid[semIdx]?.[courseIdx]?.course) {
           const course = grid[semIdx][courseIdx].course;
-          if (course.courseAttributes.div1) {
-            apr.div1.push(course.department);
-          }
-          if (course.courseAttributes.div2) {
-            apr.div2.push(course.department);
-          }
-          if (course.courseAttributes.div3) {
-            apr.div3.push(course.department);
-          }
-          if (course.courseAttributes.dpe) {
-            apr.dpe++;
-          }
-          if (course.courseAttributes.qfr) {
-            apr.qfr++;
-          }
-          if (course.courseAttributes.wac) {
-            apr.ws++;
+
+          if (course.courseAttributes) {
+            if (course.courseAttributes.div1) {
+              apr.div1.push(course.department);
+            }
+            if (course.courseAttributes.div2) {
+              apr.div2.push(course.department);
+            }
+            if (course.courseAttributes.div3) {
+              apr.div3.push(course.department);
+            }
+            if (course.courseAttributes.dpe) {
+              apr.dpe++;
+            }
+            if (course.courseAttributes.qfr) {
+              apr.qfr++;
+            }
+            if (course.courseAttributes.wac) {
+              apr.ws++;
+            }
           }
         }
       }
@@ -340,26 +367,63 @@ const MajorBuilder = ({
 
     function getDistinctPrefixCourses(arr) {
       const counts = {};
-      return arr.filter((x) => {
-        counts[x] = (counts[x] || 0) + 1;
-        return counts[x] <= 2;
-      }).length;
+      // Filter to keep only the first 2 occurrences of each department prefix
+      const filteredByDeptLimit = arr.filter((deptPrefix) => {
+        counts[deptPrefix] = (counts[deptPrefix] || 0) + 1;
+        return counts[deptPrefix] <= 2;
+      });
+      return filteredByDeptLimit.length;
     }
 
-    /* eslint-disable */
-    return (
-      <p>
-        Div 1: {getDistinctPrefixCourses(apr.div1)}/3, Div 2:{" "}
-        {getDistinctPrefixCourses(apr.div2)}/3, Div 3:{" "}
-        {getDistinctPrefixCourses(apr.div3)}/3, WS: {apr.ws}, QFR: {apr.qfr},
-        DPE: {apr.dpe}
-      </p>
-    );
-    /* eslint-enable */
+    apr.div1_count = getDistinctPrefixCourses(apr.div1);
+    apr.div2_count = getDistinctPrefixCourses(apr.div2);
+    apr.div3_count = getDistinctPrefixCourses(apr.div3);
+
+    return apr;
+  };
+
+  const renderAPRStatus = () => {
+    const aprData = getAPRInfo();
+
+    const reqs = [
+      { key: "div1_count", label: "Div I", target: 3 },
+      { key: "div2_count", label: "Div II", target: 3 },
+      { key: "div3_count", label: "Div III", target: 3 },
+      { key: "ws", label: "WS", target: 2 },
+      { key: "qfr", label: "QFR", target: 1 },
+      { key: "dpe", label: "DPE", target: 1 },
+    ];
+
+    return reqs.map((req, index) => {
+      const count = aprData[req.key];
+      const isMet = count >= req.target;
+      const color = isMet ? "#1a8754" : "#6c757d";
+
+      return (
+        <span
+          key={req.key}
+          style={{ color: color, marginRight: "10px", whiteSpace: "nowrap" }}
+        >
+          {req.label}: {count}/{req.target}
+          {index < reqs.length - 1 && (
+            <span
+              style={{ color: "#ccc", marginLeft: "10px", marginRight: "0px" }}
+            >
+              |
+            </span>
+          )}
+        </span>
+      );
+    });
   };
 
   // Ensure grid is initialized before rendering
-  if (!grid || grid.length !== MAJOR_BUILDER_SEMESTERS) {
+  if (
+    !grid ||
+    grid.length !== MAJOR_BUILDER_SEMESTERS ||
+    !semesters ||
+    semesters.length !== MAJOR_BUILDER_SEMESTERS
+  ) {
     // Or return a loading indicator
     return <div>Loading Major Builder...</div>;
   }
@@ -386,7 +450,7 @@ const MajorBuilder = ({
           <thead>
             <tr>
               <th></th>
-              {years.map((_, index) => (
+              {semesters.map((_, index) => (
                 <th key={`header-${index}`}>{renderSemesterHeader(index)}</th>
               ))}
             </tr>
@@ -400,7 +464,7 @@ const MajorBuilder = ({
                 <td>
                   Course {courseIdx === 4 ? <i>5 (optional)</i> : courseIdx + 1}
                 </td>
-                {years.map((_, semesterIdx) => (
+                {semesters.map((_, semesterIdx) => (
                   <td
                     key={`cell-${semesterIdx}-${courseIdx}`}
                     style={getDivisionHighlightStyle(
@@ -460,11 +524,11 @@ const MajorBuilder = ({
       </div>
       <div className="aprInfo">
         Your APR at a glance:<br></br>
-        {getAPRInfo()}
+        {renderAPRStatus()}
       </div>
       <h2>Major Builder</h2>
       <p>Check your requirements and progress toward your major(s).</p>
-      <div className="major-requirements-placeholder"> {/* TODO */}</div>
+      <div className="major-requirements"> {/* TODO */}</div>
     </div>
   );
 };
@@ -478,7 +542,12 @@ MajorBuilder.propTypes = {
       })
     )
   ).isRequired,
-  years: PropTypes.arrayOf(PropTypes.number).isRequired,
+  semesters: PropTypes.arrayOf(
+    PropTypes.shape({
+      year: PropTypes.number.isRequired,
+      term: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   historicalCatalogs: PropTypes.object.isRequired,
   updateMajorBuilderState: PropTypes.func.isRequired,
   loadHistoricalCatalog: PropTypes.func.isRequired, // Add prop type for the action dispatcher
@@ -486,7 +555,7 @@ MajorBuilder.propTypes = {
 
 const mapStateToProps = (state) => ({
   grid: getMajorBuilderGrid(state),
-  years: getMajorBuilderYears(state),
+  semesters: getMajorBuilderSemesters(state),
   historicalCatalogs: getHistoricalCatalogs(state),
 });
 

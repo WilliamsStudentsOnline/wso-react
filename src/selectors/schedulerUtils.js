@@ -8,8 +8,8 @@ const getOrientation = ({ schedulerUtilState }) =>
   schedulerUtilState.horizontal;
 const getMajorBuilderGrid = ({ schedulerUtilState }) =>
   schedulerUtilState.majorBuilderGrid;
-const getMajorBuilderYears = ({ schedulerUtilState }) =>
-  schedulerUtilState.majorBuilderYears;
+const getMajorBuilderSemesters = ({ schedulerUtilState }) =>
+  schedulerUtilState.majorBuilderSemesters;
 
 export {
   getCurrSubMenu,
@@ -19,5 +19,5 @@ export {
   getTimeFormat,
   getOrientation,
   getMajorBuilderGrid,
-  getMajorBuilderYears,
+  getMajorBuilderSemesters,
 };

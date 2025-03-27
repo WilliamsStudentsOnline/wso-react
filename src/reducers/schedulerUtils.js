@@ -13,6 +13,7 @@ import {
 import {
   MAJOR_BUILDER_SEMESTERS,
   MAJOR_BUILDER_COURSES_PER_SEM,
+  CURRENT_ACADEMIC_YEAR,
 } from "../constants/constants";
 
 const initialMajorBuilderGrid = Array(MAJOR_BUILDER_SEMESTERS)
@@ -23,11 +24,14 @@ const initialMajorBuilderGrid = Array(MAJOR_BUILDER_SEMESTERS)
       .map(() => ({ course: null, input: "" }))
   );
 
-const initialMajorBuilderYears = Array(MAJOR_BUILDER_SEMESTERS).fill(
-  new Date().getMonth() >= 2 // March
-    ? new Date().getFullYear()
-    : new Date().getFullYear() + 1
-);
+const initialMajorBuilderSemesters = (() => {
+  const semesters = [];
+  for (let i = 0; i < MAJOR_BUILDER_SEMESTERS / 2; i++) {
+    semesters.push({ year: CURRENT_ACADEMIC_YEAR + i, term: "Fall" });
+    semesters.push({ year: CURRENT_ACADEMIC_YEAR + i, term: "Spring" });
+  }
+  return semesters.slice(0, MAJOR_BUILDER_SEMESTERS);
+})();
 
 const INITIAL_STATE = {
   active: "Timetable",
@@ -37,7 +41,7 @@ const INITIAL_STATE = {
   twelveHour: true,
   horizontal: false,
   majorBuilderGrid: initialMajorBuilderGrid,
-  majorBuilderYears: initialMajorBuilderYears,
+  majorBuilderSemesters: initialMajorBuilderSemesters,
 };
 
 const updateMajorBuilderState = (state, action) => {
