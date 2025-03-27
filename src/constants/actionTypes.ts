@@ -31,6 +31,12 @@ export const REMOVE_SEMESTER_COURSES = "REMOVE_SEMESTER_COURSES";
 export const TOGGLE_TYPE = "TOGGLE_TYPE";
 export const UPDATE_STATE = "UPDATE_STATE";
 
+// Factrak Filters
+export const TOGGLE_FACTRAK_SCORE_DISPLAY = "TOGGLE_FACTRAK_SCORE_DISPLAY";
+export const TOGGLE_INCLUDE_FACTRAK_NO_SCORES =
+  "TOGGLE_INCLUDE_FACTRAK_NO_SCORES";
+export const SET_MIN_FACTRAK_SCORE = "SET_MIN_FACTRAK_SCORE";
+
 // Auth Reducer: See authSlice
 
 // Util Reducer: removed because not used

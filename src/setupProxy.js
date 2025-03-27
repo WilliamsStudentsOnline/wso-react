@@ -19,8 +19,24 @@ module.exports = function (app) {
     })
   );
 
+  // fetch course JSONs from prod
   app.use(
     createProxyMiddleware("/courses.json", {
+      target: "https://wso.williams.edu",
+      changeOrigin: true,
+      secure: false,
+    })
+  );
+  app.use(
+    createProxyMiddleware("/courses-*.json", {
+      target: "https://wso.williams.edu",
+      changeOrigin: true,
+      secure: false,
+    })
+  );
+  // in case the above does not work
+  app.use(
+    createProxyMiddleware("/courses-factrak.json", {
       target: "https://wso.williams.edu",
       changeOrigin: true,
       secure: false,
