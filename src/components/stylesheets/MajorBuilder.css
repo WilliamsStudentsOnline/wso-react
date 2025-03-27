@@ -21,6 +21,8 @@
   width: 100%;
   border-collapse: collapse;
   min-width: 1000px; /* Ensure table is wide enough to show semesters */
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
 }
 
 .major-builder-grid th,
