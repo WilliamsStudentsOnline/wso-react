@@ -310,6 +310,7 @@ describe("Course reducer", () => {
       hidden: [],
       crossListings: undefined,
       updateTime: undefined,
+      historicalCatalogs: {},
     };
 
     deepFreeze(previousState);
