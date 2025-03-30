@@ -4,23 +4,39 @@
   box-sizing: border-box;
   background-color: #fff;
   margin: 50px;
-  box-shadow: 0 4px 6px hsla(0, 10%, 42%, 0.2);
+  box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.1);
 }
 
 .major-builder-container h2 {
   text-align: center;
+  margin-top: 30px;
   margin-bottom: 15px;
   color: #4b2771; /* WSO Purple */
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.major-builder-container h2:first-of-type {
+  margin-top: 0;
+}
+
+.major-builder-options {
+  margin-bottom: 10px;
+  font-size: 0.9em;
+}
+
+.major-builder-options label {
+  cursor: pointer;
 }
 
 .major-builder-grid {
-  overflow-x: auto; /* Allow horizontal scrolling for the table */
+  overflow-x: auto;
 }
 
 .major-builder-grid table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1000px; /* Ensure table is wide enough to show semesters */
+  min-width: 1000px;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
 }
@@ -31,14 +47,15 @@
   padding: 8px;
   text-align: left;
   vertical-align: top;
-  min-width: 150px; /* Give columns a minimum width */
+  min-width: 150px;
+  transition: background-color 0.3s ease;
 }
 
 .major-builder-grid th {
   background-color: #f2f2f2;
   font-weight: bold;
   font-size: 1em;
-  position: sticky; /* Make header sticky */
+  position: sticky;
   top: 0;
   z-index: 1;
 }
@@ -50,8 +67,12 @@
   font-weight: bold;
   position: sticky;
   left: 0;
-  background-color: #f2f2f2; /* Match header background */
+  background-color: #f2f2f2;
   z-index: 2; /* Above regular header */
+}
+
+.optional-course-row > td {
+  font-style: italic;
 }
 
 .semester-header {
@@ -67,21 +88,31 @@
   background-color: #e0d8eb;
 }
 
+.semester-edit-select {
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.semester-edit-select.single {
+  width: 100%; /* Make the single dropdown take full cell width */
+}
+
 .major-builder-grid input[type="text"] {
   width: 100%;
   padding: 6px;
   border: 1px solid #ccc;
   border-radius: 3px;
-  box-sizing: border-box; /* Include padding and border in element's total width */
+  box-sizing: border-box;
 }
 
-.input-container {
+.cs-input-container {
   position: relative; /* Needed for absolute positioning of autocomplete */
 }
 
 .autocomplete-results {
   position: absolute;
-  top: 100%; /* Position below the input */
+  top: 100%;
   left: 0;
   right: 0;
   background-color: white;
@@ -93,7 +124,7 @@
   max-height: 200px;
   width: 200%;
   overflow-y: auto;
-  z-index: 10; /* Ensure it's above other elements */
+  z-index: 10;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -112,12 +143,247 @@
   cursor: default;
 }
 
-.major-requirements {
-  padding: 20px;
-  color: #888;
-}
-
 .aprInfo {
   text-align: center;
   margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+.aprInfo strong {
+  margin-right: 10px;
+}
+
+.major-selection-container {
+  margin-top: 0px;
+  margin-bottom: 20px;
+  position: relative;
+  max-width: 400px;
+}
+
+.major-selection-container label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.major-selection-container input[type="text"] {
+  width: 100%;
+  padding: 8px;
+}
+
+.autocomplete-results.major-autocomplete {
+  width: 100%;
+}
+
+.all-majors-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.major-requirements-display {
+  margin-top: 0px;
+  padding: 15px;
+  border: 1px solid #d3d3d3;
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 320px;
+}
+
+.major-requirements-display h3 {
+  margin-top: 0;
+  color: #4b2771;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.major-info-list {
+  list-style: disc;
+  margin-left: 20px;
+  margin-bottom: 15px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.major-req-controls {
+  text-align: right;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.major-req-controls button {
+  margin-left: 10px;
+  padding: 4px 8px;
+  font-size: 0.9em;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+.major-req-controls button:hover {
+  background-color: #e0e0e0;
+}
+
+.requirement-bucket {
+  margin-bottom: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+}
+
+.requirement-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  background-color: #f7f7f7;
+  cursor: pointer;
+  border-left: 5px solid transparent;
+  border-bottom: 1px solid #eee;
+  gap: 10px;
+  transition: background-color 0.2s ease;
+}
+.requirement-header:hover {
+  background-color: #ededed;
+}
+
+.requirement-bucket:not(:has(.requirement-item-list)) .requirement-header {
+  border-bottom: none;
+}
+.requirement-header.collapsed {
+  border-bottom: none;
+}
+
+.expand-collapse-icon {
+  font-size: 0.8em;
+  width: 1em;
+  text-align: center;
+  color: #4b2771;
+}
+
+.requirement-bucket .requirement-header {
+  border-left-width: 5px;
+  border-left-style: solid;
+}
+
+.collapsed-needs {
+  font-size: 0.85em;
+  color: #666;
+  margin-left: auto;
+  padding-left: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.requirement-item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #fff;
+}
+
+.requirement-list-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px 8px 15px;
+  gap: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.requirement-or-group {
+  padding: 8px 0 8px 15px;
+}
+.requirement-or-group .or-group-label {
+  display: block;
+  font-style: italic;
+  color: #555;
+  margin-bottom: 4px;
+}
+.requirement-or-group ul {
+  list-style: none;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.requirement-item-list > li {
+  border-bottom: 1px solid #f0f0f0;
+}
+.requirement-item-list > li:last-child {
+  border-bottom: none;
+}
+
+.requirement-item-checkbox {
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.item-string {
+  flex-grow: 1;
+}
+
+.requirement-list-item.placeholder .item-string {
+  font-style: italic;
+  color: #555;
+}
+
+.fulfilled-by-auto {
+  font-size: 0.8em;
+  color: #555;
+  margin-left: 5px;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.status-indicator {
+  font-weight: bold;
+  margin-right: 0;
+  font-size: 1.1em;
+  flex-shrink: 0;
+}
+
+.status-indicator.met {
+  color: #1a8754;
+}
+
+.status-indicator.not-met {
+  color: #dc3545;
+}
+
+.requirement-or-group ul .requirement-list-item {
+  border-bottom: none;
+  padding: 4px 0;
+}
+
+.major-builder-grid th.grid-corner-cell {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background-color: #f2f2f2;
+  text-align: center;
+  padding: 4px;
+}
+
+.clear-grid-button {
+  padding: 4px 8px;
+  font-size: 0.85em;
+  background-color: #f0e6f5;
+  border: 1px solid #e0d8eb;
+  color: #6a2d7a;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 4px;
+  min-width: 100%;
+}
+
+.clear-grid-button:hover {
+  background-color: #e0d8eb;
 }

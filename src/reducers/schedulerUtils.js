@@ -16,7 +16,7 @@ import {
   CURRENT_ACADEMIC_YEAR,
 } from "../constants/constants";
 
-const initialMajorBuilderGrid = Array(MAJOR_BUILDER_SEMESTERS)
+export const initialMajorBuilderGrid = Array(MAJOR_BUILDER_SEMESTERS)
   .fill(null)
   .map(() =>
     Array(MAJOR_BUILDER_COURSES_PER_SEM)
@@ -24,7 +24,7 @@ const initialMajorBuilderGrid = Array(MAJOR_BUILDER_SEMESTERS)
       .map(() => ({ course: null, input: "" }))
   );
 
-const initialMajorBuilderSemesters = (() => {
+export const initialMajorBuilderSemesters = (() => {
   const semesters = [];
   for (let i = 0; i < MAJOR_BUILDER_SEMESTERS / 2; i++) {
     semesters.push({ year: CURRENT_ACADEMIC_YEAR + i, term: "Fall" });

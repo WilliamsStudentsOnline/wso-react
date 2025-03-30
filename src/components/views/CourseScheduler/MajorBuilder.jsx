@@ -1,3 +1,6 @@
+// THIS IS SLOW, TERRIBLE CODE
+// SORRY JIM!
+
 // React imports
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
@@ -8,7 +11,7 @@ import axios from "axios";
 import "../../stylesheets/MajorBuilder.css";
 import Select from "../../Select";
 
-// Redux  imports
+// Redux imports
 import {
   getMajorBuilderGrid,
   getMajorBuilderSemesters,
@@ -23,6 +26,17 @@ import {
   COURSE_HISTORY_START_YEAR,
   CURRENT_ACADEMIC_YEAR,
 } from "../../../constants/constants";
+import {
+  csRegexSeparator,
+  MAJORS,
+  requirementCheckers,
+} from "../../../constants/majors";
+import { getSelectedMajor } from "../../../selectors/majorRequirements";
+import { doSelectMajor } from "../../../reducers/majorRequirements";
+import {
+  initialMajorBuilderGrid,
+  initialMajorBuilderSemesters,
+} from "../../../reducers/schedulerUtils";
 
 const MajorBuilder = ({
   grid,
@@ -30,31 +44,53 @@ const MajorBuilder = ({
   historicalCatalogs,
   updateMajorBuilderState,
   loadHistoricalCatalog,
+  selectedMajor,
+  selectMajor,
+  clearMajor,
 }) => {
-  // Local state for managing which input/year is being edited
-  const [editingYearIndex, setEditingYearIndex] = useState(null);
+  const [editingSemesterIndex, setEditingSemesterIndex] = useState(null);
+
+  // Autocomplete
+  const [autocompleteInput, setAutocompleteInput] = useState({
+    semesterIndex: null,
+    courseIndex: null,
+    value: "",
+  });
   const [autocomplete, setAutocomplete] = useState({
     semesterIndex: null,
     courseIndex: null,
     results: [],
-    visible: false,
   });
+  const [autocompleteVisible, setAutocompleteVisible] = useState(false);
 
+  // Major autocomplete
+  const [majorInput, setMajorInput] = useState("");
+  const [majorAutocompleteVisible, setMajorAutocompleteVisible] =
+    useState(false);
+  const [majorAutocompleteResults, setMajorAutocompleteResults] = useState([]);
+
+  // Requirement interactions
+  const [manualOverrides, setManualOverrides] = useState({});
+
+  // Visuals
   const [showDivisionColors, setShowDivisionColors] = useState(true);
+  const [expandedReqs, setExpandedReqs] = useState({});
 
-  // Load state from LocalStorage on mount
+  var fulfilledBy = [];
+
+  // Load state from LocalStorage
   useEffect(() => {
     const savedStateRaw = localStorage.getItem(MAJOR_BUILDER_LS_KEY);
     if (savedStateRaw) {
       try {
         const savedState = JSON.parse(savedStateRaw);
-        // Basic validation
         if (
           savedState.grid &&
           savedState.semesters &&
           savedState.grid.length === MAJOR_BUILDER_SEMESTERS &&
           savedState.semesters.length === MAJOR_BUILDER_SEMESTERS &&
-          // Check if grid structure matches expected shape
+          savedState.selectedMajor !== undefined &&
+          savedState.manualOverrides !== undefined &&
           savedState.grid.every(
             (sem) =>
               Array.isArray(sem) && sem.length === MAJOR_BUILDER_COURSES_PER_SEM
@@ -73,116 +109,142 @@ const MajorBuilder = ({
             majorBuilderGrid: savedState.grid,
             majorBuilderSemesters: savedState.semesters,
           });
+          setManualOverrides(savedState.manualOverrides || {});
+          selectMajor(savedState.selectedMajor || "");
+          if (savedState.selectedMajor) {
+            setMajorInput(savedState.selectedMajor);
+          }
         } else {
-          console.warn(
-            "Invalid or outdated major builder state found in LocalStorage. Resetting to default."
-          );
-          localStorage.removeItem(MAJOR_BUILDER_LS_KEY); // Remove invalid state
+          console.warn("Invalid LocalStorage state for MajorBuilder.");
+          localStorage.removeItem(MAJOR_BUILDER_LS_KEY);
         }
       } catch (error) {
-        console.error(
-          "Failed to parse major builder state from LocalStorage:",
-          error
-        );
-        localStorage.removeItem(MAJOR_BUILDER_LS_KEY); // Remove corrupted state
+        console.error("Failed to parse MajorBuilder state:", error);
+        localStorage.removeItem(MAJOR_BUILDER_LS_KEY);
       }
     }
-  }, [updateMajorBuilderState]); // Run only once on mount
+  }, [updateMajorBuilderState, selectMajor]);
 
-  // Load historical data on mount if not already loaded
+  // Fetch old courses
   useEffect(() => {
     const currentYear = new Date().getFullYear();
     const yearsToFetch = [];
     for (let i = 0; i < 5; i++) {
       const year = currentYear - i;
       if (year >= COURSE_HISTORY_START_YEAR) {
-        // Only fetch if not already in the redux store
         if (!historicalCatalogs || !historicalCatalogs[year]) {
           yearsToFetch.push(year);
         }
       } else {
-        break; // Stop if we go before the start year
+        break;
       }
     }
-
-    if (yearsToFetch.length > 0) {
-      console.log(
-        "MajorBuilder: Fetching historical catalogs for years:",
-        yearsToFetch
-      );
-      yearsToFetch.forEach((year) => {
-        axios({
-          url: `/courses-${year}.json`,
-          headers: { "X-Requested-With": "XMLHttpRequest" },
-        })
-          .then((response) => loadHistoricalCatalog(year, response.data))
-          .catch((error) =>
-            console.error(
-              `MajorBuilder: Failed to load catalog for ${year}:`,
-              error
-            )
-          );
-      });
-    }
-  }, [loadHistoricalCatalog]); // Depend on catalogs and the action dispatcher
+    yearsToFetch.forEach((year) => {
+      axios({
+        url: `/courses-${year}.json`,
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      })
+        .then((response) => loadHistoricalCatalog(year, response.data))
+        .catch((error) =>
+          console.error(`Failed to load catalog ${year}:`, error)
+        );
+    });
+  }, [loadHistoricalCatalog]);
 
   // Save state to LocalStorage whenever it changes
   useEffect(() => {
-    // Only save if grid and semesters are properly initialized
     if (
       grid &&
       semesters &&
       grid.length === MAJOR_BUILDER_SEMESTERS &&
-      semesters.length === MAJOR_BUILDER_SEMESTERS
+      semesters.length === MAJOR_BUILDER_SEMESTERS &&
+      selectedMajor !== undefined
     ) {
-      const stateToSave = JSON.stringify({ grid, semesters });
+      const stateToSave = JSON.stringify({
+        grid,
+        semesters,
+        selectedMajor,
+        manualOverrides,
+      });
       localStorage.setItem(MAJOR_BUILDER_LS_KEY, stateToSave);
     }
-  }, [grid, semesters]);
+  }, [grid, semesters, selectedMajor, manualOverrides]);
 
-  const handleInputChange = (semesterIndex, courseIndex, event) => {
-    const newGrid = JSON.parse(JSON.stringify(grid)); // Deep copy
+  // Reset state
+  const clearCourseGrid = () => {
+    if (window.confirm("Are you sure?")) {
+      updateMajorBuilderState({
+        majorBuilderGrid: initialMajorBuilderGrid,
+        majorBuilderSemesters: initialMajorBuilderSemesters,
+      });
+    }
+    fulfilledBy = [];
+    clearMajor();
+    setMajorInput("");
+  };
+
+  // Handle user typing in planner grid
+  const handleGridInputChange = (semesterIndex, courseIndex, event) => {
+    const newGrid = JSON.parse(JSON.stringify(grid));
     const inputValue = event.target.value;
     newGrid[semesterIndex][courseIndex] = {
-      course: null, // Clear selected course if typing
+      course: null, // clear selected course if typing
       input: inputValue,
     };
     updateMajorBuilderState({ majorBuilderGrid: newGrid });
 
-    // AUTOCOMPLETE
-    const semester = semesters[semesterIndex];
-    const year = semester.year;
-    const targetTerm = semester.term;
-    const catalogForYear = historicalCatalogs[year] || [];
-
-    if (inputValue.length > 1 && catalogForYear.length > 0) {
-      const lowerInput = inputValue.toLowerCase();
-      const semesterFilteredCourses = catalogForYear.filter(
-        (course) => course.semester === targetTerm
-      );
-      const queryFilteredCourses = semesterFilteredCourses.filter(
-        (course) =>
-          course.titleLong?.toLowerCase().includes(lowerInput) ||
-          course.titleShort?.toLowerCase().includes(lowerInput) ||
-          `${course.department} ${course.number}`
-            .toLowerCase()
-            .includes(lowerInput)
-      );
-
-      const uniqueCoursesMap = new Map();
-      queryFilteredCourses.forEach((course) => {
-        const key = `${course.department} ${course.number}`;
-        if (!uniqueCoursesMap.has(key)) {
-          uniqueCoursesMap.set(key, course);
-        }
-      });
-      const results = Array.from(uniqueCoursesMap.values()).slice(0, 5); // Limit results for autocomplete
-      setAutocomplete({ semesterIndex, courseIndex, results, visible: true });
-    } else {
-      setAutocomplete({ ...autocomplete, visible: false });
-    }
+    // AUTOCOMPLETE TRIGGER
+    setAutocompleteInput({ semesterIndex, courseIndex, value: inputValue });
   };
 
+  // Handle autocomplete
+  useEffect(() => {
+    const { semesterIndex, courseIndex, value } = autocompleteInput;
+
+    if (semesterIndex === null || courseIndex === null || value.length <= 1) {
+      if (autocompleteVisible) setAutocompleteVisible(false);
+      return;
+    }
+
+    const semester = semesters[semesterIndex];
+    if (!semester) {
+      if (autocompleteVisible) setAutocompleteVisible(false);
+      return;
+    }
+
+    const year = semester.year;
+    const targetTerm = semester.term;
+    const catalogForYear = historicalCatalogs[year];
+
+    if (catalogForYear && catalogForYear.length > 0) {
+      const lowerInput = value.toLowerCase();
+      const semesterFiltered = catalogForYear.filter(
+        (c) =>
+          c.semester === targetTerm &&
+          !grid.some((sem) =>
+            sem.some((cell) => cell.course?.courseID === c.courseID)
+          )
+      );
+      const queryFiltered = semesterFiltered.filter(
+        (c) =>
+          c.titleLong?.toLowerCase().includes(lowerInput) ||
+          c.titleShort?.toLowerCase().includes(lowerInput) ||
+          `${c.department} ${c.number}`.toLowerCase().includes(lowerInput)
+      );
+      const uniqueMap = new Map();
+      queryFiltered.forEach((c) => {
+        const key = `${c.department} ${c.number}`;
+        if (!uniqueMap.has(key)) uniqueMap.set(key, c);
+      });
+      const results = Array.from(uniqueMap.values()).slice(0, 5);
+      setAutocomplete({ semesterIndex, courseIndex, results });
+      setAutocompleteVisible(true);
+    } else {
+      if (autocompleteVisible) setAutocompleteVisible(false);
+    }
+  }, [autocompleteInput, historicalCatalogs, semesters, autocompleteVisible]);
+
+  // Handle autocomplete selection
   const handleAutocompleteSelect = (
     semesterIndex,
     courseIndex,
@@ -191,34 +253,43 @@ const MajorBuilder = ({
     const newGrid = JSON.parse(JSON.stringify(grid));
     newGrid[semesterIndex][courseIndex] = {
       course: selectedCourse,
-      input: `${selectedCourse.department} ${selectedCourse.number}`, // Display format
+      input: `${selectedCourse.department} ${selectedCourse.number}`,
     };
     updateMajorBuilderState({ majorBuilderGrid: newGrid });
-    setAutocomplete({ ...autocomplete, visible: false }); // Hide autocomplete
+    setAutocompleteVisible(false);
+    setAutocompleteInput({
+      semesterIndex: null,
+      courseIndex: null,
+      value: "",
+    });
   };
 
-  const handleInputBlur = (semesterIndex, courseIndex) => {
-    // Delay hiding autocomplete to allow click event on selection
-    setTimeout(() => {
-      // Check if the current focus is still within the autocomplete list or input
-      const activeElement = document.activeElement;
-      const autocompleteElement = document.getElementById(
-        `autocomplete-${semesterIndex}-${courseIndex}`
-      );
-      const inputElement = document.getElementById(
-        `input-${semesterIndex}-${courseIndex}`
-      );
+  // Handle autocomplete deselection
+  const handleAutocompleteBlur = (semesterIndex, courseIndex) => {
+    const activeElement = document.activeElement;
+    const inputElement = document.getElementById(
+      `input-${semesterIndex}-${courseIndex}`
+    );
+    const listElement = document.getElementById(
+      `autocomplete-${semesterIndex}-${courseIndex}`
+    );
+    const focusStillInside =
+      activeElement === inputElement ||
+      (listElement && listElement.contains(activeElement));
 
-      const isStillInteracting =
-        (autocompleteElement && autocompleteElement.contains(activeElement)) ||
-        activeElement === inputElement;
-
-      if (!isStillInteracting && autocomplete.visible) {
-        setAutocomplete({ ...autocomplete, visible: false });
-      }
-    }, 200);
+    if (
+      !focusStillInside &&
+      autocompleteVisible &&
+      autocomplete.semesterIndex === semesterIndex &&
+      autocomplete.courseIndex === courseIndex
+    ) {
+      setTimeout(() => {
+        setAutocompleteVisible(false);
+      }, 200);
+    }
   };
 
+  // Semester header dropdown
   const generateSemesterOptions = () => {
     const opts = [];
     const startYear = COURSE_HISTORY_START_YEAR;
@@ -240,10 +311,9 @@ const MajorBuilder = ({
     return opts.sort((a, b) => {
       // Sort chronologically
       if (a.year !== b.year) return a.year - b.year;
-      return a.term === "Spring" ? 1 : -1; // Fall before Spring
+      return a.term === "Spring" ? 1 : -1;
     });
   };
-
   const semesterOptions = generateSemesterOptions();
 
   const handleSemesterSelectionChange = (event) => {
@@ -252,33 +322,52 @@ const MajorBuilder = ({
       (opt) => opt.value === selectedValue
     );
 
-    if (selectedOption && editingYearIndex !== null) {
+    if (selectedOption && editingSemesterIndex !== null) {
+      if (
+        semesters.some(
+          (sem) =>
+            selectedOption.year === sem.year && selectedOption.term === sem.term
+        )
+      ) {
+        return;
+      }
+
       const newSemesters = [...semesters];
-      newSemesters[editingYearIndex] = {
+      newSemesters[editingSemesterIndex] = {
         term: selectedOption.term,
         year: selectedOption.year,
       };
-      updateMajorBuilderState({ majorBuilderSemesters: newSemesters });
-      setEditingYearIndex(null);
+      const newGrid = JSON.parse(JSON.stringify(grid));
+      for (let i = 0; i < MAJOR_BUILDER_COURSES_PER_SEM; i++) {
+        newGrid[editingSemesterIndex][i] = {
+          course: null,
+          input: "",
+        };
+      }
+      updateMajorBuilderState({
+        majorBuilderSemesters: newSemesters,
+        majorBuilderGrid: newGrid,
+      });
+      setEditingSemesterIndex(null);
     } else {
-      console.error("Selected semester option not found: ", selectedValue);
-      setEditingYearIndex(null);
+      console.error("Selected semester option error:", selectedValue);
+      setEditingSemesterIndex(null);
     }
   };
 
   const renderSemesterHeader = (index) => {
     const semester = semesters[index];
 
-    if (editingYearIndex === index) {
+    if (editingSemesterIndex === index) {
       return (
         <Select
           value={`${semester.term}-${
             semester.term === "Fall" ? semester.year - 1 : semester.year
           }`}
-          onBlur={() => setEditingYearIndex(null)} // Close dropdown on blur if no selection made
+          onBlur={() => setEditingSemesterIndex(null)} // Close dropdown on blur if no selection made
           onChange={handleSemesterSelectionChange}
-          options={semesterOptions.map((opt) => opt.label)} // Display "Term Year"
-          valueList={semesterOptions.map((opt) => opt.value)} // Use "Term-Year" as value
+          options={semesterOptions.map((opt) => opt.label)}
+          valueList={semesterOptions.map((opt) => opt.value)}
           className="semester-edit-select single"
           autoFocus
         />
@@ -287,7 +376,7 @@ const MajorBuilder = ({
 
     return (
       <div
-        onClick={() => setEditingYearIndex(index)}
+        onClick={() => setEditingSemesterIndex(index)}
         className="semester-header"
       >
         {`${semester.term} ${
@@ -297,26 +386,23 @@ const MajorBuilder = ({
     );
   };
 
-  const getDivisionHighlightStyle = (course) => {
-    if (!course || !showDivisionColors || !course.courseAttributes) {
-      return {};
+  // Flatten grid into 1D array of courses for processing
+  const getFlatUserCourses = () => {
+    const courses = [];
+    for (let semIdx = 0; semIdx < MAJOR_BUILDER_SEMESTERS; semIdx++) {
+      for (
+        let courseIdx = 0;
+        courseIdx < MAJOR_BUILDER_COURSES_PER_SEM;
+        courseIdx++
+      ) {
+        if (grid[semIdx]?.[courseIdx]?.course) {
+          courses.push(grid[semIdx][courseIdx].course);
+        }
+      }
     }
-
-    const div3Color = "rgba(99, 131, 133, 0.15)";
-    const div2Color = "rgba(143, 149, 100, 0.15)";
-    const div1Color = "rgba(143, 100, 120, 0.15)";
-
-    if (course.courseAttributes.div1) {
-      return { backgroundColor: div1Color };
-    }
-    if (course.courseAttributes.div2) {
-      return { backgroundColor: div2Color };
-    }
-    if (course.courseAttributes.div3) {
-      return { backgroundColor: div3Color };
-    }
-    return {};
+    return courses;
   };
+  const userCoursesFlat = getFlatUserCourses();
 
   // Tally division requirements
   const getAPRInfo = () => {
@@ -332,39 +418,6 @@ const MajorBuilder = ({
       ws: 0,
     };
 
-    for (let semIdx = 0; semIdx < MAJOR_BUILDER_SEMESTERS; semIdx++) {
-      for (
-        let courseIdx = 0;
-        courseIdx < MAJOR_BUILDER_COURSES_PER_SEM;
-        courseIdx++
-      ) {
-        if (grid[semIdx]?.[courseIdx]?.course) {
-          const course = grid[semIdx][courseIdx].course;
-
-          if (course.courseAttributes) {
-            if (course.courseAttributes.div1) {
-              apr.div1.push(course.department);
-            }
-            if (course.courseAttributes.div2) {
-              apr.div2.push(course.department);
-            }
-            if (course.courseAttributes.div3) {
-              apr.div3.push(course.department);
-            }
-            if (course.courseAttributes.dpe) {
-              apr.dpe++;
-            }
-            if (course.courseAttributes.qfr) {
-              apr.qfr++;
-            }
-            if (course.courseAttributes.wac) {
-              apr.ws++;
-            }
-          }
-        }
-      }
-    }
-
     function getDistinctPrefixCourses(arr) {
       const counts = {};
       // Filter to keep only the first 2 occurrences of each department prefix
@@ -373,6 +426,29 @@ const MajorBuilder = ({
         return counts[deptPrefix] <= 2;
       });
       return filteredByDeptLimit.length;
+    }
+
+    for (const course of userCoursesFlat) {
+      if (course.courseAttributes) {
+        if (course.courseAttributes.div1) {
+          apr.div1.push(course.department);
+        }
+        if (course.courseAttributes.div2) {
+          apr.div2.push(course.department);
+        }
+        if (course.courseAttributes.div3) {
+          apr.div3.push(course.department);
+        }
+        if (course.courseAttributes.dpe) {
+          apr.dpe++;
+        }
+        if (course.courseAttributes.qfr) {
+          apr.qfr++;
+        }
+        if (course.courseAttributes.wac) {
+          apr.ws++;
+        }
+      }
     }
 
     apr.div1_count = getDistinctPrefixCourses(apr.div1);
@@ -417,6 +493,193 @@ const MajorBuilder = ({
     });
   };
 
+  const getGridCellColor = (course) => {
+    if (!course || !showDivisionColors || !course.courseAttributes) {
+      return {};
+    }
+
+    const div3Color = "rgba(99, 131, 133, 0.15)";
+    const div2Color = "rgba(143, 149, 100, 0.15)";
+    const div1Color = "rgba(143, 100, 120, 0.15)";
+
+    if (course.courseAttributes.div1) {
+      return { backgroundColor: div1Color };
+    }
+    if (course.courseAttributes.div2) {
+      return { backgroundColor: div2Color };
+    }
+    if (course.courseAttributes.div3) {
+      return { backgroundColor: div3Color };
+    }
+    return {};
+  };
+
+  const toggleReqExpansion = (reqKey) => {
+    setExpandedReqs((prev) => ({ ...prev, [reqKey]: !prev[reqKey] }));
+  };
+  const setAllReqsExpansion = (majorName, isExpanded) => {
+    const newExpanded = { ...expandedReqs };
+    MAJORS[majorName]?.Requirements.forEach((req) => {
+      newExpanded[`${majorName}-${req.description}`] = isExpanded;
+    });
+    setExpandedReqs(newExpanded);
+  };
+
+  const handleMajorInputChange = (event) => {
+    const value = event.target.value;
+    setMajorInput(value);
+    clearMajor(); // clear selected major in Redux if user starts typing
+
+    if (value.length > 0) {
+      const lowerValue = value.toLowerCase();
+      const results = Object.keys(MAJORS)
+        .filter((majorName) => majorName.toLowerCase().includes(lowerValue))
+        .slice(0, 5);
+      setMajorAutocompleteResults(results);
+      setMajorAutocompleteVisible(true);
+    } else {
+      setMajorAutocompleteVisible(false);
+      setMajorAutocompleteResults([]);
+    }
+  };
+  const handleMajorAutocompleteSelect = (majorName) => {
+    setMajorInput(majorName);
+    selectMajor(majorName);
+    setMajorAutocompleteVisible(false);
+    setMajorAutocompleteResults([]);
+  };
+  const handleMajorAutocompleteBlur = () => {
+    setTimeout(() => {
+      const activeElement = document.activeElement;
+      const isStillInteracting = activeElement?.closest(
+        "#major-autocomplete-results"
+      );
+      if (!isStillInteracting) {
+        setMajorAutocompleteVisible(false);
+      }
+    }, 200);
+  };
+
+  // Mark an unchecked course as completed, or marked a check course as unfinished to trigger reprocessing
+  const handleManualOverride = (reqKey, itemString, isChecked) => {
+    setManualOverrides((prev) => ({
+      ...prev,
+      [reqKey]: {
+        ...(prev[reqKey] || {}),
+        [itemString]: isChecked,
+      },
+    }));
+  };
+
+  const truncateItemStr = (itemStr) => {
+    if (itemStr.includes(csRegexSeparator)) {
+      return itemStr.substring(0, itemStr.indexOf(csRegexSeparator));
+    }
+    return itemStr;
+  };
+  const truncateItemArr = (arr) => {
+    return arr.map((str) => {
+      return truncateItemStr(str);
+    });
+  };
+
+  const calculateRequirements = (req) => {
+    const reqKey = `${selectedMajor}-${req.description}`;
+
+    const checkerFunc = requirementCheckers[req.identifier || "requireN"];
+
+    const result = checkerFunc
+      ? checkerFunc(req.args, userCoursesFlat, fulfilledBy)
+      : {
+          autoFulfilledCount: 0,
+          fulfilledBy: [],
+          placeholders: [],
+          grid: grid,
+        };
+    if (grid !== result.grid) {
+      updateMajorBuilderState({ majorBuilderGrid: grid });
+    }
+    fulfilledBy = result.fulfilledBy;
+
+    const target = req.args[1];
+    const manualOverridesForReq = manualOverrides[reqKey] || {};
+
+    let manualContribution = 0;
+    Object.entries(manualOverridesForReq).forEach(([itemStr, isChecked]) => {
+      const isAuto = fulfilledBy.some((f) => f.matchedReqString === itemStr);
+      if (isAuto && !isChecked) {
+        manualContribution--;
+      } else if (!isAuto && isChecked) {
+        manualContribution++;
+      }
+    });
+    const finalFulfilledCount = Math.min(
+      result.autoFulfilledCount + manualContribution,
+      target
+    );
+
+    return { result, finalFulfilledCount, target };
+  };
+
+  const renderCourseRequirement = (
+    itemStr,
+    result,
+    reqKey,
+    overrides,
+    subItemClass
+  ) => {
+    const itemRenderStr = truncateItemStr(itemStr);
+    const itemKey = `${reqKey}-${itemStr}`;
+    const isPlaceholder = result.placeholders.includes(itemStr);
+    let isChecked = false;
+    const fulfillmentEntry = fulfilledBy.find(
+      (f) => f.matchedReqString === itemStr
+    );
+
+    const fulfillingCourse = fulfillmentEntry?.userCourse;
+    const manualStatus = overrides[itemStr];
+    if (manualStatus === true) isChecked = true;
+    else if (manualStatus === false) isChecked = false;
+    else {
+      if (fulfillingCourse) isChecked = true;
+    }
+
+    let viaStr = fulfillingCourse
+      ? `${fulfillingCourse.department} ${fulfillingCourse.number}`
+      : "";
+
+    return (
+      <li
+        key={itemKey}
+        className={`requirement-list-item ${
+          isPlaceholder ? "placeholder" : ""
+        } ${subItemClass}`}
+      >
+        <input
+          type="checkbox"
+          className="requirement-item-checkbox"
+          checked={isChecked}
+          onChange={(e) =>
+            handleManualOverride(
+              reqKey,
+              itemStr,
+              e.target.checked,
+              fulfillingCourse
+            )
+          }
+          title={`Mark ${itemRenderStr} as ${isChecked ? "not " : ""}fulfilled`}
+        />
+        <span className={`status-indicator ${isChecked ? "met" : "not-met"}`}>
+          {isChecked ? "✓" : "✕"}
+        </span>
+        <span className="item-string">{itemRenderStr}</span>
+        {isChecked && fulfillingCourse && (
+          <span className="fulfilled-by-auto"> (via {viaStr})</span>
+        )}
+      </li>
+    );
+  };
+
   // Ensure grid is initialized before rendering
   if (
     !grid ||
@@ -424,17 +687,14 @@ const MajorBuilder = ({
     !semesters ||
     semesters.length !== MAJOR_BUILDER_SEMESTERS
   ) {
-    // Or return a loading indicator
     return <div>Loading Major Builder...</div>;
   }
 
+  // RENDER
   return (
     <div className="major-builder-container">
       <h2>Planner</h2>
-      <p>
-        Plan your academic journey. Click semester headers to change the year
-        associated with that semester&rsquo;s courses.
-      </p>
+      <p>Plan your academic journey.</p>
       <div className="major-builder-options">
         <label>
           <input
@@ -449,7 +709,15 @@ const MajorBuilder = ({
         <table>
           <thead>
             <tr>
-              <th></th>
+              <th className="grid-corner-cell">
+                <button
+                  onClick={clearCourseGrid}
+                  className="clear-grid-button"
+                  title="Clear all courses from the planner grid"
+                >
+                  Clear
+                </button>
+              </th>
               {semesters.map((_, index) => (
                 <th key={`header-${index}`}>{renderSemesterHeader(index)}</th>
               ))}
@@ -467,23 +735,24 @@ const MajorBuilder = ({
                 {semesters.map((_, semesterIdx) => (
                   <td
                     key={`cell-${semesterIdx}-${courseIdx}`}
-                    style={getDivisionHighlightStyle(
+                    style={getGridCellColor(
                       grid[semesterIdx]?.[courseIdx]?.course
                     )}
                   >
-                    {" "}
-                    <div className="input-container">
+                    <div className="cs-input-container">
                       <input
                         id={`input-${semesterIdx}-${courseIdx}`}
                         type="text"
                         value={grid[semesterIdx]?.[courseIdx]?.input || ""}
                         onChange={(e) =>
-                          handleInputChange(semesterIdx, courseIdx, e)
+                          handleGridInputChange(semesterIdx, courseIdx, e)
                         }
-                        onBlur={() => handleInputBlur(semesterIdx, courseIdx)}
-                        autoComplete="off" // Disable browser autocomplete
+                        onBlur={() =>
+                          handleAutocompleteBlur(semesterIdx, courseIdx)
+                        }
+                        autoComplete="off"
                       />
-                      {autocomplete.visible &&
+                      {autocompleteVisible &&
                         autocomplete.semesterIndex === semesterIdx &&
                         autocomplete.courseIndex === courseIdx && (
                           <ul
@@ -496,7 +765,7 @@ const MajorBuilder = ({
                                   key={
                                     course.peoplesoftNumber ||
                                     `${course.department}${course.number}${course.semester}`
-                                  } // Use a robust key
+                                  }
                                   onClick={() =>
                                     handleAutocompleteSelect(
                                       semesterIdx,
@@ -504,7 +773,7 @@ const MajorBuilder = ({
                                       course
                                     )
                                   }
-                                  role="presentation" // for linting, proper role is complex here
+                                  role="presentation"
                                 >
                                   {`${course.department} ${course.number}: ${course.titleShort}`}
                                 </li>
@@ -526,9 +795,178 @@ const MajorBuilder = ({
         Your APR at a glance:<br></br>
         {renderAPRStatus()}
       </div>
+
       <h2>Major Builder</h2>
-      <p>Check your requirements and progress toward your major(s).</p>
-      <div className="major-requirements"> {/* TODO */}</div>
+      <p>Pick a course of study that&apos;s right for you.</p>
+      <div className="major-selection-container cs-input-container">
+        <label htmlFor="major-input">Select Major:</label>
+        <input
+          id="major-input"
+          type="text"
+          value={majorInput}
+          onChange={handleMajorInputChange}
+          onBlur={handleMajorAutocompleteBlur}
+          placeholder="Type major..."
+          autoComplete="off"
+        />
+        {majorAutocompleteVisible && majorAutocompleteResults.length > 0 && (
+          <ul
+            className="autocomplete-results major-autocomplete"
+            id="major-autocomplete-results"
+          >
+            {majorAutocompleteResults.map((majorName) => (
+              <li
+                key={majorName}
+                onClick={() => handleMajorAutocompleteSelect(majorName)}
+                role="presentation"
+              >
+                {majorName}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {selectedMajor && MAJORS[selectedMajor] && (
+        <div className="all-majors-container">
+          <div className="major-requirements-display">
+            <h3>Requirements for {selectedMajor}</h3>
+            <ul className="major-info-list">
+              {MAJORS[selectedMajor].Info.map((info, i) => (
+                <li key={`info-${i}`}>{info}</li>
+              ))}
+            </ul>
+            <div className="major-req-controls">
+              <button onClick={() => setAllReqsExpansion(selectedMajor, true)}>
+                Expand All
+              </button>
+              <button onClick={() => setAllReqsExpansion(selectedMajor, false)}>
+                Collapse All
+              </button>
+            </div>
+
+            <div className="requirements-list">
+              {MAJORS[selectedMajor].Requirements.map((req, index) => {
+                const reqKey = `${selectedMajor}-${req.description}`;
+
+                const isExpanded = !!expandedReqs[reqKey];
+                const manualOverridesForReq = manualOverrides[reqKey] || {};
+
+                const { result, finalFulfilledCount, target } =
+                  calculateRequirements(req);
+                const isMetOverall = finalFulfilledCount >= target;
+
+                // Create "Needs" string for collapsed view
+                let needsStr = "";
+                if (!isMetOverall && !isExpanded) {
+                  const unmetItemsFormatted = req.args[0]
+                    .map((itemOrGroup) => {
+                      const itemsToCheck = Array.isArray(itemOrGroup)
+                        ? itemOrGroup
+                        : [itemOrGroup];
+                      // Check if *any* item in this slot/group was fulfilled (by grid or manual override)
+                      const isSlotMet = itemsToCheck.some((itemStr) => {
+                        const manualStatus = manualOverridesForReq[itemStr];
+                        if (manualStatus === true) return true;
+                        if (manualStatus === false) return false;
+                        return fulfilledBy.some(
+                          (f) => f.matchedReqString === itemStr
+                        );
+                      });
+
+                      if (!isSlotMet) {
+                        return Array.isArray(itemOrGroup)
+                          ? itemOrGroup.join("/")
+                          : itemOrGroup;
+                      }
+                      return null;
+                    })
+                    .filter(Boolean);
+
+                  if (unmetItemsFormatted.length > 0) {
+                    needsStr = `Needs: ${truncateItemArr(
+                      unmetItemsFormatted
+                    ).join(", ")}`;
+                  }
+                }
+                return (
+                  <div key={reqKey} className="requirement-bucket">
+                    {/* Collapsed view */}
+                    <div
+                      className="requirement-header"
+                      onClick={() => toggleReqExpansion(reqKey)}
+                    >
+                      <span
+                        className={`expand-collapse-icon ${
+                          isExpanded ? "expanded" : "collapsed"
+                        }`}
+                      >
+                        {isExpanded ? "▼" : "▶"}
+                      </span>
+                      <span
+                        className={`status-indicator ${
+                          isMetOverall ? "met" : "not-met"
+                        }`}
+                      >
+                        {isMetOverall ? "✓" : "✕"}
+                      </span>
+                      <span className="requirement-description">
+                        {req.description} ({finalFulfilledCount}/{target})
+                      </span>
+                      {needsStr && (
+                        <span className="collapsed-needs" title={needsStr}>
+                          {needsStr}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Expanded view */}
+                    {isExpanded && (
+                      <ul className="requirement-item-list">
+                        {req.args[0].map((itemOrGroup, groupIdx) => {
+                          // Render OR group
+                          if (Array.isArray(itemOrGroup)) {
+                            return (
+                              <li
+                                key={`${reqKey}-group-${groupIdx}`}
+                                className="requirement-or-group"
+                              >
+                                <span className="or-group-label">One of:</span>
+                                <ul>
+                                  {itemOrGroup.map((itemStr, subIdx) => {
+                                    return renderCourseRequirement(
+                                      itemStr,
+                                      result,
+                                      reqKey,
+                                      manualOverridesForReq,
+                                      "sub-item"
+                                    );
+                                  })}
+                                </ul>
+                              </li>
+                            );
+                          }
+                          // Render single item
+                          else {
+                            const itemStr = itemOrGroup;
+                            return renderCourseRequirement(
+                              itemStr,
+                              result,
+                              reqKey,
+                              manualOverridesForReq,
+                              ""
+                            );
+                          }
+                        })}
+                      </ul>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -537,8 +975,8 @@ MajorBuilder.propTypes = {
   grid: PropTypes.arrayOf(
     PropTypes.arrayOf(
       PropTypes.shape({
-        course: PropTypes.object, // Could be null
-        input: PropTypes.string,
+        course: PropTypes.object,
+        input: PropTypes.string.isRequired,
       })
     )
   ).isRequired,
@@ -550,13 +988,17 @@ MajorBuilder.propTypes = {
   ).isRequired,
   historicalCatalogs: PropTypes.object.isRequired,
   updateMajorBuilderState: PropTypes.func.isRequired,
-  loadHistoricalCatalog: PropTypes.func.isRequired, // Add prop type for the action dispatcher
+  loadHistoricalCatalog: PropTypes.func.isRequired,
+  selectedMajor: PropTypes.string.isRequired,
+  selectMajor: PropTypes.func.isRequired,
+  clearMajor: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   grid: getMajorBuilderGrid(state),
   semesters: getMajorBuilderSemesters(state),
   historicalCatalogs: getHistoricalCatalogs(state),
+  selectedMajor: getSelectedMajor(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -564,6 +1006,8 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(doUpdateMajorBuilderState(newState)),
   loadHistoricalCatalog: (year, catalog) =>
     dispatch(doLoadHistoricalCatalogYear(year, catalog)),
+  selectMajor: (major) => dispatch(doSelectMajor(major)),
+  clearMajor: () => dispatch(doSelectMajor("")),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MajorBuilder);
