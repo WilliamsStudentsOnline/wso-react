@@ -577,12 +577,8 @@ const MajorBuilder = ({
         newFulfilledBy[itemStr] = "manual";
       }
     } else {
-      if (fulfilledBy[itemStr] === "manual") {
-        delete newFulfilledBy[itemStr];
-      } else {
-        delete newFulfillments[fulfilledBy[itemStr].courseID];
-        newFulfilledBy[itemStr] = "blocked";
-      }
+      delete newFulfillments[fulfilledBy[itemStr].courseID];
+      newFulfilledBy[itemStr] = "blocked";
     }
     setFulfilledBy(newFulfilledBy);
     setFulfillments(newFulfillments);
