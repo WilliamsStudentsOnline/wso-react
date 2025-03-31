@@ -1,8 +1,8 @@
-// THIS IS SLOW, TERRIBLE CODE
-// SORRY JIM!
+// DISCLAIMER: FRONTEND IS NOT MY THING
+// SORRY! -Charlie
 
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import axios from "axios";
@@ -69,14 +69,15 @@ const MajorBuilder = ({
     useState(false);
   const [majorAutocompleteResults, setMajorAutocompleteResults] = useState([]);
 
-  // Requirement interactions
-  const [manualOverrides, setManualOverrides] = useState({});
-
   // Visuals
   const [showDivisionColors, setShowDivisionColors] = useState(true);
   const [expandedReqs, setExpandedReqs] = useState({});
 
-  var fulfilledBy = [];
+  // Fulfillments
+  const [fulfilledBy, setFulfilledBy] = useState({});
+  const [fulfillments, setFulfillments] = useState({});
+
+  const [triggerFetch, setTriggerFetch] = useState(false);
 
   // Load state from LocalStorage
   useEffect(() => {
@@ -87,10 +88,11 @@ const MajorBuilder = ({
         if (
           savedState.grid &&
           savedState.semesters &&
+          savedState.selectedMajor !== undefined &&
+          savedState.fulfilledBy &&
+          savedState.fulfillments &&
           savedState.grid.length === MAJOR_BUILDER_SEMESTERS &&
           savedState.semesters.length === MAJOR_BUILDER_SEMESTERS &&
-          savedState.selectedMajor !== undefined &&
-          savedState.manualOverrides !== undefined &&
           savedState.grid.every(
             (sem) =>
               Array.isArray(sem) && sem.length === MAJOR_BUILDER_COURSES_PER_SEM
@@ -109,11 +111,12 @@ const MajorBuilder = ({
             majorBuilderGrid: savedState.grid,
             majorBuilderSemesters: savedState.semesters,
           });
-          setManualOverrides(savedState.manualOverrides || {});
           selectMajor(savedState.selectedMajor || "");
           if (savedState.selectedMajor) {
             setMajorInput(savedState.selectedMajor);
           }
+          setFulfilledBy(savedState.fulfilledBy);
+          setFulfillments(savedState.fulfillments);
         } else {
           console.warn("Invalid LocalStorage state for MajorBuilder.");
           localStorage.removeItem(MAJOR_BUILDER_LS_KEY);
@@ -156,19 +159,22 @@ const MajorBuilder = ({
     if (
       grid &&
       semesters &&
+      selectedMajor !== undefined &&
+      fulfilledBy &&
+      fulfillments &&
       grid.length === MAJOR_BUILDER_SEMESTERS &&
-      semesters.length === MAJOR_BUILDER_SEMESTERS &&
-      selectedMajor !== undefined
+      semesters.length === MAJOR_BUILDER_SEMESTERS
     ) {
       const stateToSave = JSON.stringify({
         grid,
         semesters,
         selectedMajor,
-        manualOverrides,
+        fulfilledBy,
+        fulfillments,
       });
       localStorage.setItem(MAJOR_BUILDER_LS_KEY, stateToSave);
     }
-  }, [grid, semesters, selectedMajor, manualOverrides]);
+  }, [grid, semesters, selectedMajor]);
 
   // Reset state
   const clearCourseGrid = () => {
@@ -178,14 +184,15 @@ const MajorBuilder = ({
         majorBuilderSemesters: initialMajorBuilderSemesters,
       });
     }
-    fulfilledBy = [];
+    setFulfilledBy({});
+    setFulfillments({});
     clearMajor();
     setMajorInput("");
   };
 
   // Handle user typing in planner grid
   const handleGridInputChange = (semesterIndex, courseIndex, event) => {
-    const newGrid = JSON.parse(JSON.stringify(grid));
+    const newGrid = JSON.parse(JSON.stringify(grid)); // Surely there's a better way
     const inputValue = event.target.value;
     newGrid[semesterIndex][courseIndex] = {
       course: null, // clear selected course if typing
@@ -387,7 +394,7 @@ const MajorBuilder = ({
   };
 
   // Flatten grid into 1D array of courses for processing
-  const getFlatUserCourses = () => {
+  const getFlatUserCourses = useMemo(() => {
     const courses = [];
     for (let semIdx = 0; semIdx < MAJOR_BUILDER_SEMESTERS; semIdx++) {
       for (
@@ -401,8 +408,7 @@ const MajorBuilder = ({
       }
     }
     return courses;
-  };
-  const userCoursesFlat = getFlatUserCourses();
+  }, [grid]);
 
   // Tally division requirements
   const getAPRInfo = () => {
@@ -428,7 +434,7 @@ const MajorBuilder = ({
       return filteredByDeptLimit.length;
     }
 
-    for (const course of userCoursesFlat) {
+    for (const course of getFlatUserCourses) {
       if (course.courseAttributes) {
         if (course.courseAttributes.div1) {
           apr.div1.push(course.department);
@@ -561,14 +567,26 @@ const MajorBuilder = ({
   };
 
   // Mark an unchecked course as completed, or marked a check course as unfinished to trigger reprocessing
-  const handleManualOverride = (reqKey, itemString, isChecked) => {
-    setManualOverrides((prev) => ({
-      ...prev,
-      [reqKey]: {
-        ...(prev[reqKey] || {}),
-        [itemString]: isChecked,
-      },
-    }));
+  const handleManualOverride = (itemStr, isChecked) => {
+    const newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
+    const newFulfillments = JSON.parse(JSON.stringify(fulfillments));
+    if (isChecked) {
+      if (fulfilledBy[itemStr] === "blocked") {
+        delete newFulfilledBy[itemStr];
+      } else {
+        newFulfilledBy[itemStr] = "manual";
+      }
+    } else {
+      if (fulfilledBy[itemStr] === "manual") {
+        delete newFulfilledBy[itemStr];
+      } else {
+        delete newFulfillments[fulfilledBy[itemStr].courseID];
+        newFulfilledBy[itemStr] = "blocked";
+      }
+    }
+    setFulfilledBy(newFulfilledBy);
+    setFulfillments(newFulfillments);
+    setTriggerFetch(!triggerFetch);
   };
 
   const truncateItemStr = (itemStr) => {
@@ -583,69 +601,67 @@ const MajorBuilder = ({
     });
   };
 
-  const calculateRequirements = (req) => {
-    const reqKey = `${selectedMajor}-${req.description}`;
+  const requirementResults = useMemo(() => {
+    if (!selectedMajor || !MAJORS[selectedMajor]) return <div></div>;
+    const results = {};
+    var newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
+    var newFulfillments = JSON.parse(JSON.stringify(fulfillments));
+    MAJORS[selectedMajor].Requirements.forEach((req) => {
+      const reqKey = `${selectedMajor}-${req.description}`;
 
-    const checkerFunc = requirementCheckers[req.identifier || "requireN"];
+      const checkerFunc = requirementCheckers[req.identifier || "requireN"];
 
-    const result = checkerFunc
-      ? checkerFunc(req.args, userCoursesFlat, fulfilledBy)
-      : {
-          autoFulfilledCount: 0,
-          fulfilledBy: [],
-          placeholders: [],
-          grid: grid,
-        };
-    if (grid !== result.grid) {
-      updateMajorBuilderState({ majorBuilderGrid: grid });
-    }
-    fulfilledBy = result.fulfilledBy;
+      const result = checkerFunc
+        ? checkerFunc(req.args, grid, newFulfilledBy, newFulfillments)
+        : {
+            autoFulfilledCount: 0,
+            fulfilledBy: {},
+            fulfillments: {},
+            placeholders: [],
+          };
+      setFulfilledBy(result.fulfilledBy);
+      setFulfillments(result.fulfillments);
 
-    const target = req.args[1];
-    const manualOverridesForReq = manualOverrides[reqKey] || {};
+      const target = req.args[1];
 
-    let manualContribution = 0;
-    Object.entries(manualOverridesForReq).forEach(([itemStr, isChecked]) => {
-      const isAuto = fulfilledBy.some((f) => f.matchedReqString === itemStr);
-      if (isAuto && !isChecked) {
-        manualContribution--;
-      } else if (!isAuto && isChecked) {
-        manualContribution++;
+      let finalFulfilledCount = 0;
+      for (let item of req.args[0]) {
+        if (typeof item === "string") {
+          item = [item];
+        }
+        for (const itemStr of item) {
+          if (fulfilledBy[itemStr] && fulfilledBy[itemStr] !== "blocked") {
+            finalFulfilledCount++;
+          }
+        }
       }
+      // finalFulfilledCount = Math.min(finalFulfilledCount, target);
+
+      results[reqKey] = { result, finalFulfilledCount, target };
     });
-    const finalFulfilledCount = Math.min(
-      result.autoFulfilledCount + manualContribution,
-      target
-    );
+    return results;
+  }, [getFlatUserCourses, selectedMajor, triggerFetch]);
 
-    return { result, finalFulfilledCount, target };
-  };
-
-  const renderCourseRequirement = (
-    itemStr,
-    result,
-    reqKey,
-    overrides,
-    subItemClass
-  ) => {
+  const renderCourseRequirement = (itemStr, result, reqKey, subItemClass) => {
     const itemRenderStr = truncateItemStr(itemStr);
     const itemKey = `${reqKey}-${itemStr}`;
     const isPlaceholder = result.placeholders.includes(itemStr);
     let isChecked = false;
-    const fulfillmentEntry = fulfilledBy.find(
-      (f) => f.matchedReqString === itemStr
-    );
-
-    const fulfillingCourse = fulfillmentEntry?.userCourse;
-    const manualStatus = overrides[itemStr];
-    if (manualStatus === true) isChecked = true;
-    else if (manualStatus === false) isChecked = false;
-    else {
-      if (fulfillingCourse) isChecked = true;
+    const fulfillingCourse = fulfilledBy[itemStr];
+    if (fulfillingCourse === "manual") {
+      isChecked = true;
+    } else if (fulfillingCourse === "blocked") {
+      isChecked = false;
+    } else {
+      if (fulfillingCourse && typeof fulfillingCourse === "object") {
+        isChecked = true;
+      }
     }
 
     let viaStr = fulfillingCourse
-      ? `${fulfillingCourse.department} ${fulfillingCourse.number}`
+      ? typeof fulfillingCourse === "object"
+        ? `${fulfillingCourse.department} ${fulfillingCourse.number}`
+        : "manual override"
       : "";
 
     return (
@@ -659,26 +675,151 @@ const MajorBuilder = ({
           type="checkbox"
           className="requirement-item-checkbox"
           checked={isChecked}
-          onChange={(e) =>
-            handleManualOverride(
-              reqKey,
-              itemStr,
-              e.target.checked,
-              fulfillingCourse
-            )
-          }
+          onChange={(e) => handleManualOverride(itemStr, e.target.checked)}
           title={`Mark ${itemRenderStr} as ${isChecked ? "not " : ""}fulfilled`}
         />
         <span className={`status-indicator ${isChecked ? "met" : "not-met"}`}>
           {isChecked ? "✓" : "✕"}
         </span>
-        <span className="item-string">{itemRenderStr}</span>
+        <span
+          className="item-string"
+          style={
+            fulfillingCourse === "blocked"
+              ? { textDecoration: "line-through" }
+              : {}
+          }
+        >
+          {itemRenderStr}
+        </span>
         {isChecked && fulfillingCourse && (
           <span className="fulfilled-by-auto"> (via {viaStr})</span>
         )}
       </li>
     );
   };
+
+  const requirementsList = useMemo(() => {
+    return (
+      <div className="requirements-list">
+        {MAJORS[selectedMajor] &&
+          MAJORS[selectedMajor].Requirements.map((req, idx) => {
+            const reqKey = `${selectedMajor}-${req.description}`;
+
+            const isExpanded = !!expandedReqs[reqKey];
+
+            const { result, finalFulfilledCount, target } = requirementResults[
+              reqKey
+            ] || {
+              result: {},
+              finalFulfilledCount: 0,
+              target: 0,
+            };
+            const isMetOverall = finalFulfilledCount >= target;
+
+            // Create "Needs" string for collapsed view
+            let needsStr = "";
+            if (!isMetOverall && !isExpanded) {
+              const unmetItemsFormatted = req.args[0]
+                .map((itemOrGroup) => {
+                  const itemsToCheck = Array.isArray(itemOrGroup)
+                    ? itemOrGroup
+                    : [itemOrGroup];
+                  // Check if *any* item in this slot/group was fulfilled (by grid or manual override)
+                  const isSlotMet = itemsToCheck.some(
+                    (r) => fulfilledBy[r] && fulfilledBy[r] !== "blocked"
+                  );
+
+                  if (!isSlotMet) {
+                    return Array.isArray(itemOrGroup)
+                      ? itemOrGroup.join("/")
+                      : itemOrGroup;
+                  }
+                  return null;
+                })
+                .filter(Boolean);
+
+              if (unmetItemsFormatted.length > 0) {
+                needsStr = `Needs: ${truncateItemArr(unmetItemsFormatted).join(
+                  ", "
+                )}`;
+              }
+            }
+
+            return (
+              <div key={reqKey} className="requirement-bucket">
+                {/* Collapsed view */}
+                <div
+                  className="requirement-header"
+                  onClick={() => toggleReqExpansion(reqKey)}
+                >
+                  <span
+                    className={`expand-collapse-icon ${
+                      isExpanded ? "expanded" : "collapsed"
+                    }`}
+                  >
+                    {isExpanded ? "▼" : "▶"}
+                  </span>
+                  <span
+                    className={`status-indicator ${
+                      isMetOverall ? "met" : "not-met"
+                    }`}
+                  >
+                    {isMetOverall ? "✓" : "✕"}
+                  </span>
+                  <span className="requirement-description">
+                    {req.description} ({finalFulfilledCount}/{target})
+                  </span>
+                  {needsStr && (
+                    <span className="collapsed-needs" title={needsStr}>
+                      {needsStr}
+                    </span>
+                  )}
+                </div>
+
+                {/* Expanded view */}
+                {isExpanded && (
+                  <ul className="requirement-item-list">
+                    {req.args[0].map((itemOrGroup, groupIdx) => {
+                      // Render OR group
+                      if (Array.isArray(itemOrGroup)) {
+                        return (
+                          <li
+                            key={`${reqKey}-group-${groupIdx}`}
+                            className="requirement-or-group"
+                          >
+                            <span className="or-group-label">One of:</span>
+                            <ul>
+                              {itemOrGroup.map((itemStr, subIdx) => {
+                                return renderCourseRequirement(
+                                  itemStr,
+                                  result,
+                                  reqKey,
+                                  "sub-item"
+                                );
+                              })}
+                            </ul>
+                          </li>
+                        );
+                      }
+                      // Render single item
+                      else {
+                        const itemStr = itemOrGroup;
+                        return renderCourseRequirement(
+                          itemStr,
+                          result,
+                          reqKey,
+                          ""
+                        );
+                      }
+                    })}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+      </div>
+    );
+  }, [fulfilledBy, expandedReqs, triggerFetch]);
 
   // Ensure grid is initialized before rendering
   if (
@@ -844,126 +985,7 @@ const MajorBuilder = ({
                 Collapse All
               </button>
             </div>
-
-            <div className="requirements-list">
-              {MAJORS[selectedMajor].Requirements.map((req, index) => {
-                const reqKey = `${selectedMajor}-${req.description}`;
-
-                const isExpanded = !!expandedReqs[reqKey];
-                const manualOverridesForReq = manualOverrides[reqKey] || {};
-
-                const { result, finalFulfilledCount, target } =
-                  calculateRequirements(req);
-                const isMetOverall = finalFulfilledCount >= target;
-
-                // Create "Needs" string for collapsed view
-                let needsStr = "";
-                if (!isMetOverall && !isExpanded) {
-                  const unmetItemsFormatted = req.args[0]
-                    .map((itemOrGroup) => {
-                      const itemsToCheck = Array.isArray(itemOrGroup)
-                        ? itemOrGroup
-                        : [itemOrGroup];
-                      // Check if *any* item in this slot/group was fulfilled (by grid or manual override)
-                      const isSlotMet = itemsToCheck.some((itemStr) => {
-                        const manualStatus = manualOverridesForReq[itemStr];
-                        if (manualStatus === true) return true;
-                        if (manualStatus === false) return false;
-                        return fulfilledBy.some(
-                          (f) => f.matchedReqString === itemStr
-                        );
-                      });
-
-                      if (!isSlotMet) {
-                        return Array.isArray(itemOrGroup)
-                          ? itemOrGroup.join("/")
-                          : itemOrGroup;
-                      }
-                      return null;
-                    })
-                    .filter(Boolean);
-
-                  if (unmetItemsFormatted.length > 0) {
-                    needsStr = `Needs: ${truncateItemArr(
-                      unmetItemsFormatted
-                    ).join(", ")}`;
-                  }
-                }
-                return (
-                  <div key={reqKey} className="requirement-bucket">
-                    {/* Collapsed view */}
-                    <div
-                      className="requirement-header"
-                      onClick={() => toggleReqExpansion(reqKey)}
-                    >
-                      <span
-                        className={`expand-collapse-icon ${
-                          isExpanded ? "expanded" : "collapsed"
-                        }`}
-                      >
-                        {isExpanded ? "▼" : "▶"}
-                      </span>
-                      <span
-                        className={`status-indicator ${
-                          isMetOverall ? "met" : "not-met"
-                        }`}
-                      >
-                        {isMetOverall ? "✓" : "✕"}
-                      </span>
-                      <span className="requirement-description">
-                        {req.description} ({finalFulfilledCount}/{target})
-                      </span>
-                      {needsStr && (
-                        <span className="collapsed-needs" title={needsStr}>
-                          {needsStr}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Expanded view */}
-                    {isExpanded && (
-                      <ul className="requirement-item-list">
-                        {req.args[0].map((itemOrGroup, groupIdx) => {
-                          // Render OR group
-                          if (Array.isArray(itemOrGroup)) {
-                            return (
-                              <li
-                                key={`${reqKey}-group-${groupIdx}`}
-                                className="requirement-or-group"
-                              >
-                                <span className="or-group-label">One of:</span>
-                                <ul>
-                                  {itemOrGroup.map((itemStr, subIdx) => {
-                                    return renderCourseRequirement(
-                                      itemStr,
-                                      result,
-                                      reqKey,
-                                      manualOverridesForReq,
-                                      "sub-item"
-                                    );
-                                  })}
-                                </ul>
-                              </li>
-                            );
-                          }
-                          // Render single item
-                          else {
-                            const itemStr = itemOrGroup;
-                            return renderCourseRequirement(
-                              itemStr,
-                              result,
-                              reqKey,
-                              manualOverridesForReq,
-                              ""
-                            );
-                          }
-                        })}
-                      </ul>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+            {requirementsList}
           </div>
         </div>
       )}
