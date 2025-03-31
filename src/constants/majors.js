@@ -1,3 +1,8 @@
+import {
+  MAJOR_BUILDER_COURSES_PER_SEM,
+  MAJOR_BUILDER_SEMESTERS,
+} from "./constants";
+
 const courseFormatRegex = /^[A-Z]{3,4} \d{2,5}/;
 export const csRegexSeparator = "\n";
 
@@ -9,10 +14,30 @@ A slot (element in nestedCourseList) can be:
 - an array including any of the above, representing an OR choice
 Include an ignore list to specify courses that the regexp will not match to
 */
-function checkRequireN(args, courses, fulfilledBy) {
+function checkRequireN(args, grid, fulfilledBy, fulfillments) {
   const [nestedCourseList, n, ignore = []] = args; // CONTROLLED BY REQUIREMENT !!!
   let autoFulfilledCount = 0;
   const placeholders = [];
+
+  for (const reqItem of nestedCourseList) {
+    const itemsToCheck = Array.isArray(reqItem) ? reqItem : [reqItem];
+    for (const itemStr of itemsToCheck) {
+      if (
+        !courseFormatRegex.test(itemStr) &&
+        !itemStr.includes(csRegexSeparator)
+      )
+        placeholders.push(itemStr);
+    }
+  }
+
+  const courses = [];
+  for (let semId = 0; semId < MAJOR_BUILDER_SEMESTERS; semId++) {
+    for (let crsId = 0; crsId < MAJOR_BUILDER_COURSES_PER_SEM; crsId++) {
+      if (grid[semId][crsId]?.course) {
+        courses.push(grid[semId][crsId].course);
+      }
+    }
+  }
 
   // Iterate through the top-level requirement slots
   for (const reqItem of nestedCourseList) {
@@ -22,6 +47,18 @@ function checkRequireN(args, courses, fulfilledBy) {
     const itemsToCheck = Array.isArray(reqItem) ? reqItem : [reqItem];
 
     for (const itemStr of itemsToCheck) {
+      if (fulfilledBy[itemStr]) {
+        if (
+          fulfilledBy[itemStr].courseID &&
+          !courses.some((c) => c.courseID === fulfilledBy[itemStr].courseID)
+        ) {
+          delete fulfillments[fulfilledBy[itemStr].courseID];
+          delete fulfilledBy[itemStr];
+        } else {
+          continue;
+        }
+      }
+
       let foundCourse = null;
 
       // Regex fulfillment (i.e. for electives, more arbitrary requirements)
@@ -42,7 +79,7 @@ function checkRequireN(args, courses, fulfilledBy) {
                 userCourse.crossListing.some((cl) => ignore.includes(cl))
               );
             if (
-              !fulfilledBy.some((n) => n.userCourse === userCourse) &&
+              !fulfillments[userCourse.courseID] &&
               (mainCodeMatches || crossListingMatches) &&
               notIgnored
             ) {
@@ -64,7 +101,7 @@ function checkRequireN(args, courses, fulfilledBy) {
         if (reqDept && !isNaN(reqNum)) {
           for (let userCourse of courses) {
             if (
-              (!fulfilledBy.some((n) => n.userCourse === userCourse) &&
+              (!fulfillments[userCourse.courseID] &&
                 userCourse.department === reqDept &&
                 userCourse.number === reqNum) ||
               (userCourse.crossListing &&
@@ -75,16 +112,10 @@ function checkRequireN(args, courses, fulfilledBy) {
           }
         }
       }
-      // Placeholder (must be checked by user; cannot be auto-fulfilled)
-      else {
-        placeholders.push(itemStr);
-      }
 
       if (foundCourse) {
-        fulfilledBy.push({
-          userCourse: foundCourse,
-          matchedReqString: itemStr,
-        });
+        fulfilledBy[itemStr] = foundCourse;
+        fulfillments[foundCourse.courseID] = itemStr;
         currentSlotFulfilled = true;
         break;
       }
@@ -98,13 +129,35 @@ function checkRequireN(args, courses, fulfilledBy) {
   return {
     autoFulfilledCount,
     fulfilledBy,
+    fulfillments,
     placeholders,
+  };
+}
+
+function checkRequireNWithYear(args, grid, fulfilledBy, fulfillments) {
+  const minSem = args[3];
+  if (minSem) {
+    const newGrid = JSON.parse(JSON.stringify(grid));
+    for (let semId = 0; semId < minSem; semId++) {
+      for (let crsId = 0; crsId < MAJOR_BUILDER_COURSES_PER_SEM; crsId++) {
+        newGrid[semId][crsId].course = null;
+      }
+    }
+    return checkRequireN(args, newGrid, fulfilledBy, fulfillments);
+  }
+  console.error("Error on checkRequireWithYear args", args);
+  return {
+    autoFulfilledCount: 0,
+    fulfilledBy,
+    fulfillments,
+    placeholders: [],
   };
 }
 
 // Map identifier strings to actual functions
 export const requirementCheckers = {
   requireN: checkRequireN,
+  requireNWithYear: checkRequireNWithYear,
 };
 
 /* Each major should have the format
@@ -116,11 +169,12 @@ export const requirementCheckers = {
   Requirements: [
     {
       description: "name of the category",
-      // identifier parameter could exist, but unnecessary as only one checker is available rn
+      // identifier defaults to requireN if left out
       args: [
         nestedList,
         n,
         ignore (optional),
+        minSemester (only for requireNWithYear; 1-indexed),
       ]
       }
     }, ...
@@ -200,15 +254,13 @@ export const MAJORS = {
         args: [["MATH 250", ["MATH 350", "MATH 351"], "MATH 355"], 3],
       },
       {
-        description: "Completion",
+        description: "Electives",
         args: [
           [
-            "Senior major course\n^(MATH|STAT) (4[0-7][0-9])",
             "Elective 1\n^(MATH|STAT) (3[0-9]{2}|[4-9][0-9]{2})",
             "Elective 2\n^(MATH|STAT) (3[0-9]{2}|[4-9][0-9]{2})",
-            "Math colloquium",
           ],
-          4,
+          2,
           [
             "MATH 140",
             "MATH 150",
@@ -222,6 +274,19 @@ export const MAJORS = {
             "MATH 351",
             "MATH 355",
           ],
+        ],
+      },
+      {
+        description: "Senior",
+        identifier: "requireNWithYear",
+        args: [
+          [
+            "Senior major course\n^(MATH|STAT) (4[0-7][0-9])",
+            "Math colloquium",
+          ],
+          2,
+          [],
+          6,
         ],
       },
     ],
