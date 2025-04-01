@@ -1,50 +1,301 @@
-.refresh-info {
-  margin-left: 30%;
-  padding-bottom: 50px;
+/* Base body */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-.all-dining-table {
+/* Main container */
+.app-container {
+  padding: 15px;
+}
+
+/* Title */
+.main-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Navigation */
+.quick-nav {
+  text-align: center;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #eee;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.nav-button {
+  background-color: transparent;
+  color: white;
+  border: 1px solid transparent;
+  padding: 8px 12px;
+  margin: 0 3px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75em;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.nav-button:hover {
+  background-color: #f8f5fa;
+  border-color: #d1b3e6;
+}
+
+.nav-button.active {
+  background-color: #f8f5fa;
+  border-color: #6f4993;
+  font-weight: bold;
+  color: #4a148c;
+}
+
+/* Grid layout for All Hours view */
+.hours-grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 340px);
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 25px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding-bottom: 5px;
+}
+
+/* Container for single menu view */
+.single-dining-view {
+  max-width: 750px;
+  margin: 0 auto;
+  padding: 0 10px;
+  margin-bottom: 100px;
+  transition: none;
+}
+
+/* Grid layout for All Menus view */
+.all-menus-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   grid-gap: 30px;
-}
-
-.dining-table-container {
-  padding-top: 0px;
-  margin-top: 0px;
-  margin-bottom: 10px;
-  max-width: 19em;
-}
-
-.dining-children {
-  border: 2px solid #d9d9d9;
-}
-
-.hours-title {
-  border: 2px solid #6f4993;
-}
-
-.all-dining-table {
   place-content: center;
   padding-bottom: 30px;
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+  margin-bottom: 100px;
 }
 
+/* Card styling (used for hours and menus) */
+.table-with-text {
+  padding: 0;
+  margin-bottom: 5px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dining-hall-text {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 1.1em;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Tables */
+tbody tr:nth-child(even) td {
+  background-color: rgb(252, 252, 252);
+}
+
+.dining-table-container,
+.menu-table-container {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+/* Table cells */
+.dining-children td,
+.dining-children th,
+.course-title td {
+  border: none;
+  border-bottom: 1px solid #eee;
+  padding: 6px 12px;
+  text-align: left;
+}
+
+.menu-item-row td,
+.menu-item-row th,
+.hours-title th,
+.meal-title th {
+  border: none;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.dining-table-container tr:last-child td,
+.menu-table-container tr:last-child td,
+.meal-content tr:last-child td {
+  border-bottom: none;
+}
+
+/* Table Headers (Hours, Meal) */
+.hours-title th,
+.meal-title th {
+  font-weight: bold;
+  background-color: #6f4993;
+  color: white;
+  cursor: default;
+}
+
+.meal-title th.meal-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.meal-title th.meal-header {
+  background-color: #6f4993;
+  color: white;
+  font-weight: bold;
+  display: block;
+  text-align: left;
+}
+
+.meal-title th.meal-header:hover {
+  background-color: #f0eafa;
+  color: #4a148c;
+}
+
+/* Course Title Row */
+.course-title td {
+  font-weight: bold;
+  font-style: normal;
+  background-color: rgb(240, 240, 240) !important;
+  color: #555;
+  padding-left: 20px;
+}
+
+/* Menu Item Row */
+.menu-item-row td {
+  padding-left: 25px;
+}
+
+/* Menu item content alignment */
+.menu-item-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-item-name {
+  flex-grow: 1;
+  padding-right: 10px;
+  padding-left: 8px;
+}
+
+/* Item details (tags container) */
+.item-details {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.item-details span {
+  display: inline-block;
+  font-size: 0.75em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: white;
+  white-space: nowrap;
+}
+
+.item-details span.vegetarian {
+  background-color: green;
+}
+.item-details span.vegan {
+  background-color: darkolivegreen;
+}
+.item-details span.glutenFree {
+  background-color: cornflowerblue;
+}
+
+/* Status indicators */
 .Open {
   font-weight: bold;
   color: green;
 }
-
 .Closed {
   font-weight: bold;
   color: red;
 }
-
 .Opening {
   font-weight: bold;
   color: rgb(104, 192, 227);
 }
-
 .Closing {
   font-weight: bold;
   color: orange;
+}
+
+/* Loading/Error messages */
+.loading-message,
+.error-message {
+  text-align: center;
+  padding: 30px 20px;
+  font-size: 1.1em;
+  color: #555;
+}
+
+.error-message {
+  color: #d32f2f;
+}
+
+/* Section Titles */
+.dining-section-title {
+  text-align: center;
+  font-size: 1.4em;
+  color: #4a148c;
+  margin-top: 35px;
+  margin-bottom: 20px;
+  padding-bottom: 5px;
+}
+
+/* Footer */
+.dining-footer {
+  text-align: center;
+  font-size: 0.85em;
+  color: #777;
+}
+
+/* Collapsible Content - Applied to the wrapper div */
+.meal-content-wrapper {
+  overflow: hidden;
+  transition: max-height 0.25s ease-in-out;
+}
+
+.meal-content-wrapper.collapsed {
+  max-height: 0;
+}
+
+.meal-content-wrapper.expanded {
+  max-height: 2000px;
+  transition: none;
+}
+
+/* Styling for rows within the collapsible section */
+.meal-content-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.meal-content-table td {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.meal-content-table tr:last-child td {
+  border-bottom: none;
+}
+
+table {
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
