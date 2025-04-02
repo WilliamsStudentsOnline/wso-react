@@ -88,6 +88,7 @@ const getMealOrder = (mealName: string): number => {
 const capitalizeMeal = (str: string): string => {
   if (!str) return "";
   return str
+    .replaceAll("williams' ", "")
     .split(" ")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
@@ -285,9 +286,24 @@ const DiningHoursCard = ({ vendor }: { vendor: Vendor }) => {
   return (
     <div className="table-with-text">
       <p className="dining-hall-text">
-        <b>{vendor.name}</b> <br></br> <span className={style}>{message}</span>
+        <b>{vendor.name}</b> · <span className={style}>{message}</span>
       </p>
       <table className="dining-table-container">
+        <colgroup>
+          <col style={{ width: "40%" }} /> {/* Left column width */}
+          <col style={{ width: "60%" }} /> {/* Right column width */}
+        </colgroup>
+        <thead className="meal-title">
+          <tr>
+            <th
+              colSpan={2}
+              style={{ display: "table-cell" }}
+              className="meal-header"
+            >
+              Hours
+            </th>
+          </tr>
+        </thead>
         <tbody>
           {sortedMeals.length > 0 ? (
             sortedMeals.map((meal, j) => (

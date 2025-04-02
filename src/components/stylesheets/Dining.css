@@ -1,6 +1,5 @@
 /* Base body */
 body {
-  font-family: sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -55,7 +54,7 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 25px;
-  max-width: 1000px;
+  max-width: 80%;
   margin: 0 auto;
   padding-bottom: 5px;
 }
@@ -77,7 +76,7 @@ body {
   place-content: center;
   padding-bottom: 30px;
   width: 90%;
-  max-width: 1100px;
+  max-width: 75%;
   margin: 0 auto;
   margin-bottom: 100px;
 }
@@ -86,8 +85,6 @@ body {
 .table-with-text {
   padding: 0;
   margin-bottom: 5px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
   overflow: hidden;
 }
 
@@ -95,17 +92,16 @@ body {
   margin: 0;
   padding: 10px 12px;
   font-size: 1.1em;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #e0e0e0;
 }
 
 /* Tables */
-tbody tr:nth-child(even) td {
+.meal-content-table tbody tr:nth-child(even) td {
   background-color: rgb(252, 252, 252);
 }
 
 .dining-table-container,
 .menu-table-container {
+  border: 1px solid #e0e0e0;
   width: 100%;
   border-collapse: collapse;
   margin: 0;
