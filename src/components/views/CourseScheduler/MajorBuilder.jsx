@@ -26,11 +26,7 @@ import {
   COURSE_HISTORY_START_YEAR,
   CURRENT_ACADEMIC_YEAR,
 } from "../../../constants/constants";
-import {
-  csRegexSeparator,
-  MAJORS,
-  requirementCheckers,
-} from "../../../constants/majors";
+import { MAJORS, checkRequireNComplex } from "../../../constants/majors";
 import { getSelectedMajor } from "../../../selectors/majorRequirements";
 import { doSelectMajor } from "../../../reducers/majorRequirements";
 import {
@@ -78,6 +74,7 @@ const MajorBuilder = ({
   const [fulfillments, setFulfillments] = useState({});
 
   const [triggerFetch, setTriggerFetch] = useState(false);
+  const [triggerUpdateFlatCourses, setTriggerUpdateFlatCourses] = useState();
 
   // Load state from LocalStorage
   useEffect(() => {
@@ -194,6 +191,9 @@ const MajorBuilder = ({
   const handleGridInputChange = (semesterIndex, courseIndex, event) => {
     const newGrid = JSON.parse(JSON.stringify(grid)); // Surely there's a better way
     const inputValue = event.target.value;
+    if (newGrid[semesterIndex][courseIndex].course !== null) {
+      setTriggerUpdateFlatCourses(!triggerUpdateFlatCourses);
+    }
     newGrid[semesterIndex][courseIndex] = {
       course: null, // clear selected course if typing
       input: inputValue,
@@ -269,6 +269,7 @@ const MajorBuilder = ({
       courseIndex: null,
       value: "",
     });
+    setTriggerUpdateFlatCourses(!triggerUpdateFlatCourses);
   };
 
   // Handle autocomplete deselection
@@ -408,7 +409,7 @@ const MajorBuilder = ({
       }
     }
     return courses;
-  }, [grid]);
+  }, [triggerUpdateFlatCourses]);
 
   // Tally division requirements
   const getAPRInfo = () => {
@@ -568,6 +569,13 @@ const MajorBuilder = ({
 
   // Mark an unchecked course as completed, or marked a check course as unfinished to trigger reprocessing
   const handleManualOverride = (itemStr, isChecked) => {
+    if (typeof itemStr === "object" && itemStr.description) {
+      itemStr = itemStr.description;
+    }
+    if (typeof itemStr === "object" && itemStr.placeholder) {
+      itemStr = itemStr.placeholder;
+    }
+
     const newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
     const newFulfillments = JSON.parse(JSON.stringify(fulfillments));
     if (isChecked) {
@@ -586,14 +594,11 @@ const MajorBuilder = ({
   };
 
   const truncateItemStr = (itemStr) => {
-    if (typeof itemStr === "object" && itemStr.description) {
+    if (itemStr.description) {
       return itemStr.description;
     }
-    if (typeof itemStr === "object" && itemStr.placeholder) {
+    if (itemStr.placeholder) {
       return itemStr.placeholder;
-    }
-    if (itemStr.includes(csRegexSeparator)) {
-      return itemStr.substring(0, itemStr.indexOf(csRegexSeparator));
     }
     return itemStr;
   };
@@ -611,16 +616,12 @@ const MajorBuilder = ({
     MAJORS[selectedMajor].Requirements.forEach((req) => {
       const reqKey = `${selectedMajor}-${req.description}`;
 
-      const checkerFunc = requirementCheckers[req.identifier || "complexN"];
-
-      const result = checkerFunc
-        ? checkerFunc(req.args, grid, newFulfilledBy, newFulfillments)
-        : {
-            autoFulfilledCount: 0,
-            fulfilledBy: {},
-            fulfillments: {},
-            placeholders: [],
-          };
+      const result = checkRequireNComplex(
+        req.args,
+        grid,
+        newFulfilledBy,
+        newFulfillments
+      );
       setFulfilledBy(result.fulfilledBy);
       setFulfillments(result.fulfillments);
 
@@ -628,9 +629,6 @@ const MajorBuilder = ({
 
       let finalFulfilledCount = 0;
       for (let item of req.args[0]) {
-        if (typeof item === "string") {
-          item = [item];
-        }
         if (typeof item === "object" && item.description) {
           item = [item.description];
         }
@@ -638,14 +636,18 @@ const MajorBuilder = ({
           item = [item.placeholder];
         }
         for (let itemStr of item) {
-          if (typeof itemStr === "object" && item.description) {
-            itemStr = item.description;
+          if (typeof itemStr === "object" && itemStr.description) {
+            itemStr = itemStr.description;
           }
-          if (typeof itemStr === "object" && item.placeholder) {
-            itemStr = item.placeholder;
+          if (typeof itemStr === "object" && itemStr.placeholder) {
+            itemStr = itemStr.placeholder;
           }
-          if (fulfilledBy[itemStr] && fulfilledBy[itemStr] !== "blocked") {
+          if (
+            result.fulfilledBy[itemStr] &&
+            result.fulfilledBy[itemStr] !== "blocked"
+          ) {
             finalFulfilledCount++;
+            break;
           }
         }
       }
@@ -657,7 +659,7 @@ const MajorBuilder = ({
   }, [getFlatUserCourses, selectedMajor, triggerFetch]);
 
   const renderCourseRequirement = (itemStr, result, reqKey, subItemClass) => {
-    const itemRenderStr = truncateItemStr(itemStr);
+    itemStr = truncateItemStr(itemStr);
     const itemKey = `${reqKey}-${itemStr}`;
     const isPlaceholder = result.placeholders.includes(itemStr);
     let isChecked = false;
@@ -690,7 +692,7 @@ const MajorBuilder = ({
           className="requirement-item-checkbox"
           checked={isChecked}
           onChange={(e) => handleManualOverride(itemStr, e.target.checked)}
-          title={`Mark ${itemRenderStr} as ${isChecked ? "not " : ""}fulfilled`}
+          title={`Mark ${itemStr} as ${isChecked ? "not " : ""}fulfilled`}
         />
         <span className={`status-indicator ${isChecked ? "met" : "not-met"}`}>
           {isChecked ? "✓" : "✕"}
@@ -703,7 +705,7 @@ const MajorBuilder = ({
               : {}
           }
         >
-          {itemRenderStr}
+          {itemStr}
         </span>
         {isChecked && fulfillingCourse && (
           <span className="fulfilled-by-auto"> (via {viaStr})</span>
@@ -728,6 +730,7 @@ const MajorBuilder = ({
               finalFulfilledCount: 0,
               target: 0,
             };
+
             const isMetOverall = finalFulfilledCount >= target;
 
             // Create "Needs" string for collapsed view
@@ -861,7 +864,7 @@ const MajorBuilder = ({
           })}
       </div>
     );
-  }, [fulfilledBy, expandedReqs, triggerFetch]);
+  }, [fulfilledBy, expandedReqs, triggerFetch, getFlatUserCourses]);
 
   // Ensure grid is initialized before rendering
   if (

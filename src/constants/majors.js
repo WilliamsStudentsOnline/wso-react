@@ -3,156 +3,6 @@ import {
   MAJOR_BUILDER_SEMESTERS,
 } from "./constants";
 
-const courseFormatRegex = /^[A-Z]{3,4} \d{2,5}/;
-export const csRegexSeparator = "\n";
-
-/* Checks if 'n' top-level slots from a potentially nested list are fulfilled
-A slot (element in nestedCourseList) can be:
-- a single course string (e.g. "MATH 151")
-- a single placeholder (e.g. "Colloquium")
-- regex of the form "<text to render>\n<REGEXP>" (without the <>s)
-- an array including any of the above, representing an OR choice
-Include an ignore list to specify courses that the regexp will not match to
-*/
-// DEPRECATED
-function checkRequireN(args, grid, fulfilledBy, fulfillments) {
-  const [nestedCourseList, n, ignore = []] = args; // CONTROLLED BY REQUIREMENT !!!
-  let autoFulfilledCount = 0;
-  const placeholders = [];
-
-  for (const reqItem of nestedCourseList) {
-    const itemsToCheck = Array.isArray(reqItem) ? reqItem : [reqItem];
-    for (const itemStr of itemsToCheck) {
-      if (
-        !courseFormatRegex.test(itemStr) &&
-        !itemStr.includes(csRegexSeparator)
-      )
-        placeholders.push(itemStr);
-    }
-  }
-
-  const courses = [];
-  for (let semId = 0; semId < MAJOR_BUILDER_SEMESTERS; semId++) {
-    for (let crsId = 0; crsId < MAJOR_BUILDER_COURSES_PER_SEM; crsId++) {
-      if (grid[semId][crsId]?.course) {
-        courses.push(grid[semId][crsId].course);
-      }
-    }
-  }
-
-  // Iterate through the top-level requirement slots
-  for (const reqItem of nestedCourseList) {
-    if (autoFulfilledCount >= n) break;
-
-    let currentSlotFulfilled = false;
-    const itemsToCheck = Array.isArray(reqItem) ? reqItem : [reqItem];
-
-    for (const itemStr of itemsToCheck) {
-      if (fulfilledBy[itemStr]) {
-        if (
-          fulfilledBy[itemStr].courseID &&
-          !courses.some((c) => c.courseID === fulfilledBy[itemStr].courseID)
-        ) {
-          delete fulfillments[fulfilledBy[itemStr].courseID];
-          delete fulfilledBy[itemStr];
-        } else {
-          continue;
-        }
-      }
-
-      let foundCourse = null;
-
-      // Regex fulfillment (i.e. for electives, more arbitrary requirements)
-      if (itemStr.includes(csRegexSeparator)) {
-        const [description, regexString] = itemStr.split(csRegexSeparator);
-        try {
-          const regex = new RegExp(regexString);
-          for (let userCourse of courses) {
-            const userCourseCode = `${userCourse.department} ${userCourse.number}`;
-            const matches =
-              userCourse.crossListing &&
-              userCourse.crossListing.some((cl) => regex.test(cl));
-            const notIgnored =
-              !ignore.includes(userCourseCode) &&
-              !(
-                userCourse.crossListing &&
-                userCourse.crossListing.some((cl) => ignore.includes(cl))
-              );
-            if (!fulfillments[userCourse.courseID] && matches && notIgnored) {
-              foundCourse = userCourse;
-            }
-          }
-        } catch (e) {
-          console.error(
-            `Invalid regex in requirement "${description}": ${regexString}`,
-            e
-          );
-          continue;
-        }
-      }
-      // Standard course fulfillment (direct/cross-listed match)
-      else if (courseFormatRegex.test(itemStr)) {
-        const [reqDept, reqNumStr] = itemStr.split(" ");
-        const reqNum = parseInt(reqNumStr, 10);
-        if (reqDept && !isNaN(reqNum)) {
-          for (let userCourse of courses) {
-            if (
-              fulfillments[userCourse.courseID](
-                userCourse.crossListing &&
-                  userCourse.crossListing.includes(itemStr)
-              )
-            ) {
-              foundCourse = userCourse;
-            }
-          }
-        }
-      }
-
-      if (foundCourse) {
-        fulfilledBy[itemStr] = foundCourse;
-        fulfillments[foundCourse.courseID] = itemStr;
-        currentSlotFulfilled = true;
-        break;
-      }
-    }
-
-    if (currentSlotFulfilled) {
-      autoFulfilledCount++;
-    }
-  }
-
-  return {
-    autoFulfilledCount,
-    fulfilledBy,
-    fulfillments,
-    placeholders,
-  };
-}
-
-/* Wrapper on checkRequireN that allows for a miniumum semester to be fulfilled
-This argument is 1-indexed (e.g. 5 is 5th sem, so junior year or after)
-*/
-// DEPRECATED
-function checkRequireNWithYear(args, grid, fulfilledBy, fulfillments) {
-  const minSem = args[3];
-  if (minSem) {
-    const newGrid = JSON.parse(JSON.stringify(grid));
-    for (let semId = 0; semId < minSem; semId++) {
-      for (let crsId = 0; crsId < MAJOR_BUILDER_COURSES_PER_SEM; crsId++) {
-        newGrid[semId][crsId].course = null;
-      }
-    }
-    return checkRequireN(args, newGrid, fulfilledBy, fulfillments);
-  }
-  console.error("Error on checkRequireWithYear args", args);
-  return {
-    autoFulfilledCount: 0,
-    fulfilledBy,
-    fulfillments,
-    placeholders: [],
-  };
-}
-
 /* Checks if n complex, versatile requirements are fulfilled
 A slot (element in requireDict) can be:
 - a requirement object
@@ -168,7 +18,7 @@ Constraint options for auto-filling:
 - regex: regexp; matches with listing/cross-listings, e.g. "^AFR 2"
 - attributes: regexp; matches with special attributes, e.g. "^AFR_AFRCORE" (see majorAttributes.txt)
 */
-function checkRequireNComplex(args, grid, fulfilledBy, fulfillments) {
+export const checkRequireNComplex = (args, grid, fulfilledBy, fulfillments) => {
   const [requirements, n] = args;
   let autoFulfilledCount = 0;
   const placeholders = [];
@@ -304,13 +154,6 @@ function checkRequireNComplex(args, grid, fulfilledBy, fulfillments) {
     fulfillments,
     placeholders,
   };
-}
-
-// Map identifier strings to actual functions
-export const requirementCheckers = {
-  requireN: checkRequireN, // DEPRECATED
-  requireNWithYear: checkRequireNWithYear, // DEPRECATED
-  complexN: checkRequireNComplex,
 };
 
 /* Each major should have the format
