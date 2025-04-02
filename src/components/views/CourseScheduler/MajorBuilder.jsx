@@ -76,6 +76,14 @@ const MajorBuilder = ({
   const [triggerFetch, setTriggerFetch] = useState(false);
   const [triggerUpdateFlatCourses, setTriggerUpdateFlatCourses] = useState();
 
+  const [overrideInputState, setOverrideInputState] = useState({
+    reqKey: null,
+    itemStr: null,
+    inputValue: "",
+    results: [],
+    visible: false,
+  });
+
   // Load state from LocalStorage
   useEffect(() => {
     const savedStateRaw = localStorage.getItem(MAJOR_BUILDER_LS_KEY);
@@ -567,6 +575,77 @@ const MajorBuilder = ({
     }, 200);
   };
 
+  const handleOpenOverrideInput = (reqKey, itemStr) => {
+    setOverrideInputState({
+      reqKey: reqKey,
+      itemStr: itemStr,
+      inputValue: "",
+      results: [],
+      visible: true,
+    });
+  };
+
+  const handleOverrideInputChange = (event) => {
+    const value = event.target.value;
+    let results = [];
+    if (value.length > 0) {
+      const lowerValue = value.toLowerCase();
+      results = getFlatUserCourses
+        .filter((course) => {
+          const courseCode = `${course.department} ${course.number}`;
+          return (
+            courseCode.toLowerCase().includes(lowerValue) ||
+            course.titleShort?.toLowerCase().includes(lowerValue)
+          );
+        })
+        .slice(0, 5);
+    }
+    results = ["Manual override", ...results];
+    setOverrideInputState((prev) => ({
+      ...prev,
+      inputValue: value,
+      results: results,
+    }));
+  };
+
+  const handleOverrideAutocompleteSelect = (selectedGridCourse, itemStr) => {
+    if (selectedGridCourse === "Manual override") {
+      setFulfilledBy({ ...fulfilledBy, [itemStr]: "manual" });
+      return;
+    }
+
+    const newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
+    const newFulfillments = JSON.parse(JSON.stringify(fulfillments));
+    for (const iStr in newFulfilledBy) {
+      if (newFulfilledBy[iStr].courseID === selectedGridCourse.courseID) {
+        delete newFulfilledBy[iStr];
+      }
+    }
+
+    newFulfillments[selectedGridCourse.courseID] = itemStr;
+    newFulfilledBy[itemStr] = selectedGridCourse;
+    setFulfilledBy(newFulfilledBy);
+    setFulfillments(newFulfillments);
+
+    setOverrideInputState({
+      reqKey: null,
+      itemStr: null,
+      inputValue: "",
+      results: [],
+      visible: false,
+    });
+  };
+
+  const handleOverrideInputBlur = () => {
+    setTimeout(() => {
+      setOverrideInputState((prev) => ({
+        ...prev,
+        visible: false,
+        results: [],
+      }));
+    }, 200);
+  };
+
   // Mark an unchecked course as completed, or marked a check course as unfinished to trigger reprocessing
   const handleManualOverride = (itemStr, isChecked) => {
     if (typeof itemStr === "object" && itemStr.description) {
@@ -660,6 +739,10 @@ const MajorBuilder = ({
 
   const renderCourseRequirement = (itemStr, result, reqKey, subItemClass) => {
     itemStr = truncateItemStr(itemStr);
+    const showOverrideInput =
+      overrideInputState.visible &&
+      overrideInputState.reqKey === reqKey &&
+      overrideInputState.itemStr === itemStr;
     const itemKey = `${reqKey}-${itemStr}`;
     const isPlaceholder = result.placeholders.includes(itemStr);
     let isChecked = false;
@@ -687,27 +770,75 @@ const MajorBuilder = ({
           isPlaceholder ? "placeholder" : ""
         } ${subItemClass}`}
       >
-        <input
-          type="checkbox"
-          className="requirement-item-checkbox"
-          checked={isChecked}
-          onChange={(e) => handleManualOverride(itemStr, e.target.checked)}
-          title={`Mark ${itemStr} as ${isChecked ? "not " : ""}fulfilled`}
-        />
-        <span className={`status-indicator ${isChecked ? "met" : "not-met"}`}>
-          {isChecked ? "✓" : "✕"}
-        </span>
-        <span
-          className="item-string"
-          style={
-            fulfillingCourse === "blocked"
-              ? { textDecoration: "line-through" }
-              : {}
-          }
-        >
-          {itemStr}
-        </span>
-        {isChecked && fulfillingCourse && (
+        {!showOverrideInput && (
+          <input
+            type="checkbox"
+            className="requirement-item-checkbox"
+            checked={isChecked}
+            onChange={(e) => handleManualOverride(itemStr, e.target.checked)}
+            title={`Mark ${itemStr} as ${isChecked ? "not " : ""}fulfilled`}
+          />
+        )}
+        {!showOverrideInput && (
+          <span className={`status-indicator ${isChecked ? "met" : "not-met"}`}>
+            {isChecked ? "✓" : "✕"}
+          </span>
+        )}
+
+        {showOverrideInput ? (
+          <div className="override-input-container cs-input-container">
+            {" "}
+            <input
+              type="text"
+              className="override-input"
+              value={overrideInputState.inputValue}
+              onChange={handleOverrideInputChange}
+              onBlur={handleOverrideInputBlur}
+              placeholder={`Find course for ${itemStr}...`}
+              autoFocus
+            />
+            {overrideInputState.results.length > 0 && (
+              <ul className="autocomplete-results override-autocomplete">
+                {overrideInputState.results.map((course) => (
+                  <li
+                    key={course.courseID || course}
+                    onClick={() =>
+                      handleOverrideAutocompleteSelect(course, itemStr)
+                    }
+                    role="presentation"
+                  >
+                    {course.department
+                      ? `${course.department} ${course.number} - ${course.titleShort}`
+                      : course}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ) : (
+          isChecked && (
+            <button
+              className="change-via-button"
+              onClick={() => handleOpenOverrideInput(reqKey, itemStr)}
+            >
+              ⟳
+            </button>
+          )
+        )}
+
+        {!showOverrideInput && (
+          <span
+            className="item-string"
+            style={
+              fulfillingCourse === "blocked"
+                ? { textDecoration: "line-through" }
+                : {}
+            }
+          >
+            {itemStr}
+          </span>
+        )}
+        {!showOverrideInput && isChecked && fulfillingCourse && (
           <span className="fulfilled-by-auto"> (via {viaStr})</span>
         )}
       </li>
@@ -864,7 +995,13 @@ const MajorBuilder = ({
           })}
       </div>
     );
-  }, [fulfilledBy, expandedReqs, triggerFetch, getFlatUserCourses]);
+  }, [
+    fulfilledBy,
+    expandedReqs,
+    triggerFetch,
+    getFlatUserCourses,
+    overrideInputState,
+  ]);
 
   // Ensure grid is initialized before rendering
   if (
