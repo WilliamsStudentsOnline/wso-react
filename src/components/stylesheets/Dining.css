@@ -20,9 +20,11 @@ body {
 .quick-nav {
   text-align: center;
   margin-bottom: 25px;
-  border-bottom: 1px solid #eee;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding: 9px 6px;
+  border-radius: 4px;
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
 }
 
 .nav-button {
@@ -39,7 +41,7 @@ body {
 
 .nav-button:hover {
   background-color: #f8f5fa;
-  border-color: #d1b3e6;
+  color: #4a148c;
 }
 
 .nav-button.active {
@@ -61,7 +63,7 @@ body {
 
 /* Container for single menu view */
 .single-dining-view {
-  max-width: 750px;
+  max-width: 60%;
   margin: 0 auto;
   padding: 0 10px;
   margin-bottom: 100px;
