@@ -468,11 +468,14 @@ const VendorMenu = ({
       ? Object.entries(vendor.meals).find(
           ([, m]) => m.name === currentMealName
         )?.[0]
-      : nextMealKey;
+      : null; // was: nextMealKey
 
-    Object.keys(vendor.meals).forEach((mealKey) => {
-      initialOpenState[mealKey] = !!targetKey && mealKey === targetKey;
-    });
+    if (targetKey) {
+      Object.keys(vendor.meals).forEach((mealKey) => {
+        initialOpenState[mealKey] =
+          isSingleView && !!targetKey && mealKey === targetKey;
+      });
+    }
     setOpenMeals(initialOpenState);
   }, [
     vendor.id,
@@ -500,7 +503,7 @@ const VendorMenu = ({
               ([, m]) => m.name === currentMealName
             )?.[0]
           : null;
-        const priorityKey = currentMealKey ?? nextMealKey; // Use current if open, else next
+        const priorityKey = currentMealKey ?? null; // was: ?? nextMealKey, to prioritize next meal
 
         if (priorityKey) {
           const keyA = Object.entries(vendor.meals).find(

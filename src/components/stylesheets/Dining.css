@@ -267,7 +267,7 @@ body {
 /* Collapsible Content - Applied to the wrapper div */
 .meal-content-wrapper {
   overflow: hidden;
-  transition: max-height 0.25s ease-in-out;
+  transition: max-height 0.2s ease-in-out;
 }
 
 .meal-content-wrapper.collapsed {
