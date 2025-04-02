@@ -980,7 +980,17 @@ const MajorBuilder = ({
       </div>
 
       <h2>Major Builder</h2>
-      <p>Pick a course of study that&apos;s right for you.</p>
+      <p>
+        Pick a course of study that&apos;s right for you. Enter your courses
+        above and/or click the boxes below to plan your major(s). Last updated
+        04/02/2025.
+      </p>
+      <p style={{ fontStyle: "italic" }}>
+        Disclaimer: this feature is still in beta, and may not correctly
+        autofill every course in every major. Please report any autofill bugs or
+        incorrect major information to{" "}
+        <a href="mailto:wso-dev@wso.williams.edu">wso-dev@wso.williams.edu</a>.
+      </p>
       <div className="major-selection-container cs-input-container">
         <label htmlFor="major-input">Select Major:</label>
         <input
