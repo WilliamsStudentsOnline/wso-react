@@ -278,6 +278,7 @@
   margin-left: auto;
   padding-left: 15px;
   white-space: nowrap;
+  max-width: 50%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -386,4 +387,8 @@
 
 .clear-grid-button:hover {
   background-color: #e0d8eb;
+}
+
+.major-info-link {
+  color: #4b2771;
 }

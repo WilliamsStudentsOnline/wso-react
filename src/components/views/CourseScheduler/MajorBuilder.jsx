@@ -586,6 +586,12 @@ const MajorBuilder = ({
   };
 
   const truncateItemStr = (itemStr) => {
+    if (typeof itemStr === "object" && itemStr.description) {
+      return itemStr.description;
+    }
+    if (typeof itemStr === "object" && itemStr.placeholder) {
+      return itemStr.placeholder;
+    }
     if (itemStr.includes(csRegexSeparator)) {
       return itemStr.substring(0, itemStr.indexOf(csRegexSeparator));
     }
@@ -605,7 +611,7 @@ const MajorBuilder = ({
     MAJORS[selectedMajor].Requirements.forEach((req) => {
       const reqKey = `${selectedMajor}-${req.description}`;
 
-      const checkerFunc = requirementCheckers[req.identifier || "requireN"];
+      const checkerFunc = requirementCheckers[req.identifier || "complexN"];
 
       const result = checkerFunc
         ? checkerFunc(req.args, grid, newFulfilledBy, newFulfillments)
@@ -625,7 +631,19 @@ const MajorBuilder = ({
         if (typeof item === "string") {
           item = [item];
         }
-        for (const itemStr of item) {
+        if (typeof item === "object" && item.description) {
+          item = [item.description];
+        }
+        if (typeof item === "object" && item.placeholder) {
+          item = [item.placeholder];
+        }
+        for (let itemStr of item) {
+          if (typeof itemStr === "object" && item.description) {
+            itemStr = item.description;
+          }
+          if (typeof itemStr === "object" && item.placeholder) {
+            itemStr = item.placeholder;
+          }
           if (fulfilledBy[itemStr] && fulfilledBy[itemStr] !== "blocked") {
             finalFulfilledCount++;
           }
@@ -717,17 +735,31 @@ const MajorBuilder = ({
             if (!isMetOverall && !isExpanded) {
               const unmetItemsFormatted = req.args[0]
                 .map((itemOrGroup) => {
-                  const itemsToCheck = Array.isArray(itemOrGroup)
+                  let itemsToCheck = Array.isArray(itemOrGroup)
                     ? itemOrGroup
                     : [itemOrGroup];
+
                   // Check if *any* item in this slot/group was fulfilled (by grid or manual override)
-                  const isSlotMet = itemsToCheck.some(
-                    (r) => fulfilledBy[r] && fulfilledBy[r] !== "blocked"
+                  const isSlotMet = itemsToCheck.some((r) =>
+                    r.description
+                      ? fulfilledBy[r.description] &&
+                        fulfilledBy[r.description] !== "blocked"
+                      : fulfilledBy[r] && fulfilledBy[r] !== "blocked"
                   );
 
                   if (!isSlotMet) {
-                    return Array.isArray(itemOrGroup)
-                      ? itemOrGroup.join("/")
+                    if (Array.isArray(itemOrGroup)) {
+                      if (itemOrGroup[0].description) {
+                        const rstri = [];
+                        for (const item of itemOrGroup) {
+                          rstri.push(item.description);
+                        }
+                        return rstri.join("/");
+                      }
+                      return itemOrGroup.join("/");
+                    }
+                    return itemOrGroup.description
+                      ? itemOrGroup.description
                       : itemOrGroup;
                   }
                   return null;
@@ -776,6 +808,13 @@ const MajorBuilder = ({
                 {isExpanded && (
                   <ul className="requirement-item-list">
                     {req.args[0].map((itemOrGroup, groupIdx) => {
+                      if (
+                        typeof itemOrGroup === "object" &&
+                        itemOrGroup.description
+                      ) {
+                        itemOrGroup = itemOrGroup.description;
+                      }
+
                       // Render OR group
                       if (Array.isArray(itemOrGroup)) {
                         return (
@@ -786,6 +825,13 @@ const MajorBuilder = ({
                             <span className="or-group-label">One of:</span>
                             <ul>
                               {itemOrGroup.map((itemStr, subIdx) => {
+                                if (
+                                  typeof itemStr === "object" &&
+                                  itemStr.description
+                                ) {
+                                  itemStr = itemStr.description;
+                                }
+
                                 return renderCourseRequirement(
                                   itemStr,
                                   result,
@@ -968,6 +1014,14 @@ const MajorBuilder = ({
         <div className="all-majors-container">
           <div className="major-requirements-display">
             <h3>Requirements for {selectedMajor}</h3>
+            <a
+              className="major-info-link"
+              href={MAJORS[selectedMajor].Link}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Department Website
+            </a>
             <ul className="major-info-list">
               {MAJORS[selectedMajor].Info.map((info, i) => (
                 <li key={`info-${i}`}>{info}</li>
