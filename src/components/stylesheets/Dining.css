@@ -63,7 +63,7 @@ body {
 
 /* Container for single menu view */
 .single-dining-view {
-  max-width: 60%;
+  max-width: 50%;
   margin: 0 auto;
   padding: 0 10px;
   margin-bottom: 100px;
@@ -207,13 +207,13 @@ body {
 }
 
 .item-details span.vegetarian {
-  background-color: green;
+  background-color: rgb(175, 82, 222);
 }
 .item-details span.vegan {
-  background-color: darkolivegreen;
+  background-color: rgb(52, 199, 89);
 }
 .item-details span.glutenFree {
-  background-color: cornflowerblue;
+  background-color: rgb(0, 122, 255);
 }
 
 /* Status indicators */

@@ -408,12 +408,10 @@ const MealSection = ({
                                     </span>
                                     <div className="item-details">
                                       {item.vegetarian && (
-                                        <span className="vegetarian">
-                                          Vegetarian
-                                        </span>
+                                        <span className="vegetarian">VGT</span>
                                       )}
                                       {item.vegan && (
-                                        <span className="vegan">Vegan</span>
+                                        <span className="vegan">V</span>
                                       )}
                                       {item.glutenFree && (
                                         <span className="glutenFree">GF</span>
