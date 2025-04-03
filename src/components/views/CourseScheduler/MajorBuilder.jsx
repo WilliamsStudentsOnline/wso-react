@@ -179,7 +179,7 @@ const MajorBuilder = ({
       });
       localStorage.setItem(MAJOR_BUILDER_LS_KEY, stateToSave);
     }
-  }, [grid, semesters, selectedMajor]);
+  }, [grid, semesters, selectedMajor, fulfilledBy, fulfillments]);
 
   // Reset state
   const clearCourseGrid = () => {
