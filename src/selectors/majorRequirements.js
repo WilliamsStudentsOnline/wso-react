@@ -1,2 +1,3 @@
-export const getSelectedMajor = ({ majorRequirementsState }) =>
-  majorRequirementsState.selectedMajor || "";
+export const getSelectedMajors = ({ majorRequirementsState }) => {
+  return majorRequirementsState.selectedMajors || ["", "", ""];
+};

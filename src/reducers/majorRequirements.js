@@ -1,26 +1,31 @@
 import { SELECT_MAJOR } from "../constants/actionTypes";
 
 const INITIAL_STATE = {
-  selectedMajor: "",
+  selectedMajors: ["", "", ""],
 };
 
-export const doSelectMajor = (majorName) => ({
+export const doSelectMajor = (majorName, idx) => ({
   type: SELECT_MAJOR,
   payload: majorName,
+  index: idx,
 });
 
-export const doClearMajor = () => ({
+export const doClearMajor = (idx) => ({
   type: SELECT_MAJOR,
   payload: "",
+  index: idx,
 });
 
 const majorRequirementsReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case SELECT_MAJOR:
+    case SELECT_MAJOR: {
+      const newSelectedMajors = [...state.selectedMajors];
+      newSelectedMajors[action.index] = action.payload;
       return {
         ...state,
-        selectedMajor: action.payload, // Payload is the major name (string)
+        selectedMajors: newSelectedMajors,
       };
+    }
     default:
       return state;
   }

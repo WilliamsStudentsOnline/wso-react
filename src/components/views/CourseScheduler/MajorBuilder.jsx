@@ -27,7 +27,7 @@ import {
   CURRENT_ACADEMIC_YEAR,
 } from "../../../constants/constants";
 import { MAJORS, checkRequireNComplex } from "../../../constants/majors";
-import { getSelectedMajor } from "../../../selectors/majorRequirements";
+import { getSelectedMajors } from "../../../selectors/majorRequirements";
 import { doSelectMajor } from "../../../reducers/majorRequirements";
 import {
   initialMajorBuilderGrid,
@@ -40,7 +40,7 @@ const MajorBuilder = ({
   historicalCatalogs,
   updateMajorBuilderState,
   loadHistoricalCatalog,
-  selectedMajor,
+  selectedMajors,
   selectMajor,
   clearMajor,
 }) => {
@@ -60,9 +60,8 @@ const MajorBuilder = ({
   const [autocompleteVisible, setAutocompleteVisible] = useState(false);
 
   // Major autocomplete
-  const [majorInput, setMajorInput] = useState("");
-  const [majorAutocompleteVisible, setMajorAutocompleteVisible] =
-    useState(false);
+  const [majorInputs, setMajorInputs] = useState(["", "", ""]);
+  const [majorAutocompleteVisible, setMajorAutocompleteVisible] = useState(-1);
   const [majorAutocompleteResults, setMajorAutocompleteResults] = useState([]);
 
   // Visuals
@@ -84,6 +83,8 @@ const MajorBuilder = ({
     visible: false,
   });
 
+  const [showInfoList, setShowInfoList] = useState({});
+
   // Load state from LocalStorage
   useEffect(() => {
     const savedStateRaw = localStorage.getItem(MAJOR_BUILDER_LS_KEY);
@@ -93,7 +94,8 @@ const MajorBuilder = ({
         if (
           savedState.grid &&
           savedState.semesters &&
-          savedState.selectedMajor !== undefined &&
+          savedState.selectedMajors &&
+          savedState.selectedMajors.length === 3 &&
           savedState.fulfilledBy &&
           savedState.fulfillments &&
           savedState.grid.length === MAJOR_BUILDER_SEMESTERS &&
@@ -116,10 +118,10 @@ const MajorBuilder = ({
             majorBuilderGrid: savedState.grid,
             majorBuilderSemesters: savedState.semesters,
           });
-          selectMajor(savedState.selectedMajor || "");
-          if (savedState.selectedMajor) {
-            setMajorInput(savedState.selectedMajor);
+          for (let i = 0; i < 3; i++) {
+            selectMajor(savedState.selectedMajors[i] || "", i);
           }
+          setMajorInputs(savedState.selectedMajors);
           setFulfilledBy(savedState.fulfilledBy);
           setFulfillments(savedState.fulfillments);
         } else {
@@ -164,7 +166,7 @@ const MajorBuilder = ({
     if (
       grid &&
       semesters &&
-      selectedMajor !== undefined &&
+      selectedMajors &&
       fulfilledBy &&
       fulfillments &&
       grid.length === MAJOR_BUILDER_SEMESTERS &&
@@ -173,13 +175,13 @@ const MajorBuilder = ({
       const stateToSave = JSON.stringify({
         grid,
         semesters,
-        selectedMajor,
+        selectedMajors,
         fulfilledBy,
         fulfillments,
       });
       localStorage.setItem(MAJOR_BUILDER_LS_KEY, stateToSave);
     }
-  }, [grid, semesters, selectedMajor, fulfilledBy, fulfillments]);
+  }, [grid, semesters, selectedMajors, fulfilledBy, fulfillments]);
 
   // Reset state
   const clearCourseGrid = () => {
@@ -191,8 +193,10 @@ const MajorBuilder = ({
     }
     setFulfilledBy({});
     setFulfillments({});
-    clearMajor();
-    setMajorInput("");
+    for (let i = 0; i < 3; i++) {
+      clearMajor(i);
+    }
+    setMajorInputs(["", "", ""]);
   };
 
   // Handle user typing in planner grid
@@ -217,13 +221,22 @@ const MajorBuilder = ({
     const { semesterIndex, courseIndex, value } = autocompleteInput;
 
     if (semesterIndex === null || courseIndex === null || value.length <= 1) {
-      if (autocompleteVisible) setAutocompleteVisible(false);
+      setAutocompleteVisible(false);
       return;
     }
 
     const semester = semesters[semesterIndex];
     if (!semester) {
-      if (autocompleteVisible) setAutocompleteVisible(false);
+      setAutocompleteVisible(false);
+      return;
+    }
+
+    const activeElement = document.activeElement;
+    const inputElement = document.getElementById(
+      `input-${semesterIndex}-${courseIndex}`
+    );
+    if (activeElement !== inputElement) {
+      setAutocompleteVisible(false);
       return;
     }
 
@@ -540,27 +553,35 @@ const MajorBuilder = ({
     setExpandedReqs(newExpanded);
   };
 
-  const handleMajorInputChange = (event) => {
+  const handleMajorInputChange = (event, index) => {
     const value = event.target.value;
-    setMajorInput(value);
-    clearMajor(); // clear selected major in Redux if user starts typing
+    const newMajorInputs = [...majorInputs];
+    newMajorInputs[index] = value;
+    setMajorInputs(newMajorInputs);
+    clearMajor(index); // clear selected major in Redux if user starts typing
 
     if (value.length > 0) {
       const lowerValue = value.toLowerCase();
       const results = Object.keys(MAJORS)
-        .filter((majorName) => majorName.toLowerCase().includes(lowerValue))
+        .filter(
+          (majorName) =>
+            majorName.toLowerCase().includes(lowerValue) &&
+            !selectedMajors.includes(majorName)
+        )
         .slice(0, 5);
       setMajorAutocompleteResults(results);
-      setMajorAutocompleteVisible(true);
+      setMajorAutocompleteVisible(index);
     } else {
-      setMajorAutocompleteVisible(false);
+      setMajorAutocompleteVisible(-1);
       setMajorAutocompleteResults([]);
     }
   };
-  const handleMajorAutocompleteSelect = (majorName) => {
-    setMajorInput(majorName);
-    selectMajor(majorName);
-    setMajorAutocompleteVisible(false);
+  const handleMajorAutocompleteSelect = (majorName, index) => {
+    const newMajorInputs = [...majorInputs];
+    newMajorInputs[index] = majorName;
+    setMajorInputs(newMajorInputs);
+    selectMajor(majorName, index);
+    setMajorAutocompleteVisible(-1);
     setMajorAutocompleteResults([]);
   };
   const handleMajorAutocompleteBlur = () => {
@@ -570,7 +591,7 @@ const MajorBuilder = ({
         "#major-autocomplete-results"
       );
       if (!isStillInteracting) {
-        setMajorAutocompleteVisible(false);
+        setMajorAutocompleteVisible(-1);
       }
     }, 200);
   };
@@ -634,6 +655,7 @@ const MajorBuilder = ({
       results: [],
       visible: false,
     });
+    setTriggerFetch(!triggerFetch);
   };
 
   const handleOverrideInputBlur = () => {
@@ -648,13 +670,6 @@ const MajorBuilder = ({
 
   // Mark an unchecked course as completed, or marked a check course as unfinished to trigger reprocessing
   const handleManualOverride = (itemStr, isChecked) => {
-    if (typeof itemStr === "object" && itemStr.description) {
-      itemStr = itemStr.description;
-    }
-    if (typeof itemStr === "object" && itemStr.placeholder) {
-      itemStr = itemStr.placeholder;
-    }
-
     const newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
     const newFulfillments = JSON.parse(JSON.stringify(fulfillments));
     if (isChecked) {
@@ -688,65 +703,78 @@ const MajorBuilder = ({
   };
 
   const requirementResults = useMemo(() => {
-    if (!selectedMajor || !MAJORS[selectedMajor]) return <div></div>;
+    if (!selectedMajors) return <div></div>;
     const results = {};
     var newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
     var newFulfillments = JSON.parse(JSON.stringify(fulfillments));
-    MAJORS[selectedMajor].Requirements.forEach((req) => {
-      const reqKey = `${selectedMajor}-${req.description}`;
+    for (let i = 0; i < 3; i++) {
+      const selectedMajor = selectedMajors[i];
+      if (!selectedMajor || selectedMajor === "") continue;
+      MAJORS[selectedMajor].Requirements.forEach((req) => {
+        const reqKey = `${selectedMajor}-${req.description}`;
 
-      const result = checkRequireNComplex(
-        req.args,
-        grid,
-        newFulfilledBy,
-        newFulfillments
-      );
-      setFulfilledBy(result.fulfilledBy);
-      setFulfillments(result.fulfillments);
+        const result = checkRequireNComplex(
+          req.args,
+          selectedMajor,
+          grid,
+          newFulfilledBy,
+          newFulfillments
+        );
+        setFulfilledBy(result.fulfilledBy);
+        setFulfillments(result.fulfillments);
 
-      const target = req.args[1];
+        const target = req.args[1];
 
-      let finalFulfilledCount = 0;
-      for (let item of req.args[0]) {
-        if (typeof item === "object" && item.description) {
-          item = [item.description];
-        }
-        if (typeof item === "object" && item.placeholder) {
-          item = [item.placeholder];
-        }
-        for (let itemStr of item) {
-          if (typeof itemStr === "object" && itemStr.description) {
-            itemStr = itemStr.description;
+        let finalFulfilledCount = 0;
+        for (let item of req.args[0]) {
+          if (typeof item === "object" && item.description) {
+            item = [item.description];
           }
-          if (typeof itemStr === "object" && itemStr.placeholder) {
-            itemStr = itemStr.placeholder;
+          if (typeof item === "object" && item.placeholder) {
+            item = [item.placeholder];
           }
-          if (
-            result.fulfilledBy[itemStr] &&
-            result.fulfilledBy[itemStr] !== "blocked"
-          ) {
-            finalFulfilledCount++;
-            break;
+          for (let itemStr of item) {
+            if (typeof itemStr === "object" && itemStr.description) {
+              itemStr = itemStr.description;
+            }
+            if (typeof itemStr === "object" && itemStr.placeholder) {
+              itemStr = itemStr.placeholder;
+            }
+            itemStr = `${selectedMajor}-${itemStr}`;
+            if (
+              result.fulfilledBy[itemStr] &&
+              result.fulfilledBy[itemStr] !== "blocked"
+            ) {
+              finalFulfilledCount++;
+              break;
+            }
           }
         }
-      }
-      // finalFulfilledCount = Math.min(finalFulfilledCount, target);
+        // finalFulfilledCount = Math.min(finalFulfilledCount, target);
 
-      results[reqKey] = { result, finalFulfilledCount, target };
-    });
+        results[reqKey] = { result, finalFulfilledCount, target };
+      });
+    }
+
     return results;
-  }, [getFlatUserCourses, selectedMajor, triggerFetch]);
+  }, [getFlatUserCourses, selectedMajors, triggerFetch]);
 
-  const renderCourseRequirement = (itemStr, result, reqKey, subItemClass) => {
-    itemStr = truncateItemStr(itemStr);
+  const renderCourseRequirement = (
+    majorStr,
+    itemStr,
+    result,
+    reqKey,
+    subItemClass
+  ) => {
+    const itemRenderStr = truncateItemStr(itemStr);
+    const itemKeyStr = `${majorStr}-${itemRenderStr}`;
     const showOverrideInput =
       overrideInputState.visible &&
       overrideInputState.reqKey === reqKey &&
-      overrideInputState.itemStr === itemStr;
-    const itemKey = `${reqKey}-${itemStr}`;
-    const isPlaceholder = result.placeholders.includes(itemStr);
+      overrideInputState.itemStr === itemKeyStr;
+    const isPlaceholder = result.placeholders.includes(itemKeyStr);
     let isChecked = false;
-    const fulfillingCourse = fulfilledBy[itemStr];
+    const fulfillingCourse = fulfilledBy[itemKeyStr];
     if (fulfillingCourse === "manual") {
       isChecked = true;
     } else if (fulfillingCourse === "blocked") {
@@ -765,7 +793,7 @@ const MajorBuilder = ({
 
     return (
       <li
-        key={itemKey}
+        key={itemKeyStr}
         className={`requirement-list-item ${
           isPlaceholder ? "placeholder" : ""
         } ${subItemClass}`}
@@ -775,8 +803,10 @@ const MajorBuilder = ({
             type="checkbox"
             className="requirement-item-checkbox"
             checked={isChecked}
-            onChange={(e) => handleManualOverride(itemStr, e.target.checked)}
-            title={`Mark ${itemStr} as ${isChecked ? "not " : ""}fulfilled`}
+            onChange={(e) => handleManualOverride(itemKeyStr, e.target.checked)}
+            title={`Mark ${itemRenderStr} as ${
+              isChecked ? "not " : ""
+            }fulfilled`}
           />
         )}
         {!showOverrideInput && (
@@ -794,7 +824,7 @@ const MajorBuilder = ({
               value={overrideInputState.inputValue}
               onChange={handleOverrideInputChange}
               onBlur={handleOverrideInputBlur}
-              placeholder={`Find course to fulfill ${itemStr}...`}
+              placeholder={`Find course to fulfill ${itemRenderStr}...`}
               autoFocus
             />
             {overrideInputState.results.length > 0 && (
@@ -803,7 +833,7 @@ const MajorBuilder = ({
                   <li
                     key={course.courseID || course}
                     onClick={() =>
-                      handleOverrideAutocompleteSelect(course, itemStr)
+                      handleOverrideAutocompleteSelect(course, itemKeyStr)
                     }
                     role="presentation"
                   >
@@ -819,7 +849,7 @@ const MajorBuilder = ({
           isChecked && (
             <button
               className="change-via-button"
-              onClick={() => handleOpenOverrideInput(reqKey, itemStr)}
+              onClick={() => handleOpenOverrideInput(reqKey, itemKeyStr)}
             >
               ⟳
             </button>
@@ -835,7 +865,7 @@ const MajorBuilder = ({
                 : {}
             }
           >
-            {itemStr}
+            {itemRenderStr}
           </span>
         )}
         {!showOverrideInput && isChecked && fulfillingCourse && (
@@ -846,155 +876,165 @@ const MajorBuilder = ({
   };
 
   const requirementsList = useMemo(() => {
-    return (
-      <div className="requirements-list">
-        {MAJORS[selectedMajor] &&
-          MAJORS[selectedMajor].Requirements.map((req, idx) => {
-            const reqKey = `${selectedMajor}-${req.description}`;
+    const requirementsMemo = [];
+    for (let i = 0; i < 3; i++) {
+      const selectedMajor = selectedMajors[i];
+      if (!selectedMajor || selectedMajor === "") {
+        requirementsMemo.push(<div></div>);
+        continue;
+      }
+      requirementsMemo.push(
+        <div className="requirements-list">
+          {MAJORS[selectedMajor] &&
+            MAJORS[selectedMajor].Requirements.map((req, idx) => {
+              const reqKey = `${selectedMajor}-${req.description}`;
 
-            const isExpanded = !!expandedReqs[reqKey];
+              const isExpanded = !!expandedReqs[reqKey];
 
-            const { result, finalFulfilledCount, target } = requirementResults[
-              reqKey
-            ] || {
-              result: {},
-              finalFulfilledCount: 0,
-              target: 0,
-            };
+              const { result, finalFulfilledCount, target } =
+                requirementResults[reqKey] || {
+                  result: {},
+                  finalFulfilledCount: 0,
+                  target: 0,
+                };
 
-            const isMetOverall = finalFulfilledCount >= target;
+              const isMetOverall = finalFulfilledCount >= target;
 
-            // Create "Needs" string for collapsed view
-            let needsStr = "";
-            if (!isMetOverall && !isExpanded) {
-              const unmetItemsFormatted = req.args[0]
-                .map((itemOrGroup) => {
-                  let itemsToCheck = Array.isArray(itemOrGroup)
-                    ? itemOrGroup
-                    : [itemOrGroup];
+              // Create "Needs" string for collapsed view
+              let needsStr = "";
+              if (!isMetOverall && !isExpanded) {
+                const unmetItemsFormatted = req.args[0]
+                  .map((itemOrGroup) => {
+                    let itemsToCheck = Array.isArray(itemOrGroup)
+                      ? itemOrGroup
+                      : [itemOrGroup];
 
-                  // Check if *any* item in this slot/group was fulfilled (by grid or manual override)
-                  const isSlotMet = itemsToCheck.some((r) =>
-                    r.description
-                      ? fulfilledBy[r.description] &&
-                        fulfilledBy[r.description] !== "blocked"
-                      : fulfilledBy[r] && fulfilledBy[r] !== "blocked"
-                  );
+                    // Check if *any* item in this slot/group was fulfilled (by grid or manual override)
+                    const isSlotMet = itemsToCheck.some((r) =>
+                      r.description
+                        ? fulfilledBy[r.description] &&
+                          fulfilledBy[r.description] !== "blocked"
+                        : fulfilledBy[r] && fulfilledBy[r] !== "blocked"
+                    );
 
-                  if (!isSlotMet) {
-                    if (Array.isArray(itemOrGroup)) {
-                      if (itemOrGroup[0].description) {
-                        const rstri = [];
-                        for (const item of itemOrGroup) {
-                          rstri.push(item.description);
+                    if (!isSlotMet) {
+                      if (Array.isArray(itemOrGroup)) {
+                        if (itemOrGroup[0].description) {
+                          const rstri = [];
+                          for (const item of itemOrGroup) {
+                            rstri.push(item.description);
+                          }
+                          return rstri.join("/");
                         }
-                        return rstri.join("/");
+                        return itemOrGroup.join("/");
                       }
-                      return itemOrGroup.join("/");
+                      return itemOrGroup.description
+                        ? itemOrGroup.description
+                        : itemOrGroup;
                     }
-                    return itemOrGroup.description
-                      ? itemOrGroup.description
-                      : itemOrGroup;
-                  }
-                  return null;
-                })
-                .filter(Boolean);
+                    return null;
+                  })
+                  .filter(Boolean);
 
-              if (unmetItemsFormatted.length > 0) {
-                needsStr = `Needs: ${truncateItemArr(unmetItemsFormatted).join(
-                  ", "
-                )}`;
+                if (unmetItemsFormatted.length > 0) {
+                  needsStr = `Needs: ${truncateItemArr(
+                    unmetItemsFormatted
+                  ).join(", ")}`;
+                }
               }
-            }
 
-            return (
-              <div key={reqKey} className="requirement-bucket">
-                {/* Collapsed view */}
-                <div
-                  className="requirement-header"
-                  onClick={() => toggleReqExpansion(reqKey)}
-                >
-                  <span
-                    className={`expand-collapse-icon ${
-                      isExpanded ? "expanded" : "collapsed"
-                    }`}
+              return (
+                <div key={reqKey} className="requirement-bucket">
+                  {/* Collapsed view */}
+                  <div
+                    className="requirement-header"
+                    onClick={() => toggleReqExpansion(reqKey)}
                   >
-                    {isExpanded ? "▼" : "▶"}
-                  </span>
-                  <span
-                    className={`status-indicator ${
-                      isMetOverall ? "met" : "not-met"
-                    }`}
-                  >
-                    {isMetOverall ? "✓" : "✕"}
-                  </span>
-                  <span className="requirement-description">
-                    {req.description} ({finalFulfilledCount}/{target})
-                  </span>
-                  {needsStr && (
-                    <span className="collapsed-needs" title={needsStr}>
-                      {needsStr}
+                    <span
+                      className={`expand-collapse-icon ${
+                        isExpanded ? "expanded" : "collapsed"
+                      }`}
+                    >
+                      {isExpanded ? "▼" : "▶"}
                     </span>
+                    <span
+                      className={`status-indicator ${
+                        isMetOverall ? "met" : "not-met"
+                      }`}
+                    >
+                      {isMetOverall ? "✓" : "✕"}
+                    </span>
+                    <span className="requirement-description">
+                      {req.description} ({finalFulfilledCount}/{target})
+                    </span>
+                    {needsStr && (
+                      <span className="collapsed-needs" title={needsStr}>
+                        {needsStr}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Expanded view */}
+                  {isExpanded && (
+                    <ul className="requirement-item-list">
+                      {req.args[0].map((itemOrGroup, groupIdx) => {
+                        if (
+                          typeof itemOrGroup === "object" &&
+                          itemOrGroup.description
+                        ) {
+                          itemOrGroup = itemOrGroup.description;
+                        }
+
+                        // Render OR group
+                        if (Array.isArray(itemOrGroup)) {
+                          return (
+                            <li
+                              key={`${reqKey}-group-${groupIdx}`}
+                              className="requirement-or-group"
+                            >
+                              <span className="or-group-label">One of:</span>
+                              <ul>
+                                {itemOrGroup.map((itemStr, subIdx) => {
+                                  if (
+                                    typeof itemStr === "object" &&
+                                    itemStr.description
+                                  ) {
+                                    itemStr = itemStr.description;
+                                  }
+
+                                  return renderCourseRequirement(
+                                    selectedMajor,
+                                    itemStr,
+                                    result,
+                                    reqKey,
+                                    "sub-item"
+                                  );
+                                })}
+                              </ul>
+                            </li>
+                          );
+                        }
+                        // Render single item
+                        else {
+                          const itemStr = itemOrGroup;
+                          return renderCourseRequirement(
+                            selectedMajor,
+                            itemStr,
+                            result,
+                            reqKey,
+                            ""
+                          );
+                        }
+                      })}
+                    </ul>
                   )}
                 </div>
-
-                {/* Expanded view */}
-                {isExpanded && (
-                  <ul className="requirement-item-list">
-                    {req.args[0].map((itemOrGroup, groupIdx) => {
-                      if (
-                        typeof itemOrGroup === "object" &&
-                        itemOrGroup.description
-                      ) {
-                        itemOrGroup = itemOrGroup.description;
-                      }
-
-                      // Render OR group
-                      if (Array.isArray(itemOrGroup)) {
-                        return (
-                          <li
-                            key={`${reqKey}-group-${groupIdx}`}
-                            className="requirement-or-group"
-                          >
-                            <span className="or-group-label">One of:</span>
-                            <ul>
-                              {itemOrGroup.map((itemStr, subIdx) => {
-                                if (
-                                  typeof itemStr === "object" &&
-                                  itemStr.description
-                                ) {
-                                  itemStr = itemStr.description;
-                                }
-
-                                return renderCourseRequirement(
-                                  itemStr,
-                                  result,
-                                  reqKey,
-                                  "sub-item"
-                                );
-                              })}
-                            </ul>
-                          </li>
-                        );
-                      }
-                      // Render single item
-                      else {
-                        const itemStr = itemOrGroup;
-                        return renderCourseRequirement(
-                          itemStr,
-                          result,
-                          reqKey,
-                          ""
-                        );
-                      }
-                    })}
-                  </ul>
-                )}
-              </div>
-            );
-          })}
-      </div>
-    );
+              );
+            })}
+        </div>
+      );
+    }
+    return requirementsMemo;
   }, [
     fulfilledBy,
     expandedReqs,
@@ -1123,7 +1163,7 @@ const MajorBuilder = ({
       <p>
         Pick a course of study that&apos;s right for you. Enter your courses
         above and/or click the boxes below to plan your major(s). Last updated
-        04/02/2025.
+        04/03/2025.
       </p>
       <p style={{ fontStyle: "italic" }}>
         Disclaimer: this feature is still in beta, and may not correctly
@@ -1131,64 +1171,109 @@ const MajorBuilder = ({
         incorrect major information to{" "}
         <a href="mailto:wso-dev@wso.williams.edu">wso-dev@wso.williams.edu</a>.
       </p>
-      <div className="major-selection-container cs-input-container">
-        <label htmlFor="major-input">Select Major:</label>
-        <input
-          id="major-input"
-          type="text"
-          value={majorInput}
-          onChange={handleMajorInputChange}
-          onBlur={handleMajorAutocompleteBlur}
-          placeholder="Type major..."
-          autoComplete="off"
-        />
-        {majorAutocompleteVisible && majorAutocompleteResults.length > 0 && (
-          <ul
-            className="autocomplete-results major-autocomplete"
-            id="major-autocomplete-results"
-          >
-            {majorAutocompleteResults.map((majorName) => (
-              <li
-                key={majorName}
-                onClick={() => handleMajorAutocompleteSelect(majorName)}
-                role="presentation"
-              >
-                {majorName}
-              </li>
-            ))}
-          </ul>
-        )}
+
+      <div className="major-inputs-container">
+        {[0, 1, 2].map((index) => {
+          return (
+            <div
+              key={`major-selection-${index}`}
+              id={`major-selection-container-${index}`}
+              className="major-selection-container cs-input-container"
+            >
+              <label htmlFor="major-input">{`Select Major ${
+                index + 1
+              }:`}</label>
+              <input
+                id="major-input"
+                type="text"
+                value={majorInputs[index]}
+                onChange={(event) => handleMajorInputChange(event, index)}
+                onBlur={handleMajorAutocompleteBlur}
+                placeholder={
+                  index === 2 ? "Type major... (seriously?)" : "Type major..."
+                }
+                autoComplete="off"
+              />
+              {majorAutocompleteVisible === index &&
+                majorAutocompleteResults.length > 0 && (
+                  <ul
+                    className="autocomplete-results major-autocomplete"
+                    id="major-autocomplete-results"
+                  >
+                    {majorAutocompleteResults.map((majorName) => (
+                      <li
+                        key={majorName}
+                        onClick={() =>
+                          handleMajorAutocompleteSelect(majorName, index)
+                        }
+                        role="presentation"
+                      >
+                        {majorName}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+            </div>
+          );
+        })}
       </div>
 
-      {selectedMajor && MAJORS[selectedMajor] && (
-        <div className="all-majors-container">
-          <div className="major-requirements-display">
-            <h3>Requirements for {selectedMajor}</h3>
-            <a
-              className="major-info-link"
-              href={MAJORS[selectedMajor].Link}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Department Website
-            </a>
-            <ul className="major-info-list">
-              {MAJORS[selectedMajor].Info.map((info, i) => (
-                <li key={`info-${i}`}>{info}</li>
-              ))}
-            </ul>
-            <div className="major-req-controls">
-              <button onClick={() => setAllReqsExpansion(selectedMajor, true)}>
-                Expand All
-              </button>
-              <button onClick={() => setAllReqsExpansion(selectedMajor, false)}>
-                Collapse All
-              </button>
+      {selectedMajors.map((selectedMajor, idx) => {
+        const key = `majors-${idx}`;
+        if (!selectedMajor || selectedMajor === "") {
+          return <div key={key}></div>;
+        }
+        return (
+          <div key={key} className="all-majors-container">
+            <div className="major-requirements-display">
+              <h3>Requirements for {selectedMajor}</h3>
+              <a
+                className="major-info-link"
+                href={MAJORS[selectedMajor].Link}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Department Website
+              </a>{" "}
+              {" | "}
+              <a
+                className="major-info-link"
+                onClick={() =>
+                  setShowInfoList({
+                    ...showInfoList,
+                    [selectedMajor]: !showInfoList[selectedMajor],
+                  })
+                }
+              >
+                {showInfoList[selectedMajor] ? "Hide info" : "Show info"}
+              </a>
+              {showInfoList[selectedMajor] && (
+                <ul
+                  id={`major-info-list-${selectedMajor}`}
+                  className="major-info-list"
+                >
+                  {MAJORS[selectedMajor].Info.map((info, i) => (
+                    <li key={`info-${i}`}>{info}</li>
+                  ))}
+                </ul>
+              )}
+              <div className="major-req-controls">
+                <button
+                  onClick={() => setAllReqsExpansion(selectedMajor, true)}
+                >
+                  Expand All
+                </button>
+                <button
+                  onClick={() => setAllReqsExpansion(selectedMajor, false)}
+                >
+                  Collapse All
+                </button>
+              </div>
+              {requirementsList[idx]}
             </div>
-            {requirementsList}
           </div>
-        </div>
-      )}
+        );
+      })}
     </div>
   );
 };
@@ -1211,7 +1296,7 @@ MajorBuilder.propTypes = {
   historicalCatalogs: PropTypes.object.isRequired,
   updateMajorBuilderState: PropTypes.func.isRequired,
   loadHistoricalCatalog: PropTypes.func.isRequired,
-  selectedMajor: PropTypes.string.isRequired,
+  selectedMajors: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
   selectMajor: PropTypes.func.isRequired,
   clearMajor: PropTypes.func.isRequired,
 };
@@ -1220,7 +1305,7 @@ const mapStateToProps = (state) => ({
   grid: getMajorBuilderGrid(state),
   semesters: getMajorBuilderSemesters(state),
   historicalCatalogs: getHistoricalCatalogs(state),
-  selectedMajor: getSelectedMajor(state),
+  selectedMajors: getSelectedMajors(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1228,8 +1313,8 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(doUpdateMajorBuilderState(newState)),
   loadHistoricalCatalog: (year, catalog) =>
     dispatch(doLoadHistoricalCatalogYear(year, catalog)),
-  selectMajor: (major) => dispatch(doSelectMajor(major)),
-  clearMajor: () => dispatch(doSelectMajor("")),
+  selectMajor: (major, index) => dispatch(doSelectMajor(major, index)),
+  clearMajor: (index) => dispatch(doSelectMajor("", index)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MajorBuilder);

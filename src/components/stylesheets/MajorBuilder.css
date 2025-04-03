@@ -1,9 +1,10 @@
 .major-builder-container {
   padding: 20px;
-  width: 100%;
   box-sizing: border-box;
+  width: 100%;
   background-color: #fff;
   margin: 50px;
+  overflow-x: auto;
   box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.1);
 }
 
@@ -30,15 +31,25 @@
 }
 
 .major-builder-grid {
-  overflow-x: auto;
+  overflow: visible;
+  overflow-x: visible;
 }
 
 .major-builder-grid table {
   width: 100%;
-  border-collapse: collapse;
   min-width: 1000px;
+  overflow-x: scroll;
+  border-collapse: collapse;
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
+  table.ai-style-change-2 {
+    position: static;
+    z-index: 101;
+    margin-top: auto;
+    margin-left: auto;
+    top: auto;
+    left: auto;
+  }
 }
 
 .major-builder-grid th,
@@ -55,7 +66,6 @@
   background-color: #f2f2f2;
   font-weight: bold;
   font-size: 1em;
-  position: sticky;
   top: 0;
   z-index: 1;
 }
@@ -65,10 +75,9 @@
   min-width: 80px;
   text-align: center;
   font-weight: bold;
-  position: sticky;
   left: 0;
   background-color: #f2f2f2;
-  z-index: 2; /* Above regular header */
+  z-index: 2;
 }
 
 .optional-course-row > td {
@@ -95,7 +104,7 @@
 }
 
 .semester-edit-select.single {
-  width: 100%; /* Make the single dropdown take full cell width */
+  width: 100%;
 }
 
 .major-builder-grid input[type="text"] {
@@ -121,9 +130,8 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 200px;
   width: 200%;
-  overflow-y: auto;
+  overflow-y: visible;
   z-index: 10;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -159,6 +167,8 @@
   margin-top: 0px;
   margin-bottom: 20px;
   position: relative;
+  min-width: 300px;
+  width: 400px;
   max-width: 400px;
 }
 
@@ -166,6 +176,12 @@
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
+}
+
+.major-inputs-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .major-selection-container input[type="text"] {
@@ -185,6 +201,7 @@
 
 .major-requirements-display {
   margin-top: 0px;
+  margin-bottom: 30px;
   padding: 15px;
   border: 1px solid #d3d3d3;
   background-color: #ffffff;
@@ -192,6 +209,7 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   flex: 1;
   min-width: 320px;
+  max-width: 100%;
 }
 
 .major-requirements-display h3 {
@@ -360,7 +378,6 @@
 }
 
 .major-builder-grid th.grid-corner-cell {
-  position: sticky;
   left: 0;
   z-index: 2;
   background-color: #f2f2f2;
@@ -379,6 +396,10 @@
   transition: background-color 0.2s ease;
   margin-top: 4px;
   min-width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: clip;
+  box-sizing: border-box;
 }
 
 .clear-grid-button:hover {

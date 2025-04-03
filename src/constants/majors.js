@@ -18,7 +18,13 @@ Constraint options for auto-filling:
 - regex: regexp; matches with listing/cross-listings, e.g. "^AFR 2"
 - attributes: regexp; matches with special attributes, e.g. "^AFR_AFRCORE" (see majorAttributes.txt)
 */
-export const checkRequireNComplex = (args, grid, fulfilledBy, fulfillments) => {
+export const checkRequireNComplex = (
+  args,
+  majorStr,
+  grid,
+  fulfilledBy,
+  fulfillments
+) => {
   const [requirements, n] = args;
   let autoFulfilledCount = 0;
   const placeholders = [];
@@ -26,7 +32,8 @@ export const checkRequireNComplex = (args, grid, fulfilledBy, fulfillments) => {
   for (const reqItem of requirements) {
     const itemsToCheck = Array.isArray(reqItem) ? reqItem : [reqItem];
     for (const item of itemsToCheck) {
-      if (item.placeholder) placeholders.push(item.placeholder);
+      if (item.placeholder)
+        placeholders.push(`${majorStr}-${item.placeholder}`);
     }
   }
 
@@ -47,7 +54,7 @@ export const checkRequireNComplex = (args, grid, fulfilledBy, fulfillments) => {
     const itemsToCheck = Array.isArray(reqItem) ? reqItem : [reqItem];
 
     for (const item of itemsToCheck) {
-      const id = item.description;
+      const id = `${majorStr}-${item.description || item.placeholder}`;
       if (fulfilledBy[id]) {
         if (
           fulfilledBy[id].courseID &&
@@ -1829,13 +1836,13 @@ export const MAJORS = {
               placeholder: "Course 9",
             },
             {
-              placeholder: "Course 10 (optional)",
+              placeholder: "Course 10",
             },
             {
-              placeholder: "Course 11 (optional)",
+              placeholder: "Course 11",
             },
             {
-              placeholder: "Course 12 (optional)",
+              placeholder: "Course 12",
             },
           ],
           12,
@@ -1883,13 +1890,13 @@ export const MAJORS = {
               placeholder: "Course 9",
             },
             {
-              placeholder: "Course 10 (optional)",
+              placeholder: "Course 10",
             },
             {
-              placeholder: "Course 11 (optional)",
+              placeholder: "Course 11",
             },
             {
-              placeholder: "Course 12 (optional)",
+              placeholder: "Course 12",
             },
           ],
           12,
