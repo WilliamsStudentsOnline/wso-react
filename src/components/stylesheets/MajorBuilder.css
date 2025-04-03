@@ -80,7 +80,7 @@
   z-index: 2;
 }
 
-.optional-course-row > td {
+.optional-course-row td:first-child {
   font-style: italic;
 }
 
