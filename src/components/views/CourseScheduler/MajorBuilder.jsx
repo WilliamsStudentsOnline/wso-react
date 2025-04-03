@@ -794,7 +794,7 @@ const MajorBuilder = ({
               value={overrideInputState.inputValue}
               onChange={handleOverrideInputChange}
               onBlur={handleOverrideInputBlur}
-              placeholder={`Find course for ${itemStr}...`}
+              placeholder={`Find course to fulfill ${itemStr}...`}
               autoFocus
             />
             {overrideInputState.results.length > 0 && (

@@ -389,13 +389,14 @@
   color: #4b2771;
 }
 
-.change-via-button button {
+.change-via-button {
   display: inline-block;
   vertical-align: middle;
   padding: 4px 8px;
   height: auto;
-  min-width: 2em !important;
-  font-size: 14px;
+  min-height: 2rem !important;
+  min-width: 2rem !important;
+  font-size: 14px !important;
   margin: 0 4px;
 }
 
