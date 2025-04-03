@@ -64,3 +64,9 @@
   display: grid;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
 }
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  font-size: 2em;
+}

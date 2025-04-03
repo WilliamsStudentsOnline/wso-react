@@ -10,6 +10,7 @@
     "dom-to-image": "^2.6.0",
     "google-client-api": "^1.0.4",
     "jwt-decode": "^3.1.2",
+    "markdown-to-jsx": "^7.7.4",
     "prop-types": "^15.8.1",
     "react": "^16.8.6",
     "react-date-picker": "^7.8.1",
