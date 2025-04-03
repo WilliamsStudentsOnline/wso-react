@@ -165,9 +165,11 @@ export const checkRequireNComplex = (args, grid, fulfilledBy, fulfillments) => {
   Requirements: [
     {
       description: "name of the category",
-      identifier: "id of checker func", (defaults to requireN if left out)
       args: [
-        specific to checker func
+        [
+          nested list; see above
+        ],
+        N (number of requirements that must be fulfilled for this category)
       ]
     }, ...
   ]
@@ -1793,11 +1795,105 @@ export const MAJORS = {
     Link: "https://registrar.williams.edu/contract-major/",
     Prefix: "",
     Division: 0,
-    Info: ["Please consult the link above"],
+    Info: ["Please consult the link above for more information."],
     Requirements: [
       {
-        description: "Consult the link above!",
-        args: [[{ placeholder: "Consult the link above!" }], 1],
+        description: "Courses",
+        args: [
+          [
+            {
+              placeholder: "Course 1",
+            },
+            {
+              placeholder: "Course 2",
+            },
+            {
+              placeholder: "Course 3",
+            },
+            {
+              placeholder: "Course 4",
+            },
+            {
+              placeholder: "Course 5",
+            },
+            {
+              placeholder: "Course 6",
+            },
+            {
+              placeholder: "Course 7",
+            },
+            {
+              placeholder: "Course 8",
+            },
+            {
+              placeholder: "Course 9",
+            },
+            {
+              placeholder: "Course 10 (optional)",
+            },
+            {
+              placeholder: "Course 11 (optional)",
+            },
+            {
+              placeholder: "Course 12 (optional)",
+            },
+          ],
+          12,
+        ],
+      },
+    ],
+  },
+  "Generic Major": {
+    Link: "",
+    Prefix: "",
+    Division: 0,
+    Info: [
+      "Use this as a blank slate to input your own courses, if you desire.",
+    ],
+    Requirements: [
+      {
+        description: "Courses",
+        args: [
+          [
+            {
+              placeholder: "Course 1",
+            },
+            {
+              placeholder: "Course 2",
+            },
+            {
+              placeholder: "Course 3",
+            },
+            {
+              placeholder: "Course 4",
+            },
+            {
+              placeholder: "Course 5",
+            },
+            {
+              placeholder: "Course 6",
+            },
+            {
+              placeholder: "Course 7",
+            },
+            {
+              placeholder: "Course 8",
+            },
+            {
+              placeholder: "Course 9",
+            },
+            {
+              placeholder: "Course 10 (optional)",
+            },
+            {
+              placeholder: "Course 11 (optional)",
+            },
+            {
+              placeholder: "Course 12 (optional)",
+            },
+          ],
+          12,
+        ],
       },
     ],
   },
@@ -1934,6 +2030,28 @@ export const MAJORS = {
       },
     ],
   },
+  "Comparative Literature": {
+    Link: "https://comp-lit.williams.edu/the-major/",
+    Prefix: "",
+    Division: 1,
+    Info: [
+      "Paths through the Comparative Literature major are varied; please consult the department website for information about the major.",
+    ],
+    Requirements: [
+      {
+        description: "Unavailable",
+        args: [
+          [
+            {
+              placeholder:
+                "The Major Builder is currently unavailable for this major. Please consult the department website link above.",
+            },
+          ],
+          1,
+        ],
+      },
+    ],
+  },
   English: {
     Link: "https://english.williams.edu/ways-through-the-major/",
     Prefix: "",
@@ -2047,6 +2165,1728 @@ export const MAJORS = {
             },
           ],
           1,
+        ],
+      },
+    ],
+  },
+  "French Language and Literature": {
+    Link: "https://french.williams.edu/french-major-certificate/",
+    Prefix: "RLFR",
+    Division: 1,
+    Info: [
+      "All French courses at Williams (RLFR courses at the 100, 200, 300, and 400 levels) can count towards the major.",
+      "One of these courses must be the 400-level senior seminar during the student’s final year at the College (even if an advanced student has already taken a senior seminar earlier in their Williams career).",
+      "Up to 4 courses from study abroad (during either a semester or year of study in a Francophone country) can also count towards the major.",
+      "Advanced students entering the major program at the 200-level may, with the permission of the Department, choose as part of their major program, 1 course in Art History, History, Philosophy, Comparative Literature, or other subjects that relate to and broaden their study of French. Students entering the major program at a very advanced level may, in some cases and with the permission of the Department, include 2 such courses in their major program.",
+      "For more on which kinds of courses can and cannot count, see the official rules and guidelines in the Course Catalog, and speak with a member of the French Faculty.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            [
+              {
+                description: "Course 1",
+                regex: "^RLFR",
+              },
+              {
+                placeholder:
+                  "Approved replacement in ARTH/HIST/PHIL/COMP/etc. (1)",
+              },
+            ],
+            [
+              {
+                description: "Course 2",
+                regex: "^RLFR",
+              },
+              {
+                placeholder:
+                  "Approved replacement in ARTH/HIST/PHIL/COMP/etc. (2)",
+              },
+            ],
+            {
+              description: "Course 3",
+              regex: "^RLFR",
+            },
+            {
+              description: "Course 4",
+              regex: "^RLFR",
+            },
+            {
+              description: "Course 5",
+              regex: "^RLFR",
+            },
+            {
+              description: "Course 6",
+              regex: "^RLFR",
+            },
+            {
+              description: "Course 7",
+              regex: "^RLFR",
+            },
+            {
+              description: "Course 8",
+              regex: "^RLFR",
+            },
+          ],
+          8,
+        ],
+      },
+      {
+        description: "Senior Seminar",
+        args: [
+          [
+            {
+              description: "400-level senior seminar",
+              regex: "^RLFR 4",
+              minSem: 7,
+              component: "^Seminar",
+            },
+          ],
+          1,
+        ],
+      },
+    ],
+  },
+  "French Studies": {
+    Link: "https://french.williams.edu/french-major-certificate/",
+    Prefix: "RLFR",
+    Division: 2,
+    Info: [
+      "The French Studies Major consists of 10 courses: at least 5 courses at Williams (RLFR courses at the 100, 200, 300, and 400 levels) in French language, literature, film, or culture; the 400-level senior seminar during the student’s final year at the College (even if an advanced student has already taken a senior seminar earlier in their Williams career); and 4 elective courses, which must be drawn from at least 3 different departments and relate primarily to the cultures, histories, societies, and politics of France and the Francophone world.",
+      "Up to 4 courses from study abroad (during either a semester or year of study in a Francophone country) can also count towards the major.",
+      "For more on which kinds of courses can and cannot count, see the official rules and guidelines in the Course Catalog, and speak with a member of the French Faculty.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "Course 1",
+              regex: "^RLFR",
+            },
+            {
+              description: "Course 2",
+              regex: "^RLFR",
+            },
+            {
+              description: "Course 3",
+              regex: "^RLFR",
+            },
+            {
+              description: "Course 4",
+              regex: "^RLFR",
+            },
+            {
+              description: "Course 5",
+              regex: "^RLFR",
+            },
+          ],
+          5,
+        ],
+      },
+      {
+        description: "Senior Seminar",
+        args: [
+          [
+            {
+              description: "400-level senior seminar",
+              regex: "^RLFR 4",
+              minSem: 7,
+              component: "^Seminar",
+            },
+          ],
+          1,
+        ],
+      },
+      {
+        description: "Interdisciplinary Electives",
+        args: [
+          [
+            {
+              placeholder: "Elective 1",
+            },
+            {
+              placeholder: "Elective 2",
+            },
+            {
+              placeholder: "Elective 3",
+            },
+            {
+              placeholder: "Elective 4",
+            },
+          ],
+          4,
+        ],
+      },
+    ],
+  },
+  Geosciences: {
+    Link: "https://geosciences.williams.edu/the-major/major-requirements/",
+    Prefix: "GEOS",
+    Division: 3,
+    Info: [
+      "Of the courses taken below, at least one and preferably two courses need to be from each of the three course groups:",
+      "Oceans and Climate (OC): the science of the atmosphere, ocean and cryosphere, including dynamics of the climate system, analyzing past and future climate variability.",
+      "Sediments and Life (SL): the science of modern and ancient sediments, including surface processes such as erosion, and preserved records of earth and life history such as fossils.",
+      "Solid Earth (SE): the science of the modern and ancient solid earth, including the formation of the planets, the origins and fates of minerals and rocks, and the formation of mountains.",
+    ],
+    Requirements: [
+      {
+        description: "At most two 100-level courses",
+        args: [
+          [
+            { description: "GEOS 100", course: "GEOS 100" },
+            { description: "GEOS 101", course: "GEOS 101" },
+            { description: "GEOS 102", course: "GEOS 102" },
+            { description: "GEOS 103", course: "GEOS 103" },
+            { description: "GEOS 104", course: "GEOS 104" },
+            { description: "GEOS 107", course: "GEOS 107" },
+            { description: "GEOS 109", course: "GEOS 109" },
+            { description: "GEOS 110", course: "GEOS 110" },
+            { description: "GEOS 111", course: "GEOS 111" },
+            {
+              placeholder:
+                "Click if replacing a 100-level with some other course (1)",
+            },
+            {
+              placeholder:
+                "Click if replacing a 100-level with some other course (2)",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "At least two 200-level courses",
+        args: [
+          [
+            { description: "GEOS 201", course: "GEOS 201" },
+            { description: "GEOS 205", course: "GEOS 205" },
+            { description: "GEOS 207", course: "GEOS 207" },
+            { description: "GEOS 208", course: "GEOS 208" },
+            { description: "GEOS 210", course: "GEOS 210" },
+            { description: "GEOS 211", course: "GEOS 211" },
+            { description: "GEOS 212", course: "GEOS 212" },
+            { description: "GEOS 214", course: "GEOS 214" },
+            { description: "GEOS 215", course: "GEOS 215" },
+            { description: "GEOS 217", course: "GEOS 217" },
+            { description: "GEOS 226", course: "GEOS 226" },
+            { description: "GEOS 227", course: "GEOS 227" },
+            { description: "GEOS 255", course: "GEOS 255" },
+            { description: "GEOS 274", course: "GEOS 274" },
+            { description: "GEOS 275", course: "GEOS 275" },
+            { description: "GEOS 290", course: "GEOS 290" },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "At least two 300-level courses",
+        args: [
+          [
+            { description: "GEOS 301", course: "GEOS 301" },
+            { description: "GEOS 302", course: "GEOS 302" },
+            { description: "GEOS 304", course: "GEOS 304" },
+            { description: "GEOS 308", course: "GEOS 308" },
+            { description: "GEOS 309", course: "GEOS 309" },
+            { description: "GEOS 314", course: "GEOS 314" },
+            { description: "GEOS 324", course: "GEOS 324" },
+            { description: "GEOS 327", course: "GEOS 327" },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "At least one 400-level seminar",
+        args: [
+          [
+            { description: "GEOS 401", course: "GEOS 401" },
+            { description: "GEOS 405", course: "GEOS 405" },
+            { description: "GEOS 409", course: "GEOS 409" },
+            { description: "GEOS 410", course: "GEOS 410" },
+            { description: "GEOS 411", course: "GEOS 411" },
+            { description: "GEOS 414", course: "GEOS 414" },
+          ],
+          1,
+        ],
+      },
+      {
+        description: "Enough courses from this group to bring the total to 9",
+        args: [
+          [
+            { description: "GEOS 220", course: "GEOS 220" },
+            { description: "GEOS 221", course: "GEOS 221" },
+            { description: "GEOS 245", course: "GEOS 245" },
+            { description: "GEOS 250", course: "GEOS 250" },
+            { description: "GEOS 272", course: "GEOS 272" },
+            { description: "GEOS 312", course: "GEOS 312" },
+            {
+              placeholder:
+                "Click if replacing with a course from another bucket (1)",
+            },
+            {
+              placeholder:
+                "Click if replacing with a course from another bucket (2)",
+            },
+            {
+              placeholder:
+                "Click if replacing with a course from another bucket (3)",
+            },
+            {
+              placeholder:
+                "Click if replacing with a course from another bucket (4)",
+            },
+          ],
+          4,
+        ],
+      },
+    ],
+  },
+  German: {
+    Link: "https://german.williams.edu/german-major-certificate/",
+    Prefix: "GERM",
+    Division: 1,
+    Info: [
+      "For students who start German at Williams, the major requires a minimum of ten courses: German 101-102, 103, 104, 201 and 202; two 300-level German courses; and two electives from either German courses numbered above 202 or appropriate offerings in other departments.",
+      "For students who have acquired intermediate or greater proficiency in the language before coming to Williams, the minimum requirement is nine courses: German 202; two 300-level German courses; and six other courses selected from German courses numbered above 102 and appropriate offerings in other departments.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            [
+              {
+                description: "GERM 101",
+                course: "GERM 101",
+              },
+              {
+                placeholder: "Approved GERM or interdepartmental elective (1)",
+                regex: "^GERM",
+                ignore: ["GERM 101", "GERM 102"],
+              },
+            ],
+            [
+              {
+                description: "GERM 102",
+                course: "GERM 102",
+              },
+              {
+                placeholder: "Approved GERM or interdepartmental elective (2)",
+                regex: "^GERM",
+                ignore: ["GERM 101", "GERM 102"],
+              },
+            ],
+            [
+              {
+                description: "GERM 103",
+                course: "GERM 103",
+              },
+              {
+                placeholder: "Approved GERM or interdepartmental elective (3)",
+                regex: "^GERM",
+                ignore: ["GERM 101", "GERM 102"],
+              },
+            ],
+            [
+              {
+                description: "GERM 104",
+                course: "GERM 104",
+              },
+              {
+                placeholder: "Approved GERM or interdepartmental elective (4)",
+                regex: "^GERM",
+                ignore: ["GERM 101", "GERM 102"],
+              },
+            ],
+            [
+              {
+                description: "GERM 201",
+                course: "GERM 201",
+              },
+              {
+                placeholder: "Approved GERM or interdepartmental elective (5)",
+                regex: "^GERM",
+                ignore: ["GERM 101", "GERM 102"],
+              },
+            ],
+            {
+              description: "GERM 202",
+              course: "GERM 202",
+            },
+          ],
+          6,
+        ],
+      },
+      {
+        description: "300-levels",
+        args: [
+          [
+            {
+              description: "300-level (1)",
+              regex: "^GERM 3",
+            },
+            {
+              description: "300-level (2)",
+              regex: "^GERM 3",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Approved GERM or depeartmental elective",
+              regex: "^GERM",
+              ignore: ["GERM 101", "GERM 102"],
+            },
+            [
+              {
+                description:
+                  "Approved GERM or depeartmental elective (for students starting German at Williams)",
+                regex: "^GERM",
+                ignore: ["GERM 101", "GERM 102"],
+              },
+              {
+                placeholder:
+                  "Check if you were proficient in German before attending Williams",
+              },
+            ],
+          ],
+          2,
+        ],
+      },
+    ],
+  },
+  History: {
+    Link: "https://history.williams.edu/about-the-history-major/the-major/",
+    Prefix: "HIST",
+    Division: 2,
+    Info: [
+      "History requires seven (7) electives, at least one to be chosen from among three of the History groups (A-G).",
+      "In addition, students must take at least one course dealing with the Premodern Period (desgnated Group P in the catalog); this may be one of the courses used to fulfill the group requirement (Groups A-G).  A single course can meet the requirement for no more than one of the the Groups A-G.",
+      "Students are encouraged, in  consultation with their advisors, to design a concentration within the History major. A concentration should consist of at least three courses that are linked by common themes, geography, or time period. Only one of those courses can be a 100-level seminar while at least one must be a 300- or 400-level course. Courses in the concentration may be used to fulfill the group requirements. Courses taken abroad may be included in the concentration with the approval of the department chair.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "HIST 301",
+              course: "HIST 301",
+            },
+            {
+              description: "400-level seminar or tutorial",
+              regex: "^HIST 4",
+              classType: "^(Seminar|Tutorial)",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Elective 1",
+              regex: "^HIST",
+              ignore: ["HIST 301"],
+            },
+            {
+              description: "Elective 2",
+              regex: "^HIST",
+              ignore: ["HIST 301"],
+            },
+            {
+              description: "Elective 3",
+              regex: "^HIST",
+              ignore: ["HIST 301"],
+            },
+            {
+              description: "Elective 4",
+              regex: "^HIST",
+              ignore: ["HIST 301"],
+            },
+            {
+              description: "Elective 5",
+              regex: "^HIST",
+              ignore: ["HIST 301"],
+            },
+            {
+              description: "Elective 6",
+              regex: "^HIST",
+              ignore: ["HIST 301"],
+            },
+            {
+              description: "Elective 7",
+              regex: "^HIST",
+              ignore: ["HIST 301"],
+            },
+          ],
+          7,
+        ],
+      },
+    ],
+  },
+  Japanese: {
+    Link: "https://japanese.williams.edu/major/",
+    Prefix: "JAPN",
+    Division: 1,
+    Info: [
+      "Students with higher language proficiency who are placed out of any of the core language courses (101 through 402) can take an equal number of faculty-approved electives taught either in Japanese or in English on literature, linguistics, culture studies or related Japanese studies disciplines (e.g., art history, history, political science) to fulfill the core language requirement.",
+      "Students who have summer or semester study-away plans MUST attend the fall Japanese study-away meeting or consult with department faculty for advice.",
+    ],
+    Requirements: [
+      {
+        description: "Core Language Courses",
+        args: [
+          [
+            [
+              {
+                description: "JAPN 101",
+                course: "JAPN 101",
+              },
+              {
+                placeholder: "Approved replacement for JAPN 101",
+              },
+            ],
+            [
+              {
+                description: "JAPN 102",
+                course: "JAPN 102",
+              },
+              {
+                placeholder: "Approved replacement for JAPN 102",
+              },
+            ],
+            [
+              {
+                description: "JAPN 201",
+                course: "JAPN 201",
+              },
+              {
+                placeholder: "Approved replacement for JAPN 201",
+              },
+            ],
+            [
+              {
+                description: "JAPN 202",
+                course: "JAPN 202",
+              },
+              {
+                placeholder: "Approved replacement for JAPN 202",
+              },
+            ],
+            [
+              {
+                description: "JAPN 301",
+                course: "JAPN 301",
+              },
+              {
+                placeholder: "Approved replacement for JAPN 301",
+              },
+            ],
+            [
+              {
+                description: "JAPN 302",
+                course: "JAPN 302",
+              },
+              {
+                placeholder: "Approved replacement for JAPN 302",
+              },
+            ],
+            [
+              {
+                description: "JAPN 401",
+                course: "JAPN 401",
+              },
+              {
+                placeholder: "Approved replacement for JAPN 401",
+              },
+            ],
+            [
+              {
+                description: "JAPN 402",
+                course: "JAPN 402",
+              },
+              {
+                placeholder: "Approved replacement for JAPN 402",
+              },
+            ],
+          ],
+          8,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "JAPN elective",
+              regex: "^JAPN",
+              ignore: [
+                "JAPN 101",
+                "JAPN 102",
+                "JAPN 201",
+                "JAPN 202",
+                "JAPN 301",
+                "JAPN 302",
+                "JAPN 401",
+                "JAPN 402",
+              ],
+            },
+            {
+              placeholder: "JAPN-related elective",
+            },
+          ],
+          2,
+        ],
+      },
+    ],
+  },
+  Mathematics: {
+    Link: "https://math.williams.edu/courses/requirements-for-the-major/",
+    Prefix: "MATH",
+    Division: 3,
+    Info: [
+      "Consult the major placement chart for appropriate placement. Electives may be taken to fulfill some core courses (e.g. lower-level calculus)",
+      "Except in unusual circumstances, students planning to major in mathematics should complete the calculus sequence (Mathematics 130, 140, 150/151) before the end of the sophomore year, at the latest.",
+    ],
+    Requirements: [
+      {
+        description: "Calculus",
+        args: [
+          [
+            {
+              description: "MATH 140",
+              course: "MATH 140",
+            },
+            [
+              {
+                description: "MATH 150",
+                course: "MATH 150",
+              },
+              {
+                description: "MATH 151",
+                course: "MATH 151",
+              },
+            ],
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Applied/Discrete",
+        args: [
+          [
+            {
+              description: "MATH 200",
+              course: "MATH 200",
+            },
+            {
+              description: "STAT 201",
+              course: "STAT 201",
+            },
+            {
+              description: "PHYS 210",
+              course: "PHYS 210",
+            },
+            {
+              description: "MATH 309",
+              course: "MATH 309",
+            },
+            {
+              placeholder: "Approved advanced elective",
+            },
+          ],
+          1,
+        ],
+      },
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "MATH 250",
+              course: "MATH 250",
+            },
+            [
+              {
+                description: "MATH 350",
+                course: "MATH 350",
+              },
+              {
+                description: "MATH 351",
+                course: "MATH 351",
+              },
+            ],
+            {
+              description: "MATH 355",
+              course: "MATH 355",
+            },
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Completion",
+        args: [
+          [
+            {
+              description:
+                "Senior major course (MATH/STAT 400-479 taken during junior/senior year)",
+              regex: "^(MATH|STAT) (4[0-7][0-9])",
+              minSem: 5,
+            },
+            {
+              description: "MATH/STAT 300/400-level elective (1)",
+              regex: "^(MATH|STAT) (3|4)",
+            },
+            {
+              description: "MATH/STAT 300/400-level elective (1)",
+              regex: "^(MATH|STAT) (3|4)",
+            },
+            {
+              placeholder:
+                "Weekly participation as a senior in the Mathematics Colloquium",
+            },
+          ],
+          4,
+        ],
+      },
+    ],
+  },
+  Statistics: {
+    Link: "https://math.williams.edu/courses/requirements-for-the-stats-major/",
+    Prefix: "STAT",
+    Division: 3,
+    Info: [],
+    Requirements: [
+      {
+        description: "Mathematics",
+        args: [
+          [
+            [
+              {
+                description: "MATH 150",
+                course: "MATH 150",
+              },
+              {
+                description: "MATH 151",
+                course: "MATH 151",
+              },
+            ],
+            {
+              description: "MATH 250",
+              course: "MATH 250",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Computer Science",
+        args: [
+          [
+            [
+              {
+                description: "CSCI 134",
+                course: "CSCI 134",
+              },
+              {
+                description: "CSCI 135",
+                course: "CSCI 135",
+              },
+              {
+                description: "CSCI 136",
+                course: "CSCI 136",
+              },
+              {
+                description: "Approved CSCI elective",
+                regex: "^CSCI",
+              },
+            ],
+          ],
+          1,
+        ],
+      },
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "STAT 201",
+              course: "STAT 201",
+            },
+            {
+              description: "STAT 341",
+              course: "STAT 341",
+            },
+            {
+              description: "STAT 346",
+              course: "STAT 346",
+            },
+            {
+              description: "STAT 360",
+              course: "STAT 360",
+            },
+          ],
+          4,
+        ],
+      },
+      {
+        description: "Continuation",
+        args: [
+          [
+            {
+              description: "300/400-level STAT elective (1)",
+              regex: "^STAT (3|4)",
+            },
+            {
+              description: "300/400-level STAT elective (2)",
+              regex: "^STAT (3|4)",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Completion",
+        args: [
+          [
+            {
+              description: "400-level STAT capstone course taken senior year",
+              regex: "^STAT 4",
+              minSem: 7,
+            },
+            {
+              placeholder:
+                "Weekly participation as a senior in the Statistics Colloquium",
+            },
+          ],
+          2,
+        ],
+      },
+    ],
+  },
+  Music: {
+    Link: "https://music.williams.edu/the-major/",
+    Prefix: "MUS",
+    Division: 1,
+    Info: [
+      "Four courses are required which must satisfy one of the following three options (the three historical periods referred to below are: pre-1750; 1750 to 1900; 1900 to the present):",
+      "Two courses in Ethnomusicology (at least one at the 200-level or higher); two courses in Music History (one in any two of the three historical periods and at least one at the 200-level or higher).",
+      "Three courses in Music History (one in each of the three historical periods and at least one at the 200-level or higher); one course in Ethnomusicology",
+      "Three courses in Ethnomusicology (at least one at the 200-level or higher); one course in Music History pre-1900",
+      "Note that a former major curriculum option exists for students graduating 2025-2027; consult the department website.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "MUS 103",
+              course: "MUS 103",
+            },
+            {
+              description: "MUS 104",
+              course: "MUS 104",
+            },
+            [
+              { description: "MUS 102", course: "MUS 102" },
+              { description: "MUS 105", course: "MUS 105" },
+              { description: "MUS 110", course: "MUS 110" },
+              { description: "MUS 201", course: "MUS 201" },
+              { description: "MUS 202", course: "MUS 202" },
+              { description: "MUS 204", course: "MUS 204" },
+              { description: "MUS 205", course: "MUS 205" },
+              { description: "MUS 206", course: "MUS 206" },
+              { description: "MUS 207", course: "MUS 207" },
+              { description: "MUS 210", course: "MUS 210" },
+              { description: "MUS 250", course: "MUS 250" },
+              { description: "MUS 252", course: "MUS 252" },
+              { description: "MUS 254", course: "MUS 254" },
+              { description: "MUS 301", course: "MUS 301" },
+              { description: "MUS 305", course: "MUS 305" },
+              { description: "MUS 307", course: "MUS 307" },
+              { description: "MUS 308", course: "MUS 308" },
+              { description: "MUS 309", course: "MUS 309" },
+              { description: "MUS 352", course: "MUS 352" },
+            ],
+            [
+              { description: "MUS 102 ", course: "MUS 102" },
+              { description: "MUS 105 ", course: "MUS 105" },
+              { description: "MUS 110 ", course: "MUS 110" },
+              { description: "MUS 201 ", course: "MUS 201" },
+              { description: "MUS 202 ", course: "MUS 202" },
+              { description: "MUS 204 ", course: "MUS 204" },
+              { description: "MUS 205 ", course: "MUS 205" },
+              { description: "MUS 206 ", course: "MUS 206" },
+              { description: "MUS 207 ", course: "MUS 207" },
+              { description: "MUS 210 ", course: "MUS 210" },
+              { description: "MUS 250 ", course: "MUS 250" },
+              { description: "MUS 252 ", course: "MUS 252" },
+              { description: "MUS 254 ", course: "MUS 254" },
+              { description: "MUS 301 ", course: "MUS 301" },
+              { description: "MUS 305 ", course: "MUS 305" },
+              { description: "MUS 307 ", course: "MUS 307" },
+              { description: "MUS 308 ", course: "MUS 308" },
+              { description: "MUS 309 ", course: "MUS 309" },
+              { description: "MUS 352 ", course: "MUS 352" },
+            ],
+          ],
+          4,
+        ],
+      },
+      {
+        description: "Music and Culture",
+        args: [
+          [
+            {
+              description: "Music History (1)",
+              attributes: "^MUS_MUSH",
+            },
+            {
+              description: "Ethnomusicology (1)",
+              attributes: "^MUS_MUSE",
+            },
+            {
+              description: "Music History or Ethnmusicology (1)",
+              attributes: "^(MUS_MUSH|MUS_MUSE)",
+            },
+            {
+              description: "Music History or Ethnmusicology (2)",
+              attributes: "^(MUS_MUSH|MUS_MUSE)",
+            },
+          ],
+          4,
+        ],
+      },
+      {
+        description: "Senior Capstone",
+        args: [
+          [
+            {
+              description:
+                "Any 400-level seminar, independent study, or yearlong thesis taken junior or senior year",
+              classType: "^(Seminar|Independent Study|Honors)",
+              minSem: 7,
+              regex: "^MUSC 4",
+            },
+          ],
+          1,
+        ],
+      },
+      {
+        description: "Performance",
+        args: [
+          [
+            {
+              placeholder: "Ensemble (semester 1)",
+            },
+            {
+              placeholder: "Ensemble (semester 2)",
+            },
+            {
+              placeholder: "Ensemble (semester 3)",
+            },
+            {
+              placeholder: "Ensemble (semester 4)",
+            },
+            {
+              placeholder: "Lessons (semester 1)",
+            },
+            {
+              placeholder: "Lessons (semester 2)",
+            },
+          ],
+          6,
+        ],
+      },
+    ],
+  },
+  Philosophy: {
+    Link: "https://philosophy.williams.edu/the-major/",
+    Prefix: "PHIL",
+    Division: 2,
+    Info: [
+      "Courses taught in other departments at Williams or at other institutions will not count toward the distribution requirement (Williams-Exeter tutorials may count, however, with the approval of the department chair).",
+      "Up to two cross-listed courses taught in other departments may count as electives toward the major",
+      "No more than one 100-level course may count toward the major (and one 100-level course is required for the major – no exceptions).",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "100-level PHIL course",
+              regex: "^PHIL 1",
+            },
+            [
+              {
+                description: "PHIL 201",
+                course: "PHIL 201",
+              },
+              {
+                description: "PHIL 202",
+                course: "PHIL 202",
+              },
+              {
+                description: "PHIL 401",
+                course: "PHIL 401",
+              },
+            ],
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Contemporary Metaphysics & Epistemology",
+              attributes: "^PHIL_M&E",
+            },
+            {
+              description: "Contemporary Value Theory",
+              attributes: "^PHIL_VALUE",
+            },
+            {
+              description: "History",
+              attributes: "^PHIL_HIST",
+            },
+            {
+              description: "PHIL Elective 4",
+              regex: "^PHIL (?!1).*",
+              ignore: ["PHIL 201", "PHIL 202", "PHIL 401"],
+            },
+            {
+              description: "Elective 5",
+              ignore: ["PHIL 201", "PHIL 202", "PHIL 401"],
+            },
+            {
+              description: "Elective 6",
+              ignore: ["PHIL 201", "PHIL 202", "PHIL 401"],
+            },
+          ],
+          6,
+        ],
+      },
+    ],
+  },
+  Physics: {
+    Link: "https://physics.williams.edu/programs/physics-major-requirements/",
+    Prefix: "PHYS",
+    Division: 3,
+    Info: [],
+    Requirements: [
+      {
+        description: "Introduction",
+        args: [
+          [
+            [
+              {
+                description: "PHYS 141",
+                course: "PHYS 141",
+              },
+              {
+                description: "PHYS 131",
+                course: "PHYS 131",
+              },
+            ],
+            [
+              {
+                description: "PHYS 142",
+                course: "PHYS 142",
+              },
+              {
+                description: "PHYS 151",
+                course: "PHYS 151",
+              },
+            ],
+            [
+              {
+                description: "MATH 150",
+                course: "MATH 150",
+              },
+              {
+                description: "MATH 151",
+                course: "MATH 151",
+              },
+            ],
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "PHYS 201",
+              course: "PHYS 201",
+            },
+            {
+              description: "PHYS 202",
+              course: "PHYS 202",
+            },
+            {
+              description: "PHYS 210",
+              course: "PHYS 210",
+            },
+            {
+              description: "PHYS 301",
+              course: "PHYS 301",
+            },
+            {
+              description: "PHYS 302",
+              course: "PHYS 302",
+            },
+          ],
+          5,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            [
+              { description: "PHYS 234", course: "PHYS 234" },
+              { description: "PHYS 312", course: "PHYS 312" },
+              { description: "PHYS 314", course: "PHYS 314" },
+              { description: "PHYS 315", course: "PHYS 315" },
+              { description: "PHYS 316", course: "PHYS 316" },
+              { description: "PHYS 321", course: "PHYS 321" },
+              { description: "PHYS 402", course: "PHYS 402" },
+              { description: "PHYS 405", course: "PHYS 405" },
+              { description: "PHYS 411", course: "PHYS 411" },
+              { description: "PHYS 418", course: "PHYS 418" },
+              { description: "PHYS 451", course: "PHYS 451" },
+            ],
+            [
+              { description: "PHYS 234 ", course: "PHYS 234" },
+              { description: "PHYS 312 ", course: "PHYS 312" },
+              { description: "PHYS 314 ", course: "PHYS 314" },
+              { description: "PHYS 315 ", course: "PHYS 315" },
+              { description: "PHYS 316 ", course: "PHYS 316" },
+              { description: "PHYS 321 ", course: "PHYS 321" },
+              { description: "PHYS 402 ", course: "PHYS 402" },
+              { description: "PHYS 405 ", course: "PHYS 405" },
+              { description: "PHYS 411 ", course: "PHYS 411" },
+              { description: "PHYS 418 ", course: "PHYS 418" },
+              { description: "PHYS 451 ", course: "PHYS 451" },
+            ],
+          ],
+          2,
+        ],
+      },
+    ],
+  },
+  "Political Economy": {
+    Link: "https://political-economy.williams.edu/the-major/major-requirements/",
+    Prefix: "POEC",
+    Division: 2,
+    Info: [
+      "All Political Economy majors are required to fulfill an experiential education requirement. This involves some element of community service, participation in the political process, or taking part in the making of or analysis of public policy beyond a purely academic engagement. This requirement is most often fulfilled through an internship or a winter study course.",
+    ],
+    Requirements: [
+      {
+        description: "Introduction",
+        args: [
+          [
+            {
+              description: "ECON 110",
+              course: "ECON 110",
+            },
+            {
+              description: "ECON 120",
+              course: "ECON 120",
+            },
+            {
+              description: "PSCI 110",
+              course: "PSCI 110",
+            },
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Empirical Methods",
+        args: [
+          [
+            [
+              {
+                description: "POEC 253",
+                course: "POEC 253",
+              },
+              {
+                description: "ECON 253",
+                course: "ECON 253",
+              },
+            ],
+          ],
+          1,
+        ],
+      },
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "POEC 250",
+              course: "POEC 250",
+            },
+            {
+              description: "POEC 401",
+              course: "POEC 401",
+            },
+            {
+              description: "POEC 402",
+              course: "POEC 402",
+            },
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Skills Electives",
+        args: [
+          [
+            {
+              description: "ECON skills elective",
+              regex: "^ECON",
+              attributes: "^POEC_POECSKILLS",
+            },
+            {
+              description: "PSCI skills elective",
+              regex: "^PSCI",
+              attributes: "^POEC_POECSKILLS",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Depth Electives",
+        args: [
+          [
+            {
+              description: "PSCI depth elective",
+              regex: "^PSCI",
+              attributes: "^POEC_POECDEPTH",
+            },
+            {
+              description: "PSCI/ECON depth elective",
+              regex: "^(PSCI|ECON)",
+              attributes: "^POEC_POECDEPTH",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Experiential Learning",
+        args: [
+          [
+            {
+              placeholder:
+                "All Political Economy majors are required to fulfill an experiential education requirement.",
+            },
+          ],
+          1,
+        ],
+      },
+    ],
+  },
+  "Political Science": {
+    Link: "https://political-science.williams.edu/major/",
+    Prefix: "PSCI",
+    Division: 2,
+    Info: [
+      "Paths through the Political Science major are varied and involve the selection of a specific concentration; please consult the department website for information about the major.",
+    ],
+    Requirements: [
+      {
+        description: "Unavailable",
+        args: [
+          [
+            {
+              placeholder:
+                "The Major Builder is currently unavailable for this major. Please consult the department website link above.",
+            },
+          ],
+          1,
+        ],
+      },
+    ],
+  },
+  Religion: {
+    Link: "https://religion.williams.edu/",
+    Prefix: "REL",
+    Division: 2,
+    Info: [
+      "The major in Religion is designed both to expose students to the methods and issues involved in the study of religion and to introduce students to the beliefs, practices, and values of specific religions.",
+      "Each student can fashion his or her own sequence of study within a basic pattern.",
+      "Students must take REL 200 (What is Religion?), one 300–level seminar or tutorial, and REL 401 (Issues in the Study of Religion), as well as six electives. The course catalog offers further details on the major.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "REL 200",
+              course: "REL 200",
+            },
+            {
+              description: "300-level seminar or tutorial",
+              regex: "^REL 3",
+              classType: "^(Seminar|Tutorial)",
+            },
+            {
+              description: "REL 401",
+              course: "REL 401",
+            },
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Elective 1",
+              regex: "^REL",
+            },
+            {
+              description: "Elective 2",
+              regex: "^REL",
+            },
+            {
+              description: "Elective 3",
+              regex: "^REL",
+            },
+            {
+              description: "Elective 4",
+              regex: "^REL",
+            },
+            {
+              description: "Elective 5",
+              regex: "^REL",
+            },
+            {
+              description: "Elective 6",
+              regex: "^REL",
+            },
+          ],
+          6,
+        ],
+      },
+    ],
+  },
+  Russian: {
+    Link: "https://russian.williams.edu/russian-major-certificate/",
+    Prefix: "RUS",
+    Division: 1,
+    Info: [
+      "Students complete the major by combining courses in Russian language and literature with courses in history, political science, music, economics, and art.",
+      "The major requires a minimum of ten courses of which at least six must be conducted in Russian, at least two must be at the 300-level, and one at the 400-level.",
+      "In addition, students may take up to four related courses offered by other departments and taught in English.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              placeholder: "Course 1",
+            },
+            {
+              placeholder: "Course 2",
+            },
+            {
+              placeholder: "Course 3",
+            },
+            {
+              placeholder: "Course 4",
+            },
+            {
+              placeholder: "Course 5",
+            },
+            {
+              placeholder: "Course 6",
+            },
+          ],
+          6,
+        ],
+      },
+      {
+        description: "Advanced coursework",
+        args: [
+          [
+            {
+              description: "300-level (1)",
+              regex: "^RUS 3",
+            },
+            {
+              description: "300-level (2)",
+              regex: "^RUS 3",
+            },
+            {
+              description: "400-level",
+              regex: "^RUS 4",
+            },
+          ],
+          3,
+        ],
+      },
+    ],
+  },
+  Psychology: {
+    Link: "https://psychology.williams.edu/curriculum/",
+    Prefix: "PSYC",
+    Division: 3,
+    Info: [
+      "Either Psychology 221 or 222, but not both, can count towards the three required 200-level courses",
+      "An array of 300-level lab and seminar courses enable students to conduct original research, work in applied settings, and engage in small group discussion of primary source material. Majors take at least three 300-level courses from at least two of six areas. At least one of these 300-level courses must be from among those carrying the designation Empirical Lab Course.",
+    ],
+    Requirements: [
+      {
+        description: "Introduction",
+        args: [
+          [
+            {
+              description: "PSYC 101",
+              course: "PSYC 101",
+            },
+            {
+              description: "PSYC 201",
+              course: "PSYC 201",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "200-level",
+        args: [
+          [
+            [
+              {
+                description: "PSYC 221",
+                course: "PSYC 221",
+              },
+              {
+                description: "PSYC 222",
+                course: "PSYC 222",
+              },
+            ],
+            {
+              description: "PSYC 212",
+              course: "PSYC 212",
+            },
+            {
+              description: "PSYC 232",
+              course: "PSYC 232",
+            },
+            {
+              description: "PSYC 242",
+              course: "PSYC 243",
+            },
+            {
+              description: "PSYC 252",
+              course: "PSYC 252",
+            },
+            {
+              description: "PSYC 272",
+              course: "PSYC 272",
+            },
+          ],
+          3,
+        ],
+      },
+      {
+        description: "300-level",
+        args: [
+          [
+            {
+              description: "Empirical lab course",
+              attributes: "^PSYC_PSYCEMPER",
+            },
+            {
+              description: "Elective 2",
+              attributes: "^PSYC_PSYCAREA",
+            },
+            {
+              description: "Elective 3",
+              attributes: "^PSYC_PSYCAREA",
+            },
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Senior Seminar",
+        args: [
+          [
+            {
+              description: "400-level senior seminar",
+              regex: "^PSYC 4",
+              minSem: 7,
+              classType: "^Seminar",
+            },
+          ],
+          1,
+        ],
+      },
+    ],
+  },
+  Anthropology: {
+    Link: "https://anso.williams.edu/the-major/",
+    Prefix: "ANTH",
+    Division: 2,
+    Info: [
+      "All ANSO core courses must be taken at Williams, with one exception: ANTH 101 or SOC 101 (or equivalent college-level introductory course in these disciplines) can be taken elsewhere, including study-abroad programs.",
+      "Majors must take five electives from the course listings in their respective disciplines or from joint ANSO listings.",
+      "Two of the courses are normally at the 300 level or above.",
+      "Majors in each wing of the department are allowed to count up to two courses in the other wing towards fulfillment of their major requirements.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "ANTH 101",
+              course: "ANTH 101",
+            },
+            {
+              description: "ANSO 205",
+              course: "ANSO 205",
+            },
+            {
+              description: "ANSO 305",
+              course: "ANSO 305",
+            },
+            {
+              description: "ANSO 402",
+              course: "ANSO 402",
+            },
+          ],
+          4,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "ANTH/SOC/ANSO elective (1)",
+              regex: "^(ANTH|ANSO|SOC)",
+              ignore: ["ANSO 101", "ANSO 205", "ANSO 305", "ANSO 402"],
+            },
+            {
+              description: "ANTH/SOC/ANSO elective (2)",
+              regex: "^(ANTH|ANSO|SOC)",
+              ignore: ["ANSO 101", "ANSO 205", "ANSO 305", "ANSO 402"],
+            },
+            {
+              description: "ANTH/ANSO elective (3)",
+              regex: "^(ANTH|ANSO)",
+              ignore: ["ANSO 101", "ANSO 205", "ANSO 305", "ANSO 402"],
+            },
+            {
+              description: "ANTH/ANSO elective (4)",
+              regex: "^(ANTH|ANSO)",
+              ignore: ["ANSO 101", "ANSO 205", "ANSO 305", "ANSO 402"],
+            },
+            {
+              description: "ANTH/ANSO elective (5)",
+              regex: "^(ANTH|ANSO)",
+              ignore: ["ANSO 101", "ANSO 205", "ANSO 305", "ANSO 402"],
+            },
+          ],
+          5,
+        ],
+      },
+    ],
+  },
+  Sociology: {
+    Link: "https://anso.williams.edu/the-major/",
+    Prefix: "SOC",
+    Division: 2,
+    Info: [
+      "All ANSO core courses must be taken at Williams, with one exception: ANTH 101 or SOC 101 (or equivalent college-level introductory course in these disciplines) can be taken elsewhere, including study-abroad programs.",
+      "Majors must take five electives from the course listings in their respective disciplines or from joint ANSO listings.",
+      "Two of the courses are normally at the 300 level or above.",
+      "Majors in each wing of the department are allowed to count up to two courses in the other wing towards fulfillment of their major requirements.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "SOC 101",
+              course: "SOC 101",
+            },
+            {
+              description: "ANSO 205",
+              course: "ANSO 205",
+            },
+            {
+              description: "ANSO 305",
+              course: "ANSO 305",
+            },
+            {
+              description: "ANSO 402",
+              course: "ANSO 402",
+            },
+          ],
+          4,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "ANTH/SOC/ANSO elective (1)",
+              regex: "^(ANTH|ANSO|SOC)",
+              ignore: ["ANSO 101", "ANSO 205", "ANSO 305", "ANSO 402"],
+            },
+            {
+              description: "ANTH/SOC/ANSO elective (2)",
+              regex: "^(ANTH|ANSO|SOC)",
+              ignore: ["ANSO 101", "ANSO 205", "ANSO 305", "ANSO 402"],
+            },
+            {
+              description: "SOC/ANSO elective (3)",
+              regex: "^(SOC|ANSO)",
+              ignore: ["ANSO 101", "ANSO 205", "ANSO 305", "ANSO 402"],
+            },
+            {
+              description: "SOC/ANSO elective (4)",
+              regex: "^(SOC|ANSO)",
+              ignore: ["ANSO 101", "ANSO 205", "ANSO 305", "ANSO 402"],
+            },
+            {
+              description: "SOC/ANSO elective (5)",
+              regex: "^(SOC|ANSO)",
+              ignore: ["ANSO 101", "ANSO 205", "ANSO 305", "ANSO 402"],
+            },
+          ],
+          5,
+        ],
+      },
+    ],
+  },
+  Spanish: {
+    Link: "https://spanish.williams.edu/spanish-major-certificate/",
+    Prefix: "RLSP",
+    Division: 1,
+    Info: [
+      "The Spanish major consists of nine courses above the 101-102 level.",
+      "These nine courses may include 103, 104, 105, or any other course taught in Spanish at the 200 level or above.",
+      "Spanish majors are required to take the  400-level Senior Seminar, our capstone course, during their senior year.",
+      "At least one 200-level course must be completed at Williams.",
+      "In addition, one course must be focused primarily on literature or cultural texts produced prior to 1800.",
+      "A maximum of four courses taken at overseas programs may be used to satisfy the requirements of the major, with approval of the department. The Spanish faculty strongly suggests that students take 201 and 206 at some point in their studies, and especially recommends that they do so before rather than after studying abroad.",
+    ],
+    Requirements: [
+      {
+        description: "Unavailable",
+        args: [
+          [
+            {
+              placeholder:
+                "The Major Builder is currently unavailable for this major. Please consult the department website link above.",
+            },
+          ],
+          1,
+        ],
+      },
+    ],
+  },
+  "Women's, Gender, and Sexuality Studies (WGSS)": {
+    Link: "https://wgss.williams.edu/the-major/",
+    Prefix: "WGSS",
+    Division: 2,
+    Info: [
+      "In addition to these three required courses, majors are required to take at least six electives. In consultation with their major advisor and with approval from the chair, these courses should include:",
+      "Courses from at least three different disciplinary traditions",
+      "At least 3 courses at the 300 level",
+      "At least 1 course that emphasizes feminist/queer theories and/or methodologies",
+      "At least 1 course that emphasizes a diversity of racial, sexual, religious, and/or cultural identities and practices",
+      "In the final semester of their senior year, all majors will be required to write a reflective intellectual autobiography of their WGSS major, in which they explain how their courses meet the goals of the major, and analyze the relationship among the courses they have taken and papers they have written, and the research projects undertaken.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "WGSS 101",
+              course: "WGSS 101",
+            },
+            {
+              description: "WGSS 102",
+              course: "WGSS 102",
+            },
+            {
+              description: "Senior seminar",
+              regex: "^WGSS 4",
+            },
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Feminist/queer theories/methodologies",
+              attributes: "^WGSS_WGSSTHRY",
+            },
+            {
+              description: "Racial/sexual/religious/cultural practices",
+              attributes: "^WGSS_WGSSDIV",
+            },
+            {
+              description: "Elective 3",
+              regex: "^WGSS",
+              ignore: ["WGSS 101", "WGSS 102"],
+            },
+            {
+              description: "Elective 4",
+              regex: "^WGSS",
+              ignore: ["WGSS 101", "WGSS 102"],
+            },
+            {
+              description: "Elective 5",
+              regex: "^WGSS",
+              ignore: ["WGSS 101", "WGSS 102"],
+            },
+            {
+              description: "Elective 6",
+              regex: "^WGSS",
+              ignore: ["WGSS 101", "WGSS 102"],
+            },
+          ],
+          6,
         ],
       },
     ],
