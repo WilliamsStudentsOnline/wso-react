@@ -1742,8 +1742,8 @@ export const MAJORS = {
             },
             [
               {
-                description: "CSCI 337",
-                course: "CSCI 337",
+                description: "CSCI 334",
+                course: "CSCI 334",
               },
               {
                 description: "CSCI 361",
