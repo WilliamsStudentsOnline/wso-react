@@ -58,3 +58,13 @@
   font-size: 12px;
   line-height: 16px;
 }
+
+.slider-container {
+  margin-top: 10px;
+}
+
+.factrak-score-slider {
+  width: 100%;
+  cursor: pointer;
+  margin-top: 5px;
+}

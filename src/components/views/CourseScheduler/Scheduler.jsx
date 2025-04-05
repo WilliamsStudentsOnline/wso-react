@@ -27,6 +27,9 @@ import {
 import { FAILURE } from "../../../constants/actionTypes";
 import { doLoadCatalog } from "../../../actions/course";
 import { DEFAULT_SEMESTER_INDEX } from "../../../lib/scheduler";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
+import { useAppSelector } from "../../../lib/store";
+import { getAPIToken } from "../../../lib/authSlice";
 
 const Scheduler = ({
   doUpdateGAPI,
@@ -35,6 +38,7 @@ const Scheduler = ({
   active,
   loadCatalog,
 }) => {
+  const token = useAppSelector(getAPIToken);
   useEffect(() => {
     const loadGAPI = async () => {
       try {
@@ -63,10 +67,17 @@ const Scheduler = ({
       }
     };
 
-    const loadCatalogCourses = async () => {
+    const loadCatalogCourses = () => {
+      // if logged in as student, fetch catalog with factrak reviews
+      let jsonURL = "/courses.json";
+      if (token && containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
+        jsonURL = "/courses-factrak.json";
+      }
+
       axios({
-        url: "/courses.json",
+        url: jsonURL,
         headers: {
+          Authorization: "Bearer " + token,
           "X-Requested-With": "XMLHttpRequest",
         },
       }).then((response) => {
@@ -83,6 +94,7 @@ const Scheduler = ({
     // doUpdateSignIn,
     loadCatalog,
     doAddNotification,
+    token,
   ]);
 
   const getActive = () => {

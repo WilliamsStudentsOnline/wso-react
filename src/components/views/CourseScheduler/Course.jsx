@@ -13,7 +13,11 @@ import {
   doHideCourse,
   doUnhideCourse,
 } from "../../../actions/course";
-import { getAddedCourses, getHiddenCourses } from "../../../selectors/course";
+import {
+  getAddedCourses,
+  getHiddenCourses,
+  getShowFactrakScore,
+} from "../../../selectors/course";
 import { getTimeFormat } from "../../../selectors/schedulerUtils";
 import { BORDER_PALETTE } from "../../../constants/constants";
 import { Link } from "react-router-dom";
@@ -35,15 +39,54 @@ const Course = ({
   onHide,
   onUnhide,
   twelveHour,
+  showFactrakScore,
 }) => {
   // State of body visibiity
   const [bodyHidden, setHidden] = useState(true);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
 
   const addedIds = added.map((addedCourse) => addedCourse.peoplesoftNumber);
   const addIndex = addedIds.indexOf(course.peoplesoftNumber);
   const isAdded = addIndex !== -1;
 
   const isHidden = hidden.indexOf(course) !== -1;
+
+  const getFactrakRating = () => {
+    if (course.factrakScore === -1) {
+      return "N/A";
+    }
+    return (course.factrakScore * 100).toFixed(0);
+  };
+
+  const getRatingsVisible = () => {
+    if (
+      !showFactrakScore ||
+      !course.factrakScore ||
+      course.factrakScore === -1
+    ) {
+      return "hidden";
+    }
+    return "visible";
+  };
+
+  const getTooltipText = () => {
+    return `${course.recommendReviews} out of ${course.totalReviews} would recommend`;
+  };
+
+  const getFactrakUrl = () => {
+    if (course.instructors.length === 1) {
+      return `/factrak/courses/${course.courseDBID}/${course.instructors[0].id}`;
+    } else {
+      return `/factrak/courses/${course.courseDBID}`;
+    }
+  };
+
+  const getRatingColor = (rating) => {
+    if (rating >= 80) return "#1a8754";
+    if (rating >= 60) return "#ffc107";
+    if (rating >= 40) return "#fd7e14";
+    return "#dc3545";
+  };
 
   const instructors = () => {
     return (
@@ -290,6 +333,24 @@ const Course = ({
       onClick={toggleBody}
       role="presentation"
     >
+      <div
+        className="factrak-rating"
+        style={{
+          backgroundColor: getRatingColor(getFactrakRating()),
+          visibility: getRatingsVisible(),
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          window.location.href = getFactrakUrl();
+        }}
+        onMouseEnter={() => setTooltipVisible(true)}
+        onMouseLeave={() => setTooltipVisible(false)}
+      >
+        <span className="rating-value">{getFactrakRating()}</span>
+        {tooltipVisible && (
+          <div className="rating-tooltip">{getTooltipText()}</div>
+        )}
+      </div>
       <div className="course-header">
         <div className="row course-title">
           <div className="row title">
@@ -379,6 +440,7 @@ Course.propTypes = {
   onUnhide: PropTypes.func.isRequired,
   location: PropTypes.string,
   course: PropTypes.object.isRequired,
+  showFactrakScore: PropTypes.bool.isRequired,
 };
 
 Course.defaultProps = {
@@ -389,6 +451,7 @@ const mapStateToProps = (state) => ({
   hidden: getHiddenCourses(state),
   added: getAddedCourses(state),
   twelveHour: getTimeFormat(state),
+  showFactrakScore: getShowFactrakScore(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

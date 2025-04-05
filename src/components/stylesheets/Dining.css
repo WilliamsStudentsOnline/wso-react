@@ -1,0 +1,50 @@
+.refresh-info {
+  margin-left: 30%;
+  padding-bottom: 50px;
+}
+
+.all-dining-table {
+  display: grid;
+  grid-template-columns: repeat(3, 340px);
+  grid-gap: 30px;
+}
+
+.dining-table-container {
+  padding-top: 0px;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  max-width: 19em;
+}
+
+.dining-children {
+  border: 2px solid #d9d9d9;
+}
+
+.hours-title {
+  border: 2px solid #6f4993;
+}
+
+.all-dining-table {
+  place-content: center;
+  padding-bottom: 30px;
+}
+
+.Open {
+  font-weight: bold;
+  color: green;
+}
+
+.Closed {
+  font-weight: bold;
+  color: red;
+}
+
+.Opening {
+  font-weight: bold;
+  color: rgb(104, 192, 227);
+}
+
+.Closing {
+  font-weight: bold;
+  color: orange;
+}
