@@ -1,0 +1,445 @@
+.major-builder-container {
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  background-color: #fff;
+  margin: 50px;
+  overflow-x: auto;
+  box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.1);
+}
+
+.major-builder-container h2 {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #4b2771; /* WSO Purple */
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.major-builder-container h2:first-of-type {
+  margin-top: 0;
+}
+
+.major-builder-options {
+  margin-bottom: 10px;
+  font-size: 0.9em;
+}
+
+.major-builder-options label {
+  cursor: pointer;
+}
+
+.major-builder-grid {
+  overflow: visible;
+  overflow-x: visible;
+}
+
+.major-builder-grid table {
+  width: 100%;
+  min-width: 1000px;
+  overflow-x: scroll;
+  border-collapse: collapse;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  table.ai-style-change-2 {
+    position: static;
+    z-index: 101;
+    margin-top: auto;
+    margin-left: auto;
+    top: auto;
+    left: auto;
+  }
+}
+
+.major-builder-grid th,
+.major-builder-grid td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+  min-width: 150px;
+  transition: background-color 0.3s ease;
+}
+
+.major-builder-grid th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  font-size: 1em;
+  top: 0;
+  z-index: 1;
+}
+
+.major-builder-grid td:first-child, /* Course number column */
+  .major-builder-grid th:first-child {
+  min-width: 80px;
+  text-align: center;
+  font-weight: bold;
+  left: 0;
+  background-color: #f2f2f2;
+  z-index: 2;
+}
+
+.optional-course-row td:first-child {
+  font-style: italic;
+}
+
+.semester-header {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95em;
+  color: #4b2771;
+  padding-left: 5px;
+  padding-top: 2px;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+.semester-header:hover {
+  background-color: #e0d8eb;
+}
+
+.semester-edit-select {
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.semester-edit-select.single {
+  width: 100%;
+}
+
+.major-builder-grid input[type="text"] {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+.cs-input-container {
+  position: relative; /* Needed for absolute positioning of autocomplete */
+}
+
+.autocomplete-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 200%;
+  overflow-y: visible;
+  z-index: 10;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.autocomplete-results li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.autocomplete-results li:hover {
+  background-color: #eee;
+}
+
+.autocomplete-results li.no-results {
+  padding: 8px 12px;
+  color: #888;
+  cursor: default;
+}
+
+.aprInfo {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+.aprInfo strong {
+  margin-right: 10px;
+}
+
+.major-selection-container {
+  margin-top: 0px;
+  margin-bottom: 20px;
+  position: relative;
+  min-width: 300px;
+  width: 400px;
+  max-width: 400px;
+}
+
+.major-selection-container label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.major-inputs-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.major-selection-container input[type="text"] {
+  width: 100%;
+  padding: 8px;
+}
+
+.autocomplete-results.major-autocomplete {
+  width: 100%;
+}
+
+.all-majors-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.major-requirements-display {
+  margin-top: 0px;
+  margin-bottom: 30px;
+  padding: 15px;
+  border: 1px solid #d3d3d3;
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 320px;
+  max-width: 100%;
+}
+
+.major-requirements-display h3 {
+  margin-top: 0;
+  color: #4b2771;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.major-info-list {
+  list-style: disc;
+  margin-left: 20px;
+  margin-bottom: 15px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.major-req-controls {
+  text-align: right;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.major-req-controls button {
+  margin-left: 10px;
+  padding: 4px 8px;
+  font-size: 0.9em;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+.major-req-controls button:hover {
+  background-color: #e0e0e0;
+}
+
+.requirement-bucket {
+  margin-bottom: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+}
+
+.requirement-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  background-color: #f7f7f7;
+  cursor: pointer;
+  border-left: 5px solid transparent;
+  border-bottom: 1px solid #eee;
+  gap: 10px;
+  transition: background-color 0.2s ease;
+}
+.requirement-header:hover {
+  background-color: #ededed;
+}
+
+.requirement-bucket:not(:has(.requirement-item-list)) .requirement-header {
+  border-bottom: none;
+}
+.requirement-header.collapsed {
+  border-bottom: none;
+}
+
+.expand-collapse-icon {
+  font-size: 0.8em;
+  width: 1em;
+  text-align: center;
+  color: #4b2771;
+}
+
+.requirement-bucket .requirement-header {
+  border-left-width: 5px;
+  border-left-style: solid;
+}
+
+.collapsed-needs {
+  font-size: 0.85em;
+  color: #666;
+  margin-left: auto;
+  padding-left: 15px;
+  white-space: nowrap;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.requirement-item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #fff;
+}
+
+.requirement-list-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px 8px 15px;
+  gap: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.requirement-or-group {
+  padding: 8px 0 8px 15px;
+}
+.requirement-or-group .or-group-label {
+  display: block;
+  font-style: italic;
+  color: #555;
+  margin-bottom: 4px;
+}
+.requirement-or-group ul {
+  list-style: none;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.requirement-item-list > li {
+  border-bottom: 1px solid #f0f0f0;
+}
+.requirement-item-list > li:last-child {
+  border-bottom: none;
+}
+
+.requirement-item-checkbox {
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.requirement-list-item.placeholder .item-string {
+  font-style: italic;
+  color: #555;
+}
+
+.fulfilled-by-auto {
+  font-size: 0.8em;
+  color: #555;
+  margin-left: auto;
+  margin-right: 10px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.status-indicator {
+  font-weight: bold;
+  margin-right: 0;
+  font-size: 1.1em;
+  flex-shrink: 0;
+}
+
+.status-indicator.met {
+  color: #1a8754;
+}
+
+.status-indicator.not-met {
+  color: #dc3545;
+}
+
+.requirement-or-group ul .requirement-list-item {
+  border-bottom: none;
+  padding: 4px 10px 4px 0px;
+}
+
+.major-builder-grid th.grid-corner-cell {
+  left: 0;
+  z-index: 2;
+  background-color: #f2f2f2;
+  text-align: center;
+  padding: 4px;
+}
+
+.clear-grid-button {
+  padding: 4px 8px;
+  font-size: 0.85em;
+  background-color: #f0e6f5;
+  border: 1px solid #e0d8eb;
+  color: #6a2d7a;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 2px;
+  min-width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: clip;
+  box-sizing: border-box;
+}
+
+.clear-grid-button:hover {
+  background-color: #e0d8eb;
+}
+
+.major-info-link {
+  color: #4b2771;
+}
+
+.change-via-button {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 4px 8px;
+  height: auto;
+  min-height: 1.8rem !important;
+  min-width: 2rem !important;
+  font-size: 14px !important;
+  margin: 0 4px;
+}
+
+.override-input-container {
+  flex-grow: 1;
+  position: relative;
+  margin-left: 5px;
+}
+
+.override-input {
+  width: 100%;
+  padding: 4px 6px;
+  font-size: 0.9em;
+  border: 1px solid #4b2771;
+  border-radius: 3px;
+}
+
+.override-autocomplete {
+  width: auto;
+  min-width: 200px;
+  box-sizing: border-box;
+  padding: 4px 6px;
+}

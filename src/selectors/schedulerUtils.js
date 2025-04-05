@@ -6,6 +6,10 @@ const getSemester = ({ schedulerUtilState }) => schedulerUtilState.semester;
 const getTimeFormat = ({ schedulerUtilState }) => schedulerUtilState.twelveHour;
 const getOrientation = ({ schedulerUtilState }) =>
   schedulerUtilState.horizontal;
+const getMajorBuilderGrid = ({ schedulerUtilState }) =>
+  schedulerUtilState.majorBuilderGrid;
+const getMajorBuilderSemesters = ({ schedulerUtilState }) =>
+  schedulerUtilState.majorBuilderSemesters;
 
 export {
   getCurrSubMenu,
@@ -14,4 +18,6 @@ export {
   getSemester,
   getTimeFormat,
   getOrientation,
+  getMajorBuilderGrid,
+  getMajorBuilderSemesters,
 };
