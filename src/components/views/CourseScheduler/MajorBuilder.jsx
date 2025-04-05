@@ -1,4 +1,4 @@
-// DISCLAIMER: FRONTEND IS NOT MY THING
+// THIS IS REALLY BAD, HORRIBLE CODE
 // SORRY! -Charlie
 
 // React imports
@@ -183,20 +183,16 @@ const MajorBuilder = ({
     }
   }, [grid, semesters, selectedMajors, fulfilledBy, fulfillments]);
 
-  // Reset state
   const clearCourseGrid = () => {
     if (window.confirm("Are you sure?")) {
       updateMajorBuilderState({
         majorBuilderGrid: initialMajorBuilderGrid,
         majorBuilderSemesters: initialMajorBuilderSemesters,
       });
+      setFulfilledBy({});
+      setFulfillments({});
+      setTriggerFetch(!triggerFetch);
     }
-    setFulfilledBy({});
-    setFulfillments({});
-    for (let i = 0; i < 3; i++) {
-      clearMajor(i);
-    }
-    setMajorInputs(["", "", ""]);
   };
 
   // Handle user typing in planner grid
@@ -212,11 +208,11 @@ const MajorBuilder = ({
     };
     updateMajorBuilderState({ majorBuilderGrid: newGrid });
 
-    // AUTOCOMPLETE TRIGGER
+    // GRID AUTOCOMPLETE TRIGGER
     setAutocompleteInput({ semesterIndex, courseIndex, value: inputValue });
   };
 
-  // Handle autocomplete
+  // Handle grid autocomplete
   useEffect(() => {
     const { semesterIndex, courseIndex, value } = autocompleteInput;
 
@@ -386,13 +382,13 @@ const MajorBuilder = ({
 
   const renderSemesterHeader = (index) => {
     const semester = semesters[index];
+    const semesterDisplayYear =
+      semester.term === "Fall" ? semester.year - 1 : semester.year;
 
     if (editingSemesterIndex === index) {
       return (
         <Select
-          value={`${semester.term}-${
-            semester.term === "Fall" ? semester.year - 1 : semester.year
-          }`}
+          value={`${semester.term}-${semesterDisplayYear}`}
           onBlur={() => setEditingSemesterIndex(null)} // Close dropdown on blur if no selection made
           onChange={handleSemesterSelectionChange}
           options={semesterOptions.map((opt) => opt.label)}
@@ -407,10 +403,12 @@ const MajorBuilder = ({
       <div
         onClick={() => setEditingSemesterIndex(index)}
         className="semester-header"
+        style={{
+          fontWeight: historicalCatalogs[semester.year] ? "Bold" : "Normal",
+        }}
       >
-        {`${semester.term} ${
-          semester.term === "Fall" ? semester.year - 1 : semester.year
-        }`}
+        {`${semester.term} ${semesterDisplayYear}`}
+        {" ▼"}
       </div>
     );
   };
@@ -556,9 +554,11 @@ const MajorBuilder = ({
   const handleMajorInputChange = (event, index) => {
     const value = event.target.value;
     const newMajorInputs = [...majorInputs];
+    const selectedMajor = majorInputs[index];
+    const hadMajor = selectedMajors[index];
     newMajorInputs[index] = value;
-    setMajorInputs(newMajorInputs);
     clearMajor(index); // clear selected major in Redux if user starts typing
+    setMajorInputs(newMajorInputs);
 
     if (value.length > 0) {
       const lowerValue = value.toLowerCase();
@@ -574,6 +574,29 @@ const MajorBuilder = ({
     } else {
       setMajorAutocompleteVisible(-1);
       setMajorAutocompleteResults([]);
+      const newFulfillments = JSON.parse(JSON.stringify(fulfillments));
+      const newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
+      if (hadMajor) {
+        for (const req of MAJORS[selectedMajor].Requirements) {
+          for (let itemOrGroup of req.args[0]) {
+            if (!Array.isArray(itemOrGroup)) {
+              itemOrGroup = [itemOrGroup];
+            }
+            for (let item of itemOrGroup) {
+              let itemStr = item.description || item.placeholder;
+              itemStr = `${selectedMajor}-${itemStr}`;
+              if (newFulfilledBy[itemStr]) {
+                if (newFulfilledBy[itemStr].courseID) {
+                  delete newFulfillments[newFulfilledBy[itemStr].courseID];
+                }
+                delete newFulfilledBy[itemStr];
+              }
+            }
+          }
+        }
+      }
+      setFulfilledBy(newFulfilledBy);
+      setFulfillments(newFulfillments);
     }
   };
   const handleMajorAutocompleteSelect = (majorName, index) => {
@@ -688,13 +711,7 @@ const MajorBuilder = ({
   };
 
   const truncateItemStr = (itemStr) => {
-    if (itemStr.description) {
-      return itemStr.description;
-    }
-    if (itemStr.placeholder) {
-      return itemStr.placeholder;
-    }
-    return itemStr;
+    return itemStr.description || itemStr.placeholder || itemStr;
   };
   const truncateItemArr = (arr) => {
     return arr.map((str) => {
@@ -1073,11 +1090,7 @@ const MajorBuilder = ({
           <thead>
             <tr>
               <th className="grid-corner-cell">
-                <button
-                  onClick={clearCourseGrid}
-                  className="clear-grid-button"
-                  title="Clear all courses from the planner grid"
-                >
+                <button onClick={clearCourseGrid} className="clear-grid-button">
                   Clear
                 </button>
               </th>
@@ -1162,14 +1175,15 @@ const MajorBuilder = ({
       <h2>Major Builder</h2>
       <p>
         Pick a course of study that&apos;s right for you. Enter your courses
-        above and/or click the boxes below to plan your major(s). Last updated
-        04/03/2025.
+        above and/or click the boxes below to plan your major(s).
       </p>
       <p style={{ fontStyle: "italic" }}>
         Disclaimer: this feature is still in beta, and may not correctly
-        autofill every course in every major. Please report any autofill bugs or
-        incorrect major information to{" "}
+        autofill every course in every major. Always consult department websites
+        for accurate and up-to-date major requirements. Please report any
+        autofill bugs or incorrect major information to{" "}
         <a href="mailto:wso-dev@wso.williams.edu">wso-dev@wso.williams.edu</a>.
+        Last updated 04/03/2025.
       </p>
 
       <div className="major-inputs-container">
@@ -1238,6 +1252,7 @@ const MajorBuilder = ({
               {" | "}
               <a
                 className="major-info-link"
+                style={{ cursor: "pointer" }}
                 onClick={() =>
                   setShowInfoList({
                     ...showInfoList,
