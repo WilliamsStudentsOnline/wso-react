@@ -98,6 +98,9 @@ const Nav = () => {
               <Link to="/">Home</Link>
             </li>
             <li>
+              <Link to="dining">Dining</Link>
+            </li>
+            <li>
               <Link to="facebook">Facebook</Link>
             </li>
             <li>
