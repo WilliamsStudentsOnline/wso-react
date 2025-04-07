@@ -1,6 +1,8 @@
 // React Imports
 import React, { useEffect, useState } from "react";
 
+import "./stylesheets/Nav.css";
+
 // Redux imports
 import { getWSO, getCurrUser } from "../lib/authSlice";
 import { removeCredentials } from "../lib/authSlice";
@@ -10,6 +12,32 @@ import { useAppSelector, useAppDispatch } from "../lib/store";
 import { Link } from "react-router-dom";
 import history from "../lib/history";
 import { userTypeStudent } from "../constants/general";
+
+// Feature flag imports
+import { RootState } from "../lib/store";
+import { FeatureFlag, FFState } from "../lib/featureFlagSlice";
+
+interface FeatureFlagElementProps {
+  element: React.ReactElement;
+  flag: keyof FeatureFlag;
+}
+
+const FeatureFlagElement: React.FC<FeatureFlagElementProps> = ({
+  element,
+  flag,
+}) => {
+  const enabled = useAppSelector(
+    (state: RootState) => state.featureFlagState[flag]
+  );
+
+  return (
+    <div className="nav_feature_div">
+      {enabled === FFState.Enabled ? (
+        <li className="nav_feature_item">{element}</li>
+      ) : null}
+    </div>
+  );
+};
 
 const Nav = () => {
   const dispatch = useAppDispatch();
@@ -117,18 +145,26 @@ const Nav = () => {
               </>
             )}
 
-            <li>
-              <Link to="faq">FAQ</Link>
-            </li>
-            <li>
-              <a href="/wiki/">Wiki</a>
-            </li>
-            <li>
-              <Link to="about">About</Link>
-            </li>
+            <FeatureFlagElement
+              element={<Link to="faq">FAQ</Link>}
+              flag="enableFAQ"
+            />
+            <FeatureFlagElement
+              element={<a href="/wiki/">Wiki</a>}
+              flag="enableWiki"
+            />
+            <FeatureFlagElement
+              element={<Link to="about">About</Link>}
+              flag="enableAbout"
+            />
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
             </li>
+            {currUser?.admin && (
+              <li>
+                <Link to="admin">Admin Dashboard</Link>
+              </li>
+            )}
             {ephmatchVisibility > 0 && (
               <li>
                 <Link

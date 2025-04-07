@@ -1,0 +1,7 @@
+.nav_feature_div {
+  display: inline-block;
+}
+
+.nav_feature_div:not(:empty) {
+  padding-right: 2em;
+}
