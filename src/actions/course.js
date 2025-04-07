@@ -19,6 +19,7 @@ import {
   RESET_FILTERS,
   REMOVE_SEMESTER_COURSES,
   LOAD_CATALOG,
+  LOAD_HISTORICAL_CATALOG_YEAR,
   TOGGLE_FACTRAK_SCORE_DISPLAY,
   TOGGLE_INCLUDE_FACTRAK_NO_SCORES,
   SET_MIN_FACTRAK_SCORE,
@@ -154,6 +155,13 @@ const doRemoveSemesterCourses = (semester) => ({
   semester,
 });
 
+// fetch catalogs from previous years
+const doLoadHistoricalCatalogYear = (year, catalog) => ({
+  type: LOAD_HISTORICAL_CATALOG_YEAR,
+  year,
+  catalog,
+});
+
 export {
   doAddCourse,
   doRemoveCourse,
@@ -177,5 +185,6 @@ export {
   doResetFilters,
   doRemoveSemesterCourses,
   doLoadCatalog,
+  doLoadHistoricalCatalogYear,
   doSetMinFactrakScore,
 };
