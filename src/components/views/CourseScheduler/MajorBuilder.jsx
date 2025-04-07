@@ -929,9 +929,12 @@ const MajorBuilder = ({
                     // Check if *any* item in this slot/group was fulfilled (by grid or manual override)
                     const isSlotMet = itemsToCheck.some((r) =>
                       r.description
-                        ? fulfilledBy[r.description] &&
-                          fulfilledBy[r.description] !== "blocked"
-                        : fulfilledBy[r] && fulfilledBy[r] !== "blocked"
+                        ? fulfilledBy[`${selectedMajor}-${r.description}`] &&
+                          fulfilledBy[`${selectedMajor}-${r.description}`] !==
+                            "blocked"
+                        : fulfilledBy[`${selectedMajor}-${r.placeholder}`] &&
+                          fulfilledBy[`${selectedMajor}-${r.placeholder}`] !==
+                            "blocked"
                     );
 
                     if (!isSlotMet) {
@@ -939,15 +942,13 @@ const MajorBuilder = ({
                         if (itemOrGroup[0].description) {
                           const rstri = [];
                           for (const item of itemOrGroup) {
-                            rstri.push(item.description);
+                            rstri.push(item.description || item.placeholder);
                           }
                           return rstri.join("/");
                         }
                         return itemOrGroup.join("/");
                       }
-                      return itemOrGroup.description
-                        ? itemOrGroup.description
-                        : itemOrGroup;
+                      return itemOrGroup.description || itemOrGroup.placeholder;
                     }
                     return null;
                   })
@@ -1071,8 +1072,15 @@ const MajorBuilder = ({
   }
 
   // RENDER
+  console.log(selectedMajors);
   return (
-    <div className="major-builder-container">
+    <div
+      className="major-builder-container"
+      style={{
+        paddingBottom: `${majorAutocompleteResults.length * 2 + 2}em`,
+        transition: "none",
+      }}
+    >
       <h2>Planner</h2>
       <p>Plan your academic journey.</p>
       <div className="major-builder-options">
