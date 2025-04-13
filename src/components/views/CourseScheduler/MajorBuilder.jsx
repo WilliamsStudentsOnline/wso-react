@@ -1083,7 +1083,34 @@ const MajorBuilder = ({
       }}
     >
       <h2>Planner</h2>
-      <p>Plan your academic journey.</p>
+      <p>
+        Plan your academic journey. You may want to review the{" "}
+        <a className="major-info-link" href="https://registrar.williams.edu/">
+          Registrar&apos;s website
+        </a>
+        ,{" "}
+        <a
+          className="major-info-link"
+          href="https://registrar.williams.edu/degree-requirements-at-a-glance/"
+        >
+          degree requirements
+        </a>
+        ,{" "}
+        <a
+          className="major-info-link"
+          href="https://registrar.williams.edu/course-registration/placement-information/"
+        >
+          placement information
+        </a>
+        , and{" "}
+        <a
+          className="major-info-link"
+          href="https://registrar.williams.edu/early-concentration-rules"
+        >
+          early concentration restrictions
+        </a>
+        .
+      </p>
       <div className="major-builder-options">
         <label>
           <input
