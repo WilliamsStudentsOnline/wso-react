@@ -137,14 +137,15 @@ const MajorBuilder = ({
 
   // Fetch old courses
   useEffect(() => {
-    const currentYear = new Date().getFullYear();
+    const currentYear = new Date().getFullYear() + 1;
     const yearsToFetch = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       const year = currentYear - i;
-      if (year >= COURSE_HISTORY_START_YEAR) {
-        if (!historicalCatalogs || !historicalCatalogs[year]) {
-          yearsToFetch.push(year);
-        }
+      if (
+        year >= COURSE_HISTORY_START_YEAR &&
+        (!historicalCatalogs || !historicalCatalogs[year])
+      ) {
+        yearsToFetch.push(year);
       } else {
         break;
       }
