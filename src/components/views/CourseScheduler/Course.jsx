@@ -1,5 +1,5 @@
 // React imports
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -29,36 +29,12 @@ import { FOLLETT_SEMESTER_UUID } from "../../../constants/constants";
 
 dayjs.extend(customParseFormat);
 
-const Course = ({
-  added,
-  hidden,
-  course,
-  location,
-  onAdd,
-  onRemove,
-  onHide,
-  onUnhide,
-  twelveHour,
-  showFactrakScore,
-}) => {
-  // State of body visibiity
-  const [bodyHidden, setHidden] = useState(true);
+const FactrakRatingBox = ({ showFactrakScore, course }) => {
   const [tooltipVisible, setTooltipVisible] = useState(false);
-
-  const addedIds = added.map((addedCourse) => addedCourse.peoplesoftNumber);
-  const addIndex = addedIds.indexOf(course.peoplesoftNumber);
-  const isAdded = addIndex !== -1;
-
-  const isHidden = hidden.indexOf(course) !== -1;
-
-  const getFactrakRating = () => {
-    if (course.factrakScore === -1) {
-      return "N/A";
-    }
-    return (course.factrakScore * 100).toFixed(0);
-  };
+  const divRef = useRef(null);
 
   const getRatingsVisible = () => {
+    if (divRef.current?.closest(".timetable")) return "hidden";
     if (
       !showFactrakScore ||
       !course.factrakScore ||
@@ -67,10 +43,6 @@ const Course = ({
       return "hidden";
     }
     return "visible";
-  };
-
-  const getTooltipText = () => {
-    return `${course.recommendReviews} out of ${course.totalReviews} would recommend`;
   };
 
   const getFactrakUrl = () => {
@@ -87,6 +59,65 @@ const Course = ({
     if (rating >= 40) return "#fd7e14";
     return "#dc3545";
   };
+
+  const getFactrakRating = () => {
+    if (course.factrakScore === -1) {
+      return "N/A";
+    }
+    return (course.factrakScore * 100).toFixed(0);
+  };
+
+  const getTooltipText = () => {
+    return `${course.recommendReviews} out of ${course.totalReviews} would recommend`;
+  };
+
+  return (
+    <div
+      ref={divRef}
+      className="factrak-rating"
+      style={{
+        backgroundColor: getRatingColor(getFactrakRating()),
+        visibility: getRatingsVisible(),
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        window.location.href = getFactrakUrl();
+      }}
+      onMouseEnter={() => setTooltipVisible(true)}
+      onMouseLeave={() => setTooltipVisible(false)}
+    >
+      <span className="rating-value">{getFactrakRating()}</span>
+      {tooltipVisible && (
+        <div className="rating-tooltip">{getTooltipText()}</div>
+      )}
+    </div>
+  );
+};
+
+FactrakRatingBox.propTypes = {
+  showFactrakScore: PropTypes.bool.isRequired,
+  course: PropTypes.object.isRequired,
+};
+
+const Course = ({
+  added,
+  hidden,
+  course,
+  location,
+  onAdd,
+  onRemove,
+  onHide,
+  onUnhide,
+  twelveHour,
+  showFactrakScore,
+}) => {
+  const [bodyHidden, setHidden] = useState(true);
+
+  const addedIds = added.map((addedCourse) => addedCourse.peoplesoftNumber);
+  const addIndex = addedIds.indexOf(course.peoplesoftNumber);
+  const isAdded = addIndex !== -1;
+
+  const isHidden = hidden.indexOf(course) !== -1;
 
   const instructors = () => {
     return (
@@ -333,24 +364,10 @@ const Course = ({
       onClick={toggleBody}
       role="presentation"
     >
-      <div
-        className="factrak-rating"
-        style={{
-          backgroundColor: getRatingColor(getFactrakRating()),
-          visibility: getRatingsVisible(),
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-          window.location.href = getFactrakUrl();
-        }}
-        onMouseEnter={() => setTooltipVisible(true)}
-        onMouseLeave={() => setTooltipVisible(false)}
-      >
-        <span className="rating-value">{getFactrakRating()}</span>
-        {tooltipVisible && (
-          <div className="rating-tooltip">{getTooltipText()}</div>
-        )}
-      </div>
+      <FactrakRatingBox
+        showFactrakScore={showFactrakScore}
+        course={course}
+      ></FactrakRatingBox>
       <div className="course-header">
         <div className="row course-title">
           <div className="row title">
