@@ -164,7 +164,30 @@ const BulletinShow = () => {
           <br />
           <br />
           <div className="markdown-content">
-            <Markdown>
+            <Markdown
+              options={{
+                overrides: {
+                  h1: {
+                    component: "h2",
+                  },
+                  h2: {
+                    component: "h2",
+                  },
+                  h3: {
+                    component: "h2",
+                  },
+                  h4: {
+                    component: "h5",
+                  },
+                  h5: {
+                    component: "h5",
+                  },
+                  h6: {
+                    component: "h5",
+                  },
+                },
+              }}
+            >
               {bulletin.body ||
                 "There was an error displaying the content for this post."}
             </Markdown>

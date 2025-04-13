@@ -9,6 +9,7 @@ import { getCurrUser, getWSO } from "../../../lib/authSlice";
 
 // Additional imports
 import { Link, useNavigate } from "react-router-dom";
+import Markdown from "markdown-to-jsx";
 
 const DiscussionPost = ({ post }) => {
   const currUser = useAppSelector(getCurrUser);
@@ -105,7 +106,34 @@ const DiscussionPost = ({ post }) => {
           <em>{new Date(currPost.createdTime).toDateString()}</em>
           <br />
           {editControls()}
-          {currPost.content}
+          <div className="markdown-content">
+            <Markdown
+              options={{
+                overrides: {
+                  h1: {
+                    component: "h5",
+                  },
+                  h2: {
+                    component: "h5",
+                  },
+                  h3: {
+                    component: "h5",
+                  },
+                  h4: {
+                    component: "h5",
+                  },
+                  h5: {
+                    component: "h5",
+                  },
+                  h6: {
+                    component: "h5",
+                  },
+                },
+              }}
+            >
+              {currPost.content}
+            </Markdown>
+          </div>
         </div>
       );
     }
