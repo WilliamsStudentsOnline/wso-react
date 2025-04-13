@@ -137,14 +137,15 @@ const MajorBuilder = ({
 
   // Fetch old courses
   useEffect(() => {
-    const currentYear = new Date().getFullYear();
+    const currentYear = new Date().getFullYear() + 1;
     const yearsToFetch = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       const year = currentYear - i;
-      if (year >= COURSE_HISTORY_START_YEAR) {
-        if (!historicalCatalogs || !historicalCatalogs[year]) {
-          yearsToFetch.push(year);
-        }
+      if (
+        year >= COURSE_HISTORY_START_YEAR &&
+        (!historicalCatalogs || !historicalCatalogs[year])
+      ) {
+        yearsToFetch.push(year);
       } else {
         break;
       }
@@ -1082,7 +1083,34 @@ const MajorBuilder = ({
       }}
     >
       <h2>Planner</h2>
-      <p>Plan your academic journey.</p>
+      <p>
+        Plan your academic journey. You may want to review the{" "}
+        <a className="major-info-link" href="https://registrar.williams.edu/">
+          Registrar&apos;s website
+        </a>
+        ,{" "}
+        <a
+          className="major-info-link"
+          href="https://registrar.williams.edu/degree-requirements-at-a-glance/"
+        >
+          degree requirements
+        </a>
+        ,{" "}
+        <a
+          className="major-info-link"
+          href="https://registrar.williams.edu/course-registration/placement-information/"
+        >
+          placement information
+        </a>
+        , and{" "}
+        <a
+          className="major-info-link"
+          href="https://registrar.williams.edu/early-concentration-rules"
+        >
+          early concentration restrictions
+        </a>
+        .
+      </p>
       <div className="major-builder-options">
         <label>
           <input
