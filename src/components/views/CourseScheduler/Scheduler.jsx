@@ -75,12 +75,17 @@ const Scheduler = ({
         jsonURL = "/courses-factrak.json";
       }
 
+      const axios_headers = {
+        "X-Requested-With": "XMLHttpRequest",
+      };
+
+      if (token) {
+        axios_headers["Authorization"] = "Bearer " + token;
+      }
+
       axios({
         url: jsonURL,
-        headers: {
-          Authorization: "Bearer " + token,
-          "X-Requested-With": "XMLHttpRequest",
-        },
+        headers: axios_headers,
       }).then((response) => {
         loadCatalog(response.data);
       });
