@@ -48,9 +48,14 @@ const SubMenu = ({ handler, active }) => {
             className={checkSelected("Catalog")}
           />
           <ListItem
+            image="wysiwyg"
+            text="Planner"
+            className={checkSelected("Planner")}
+          />
+          <ListItem
             image="build"
-            text="Major Builder"
-            className={checkSelected("Major Builder")}
+            text="Editor"
+            className={checkSelected("Editor")}
           />
         </ul>
       </div>

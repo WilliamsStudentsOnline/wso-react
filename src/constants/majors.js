@@ -1802,60 +1802,9 @@ export const MAJORS = {
     Link: "https://registrar.williams.edu/contract-major/",
     Prefix: "",
     Division: 0,
-    Info: ["Please consult the link above for more information."],
-    Requirements: [
-      {
-        description: "Courses",
-        args: [
-          [
-            {
-              placeholder: "Course 1",
-            },
-            {
-              placeholder: "Course 2",
-            },
-            {
-              placeholder: "Course 3",
-            },
-            {
-              placeholder: "Course 4",
-            },
-            {
-              placeholder: "Course 5",
-            },
-            {
-              placeholder: "Course 6",
-            },
-            {
-              placeholder: "Course 7",
-            },
-            {
-              placeholder: "Course 8",
-            },
-            {
-              placeholder: "Course 9",
-            },
-            {
-              placeholder: "Course 10",
-            },
-            {
-              placeholder: "Course 11",
-            },
-            {
-              placeholder: "Course 12",
-            },
-          ],
-          12,
-        ],
-      },
-    ],
-  },
-  "Generic Major": {
-    Link: "",
-    Prefix: "",
-    Division: 0,
     Info: [
-      "Use this as a blank slate to input your own courses, if you desire.",
+      "Please consult the link above for more information.",
+      "Advanced users may wish to use the Editor feature. Otherwise, the options below allow you to fill courses manually.",
     ],
     Requirements: [
       {
@@ -2858,7 +2807,7 @@ export const MAJORS = {
               regex: "^(MATH|STAT) (3|4)",
             },
             {
-              description: "MATH/STAT 300/400-level elective (1)",
+              description: "MATH/STAT 300/400-level elective (2)",
               regex: "^(MATH|STAT) (3|4)",
             },
             {

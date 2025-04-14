@@ -119,7 +119,9 @@ const MajorBuilder = ({
             majorBuilderSemesters: savedState.semesters,
           });
           for (let i = 0; i < 3; i++) {
-            selectMajor(savedState.selectedMajors[i] || "", i);
+            if (MAJORS[savedState.selectedMajors[i]]) {
+              selectMajor(savedState.selectedMajors[i] || "", i);
+            }
           }
           setMajorInputs(savedState.selectedMajors);
           setFulfilledBy(savedState.fulfilledBy);
@@ -137,14 +139,15 @@ const MajorBuilder = ({
 
   // Fetch old courses
   useEffect(() => {
-    const currentYear = new Date().getFullYear();
+    const currentYear = new Date().getFullYear() + 1;
     const yearsToFetch = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       const year = currentYear - i;
-      if (year >= COURSE_HISTORY_START_YEAR) {
-        if (!historicalCatalogs || !historicalCatalogs[year]) {
-          yearsToFetch.push(year);
-        }
+      if (
+        year >= COURSE_HISTORY_START_YEAR &&
+        (!historicalCatalogs || !historicalCatalogs[year])
+      ) {
+        yearsToFetch.push(year);
       } else {
         break;
       }
@@ -711,7 +714,9 @@ const MajorBuilder = ({
   };
 
   const truncateItemStr = (itemStr) => {
-    return itemStr.description || itemStr.placeholder || itemStr;
+    return typeof itemStr === "object"
+      ? itemStr.description || itemStr.placeholder || ""
+      : itemStr;
   };
   const truncateItemArr = (arr) => {
     return arr.map((str) => {
@@ -727,49 +732,70 @@ const MajorBuilder = ({
     for (let i = 0; i < 3; i++) {
       const selectedMajor = selectedMajors[i];
       if (!selectedMajor || selectedMajor === "") continue;
+      if (!MAJORS[selectedMajor]) {
+        clearMajor(i);
+        let newMajorInputs = [...majorInputs];
+        newMajorInputs[i] = "";
+        setMajorInputs(newMajorInputs);
+        continue;
+      }
       MAJORS[selectedMajor].Requirements.forEach((req) => {
         const reqKey = `${selectedMajor}-${req.description}`;
 
-        const result = checkRequireNComplex(
-          req.args,
-          selectedMajor,
-          grid,
-          newFulfilledBy,
-          newFulfillments
-        );
-        setFulfilledBy(result.fulfilledBy);
-        setFulfillments(result.fulfillments);
+        try {
+          const result = checkRequireNComplex(
+            req.args,
+            selectedMajor,
+            grid,
+            newFulfilledBy,
+            newFulfillments
+          );
 
-        const target = req.args[1];
+          setFulfilledBy(result.fulfilledBy);
+          setFulfillments(result.fulfillments);
 
-        let finalFulfilledCount = 0;
-        for (let item of req.args[0]) {
-          if (typeof item === "object" && item.description) {
-            item = [item.description];
-          }
-          if (typeof item === "object" && item.placeholder) {
-            item = [item.placeholder];
-          }
-          for (let itemStr of item) {
-            if (typeof itemStr === "object" && itemStr.description) {
-              itemStr = itemStr.description;
+          const target = req.args[1];
+
+          let finalFulfilledCount = 0;
+          for (let item of req.args[0]) {
+            if (typeof item === "object" && item.description) {
+              item = [item.description];
             }
-            if (typeof itemStr === "object" && itemStr.placeholder) {
-              itemStr = itemStr.placeholder;
+            if (typeof item === "object" && item.placeholder) {
+              item = [item.placeholder];
             }
-            itemStr = `${selectedMajor}-${itemStr}`;
-            if (
-              result.fulfilledBy[itemStr] &&
-              result.fulfilledBy[itemStr] !== "blocked"
-            ) {
-              finalFulfilledCount++;
-              break;
+            for (let itemStr of item) {
+              if (typeof itemStr === "object" && itemStr.description) {
+                itemStr = itemStr.description;
+              }
+              if (typeof itemStr === "object" && itemStr.placeholder) {
+                itemStr = itemStr.placeholder;
+              }
+              itemStr = `${selectedMajor}-${itemStr}`;
+              if (
+                result.fulfilledBy[itemStr] &&
+                result.fulfilledBy[itemStr] !== "blocked"
+              ) {
+                finalFulfilledCount++;
+                break;
+              }
             }
           }
+          // finalFulfilledCount = Math.min(finalFulfilledCount, target);
+
+          results[reqKey] = { result, finalFulfilledCount, target };
+        } catch (error) {
+          console.error("Error parsing requirement", reqKey, error);
+          results[reqKey] = {
+            result: {
+              autoFulfilledCount: 0,
+              placeholders: [],
+            },
+            finalFulfilledCount: -1,
+            target: -1,
+            error: error,
+          };
         }
-        // finalFulfilledCount = Math.min(finalFulfilledCount, target);
-
-        results[reqKey] = { result, finalFulfilledCount, target };
       });
     }
 
@@ -914,8 +940,10 @@ const MajorBuilder = ({
                   finalFulfilledCount: 0,
                   target: 0,
                 };
+              const resultError = requirementResults[reqKey]?.error;
 
-              const isMetOverall = finalFulfilledCount >= target;
+              const isMetOverall =
+                finalFulfilledCount >= target && !resultError;
 
               // Create "Needs" string for collapsed view
               let needsStr = "";
@@ -983,7 +1011,10 @@ const MajorBuilder = ({
                       {isMetOverall ? "✓" : "✕"}
                     </span>
                     <span className="requirement-description">
-                      {req.description} ({finalFulfilledCount}/{target})
+                      {finalFulfilledCount === -1 &&
+                      selectedMajor === "Custom Major"
+                        ? `Error: ${resultError}`
+                        : `${req.description} (${finalFulfilledCount}/${target})`}
                     </span>
                     {needsStr && (
                       <span className="collapsed-needs" title={needsStr}>
@@ -1071,8 +1102,16 @@ const MajorBuilder = ({
     return <div>Loading Major Builder...</div>;
   }
 
+  const customMajor = localStorage.getItem("courseSchedulerCustomMajor");
+  if (customMajor) {
+    try {
+      MAJORS["Custom Major"] = JSON.parse(customMajor);
+    } catch {
+      console.error("Error loading custom major");
+    }
+  }
+
   // RENDER
-  console.log(selectedMajors);
   return (
     <div
       className="major-builder-container"
@@ -1082,7 +1121,34 @@ const MajorBuilder = ({
       }}
     >
       <h2>Planner</h2>
-      <p>Plan your academic journey.</p>
+      <p>
+        Plan your academic journey. You may want to review the{" "}
+        <a className="major-info-link" href="https://registrar.williams.edu/">
+          Registrar&apos;s website
+        </a>
+        ,{" "}
+        <a
+          className="major-info-link"
+          href="https://registrar.williams.edu/degree-requirements-at-a-glance/"
+        >
+          degree requirements
+        </a>
+        ,{" "}
+        <a
+          className="major-info-link"
+          href="https://registrar.williams.edu/course-registration/placement-information/"
+        >
+          placement information
+        </a>
+        , and{" "}
+        <a
+          className="major-info-link"
+          href="https://registrar.williams.edu/early-concentration-rules"
+        >
+          early concentration restrictions
+        </a>
+        . Autofill availability is limited to existing catalogs.
+      </p>
       <div className="major-builder-options">
         <label>
           <input
@@ -1239,7 +1305,6 @@ const MajorBuilder = ({
           );
         })}
       </div>
-
       {selectedMajors.map((selectedMajor, idx) => {
         const key = `majors-${idx}`;
         if (!selectedMajor || selectedMajor === "") {
