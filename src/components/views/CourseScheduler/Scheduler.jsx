@@ -16,6 +16,7 @@ import Search from "./Search";
 import Timetable from "./Timetable";
 import AdditionalOptions from "./AdditionalOptions";
 import MajorBuilder from "./MajorBuilder";
+import MajorEditor from "./MajorEditor";
 
 // Redux (Selector, Reducer, Actions) imports
 import { getCurrSubMenu } from "../../../selectors/schedulerUtils";
@@ -121,10 +122,16 @@ const Scheduler = ({
             <Timetable />
           </div>
         );
-      case "Major Builder":
+      case "Planner":
         return (
           <div className="row">
             <MajorBuilder />
+          </div>
+        );
+      case "Editor":
+        return (
+          <div className="row">
+            <MajorEditor />
           </div>
         );
       default:
