@@ -1853,60 +1853,6 @@ export const MAJORS = {
       },
     ],
   },
-  "Generic Major": {
-    Link: "",
-    Prefix: "",
-    Division: 0,
-    Info: [
-      "Use this as a blank slate to input your own courses, if you desire.",
-    ],
-    Requirements: [
-      {
-        description: "Courses",
-        args: [
-          [
-            {
-              placeholder: "Course 1",
-            },
-            {
-              placeholder: "Course 2",
-            },
-            {
-              placeholder: "Course 3",
-            },
-            {
-              placeholder: "Course 4",
-            },
-            {
-              placeholder: "Course 5",
-            },
-            {
-              placeholder: "Course 6",
-            },
-            {
-              placeholder: "Course 7",
-            },
-            {
-              placeholder: "Course 8",
-            },
-            {
-              placeholder: "Course 9",
-            },
-            {
-              placeholder: "Course 10",
-            },
-            {
-              placeholder: "Course 11",
-            },
-            {
-              placeholder: "Course 12",
-            },
-          ],
-          12,
-        ],
-      },
-    ],
-  },
   "East Asian Languages and Cultures": {
     Link: "https://www.williams.edu/dallc/east-asian-languages-cultures-major/",
     Prefix: "",

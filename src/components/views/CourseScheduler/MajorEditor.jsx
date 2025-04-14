@@ -155,9 +155,9 @@ const MajorEditor = () => {
     setShowConfirmation(true);
   };
 
-  const handleImport = () => {
+  const handleImport = (text) => {
     try {
-      const parsed = JSON.parse(importText);
+      const parsed = JSON.parse(text);
       setLink(parsed.Link || "");
       setPrefix(parsed.Prefix || "");
       setDivision(parsed.Division || 0);
@@ -402,8 +402,8 @@ const MajorEditor = () => {
             onClick={() => {
               if (window.confirm("Are you sure?")) {
                 localStorage.removeItem("courseSchedulerCustomMajor");
-                setImportText(JSON.stringify({}));
-                setTimeout(handleImport, 0);
+                setImportText("");
+                handleImport(JSON.stringify({}));
               }
             }}
             className="tab"
@@ -673,7 +673,7 @@ const MajorEditor = () => {
               <p>Load the JSON format for an existing major.</p>
               <select onChange={(e) => setImportMajor(e.target.value)}>
                 {Object.keys(MAJORS)
-                  .filter((k) => k !== "Custom Major")
+                  .sort()
                   .map((major) => (
                     <option key={`major-import-${major}`} value={major}>
                       {major}
@@ -699,7 +699,7 @@ const MajorEditor = () => {
                 className="json-input"
               />
               <button
-                onClick={handleImport}
+                onClick={() => handleImport(importText)}
                 className="major-editor-button major-editor-button-primary"
               >
                 Import JSON
