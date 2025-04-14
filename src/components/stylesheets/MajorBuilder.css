@@ -72,7 +72,7 @@
   text-align: center;
   margin-top: 30px;
   margin-bottom: 15px;
-  color: #4b2771; /* Specific purple retained over general h2 */
+  color: #4b2771; /* WSO purple */
   border-bottom: 1px solid #eee;
   padding-bottom: 10px;
 }
@@ -83,7 +83,7 @@
 
 .major-requirements-display h3 {
   margin-top: 0;
-  color: #4b2771; /* Specific purple retained over general h3 */
+  color: #4b2771;
   border-bottom: 1px solid #eee;
   padding-bottom: 10px;
   margin-bottom: 15px;
@@ -128,10 +128,9 @@
   font-size: 1em;
   top: 0;
   z-index: 1;
-  /* position: sticky; /* Recommended */
 }
 
-.major-builder-grid td:first-child, /* Course number column */
+.major-builder-grid td:first-child,
 .major-builder-grid th:first-child {
   min-width: 80px;
   text-align: center;
@@ -139,7 +138,6 @@
   left: 0;
   background-color: #f2f2f2;
   z-index: 2;
-  /* position: sticky; /* Recommended */
 }
 
 .optional-course-row td:first-child {
@@ -326,7 +324,7 @@
   border-bottom: 1px solid #eee;
   gap: 10px;
   transition: background-color 0.2s ease;
-  margin-bottom: 16px; /* Added from new CSS */
+  margin-bottom: 16px;
 }
 .requirement-header:hover {
   background-color: #ededed;
@@ -527,7 +525,7 @@
 }
 
 .tab:hover {
-  color: var(--color-primary);
+  font-weight: bold;
 }
 
 .tab.active {
@@ -535,7 +533,6 @@
   font-weight: bold;
 }
 
-/* Card and Section Styles */
 .card {
   background-color: var(--color-light-shade);
   border-radius: 8px;
@@ -555,7 +552,6 @@
   margin-bottom: 16px;
 }
 
-/* Form and Input Fields */
 .form-row {
   display: flex;
   align-items: center;
@@ -598,7 +594,6 @@
   max-width: 100px;
 }
 
-/* Button Styles */
 .major-editor-button {
   padding: 8px 16px;
   border: none;
@@ -657,14 +652,12 @@
   color: var(--color-danger);
 }
 
-/* Info Items */
 .info-item {
   display: flex;
   align-items: center;
   margin-bottom: 8px;
 }
 
-/* Each top-level requirement has a "requirement-card" wrapper */
 .requirement-card {
   background-color: #fff;
   border: 1px solid #ddd;
@@ -674,7 +667,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* The row at the top for the requirement’s name, e.g. "Introduction" */
 .requirement-header {
   display: flex;
   align-items: flex-start;
@@ -684,7 +676,6 @@
   border-bottom: 1px solid #eee;
 }
 
-/* Additional spacing/structure for the “Description” and “Required Count” inputs */
 .requirement-header .form-row {
   margin-bottom: 0;
   flex: 1;
@@ -699,13 +690,11 @@
   max-width: 300px;
 }
 
-/* The "Remove Requirement" button at top right */
 .major-editor-button-danger {
   margin-left: auto !important;
   align-self: center;
 }
 
-/* Container for the entire groups section inside a requirement */
 .groups-container {
   margin-top: 16px;
   border: 1px dashed #ddd;
@@ -713,7 +702,6 @@
   padding: 16px;
 }
 
-/* The row for “Groups” heading + “Add Group” button */
 .groups-header {
   display: flex;
   justify-content: space-between;
@@ -721,7 +709,6 @@
   margin-bottom: 12px;
 }
 
-/* A single group block inside the requirement */
 .group-card {
   background-color: #fafafa;
   border: 1px solid #ccc;
@@ -730,7 +717,6 @@
   margin-bottom: 16px;
 }
 
-/* The row at the top for “Group 1” label + “Remove Group” button */
 .group-header {
   display: flex;
   justify-content: space-between;
@@ -743,10 +729,9 @@
   color: var(--color-info, #2a2f41);
 }
 
-/* Each item row is one “requirement” within a group */
 .item-row {
   display: flex;
-  flex-direction: column; /* Stack the selects & inputs vertically */
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 12px;
   padding: 12px;
@@ -759,7 +744,6 @@
   margin-bottom: 0;
 }
 
-/* The top row of fields within an item, e.g. a type dropdown & placeholder toggle */
 .requirement-item {
   display: flex;
   flex-wrap: wrap;
@@ -767,12 +751,10 @@
   gap: 12px;
 }
 
-/* “Remove Item” button at the end of an item row */
 .item-row > .major-editor-button-icon:last-child {
   margin-left: auto;
 }
 
-/* More uniform looks for the type dropdown and placeholder checkbox label */
 .requirement-item select {
   min-width: 140px;
 }
@@ -784,20 +766,17 @@
   font-size: 0.9rem;
 }
 
-/* The single input for “placeholder text” or “filter value” */
 .requirement-item input[type="text"],
 .requirement-item input[type="number"] {
   flex: 1;
   max-width: 280px;
 }
 
-/* The button row at the bottom of each group (“Add Item” etc.) */
 .group-card > button.major-editor-button-secondary {
   margin-top: 12px;
   width: auto;
 }
 
-/* Slight improvements for repeated “Add Extra Field” or “Add Item” type of buttons */
 .major-editor-button-secondary {
   display: inline-flex;
   align-items: center;
@@ -805,9 +784,6 @@
   font-size: 0.9rem;
 }
 
-/* ---------------------------------------------
-   Fine-tuning for better spacing & readability
----------------------------------------------- */
 .form-row {
   margin-bottom: 16px;
 }
@@ -828,7 +804,6 @@
   margin-bottom: 0 !important;
 }
 
-/* JSON Output Styling */
 .json-preview {
   background-color: #f8f8f8;
   padding: 16px;
@@ -840,7 +815,6 @@
   white-space: pre-wrap;
 }
 
-/* Import Textarea */
 .json-input {
   width: 100%;
   height: 200px;
@@ -853,7 +827,6 @@
   resize: vertical;
 }
 
-/* Confirmation Toast */
 .confirmation-toast {
   position: fixed;
   bottom: 20px;
