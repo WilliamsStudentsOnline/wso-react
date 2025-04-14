@@ -1802,7 +1802,10 @@ export const MAJORS = {
     Link: "https://registrar.williams.edu/contract-major/",
     Prefix: "",
     Division: 0,
-    Info: ["Please consult the link above for more information."],
+    Info: [
+      "Please consult the link above for more information.",
+      "Advanced users may wish to use the Editor feature. Otherwise, the options below allow you to fill courses manually.",
+    ],
     Requirements: [
       {
         description: "Courses",
@@ -2858,7 +2861,7 @@ export const MAJORS = {
               regex: "^(MATH|STAT) (3|4)",
             },
             {
-              description: "MATH/STAT 300/400-level elective (1)",
+              description: "MATH/STAT 300/400-level elective (2)",
               regex: "^(MATH|STAT) (3|4)",
             },
             {
