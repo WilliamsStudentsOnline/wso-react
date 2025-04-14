@@ -1,5 +1,5 @@
 // React imports
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -21,6 +21,7 @@ import {
 import { getTimeFormat } from "../../../selectors/schedulerUtils";
 import { BORDER_PALETTE } from "../../../constants/constants";
 import { Link } from "react-router-dom";
+import { getCurrSubMenu } from "../../../selectors/schedulerUtils";
 
 // External imports
 import dayjs from "dayjs";
@@ -31,18 +32,11 @@ dayjs.extend(customParseFormat);
 
 const FactrakRatingBox = ({ showFactrakScore, course }) => {
   const [tooltipVisible, setTooltipVisible] = useState(false);
-  const divRef = useRef(null);
 
   const getRatingsVisible = () => {
-    if (divRef.current?.closest(".timetable")) return "hidden";
-    if (
-      !showFactrakScore ||
-      !course.factrakScore ||
-      course.factrakScore === -1
-    ) {
-      return "hidden";
-    }
-    return "visible";
+    if (showFactrakScore && course.factrakScore && course.factrakScore !== -1)
+      return "visible";
+    return "hidden";
   };
 
   const getFactrakUrl = () => {
@@ -73,7 +67,6 @@ const FactrakRatingBox = ({ showFactrakScore, course }) => {
 
   return (
     <div
-      ref={divRef}
       className="factrak-rating"
       style={{
         backgroundColor: getRatingColor(getFactrakRating()),
@@ -110,6 +103,7 @@ const Course = ({
   onUnhide,
   twelveHour,
   showFactrakScore,
+  active,
 }) => {
   const [bodyHidden, setHidden] = useState(true);
 
@@ -365,7 +359,7 @@ const Course = ({
       role="presentation"
     >
       <FactrakRatingBox
-        showFactrakScore={showFactrakScore}
+        showFactrakScore={showFactrakScore && active === "Catalog"}
         course={course}
       ></FactrakRatingBox>
       <div className="course-header">
@@ -458,6 +452,7 @@ Course.propTypes = {
   location: PropTypes.string,
   course: PropTypes.object.isRequired,
   showFactrakScore: PropTypes.bool.isRequired,
+  active: PropTypes.string,
 };
 
 Course.defaultProps = {
@@ -469,6 +464,7 @@ const mapStateToProps = (state) => ({
   added: getAddedCourses(state),
   twelveHour: getTimeFormat(state),
   showFactrakScore: getShowFactrakScore(state),
+  active: getCurrSubMenu(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
