@@ -918,6 +918,16 @@ const MajorBuilder = ({
     );
   };
 
+  const parseCustomMajorError = (error) => {
+    if (error.includes("is not iterable")) {
+      return "Did you forget to add a description?";
+    } else if (error.includes("Invalid regular")) {
+      return "Invalid regular expression";
+    } else {
+      return error;
+    }
+  };
+
   const requirementsList = useMemo(() => {
     const requirementsMemo = [];
     for (let i = 0; i < 3; i++) {
@@ -967,7 +977,7 @@ const MajorBuilder = ({
 
                     if (!isSlotMet) {
                       if (Array.isArray(itemOrGroup)) {
-                        if (itemOrGroup[0].description) {
+                        if (itemOrGroup[0]?.description) {
                           const rstri = [];
                           for (const item of itemOrGroup) {
                             rstri.push(item.description || item.placeholder);
@@ -1013,7 +1023,7 @@ const MajorBuilder = ({
                     <span className="requirement-description">
                       {finalFulfilledCount === -1 &&
                       selectedMajor === "Custom Major"
-                        ? `Error: ${resultError}`
+                        ? `Error: ${parseCustomMajorError(`${resultError}`)}`
                         : `${req.description} (${finalFulfilledCount}/${target})`}
                     </span>
                     {needsStr && (
