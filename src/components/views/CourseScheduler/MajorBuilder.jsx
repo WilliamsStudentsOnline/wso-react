@@ -714,7 +714,9 @@ const MajorBuilder = ({
   };
 
   const truncateItemStr = (itemStr) => {
-    return itemStr.description || itemStr.placeholder || "";
+    return typeof itemStr === "object"
+      ? itemStr.description || itemStr.placeholder || ""
+      : itemStr;
   };
   const truncateItemArr = (arr) => {
     return arr.map((str) => {

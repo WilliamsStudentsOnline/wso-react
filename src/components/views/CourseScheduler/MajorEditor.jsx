@@ -12,7 +12,7 @@ const MajorEditor = () => {
   const [activeTab, setActiveTab] = useState("editor");
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState("");
-  const [importMajor, setImportMajor] = useState("");
+  const [importMajor, setImportMajor] = useState(Object.keys(MAJORS)[0]);
 
   const addInfo = () => setInfoList([...infoList, ""]);
   const updateInfo = (i, value) => {
@@ -116,7 +116,6 @@ const MajorEditor = () => {
   // If an item has no extra fields, output as { placeholder: <description> }
   // Otherwise, output as { description: <description>, and then one key per extra field }
   const convertRequirementItem = (item) => {
-    console.log(item);
     const desc = item.description.trim();
     if (item.extraFields.length === 0) {
       return { placeholder: desc };
@@ -404,7 +403,7 @@ const MajorEditor = () => {
               if (window.confirm("Are you sure?")) {
                 localStorage.removeItem("courseSchedulerCustomMajor");
                 setImportText(JSON.stringify({}));
-                handleImport();
+                setTimeout(handleImport, 0);
               }
             }}
             className="tab"
