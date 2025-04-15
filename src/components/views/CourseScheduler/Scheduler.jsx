@@ -69,10 +69,14 @@ const Scheduler = ({
       }
     };
 
-    const loadCatalogCourses = () => {
+    const loadCatalogCourses = (prohibitFactrak = false) => {
       // if logged in as student, fetch catalog with factrak reviews
       let jsonURL = "/courses.json";
-      if (token && containsOneOfScopes(token, [scopes.ScopeFactrakFull])) {
+      if (
+        !prohibitFactrak &&
+        token &&
+        containsOneOfScopes(token, [scopes.ScopeFactrakFull])
+      ) {
         jsonURL = "/courses-factrak.json";
       }
 
@@ -80,7 +84,7 @@ const Scheduler = ({
         "X-Requested-With": "XMLHttpRequest",
       };
 
-      if (token) {
+      if (!prohibitFactrak && token) {
         axios_headers["Authorization"] = "Bearer " + token;
       }
 
@@ -88,7 +92,11 @@ const Scheduler = ({
         url: jsonURL,
         headers: axios_headers,
       }).then((response) => {
-        loadCatalog(response.data);
+        if (response.status !== 200 || response.statusText !== "OK") {
+          loadCatalogCourses(true);
+        } else {
+          loadCatalog(response.data);
+        }
       });
     };
 
