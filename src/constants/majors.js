@@ -2933,6 +2933,94 @@ export const MAJORS = {
       },
     ],
   },
+  Theatre: {
+    Link: "https://theatre.williams.edu/the-major/",
+    Prefix: "THEA",
+    Division: 1,
+    Info: [
+      "Five additional elective courses must be taken from the department’s other offerings (including courses cross-listed with Theatre). Two of the five electives must be taken at the 200-level or higher by the end of the student’s junior year, and an additional two of the five must be taken at the 300-level or higher by the time of graduation.",
+      "All majors in Theatre are required to participate in a minimum of four department productions. Participation in at least one of these four must be in stage management. Assignment to productions in stage management must be made in consultation with the department Chair. Students participating in a production will be enrolled in THEA 290-299: Theatre Department Production as a partial-credit, fifth course, admitted by permission of the department Chair and evaluated on a Pass/Fail basis only. Students remaining in the course beyond the sixth week of the start of a term will be graded by the instructor. Enrollment is by audition or appointment within the Theatre department. Students who do not wish to enroll for credit will be given the opportunity by the department to be removed from the course. Rehearsals for productions are scheduled TBA, based on the availability of the ensemble, and do not conflict with other academic commitments, such as evening courses or evening exams. The department normally produces three productions per academic year. Students may enroll in multiple productions in the same semester and may repeat a production course by permission of the department Chair. For each departmental production they participate in, a student will receive a partial credit of .5 on their College transcript. Production credits do not accrue, nor do they count towards a student’s 32 required course credits for graduation.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "THEA 101",
+              course: "THEA 101",
+            },
+            {
+              description: "THEA 201",
+              course: "THEA 201",
+            },
+            {
+              description: "THEA 301",
+              course: "THEA 301",
+            },
+            {
+              description: "THEA 401",
+              course: "THEA 401",
+            },
+          ],
+          4,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "200-level elective by junior year (1)",
+              regex: "^THEA (2|3|4)",
+              ignore: ["THEA 101", "THEA 201", "THEA 301", "THEA 401"],
+            },
+            {
+              description: "200-level elective by junior year (2)",
+              regex: "^THEA (2|3|4)",
+              ignore: ["THEA 101", "THEA 201", "THEA 301", "THEA 401"],
+            },
+            {
+              description: "300-level elective (1)",
+              regex: "^THEA (3|4)",
+              ignore: ["THEA 101", "THEA 201", "THEA 301", "THEA 401"],
+            },
+            {
+              description: "300-level elective (2)",
+              regex: "^THEA (3|4)",
+              ignore: ["THEA 101", "THEA 201", "THEA 301", "THEA 401"],
+            },
+            {
+              description: "Elective (any)",
+              regex: "^THEA",
+              ignore: ["THEA 101", "THEA 201", "THEA 301", "THEA 401"],
+            },
+          ],
+          5,
+        ],
+      },
+      {
+        description: "Productions",
+        args: [
+          [
+            {
+              placeholder: "Production (stage management) (1)",
+            },
+            {
+              placeholder: "Production (any) (2)",
+            },
+            {
+              placeholder: "Production (any) (3)",
+            },
+            {
+              placeholder: "Production (any) (4)",
+            },
+          ],
+          4,
+        ],
+      },
+    ],
+  },
   Music: {
     Link: "https://music.williams.edu/the-major/",
     Prefix: "MUS",
