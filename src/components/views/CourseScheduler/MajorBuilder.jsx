@@ -1287,9 +1287,7 @@ const MajorBuilder = ({
                 value={majorInputs[index]}
                 onChange={(event) => handleMajorInputChange(event, index)}
                 onBlur={handleMajorAutocompleteBlur}
-                placeholder={
-                  index === 2 ? "Type major... (seriously?)" : "Type major..."
-                }
+                placeholder={"Type major..."}
                 autoComplete="off"
               />
               {majorAutocompleteVisible === index &&
