@@ -81,13 +81,13 @@ To aid in your development process, we also suggest installing the following:
 - Configuring [ES-Lint](https://eslint.org/) to work with your editor. Like Prettier, we have a pre-commit hook to ensure that your code fits our standards, but unlike the Prettier hook, the commit will fail if there are errors, so it will help your development loop if it is configured with your editor.
 
 **Styling**
-Styling is currently done via vanilla CSS, although we will likely be moving to a React component library soon (see [issue #2](https://github.com/WilliamsStudentsOnline/wso-react/issues/2)).
+Styling is currently done via vanilla CSS. Edit existing stylesheets or, for larger features, create new ones, and make sure to include them in the appropriate `.tsx`/`.jsx` files.
 
 **Where to begin:**
 
 - Start by reading the section on contributing to find out the ways you can contribute to this repository. Contrary to popular belief, contributions need not come in the form of code. Fixing typos, creating issues for bugs, adding comments, suggesting tutorials, and helping out the community are valued ways of contributing.
 - If you're interested in learning more about React and Redux, we recommend [this tutorial](https://www.robinwieruch.de/react-redux-tutorial/#react-redux-and-x-tutorial).
-- Look out for issues labelled as 'good first issue' [here](https://github.com/WilliamsStudentsOnline/wso-react/labels/good%20first%20issue). These issues are usually what we have deemed to be great places to get your feet wet.
+- Look out for issues labelled as 'good first issue' [here](https://github.com/WilliamsStudentsOnline/wso-react/labels/good%20first%20issue), or just ask us what needs fixing!
 
 ## Available Scripts
 
