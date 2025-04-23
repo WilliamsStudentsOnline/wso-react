@@ -127,10 +127,6 @@ const Nav = () => {
                 <a href="/wiki/">Wiki</a>
               </li>
             )}
-
-            <li>
-              <Link to="about">About</Link>
-            </li>
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
             </li>
