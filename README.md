@@ -7,6 +7,8 @@ This repository contains all the front-end code to the Williams Student Online w
 
 Interested in the back-end instead? Head over to our backend [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/).
 
+See our [frontend wiki](https://wso-dev.williams.edu/wiki/wso-react/) for more detailed info (if you are on campus/connected via VPN).
+
 ## Suggestions, issues, or bug reports?
 
 We would love to hear from you and discuss them. File an issue [here](https://github.com/WilliamsStudentsOnline/wso-react/issues/new) with one of the templates, and our developers will get back to you shortly!
