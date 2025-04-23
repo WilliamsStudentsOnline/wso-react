@@ -64,9 +64,11 @@ to launch a development build, which includes Hot Module Reload(HMR), where chan
 
 **5) Communicating with the Backend**
 
-While we've set up the React side of things, we need to set up the backend to allow our client to get the information from a local server. To do so, set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/), and run the `wso-go` server alongside the React development server at `yarn start`.
+By default, the development server will communicate with [wso-dev.williams.edu](wso-dev.wso.williams.edu). This is fine for most frontend-focused development!
 
-The development server is set to communicate to the backend via a proxy, allowing all HTTP requests can thus be made to `/path/to/endpoint` without further settings.
+However, you may wish to set up the backend to allow our client to get the information from a local server. To do so, set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/), and run the `wso-go` server alongside the React development server. If you're working in VSCode, you should see ports `:8080` (backend) and `:3000` (frontend) in use on your machine. You should then change `setupProxy.js` to point to `localhost:8080` (instead of `wso-dev`) to access your local development backend.
+
+`setupProxy.js` enables all HTTP requests to be made to `/path/to/endpoint` without further settings--so don't worry about changing URL paths!
 
 ## Development
 
