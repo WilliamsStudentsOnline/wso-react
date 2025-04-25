@@ -248,9 +248,10 @@ const MajorBuilder = ({
       const semesterFiltered = catalogForYear.filter(
         (c) =>
           c.semester === targetTerm &&
-          !grid.some((sem) =>
-            sem.some((cell) => cell.course?.courseID === c.courseID)
-          )
+          (c.components.includes("Independent Study") ||
+            !grid.some((sem) =>
+              sem.some((cell) => cell.course?.courseID === c.courseID)
+            ))
       );
       const queryFiltered = semesterFiltered.filter(
         (c) =>
