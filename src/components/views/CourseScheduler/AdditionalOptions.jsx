@@ -410,8 +410,10 @@ const AdditionalOptions = ({
         <span className="last-update">
           {updateTime ? `Catalog last updated on ${updateTime}` : ""}
           <br></br>
-          Factrak reviews are aggregated from archival data; check Factrak for
-          only recent reviews
+          <div style={{ lineHeight: "1em" }}>
+            Factrak reviews are aggregated from archival data; check Factrak for
+            only recent reviews
+          </div>
         </span>
       </div>
     </div>
