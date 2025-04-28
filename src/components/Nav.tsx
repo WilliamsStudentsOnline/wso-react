@@ -120,12 +120,13 @@ const Nav = () => {
             <li>
               <Link to="faq">FAQ</Link>
             </li>
-            <li>
-              <a href="/wiki/">Wiki</a>
-            </li>
-            <li>
-              <Link to="about">About</Link>
-            </li>
+
+            {/* wiki link is disabled on prod */}
+            {!window.location.href.includes("wso.williams.edu") && (
+              <li>
+                <a href="/wiki/">Wiki</a>
+              </li>
+            )}
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
             </li>

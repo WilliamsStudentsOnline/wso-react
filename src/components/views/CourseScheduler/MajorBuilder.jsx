@@ -26,7 +26,12 @@ import {
   COURSE_HISTORY_START_YEAR,
   CURRENT_ACADEMIC_YEAR,
 } from "../../../constants/constants";
-import { MAJORS, checkRequireNComplex } from "../../../constants/majors";
+import {
+  MAJORS,
+  CONCENTRATIONS,
+  checkRequireNComplex,
+  COURSES_OF_STUDY,
+} from "../../../constants/majors";
 import { getSelectedMajors } from "../../../selectors/majorRequirements";
 import { doSelectMajor } from "../../../reducers/majorRequirements";
 import {
@@ -60,12 +65,14 @@ const MajorBuilder = ({
   const [autocompleteVisible, setAutocompleteVisible] = useState(false);
 
   // Major autocomplete
-  const [majorInputs, setMajorInputs] = useState(["", "", ""]);
-  const [majorAutocompleteVisible, setMajorAutocompleteVisible] = useState(-1);
-  const [majorAutocompleteResults, setMajorAutocompleteResults] = useState([]);
+  const [majorInputs, setMajorInputs] = useState(["", "", "", "", "", ""]);
+  const [concentrationAutocompleteVisible, setMajorAutocompleteVisible] =
+    useState(-1);
+  const [concentrationAutocompleteResults, setMajorAutocompleteResults] =
+    useState([]);
 
   // Visuals
-  const [showDivisionColors, setShowDivisionColors] = useState(true);
+  const [showGridColors, setShowGridColors] = useState("");
   const [expandedReqs, setExpandedReqs] = useState({});
 
   // Fulfillments
@@ -95,7 +102,7 @@ const MajorBuilder = ({
           savedState.grid &&
           savedState.semesters &&
           savedState.selectedMajors &&
-          savedState.selectedMajors.length === 3 &&
+          savedState.selectedMajors.length === 6 &&
           savedState.fulfilledBy &&
           savedState.fulfillments &&
           savedState.grid.length === MAJOR_BUILDER_SEMESTERS &&
@@ -120,6 +127,11 @@ const MajorBuilder = ({
           });
           for (let i = 0; i < 3; i++) {
             if (MAJORS[savedState.selectedMajors[i]]) {
+              selectMajor(savedState.selectedMajors[i] || "", i);
+            }
+          }
+          for (let i = 3; i < 6; i++) {
+            if (CONCENTRATIONS[savedState.selectedMajors[i]]) {
               selectMajor(savedState.selectedMajors[i] || "", i);
             }
           }
@@ -248,9 +260,10 @@ const MajorBuilder = ({
       const semesterFiltered = catalogForYear.filter(
         (c) =>
           c.semester === targetTerm &&
-          !grid.some((sem) =>
-            sem.some((cell) => cell.course?.courseID === c.courseID)
-          )
+          (c.components.includes("Independent Study") ||
+            !grid.some((sem) =>
+              sem.some((cell) => cell.course?.courseID === c.courseID)
+            ))
       );
       const queryFiltered = semesterFiltered.filter(
         (c) =>
@@ -523,23 +536,33 @@ const MajorBuilder = ({
   };
 
   const getGridCellColor = (course) => {
-    if (!course || !showDivisionColors || !course.courseAttributes) {
+    if (!course || showGridColors === "" || !course.courseAttributes) {
       return {};
     }
 
-    const div3Color = "rgba(99, 131, 133, 0.15)";
-    const div2Color = "rgba(143, 149, 100, 0.15)";
-    const div1Color = "rgba(143, 100, 120, 0.15)";
+    const colors = [
+      "rgba(99, 131, 133, 0.15)",
+      "rgba(143, 149, 100, 0.15)",
+      "rgba(143, 100, 120, 0.15)",
+    ];
 
-    if (course.courseAttributes.div1) {
-      return { backgroundColor: div1Color };
+    if (showGridColors === "division") {
+      if (course.courseAttributes.div1) {
+        return { backgroundColor: colors[2] };
+      }
+      if (course.courseAttributes.div2) {
+        return { backgroundColor: colors[1] };
+      }
+      if (course.courseAttributes.div3) {
+        return { backgroundColor: colors[0] };
+      }
+    } else if (showGridColors === "major") {
+      if (fulfillments[course.courseID]) {
+        const major = fulfillments[course.courseID].split("-")[0];
+        return { backgroundColor: colors[selectedMajors.indexOf(major)] };
+      }
     }
-    if (course.courseAttributes.div2) {
-      return { backgroundColor: div2Color };
-    }
-    if (course.courseAttributes.div3) {
-      return { backgroundColor: div3Color };
-    }
+
     return {};
   };
 
@@ -548,13 +571,14 @@ const MajorBuilder = ({
   };
   const setAllReqsExpansion = (majorName, isExpanded) => {
     const newExpanded = { ...expandedReqs };
-    MAJORS[majorName]?.Requirements.forEach((req) => {
+    COURSES_OF_STUDY[majorName]?.Requirements.forEach((req) => {
       newExpanded[`${majorName}-${req.description}`] = isExpanded;
     });
     setExpandedReqs(newExpanded);
   };
 
   const handleMajorInputChange = (event, index) => {
+    const REQUIREMENTS_OBJECT = index < 3 ? MAJORS : CONCENTRATIONS;
     const value = event.target.value;
     const newMajorInputs = [...majorInputs];
     const selectedMajor = majorInputs[index];
@@ -565,7 +589,7 @@ const MajorBuilder = ({
 
     if (value.length > 0) {
       const lowerValue = value.toLowerCase();
-      const results = Object.keys(MAJORS)
+      const results = Object.keys(REQUIREMENTS_OBJECT)
         .filter(
           (majorName) =>
             majorName.toLowerCase().includes(lowerValue) &&
@@ -580,7 +604,7 @@ const MajorBuilder = ({
       const newFulfillments = JSON.parse(JSON.stringify(fulfillments));
       const newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
       if (hadMajor) {
-        for (const req of MAJORS[selectedMajor].Requirements) {
+        for (const req of REQUIREMENTS_OBJECT[selectedMajor].Requirements) {
           for (let itemOrGroup of req.args[0]) {
             if (!Array.isArray(itemOrGroup)) {
               itemOrGroup = [itemOrGroup];
@@ -655,7 +679,11 @@ const MajorBuilder = ({
     }));
   };
 
-  const handleOverrideAutocompleteSelect = (selectedGridCourse, itemStr) => {
+  const handleOverrideAutocompleteSelect = (
+    selectedGridCourse,
+    itemStr,
+    overrideFulfillments = true
+  ) => {
     if (selectedGridCourse === "Manual override") {
       setFulfilledBy({ ...fulfilledBy, [itemStr]: "manual" });
       return;
@@ -664,15 +692,20 @@ const MajorBuilder = ({
     const newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
     const newFulfillments = JSON.parse(JSON.stringify(fulfillments));
     for (const iStr in newFulfilledBy) {
-      if (newFulfilledBy[iStr].courseID === selectedGridCourse.courseID) {
+      if (
+        overrideFulfillments &&
+        newFulfilledBy[iStr].courseID === selectedGridCourse.courseID
+      ) {
         delete newFulfilledBy[iStr];
       }
     }
 
-    newFulfillments[selectedGridCourse.courseID] = itemStr;
+    if (overrideFulfillments) {
+      newFulfillments[selectedGridCourse.courseID] = itemStr;
+      setFulfillments(newFulfillments);
+    }
     newFulfilledBy[itemStr] = selectedGridCourse;
     setFulfilledBy(newFulfilledBy);
-    setFulfillments(newFulfillments);
 
     setOverrideInputState({
       reqKey: null,
@@ -729,76 +762,82 @@ const MajorBuilder = ({
     const results = {};
     var newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
     var newFulfillments = JSON.parse(JSON.stringify(fulfillments));
-    for (let i = 0; i < 3; i++) {
-      const selectedMajor = selectedMajors[i];
-      if (!selectedMajor || selectedMajor === "") continue;
-      if (!MAJORS[selectedMajor]) {
+    for (let i = 0; i < 6; i++) {
+      const REQUIREMENTS_OBJECT = i < 3 ? MAJORS : CONCENTRATIONS;
+      const selectedMajorOrConcentration = selectedMajors[i];
+      if (!selectedMajorOrConcentration || selectedMajorOrConcentration === "")
+        continue;
+      if (!REQUIREMENTS_OBJECT[selectedMajorOrConcentration]) {
         clearMajor(i);
         let newMajorInputs = [...majorInputs];
         newMajorInputs[i] = "";
         setMajorInputs(newMajorInputs);
         continue;
       }
-      MAJORS[selectedMajor].Requirements.forEach((req) => {
-        const reqKey = `${selectedMajor}-${req.description}`;
+      REQUIREMENTS_OBJECT[selectedMajorOrConcentration].Requirements.forEach(
+        (req) => {
+          const reqKey = `${selectedMajorOrConcentration}-${req.description}`;
 
-        try {
-          const result = checkRequireNComplex(
-            req.args,
-            selectedMajor,
-            grid,
-            newFulfilledBy,
-            newFulfillments
-          );
+          try {
+            const result = checkRequireNComplex(
+              req.args,
+              selectedMajorOrConcentration,
+              grid,
+              newFulfilledBy,
+              newFulfillments,
+              i < 3
+            );
 
-          setFulfilledBy(result.fulfilledBy);
-          setFulfillments(result.fulfillments);
-
-          const target = req.args[1];
-
-          let finalFulfilledCount = 0;
-          for (let item of req.args[0]) {
-            if (typeof item === "object" && item.description) {
-              item = [item.description];
+            setFulfilledBy(result.fulfilledBy);
+            if (i < 3) {
+              setFulfillments(result.fulfillments);
             }
-            if (typeof item === "object" && item.placeholder) {
-              item = [item.placeholder];
+
+            const target = req.args[1];
+
+            let finalFulfilledCount = 0;
+            for (let item of req.args[0]) {
+              if (typeof item === "object" && item.description) {
+                item = [item.description];
+              }
+              if (typeof item === "object" && item.placeholder) {
+                item = [item.placeholder];
+              }
+              for (let itemStr of item) {
+                if (typeof itemStr === "object" && itemStr.description) {
+                  itemStr = itemStr.description;
+                }
+                if (typeof itemStr === "object" && itemStr.placeholder) {
+                  itemStr = itemStr.placeholder;
+                }
+                itemStr = `${selectedMajorOrConcentration}-${itemStr}`;
+                if (
+                  result.fulfilledBy[itemStr] &&
+                  result.fulfilledBy[itemStr] !== "blocked"
+                ) {
+                  finalFulfilledCount++;
+                  break;
+                }
+              }
             }
-            for (let itemStr of item) {
-              if (typeof itemStr === "object" && itemStr.description) {
-                itemStr = itemStr.description;
-              }
-              if (typeof itemStr === "object" && itemStr.placeholder) {
-                itemStr = itemStr.placeholder;
-              }
-              itemStr = `${selectedMajor}-${itemStr}`;
-              if (
-                result.fulfilledBy[itemStr] &&
-                result.fulfilledBy[itemStr] !== "blocked"
-              ) {
-                finalFulfilledCount++;
-                break;
-              }
-            }
+            // finalFulfilledCount = Math.min(finalFulfilledCount, target);
+
+            results[reqKey] = { result, finalFulfilledCount, target };
+          } catch (error) {
+            console.error("Error parsing requirement", reqKey, error);
+            results[reqKey] = {
+              result: {
+                autoFulfilledCount: 0,
+                placeholders: [],
+              },
+              finalFulfilledCount: -1,
+              target: -1,
+              error: error,
+            };
           }
-          // finalFulfilledCount = Math.min(finalFulfilledCount, target);
-
-          results[reqKey] = { result, finalFulfilledCount, target };
-        } catch (error) {
-          console.error("Error parsing requirement", reqKey, error);
-          results[reqKey] = {
-            result: {
-              autoFulfilledCount: 0,
-              placeholders: [],
-            },
-            finalFulfilledCount: -1,
-            target: -1,
-            error: error,
-          };
         }
-      });
+      );
     }
-
     return results;
   }, [getFlatUserCourses, selectedMajors, triggerFetch]);
 
@@ -807,7 +846,8 @@ const MajorBuilder = ({
     itemStr,
     result,
     reqKey,
-    subItemClass
+    subItemClass,
+    isConcentration = false
   ) => {
     const itemRenderStr = truncateItemStr(itemStr);
     const itemKeyStr = `${majorStr}-${itemRenderStr}`;
@@ -876,7 +916,11 @@ const MajorBuilder = ({
                   <li
                     key={course.courseID || course}
                     onClick={() =>
-                      handleOverrideAutocompleteSelect(course, itemKeyStr)
+                      handleOverrideAutocompleteSelect(
+                        course,
+                        itemKeyStr,
+                        !isConcentration
+                      )
                     }
                     role="presentation"
                   >
@@ -930,7 +974,7 @@ const MajorBuilder = ({
 
   const requirementsList = useMemo(() => {
     const requirementsMemo = [];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 6; i++) {
       const selectedMajor = selectedMajors[i];
       if (!selectedMajor || selectedMajor === "") {
         requirementsMemo.push(<div></div>);
@@ -938,8 +982,8 @@ const MajorBuilder = ({
       }
       requirementsMemo.push(
         <div className="requirements-list">
-          {MAJORS[selectedMajor] &&
-            MAJORS[selectedMajor].Requirements.map((req, idx) => {
+          {COURSES_OF_STUDY[selectedMajor] &&
+            COURSES_OF_STUDY[selectedMajor].Requirements.map((req, idx) => {
               const reqKey = `${selectedMajor}-${req.description}`;
 
               const isExpanded = !!expandedReqs[reqKey];
@@ -1066,7 +1110,8 @@ const MajorBuilder = ({
                                     itemStr,
                                     result,
                                     reqKey,
-                                    "sub-item"
+                                    "sub-item",
+                                    i >= 3
                                   );
                                 })}
                               </ul>
@@ -1116,6 +1161,7 @@ const MajorBuilder = ({
   if (customMajor) {
     try {
       MAJORS["Custom Major"] = JSON.parse(customMajor);
+      COURSES_OF_STUDY["Custom Major"] = JSON.parse(customMajor);
     } catch {
       console.error("Error loading custom major");
     }
@@ -1126,7 +1172,7 @@ const MajorBuilder = ({
     <div
       className="major-builder-container"
       style={{
-        paddingBottom: `${majorAutocompleteResults.length * 2 + 2}em`,
+        paddingBottom: `${concentrationAutocompleteResults.length * 2 + 2}em`,
         transition: "none",
       }}
     >
@@ -1163,10 +1209,22 @@ const MajorBuilder = ({
         <label>
           <input
             type="checkbox"
-            checked={showDivisionColors}
-            onChange={() => setShowDivisionColors(!showDivisionColors)}
+            checked={showGridColors === "division"}
+            onChange={() =>
+              setShowGridColors(showGridColors === "division" ? "" : "division")
+            }
           />{" "}
-          Highlight Division Colors
+          Color grid by division
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={showGridColors === "major"}
+            onChange={() =>
+              setShowGridColors(showGridColors === "major" ? "" : "major")
+            }
+          />{" "}
+          Color grid by major
         </label>
       </div>
       <div className="major-builder-grid">
@@ -1259,15 +1317,16 @@ const MajorBuilder = ({
       <h2>Major Builder</h2>
       <p>
         Pick a course of study that&apos;s right for you. Enter your courses
-        above and/or click the boxes below to plan your major(s).
+        above and/or click the boxes below to plan your major(s) and/or
+        concentration(s).
       </p>
       <p style={{ fontStyle: "italic" }}>
         Disclaimer: this feature is still in beta, and may not correctly
-        autofill every course in every major. Always consult department websites
-        for accurate and up-to-date major requirements. Please report any
-        autofill bugs or incorrect major information to{" "}
+        autofill every course in every major/concentration. Always consult
+        department websites for accurate and up-to-date requirements. Please
+        report any autofill bugs or incorrect information to{" "}
         <a href="mailto:wso-dev@wso.williams.edu">wso-dev@wso.williams.edu</a>.
-        Last updated 04/03/2025.
+        Last updated 04/27/2025.
       </p>
 
       <div className="major-inputs-container">
@@ -1290,13 +1349,13 @@ const MajorBuilder = ({
                 placeholder={"Type major..."}
                 autoComplete="off"
               />
-              {majorAutocompleteVisible === index &&
-                majorAutocompleteResults.length > 0 && (
+              {concentrationAutocompleteVisible === index &&
+                concentrationAutocompleteResults.length > 0 && (
                   <ul
                     className="autocomplete-results major-autocomplete"
                     id="major-autocomplete-results"
                   >
-                    {majorAutocompleteResults.map((majorName) => (
+                    {concentrationAutocompleteResults.map((majorName) => (
                       <li
                         key={majorName}
                         onClick={() =>
@@ -1307,6 +1366,54 @@ const MajorBuilder = ({
                         {majorName}
                       </li>
                     ))}
+                  </ul>
+                )}
+            </div>
+          );
+        })}
+      </div>
+      <div className="major-inputs-container">
+        {[3, 4, 5].map((index) => {
+          return (
+            <div
+              key={`major-selection-${index}`}
+              id={`major-selection-container-${index}`}
+              className="major-selection-container cs-input-container"
+            >
+              <label htmlFor="concentration-input">{`Select Concentration ${
+                index - 2
+              }:`}</label>
+              <input
+                id="concentration-input"
+                type="text"
+                value={majorInputs[index]}
+                onChange={(event) => handleMajorInputChange(event, index)}
+                onBlur={handleMajorAutocompleteBlur}
+                placeholder={"Type concentration..."}
+                autoComplete="off"
+              />
+              {concentrationAutocompleteVisible === index &&
+                concentrationAutocompleteResults.length > 0 && (
+                  <ul
+                    className="autocomplete-results major-autocomplete"
+                    id="major-autocomplete-results"
+                  >
+                    {concentrationAutocompleteResults.map(
+                      (concentrationName) => (
+                        <li
+                          key={concentrationName}
+                          onClick={() =>
+                            handleMajorAutocompleteSelect(
+                              concentrationName,
+                              index
+                            )
+                          }
+                          role="presentation"
+                        >
+                          {concentrationName}
+                        </li>
+                      )
+                    )}
                   </ul>
                 )}
             </div>
@@ -1324,7 +1431,7 @@ const MajorBuilder = ({
               <h3>Requirements for {selectedMajor}</h3>
               <a
                 className="major-info-link"
-                href={MAJORS[selectedMajor].Link}
+                href={COURSES_OF_STUDY[selectedMajor].Link}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -1348,7 +1455,7 @@ const MajorBuilder = ({
                   id={`major-info-list-${selectedMajor}`}
                   className="major-info-list"
                 >
-                  {MAJORS[selectedMajor].Info.map((info, i) => (
+                  {COURSES_OF_STUDY[selectedMajor].Info.map((info, i) => (
                     <li key={`info-${i}`}>{info}</li>
                   ))}
                 </ul>

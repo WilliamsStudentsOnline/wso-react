@@ -11,6 +11,20 @@ const FAQ = () => {
           <h1>Frequently Asked Questions</h1>
           <br />
           <br />
+          <h3>What is WSO?</h3>
+          <article>
+            <br />
+            <p>
+              WSO (Williams Students Online) is a student organization devoted
+              to creating innovative and useful computer-based services and
+              offering them to the Williams College community. WSO was founded
+              in 1995 and continues to play an important role in the campus
+              community today.
+            </p>
+            <p>
+              See more at <a href="/about">our About page</a>.
+            </p>
+          </article>
           <h3>Listserv</h3>
           <article>
             <br />
@@ -20,7 +34,6 @@ const FAQ = () => {
               after
               <strong>&nbsp;wso.williams.edu</strong>
             </h4>
-            <br />
             <br />
 
             <h3>List Administrators</h3>
@@ -39,7 +52,6 @@ const FAQ = () => {
             </p>
 
             <br />
-            <br />
             <h4>What&#39;s this?</h4>
             <p>
               Some of you may have noticed increased spam recently on your
@@ -49,15 +61,31 @@ const FAQ = () => {
               to figure out how to do that. We apologize for the inconvenience.
             </p>
             <br />
+          </article>
+
+          <h3>Where did Willipedia go?</h3>
+          <article>
+            <br />
+            <p>
+              Access Willipedia at{" "}
+              <a href="https://wso.williams.edu/wiki/index.php/Main_Page">
+                this link
+              </a>
+              .
+            </p>
+            <p>
+              We removed the Willipedia link from our header in production in
+              April 2025 as the wiki is unmaintained and outdated.
+            </p>
             <br />
           </article>
 
           <h3>Building Hours</h3>
-
           <br />
-          <br />
-
           <article>
+            <p>
+              <b>Warning: </b> may be outdated.
+            </p>
             <p>
               <strong>Hollander &amp; Schapiro Hall:&nbsp;</strong>
               unlocked M - F (6am - 7pm) Student card access: Monday - Thursday
@@ -118,7 +146,6 @@ const FAQ = () => {
               <b>Stetson Court Trailer Classrooms:&nbsp;</b>
               unlocked M - F (8am - 5pm) and per the room reservation schedule
             </p>
-            <br />
             <br />
           </article>
         </article>

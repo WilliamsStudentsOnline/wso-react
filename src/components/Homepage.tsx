@@ -62,14 +62,17 @@ const Homepage = () => {
     );
   };
 
+  const joinHeaderText = ""; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
+  const joinHeaderLink = "";
+
   return (
     <div className="home">
       <div className="full-width">
-        <div id="join-header">
-          <a href="https://wso.williams.edu/bulletins/announcement/8387">
-            4/13 PATCH NOTES
-          </a>
-        </div>
+        {joinHeaderText && (
+          <div id="join-header">
+            <a href={joinHeaderLink}>{joinHeaderText}</a>
+          </div>
+        )}{" "}
         <header>
           <div className="logo">
             <h2 className="text-center" id="logotype">

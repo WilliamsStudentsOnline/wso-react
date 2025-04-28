@@ -23,7 +23,8 @@ export const checkRequireNComplex = (
   majorStr,
   grid,
   fulfilledBy,
-  fulfillments
+  fulfillments,
+  allowsDoubleCounting = false
 ) => {
   const [requirements, n] = args;
   let autoFulfilledCount = 0;
@@ -72,9 +73,12 @@ export const checkRequireNComplex = (
       }
 
       let foundCourse = null;
-      let filteredCourses = JSON.parse(JSON.stringify(courses)).filter(
-        (c) => !fulfillments[c.courseID]
-      );
+      let filteredCourses = JSON.parse(JSON.stringify(courses));
+      if (!allowsDoubleCounting) {
+        filteredCourses = filteredCourses.filter(
+          (c) => !fulfillments[c.courseID]
+        );
+      }
 
       if (item.minSem) {
         const semFilteredCourses = [];
@@ -144,7 +148,9 @@ export const checkRequireNComplex = (
 
       if (foundCourse) {
         fulfilledBy[id] = foundCourse;
-        fulfillments[foundCourse.courseID] = id;
+        if (!allowsDoubleCounting) {
+          fulfillments[foundCourse.courseID] = id;
+        }
         currentSlotFulfilled = true;
         break;
       }
@@ -1145,12 +1151,12 @@ export const MAJORS = {
             },
             {
               description: "300-level lab (1)",
-              class: "^BIOL 3",
+              regex: "^BIOL 3",
               component: "^Laboratory",
             },
             {
               description: "300-level lab (2)",
-              class: "^BIOL 3",
+              regex: "^BIOL 3",
               component: "^Laboratory",
             },
           ],
@@ -1163,7 +1169,7 @@ export const MAJORS = {
           [
             {
               description: "400-level seminar",
-              class: "^BIOL 4",
+              regex: "^BIOL 4",
               classType: "^Seminar",
             },
           ],
@@ -3936,3 +3942,1186 @@ export const MAJORS = {
     ],
   },
 };
+
+export const CONCENTRATIONS = {
+  "Asian American Studies": {
+    Link: "https://www.williams.edu/asian-american-studies/courses-concentration/structure-of-the-concentration/",
+    Prefix: "AAS",
+    Division: 2,
+    Info: [
+      "The portfolio project is completed during the spring semester of a student's senior year; it is done independently and does not involve registering for a special course; see website for detailed information about the portfolio",
+      "Divisional spread: to complete the concentration, your five courses must represent at least two different divisions of the college (for example, if four of your AAS courses are Div II courses, the fifth must come from Div I or Div III)",
+      "To ensure that students are exposed to a variety of methods and perspectives in the field, it is strongly recommended that students take no more than three courses toward the concentration with the same professor",
+      "One of the courses may be taken while studying abroad or away",
+      "It is highly recommended that students take at least four of the five required courses for the concentration before the spring semester of their senior year",
+      "The deadline to declare the concentration is the end of a student's junior year",
+    ],
+    Requirements: [
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "100-200 level gateway",
+              attributes: "^AAS_AASGATE",
+            },
+            {
+              description: "Core elective",
+              attributes: "AAS_AASCORE",
+            },
+            {
+              description:
+                "Transational, diasporic, or comparative ethnic studies elective",
+              attributes: "AAS_AASNCORE",
+            },
+            {
+              description: "300+ level elective",
+              regex: "^AAS (3|4|5)",
+            },
+          ],
+          4,
+        ],
+      },
+      {
+        description: "Completion",
+        args: [
+          [
+            {
+              description: "400-level seminar",
+              attributes: "^AAS_AASCAP",
+            },
+            {
+              placeholder: "Portfolio project (senior spring)",
+            },
+          ],
+          2,
+        ],
+      },
+    ],
+  },
+  "Asian Studies": {
+    Link: "https://asian-studies.williams.edu/concentration-requirements/",
+    Prefix: "ASIA",
+    Division: 2,
+    Info: [
+      "Each concentrator constructs a three-course curricular focus which can center on either a region or country interdisciplinarily (e.g., South Asia via history, anthropology, and art) or on a theme inter-regionally (e.g., Imperialism/Colonialism in Asia; Art and Performance in Asia).",
+      "The capstone of the concentration is a research paper or performance/exhibit completed within one of the courses taken for the concentration.",
+      "Of the five courses that comprise the curricular focus and electives, at least two different disciplines must be covered.",
+      "Of the five courses that comprise the curricular focus and electives, at least two regions or countries of Asia (China, Japan, Korea, Taiwan, East Asia, Southeast Asia, South Asia) must be covered.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "ASIA 210",
+              course: "ASIA 210",
+            },
+            {
+              description: "Focus Course 1",
+              regex: "^ASIA",
+              ignore: ["ASIA 210"],
+            },
+            {
+              description: "Focus Course 2",
+              regex: "^ASIA",
+              ignore: ["ASIA 210"],
+            },
+            {
+              description: "Focus Course 3",
+              regex: "^ASIA",
+              ignore: ["ASIA 210"],
+            },
+            {
+              placeholder:
+                "Capstone project and senior seminar (not an extra course)",
+            },
+          ],
+          5,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Elective 1",
+              regex: "^ASIA",
+              ignore: ["ASIA 210"],
+            },
+            {
+              description: "Elective 2",
+              regex: "^ASIA",
+              ignore: ["ASIA 210"],
+            },
+          ],
+          2,
+        ],
+      },
+    ],
+  },
+  "Biochemistry and Molecular Biology": {
+    Link: "https://bimo.williams.edu/the-program/",
+    Prefix: "BIMO",
+    Division: 3,
+    Info: [
+      "Since the Chemistry Department counts two biology courses and the Biology Department counts two chemistry courses toward the majors (each of which can be completed with only eight other courses), a student majoring in either chemistry or biology would have to take only two or three additional courses to complete the program.",
+    ],
+    Requirements: [
+      {
+        description: "Required",
+        args: [
+          [
+            {
+              description: "BIOL 101",
+              course: "BIOL 101",
+            },
+            {
+              description: "CHEM 101",
+              course: "CHEM 101",
+            },
+            {
+              description: "BIOL 102",
+              course: "BIOL 102",
+            },
+            {
+              description: "CHEM 200",
+              course: "CHEM 200",
+            },
+            {
+              description: "CHEM 201",
+              course: "CHEM 201",
+            },
+            {
+              description: "BIOL 202",
+              course: "BIOL 202",
+            },
+            {
+              description: "CHEM 242",
+              course: "CHEM 242",
+            },
+            {
+              description: "BIMO 321",
+              course: "BIMO 321",
+            },
+            {
+              description: "BIMO 322",
+              course: "BIMO 322",
+            },
+            {
+              description: "BIMO 401",
+              course: "BIMO 401",
+            },
+            {
+              placeholder:
+                "Attend at least eight Biology and/or Chemistry Department colloquia",
+            },
+          ],
+          11,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            [
+              { description: "BIOL 301", course: "BIOL 301" },
+              { description: "BIOL 303", course: "BIOL 303" },
+              { description: "BIOL 305", course: "BIOL 305" },
+              { description: "BIOL 306", course: "BIOL 306" },
+              { description: "BIOL 308", course: "BIOL 308" },
+              { description: "BIOL 313", course: "BIOL 313" },
+              { description: "BIOL 315", course: "BIOL 315" },
+              { description: "BIOL 319", course: "BIOL 319" },
+              { description: "BIOL 326", course: "BIOL 326" },
+              { description: "BIOL 330", course: "BIOL 330" },
+              { description: "BIOL 406", course: "BIOL 406" },
+              { description: "BIOL 407", course: "BIOL 407" },
+              { description: "BIOL 408", course: "BIOL 408" },
+              { description: "BIOL 410", course: "BIOL 410" },
+              { description: "BIOL 411", course: "BIOL 411" },
+              { description: "BIOL 418", course: "BIOL 418" },
+              { description: "BIOL 419", course: "BIOL 419" },
+              { description: "BIOL 426", course: "BIOL 426" },
+              { description: "BIOL 430", course: "BIOL 430" },
+              { description: "BIOL 436", course: "BIOL 436" },
+              { description: "BIOL 440", course: "BIOL 440" },
+              { description: "NSCI 347", course: "NSCI 347" },
+              { description: "CAOS 414", course: "CAOS 414" },
+            ],
+            [
+              { description: "CHEM 319", course: "CHEM 319" },
+              { description: "CHEM 324", course: "CHEM 324" },
+              { description: "CHEM 326", course: "CHEM 326" },
+              { description: "CHEM 336", course: "CHEM 336" },
+              { description: "CHEM 337", course: "CHEM 337" },
+              { description: "CHEM 338", course: "CHEM 338" },
+              { description: "CHEM 341", course: "CHEM 341" },
+              { description: "CHEM 342", course: "CHEM 342" },
+              { description: "CHEM 343", course: "CHEM 343" },
+              { description: "CHEM 344", course: "CHEM 344" },
+              { description: "CHEM 348", course: "CHEM 348" },
+              { description: "CHEM 364", course: "CHEM 364" },
+              { description: "CHEM 366", course: "CHEM 366" },
+              { description: "CHEM 367", course: "CHEM 367" },
+            ],
+          ],
+          2,
+        ],
+      },
+    ],
+  },
+  "Coastal and Ocean Studies": {
+    Link: "https://www.williams.edu/caos/the-concentration/",
+    Prefix: "CAOS",
+    Division: 3,
+    Info: [
+      "Concentrators take four core courses in the Williams-Mystic Coastal and Ocean Studies Program at our coastal campus in Mystic, CT, and three classes here in Williamstown. You can plan to attend Williams-Mystic in either sophomore or junior year.",
+    ],
+    Requirements: [
+      {
+        description: "Core and Electives",
+        args: [
+          [
+            {
+              description: "Introductory oceanography course",
+              regex: "^(CAOS 104|CAOS 110|CAOS 210)",
+            },
+            {
+              description: "Elective 1",
+              attributes: "^CAOS_CAOSELEC",
+            },
+            {
+              description: "Elective 2 (optional)",
+              attributes: "^CAOS_CAOSELEC",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Williams-Mystic",
+        args: [
+          [
+            {
+              placeholder: "Mystic course 1",
+            },
+            {
+              placeholder: "Mystic course 2",
+            },
+            {
+              placeholder: "Mystic course 3",
+            },
+            {
+              placeholder: "Mystic course 4",
+            },
+          ],
+        ],
+      },
+      {
+        description: "Senior Seminar",
+        args: [
+          [
+            {
+              description: "Senior seminar",
+              attributes: "^CAOS_CAOSSENSEM",
+            },
+          ],
+          1,
+        ],
+      },
+    ],
+  },
+  "Cognitive Science": {
+    Link: "https://cogsci.williams.edu/the-program/",
+    Prefix: "COGS",
+    Division: 3,
+    Info: [
+      "In years where COGS 493 is not offered, students should register for COGS 497 and should contact Joseph Cruz, Program Chair for details.",
+    ],
+    Requirements: [
+      {
+        description: "Requirements",
+        args: [
+          [
+            {
+              description: "COGS 222",
+              course: "COGS 222",
+            },
+            {
+              description: "COGS 493",
+              course: "COGS 493",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Elective 1",
+              attributes: "^COGS_COGSELEC",
+            },
+            {
+              description: "Elective 2",
+              attributes: "^COGS_COGSELEC",
+            },
+            {
+              description: "Elective 3",
+              attributes: "^COGS_COGSELEC",
+            },
+            {
+              description: "Elective 4",
+              attributes: "^COGS_COGSELEC",
+            },
+          ],
+          4,
+        ],
+      },
+    ],
+  },
+  "Environmental Studies": {
+    Link: "https://www.williams.edu/environmental-studies/curriculum/concentration/",
+    Prefix: "ENVI",
+    Division: 2,
+    Info: [
+      "Students with a score of 5 on the AP Environmental Science exam may take a 200-level environmental science lab course, cross-listed with Environmental Studies, in lieu of ENVI 102",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "ENVI 101",
+              course: "ENVI 101",
+            },
+            {
+              description: "ENVI 102",
+              course: "ENVI 102",
+            },
+            {
+              description: "Senior seminar",
+              attributes: "^ENVI_ENVISENSEM",
+            },
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Culture/Humanities elective",
+              attributes: "^ENVI_ENVIHUM",
+            },
+            {
+              description: "Social Science/Policy elective",
+              attributes: "^ENVI_ENVIPOL",
+            },
+            {
+              description: "Environmental Science elective",
+              attributes: "^ENVI_ENVINATW",
+            },
+          ],
+          3,
+        ],
+      },
+    ],
+  },
+  "Global Studies": {
+    Link: "https://global-studies.williams.edu/program/",
+    Prefix: "GBST",
+    Division: 2,
+    Info: [
+      "After taking an introductory course from the Global Studies 101-110 series, students are asked to select a track that will structure their global studies curriculum. There are two types of track. The first focuses on a particular region of the world or a contact zone where multiple communities encounter one another. The second type is organized thematically and permits students to explore a cultural, political, economic or technological issue globally and comparatively. Each track is administered by faculty teaching in that track in consultation with the advisory committee.",
+    ],
+    Requirements: [
+      {
+        description: "Introduction",
+        args: [
+          [
+            {
+              description: "GBST 101-110",
+              regex: "^GBST (10|110)",
+            },
+          ],
+          1,
+        ],
+      },
+      {
+        description: "Track",
+        args: [
+          [
+            {
+              placeholder: "Track fulfillment (1)",
+            },
+            {
+              placeholder: "Track fulfillment (2)",
+            },
+            {
+              placeholder: "Track fulfillment (3)",
+            },
+            {
+              placeholder: "Comparative course",
+            },
+            {
+              placeholder: "Senior exercise",
+            },
+            {
+              placeholder: "Language requirement (depends on track)",
+            },
+          ],
+          6,
+        ],
+      },
+    ],
+  },
+  "Jewish Studies": {
+    Link: "https://jewish-studies.williams.edu/about/concentration/",
+    Prefix: "JWST",
+    Division: 2,
+    Info: [],
+    Requirements: [
+      {
+        description: "Gateway",
+        args: [
+          [
+            [
+              {
+                description: "JWST 101/REL 203",
+                course: "JWST 101",
+              },
+              {
+                description: "JWST/REL/COMP 201",
+                course: "JWST 201",
+              },
+              {
+                description: "JWST/REL 222",
+                course: "JWST 222",
+              },
+            ],
+          ],
+          1,
+        ],
+      },
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "JWST 101/REL 203",
+              course: "JWST 101",
+            },
+            {
+              description: "JWST/REL/COMP 201",
+              course: "JWST 201",
+            },
+            {
+              description: "JWST/REL 222",
+              course: "JWST 222",
+            },
+            {
+              description: "ANTH/JWST 334",
+              course: "JWST 334",
+            },
+            {
+              description: "COMP/JWST 352",
+              course: "JWST 352",
+            },
+            {
+              description: "HIST/JWST 230",
+              course: "JWST 230",
+            },
+            {
+              description: "REL/JWST 299",
+              course: "JWST 299",
+            },
+            {
+              description: "HIST/JWST 338/REL 296",
+              course: "JWST 338",
+            },
+            {
+              description: "HIST/JWST 433",
+              course: "JWST 433",
+            },
+            {
+              description: "HIST/JWST 434",
+              course: "JWST 434",
+            },
+            {
+              description: "HIST/JWST 480T",
+              course: "JWST 480",
+            },
+            {
+              description: "HIST/JWST 490T",
+              course: "JWST 490",
+            },
+            {
+              description: "HIST/JWST 495T",
+              course: "JWST 495",
+            },
+            {
+              description: "REL/JWST 202/COMP 214",
+              course: "JWST 202",
+            },
+            {
+              description: "REL/JWST/ARAB/CLAS 205/COMP 217",
+              course: "JWST 205",
+            },
+            {
+              description: "REL/JWST/COMP 206",
+              course: "JWST 206",
+            },
+            {
+              description: "REL/JWST 207/COMP 250",
+              course: "JWST 207",
+            },
+            {
+              description: "REL/JWST 208/COMP 207",
+              course: "JWST 208",
+            },
+            {
+              description: "REL/JWST 209",
+              course: "JWST 209",
+            },
+            {
+              description: "REL/JWST 222/COMP 211",
+              course: "JWST 222",
+            },
+            {
+              description: "REL/ENGL/JWST 259",
+              course: "JWST 259",
+            },
+            {
+              description: "REL 268/JWST 268/COMP 363/ARAB 363",
+              course: "JWST 268",
+            },
+            {
+              description: "REL 330/JWST 492/PSCI 375",
+              course: "JWST 492",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Elective",
+        args: [
+          [
+            [
+              {
+                description: "HIST 111/LEAD 150",
+                course: "HIST 111",
+              },
+              {
+                description: "HIST/ARAB 207/JWST 217/REL 239",
+                course: "HIST 207",
+              },
+              {
+                description: "HIST 239",
+                course: "HIST 239",
+              },
+              {
+                description: "HIST 311",
+                course: "HIST 311",
+              },
+              {
+                description: "HIST 409",
+                course: "HIST 409",
+              },
+              {
+                description: "HIST 488T",
+                course: "HIST 488",
+              },
+              {
+                description: "PSCI/JWST 339",
+                course: "JWST 339",
+              },
+              {
+                description: "REL 104",
+                course: "REL 104",
+              },
+              {
+                description: "REL 212/HIST 324",
+                course: "REL 212",
+              },
+              {
+                description: "RUSS/JWST 343",
+                course: "JWST 343",
+              },
+            ],
+          ],
+          1,
+        ],
+      },
+      {
+        description: "Capstone",
+        args: [
+          [
+            [
+              {
+                description: "HIST/JWST 490T",
+                course: "JWST 490",
+              },
+              {
+                description: "REL 330/JWST 492/PSCI 375",
+                course: "JWST 492",
+              },
+            ],
+          ],
+          1,
+        ],
+      },
+    ],
+  },
+  "Justice and Law Studies": {
+    Link: "https://justice.williams.edu/home/",
+    Prefix: "JLST",
+    Division: 2,
+    Info: [
+      "JLST does not crosslist courses; enroll with a department prefix.",
+      "Students who have taken or are considering taking any course with a substantial law and/or justice component may ask the program chair whether it qualifies as a JLST elective/",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "Introduction",
+              regex: "^JLST 1",
+            },
+            {
+              description: "Senior seminar",
+              regex: "^JLST 4",
+              classType: "^Seminar",
+              minSem: 7,
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Elective 1",
+              attributes: "^JLST_JLSTELEC",
+            },
+            {
+              description: "Elective 2",
+              attributes: "^JLST_JLSTELEC",
+            },
+            {
+              description: "Elective 3",
+              attributes: "^JLST_JLSTELEC",
+            },
+            {
+              description: "Elective 4",
+              attributes: "^JLST_JLSTELEC",
+            },
+          ],
+          4,
+        ],
+      },
+    ],
+  },
+  "Latina/o Studies": {
+    Link: "https://latino-studies.williams.edu/academics/history/concentration/",
+    Prefix: "LATS",
+    Division: 2,
+    Info: [],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "LATS 105",
+              course: "LATS 105",
+            },
+            {
+              description: "Senior seminar",
+              attributes: "^LATS_LATSSEM",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Core elective (1)",
+              attributes: "^LATS_LATSCORE",
+            },
+            {
+              description: "Core elective (2)",
+              attributes: "^LATS_LATSCORE",
+            },
+            {
+              description:
+                "Comparative Race and Ethnic Studies/Countries of Origin and Transnationalism elective",
+              attributes: "^LATS_LATS(COMP|ORIG)",
+            },
+          ],
+          3,
+        ],
+      },
+    ],
+  },
+  "Leadership Studies (American Foreign Policy)": {
+    Link: "https://leadership-studies.williams.edu/curriculum/american-foreign-policy-track",
+    Prefix: "LEAD",
+    Division: 2,
+    Info: [
+      "To meet the requirements of the concentration, students must complete one of two sequences: American foreign policy or leadership studies.",
+    ],
+    Requirements: [
+      {
+        description: "Introduction",
+        args: [
+          [
+            [
+              {
+                description: "HIST 262",
+                course: "HIST 262",
+              },
+              {
+                description: "PSCI 165",
+                course: "PSCI 165",
+              },
+              {
+                description: "LEAD/PSCI 155",
+                course: "LEAD 155",
+              },
+            ],
+          ],
+          1,
+        ],
+      },
+      {
+        description: "American Domestic Leadership",
+        args: [
+          [
+            [
+              {
+                description: "HIST/LEAD 157",
+                course: "LEAD 157",
+              },
+              {
+                description: "HIST 158",
+                course: "HIST 158",
+              },
+              {
+                description: "HIST 255/LEAD 355",
+                course: "LEAD 255",
+              },
+              {
+                description: "HIST 259/LEAD 359",
+                course: "LEAD 259",
+              },
+              {
+                description: "HIST 360",
+                course: "HIST 360",
+              },
+              {
+                description: "LEAD 250",
+                course: "LEAD 250",
+              },
+              {
+                description: "LEAD 285",
+                course: "LEAD 285",
+              },
+              {
+                description: "LEAD 402",
+                course: "LEAD 402",
+              },
+              {
+                description: "LEAD/PSCI 205",
+                course: "LEAD 205",
+              },
+              {
+                description: "LEAD/PSCI 218",
+                course: "LEAD 218",
+              },
+              {
+                description: "PSCI 230",
+                course: "PSCI 230",
+              },
+              {
+                description: "PSCI 309",
+                course: "PSCI 309",
+              },
+            ],
+          ],
+          1,
+        ],
+      },
+      {
+        description: "American Foreign Policy Leadership",
+        args: [
+          [
+            {
+              description: "HIST 262",
+              course: "HIST 262",
+            },
+            {
+              description: "HIST 263",
+              course: "HIST 263",
+            },
+            {
+              description: "AFR/HIST/LEAD 345",
+              course: "LEAD 345",
+            },
+            {
+              description: "HIST 388",
+              course: "HIST 388",
+            },
+            {
+              description: "HIST 464",
+              course: "HIST 464",
+            },
+            {
+              description: "PSCI 222",
+              course: "PSCI 222",
+            },
+            {
+              description: "PSCI 225",
+              course: "PSCI 225",
+            },
+            {
+              description: "PSCI 262",
+              course: "PSCI 262",
+            },
+            {
+              description: "PSCI 323T",
+              course: "PSCI 323",
+            },
+            {
+              description: "PSCI 326",
+              course: "PSCI 326",
+            },
+            {
+              description: "LEAD/PSCI 362T",
+              course: "LEAD 362",
+            },
+            {
+              description: "PSCI 420",
+              course: "PSCI 420",
+            },
+            {
+              description: "SOC 202",
+              course: "SOC 202",
+            },
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Capstone",
+        args: [
+          [
+            [
+              {
+                description: "PSCI/LEAD 365",
+                course: "LEAD 365",
+              },
+              {
+                description: "LEAD 402",
+                course: "LEAD 402",
+              },
+              {
+                description: "PSCI 420",
+                course: "PSCI 420",
+              },
+            ],
+          ],
+          1,
+        ],
+      },
+    ],
+  },
+  "Leadership Studies": {
+    Link: "https://leadership-studies.williams.edu/curriculum/leadership-studies-track",
+    Prefix: "LEAD",
+    Division: 2,
+    Info: [
+      "To meet the requirements of the concentration, students must complete one of two sequences: American foreign policy or leadership studies.",
+    ],
+    Requirements: [
+      {
+        description: "Introduction",
+        args: [
+          [
+            {
+              description: "LEAD/PSCI 155",
+              course: "LEAD 155",
+            },
+          ],
+          1,
+        ],
+      },
+      {
+        description: "Ethical Issues & Leadership",
+        args: [
+          [
+            {
+              description: "PSCI 130",
+              course: "PSCI 130",
+            },
+          ],
+          1,
+        ],
+      },
+      {
+        description: "Domains of Leadership",
+        args: [
+          [
+            {
+              description: "ANTH 258/CLAS 258/HIST 394/REL 213",
+              course: "CLAS 258",
+            },
+            {
+              description: "CLAS/HIST/LEAD 323",
+              course: "LEAD 323",
+            },
+            {
+              description: "HIST 115/LEAD 150",
+              course: "LEAD 150",
+            },
+            {
+              description: "HIST/LEAD 207",
+              course: "LEAD 207",
+            },
+            {
+              description: "LEAD/PSCI 205/212",
+              course: "LEAD 205",
+            },
+            {
+              description: "LEAD/PSCI 206T",
+              course: "LEAD 206",
+            },
+            {
+              description: "LEAD/PSCI 218",
+              course: "LEAD 218",
+            },
+            {
+              description: "PSCI 345",
+              course: "PSCI 345",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Winter Study",
+        args: [
+          [
+            {
+              placeholder: "Leadership Studies Winter Study course",
+            },
+          ],
+          1,
+        ],
+      },
+      {
+        description: "Capstone",
+        args: [
+          [
+            {
+              description: "LEAD 425",
+              course: "LEAD 425",
+            },
+          ],
+          1,
+        ],
+      },
+    ],
+  },
+  Neuroscience: {
+    Link: "https://neuroscience.williams.edu/the-program/",
+    Prefix: "NSCI",
+    Division: 3,
+    Info: [],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "NSCI 201/BIOL 212/PSYC 212",
+              course: "NSCI 201",
+            },
+            {
+              description: "BIOL 101",
+              course: "BIOL 101",
+            },
+            {
+              description: "PSYC 101",
+              course: "PSYC 101",
+            },
+            {
+              description: "NSCI 401 (senior seminar)",
+              course: "NSCI 401",
+              minSem: 7,
+            },
+          ],
+          4,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Group A elective",
+              attributes: "^NSCI_NSCIA",
+            },
+            {
+              description: "Group B elective",
+              attributes: "^NSCI_NSCIB",
+            },
+            {
+              description: "Group A/B/C elective/substitute",
+              attributes: "^NSCI_NSCI(A|B|C)",
+            },
+          ],
+
+          3,
+        ],
+      },
+    ],
+  },
+  "Public Health": {
+    Link: "https://public-health.williams.edu/the-program/",
+    Preifx: "PHLH",
+    Division: 2,
+    Info: [
+      "To be considered for admission to the Area of Concentration in Public Health, students should complete an expression of interest form during the spring of sophomore year.",
+      "Because many public health challenges cannot be fully appreciated until one has hands-on experience with actual populations or communities, each concentrator must have at least one relevant field-based educational experience with a research component. This requirement may be met through participation in an approved study abroad program, an approved field-work Winter Study course (AFR 25, PSCI 21, SPEC 24), a WS99 project, or a not-for-credit summer or academic-year internship. Students often gain experiential credit in Public Health study abroad programs such as the SIT-IHP program.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "PHLH 201",
+              course: "PHLH 201",
+            },
+            {
+              description: "Statistics course",
+              attributes: "^PHLHSTAT",
+            },
+            {
+              description: "PHLH 401 (senior seminar)",
+              course: "PHLH 401",
+              minSem: 7,
+            },
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Elective 1",
+              attributes: "^PHLH_PHLH(?<!STAT|CORE)$",
+            },
+            {
+              description: "Elective 2",
+              attributes: "^PHLH_PHLH(?<!STAT|CORE)$",
+            },
+            {
+              description: "Elective 3 (needs different prefix)",
+              attributes: "^PHLH_PHLH(?<!STAT|CORE)$",
+            },
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Experiential Component",
+        args: [
+          [
+            {
+              placeholder: "Experiential component",
+            },
+          ],
+          1,
+        ],
+      },
+    ],
+  },
+  "Science & Technology Studies": {
+    Link: "https://catalog.williams.edu/pdf/sts.pdf",
+    Prefix: "STS",
+    Division: 2,
+    Info: [
+      "Students may petition the Chair for recognition of a course as an STS course even if it is not cross-listed in STS. The petitions will be approved ordenied on a case-by-case basis.",
+    ],
+    Requirements: [
+      {
+        description: "Core",
+        args: [
+          [
+            {
+              description: "STS 101",
+              course: "STS 101",
+            },
+            {
+              description: "Senior seminar",
+              attributes: "^STS_STSSEM",
+            },
+          ],
+          2,
+        ],
+      },
+      {
+        description: "Electives",
+        args: [
+          [
+            {
+              description: "Elective 1",
+              regex: "^STS",
+            },
+            {
+              description: "Elective 2",
+              regex: "^STS",
+            },
+            {
+              description: "Elective 3 (needs different department)",
+              regex: "^STS",
+            },
+          ],
+          3,
+        ],
+      },
+      {
+        description: "Lab",
+        args: [
+          [
+            {
+              description:
+                "Course with laboratory or field work component in natural, social, or computer science",
+              component: "^Laboratory",
+            },
+          ],
+          1,
+        ],
+      },
+    ],
+  },
+};
+
+export const COURSES_OF_STUDY = { ...MAJORS, ...CONCENTRATIONS };

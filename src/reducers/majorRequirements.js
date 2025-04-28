@@ -1,7 +1,7 @@
 import { SELECT_MAJOR } from "../constants/actionTypes";
 
 const INITIAL_STATE = {
-  selectedMajors: ["", "", ""],
+  selectedMajors: ["", "", "", "", "", ""],
 };
 
 export const doSelectMajor = (majorName, idx) => ({
