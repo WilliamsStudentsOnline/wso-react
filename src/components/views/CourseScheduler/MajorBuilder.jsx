@@ -78,6 +78,9 @@ const MajorBuilder = ({
   // Fulfillments
   const [fulfilledBy, setFulfilledBy] = useState({});
   const [fulfillments, setFulfillments] = useState({});
+  const [concentrationFulfillments, setConcentrationFulfillments] = useState(
+    {}
+  );
 
   const [triggerFetch, setTriggerFetch] = useState(false);
   const [triggerUpdateFlatCourses, setTriggerUpdateFlatCourses] = useState();
@@ -105,6 +108,7 @@ const MajorBuilder = ({
           savedState.selectedMajors.length === 6 &&
           savedState.fulfilledBy &&
           savedState.fulfillments &&
+          savedState.concentrationFulfillments &&
           savedState.grid.length === MAJOR_BUILDER_SEMESTERS &&
           savedState.semesters.length === MAJOR_BUILDER_SEMESTERS &&
           savedState.grid.every(
@@ -138,6 +142,7 @@ const MajorBuilder = ({
           setMajorInputs(savedState.selectedMajors);
           setFulfilledBy(savedState.fulfilledBy);
           setFulfillments(savedState.fulfillments);
+          setConcentrationFulfillments(savedState.concentrationFulfillments);
         } else {
           console.warn("Invalid LocalStorage state for MajorBuilder.");
           localStorage.removeItem(MAJOR_BUILDER_LS_KEY);
@@ -184,6 +189,7 @@ const MajorBuilder = ({
       selectedMajors &&
       fulfilledBy &&
       fulfillments &&
+      concentrationFulfillments &&
       grid.length === MAJOR_BUILDER_SEMESTERS &&
       semesters.length === MAJOR_BUILDER_SEMESTERS
     ) {
@@ -193,10 +199,18 @@ const MajorBuilder = ({
         selectedMajors,
         fulfilledBy,
         fulfillments,
+        concentrationFulfillments,
       });
       localStorage.setItem(MAJOR_BUILDER_LS_KEY, stateToSave);
     }
-  }, [grid, semesters, selectedMajors, fulfilledBy, fulfillments]);
+  }, [
+    grid,
+    semesters,
+    selectedMajors,
+    fulfilledBy,
+    fulfillments,
+    concentrationFulfillments,
+  ]);
 
   const clearCourseGrid = () => {
     if (window.confirm("Are you sure?")) {
@@ -206,6 +220,7 @@ const MajorBuilder = ({
       });
       setFulfilledBy({});
       setFulfillments({});
+      setConcentrationFulfillments({});
       setTriggerFetch(!triggerFetch);
     }
   };
@@ -633,6 +648,12 @@ const MajorBuilder = ({
     selectMajor(majorName, index);
     setMajorAutocompleteVisible(-1);
     setMajorAutocompleteResults([]);
+    if (index >= 3) {
+      setConcentrationFulfillments({
+        ...concentrationFulfillments,
+        [majorName]: {},
+      });
+    }
   };
   const handleMajorAutocompleteBlur = () => {
     setTimeout(() => {
@@ -682,7 +703,7 @@ const MajorBuilder = ({
   const handleOverrideAutocompleteSelect = (
     selectedGridCourse,
     itemStr,
-    overrideFulfillments = true
+    concentrationID
   ) => {
     if (selectedGridCourse === "Manual override") {
       setFulfilledBy({ ...fulfilledBy, [itemStr]: "manual" });
@@ -690,19 +711,31 @@ const MajorBuilder = ({
     }
 
     const newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
-    const newFulfillments = JSON.parse(JSON.stringify(fulfillments));
+    const newFulfillments = JSON.parse(
+      JSON.stringify(
+        concentrationID === ""
+          ? fulfillments
+          : concentrationFulfillments[concentrationID]
+      )
+    );
     for (const iStr in newFulfilledBy) {
       if (
-        overrideFulfillments &&
-        newFulfilledBy[iStr].courseID === selectedGridCourse.courseID
+        concentrationID === "" &&
+        newFulfilledBy[iStr].courseID === selectedGridCourse.courseID &&
+        selectedMajors.indexOf(iStr.split("-")[0]) < 3
       ) {
         delete newFulfilledBy[iStr];
       }
     }
 
-    if (overrideFulfillments) {
-      newFulfillments[selectedGridCourse.courseID] = itemStr;
+    newFulfillments[selectedGridCourse.courseID] = itemStr;
+    if (concentrationID === "") {
       setFulfillments(newFulfillments);
+    } else {
+      setConcentrationFulfillments({
+        ...concentrationFulfillments,
+        [concentrationID]: newFulfillments,
+      });
     }
     newFulfilledBy[itemStr] = selectedGridCourse;
     setFulfilledBy(newFulfilledBy);
@@ -728,9 +761,18 @@ const MajorBuilder = ({
   };
 
   // Mark an unchecked course as completed, or marked a check course as unfinished to trigger reprocessing
-  const handleManualOverride = (itemStr, isChecked) => {
+  const handleManualOverride = (
+    itemStr,
+    isChecked,
+    isConcentration,
+    majorStr
+  ) => {
     const newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
-    const newFulfillments = JSON.parse(JSON.stringify(fulfillments));
+    const newFulfillments = JSON.parse(
+      JSON.stringify(
+        isConcentration ? concentrationFulfillments[majorStr] : fulfillments
+      )
+    );
     if (isChecked) {
       if (fulfilledBy[itemStr] === "blocked") {
         delete newFulfilledBy[itemStr];
@@ -742,7 +784,14 @@ const MajorBuilder = ({
       newFulfilledBy[itemStr] = "blocked";
     }
     setFulfilledBy(newFulfilledBy);
-    setFulfillments(newFulfillments);
+    if (isConcentration) {
+      setConcentrationFulfillments({
+        ...concentrationFulfillments,
+        [majorStr]: newFulfillments,
+      });
+    } else {
+      setFulfillments(newFulfillments);
+    }
     setTriggerFetch(!triggerFetch);
   };
 
@@ -762,6 +811,9 @@ const MajorBuilder = ({
     const results = {};
     var newFulfilledBy = JSON.parse(JSON.stringify(fulfilledBy));
     var newFulfillments = JSON.parse(JSON.stringify(fulfillments));
+    var newConcentrationFulfillments = JSON.parse(
+      JSON.stringify(concentrationFulfillments)
+    );
     for (let i = 0; i < 6; i++) {
       const REQUIREMENTS_OBJECT = i < 3 ? MAJORS : CONCENTRATIONS;
       const selectedMajorOrConcentration = selectedMajors[i];
@@ -774,6 +826,7 @@ const MajorBuilder = ({
         setMajorInputs(newMajorInputs);
         continue;
       }
+
       REQUIREMENTS_OBJECT[selectedMajorOrConcentration].Requirements.forEach(
         (req) => {
           const reqKey = `${selectedMajorOrConcentration}-${req.description}`;
@@ -784,13 +837,19 @@ const MajorBuilder = ({
               selectedMajorOrConcentration,
               grid,
               newFulfilledBy,
-              newFulfillments,
               i < 3
+                ? newFulfillments
+                : newConcentrationFulfillments[selectedMajorOrConcentration]
             );
 
             setFulfilledBy(result.fulfilledBy);
             if (i < 3) {
               setFulfillments(result.fulfillments);
+            } else {
+              setConcentrationFulfillments({
+                ...concentrationFulfillments,
+                [selectedMajorOrConcentration]: result.fulfillments,
+              });
             }
 
             const target = req.args[1];
@@ -847,7 +906,7 @@ const MajorBuilder = ({
     result,
     reqKey,
     subItemClass,
-    isConcentration = false
+    isConcentration
   ) => {
     const itemRenderStr = truncateItemStr(itemStr);
     const itemKeyStr = `${majorStr}-${itemRenderStr}`;
@@ -868,7 +927,7 @@ const MajorBuilder = ({
       }
     }
 
-    let viaStr = fulfillingCourse
+    const viaStr = fulfillingCourse
       ? typeof fulfillingCourse === "object"
         ? `${fulfillingCourse.department} ${fulfillingCourse.number}`
         : "manual override"
@@ -886,7 +945,14 @@ const MajorBuilder = ({
             type="checkbox"
             className="requirement-item-checkbox"
             checked={isChecked}
-            onChange={(e) => handleManualOverride(itemKeyStr, e.target.checked)}
+            onChange={(e) =>
+              handleManualOverride(
+                itemKeyStr,
+                e.target.checked,
+                isConcentration,
+                majorStr
+              )
+            }
             title={`Mark ${itemRenderStr} as ${
               isChecked ? "not " : ""
             }fulfilled`}
@@ -919,7 +985,7 @@ const MajorBuilder = ({
                       handleOverrideAutocompleteSelect(
                         course,
                         itemKeyStr,
-                        !isConcentration
+                        isConcentration ? majorStr : ""
                       )
                     }
                     role="presentation"
@@ -1126,7 +1192,8 @@ const MajorBuilder = ({
                             itemStr,
                             result,
                             reqKey,
-                            ""
+                            "",
+                            i >= 3
                           );
                         }
                       })}
