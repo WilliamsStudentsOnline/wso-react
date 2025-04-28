@@ -23,8 +23,7 @@ export const checkRequireNComplex = (
   majorStr,
   grid,
   fulfilledBy,
-  fulfillments,
-  allowsDoubleCounting = false
+  fulfillments
 ) => {
   const [requirements, n] = args;
   let autoFulfilledCount = 0;
@@ -74,11 +73,9 @@ export const checkRequireNComplex = (
 
       let foundCourse = null;
       let filteredCourses = JSON.parse(JSON.stringify(courses));
-      if (!allowsDoubleCounting) {
-        filteredCourses = filteredCourses.filter(
-          (c) => !fulfillments[c.courseID]
-        );
-      }
+      filteredCourses = filteredCourses.filter(
+        (c) => !fulfillments[c.courseID]
+      );
 
       if (item.minSem) {
         const semFilteredCourses = [];
@@ -139,8 +136,8 @@ export const checkRequireNComplex = (
 
       if (item.attributes) {
         const regex = new RegExp(item.attributes);
-        filteredCourses = filteredCourses.filter((c) =>
-          c.rawAttributes.some((a) => regex.test(a))
+        filteredCourses = filteredCourses.filter(
+          (c) => c.rawAttributes && c.rawAttributes.some((a) => regex.test(a))
         );
       }
 
@@ -148,9 +145,7 @@ export const checkRequireNComplex = (
 
       if (foundCourse) {
         fulfilledBy[id] = foundCourse;
-        if (!allowsDoubleCounting) {
-          fulfillments[foundCourse.courseID] = id;
-        }
+        fulfillments[foundCourse.courseID] = id;
         currentSlotFulfilled = true;
         break;
       }
