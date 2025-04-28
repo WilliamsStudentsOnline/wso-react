@@ -16,7 +16,7 @@ import QueryTable from "../../QueryTable";
 const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
   const navigateTo = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const [searchInputValue, setSearchInputValue] = useState(
     searchParams.get("q") ?? ""
@@ -61,7 +61,7 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
         className={
           advancedFiltersSelected ? "button-toggled" : "button-default"
         }
-        style={{ height: "38px", verticalAlign: "middle", marginLeft: "10px" }}
+        style={{ marginLeft: "10px" }}
       >
         Advanced
       </button>
@@ -103,14 +103,14 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
             <div
               style={{
                 display: "flex",
-                alignItems: "center",
+                flexDirection: "row",
                 marginTop: "10px",
               }}
             >
               <input
                 aria-label="Search box for Facebook"
                 type="search"
-                placeholder="Search Facebook or use Advanced"
+                placeholder="Search Facebook"
                 value={searchInputValue}
                 onChange={handleInputChange}
               />
@@ -120,7 +120,15 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
                 value="Search"
                 className="submit"
               />
-              <FilterButton />
+              <div
+                style={{
+                  marginLeft: "30px",
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <FilterButton />
+              </div>
             </div>
           </form>
         </div>

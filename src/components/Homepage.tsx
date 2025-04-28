@@ -52,9 +52,10 @@ const Homepage = () => {
     return (
       <button
         onClick={handleAdvancedToggleClick}
-        className={
+        className={`${
           advancedFiltersSelected ? "button-toggled" : "button-default"
-        }
+        }`}
+        style={{ marginLeft: "20px" }}
       >
         Advanced
       </button>
@@ -84,7 +85,7 @@ const Homepage = () => {
               <input
                 aria-label="Search box for Facebook"
                 type="search"
-                placeholder="Search Facebook or use Advanced"
+                placeholder="Search Facebook"
                 value={searchInputValue}
                 onChange={handleInputChange}
               />
@@ -94,10 +95,16 @@ const Homepage = () => {
                 value="Search"
                 className="submit"
               />
+              <div
+                style={{
+                  marginLeft: "30px",
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <FilterButton />
+              </div>
             </form>
-            <div style={{ marginLeft: "20px" }}>
-              <FilterButton />
-            </div>
           </div>
           {advancedFiltersSelected && (
             <div className="advanced-query">

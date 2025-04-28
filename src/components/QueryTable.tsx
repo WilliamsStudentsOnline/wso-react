@@ -13,7 +13,6 @@ import {
 } from "../lib/queryBuilderSlice"; // Adjust path as needed
 
 // Component imports
-import Button from "./Components"; // Assuming Button is a simple styled button component
 import StatesDropdown from "./StatesDropdown";
 
 const QueryTable = () => {
@@ -47,7 +46,7 @@ const QueryTable = () => {
           <td align="left">
             <input
               type="text"
-              placeholder="John Doe"
+              placeholder="e.g. Ephraim"
               value={filters.name}
               onChange={(e) => handleFieldChange("name", e.target.value)}
             />
@@ -58,9 +57,21 @@ const QueryTable = () => {
           <td align="left">
             <input
               type="text"
-              placeholder="e.g. eph"
+              className="unix-input"
+              placeholder="e.g. eph1"
               value={filters.unix}
               onChange={(e) => handleFieldChange("unix", e.target.value)}
+            />
+          </td>
+          <td align="right">
+            <strong>building</strong>
+          </td>
+          <td align="left">
+            <input
+              type="text"
+              placeholder="e.g. Williams"
+              value={filters.building}
+              onChange={(e) => handleFieldChange("building", e.target.value)}
             />
           </td>
         </tr>
@@ -71,7 +82,7 @@ const QueryTable = () => {
           <td align="left">
             <input
               type="text"
-              placeholder="United States"
+              placeholder="e.g. United States"
               value={filters.country}
               onChange={(e) => handleFieldChange("country", e.target.value)}
               disabled={!!filters.state}
@@ -81,12 +92,10 @@ const QueryTable = () => {
             <strong>state (US)</strong>
           </td>
           <td align="center">
-            <div className="vertical">
-              <StatesDropdown
-                updateState={(value) => handleFieldChange("state", value)}
-                currentState={filters.state}
-              />
-            </div>
+            <StatesDropdown
+              updateState={(value) => handleFieldChange("state", value)}
+              currentState={filters.state}
+            />
           </td>
           <td align="right">
             <strong>city</strong>
@@ -94,7 +103,7 @@ const QueryTable = () => {
           <td align="left">
             <input
               type="text"
-              placeholder="Williamstown"
+              placeholder="e.g. Williamstown"
               value={filters.city}
               onChange={(e) => handleFieldChange("city", e.target.value)}
             />
@@ -107,7 +116,7 @@ const QueryTable = () => {
           </td>
           {AVAILABLE_YEARS.map((year) => (
             <td align="left" key={year}>
-              <Button
+              <button
                 onClick={() => handleYearToggle(year)}
                 className={
                   filters.selectedYears.includes(year)
@@ -116,7 +125,7 @@ const QueryTable = () => {
                 }
               >
                 {`'${String(year).padStart(2, "0")}`}
-              </Button>
+              </button>
             </td>
           ))}
           {[...Array(Math.max(0, 4 - AVAILABLE_YEARS.length))].map((_, i) => (
@@ -129,7 +138,7 @@ const QueryTable = () => {
           </td>
           {AVAILABLE_TYPES.map((type) => (
             <td align="left" key={type}>
-              <Button
+              <button
                 onClick={() => handleTypeToggle(type)}
                 className={
                   filters.selectedTypes.includes(type)
@@ -138,31 +147,12 @@ const QueryTable = () => {
                 }
               >
                 {type}
-              </Button>
+              </button>
             </td>
           ))}
           {[...Array(Math.max(0, 3 - AVAILABLE_TYPES.length))].map((_, i) => (
             <td key={`empty-type-${i}`}></td>
           ))}
-        </tr>
-        <tr style={{ height: "10px" }}></tr>
-        <tr>
-          <td align="right">
-            <strong>building</strong>
-          </td>
-          <td align="left">
-            <input
-              type="text"
-              placeholder="Paresky"
-              value={filters.building}
-              onChange={(e) => handleFieldChange("building", e.target.value)}
-            />
-          </td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
         </tr>
       </tbody>
     </table>
