@@ -61,7 +61,7 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
         className={
           advancedFiltersSelected ? "button-toggled" : "button-default"
         }
-        style={{ marginLeft: "10px" }}
+        style={{ marginLeft: "0px" }}
       >
         Advanced
       </button>
