@@ -246,6 +246,9 @@ describe("Course reducer", () => {
       start: "",
       end: "",
       classTypes: [false, false, false, false, false, false],
+      showFactrakScore: true,
+      includeFactrakNoScores: true,
+      minFactrakScore: 0,
     };
     const counts = {
       semesters: [0, 0, 0],
@@ -256,6 +259,7 @@ describe("Course reducer", () => {
       levels: [0, 0, 0, 0, 0],
       conflict: [0],
       classTypes: [0, 0, 0, 0, 0, 0],
+      factrak: [0, 0],
     };
 
     const defaultSemester = DEFAULT_SEMESTER.filter((e) => e)[0];
@@ -299,11 +303,14 @@ describe("Course reducer", () => {
         levels: [0, 1, 0, 0, 0],
         conflict: [1],
         classTypes: [1, 0, 0, 0, 0, 0],
+        factrak: [1, 0],
       },
       queried: [{ ...semesterCourse, score: 10001 }],
       added: [],
       hidden: [],
+      crossListings: undefined,
       updateTime: undefined,
+      historicalCatalogs: {},
     };
 
     deepFreeze(previousState);
@@ -489,6 +496,9 @@ describe("Course reducer", () => {
         start: "",
         end: "",
         classTypes: [false, false, false, false, false, false],
+        showFactrakScore: true,
+        includeFactrakNoScores: true,
+        minFactrakScore: 0,
       },
       error: null,
     };

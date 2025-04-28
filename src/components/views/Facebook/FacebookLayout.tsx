@@ -8,6 +8,7 @@ import { selectGeneratedQuery } from "../../../lib/queryBuilderSlice";
 
 // Additional imports
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { StylizedLink } from "../../StylizedLink";
 
 // Component Imports
 import QueryTable from "../../QueryTable";
@@ -76,19 +77,23 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
           </h1>
           <ul>
             <li>
-              <Link to="/facebook">Search</Link>
+              <StylizedLink to="/facebook" end>
+                Search
+              </StylizedLink>
             </li>
             <li>
-              <Link to="/facebook/help">Help</Link>
+              <StylizedLink to="/facebook/help">Help</StylizedLink>
             </li>
             {currUser === null
               ? null
               : [
                   <li key="view">
-                    <Link to={`/facebook/users/${currUser.id}`}>View</Link>
+                    <StylizedLink to={`/facebook/users/${currUser.id}`}>
+                      View
+                    </StylizedLink>
                   </li>,
                   <li key="edit">
-                    <Link to="/facebook/edit"> Edit </Link>
+                    <StylizedLink to="/facebook/edit"> Edit </StylizedLink>
                   </li>,
                 ]}
           </ul>

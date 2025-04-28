@@ -3,31 +3,45 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const BoardMap = {
-  "Andrew Megalaa": 12092,
-  "Ye Shu": 12579,
-  "David Goetze": 12282,
+  "Matt Laws": 13268,
+  "Charlie Tharas": 14774,
+  "Nathan Vosburg": 14656,
 };
 
 const ContributorMap = {
-  "Max Enis": 12516,
-  "Max Kan": 12406,
-  "Satya Benson": 14059,
-  "Santiago Ferris": 14145,
-  "Matt Laws": 13268,
-  "Himal Pandey": 12851,
-  "Tim Kim": 14087,
-  "Will Pachus": 13101,
-  "Henrique Rodrigues": 13670,
-  "Christopher Brown": 12444,
-  "Milo Chang": 12365,
-  "Emma Li": 14916,
-  "Kevin Zhuo": 13052,
-  "Serah Park": 13923,
-  "Evelyn Chou": 12515,
-  "Jon Carl": 12125,
-  "Lesley Iazzag": 14147,
-  "Nathan Vosburg": 14656,
-  "Charlie Tharas": 14774,
+  "Aaron Anidjar": 15487,
+  "Abel Mesfin": 14016,
+  "Adhip Rijal": 15897,
+  "Amirjon Ulmasov": 15538,
+  "Chris Pohlmann": 14876,
+  "Danny Hinh": 15577,
+  "David Vieten": 14200,
+  "Dimitri Meimeteas": 14839,
+  "Emmanuel Ekpenyong": 15714,
+  "Gabe Ramirez": 13920,
+  "Hayden Curfman": 15721,
+  "Helen Qian": 13718,
+  "Jaskaran Singh": 13126,
+  "Jasper Li": 14874,
+  "Jeeyon Kang": 13262,
+  "Lauren Hall": 14661,
+  "Leila Salken": 14941,
+  "Lola Casenave": 13239,
+  "Matthew Chin": 15568,
+  "Melanie Wang": 14710,
+  "Natalia Avila-Hernandez": 14835,
+  "Nathaniel Flores": 14643,
+  "Nick Canora": 13953,
+  "Nikhil Radosevich": 15099,
+  "Niklas Obermüller": 15681,
+  "Ronald Deng": 15674,
+  "Savannah Bolton": 14892,
+  "Simon Angoluan": 13089,
+  "Susanna Boberg": 14715,
+  "Tao Chen": 15850,
+  "Temani Knight": 14872,
+  "Vincent Hernandez": 15646,
+  "William Hallward-Driemeier": 14905,
 };
 
 const constructFacebookLink = (userID: number) => {
@@ -70,7 +84,7 @@ const Team = () => {
             <br />
             <p>{BulletList(BoardMap)}</p>
           </article>
-          <h3>Contributors</h3>
+          <h3>2024-2025 Contributors</h3>
           <article>
             <br />
             <p>{BulletList(ContributorMap)}</p>

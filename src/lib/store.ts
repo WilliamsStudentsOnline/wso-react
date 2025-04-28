@@ -12,8 +12,13 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import { courseReducer, schedulerUtilReducer, authReducer } from "../reducers";
 import queryBuilderReducer from "../lib/queryBuilderSlice";
+import {
+  courseReducer,
+  schedulerUtilReducer,
+  authReducer,
+  majorRequirementsReducer,
+} from "../reducers";
 
 const persistedAuthReducer = persistReducer(
   { key: "auth", storage, whitelist: ["identityToken"] },
@@ -31,6 +36,7 @@ const store = configureStore({
     schedulerUtilState: persistedCourseSchedulerReducer,
     authState: persistedAuthReducer,
     queryBuilder: queryBuilderReducer,
+    majorRequirementsState: majorRequirementsReducer,
   },
   // this is to disable React Toolkit's error message "A non-serializable value was detected in the state"
   // TODO: stop using non-serializable object `authState.wso` and `schedulerUtilState.gapi`

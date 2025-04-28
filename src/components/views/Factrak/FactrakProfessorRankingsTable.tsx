@@ -18,12 +18,10 @@ import {
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import {
-  ModelsFactrakSurveyAvgRatings,
-  ModelsUser,
-} from "wso-api-client/lib/services/types";
+import { FactrakProfessorMetric } from "wso-api-client/lib/services/factrak";
+import { ModelsUser } from "wso-api-client/lib/services/types";
 
-const FactrakTopProfs = () => {
+const FactrakProfessorRankingsTable = () => {
   const currUser = useAppSelector(getCurrUser);
   const token = useAppSelector(getAPIToken);
   const wso = useAppSelector(getWSO);
@@ -32,81 +30,25 @@ const FactrakTopProfs = () => {
   const params = useParams();
   const [searchParams] = useSearchParams();
 
-  const [profs, updateProfs] = useState<
-    ModelsUser & { ratingResponseData: ModelsFactrakSurveyAvgRatings }[]
-  >([]);
-  const [metric, updateMetric] = useState("avgWouldTakeAnother");
+  const [profs, updateProfs] = useState<ModelsUser[] | undefined>(undefined);
+  const [metric, updateMetric] = useState<FactrakProfessorMetric>(
+    FactrakProfessorMetric.WouldTakeAnother
+  );
   const [ascending, updateAscending] = useState(false);
 
-  // Map Ratings API names to listProfessors API metrics
-  const metricSwitch = (key: string) => {
-    switch (key) {
-      case "avgApproachability":
-        return "approachability";
-      case "avgCourseWorkload":
-        return "course_workload";
-      case "avgLeadLecture":
-        return "lead_lecture";
-      case "avgOutsideHelpfulness":
-        return "outside_helpfulness";
-      case "avgPromoteDiscussion":
-        return "promote_discussion";
-      default:
-        return "would_take_another";
-    }
-  };
-  // TODO: Clean this up hack and change backend API
   useEffect(() => {
     const loadProfs = async () => {
       const queryParams = {
-        metric: metricSwitch(metric) as
-          | "approachability"
-          | "course_workload"
-          | "lead_lecture"
-          | "outside_helpfulness"
-          | "promote_discussion"
-          | "would_take_another"
-          | "course_stimulating", // default metric
+        metric: metric,
         ascending,
         areaOfStudyID: params.aos ? parseInt(params.aos) : undefined,
       };
 
       // Loads in professors and the ratings for each one
       try {
-        updateProfs([]);
         const profRanked = await wso.factrakService.listProfessors(queryParams);
         const profRankedData = profRanked.data;
-        if (!profRankedData) {
-          throw new Error("No ranked data returned");
-        }
-        queryParams.metric = metric as
-          | "approachability"
-          | "course_workload"
-          | "lead_lecture"
-          | "outside_helpfulness"
-          | "promote_discussion"
-          | "would_take_another"
-          | "course_stimulating";
-        const withRanking = await Promise.all(
-          profRankedData.map(async (prof) => {
-            if (!prof.id) {
-              throw new Error("Missing prof ID");
-            }
-            const ratingResponse = await wso.factrakService.getProfessorRatings(
-              prof.id,
-              queryParams
-            );
-            const ratingResponseData = ratingResponse.data;
-            if (!ratingResponseData) {
-              throw new Error("Missing rating data");
-            }
-            return {
-              ...prof,
-              ratingResponseData,
-            };
-          })
-        );
-        updateProfs(withRanking);
+        updateProfs(profRankedData ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
@@ -118,16 +60,13 @@ const FactrakTopProfs = () => {
   }, [token, wso, params.aos, metric]);
 
   // Generates a row containing the prof information.
-  const generateProfRow = (
-    prof: ModelsUser & { ratingResponseData: ModelsFactrakSurveyAvgRatings }
-  ) => {
-    const index = metric as keyof ModelsFactrakSurveyAvgRatings;
-    if (!prof.ratingResponseData[index]) {
+  const generateProfRow = (prof: ModelsUser) => {
+    if (prof.factrakScore === undefined) {
       return null;
     }
-    const val = prof.ratingResponseData[index] as number;
+    const val = prof.factrakScore;
     let rating = "";
-    if (metric === "avgWouldTakeAnother") {
+    if (metric === FactrakProfessorMetric.WouldTakeAnother) {
       rating = `${Math.round(val * 100)}%`;
     } else {
       // Currently no API to retrieve the max value of the metric but
@@ -173,12 +112,15 @@ const FactrakTopProfs = () => {
               <th> Name </th>
               <th>
                 <Link
-                  to={`/factrak/rankings/${
-                    params.aos ? params.aos : ""
+                  to={`/factrak/professor-rankings/${
+                    params.aos ?? ""
                   }?${searchParams.toString()}`}
                   onClick={() => {
-                    updateProfs(profs.reverse());
                     updateAscending(!ascending);
+                    if (profs === undefined) {
+                      return;
+                    }
+                    updateProfs(profs.reverse());
                   }}
                   style={{
                     color: "#FFFFFF",
@@ -192,7 +134,7 @@ const FactrakTopProfs = () => {
             </tr>
           </thead>
           <tbody>
-            {profs.length > 0
+            {profs !== undefined
               ? profs.map((prof) => generateProfRow(prof))
               : [...Array(5)].map((_, i) => profSkeleton(i))}
           </tbody>
@@ -215,6 +157,7 @@ const FactrakTopProfs = () => {
           <Select
             onChange={(event) => {
               updateMetric(event.target.value);
+              updateProfs(undefined);
               // TODO: Update the URL to reflect the new metric
             }}
             options={[
@@ -227,12 +170,12 @@ const FactrakTopProfs = () => {
             ]}
             value={metric}
             valueList={[
-              "avgApproachability",
-              "avgCourseWorkload",
-              "avgLeadLecture",
-              "avgOutsideHelpfulness",
-              "avgPromoteDiscussion",
-              "avgWouldTakeAnother",
+              FactrakProfessorMetric.Approachability,
+              FactrakProfessorMetric.CourseWorkload,
+              FactrakProfessorMetric.PromoteDiscussion,
+              FactrakProfessorMetric.LeadLecture,
+              FactrakProfessorMetric.OutsideHelpfulness,
+              FactrakProfessorMetric.WouldTakeAnother,
             ]}
             style={{
               display: "inline",
@@ -248,4 +191,4 @@ const FactrakTopProfs = () => {
   );
 };
 
-export default FactrakTopProfs;
+export default FactrakProfessorRankingsTable;

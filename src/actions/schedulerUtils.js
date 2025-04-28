@@ -7,6 +7,7 @@ import {
   CHANGE_TIME_FORMAT,
   CHANGE_ORIENTATION,
   UPDATE_STATE,
+  UPDATE_MAJOR_BUILDER_STATE,
 } from "../constants/actionTypes";
 
 const doSubmenuChange = (newState) => ({
@@ -49,6 +50,11 @@ const doUpdateSchedulerState = (newState) => ({
   newState,
 });
 
+const doUpdateMajorBuilderState = (newState) => ({
+  type: UPDATE_MAJOR_BUILDER_STATE,
+  newState,
+});
+
 export {
   addNotif,
   changeOrientation,
@@ -58,4 +64,5 @@ export {
   removeNotif,
   updateGAPI,
   doUpdateSchedulerState,
+  doUpdateMajorBuilderState,
 };

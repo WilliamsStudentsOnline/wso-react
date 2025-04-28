@@ -15,6 +15,8 @@ import SubMenu from "./SubMenu";
 import Search from "./Search";
 import Timetable from "./Timetable";
 import AdditionalOptions from "./AdditionalOptions";
+import MajorBuilder from "./MajorBuilder";
+import MajorEditor from "./MajorEditor";
 
 // Redux (Selector, Reducer, Actions) imports
 import { getCurrSubMenu } from "../../../selectors/schedulerUtils";
@@ -27,6 +29,9 @@ import {
 import { FAILURE } from "../../../constants/actionTypes";
 import { doLoadCatalog } from "../../../actions/course";
 import { DEFAULT_SEMESTER_INDEX } from "../../../lib/scheduler";
+import { containsOneOfScopes, scopes } from "../../../lib/general";
+import { useAppSelector } from "../../../lib/store";
+import { getAPIToken } from "../../../lib/authSlice";
 
 const Scheduler = ({
   doUpdateGAPI,
@@ -35,6 +40,7 @@ const Scheduler = ({
   active,
   loadCatalog,
 }) => {
+  const token = useAppSelector(getAPIToken);
   useEffect(() => {
     const loadGAPI = async () => {
       try {
@@ -45,7 +51,7 @@ const Scheduler = ({
         const DISCOVERY_DOCS = [
           "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
         ];
-        const API_KEY = "AIzaSyAxGwi55Zk2mg-Hs-O3qLBcoEMx__cceD0";
+        const API_KEY = "AIzaSyAxGwi55Zk2mg-Hs-O3qLBcoEMx__cceD0"; // yeppp
 
         gapiClient.client.init({
           clientId: CLIENT_ID,
@@ -63,14 +69,34 @@ const Scheduler = ({
       }
     };
 
-    const loadCatalogCourses = async () => {
+    const loadCatalogCourses = (prohibitFactrak = false) => {
+      // if logged in as student, fetch catalog with factrak reviews
+      let jsonURL = "/courses.json";
+      if (
+        !prohibitFactrak &&
+        token &&
+        containsOneOfScopes(token, [scopes.ScopeFactrakFull])
+      ) {
+        jsonURL = "/courses-factrak.json";
+      }
+
+      const axios_headers = {
+        "X-Requested-With": "XMLHttpRequest",
+      };
+
+      if (!prohibitFactrak && token) {
+        axios_headers["Authorization"] = "Bearer " + token;
+      }
+
       axios({
-        url: "/courses.json",
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
+        url: jsonURL,
+        headers: axios_headers,
       }).then((response) => {
-        loadCatalog(response.data);
+        if (response.status !== 200 || response.statusText !== "OK") {
+          loadCatalogCourses(true);
+        } else {
+          loadCatalog(response.data);
+        }
       });
     };
 
@@ -83,6 +109,7 @@ const Scheduler = ({
     // doUpdateSignIn,
     loadCatalog,
     doAddNotification,
+    token,
   ]);
 
   const getActive = () => {
@@ -101,6 +128,18 @@ const Scheduler = ({
         return (
           <div className="row">
             <Timetable />
+          </div>
+        );
+      case "Planner":
+        return (
+          <div className="row">
+            <MajorBuilder />
+          </div>
+        );
+      case "Editor":
+        return (
+          <div className="row">
+            <MajorEditor />
           </div>
         );
       default:

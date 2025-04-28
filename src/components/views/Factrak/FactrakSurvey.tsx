@@ -8,6 +8,7 @@ import { getWSO } from "../../../lib/authSlice";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   FactrakSurveyCreateParams,
+  FactrakSurveyUpdateParams,
   ModelsAreaOfStudy,
   ModelsFactrakSurvey,
   ModelsUser,
@@ -42,6 +43,9 @@ const FactrakSurvey = ({ edit }: { edit: boolean }) => {
   const [wouldTakeAnother, updateTakeAnother] = useState<boolean | undefined>(
     undefined
   );
+  const [courseStimulating, updateCourseStimulating] = useState<
+    number | undefined
+  >(undefined);
   const [workload, updateWorkload] = useState<number | undefined>(undefined);
   const [approachability, updateApprochability] = useState<number | undefined>(
     undefined
@@ -99,6 +103,7 @@ const FactrakSurvey = ({ edit }: { edit: boolean }) => {
             : ""
         );
         updateCourseFormat(surveyData?.courseFormat ?? "");
+        updateCourseStimulating(surveyData?.courseStimulating);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
@@ -148,25 +153,27 @@ const FactrakSurvey = ({ edit }: { edit: boolean }) => {
     const [semesterSeason, semesterYear] = courseSemester.split(".");
 
     // Parse integers here rather than below to minimize the expensive operation
-    const surveyParams = {
-      areaOfStudyAbbreviation: courseAOS,
-      professorID: prof?.id,
-      courseNumber,
-      comment,
-      wouldRecommendCourse,
-      wouldTakeAnother,
-      // Parse ints should work without errors here since users do not have access to these
-      // variables
-      courseWorkload: workload,
-      approachability: approachability,
-      leadLecture: lecture,
-      promoteDiscussion: discussion,
-      outsideHelpfulness: helpful,
-      mentalHealthSupport: mentalHealthSupport,
-      semesterSeason,
-      semesterYear: parseInt(semesterYear),
-      courseFormat: courseFormat ? courseFormat : undefined,
-    };
+    const surveyParams: FactrakSurveyCreateParams | FactrakSurveyUpdateParams =
+      {
+        areaOfStudyAbbreviation: courseAOS,
+        professorID: prof?.id,
+        courseNumber,
+        comment,
+        wouldRecommendCourse,
+        wouldTakeAnother,
+        courseStimulating,
+        // Parse ints should work without errors here since users do not have access to these
+        // variables
+        courseWorkload: workload,
+        approachability: approachability,
+        leadLecture: lecture,
+        promoteDiscussion: discussion,
+        outsideHelpfulness: helpful,
+        mentalHealthSupport: mentalHealthSupport,
+        semesterSeason,
+        semesterYear: parseInt(semesterYear),
+        courseFormat: courseFormat ? courseFormat : undefined,
+      };
 
     try {
       if (edit && survey?.id) {
@@ -448,6 +455,17 @@ const FactrakSurvey = ({ edit }: { edit: boolean }) => {
                   </td>
                   <td align="left">
                     {optionBuilder(approachability, updateApprochability)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td align="left">
+                    <strong>
+                      How stimulating was this professor&apos;s course?
+                    </strong>
+                  </td>
+                  <td align="left">
+                    {optionBuilder(courseStimulating, updateCourseStimulating)}
                   </td>
                 </tr>
 

@@ -1,6 +1,6 @@
 import {
   dayConversionGCal,
-  gcalFormattedDate,
+  RFC3339FormattedDate,
   nextDateWithDay,
   toDayArray,
 } from "../../lib/scheduler";
@@ -29,11 +29,11 @@ describe("nextDateWithDay", () => {
 
 describe("gcalFormattedDate", () => {
   it("modifies YYYYMMDD dates", () => {
-    expect(gcalFormattedDate("20200906")).toEqual("2020-09-06");
+    expect(RFC3339FormattedDate("20200906")).toEqual("2020-09-06");
   });
 
   it("does not modify YYYY-MM-DD dates", () => {
-    expect(gcalFormattedDate("2020-09-06")).toEqual("2020-09-06");
+    expect(RFC3339FormattedDate("2020-09-06")).toEqual("2020-09-06");
   });
 });
 
