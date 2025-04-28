@@ -13,16 +13,84 @@ import {
   doHideCourse,
   doUnhideCourse,
 } from "../../../actions/course";
-import { getAddedCourses, getHiddenCourses } from "../../../selectors/course";
+import {
+  getAddedCourses,
+  getHiddenCourses,
+  getShowFactrakScore,
+} from "../../../selectors/course";
 import { getTimeFormat } from "../../../selectors/schedulerUtils";
 import { BORDER_PALETTE } from "../../../constants/constants";
 import { Link } from "react-router-dom";
+import { getCurrSubMenu } from "../../../selectors/schedulerUtils";
 
 // External imports
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { FOLLETT_SEMESTER_UUID } from "../../../constants/constants";
 
 dayjs.extend(customParseFormat);
+
+const FactrakRatingBox = ({ showFactrakScore, course }) => {
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+
+  const getRatingsVisible = () => {
+    if (showFactrakScore && course.factrakScore && course.factrakScore !== -1)
+      return "visible";
+    return "hidden";
+  };
+
+  const getFactrakUrl = () => {
+    if (course.instructors.length === 1) {
+      return `/factrak/courses/${course.courseDBID}/${course.instructors[0].id}`;
+    } else {
+      return `/factrak/courses/${course.courseDBID}`;
+    }
+  };
+
+  const getRatingColor = (rating) => {
+    if (rating >= 80) return "#1a8754";
+    if (rating >= 60) return "#ffc107";
+    if (rating >= 40) return "#fd7e14";
+    return "#dc3545";
+  };
+
+  const getFactrakRating = () => {
+    if (course.factrakScore === -1) {
+      return "N/A";
+    }
+    return (course.factrakScore * 100).toFixed(0);
+  };
+
+  const getTooltipText = () => {
+    return `${course.recommendReviews} out of ${course.totalReviews} would recommend`;
+  };
+
+  return (
+    <div
+      className="factrak-rating"
+      style={{
+        backgroundColor: getRatingColor(getFactrakRating()),
+        visibility: getRatingsVisible(),
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        window.location.href = getFactrakUrl();
+      }}
+      onMouseEnter={() => setTooltipVisible(true)}
+      onMouseLeave={() => setTooltipVisible(false)}
+    >
+      <span className="rating-value">{getFactrakRating()}</span>
+      {tooltipVisible && (
+        <div className="rating-tooltip">{getTooltipText()}</div>
+      )}
+    </div>
+  );
+};
+
+FactrakRatingBox.propTypes = {
+  showFactrakScore: PropTypes.bool.isRequired,
+  course: PropTypes.object.isRequired,
+};
 
 const Course = ({
   added,
@@ -34,8 +102,9 @@ const Course = ({
   onHide,
   onUnhide,
   twelveHour,
+  showFactrakScore,
+  active,
 }) => {
-  // State of body visibiity
   const [bodyHidden, setHidden] = useState(true);
 
   const addedIds = added.map((addedCourse) => addedCourse.peoplesoftNumber);
@@ -207,20 +276,16 @@ const Course = ({
     );
   };
 
+  // this function name is a little misleading, this now returns a UUID for Follett links
   const semesterInNumber = () => {
-    switch (course.semester) {
-      case "Fall":
-        return 1001 + 10 * (course.year % 100);
-      case "Winter":
-        return 1002 + 10 * (course.year % 100);
-      default:
-        return 1003 + 10 * (course.year % 100);
-    }
+    // NOTE: this is currently only stable for 2024 Spring (!!)
+    // this controls the termID flag in the HTTP request, which Follett changed recently and may change again
+    return FOLLETT_SEMESTER_UUID;
   };
 
   const bookstoreLink = () => {
     const baseBookstoreLink =
-      "https://www.bkstr.com/williamsstore/follett-discover-view/booklook?shopBy=discoverViewCourse&bookstoreId=506&divisionDisplayName=";
+      "https://www.bkstr.com/williamsstore/course-materials-results?shopBy=course&divisionDisplayName=&bookstoreId=506&programID=912";
 
     return (
       <a
@@ -293,6 +358,10 @@ const Course = ({
       onClick={toggleBody}
       role="presentation"
     >
+      <FactrakRatingBox
+        showFactrakScore={showFactrakScore && active === "Catalog"}
+        course={course}
+      ></FactrakRatingBox>
       <div className="course-header">
         <div className="row course-title">
           <div className="row title">
@@ -382,6 +451,8 @@ Course.propTypes = {
   onUnhide: PropTypes.func.isRequired,
   location: PropTypes.string,
   course: PropTypes.object.isRequired,
+  showFactrakScore: PropTypes.bool.isRequired,
+  active: PropTypes.string,
 };
 
 Course.defaultProps = {
@@ -392,6 +463,8 @@ const mapStateToProps = (state) => ({
   hidden: getHiddenCourses(state),
   added: getAddedCourses(state),
   twelveHour: getTimeFormat(state),
+  showFactrakScore: getShowFactrakScore(state),
+  active: getCurrSubMenu(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({

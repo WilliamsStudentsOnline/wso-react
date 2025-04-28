@@ -15,10 +15,14 @@ import {
   TOGGLE_LEVEL,
   TOGGLE_TYPE,
   TOGGLE_REMOTE,
+  TOGGLE_FACTRAK_SCORE_DISPLAY,
+  TOGGLE_INCLUDE_FACTRAK_NO_SCORES,
+  SET_MIN_FACTRAK_SCORE,
   UPDATE_END,
   UPDATE_START,
   RESET_FILTERS,
   REMOVE_SEMESTER_COURSES,
+  LOAD_HISTORICAL_CATALOG_YEAR,
 } from "../constants/actionTypes";
 
 import {
@@ -36,7 +40,7 @@ import { DEFAULT_SEMESTER_INDEX } from "../lib/scheduler";
 const INITIAL_STATE = {};
 let INITIAL_CATALOG = [];
 
-// Gets the added courses attributes from WebStorage and add the relevant courses.
+// Gets the added courses attributes from LocalStorage and add the relevant courses.
 // TODO: binary search?
 const parseAddedCourses = () => {
   const addedCourses = localStorage.getItem("added");
@@ -66,12 +70,15 @@ const INITIAL_FILTER_STATE = {
   distributions: [false, false, false],
   divisions: [false, false, false],
   others: [false, false],
+  remote: [false, false, false],
   levels: [false, false, false, false, false],
   conflict: [false],
   start: "",
   end: "",
   classTypes: [false, false, false, false, false, false],
-  remote: [false, false, false],
+  showFactrakScore: true,
+  includeFactrakNoScores: true,
+  minFactrakScore: 0,
 };
 
 const INITIAL_COUNT_STATE = {
@@ -83,6 +90,7 @@ const INITIAL_COUNT_STATE = {
   conflict: [0],
   classTypes: [0, 0, 0, 0, 0, 0],
   remote: [0, 0, 0],
+  factrak: [0, 0],
 };
 
 const DEFAULT_SEMESTER = [false, false, false];
@@ -101,6 +109,7 @@ Object.assign(INITIAL_STATE, {
   hidden: [],
   filters: INITIAL_FILTER_STATE,
   counts: INITIAL_COUNT_STATE,
+  historicalCatalogs: {}, // will be { 2025: [], 2024: [], 2023: [], ... }
 });
 
 // Writing this rather than using regex for speed reasons
@@ -267,6 +276,8 @@ const applyFilters = (state, queried, filters) => {
     classTypes,
     conflict,
     remote,
+    includeFactrakNoScores,
+    minFactrakScore,
   } = filters;
 
   const result = [];
@@ -367,6 +378,19 @@ const applyFilters = (state, queried, filters) => {
       if (hasConflict) continue;
     }
 
+    if (course.factrakScore) {
+      // don't use factrak filters without factrak scope
+      if (!includeFactrakNoScores && course.factrakScore === -1) continue;
+
+      if (
+        minFactrakScore > 0 &&
+        course.factrakScore < minFactrakScore / 100 &&
+        course.factrakScore >= 0
+      ) {
+        continue;
+      }
+    } else if (!includeFactrakNoScores) continue; // edge case!
+
     result.push(course);
   }
 
@@ -399,6 +423,29 @@ const findCount = (
 const updateCounts = (state) => {
   const newCounts = { ...state.counts };
 
+  const getCountWithTempFactrakFilters = (
+    tempIncludeNoScores,
+    tempMinScore
+  ) => {
+    const tempFilters = { ...state.filters };
+
+    tempFilters.includeFactrakNoScores = tempIncludeNoScores;
+    tempFilters.minFactrakScore = tempMinScore;
+
+    return applyFilters(state, state.queried, tempFilters).length;
+  };
+
+  const countWithNoScores = getCountWithTempFactrakFilters(true, 0);
+  const countWithoutNoScores = getCountWithTempFactrakFilters(false, 0);
+
+  const noScoresCount = countWithNoScores - countWithoutNoScores;
+  const minScoreCount = getCountWithTempFactrakFilters(
+    false,
+    state.filters.minFactrakScore
+  );
+
+  newCounts.factrak = [noScoresCount, minScoreCount];
+
   newCounts.semesters = findCount(state, newCounts, "semesters", SEMESTERS);
   newCounts.distributions = findCount(
     state,
@@ -412,8 +459,9 @@ const updateCounts = (state) => {
   newCounts.conflict = findCount(state, newCounts, "conflict", [true]);
   newCounts.classTypes = findCount(state, newCounts, "classTypes", CLASS_TYPES);
   newCounts.remote = findCount(state, newCounts, "remote", REMOTE);
+  // --- End Standard Counts ---
 
-  return newCounts;
+  return newCounts; // Return the updated counts object
 };
 
 const updateScores = (param) => {
@@ -480,7 +528,7 @@ const applyAddCourse = (state, action) => {
 };
 
 const applyRemoveCourse = (state, action) => {
-  // Update WebStorage
+  // Update LocalStorage
   let addedCourses = localStorage.getItem("added");
   if (!addedCourses) addedCourses = "";
 
@@ -575,6 +623,36 @@ const toggleType = (state, action) => {
   return { ...state, filters: { ...state.filters, classTypes: final } };
 };
 
+const toggleFactrakDisplay = (state, action) => {
+  return {
+    ...state,
+    filters: {
+      ...state.filters,
+      showFactrakScore: !state.filters.showFactrakScore,
+    },
+  };
+};
+
+const toggleIncludeFactrakNoScores = (state, action) => {
+  return {
+    ...state,
+    filters: {
+      ...state.filters,
+      includeFactrakNoScores: !state.filters.includeFactrakNoScores,
+    },
+  };
+};
+
+const setMinFactrakScore = (state, action) => {
+  return {
+    ...state,
+    filters: {
+      ...state.filters,
+      minFactrakScore: parseInt(action.score, 10) || 0,
+    },
+  };
+};
+
 const updateStart = (state, action) => {
   return { ...state, filters: { ...state.filters, start: action.time } };
 };
@@ -610,10 +688,22 @@ const applyLoadCatalog = (state, catalog) => {
   Object.assign(INITIAL_STATE, {
     queried: INITIAL_CATALOG,
     added: parseAddedCourses(),
+    crossListings: catalog.crossListings,
     updateTime: catalog.updateTime,
   });
 
   return { ...state, ...applySearchCourse(INITIAL_STATE) };
+};
+
+const applyLoadHistoricalCatalogYear = (state, action) => {
+  const { year, catalog } = action;
+  return {
+    ...state,
+    historicalCatalogs: {
+      ...state.historicalCatalogs,
+      [year]: catalog.courses,
+    },
+  };
 };
 
 const toggleRemote = (state, action) => {
@@ -641,6 +731,8 @@ const courseReducer = (state = INITIAL_STATE, action) => {
       break;
     case LOAD_CATALOG:
       return applyLoadCatalog(state, action.catalog);
+    case LOAD_HISTORICAL_CATALOG_YEAR:
+      return applyLoadHistoricalCatalogYear(state, action);
     case LOAD_COURSES:
       return applyLoadCourses(state, action);
     case RESET_FILTERS:
@@ -667,6 +759,12 @@ const courseReducer = (state = INITIAL_STATE, action) => {
       return toggleSem(state, action);
     case TOGGLE_TYPE:
       return toggleType(state, action);
+    case TOGGLE_FACTRAK_SCORE_DISPLAY:
+      return toggleFactrakDisplay(state, action);
+    case TOGGLE_INCLUDE_FACTRAK_NO_SCORES:
+      return toggleIncludeFactrakNoScores(state, action);
+    case SET_MIN_FACTRAK_SCORE:
+      return setMinFactrakScore(state, action);
     case UPDATE_END:
       return updateEnd(state, action);
     case UPDATE_START:

@@ -17,6 +17,9 @@ import {
   getEndTimes,
   getCounts,
   getCatalogUpdateTime,
+  getShowFactrakScore,
+  getMinFactrakScore,
+  getIncludeFactrakNoScores,
 } from "../../../selectors/course";
 import { getTimeFormat } from "../../../selectors/schedulerUtils";
 import {
@@ -39,6 +42,9 @@ import {
   doUpdateEnd,
   doSearchCourse,
   doResetFilters,
+  doToggleFactrakScoreDisplay,
+  doSetMinFactrakScore,
+  doToggleIncludeFactrakNoScores,
 } from "../../../actions/course";
 
 const AdditionalOptions = ({
@@ -51,6 +57,9 @@ const AdditionalOptions = ({
   levelClick,
   typeClick,
   remoteClick,
+  toggleFactrakScoreClick,
+  setMinFactrakScoreClick,
+  toggleIncludeNoScoresClick,
   filters,
   onSearch,
   startChange,
@@ -59,7 +68,12 @@ const AdditionalOptions = ({
   twelveHour,
   counts,
   updateTime,
+  showFactrakScore,
+  minFactrakScore,
+  includeFactrakNoScores,
 }) => {
+  const factrakAuth = catalog.length > 0 && catalog[0].factrakScore; // lazy!
+
   // Generates a description of how many courses were found.
   const numFound = (length) => {
     if (length === 1) {
@@ -68,12 +82,19 @@ const AdditionalOptions = ({
     return <span className="num-found">{`${length} courses found`}</span>;
   };
 
-  // Handles the clicking
+  // Handles the clicking and triggers a search update,
+  // *unless* the action is purely for display (like toggleFactrakScoreClick)
   const clickLoader = (funct, param) => {
     if (param && param.target) {
-      funct(param.target.value);
-    } else funct(param);
-    onSearch();
+      // Check if it's an event object
+      funct(param.target.value); // Extract value from event
+    } else {
+      funct(param); // Use param directly (e.g., slider value, index)
+    }
+    // Only trigger search if the function isn't the display toggle (SPECIAL CASE!)
+    if (funct !== toggleFactrakScoreClick) {
+      onSearch(); // Trigger search/filter update
+    }
   };
 
   // Determining which set of start times should be used.
@@ -85,57 +106,47 @@ const AdditionalOptions = ({
       <div className="additional-options">
         {numFound(catalog.length)}
         <span className="refine">Refine by</span>
-        <Accordion header="Remote Availability" startsHidden={false}>
-          <ul className="remote">
-            <li>
-              <Checkbox
-                onClick={() => clickLoader(remoteClick, 0)}
-                checked={filters.remote[0]}
-              />
-              {`Hybrid (${counts.remote[0]})`}
-            </li>
-            <li>
-              <Checkbox
-                onClick={() => clickLoader(remoteClick, 1)}
-                checked={filters.remote[1]}
-              />
-              {`Remote (${counts.remote[1]})`}
-            </li>
-
-            <li>
-              <Checkbox
-                onClick={() => clickLoader(remoteClick, 2)}
-                checked={filters.remote[2]}
-              />
-              {`In-person (${counts.remote[2]})`}
-            </li>
-          </ul>
-        </Accordion>
-        <Accordion header="Semester">
-          <ul className="semester">
-            <li>
-              <Checkbox
-                onClick={() => clickLoader(semClick, 0)}
-                checked={filters.semesters[0]}
-              />
-              {`Fall (${counts.semesters[0]})`}
-            </li>
-            <li>
-              <Checkbox
-                onClick={() => clickLoader(semClick, 1)}
-                checked={filters.semesters[1]}
-              />
-              {`Winter (${counts.semesters[1]})`}
-            </li>
-            <li>
-              <Checkbox
-                onClick={() => clickLoader(semClick, 2)}
-                checked={filters.semesters[2]}
-              />
-              {`Spring (${counts.semesters[2]})`}
-            </li>
-          </ul>
-        </Accordion>
+        {factrakAuth ? (
+          <Accordion header="Course Reviews" startsHidden={false}>
+            <ul className="factrak-filters">
+              <li>
+                <Checkbox
+                  // This checkbox just toggles a display setting, no immediate search needed
+                  // Call action directly, bypassing clickLoader
+                  onClick={toggleFactrakScoreClick}
+                  checked={showFactrakScore}
+                />
+                Display factrak score (if available)
+              </li>
+              <li>
+                <Checkbox
+                  onClick={() => clickLoader(toggleIncludeNoScoresClick)}
+                  checked={includeFactrakNoScores}
+                />
+                Include courses with no Factrak reviews ({counts.factrak[0]})
+              </li>
+              <li className="slider-container">
+                <label htmlFor="factrak-slider">
+                  Minimum Factrak Score:{" "}
+                  {minFactrakScore > 0 ? minFactrakScore : "Any"} (
+                  {counts.factrak[1]})
+                </label>
+                <input
+                  type="range"
+                  id="factrak-slider"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value={minFactrakScore}
+                  onChange={(e) => clickLoader(setMinFactrakScoreClick, e)}
+                  className="factrak-score-slider"
+                />
+              </li>
+            </ul>
+          </Accordion>
+        ) : (
+          ""
+        )}
         <Accordion header="Level">
           <ul className="Level">
             <li>
@@ -221,7 +232,50 @@ const AdditionalOptions = ({
                 onClick={() => clickLoader(distClick, 2)}
                 checked={filters.distributions[2]}
               />
-              {`Writing Intensive (WI) (${counts.distributions[2]})`}
+              {`Writing Skills (WS) (${counts.distributions[2]})`}
+            </li>
+          </ul>
+        </Accordion>
+        <Accordion header="Other Attributes">
+          <ul className="pffc">
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(othersClick, 0)}
+                checked={filters.others[0]}
+              />
+              {`Pass/Fail Available (${counts.others[0]})`}
+            </li>
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(othersClick, 1)}
+                checked={filters.others[1]}
+              />
+              {`Fifth Course Available (${counts.others[1]})`}
+            </li>
+          </ul>
+        </Accordion>
+        <Accordion header="Semester">
+          <ul className="semester">
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(semClick, 0)}
+                checked={filters.semesters[0]}
+              />
+              {`Fall (${counts.semesters[0]})`}
+            </li>
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(semClick, 1)}
+                checked={filters.semesters[1]}
+              />
+              {`Winter (${counts.semesters[1]})`}
+            </li>
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(semClick, 2)}
+                checked={filters.semesters[2]}
+              />
+              {`Spring (${counts.semesters[2]})`}
             </li>
           </ul>
         </Accordion>
@@ -233,6 +287,71 @@ const AdditionalOptions = ({
                 checked={filters.conflict[0]}
               />
               {`Only classes that fit my current schedule (${counts.conflict[0]})`}
+            </li>
+          </ul>
+        </Accordion>
+        <Accordion header="Time">
+          <div className="row">
+            <div className="column">
+              <span className="ul-header">Start Time</span>
+              {/* We pass in the 24 hour values for comparison so we don't have to write
+                    methods to parse them in the reducer. */}
+              <Select
+                onChange={(event) => clickLoader(startChange, event)}
+                options={startTimes.filter((time, index) => {
+                  if (filters.end) return START_TIMES[index] < filters.end;
+                  return true;
+                })}
+                value={filters.start}
+                valueList={START_TIMES.filter((time, index) => {
+                  if (filters.end) return START_TIMES[index] < filters.end;
+                  return true;
+                })}
+                fillerOption="Pick a Time"
+                fillerValue=""
+              />
+            </div>
+            <div className="column">
+              <span className="ul-header">End Time</span>
+              <Select
+                onChange={(event) => clickLoader(endChange, event)}
+                options={endTimes.filter((time, index) => {
+                  if (filters.start) return END_TIMES[index] > filters.start;
+                  return true;
+                })}
+                value={filters.end}
+                valueList={END_TIMES.filter((time, index) => {
+                  if (filters.start) return END_TIMES[index] > filters.start;
+                  return true;
+                })}
+                fillerOption="Pick a Time"
+                fillerValue=""
+              />
+            </div>
+          </div>
+        </Accordion>
+        <Accordion header="Remote Availability">
+          <ul className="remote">
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(remoteClick, 0)}
+                checked={filters.remote[0]}
+              />
+              {`Hybrid (${counts.remote[0]})`}
+            </li>
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(remoteClick, 1)}
+                checked={filters.remote[1]}
+              />
+              {`Remote (${counts.remote[1]})`}
+            </li>
+            <li>
+              <Checkbox
+                onClick={() => clickLoader(remoteClick, 2)}
+                checked={filters.remote[2]}
+              />
+              {`In-person (${counts.remote[2]})`}
             </li>
           </ul>
         </Accordion>
@@ -283,65 +402,6 @@ const AdditionalOptions = ({
           </ul>
         </Accordion>
 
-        <Accordion header="Others">
-          <ul className="pffc">
-            <li>
-              <Checkbox
-                onClick={() => clickLoader(othersClick, 0)}
-                checked={filters.others[0]}
-              />
-              {`Pass/Fail Available (${counts.others[0]})`}
-            </li>
-            <li>
-              <Checkbox
-                onClick={() => clickLoader(othersClick, 1)}
-                checked={filters.others[1]}
-              />
-              {`Fifth Course Available (${counts.others[1]})`}
-            </li>
-          </ul>
-        </Accordion>
-        <Accordion header="Time">
-          <div className="row">
-            <div className="column">
-              <span className="ul-header">Start Time</span>
-              {/* We pass in the 24 hour values for comparison so we don't have to write
-                    methods to parse them in the reducer. */}
-              <Select
-                onChange={(event) => clickLoader(startChange, event)}
-                options={startTimes.filter((time, index) => {
-                  if (filters.end) return START_TIMES[index] < filters.end;
-                  return true;
-                })}
-                value={filters.start}
-                valueList={START_TIMES.filter((time, index) => {
-                  if (filters.end) return START_TIMES[index] < filters.end;
-                  return true;
-                })}
-                fillerOption="Pick a Time"
-                fillerValue=""
-              />
-            </div>
-            <div className="column">
-              <span className="ul-header">End Time</span>
-              <Select
-                onChange={(event) => clickLoader(endChange, event)}
-                options={endTimes.filter((time, index) => {
-                  if (filters.start) return END_TIMES[index] > filters.start;
-                  return true;
-                })}
-                value={filters.end}
-                valueList={END_TIMES.filter((time, index) => {
-                  if (filters.start) return END_TIMES[index] > filters.start;
-                  return true;
-                })}
-                fillerOption="Pick a Time"
-                fillerValue=""
-              />
-            </div>
-          </div>
-        </Accordion>
-
         <div className="reset-filters">
           <button type="button" onClick={() => clickLoader(resetFilters)}>
             Reset Filters
@@ -349,6 +409,9 @@ const AdditionalOptions = ({
         </div>
         <span className="last-update">
           {updateTime ? `Catalog last updated on ${updateTime}` : ""}
+          <br></br>
+          Factrak reviews are aggregated from archival data; check Factrak for
+          only recent reviews
         </span>
       </div>
     </div>
@@ -365,6 +428,9 @@ AdditionalOptions.propTypes = {
   levelClick: PropTypes.func.isRequired,
   typeClick: PropTypes.func.isRequired,
   remoteClick: PropTypes.func.isRequired,
+  setMinFactrakScoreClick: PropTypes.func.isRequired,
+  toggleIncludeNoScoresClick: PropTypes.func.isRequired,
+  toggleFactrakScoreClick: PropTypes.func.isRequired,
   filters: PropTypes.object.isRequired,
   onSearch: PropTypes.func.isRequired,
   startChange: PropTypes.func.isRequired,
@@ -372,6 +438,9 @@ AdditionalOptions.propTypes = {
   resetFilters: PropTypes.func.isRequired,
   twelveHour: PropTypes.bool.isRequired,
   counts: PropTypes.object.isRequired,
+  minFactrakScore: PropTypes.number.isRequired,
+  showFactrakScore: PropTypes.bool.isRequired,
+  includeFactrakNoScores: PropTypes.bool.isRequired,
   updateTime: PropTypes.string,
 };
 
@@ -387,6 +456,9 @@ const mapStateToProps = (state) => ({
   twelveHour: getTimeFormat(state),
   counts: getCounts(state),
   updateTime: getCatalogUpdateTime(state),
+  showFactrakScore: getShowFactrakScore(state),
+  minFactrakScore: getMinFactrakScore(state),
+  includeFactrakNoScores: getIncludeFactrakNoScores(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -403,6 +475,9 @@ const mapDispatchToProps = (dispatch) => ({
   resetFilters: () => dispatch(doResetFilters()),
   typeClick: (index) => dispatch(doToggleType(index)),
   remoteClick: (index) => dispatch(doToggleRemote(index)),
+  toggleFactrakScoreClick: () => dispatch(doToggleFactrakScoreDisplay()),
+  toggleIncludeNoScoresClick: () => dispatch(doToggleIncludeFactrakNoScores()),
+  setMinFactrakScoreClick: (score) => dispatch(doSetMinFactrakScore(score)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdditionalOptions);

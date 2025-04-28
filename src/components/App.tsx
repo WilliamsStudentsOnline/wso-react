@@ -36,7 +36,9 @@ const MobilePrivacyPolicy = lazy(
 const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
 const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
 const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
+const BooktrakMain = lazy(() => import("./views/Booktrak/BooktrakMain"));
 const EphmatchMain = lazy(() => import("./views/Ephmatch/EphmatchMain"));
+const DiningMain = lazy(() => import("./views/Dining/DiningMain"));
 const Error404 = lazy(() => import("./views/Errors/Error404"));
 const Login = lazy(() => import("./Login"));
 const Error403 = lazy(() => import("./views/Errors/Error403"));
@@ -179,6 +181,14 @@ const App = () => {
             }
           />
           <Route
+            path="booktrak/*"
+            element={
+              <RequireScope token={apiToken} name="booktrak">
+                <BooktrakMain />
+              </RequireScope>
+            }
+          />
+          <Route
             path="dormtrak/*"
             element={
               <RequireScope token={apiToken} name="dormtrak">
@@ -195,6 +205,7 @@ const App = () => {
             }
           />
           <Route path="schedulecourses" element={<Scheduler />} />
+          <Route path="dining/*" element={<DiningMain />} />
           {/* Static Content Pages */}
           <Route path="about" element={<About />} />
           <Route path="faq" element={<FAQ />} />

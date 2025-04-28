@@ -64,3 +64,19 @@
   display: grid;
   grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
 }
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  font-size: 2em;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+  padding-left: 1em;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+  padding-left: 1em;
+}

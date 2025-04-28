@@ -4,29 +4,68 @@ import React, { useState, useEffect } from "react";
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
 import { getCurrUser } from "../../../lib/authSlice";
+import { selectGeneratedQuery } from "../../../lib/queryBuilderSlice";
 
 // Additional imports
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { StylizedLink } from "../../StylizedLink";
+
+// Component Imports
+import QueryTable from "../../QueryTable";
 
 const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
   const navigateTo = useNavigate();
   const [searchParams] = useSearchParams();
-  const [query, updateQuery] = useState("");
+
+  const [searchInputValue, setSearchInputValue] = useState(
+    searchParams.get("q") ?? ""
+  );
+  const [advancedFiltersSelected, setAdvancedFiltersSelected] = useState(false);
+  const { query: generatedQuery, warning: queryWarning } =
+    useAppSelector(selectGeneratedQuery);
 
   useEffect(() => {
-    if (searchParams?.get("q")) {
-      updateQuery(searchParams.get("q") ?? "");
-    } else {
-      updateQuery("");
+    if (advancedFiltersSelected) {
+      setSearchInputValue(generatedQuery);
     }
-  }, [searchParams]);
+  }, [advancedFiltersSelected, generatedQuery]);
 
-  // Handles submissions
   const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    searchParams.set("q", query);
-    navigateTo(`/facebook?${searchParams.toString()}`);
+    const finalQuery = advancedFiltersSelected
+      ? generatedQuery
+      : searchInputValue;
+    if (finalQuery.trim()) {
+      searchParams.set("q", finalQuery.trim());
+      navigateTo(`/facebook?${searchParams.toString()}`);
+    } else {
+      searchParams.delete("q");
+      navigateTo(`/facebook?${searchParams.toString()}`);
+    }
+    setAdvancedFiltersSelected(false);
+  };
+
+  const handleAdvancedToggleClick = () => {
+    setAdvancedFiltersSelected(!advancedFiltersSelected);
+  };
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInputValue(event.target.value);
+  };
+
+  const FilterButton = () => {
+    return (
+      <button
+        onClick={handleAdvancedToggleClick}
+        className={
+          advancedFiltersSelected ? "button-toggled" : "button-default"
+        }
+        style={{ marginLeft: "10px" }}
+      >
+        Advanced
+      </button>
+    );
   };
 
   return (
@@ -38,39 +77,78 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
           </h1>
           <ul>
             <li>
-              <Link to="/facebook">Search</Link>
+              <StylizedLink to="/facebook" end>
+                Search
+              </StylizedLink>
             </li>
             <li>
-              <Link to="/facebook/help">Help</Link>
+              <StylizedLink to="/facebook/help">Help</StylizedLink>
             </li>
             {currUser === null
               ? null
               : [
                   <li key="view">
-                    <Link to={`/facebook/users/${currUser.id}`}>View</Link>
+                    <StylizedLink to={`/facebook/users/${currUser.id}`}>
+                      View
+                    </StylizedLink>
                   </li>,
                   <li key="edit">
-                    <Link to="/facebook/edit"> Edit </Link>
+                    <StylizedLink to="/facebook/edit"> Edit </StylizedLink>
                   </li>,
                 ]}
           </ul>
         </div>
-        <form onSubmit={submitHandler}>
-          <input
-            id="search"
-            type="search"
-            placeholder="Search Facebook"
-            autoFocus
-            onChange={(event) => updateQuery(event.target.value)}
-            value={query}
-          />
-          <input
-            data-disable-with="Search"
-            type="submit"
-            value="Search"
-            className="submit"
-          />
-        </form>
+        <div>
+          <form onSubmit={submitHandler}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                marginTop: "10px",
+              }}
+            >
+              <input
+                aria-label="Search box for Facebook"
+                type="search"
+                placeholder="Search Facebook"
+                value={searchInputValue}
+                onChange={handleInputChange}
+              />
+              <input
+                data-disable-with="Search"
+                type="submit"
+                value="Search"
+                className="submit"
+              />
+              <div
+                style={{
+                  marginLeft: "30px",
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <FilterButton />
+              </div>
+            </div>
+          </form>
+        </div>
+        {advancedFiltersSelected && (
+          <div className="advanced-query advanced-query-facebook">
+            <br />
+            <div className="active-filters-container">
+              {generatedQuery ? (
+                <div className="active-filters">{generatedQuery}</div>
+              ) : (
+                <div className="active-filters">
+                  <span id="italic">empty query - add filters below</span>
+                </div>
+              )}
+              {queryWarning && <div className="warning">{queryWarning}</div>}
+            </div>
+            <br />
+            <QueryTable />
+          </div>
+        )}
       </header>
       {children}
     </div>

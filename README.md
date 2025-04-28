@@ -7,6 +7,8 @@ This repository contains all the front-end code to the Williams Student Online w
 
 Interested in the back-end instead? Head over to our backend [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/).
 
+See our [frontend wiki](https://wso-dev.williams.edu/wiki/wso-react/) for more detailed info (if you are on campus/connected via VPN).
+
 ## Suggestions, issues, or bug reports?
 
 We would love to hear from you and discuss them. File an issue [here](https://github.com/WilliamsStudentsOnline/wso-react/issues/new) with one of the templates, and our developers will get back to you shortly!
@@ -64,9 +66,11 @@ to launch a development build, which includes Hot Module Reload(HMR), where chan
 
 **5) Communicating with the Backend**
 
-While we've set up the React side of things, we need to set up the backend to allow our client to get the information from a local server. To do so, set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/), and run the `wso-go` server alongside the React development server at `yarn start`.
+By default, the development server will communicate with [wso-dev.williams.edu](wso-dev.wso.williams.edu). This is fine for most frontend-focused development!
 
-The development server is set to communicate to the backend via a proxy, allowing all HTTP requests can thus be made to `/path/to/endpoint` without further settings.
+However, you may wish to set up the backend to allow our client to get the information from a local server. To do so, set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/), and run the `wso-go` server alongside the React development server. If you're working in VSCode, you should see ports `:8080` (backend) and `:3000` (frontend) in use on your machine. You should then change `setupProxy.js` to point to `localhost:8080` (instead of `wso-dev`) to access your local development backend.
+
+`setupProxy.js` enables all HTTP requests to be made to `/path/to/endpoint` without further settings--so don't worry about changing URL paths!
 
 ## Development
 
@@ -79,13 +83,13 @@ To aid in your development process, we also suggest installing the following:
 - Configuring [ES-Lint](https://eslint.org/) to work with your editor. Like Prettier, we have a pre-commit hook to ensure that your code fits our standards, but unlike the Prettier hook, the commit will fail if there are errors, so it will help your development loop if it is configured with your editor.
 
 **Styling**
-Styling is currently done via vanilla CSS, although we will likely be moving to a React component library soon (see [issue #2](https://github.com/WilliamsStudentsOnline/wso-react/issues/2)).
+Styling is currently done via vanilla CSS. Edit existing stylesheets or, for larger features, create new ones, and make sure to include them in the appropriate `.tsx`/`.jsx` files.
 
 **Where to begin:**
 
 - Start by reading the section on contributing to find out the ways you can contribute to this repository. Contrary to popular belief, contributions need not come in the form of code. Fixing typos, creating issues for bugs, adding comments, suggesting tutorials, and helping out the community are valued ways of contributing.
 - If you're interested in learning more about React and Redux, we recommend [this tutorial](https://www.robinwieruch.de/react-redux-tutorial/#react-redux-and-x-tutorial).
-- Look out for issues labelled as 'good first issue' [here](https://github.com/WilliamsStudentsOnline/wso-react/labels/good%20first%20issue). These issues are usually what we have deemed to be great places to get your feet wet.
+- Look out for issues labelled as 'good first issue' [here](https://github.com/WilliamsStudentsOnline/wso-react/labels/good%20first%20issue), or just ask us what needs fixing!
 
 ## Available Scripts
 

@@ -1,6 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import { Line, Paragraph } from "../../Skeleton";
+import Markdown from "markdown-to-jsx";
 
 // Redux and Routing imports
 import { useAppSelector } from "../../../lib/store";
@@ -159,11 +160,38 @@ const BulletinShow = () => {
           </h3>
           {`${generateBulletinDate(bulletin)} by `}
           {generateBulletinStarter()}
-
           {editDeleteButtons()}
           <br />
           <br />
-          {bulletin.body}
+          <div className="markdown-content">
+            <Markdown
+              options={{
+                overrides: {
+                  h1: {
+                    component: "h2",
+                  },
+                  h2: {
+                    component: "h2",
+                  },
+                  h3: {
+                    component: "h2",
+                  },
+                  h4: {
+                    component: "h5",
+                  },
+                  h5: {
+                    component: "h5",
+                  },
+                  h6: {
+                    component: "h5",
+                  },
+                },
+              }}
+            >
+              {bulletin.body ||
+                "There was an error displaying the content for this post."}
+            </Markdown>
+          </div>{" "}
         </div>
         <br />
       </section>

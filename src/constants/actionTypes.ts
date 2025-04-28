@@ -31,6 +31,18 @@ export const REMOVE_SEMESTER_COURSES = "REMOVE_SEMESTER_COURSES";
 export const TOGGLE_TYPE = "TOGGLE_TYPE";
 export const UPDATE_STATE = "UPDATE_STATE";
 
+// New Major Builder features
+export const SELECT_MAJOR = "SELECT_MAJOR";
+
+export const LOAD_HISTORICAL_CATALOG_YEAR = "LOAD_HISTORICAL_CATALOG_YEAR";
+export const UPDATE_MAJOR_BUILDER_STATE = "UPDATE_MAJOR_BUILDER_STATE";
+
+// Factrak Filters
+export const TOGGLE_FACTRAK_SCORE_DISPLAY = "TOGGLE_FACTRAK_SCORE_DISPLAY";
+export const TOGGLE_INCLUDE_FACTRAK_NO_SCORES =
+  "TOGGLE_INCLUDE_FACTRAK_NO_SCORES";
+export const SET_MIN_FACTRAK_SCORE = "SET_MIN_FACTRAK_SCORE";
+
 // Auth Reducer: See authSlice
 
 // Util Reducer: removed because not used

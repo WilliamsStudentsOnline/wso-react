@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { format } from "timeago.js";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
+import { StylizedLink } from "../../StylizedLink";
 
 const EphmatchLayout = ({
   available,
@@ -29,7 +30,9 @@ const EphmatchLayout = ({
           </h1>
           <ul>
             <li>
-              <Link to="/ephmatch">Home</Link>
+              <StylizedLink to="/ephmatch" end>
+                Home
+              </StylizedLink>
             </li>
             {containsOneOfScopes(token, [
               scopes.ScopeEphmatchMatches,
@@ -37,16 +40,16 @@ const EphmatchLayout = ({
             ]) && (
               <>
                 <li>
-                  <Link to="/ephmatch/matches">Matches</Link>
+                  <StylizedLink to="/ephmatch/matches">Matches</StylizedLink>
                   <span className="ephmatch-badge" title="Matches!">
                     {matchesTotalCount}
                   </span>
                 </li>
                 <li>
-                  <Link to="/ephmatch/profile">Profile</Link>
+                  <StylizedLink to="/ephmatch/profile">Profile</StylizedLink>
                 </li>
                 <li>
-                  <Link to="/ephmatch/opt-out">Opt Out</Link>
+                  <StylizedLink to="/ephmatch/opt-out">Opt Out</StylizedLink>
                 </li>
               </>
             )}
