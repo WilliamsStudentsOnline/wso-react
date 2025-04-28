@@ -2,9 +2,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const StatesDropdown = ({ updateState }) => {
+const StatesDropdown = ({ updateState, currentState }) => {
   return (
-    <select onChange={(event) => updateState(event.target.value)}>
+    <select
+      value={currentState}
+      onChange={(event) => updateState(event.target.value)}
+    >
       <option value=""></option>
       <option value="AL">Alabama</option>
       <option value="AK">Alaska</option>
@@ -63,6 +66,7 @@ const StatesDropdown = ({ updateState }) => {
 
 StatesDropdown.propTypes = {
   updateState: PropTypes.func,
+  currentState: PropTypes.string,
 };
 
 export default StatesDropdown;
