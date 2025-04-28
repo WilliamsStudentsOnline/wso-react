@@ -4,3 +4,110 @@
   place-content: center;
   grid-gap: 30px;
 }
+
+.search-bar {
+  display: flex;
+  flex-direction: row;
+  margin-right: 80px;
+  padding: 8px 0;
+}
+
+.search-bar input[type="search"],
+.search-bar input[type="submit"],
+.search-bar .button-default,
+.search-bar .button-toggled,
+.facebook header form input[type="search"],
+.facebook header form input[type="submit"],
+.facebook header form .button-default,
+.facebook header form input[type="button"],
+.facebook header form .button-toggled {
+  height: 52px;
+  box-sizing: border-box;
+}
+
+.advanced-query {
+  border: 3px solid #6f4399;
+  border-radius: 20px;
+}
+
+.advanced-query-facebook {
+  border: 3px solid #6f4399;
+  border-radius: 20px;
+  margin-top: 290px;
+}
+
+input[type="submit"] {
+  border: 1px solid #6f4399;
+}
+
+.button-default {
+  box-sizing: border-box;
+  display: inline-block;
+  background: none;
+  color: #6f4993;
+  border: 1px solid #6f4399;
+}
+
+.button-toggled {
+  border: 1px solid #6f4399;
+}
+
+.invisible {
+  display: none;
+  visibility: hidden;
+}
+
+#homepage-table {
+  margin-top: 0px;
+  margin-bottom: 20px;
+}
+
+#homepage-table,
+#homepage-table tr {
+  background-color: #fcfcfc;
+  border: none;
+  padding-bottom: 20px;
+}
+
+#homepage-table td {
+  background-color: #fcfcfc;
+  border: none;
+  vertical-align: middle;
+  padding: 8px 4px;
+}
+
+#homepage-table td > input,
+#homepage-table td > select {
+  width: 100%;
+  min-width: 160px;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+#homepage-table td strong {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#italic {
+  font-style: italic;
+}
+
+.warning {
+  width: fit-content;
+  margin: auto;
+  color: red;
+}
+
+.active-filters {
+  background-color: #fff6bf;
+  color: #6f4399;
+  border-radius: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 0;
+  padding-bottom: 0;
+  width: fit-content;
+  height: fit-content;
+  margin: auto;
+}
