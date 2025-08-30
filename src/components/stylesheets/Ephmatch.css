@@ -1,9 +1,9 @@
 .icon-color {
-  color: #aaa;
+  color: var(--color-ephmatch-icon);
 }
 
 .message-icon {
-  color: #aaa;
+  color: var(--color-ephmatch-icon);
   vertical-align: middle;
 }
 
