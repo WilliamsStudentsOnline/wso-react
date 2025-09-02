@@ -224,6 +224,49 @@
   --color-blockquote: #6a6a6a;
   --color-blockquote-border: rgba(17, 17, 17, 0.15);
   --color-cite: #848484;
+  --color-fieldset-bg: rgba(43, 43, 43, 0.15); /* no idea what this does */
+  --color-fieldset-border: rgba(17, 17, 17, 0.15);
+  --color-input-alt-fg: white; /* used for select input boxes, check i.css */
+  --color-input-alt-border: rgba(17, 17, 17, 0.15);
+  --color-input-placeholder: #aaa;
+  --color-textarea-hover-border: rgba(0, 0, 0, 0.15);
+  --color-textarea-focus-border: #6f4993;
+  --color-search-toggle-label-shadow: #6f4993;
+  --color-search-toggle-label-fg: #6f4993;
+  --color-search-toggle-label-input-bg: #6f4993;
+  --color-search-toggle-label-input-fg: white;
+  --color-table-bg: white; /* global table class is not always inherited */
+  --color-thread-bg: #6f4993; /* no idea what this does */
+  --color-thread-fg: white;
+  --color-tbody-bg: #f3f3f3;
+  --color-tbody-a: #6f4993;
+  --color-tabledata-border: #d9d9d9;
+  --color-tabledata-bg: #fcfcfc;
+  --color-tablerow-bg: #fcfcfc;
+  --color-tablerow-border: #d9d9d9;
+  --color-page-head-ul-li: white; /* list colors! */
+  --color-page-head-ul-li-a: #6f4993; /* this is a terrible variable name */
+  --color-aside-h5: white;
+  --color-aside-h5-bg: #6f4993;
+  --color-aside-h5-border: #d9d9d9;
+  --color-aside-boxshadow: #d9d9d9;
+  --color-aside-ul-li-a: #6f4993;
+  --color-aside-ul-li-bg-evens: #fcfcfc; /* this is a stupid but literal name */
+  --color-error-bg: #fbe3e4;
+  --color-error-fg: #97161b;
+  --color-error-a: #6a0f13;
+  --color-error-a-hover: #110203;
+  --color-notice-bg: #fff6bf;
+  --color-notice-fg: #8c7800;
+  --color-notice-a: #594c00;
+  --color-notice-a-hover: #000;
+  --color-success-bg: #e6efc2;
+  --color-success-fg: #56651a;
+  --color-success-a: #333c10;
+  --color-success-a-hover: #000;
+  --color-navbar: #111; /* technically for <body> but this is only used for the navbar */
+  --color-navbar-bg: #fcfcfc;
+  --color-h4: #6f4993; /* global h4 tag */
 }
 
 /* TODO: put a dark mode here! */

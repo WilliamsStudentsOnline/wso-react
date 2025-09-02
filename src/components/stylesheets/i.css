@@ -770,8 +770,8 @@ cite:before {
   content: "\2014 \00A0";
 }
 fieldset {
-  background: rgba(43, 43, 43, 0.15);
-  border: 2px solid rgba(17, 17, 17, 0.15);
+  background: var(--color-fieldset-bg);
+  border: 2px solid var(--color-fieldset-border);
   margin: 0 0 0.75em 0;
   padding: 1.5em;
 }
@@ -822,9 +822,9 @@ select {
   -webkit-transition: border-color;
   -moz-transition: border-color;
   transition: border-color;
-  background-color: white;
+  background-color: var(--color-input-alt-fg);
   border-radius: 0.1875em;
-  border: 2px solid rgba(17, 17, 17, 0.15);
+  border: 2px solid var(--color-input-alt-border);
   /*APRIL FOOL'S*/
   /*   font-family: "Comic Sans MS", "Comic Sans", cursive, sans-setif; */
   /*STANDARD*/
@@ -851,7 +851,7 @@ input[type="datetime-local"]::-webkit-input-placeholder,
 input[type="month"]::-webkit-input-placeholder,
 input[type="time"]::-webkit-input-placeholder,
 input[type="week"]::-webkit-input-placeholder {
-  color: #aaa;
+  color: var(--color-input-placeholder);
 }
 textarea:-moz-placeholder,
 input[type="email"]:-moz-placeholder,
@@ -868,7 +868,7 @@ input[type="datetime-local"]:-moz-placeholder,
 input[type="month"]:-moz-placeholder,
 input[type="time"]:-moz-placeholder,
 input[type="week"]:-moz-placeholder {
-  color: #aaa;
+  color: var(--color-input-placeholder);
 }
 textarea::-moz-placeholder,
 input[type="email"]::-moz-placeholder,
@@ -885,7 +885,7 @@ input[type="datetime-local"]::-moz-placeholder,
 input[type="month"]::-moz-placeholder,
 input[type="time"]::-moz-placeholder,
 input[type="week"]::-moz-placeholder {
-  color: #aaa;
+  color: var(--color-input-placeholder);
 }
 textarea:-ms-input-placeholder,
 input[type="email"]:-ms-input-placeholder,
@@ -902,7 +902,7 @@ input[type="datetime-local"]:-ms-input-placeholder,
 input[type="month"]:-ms-input-placeholder,
 input[type="time"]:-ms-input-placeholder,
 input[type="week"]:-ms-input-placeholder {
-  color: #aaa;
+  color: var(--color-input-placeholder);
 }
 textarea:hover,
 input[type="email"]:hover,
@@ -919,7 +919,7 @@ input[type="datetime-local"]:hover,
 input[type="month"]:hover,
 input[type="time"]:hover,
 input[type="week"]:hover {
-  border-color: rgba(0, 0, 0, 0.15);
+  border-color: var(--color-textarea-hover-border);
 }
 textarea:focus,
 input[type="email"]:focus,
@@ -939,7 +939,7 @@ input[type="week"]:focus {
   /*APRIL FOOL'S*/
   /*   border-color: #20012e; */
   /*STANDARD*/
-  border-color: #6f4993;
+  border-color: var(--color-textarea-focus-border);
   outline: none;
 }
 input[type="search"] {
@@ -1005,9 +1005,10 @@ input[type="submit"] {
 }
 .search-toggle label {
   background: none;
-  -webkit-box-shadow: inset 0px 0px 0px 2px #6f4993;
-  -moz-box-shadow: inset 0px 0px 0px 2px #6f4993;
-  box-shadow: inset 0px 0px 0px 2px #6f4993;
+  -webkit-box-shadow: inset 0px 0px 0px 2px
+    var(--color-search-toggle-label-shadow);
+  -moz-box-shadow: inset 0px 0px 0px 2px var(--color-search-toggle-label-shadow);
+  box-shadow: inset 0px 0px 0px 2px var(--color-search-toggle-label-shadow);
   padding: 7px 10px;
   width: 120px;
   -moz-border-radius: 2px;
@@ -1017,7 +1018,7 @@ input[type="submit"] {
   /*APRIL FOOLS*/
   /*  color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-search-toggle-label-fg);
   font-size: 0.75em;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1035,8 +1036,8 @@ input[type="submit"] {
   opacity: 0;
 }
 .search-toggle input[type="checkbox"]:checked ~ label {
-  background: #6f4993;
-  color: white;
+  background: var(--color-search-toggle-label-input-bg);
+  color: var(--color-search-toggle-label-input-fg);
 }
 .search-toggle input[type="radio"] {
   position: absolute;
@@ -1048,8 +1049,8 @@ input[type="submit"] {
   /*APRIL FOOLS*/
   /*   background: #20012e; */
   /*STANDARD*/
-  background: #6f4993;
-  color: white;
+  background: var(--color-search-toggle-label-input-bg);
+  color: var(--color-search-toggle-label-input-fg);
 }
 .account form,
 .account header .toggles,
@@ -1120,7 +1121,7 @@ table {
   margin: 1.5em 0;
   table-layout: fixed;
   width: 100%;
-  background: white;
+  background: var(--color-table-bg);
 }
 .col-10 {
   width: 10%;
@@ -1160,9 +1161,9 @@ thead tr th {
   /*   background: #20012e;
   font-size: 0.7em; */
   /*STANDARD*/
-  background: #6f4993;
+  background: var(--color-thread-bg);
   font-size: 0.75em;
-  color: white;
+  color: var(--color-thread-fg);
   text-transform: uppercase;
   letter-spacing: 1px;
   border: none;
@@ -1176,13 +1177,13 @@ td {
   padding: 0.375em 0.75em;
 }
 tbody tr:nth-child(even) td {
-  background: #f3f3f3;
+  background: var(--color-tbody-bg);
 }
 tbody a {
   /*APRIL FOOLS*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-tbody-a);
 }
 tbody td:first-child {
   border-left-style: none;
@@ -1191,13 +1192,13 @@ tbody td:last-child {
   border-right-style: none;
 }
 td {
-  border: 2px solid #d9d9d9;
-  background: #fcfcfc;
+  border: 2px solid var(--color-tabledata-border);
+  background: var(--color-tabledata-bg);
 }
 tr {
-  background: #fcfcfc;
-  border-top: 2px solid #d9d9d9;
-  border-bottom: 2px solid #d9d9d9;
+  background: var(--color-tablerow-bg);
+  border-top: 2px solid var(--color-tablerow-border);
+  border-bottom: 2px solid var(--color-tablerow-border);
 }
 tr,
 td,
@@ -1256,7 +1257,7 @@ dl dd {
 .account header .page-head ul li,
 .login header .page-head ul li {
   display: inline-block;
-  color: white;
+  color: var(--color-page-head-ul-li);
   font-weight: bold;
   letter-spacing: 1px;
   list-style: 1px;
@@ -1287,21 +1288,21 @@ dl dd {
   /*APRIL FOOL'S*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-page-head-ul-li-a);
 }
 .facebook .grid-wrap aside h5,
 .factrak .grid-wrap aside h5,
 .dormtrak .grid-wrap aside h5,
 .home article aside h5 {
-  color: white;
+  color: var(--color-aside-h5);
   font-weight: bold;
   /*APRIL FOOLS*/
   /*   background: #20012e; */
   /*STANDARD*/
-  background: #6f4993;
+  background: var(--color-aside-h5-bg);
   text-align: center;
   padding: 1rem 0.5rem;
-  border-bottom: 2px solid #d9d9d9;
+  border-bottom: 2px solid var(--color-aside-h5-border);
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
 }
@@ -1326,8 +1327,10 @@ dl dd {
 .dormtrak .grid-wrap aside ul li,
 .home article aside ul li {
   padding: 1em;
-  -webkit-box-shadow: inset 2px -2px 0 #d9d9d9, inset -2px 0 0 #d9d9d9;
-  box-shadow: inset 2px -2px 0 #d9d9d9, inset -2px 0 0 #d9d9d9;
+  -webkit-box-shadow: inset 2px -2px 0 var(--color-aside-boxshadow),
+    inset -2px 0 0 var(--color-aside-boxshadow);
+  box-shadow: inset 2px -2px 0 var(--color-aside-boxshadow),
+    inset -2px 0 0 var(--color-aside-boxshadow);
 }
 @media screen and (max-width: 43.75em) {
   .facebook .grid-wrap aside ul li,
@@ -1344,13 +1347,13 @@ dl dd {
   /*APRIL FOOL'S*/
   /*  color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-aside-ul-li-a);
 }
 .facebook .grid-wrap aside ul li:nth-child(even),
 .factrak .grid-wrap aside ul li:nth-child(even),
 .dormtrak .grid-wrap aside ul li:nth-child(even),
 .home article aside ul li:nth-child(even) {
-  background: #fcfcfc;
+  background: var(--color-aside-ul-li-bg-evens);
 }
 .facebook .grid-wrap aside ul li:last-child,
 .factrak .grid-wrap aside ul li:last-child,
@@ -1360,44 +1363,44 @@ dl dd {
   border-bottom-right-radius: 2px;
 }
 .error {
-  background: #fbe3e4;
-  color: #97161b;
+  background: var(--color-error-bg);
+  color: var(--color-error-fg);
   font-weight: bold;
   margin-bottom: 0.75em;
   padding: 0.75em;
 }
 .error a {
-  color: #6a0f13;
+  color: var(--color-error-a);
 }
 .error a:hover {
-  color: #110203;
+  color: var(--color-error-a-hover);
 }
 .notice {
-  background: #fff6bf;
-  color: #8c7800;
+  background: var(--color-notice-bg);
+  color: var(--color-notice-fg);
   font-weight: bold;
   margin-bottom: 0.75em;
   padding: 0.75em;
   text-align: center;
 }
 .notice a {
-  color: #594c00;
+  color: var(--color-notice-a);
 }
 .notice a:hover {
-  color: #000;
+  color: var(--color-notice-a-hover);
 }
 .success {
-  background: #e6efc2;
-  color: #56651a;
+  background: var(--color-success-bg);
+  color: var(--color-success-fg);
   font-weight: bold;
   margin-bottom: 0.75em;
   padding: 0.75em;
 }
 .success a {
-  color: #333c10;
+  color: var(--color-success-a);
 }
 .success a:hover {
-  color: #000;
+  color: var(--color-success-a-hover);
 }
 * {
   margin: 0;
@@ -1420,11 +1423,11 @@ html {
   position: relative;
 }
 body {
-  color: #111;
+  color: var(--color-navbar);
   display: block;
   height: 100%;
   margin: 0 0 6em;
-  background: #fcfcfc;
+  background: var(--color-navbar-bg);
   -webkit-text-smoothing: antialiased;
 }
 em {
@@ -1454,7 +1457,7 @@ h4 {
   /*APRIL FOOL'S*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-h4);
 }
 .liga {
   font-style: italic;
