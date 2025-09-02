@@ -190,6 +190,23 @@
   --color-schedule-hour-vertical-odd-border: #eee;
   --color-schedule-hour-horizontal-odd-border: #eee;
   --color-schedule-hour-horizontal-even-border: #fff;
+  /* tooltip colors */
+  --color-tooltip-bg: #9764c6;
+  --color-tooltip-fg: white;
+  --color-tooltip-border: #9764c6;
+  --color-tooltip-text-bg: rgb(245, 245, 245);
+  --color-tooltip-text-fg: #9764c6;
+  /* submenu colors */
+  --color-submenu-hover-bg: #f4edfc;
+  --color-submenu-hover-fg: #68379e;
+  --color-submenu-list-item-border: #68379e;
+  --color-submenu-list-item-bg: #f3f3f9;
+  --color-submenu-list-item-fg: #68379e;
+  --color-submenu: #131315;
+  --color-submenu-bg: #ffffff;
+  --color-submenu-unselected-fg: #cfcfd9;
+  --color-submenu-unselected-border: #ffffff;
+  --color-submenu-unselected-bg: #ffffff;
 }
 
 /* TODO: put a dark mode here! */
