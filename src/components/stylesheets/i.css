@@ -160,7 +160,7 @@ a {
 .announcement .no-posts,
 .jobs .no-posts,
 .rides .no-posts {
-  color: #ccc;
+  color: var(--color-rides-no-posts);
   text-align: center;
 }
 #errors ul li,
@@ -419,7 +419,7 @@ footer {
 .announcement .main-table table,
 .jobs .main-table table,
 .rides .main-table table {
-  border: 2px solid #d9d9d9;
+  border: 2px solid var(--color-rides-main-table-border);
 }
 @media screen and (max-width: 43.75em) {
   .facebook .facebook-results table,
@@ -523,8 +523,8 @@ input[type="submit"],
   );
   color: #20012e; */
   /*STANDARD*/
-  background: #6f4993;
-  color: #fff;
+  background: var(--color-input-bg);
+  color: var(--color-input-fg);
   border-radius: 2px;
   display: inline-block;
   font-size: inherit;
@@ -550,7 +550,7 @@ input[type="submit"]:active,
     #f2a2e8
   ); */
   /*STANDARD*/
-  background: #553871;
+  background: var(--color-input-active-bg);
 }
 button:disabled,
 input[type="submit"]:disabled,
@@ -567,7 +567,7 @@ input[type="submit"]:disabled,
     #f2a2e8
   ); */
   /*STANDARD*/
-  background: #6e6e6e;
+  background: var(--color-input-disabled-bg);
   cursor: pointer;
 }
 button:disabled,
@@ -579,7 +579,7 @@ input[type="submit"]:disabled,
 }
 
 body {
-  color: #444;
+  color: var(--color-body);
   /*APRIL FOOL'S*/
   /*   font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif; */
   /*STANDARD*/
@@ -712,7 +712,7 @@ a:hover {
 }
 a:active,
 a:focus {
-  color: #553871;
+  color: var(--color-a-focus);
   outline: none;
 }
 article a {
@@ -720,18 +720,18 @@ article a {
   /*APRIL FOOLS*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-a-article);
 }
 article a:hover {
   opacity: 0.6;
 }
 article a:active,
 article a:focus {
-  color: #553871;
+  color: var(--color-a-article-focus);
   outline: none;
 }
 hr {
-  border-bottom: 2px solid rgba(17, 17, 17, 0.15);
+  border-bottom: 2px solid var(--color-hr-border);
   border-left: none;
   border-right: none;
   border-top: none;
@@ -743,7 +743,7 @@ img {
 }
 abbr,
 acronym {
-  border-bottom: 1px dotted rgba(17, 17, 17, 0.15);
+  border-bottom: 1px dotted var(--color-acronym-border);
   cursor: help;
 }
 address {
@@ -754,16 +754,16 @@ hgroup {
   margin-bottom: 0.75em;
 }
 del {
-  color: #6a6a6a;
+  color: var(--color-del);
 }
 blockquote {
-  border-left: 2px solid rgba(17, 17, 17, 0.15);
-  color: #6a6a6a;
+  border-left: 2px solid var(--color-blockquote-border);
+  color: var(--color-blockquote);
   margin: 1.5em 0;
   padding-left: 0.75em;
 }
 cite {
-  color: #848484;
+  color: var(--color-cite);
   font-style: italic;
 }
 cite:before {

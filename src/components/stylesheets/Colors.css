@@ -207,6 +207,23 @@
   --color-submenu-unselected-fg: #cfcfd9;
   --color-submenu-unselected-border: #ffffff;
   --color-submenu-unselected-bg: #ffffff;
+  /* colors from i.css (core) */
+  --color-rides-no-posts: #ccc;
+  --color-rides-main-table-border: #d9d9d9;
+  --color-input-bg: #6f4993; /* this is the master setting for all input boxes */
+  --color-input-fg: #fff;
+  --color-input-active-bg: #553871;
+  --color-input-disabled-bg: #6e6e6e;
+  --color-body: #444; /* for most of the whole site, but not top bar */
+  --color-a-focus: #553871; /* unclear what most a tags do */
+  --color-a-article: #6f4993;
+  --color-a-article-focus: #553871;
+  --color-hr-border: rgba(17, 17, 17, 0.15);
+  --color-acronym-border: rgba(17, 17, 17, 0.15);
+  --color-del: #6a6a6a;
+  --color-blockquote: #6a6a6a;
+  --color-blockquote-border: rgba(17, 17, 17, 0.15);
+  --color-cite: #848484;
 }
 
 /* TODO: put a dark mode here! */
