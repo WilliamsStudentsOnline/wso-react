@@ -1524,7 +1524,7 @@ section:after {
   width: 100%;
   margin-bottom: 1.5em;
   padding-bottom: 1em;
-  border-bottom: 1px solid rgba(68, 68, 68, 0.1);
+  border-bottom: 1px solid var(--color-comment-border);
 }
 .comment .comment-image,
 .comment .comment-content {
@@ -1539,7 +1539,7 @@ section:after {
   height: auto;
   border-radius: 0.1875em;
   padding: 0em;
-  background: #9570b8;
+  background: var(--color-comment-bg);
   display: block;
   max-width: none;
 }
@@ -1560,20 +1560,20 @@ section:after {
 .comment .comment-detail {
   font-style: italic;
   font-size: 0.9em;
-  color: rgba(68, 68, 68, 0.5);
+  color: var(--color-comment-detail);
 }
 #errors {
   color: red;
   padding: 0.5em;
 }
 #error_explanation {
-  color: red;
-  border: 2px solid red;
+  color: var(--color-errors-explanation);
+  border: 2px solid var(--color-errors-explanation-border);
   width: 450px;
   max-width: 100%;
   padding: 0.5em;
   margin-bottom: 2em;
-  background-color: #d9d9d9;
+  background-color: var(--color-errors-explanation-bg);
 }
 #error_explanation h2 {
   text-align: left;
@@ -1582,12 +1582,12 @@ section:after {
   font-size: 0.75em;
   margin: -7px;
   margin-bottom: 0;
-  background-color: #c00;
-  color: #fcfcfc;
+  background-color: var(--color-errors-explanation-h2-bg);
+  color: var(--color-errors-explanation-h2);
 }
 #join-header {
   text-align: center;
-  background-color: #fff6bf;
+  background-color: var(--color-join-header-bg);
 }
 /*APRIL FOOL'S*/
 /* .logo {
@@ -1620,7 +1620,7 @@ section:after {
 @media screen and (max-width: 43.75em) {
   .article .about-header {
     position: relative;
-    color: #111;
+    color: var(--color-about-header);
     padding-top: 6em;
     text-shadow: none;
     padding: 0 2em;
@@ -1638,7 +1638,7 @@ section:after {
   margin-left: 8.5298042998%;
   zoom: 1;
   overflow: hidden;
-  color: #fcfcfc;
+  color: var(--color-about-header-h5);
 }
 .article .about-header h1:last-child,
 .article .about-header h5:last-child {
@@ -1693,7 +1693,7 @@ section:after {
     /*APRIL FOOL'S*/
     /*     color: #20012e; */
     /*STANDARD*/
-    color: #6f4993;
+    color: var(--color-about-header-h5-narrow);
   }
   .article .about-header h1:last-child,
   .article .about-header h5:last-child {
@@ -1792,7 +1792,7 @@ section:after {
   /*APRIL FOOLS*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-article-h);
   font-style: normal;
 }
 .article .intro-paragraph {
@@ -1801,11 +1801,11 @@ section:after {
 }
 .article a {
   text-decoration: none;
-  border-bottom: 1px dotted #d4d4e4;
+  border-bottom: 1px dotted var(--color-article-a-border);
   /*APRIL FOOLS*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-article-a);
 }
 .article a:visited {
   border-bottom: none;
@@ -1945,7 +1945,7 @@ section:after {
   /*APRIL FOOL'S*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-page-head-a);
 }
 .facebook header h1,
 .factrak header h1,
@@ -1955,7 +1955,7 @@ section:after {
   /*APRIL FOOL'S*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-page-head-h1);
 }
 .facebook .facebook-search,
 .facebook .factrak-search,
@@ -2060,7 +2060,7 @@ section:after {
 .facebook-edit .dormtrak section,
 .dormtrak .sidebar,
 .dormtrak .main {
-  border: 2px solid rgba(17, 17, 17, 0.15);
+  border: 2px solid var(--color-border);
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   border-radius: 2px;
@@ -2111,8 +2111,8 @@ section:after {
 .facebook .grid-wrap aside,
 .factrak .grid-wrap aside,
 .dormtrak .grid-wrap aside {
-  background: #fcfcfc;
-  border: 2px solid rgba(17, 17, 17, 0.15);
+  background: var(--color-grid-wrap-aside);
+  border: 2px solid var(--color-grid-wrap-aside-border);
   padding: 1em;
   font-size: 0.75em;
   letter-spacing: 1px;
@@ -2326,7 +2326,7 @@ section:after {
 .factrak .grid-wrap aside .list-headers,
 .dormtrak .grid-wrap aside .list-headers {
   font-size: 1em;
-  color: #aaa;
+  color: var(--color-grid-wrap-aside-list-headers);
 }
 @media screen and (max-width: 48.125em) {
   .facebook .grid-wrap aside .list-headers,
@@ -2351,14 +2351,14 @@ section:after {
 
 .ephmatch-select-link {
   cursor: pointer;
-  box-shadow: 0 6px 10px #888;
+  box-shadow: 0 6px 10px var(--color-ephmatch-select-link-shadow);
   width: 100%;
   border-radius: 10px;
 }
 
 .ephmatch-selected {
-  box-shadow: 0 6px 30px #6f4993;
-  background: #e5dcfb;
+  box-shadow: 0 6px 30px var(--color-ephmatch-selected-shadow);
+  background: var(--color-ephmatch-selected-bg);
 }
 
 .facebook-profile .name,
@@ -2417,9 +2417,9 @@ section:after {
   /*APRIL FOOLS*/
   /*   background: #20012e; */
   /*STANDARD*/
-  background: #6f4993;
+  background: var(--color-facebook-picture-a-bg);
   border-radius: 2px;
-  color: #fff;
+  color: var(--color-facebook-picture-a-fg);
   display: inline-block;
   font-size: inherit;
   letter-spacing: 1px;
@@ -2432,11 +2432,11 @@ section:after {
 }
 .facebook-profile .picture a:active,
 .facebook-edit .picture a:active {
-  background: #553871;
+  background: var(--color-facebook-picture-active-bg);
 }
 .facebook-profile .picture a:disabled,
 .facebook-edit .picture a:disabled {
-  background: #6e6e6e;
+  background: var(--color-facebook-picture-disabled-bg);
   cursor: pointer;
 }
 .facebook-profile .picture a:disabled,
@@ -2486,16 +2486,16 @@ section:after {
   /*APRIL FOOLS*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-facebook-edit-info-a);
 }
 .facebook-profile .info h3,
 .facebook-edit .info h3 {
-  color: #111;
+  color: var(--color-facebook-edit-info-h3);
   margin: 0;
 }
 .facebook-profile .info h3 span,
 .facebook-edit .info h3 span {
-  color: #aaa;
+  color: var(--color-facebook-edit-info-h3-span);
 }
 .facebook-profile .info h5,
 .facebook-profile .info h4,
@@ -2506,11 +2506,11 @@ section:after {
 }
 .facebook-profile .info h5,
 .facebook-edit .info h5 {
-  color: #aaa;
+  color: var(--color-facebook-edit-info-h5);
 }
 .facebook-profile .info h4,
 .facebook-edit .info h4 {
-  color: #111;
+  color: var(--color-facebook-edit-info-h4);
   font-size: 1em;
 }
 .facebook-profile .info .save,
@@ -2518,9 +2518,9 @@ section:after {
   /*APRIL FOOLS*/
   /*   background: #20012e; */
   /*STANDARD*/
-  background: #6f4993;
+  background: var(--color-facebook-edit-save-bg);
   border-radius: 2px;
-  color: #fff;
+  color: var(--color-facebook-edit-save-fg);
   display: inline-block;
   font-size: inherit;
   letter-spacing: 1px;
@@ -2532,11 +2532,11 @@ section:after {
 }
 .facebook-profile .info .save:active,
 .facebook-edit .info .save:active {
-  background: #553871;
+  background: var(--color-facebook-edit-save-active);
 }
 .facebook-profile .info .save:disabled,
 .facebook-edit .info .save:disabled {
-  background: #6e6e6e;
+  background: var(--color-facebook-edit-save-disabled);
   cursor: pointer;
 }
 .facebook-profile .info .save:disabled,
@@ -2552,11 +2552,11 @@ section:after {
   /*APRIL FOOL'S*/
   /*   border: solid 2px #20012e; */
   /*STANDARD*/
-  border: solid 2px #6f4993;
+  border: solid 2px var(--color-facebook-tag-border);
   border-radius: 5px;
   padding: 5px;
   margin: 5px;
-  color: #444;
+  color: var(--color-facebook-tag);
   display: inline-block;
 }
 @media all and (max-width: 33.75em) {
@@ -2578,11 +2578,11 @@ section:after {
   /*APRIL FOOLS*/
   /* color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-facebook-tag-suggestions);
   cursor: pointer;
   width: 90%;
-  border-right: 2px solid #d9d9d9;
-  border-left: 2px solid #d9d9d9;
+  border-right: 2px solid var(--color-facebook-suggestions-border);
+  border-left: 2px solid var(--color-facebook-suggestions-border);
   z-index: 999 !important;
 }
 ul#tag-list .tag-input {
@@ -2635,7 +2635,7 @@ ul#tag-list .tag-input {
   /*APRIL FOOLS*/
   /* color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-factrak-h3);
 }
 .factrak #factrak-comments-section {
   margin-bottom: 4em;
@@ -2732,17 +2732,17 @@ ul#tag-list .tag-input {
   top: 1.75em;
 }
 .factrak .survey_course_name #factrak_dept_suggestions td {
-  border: 2px solid #d9d9d9;
+  border: 2px solid var(--color-factrak-survey-course-name-td);
 }
 .factrak .survey_course_name #factrak_dept_suggestions tr:nth-child(even) {
-  background-color: #f3f3f3;
+  background-color: var(--color-factrak-survey-course-name-tr-even);
 }
 .factrak #open-survey {
   cursor: pointer;
   /*APRIL FOOLS*/
   /* color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-factrak-open-survey);
 }
 .factrak #open-survey:hover {
   cursor: pointer;
@@ -2759,18 +2759,18 @@ ul#tag-list .tag-input {
 .factrak #factrak_survey_factrak_course_id {
   padding: 0em;
   display: inline;
-  border: 2px solid rgba(17, 17, 17, 0.15);
+  border: 2px solid var(--color-factrak-survey-course-id-border);
   border-radius: 0.1875em;
   box-sizing: border-box;
 }
 .factrak #factrak-survey-table tr,
 .factrak #factrak-survey-table td {
-  background: #fcfcfc;
+  background: var(--color-factrak-survey-table-tr-and-td-bg);
   padding: 0.5em;
   border: none;
 }
 .factrak .factrak-flag {
-  color: red;
+  color: var(--color-factrak-flag);
   cursor: pointer;
 }
 .dormtrak .container section {
@@ -2807,7 +2807,7 @@ ul#tag-list .tag-input {
   }
 }
 .dormtrak .sidebar .dorm-ranks th {
-  border: 2px solid #d9d9d9;
+  border: 2px solid var(--color-dormtrak-dorm-ranks-th);
 }
 .dormtrak .sidebar .fact-table {
   margin: 0;
@@ -2816,7 +2816,7 @@ ul#tag-list .tag-input {
   /*APRIL FOOLS*/
   /*  color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-dormtrak-sidebar-a);
 }
 .dormtrak .main {
   float: left;
@@ -2939,7 +2939,7 @@ ul#tag-list .tag-input {
   /*APRIL FOOL'S*/
   /*  color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-bulletins-h1);
 }
 .lost-found h1 a,
 .announcement h1 a,
@@ -2949,7 +2949,7 @@ ul#tag-list .tag-input {
   /*APRIL FOOLS*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-bulletins-a);
   margin-bottom: 1rem;
 }
 .list-creation section {
@@ -2959,7 +2959,7 @@ ul#tag-list .tag-input {
   width: 82.9403914003%;
   margin-left: 8.5298042998%;
   padding: 1.5em;
-  border: 2px solid rgba(17, 17, 17, 0.15);
+  border: 2px solid var(--color-list-creation-border);
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   border-radius: 2px;
@@ -2995,7 +2995,7 @@ ul#tag-list .tag-input {
   /*APRIL FOOLS*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-list-creation-h3);
 }
 @media screen and (max-width: 43.75em) {
   .list-creation section {
@@ -3010,14 +3010,15 @@ ul#tag-list .tag-input {
   /*APRIL FOOLS*/
   /* background: #20012e; */
   /*STANDARD*/
-  background: #6f4993;
-  color: white;
+  background: var(--color-list-creation-label-fg);
+  color: var(--color-list-creation-label-bg);
 }
 .list-creation .category + label {
-  background: white;
-  -webkit-box-shadow: inset 0px 0px 0px 2px #6f4993;
-  -moz-box-shadow: inset 0px 0px 0px 2px #6f4993;
-  box-shadow: inset 0px 0px 0px 2px #6f4993;
+  background: var(--color-list-creation-label-bg);
+  -webkit-box-shadow: inset 0px 0px 0px 2px
+    var(--color-list-creation-label-shadow);
+  -moz-box-shadow: inset 0px 0px 0px 2px var(--color-list-creation-label-shadow);
+  box-shadow: inset 0px 0px 0px 2px var(--color-list-creation-label-shadow);
   padding: 10px 0px;
   width: 200px;
   -moz-border-radius: 2px;
@@ -3027,7 +3028,7 @@ ul#tag-list .tag-input {
   /*APRIL FOOLS*/
   /* color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-list-creation-label-fg);
   letter-spacing: 1px;
   font-weight: bold;
   display: inline-block;
@@ -3044,9 +3045,9 @@ ul#tag-list .tag-input {
   /*APRIL FOOLS*/
   /* background: #20012e; */
   /*STANDARD*/
-  background: #6f4993;
+  background: var(--color-list-creation-submit-bg);
   border-radius: 2px;
-  color: #fff;
+  color: var(--color-list-creation-submit-fg);
   display: inline-block;
   font-size: inherit;
   letter-spacing: 1px;
@@ -3058,10 +3059,10 @@ ul#tag-list .tag-input {
   text-align: center;
 }
 .list-creation .submit:active {
-  background: #553871;
+  background: var(--color-list-creation-submit-active);
 }
 .list-creation .submit:disabled {
-  background: #6e6e6e;
+  background: var(--color-list-creation-submit-disabled);
   cursor: pointer;
 }
 .list-creation .submit:disabled {
@@ -3137,7 +3138,7 @@ ul#tag-list .tag-input {
   /*APRIL FOOLS*/
   /* color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-home-h1);
   font-size: 4em;
 }
 @media screen and (max-width: 43.75em) {
@@ -3166,7 +3167,7 @@ ul#tag-list .tag-input {
   }
 }
 .home article aside {
-  background: #fcfcfc;
+  background: var(--color-home-article-aside);
   margin-bottom: 2em;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -3235,10 +3236,10 @@ ul#tag-list .tag-input {
   }
 }
 .home article aside h5 a {
-  color: #fcfcfc;
+  color: var(--color-home-article-aside);
 }
 .home article aside h5 a:hover {
-  color: #fcfcfc;
+  color: var(--color-home-article-aside);
 }
 .home article aside .box-item-div {
   overflow: hidden;
@@ -3475,7 +3476,7 @@ nav a {
   /*APRIL FOOL'S*/
   /*  color: #20012e; */
   /*STANDARD*/
-  color: #fcfcfc;
+  color: var(--color-nav-a);
   font-weight: 600;
   letter-spacing: 1px;
   font-size: 0.75em;
@@ -3487,7 +3488,7 @@ nav a:visited {
   /*APRIL FOOL'S*/
   /* color: #20012e; */
   /*STANDARD*/
-  color: #fcfcfc;
+  color: var(--color-nav-a);
 }
 nav a:active,
 nav a:visited,
@@ -3496,7 +3497,7 @@ nav a:focus {
   /*APRIL FOOL'S*/
   /* color: #20012e; */
   /*STANDARD*/
-  color: #fcfcfc;
+  color: var(--color-nav-a);
 }
 nav .nav-left-container {
   float: left;
@@ -3543,8 +3544,8 @@ footer {
     #f2a2e8
   ); */
   /*STANDARD*/
-  background: #282e42;
-  color: #fcfcfc;
+  background: var(--color-footer-bg);
+  color: var(--color-footer-fg);
   height: 6rem;
   position: absolute;
   left: 0;
@@ -3577,7 +3578,7 @@ footer section small {
   /*APRIL FOOL'S*/
   /* color: #20012e; */
   /*STANDARD*/
-  color: white;
+  color: var(--color-footer-section);
   float: left;
   display: block;
   margin-right: 2.3576515979%;
@@ -3618,18 +3619,18 @@ footer section small:after {
   }
 }
 footer section small a {
-  color: white;
-  border-bottom: 1px solid rgba(252, 252, 252, 0.12);
+  color: var(--color-footer-section-a);
+  border-bottom: 1px solid var(--color-footer-section-border);
 }
 .ephmatch-badge {
-  background-color: #6f4993;
+  background-color: var(--color-ephmatch-badge-bg);
   border-radius: 20px;
   border: 2px;
   display: inline-block;
   min-width: 10px;
   padding: 3px 7px;
   line-height: 10px;
-  color: #fcfcfc;
+  color: var(--color-ephmatch-badge-fg);
   white-space: nowrap;
   text-align: center;
   cursor: pointer;
@@ -3697,7 +3698,7 @@ footer section small a {
   /*APRIL FOOLS*/
   /* color: #20012e; */
   /*STANDARD*/
-  color: #6f4993;
+  color: var(--color-login-header-h1);
   margin-bottom: 1rem;
 }
 .account form,
@@ -3768,8 +3769,8 @@ header .login .toggles input[type="submit"]:last-child {
   display: inline;
   padding: 0px 0px 0px 12px;
   margin: 0px;
-  background: rgb(255, 255, 255);
-  color: rgb(111, 73, 51);
+  background: var(--color-tag-remove-bg);
+  color: var(--color-tag-remove-fg);
   min-width: 0px;
 }
 
@@ -3798,7 +3799,7 @@ header .login .toggles input[type="submit"]:last-child {
 }
 
 .ephmatch-link {
-  color: #fff238;
+  color: var(--color-ephmatch-link);
   /*animation: ephmatch 2s;
   animation-iteration-count: 3;
   -webkit-animation: ephmatch 2s;
@@ -3807,14 +3808,14 @@ header .login .toggles input[type="submit"]:last-child {
 
 .match-message {
   padding: 10px;
-  border: 2px dashed purple;
-  background: papayawhip;
+  border: 2px dashed var(--color-ephmatch-match-message-border);
+  background: var(--color-ephmatch-match-message-bg);
   margin-top: 10px;
 }
 
 .ephmatch-form {
   padding: 20px;
-  box-shadow: 0 6px 10px #888;
+  box-shadow: 0 6px 10px var(--color-ephmatch-form);
 }
 
 .ephmatch-sample-profile {

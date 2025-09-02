@@ -1,3 +1,6 @@
+/* if you add a new color to this file, please be sure to check that it's
+   namespaced correctly in order to prevent collisions between different colors.
+   thanks! somewhere, a future developer is spared some agony thanks to you */
 :root {
   /* course colors */
   --color-course-hover: indigo;
@@ -265,8 +268,99 @@
   --color-success-a: #333c10;
   --color-success-a-hover: #000;
   --color-navbar: #111; /* technically for <body> but this is only used for the navbar */
+  /* another note on navbar: technically it's used for coloring all text too. horrifying! */
+  /* TODO: rename this */
   --color-navbar-bg: #fcfcfc;
   --color-h4: #6f4993; /* global h4 tag */
+  --color-comment-border: rgba(68, 68, 68, 0.1);
+  --color-comment-bg: #9570b8;
+  --color-comment-detail: rgba(68, 68, 68, 0.5);
+  --color-errors: red;
+  --color-errors-explanation: red;
+  --color-errors-explanation-border: red;
+  --color-errors-explanation-bg: #d9d9d9;
+  --color-errors-explanation-h2-bg: #c00;
+  --color-errors-explanation-h2: #fcfcfc;
+  --color-join-header-bg: #fff6bf;
+  --color-about-header: #111; /* only seen when no image */
+  --color-about-header-h5: #fcfcfc;
+  --color-about-header-h5-narrow: #6f4993; /* only seen when too narrow for image */
+  --color-article-h: #6f4993; /* extremely powerful global variable */
+  --color-article-a-border: #d4d4e4;
+  --color-article-a: #6f4993;
+  --color-page-head-a: #6f4993;
+  --color-page-head-h1: #6f4993;
+  --color-border: rgba(17, 17, 17, 0.15); /* used basically everywhere */
+  --color-grid-wrap-aside-bg: #fcfcfc; /* i have no idea */
+  --color-grid-wrap-aside-border: rgba(17, 17, 17, 0.15);
+  --color-grid-wrap-aside-list-headers: #aaa;
+  /* ephmatch colors in i.css */
+  --color-ephmatch-select-link-shadow: #888;
+  --color-ephmatch-selected-shadow: #6f4993;
+  --color-ephmatch-selected-bg: #e5dcfb;
+  /* facebook colors in i.css */
+  --color-facebook-picture-a-bg: #6f4993;
+  --color-facebook-picture-a-fg: #fff;
+  --color-facebook-picture-active-bg: #553871;
+  --color-facebook-picture-disabled-bg: #6e6e6e;
+  --color-facebook-edit-info-a: #6f4993;
+  --color-facebook-edit-info-h3: #111;
+  --color-facebook-edit-info-h3-span: #aaa;
+  --color-facebook-edit-info-h5: #aaa;
+  --color-facebook-edit-info-h4: #111;
+  --color-facebook-edit-save-bg: #6f4993;
+  --color-facebook-edit-save-fg: #fff;
+  --color-facebook-edit-save-active: #553871;
+  --color-facebook-edit-save-disabled: #6e6e6e;
+  --color-facebook-tag-border: #6f4993;
+  --color-facebook-tag: #444;
+  --color-facebook-tag-suggestions: #6f4993;
+  --color-facebook-tag-suggestions-border: #d9d9d9;
+  /* factrak colors in i.css */
+  --color-factrak-h3: #6f4993;
+  --color-factrak-survey-course-name-td: #d9d9d9;
+  --color-factrak-survey-course-name-tr-even: #f3f3f3;
+  --color-factrak-open-survey: #6f4993;
+  --color-factrak-survey-course-id-border: rgba(17, 17, 17, 0.15);
+  --color-factrak-survey-table-tr-and-td-bg: #fcfcfc;
+  --color-factrak-flag: red;
+  /* domtrak colors in i.css */
+  --color-dormtrak-dorm-ranks-th: #d9d9d9;
+  --color-dormtrak-sidebar-a: #6f4993;
+  /* bulletin colors in i.css */
+  --color-bulletins-h1: #6f4993;
+  --color-bulletins-a: #6f4993;
+  /* back to your regularly scheduled i.css colors */
+  --color-list-creation-border: rgba(17, 17, 17, 0.15);
+  --color-list-creation-h3: #6f4993;
+  --color-list-creation-label-fg: #6f4993;
+  --color-list-creation-label-bg: white;
+  --color-list-creation-label-shadow: #6f4993;
+  --color-list-creation-submit-bg: #6f4993;
+  --color-list-creation-submit-fg: #fff;
+  --color-list-creation-submit-active: #553871;
+  --color-list-creation-submit-disabled: #6e6e6e;
+  --color-home-h1: #6f4993;
+  --color-home-article-aside: #fcfcfc;
+  --color-nav: #282e42;
+  --color-nav-a: #fcfcfc;
+  --color-footer-bg: #282e42;
+  --color-footer-fg: #fcfcfc;
+  --color-footer-section: white;
+  --color-footer-section-a: white;
+  --color-footer-section-border: rgba(252, 252, 252, 0.12);
+  /* another ephmatch color in i.css */
+  --color-ephmatch-badge-bg: #6f4993;
+  --color-ephmatch-badge-fg: #fcfcfc;
+  /* back to your regularly scheduled i.css colors */
+  --color-login-header-h1: #6f4993;
+  --color-tag-remove-bg: rgb(255, 255, 255);
+  --color-tag-remove-fg: rgb(111, 73, 51);
+  /* another ephmatch color in i.css */
+  --color-ephmatch-link: #fff238;
+  --color-ephmatch-match-message-border: purple;
+  --color-ephmatch-match-message-bg: papayawhip;
+  --color-ephmatch-form: #888;
 }
 
 /* TODO: put a dark mode here! */
