@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.3",
-    "axios": "^0.26.1",
+    "axios": "^0.30.2",
     "classnames": "^2.3.1",
     "dayjs": "^1.10.7",
     "dom-to-image": "^2.6.0",
