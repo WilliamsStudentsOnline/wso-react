@@ -11,6 +11,16 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 import { ResponsesGetUserResponseUser } from "wso-api-client/lib/services/types";
 
+const dietaryPreferenceMap = {
+  "0": "No preference",
+  "1": "Vegetarian",
+  "2": "Vegan",
+  "3": "Halal",
+  "4": "Kosher",
+  "5": "Gluten Free",
+  "6": "Dairy Free",
+} as const;
+
 const FacebookUser = () => {
   const wso = useAppSelector(getWSO);
   const currUser = useAppSelector(getCurrUser);
@@ -21,6 +31,11 @@ const FacebookUser = () => {
   const [viewPerson, updateTarget] = useState<
     ResponsesGetUserResponseUser | undefined
   >(undefined);
+
+  // dietary preferences test
+  const dietaryVisible = true;
+  const dietaryPreference = "0";
+
   const [userPhoto, updateUserPhoto] = useState("");
 
   useEffect(() => {
@@ -294,6 +309,37 @@ const FacebookUser = () => {
               ? viewPerson.homeState
               : viewPerson.homeCountry}
           </h4>
+          <br />
+        </>
+      );
+    }
+    return null;
+  };
+
+  // Generate user's dietary preferences
+  const userDietaryPreferences = () => {
+    if (!viewPerson) {
+      return (
+        <>
+          <h5>
+            <Line width="20%" />
+          </h5>
+          <h4>
+            <Line width="45%" />
+          </h4>
+          <br />
+        </>
+      );
+    }
+    if (
+      dietaryVisible &&
+      dietaryPreference &&
+      viewPerson.type === userTypeStudent
+    ) {
+      return (
+        <>
+          <h5>Dietary Preferences:</h5>
+          <h4>{dietaryPreferenceMap[dietaryPreference]}</h4>
         </>
       );
     }
@@ -344,6 +390,7 @@ const FacebookUser = () => {
           {userSUBox()}
           {userRoom()}
           {userHometown()}
+          {userDietaryPreferences()}
         </aside>
       </section>
     </article>

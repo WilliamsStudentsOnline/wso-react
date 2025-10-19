@@ -23,6 +23,9 @@ const FacebookEdit = () => {
   const [pronoun] = useState(currUser?.pronoun);
   const [visible, setVisible] = useState(currUser?.visible);
   const [homeVisible, setHomeVisible] = useState(currUser?.homeVisible);
+  const [dietaryVisible, setDietaryVisible] = useState(false);
+  const [dietaryPreference, setDietaryPreference] = useState("0");
+
   const [dormVisible, setDormVisible] = useState(currUser?.dormVisible);
   const [offCycle, setOffCycle] = useState(currUser?.offCycle);
 
@@ -191,6 +194,37 @@ const FacebookEdit = () => {
                   onChange={() => setOffCycle(!offCycle)}
                 />
                 (Checking this box will subtract 0.5 from your class year.)
+                <br />
+                <br />
+                <strong>Dietary Preference</strong>
+                <br />
+                <br />
+                <select
+                  value={dietaryPreference}
+                  onChange={(e) => setDietaryPreference(e.target.value)}
+                >
+                  <option value="0">No preference</option>
+                  <option value="1">Vegetarian</option>
+                  <option value="2">Vegan</option>
+                  <option value="3">Halal</option>
+                  <option value="4">Kosher</option>
+                  <option value="5">Gluten Free</option>
+                  <option value="6">Dairy Free</option>
+                </select>
+                <strong>Dietary Preference Visibility:</strong>
+                <br />
+                Show&nbsp;
+                <input
+                  type="radio"
+                  checked={dietaryVisible}
+                  onChange={() => setDietaryVisible(true)}
+                />
+                Hide&nbsp;
+                <input
+                  type="radio"
+                  checked={!dietaryVisible}
+                  onChange={() => setDietaryVisible(false)}
+                />
                 <br />
                 <br />
               </>
