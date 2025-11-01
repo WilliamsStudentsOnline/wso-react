@@ -36,7 +36,7 @@ const FAQ = () => {
             </h4>
             <br />
 
-            <h3>List Administrators</h3>
+            <h4>List Administrators</h4>
             <p>
               Please note that as a result of a recent server move, the address
               to access the admin portal for listservs has changed slightly.
@@ -67,15 +67,17 @@ const FAQ = () => {
           <article>
             <br />
             <p>
-              Access Willipedia at{" "}
+              Access Old Willipedia at{" "}
               <a href="https://wso.williams.edu/wiki/index.php/Main_Page">
                 this link
               </a>
-              .
+              . Access New Willipedia at{" "}
+              <a href="https://wiki-wso.williams.edu/">this link</a>.
             </p>
             <p>
-              We removed the Willipedia link from our header in production in
-              April 2025 as the wiki is unmaintained and outdated.
+              We removed the Old Willipedia link from our header in production
+              in April 2025. Please use New Willipedia only. Old Willipedia will
+              be permanently sunset during Winter Study 2026.
             </p>
             <br />
           </article>
@@ -84,7 +86,7 @@ const FAQ = () => {
           <br />
           <article>
             <p>
-              <b>Warning: </b> may be outdated.
+              <b>WARNING:</b> may be outdated.
             </p>
             <p>
               <strong>Hollander &amp; Schapiro Hall:&nbsp;</strong>
