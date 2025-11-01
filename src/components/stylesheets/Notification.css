@@ -1,7 +1,7 @@
 .notification {
   width: 600px;
   box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
-  background-color: #fff;
+  background-color: var(--color-notification-bg);
   margin-top: 25px;
   padding-top: 25px;
   font-size: 18px;
@@ -19,16 +19,16 @@
 }
 
 .notification-ack {
-  border-top: 1px solid #c3c3d0;
+  border-top: 1px solid var(--color-notification-ack-border);
   width: 100%;
   justify-content: flex-end;
-  background-color: #f3f3f6;
+  background-color: var(--color-notification-ack-bg);
   margin-top: 20px;
 }
 
 .notification button {
   background-color: inherit;
   margin-right: 0;
-  color: #3c1f5a;
+  color: var(--color-notification-button);
   padding: 10px 0;
 }

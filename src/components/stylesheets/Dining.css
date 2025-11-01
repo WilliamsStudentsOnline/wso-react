@@ -12,7 +12,7 @@ body {
 /* Title */
 .main-title {
   text-align: center;
-  color: #333;
+  color: var(--color-dining-maintitle);
   margin-bottom: 20px;
 }
 
@@ -29,7 +29,7 @@ body {
 
 .nav-button {
   background-color: transparent;
-  color: white;
+  color: var(--color-dining-navbutton-bg);
   border: 1px solid transparent;
   padding: 8px 12px;
   margin: 0 3px;
@@ -40,15 +40,15 @@ body {
 }
 
 .nav-button:hover {
-  background-color: #f8f5fa;
-  color: #4a148c;
+  background-color: var(--color-dining-navbutton-bg);
+  color: var(--color-dining-navbutton-fg);
 }
 
 .nav-button.active {
-  background-color: #f8f5fa;
-  border-color: #6f4993;
+  background-color: var(--color-dining-navbutton-bg);
+  border-color: var(--color-dining-navbutton-border);
   font-weight: bold;
-  color: #4a148c;
+  color: var(--color-dining-navbutton-fg);
 }
 
 /* Grid layout for All Hours view */
@@ -98,12 +98,12 @@ body {
 
 /* Tables */
 .meal-content-table tbody tr:nth-child(even) td {
-  background-color: rgb(252, 252, 252);
+  background-color: var(--color-dining-menu-table-bg);
 }
 
 .dining-table-container,
 .menu-table-container {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-dining-menu-table-border);
   width: 100%;
   border-collapse: collapse;
   margin: 0;
@@ -114,7 +114,7 @@ body {
 .dining-children th,
 .course-title td {
   border: none;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-dining-menu-table-course-border);
   padding: 6px 12px;
   text-align: left;
 }
@@ -138,8 +138,8 @@ body {
 .hours-title th,
 .meal-title th {
   font-weight: bold;
-  background-color: #6f4993;
-  color: white;
+  background-color: var(--color-dining-menu-table-meal-title-bg);
+  color: var(--color-dining-menu-table-meal-title-fg);
   cursor: default;
 }
 
@@ -151,24 +151,24 @@ body {
 }
 
 .meal-title th.meal-header {
-  background-color: #6f4993;
-  color: white;
+  background-color: var(--color-dining-menu-table-meal-header-bg);
+  color: var(--color-dining-menu-table-meal-header-fg);
   font-weight: bold;
   display: block;
   text-align: left;
 }
 
 .meal-title th.meal-header:hover {
-  background-color: #f0eafa;
-  color: #4a148c;
+  background-color: var(--color-dining-menu-table-meal-header-hover-bg);
+  color: var(--color-dining-menu-table-meal-header-hover-fg);
 }
 
 /* Course Title Row */
 .course-title td {
   font-weight: bold;
   font-style: normal;
-  background-color: rgb(240, 240, 240) !important;
-  color: #555;
+  background-color: var(--color-dining-menu-table-course-title-bg) !important;
+  color: var(--color-dining-menu-table-course-title-fg);
   padding-left: 20px;
 }
 
@@ -202,36 +202,36 @@ body {
   font-size: 0.75em;
   padding: 2px 6px;
   border-radius: 4px;
-  color: white;
+  color: var(--color-dining-menu-item-details-bg);
   white-space: nowrap;
 }
 
 .item-details span.vegetarian {
-  background-color: rgb(0, 122, 255);
+  background-color: var(--color-dining-menu-item-details-vegetarian);
 }
 .item-details span.vegan {
-  background-color: rgb(52, 199, 89);
+  background-color: var(--color-dining-menu-item-details-vegan);
 }
 .item-details span.glutenFree {
-  background-color: rgb(175, 82, 222);
+  background-color: var(--color-dining-menu-item-details-glutenfree);
 }
 
 /* Status indicators */
 .Open {
   font-weight: bold;
-  color: green;
+  color: var(--color-dining-status-open);
 }
 .Closed {
   font-weight: bold;
-  color: red;
+  color: var(--color-dining-status-closed);
 }
 .Opening {
   font-weight: bold;
-  color: rgb(104, 192, 227);
+  color: var(--color-dining-status-opening);
 }
 .Closing {
   font-weight: bold;
-  color: orange;
+  color: var(--color-dining-status-closing);
 }
 
 /* Loading/Error messages */
@@ -240,18 +240,18 @@ body {
   text-align: center;
   padding: 30px 20px;
   font-size: 1.1em;
-  color: #555;
+  color: var(--color-dining-loading-message-a);
 }
 
 .error-message {
-  color: #d32f2f;
+  color: var(--color-dining-error-message-a);
 }
 
 /* Section Titles */
 .dining-section-title {
   text-align: center;
   font-size: 1.4em;
-  color: #4a148c;
+  color: var(--color-dining-section-title);
   margin-top: 35px;
   margin-bottom: 20px;
   padding-bottom: 5px;
@@ -261,7 +261,7 @@ body {
 .dining-footer {
   text-align: center;
   font-size: 0.85em;
-  color: #777;
+  color: var(--color-dining-footer);
 }
 
 /* Collapsible Content - Applied to the wrapper div */
@@ -286,7 +286,7 @@ body {
 }
 
 .meal-content-table td {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-dining-meal-content-table);
 }
 
 .meal-content-table tr:last-child td {

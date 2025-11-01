@@ -62,9 +62,9 @@ const Homepage = () => {
     );
   };
 
-  const joinHeaderText = "Important notes about an upcoming server move"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
+  const joinHeaderText = "NEW server status monitoring page"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
   const joinHeaderLink =
-    "https://github.com/WilliamsStudentsOnline/wso-config/issues/22";
+    "https://github.com/WilliamsStudentsOnline/wso-config/issues/22#issuecomment-3476426496";
 
   return (
     <div className="home">
