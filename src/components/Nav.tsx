@@ -121,12 +121,6 @@ const Nav = () => {
               <Link to="faq">FAQ</Link>
             </li>
 
-            {/* wiki link is disabled on prod */}
-            {!window.location.href.includes("wso.williams.edu") && (
-              <li>
-                <a href="/wiki/">Wiki</a>
-              </li>
-            )}
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
             </li>
@@ -142,13 +136,20 @@ const Nav = () => {
                   <a href="/about">About</a>
                 </li>
                 <li>
-                  <a href="/wiki/">Willipedia</a>
+                  <a href="https://status-wso.williams.edu">Status</a>
+                </li>
+                <li>
+                  <a href="/wiki/">Willipedia (OLD)</a>
+                </li>
+                <li>
+                  <a href="https://wiki-wso.williams.edu/">Willipedia (NEW)</a>
                 </li>
                 <li>
                   <a href="https://wso-vm-a10.williams.edu/bluemap/">
                     Minecraft
                   </a>
                 </li>
+
                 <li>
                   <a href="https://warp-wso.williams.edu">WARP Foundry</a>
                 </li>
