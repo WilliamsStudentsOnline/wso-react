@@ -65,7 +65,8 @@ const About = () => {
             <li>
               Each user is responsible for ensuring proper attribution and
               copyrights for materials stored in his or her account or posted on
-              WSO&rsquo;s web services.
+              WSO&rsquo;s web services. Scraping WSO content for LLM training of
+              any kind is in violation of this rule.
             </li>
           </ul>
           <p>
@@ -96,8 +97,9 @@ const About = () => {
           <h3>Join</h3>
           <p>
             WSO is always looking for new members, regardless of computing
-            expertise or experience. Contact us to find out meeting time and
-            place.
+            expertise or experience. Contact us (either through wso-staff [at]
+            wso.williams.edu or by reaching out to a board member) to find out
+            meeting time and place.
           </p>
 
           <br />
