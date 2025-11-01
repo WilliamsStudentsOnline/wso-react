@@ -35,6 +35,13 @@ module.exports = function (app) {
     })
   );
   app.use(
+    createProxyMiddleware("/library.json", {
+      target: "https://wso.williams.edu",
+      changeOrigin: true,
+      secure: false,
+    })
+  );
+  app.use(
     createProxyMiddleware("/courses-*.json", {
       target: "https://wso.williams.edu",
       changeOrigin: true,
