@@ -130,6 +130,35 @@ const Nav = () => {
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
             </li>
+            <li
+              className="dropdown"
+              onClick={(e) => e.currentTarget.classList.toggle("open")}
+            >
+              <a href="#" className="dropbtn">
+                more ▾
+              </a>
+              <ul className="dropdown-content">
+                <li>
+                  <a href="/about">About</a>
+                </li>
+                <li>
+                  <a href="/wiki/">Willipedia</a>
+                </li>
+                <li>
+                  <a href="https://wso-vm-a10.williams.edu/bluemap/">
+                    Minecraft
+                  </a>
+                </li>
+                <li>
+                  <a href="https://warp-wso.williams.edu">WARP Foundry</a>
+                </li>
+                <li>
+                  <a href="https://github.com/WilliamsStudentsOnline">
+                    WSO Github
+                  </a>
+                </li>
+              </ul>
+            </li>
             {ephmatchVisibility > 0 && (
               <li>
                 <Link
