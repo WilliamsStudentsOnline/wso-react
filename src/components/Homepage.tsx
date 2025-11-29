@@ -62,9 +62,8 @@ const Homepage = () => {
     );
   };
 
-  const joinHeaderText = "NEW server status monitoring page"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
-  const joinHeaderLink =
-    "https://github.com/WilliamsStudentsOnline/wso-config/issues/22#issuecomment-3476426496";
+  const joinHeaderText = "Join the WSO Mobile Beta!"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
+  const joinHeaderLink = "https://groupme.com/join_group/111686917/rZoq4jPX";
 
   return (
     <div className="home">
