@@ -139,15 +139,13 @@ const Nav = () => {
                   <a href="https://status-wso.williams.edu">Status</a>
                 </li>
                 <li>
-                  <a href="/wiki/">Willipedia (OLD)</a>
+                  <a href="https://wiki-wso.williams.edu/">Willipedia</a>
                 </li>
                 <li>
-                  <a href="https://wiki-wso.williams.edu/">Willipedia (NEW)</a>
+                  <a href="/wiki/">Developer Wiki</a>
                 </li>
                 <li>
-                  <a href="https://wso-vm-a10.williams.edu/bluemap/">
-                    Minecraft
-                  </a>
+                  <a href="https://wso.williams.edu/bluemap/">Minecraft</a>
                 </li>
 
                 <li>
