@@ -29,36 +29,35 @@ const FAQ = () => {
           <article>
             <br />
             <h4>
-              To access listservs, type
-              <strong>&nbsp;/mailman/listinfo&nbsp;</strong>
-              after
-              <strong>&nbsp;wso.williams.edu</strong>
+              To access listservs, visit
+              <strong>
+                &nbsp;
+                <a href="listserv.wso.williams.edu">
+                  listserv-wso.williams.edu
+                </a>
+                &nbsp;
+              </strong>
             </h4>
             <br />
 
             <h4>List Administrators</h4>
             <p>
-              Please note that as a result of a recent server move, the address
-              to access the admin portal for listservs has changed slightly.
-              Append
-              <strong>&nbsp;_wso.williams.edu&nbsp;</strong>
-              to the old address to access the admin portal. For example, the
-              admin portal for the
-              <strong>&nbsp;wso-staff&nbsp;</strong>
-              list was formerly
-              <strong>&nbsp;/mailman/admin/wso-staff &nbsp;</strong>
-              and is now
-              <strong>&nbsp;/mailman/admin/wso-staff_wso.williams.edu</strong>
+              Please note that as a result of a recent server move, access to
+              administrator accounts has been reset.
+              <strong>&nbsp;Create an account on the new site&nbsp;</strong>
+              to gain access to your listserv administrator powers again. If you
+              still cannot gain access to your list, contact a WSO adminstrator.
             </p>
 
             <br />
             <h4>What&#39;s this?</h4>
             <p>
-              Some of you may have noticed increased spam recently on your
-              listservs. Bots scan websites trying to find emails, and so
-              directly linking to emails can be risky. So, we ask that you
-              manually enter the URL because it would take a sophisticated bot
-              to figure out how to do that. We apologize for the inconvenience.
+              We have recently implemented a new anti-spam technique to try and
+              reduce the amount of spam on student listservs. As well, we have
+              decided to move away from the old listserv software to improve
+              ease of use. However, the new software does not allow for the
+              migration of credentials from the old dashboard. As a result, you
+              will need to make new ones. Our apologies.
             </p>
             <br />
           </article>
@@ -67,17 +66,13 @@ const FAQ = () => {
           <article>
             <br />
             <p>
-              Access Old Willipedia at{" "}
-              <a href="https://wso.williams.edu/wiki/index.php/Main_Page">
-                this link
-              </a>
-              . Access New Willipedia at{" "}
+              Access New Willipedia at{" "}
               <a href="https://wiki-wso.williams.edu/">this link</a>.
             </p>
             <p>
               We removed the Old Willipedia link from our header in production
-              in April 2025. Please use New Willipedia only. Old Willipedia will
-              be permanently sunset during Winter Study 2026.
+              in April 2025. Old Willipedia was permanently sunset during Winter
+              Study 2026 for security reasons.
             </p>
             <br />
           </article>

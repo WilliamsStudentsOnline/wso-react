@@ -136,6 +136,9 @@ const Nav = () => {
                   <a href="/about">About</a>
                 </li>
                 <li>
+                  <a href="https://listserv-wso.williams.edu">Listserv</a>
+                </li>
+                <li>
                   <a href="https://status-wso.williams.edu">Status</a>
                 </li>
                 <li>
@@ -147,7 +150,6 @@ const Nav = () => {
                 <li>
                   <a href="https://wso.williams.edu/bluemap/">Minecraft</a>
                 </li>
-
                 <li>
                   <a href="https://warp-wso.williams.edu">WARP Foundry</a>
                 </li>
