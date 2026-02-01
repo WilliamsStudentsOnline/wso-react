@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../lib/store";
 import { selectGeneratedQuery } from "../lib/queryBuilderSlice";
 import { PostType } from "../lib/types";
+import LibraryHoursTable from "./LibraryHours";
 
 const Homepage = () => {
   const navigateTo = useNavigate();
@@ -128,6 +129,9 @@ const Homepage = () => {
             </div>
           )}
         </header>
+        <article>
+          <LibraryHoursTable />
+        </article>
         <article>
           <section>
             <div className="bulletin-list">
