@@ -34,16 +34,16 @@
   /*APRIL FOOL'S*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #4b2771;
+  color: var(--color-timetable-header);
   vertical-align: middle;
 }
 
 .timetable-header button {
-  background-color: #fff;
+  background-color: var(--color-timetable-header-button-bg);
   /*APRIL FOOL'S*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #4b2771;
+  color: var(--color-timetable-header-button-fg);
   display: inline-block;
 }
 
@@ -53,8 +53,8 @@
 
 .unselectable {
   cursor: not-allowed;
-  background-color: #cfcfd9;
-  color: #9c9ca6;
+  background-color: var(--color-timetable-unselectable-bg);
+  color: var(--color-timetable-unselectable-fg);
 }
 
 .unselectable:hover {
@@ -70,8 +70,8 @@
 .export-options button {
   width: 20%;
   min-width: 200px;
-  background-color: lavender;
-  color: indigo;
+  background-color: var(--color-timetable-export-bg);
+  color: var(--color-timetable-export-fg);
   border-radius: 10px;
   width: 20%;
   min-width: 200px;
@@ -90,7 +90,7 @@
 }
 
 .timetable {
-  background-color: #fff;
+  background-color: var(--color-timetable-bg);
   padding: 50px;
   height: 100%;
   margin: 50px;
@@ -100,8 +100,8 @@
 }
 
 .course-warnings {
-  background-color: rgb(240, 202, 158);
-  border-top: 5px solid rgb(243, 144, 31);
+  background-color: var(--color-timetable-course-warning-bg);
+  border-top: 5px solid var(--color-timetable-course-warning-top);
   padding: 20px;
 }
 

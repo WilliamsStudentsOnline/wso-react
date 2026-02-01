@@ -1,59 +1,417 @@
 :root {
-  --color-main: #553871;
-  --color-light-accent: #9796b9;
-  --color-light-accent-pop: #dfaa87;
-  --color-light-shade: #ffffff;
-  --color-dark-accent: #8884a6;
-  --color-dark-accent-pop: #c45182;
-  --color-dark-shade: #282e42;
-
-  --color-primary: #553871;
-  --color-success: #508e5b;
-  --color-info: #2a2f41;
-  --color-warning: #ce7e23;
-  --color-danger: #f44336;
+  /* course colors */
+  --color-course-hover: indigo;
+  --color-course-bg: #ffffff;
+  --color-course-button-bg: lavender;
+  --color-course-button-fg: indigo;
+  --color-course-title-border: #c3c3d0;
+  --color-course-header-info: #626268;
+  --color-course-a: black; /* prof titles */
+  --color-course-added-course: paleturquoise; /* no idea? */
+  --color-course-divs: rgb(99, 131, 133); /* course divisions */
+  --color-course-reqs: rgb(143, 149, 100); /* qfr + dpe + wi */
+  --color-course-divreqs-a: #fff;
+  --color-course-factrak-rating-bg: #8a3b37; /* what? */
+  --color-course-factrak-rating-fg: white; /* double what? */
+  --color-course-factrak-rating-hover: #6a2b27;
+  --color-course-rating-tooltip-bg: #333;
+  --color-course-rating-tooltip-fg: white;
+  /* homepage colors */
+  --color-homepage-button-borders: #6f4399;
+  --color-homepage-table-tr: #fcfcfc;
+  --color-homepage-table-td: #fcfcfc;
+  --color-homepage-warning: red;
+  --color-homepage-active-filters-bg: #fff6bf;
+  --color-homepage-active-filters-fg: #6f4399;
+  /* timetable colors */
+  --color-timetable-header: #4b2771;
+  --color-timetable-header-button-bg: #fff;
+  --color-timetable-header-button-fg: #4b2771;
+  --color-timetable-unselectable-bg: #cfcfd9;
+  --color-timetable-unselectable-fg: #9c9ca6;
+  --color-timetable-export-bg: lavender;
+  --color-timetable-export-fg: indigo;
+  --color-timetable-course-warning-bg: rgb(240, 202, 158);
+  --color-timetable-course-warning-top: rgb(243, 144, 31);
+  --color-timetable-bg: #fff;
+  /* booktrak colors */
+  --color-booktrak-missing-image-border: #ccc;
+  --color-booktrak-missing-image-bg: #f9f9f9;
+  --color-booktrak-missing-image-fg: #999;
+  --color-booktrak-unavailable: #ccc;
+  --color-booktrak-search-input-border: #6f4993;
+  --color-booktrak-search-input-fg: #444;
+  --color-booktrak-course-suggestions-fg: #6f4993;
+  --color-booktrak-course-suggestions-border: #d9d9d9;
+  --color-booktrak-course-suggestions-option-fg: #6f4399;
+  --color-booktrak-course-container-bg: #6f4993; /* border of a selected course in search*/
+  --color-booktrak-course-container-fg: #444; /* text color of selected course */
+  --color-booktrak-course-container-remove-course-button-bg: rgb(255, 255, 255);
+  --color-booktrak-course-container-remove-course-button-fg: rgb(111, 73, 51);
+  /* bulletin colors */
+  --color-bulletin-title-background: #6f4993; /* on home page */
+  --color-bulletin-title-bottom-border: #d9d9d9; /* on home page */
+  --color-bulletin-link: white; /* on home page */
+  --color-bulletin-list-date-bg: #fcfcfc; /* on home page */
+  --color-bulletin-list-date-fg: #666; /* on home page */
+  /* search on course scheduler colors */
+  --color-course-sel-search-bg: white;
+  --color-course-sel-search-borders: #ccc;
+  --color-course-sel-search-cursor: #222;
+  /* ephmatch colors */
+  --color-ephmatch-icon: #aaa;
+  /* dining colors */
+  --color-dining-maintitle: #333;
+  --color-dining-navbutton-bg: #f8f5fa;
+  --color-dining-navbutton-fg: #4a148c;
+  --color-dining-navbutton-border: #6f4993;
+  --color-dining-menu-table-bg: rgb(252, 252, 252); /* per dining hall */
+  --color-dining-menu-table-border: #e0e0e0;
+  --color-dining-menu-table-course-border: #eee;
+  --color-dining-menu-table-meal-title-bg: #6f4993; /* doesn't do anything */
+  --color-dining-menu-table-meal-title-fg: white;
+  --color-dining-menu-table-meal-header-bg: #6f4993;
+  --color-dining-menu-table-meal-header-fg: white;
+  --color-dining-menu-table-meal-header-hover-bg: #f0eafa;
+  --color-dining-menu-table-meal-header-hover-fg: #4a148c;
+  --color-dining-menu-table-course-title-bg: rgb(240, 240, 240);
+  --color-dining-menu-table-course-title-fg: #555;
+  --color-dining-menu-item-details-bg: white;
+  --color-dining-menu-item-details-vegetarian: rgb(0, 122, 255);
+  --color-dining-menu-item-details-vegan: rgb(52, 199, 89);
+  --color-dining-menu-item-details-glutenfree: rgb(175, 82, 222);
+  --color-dining-status-open: green;
+  --color-dining-status-closed: red;
+  --color-dining-status-opening: rgb(104, 192, 227);
+  --color-dining-status-closing: orange;
+  --color-dining-loading-message-a: #555;
+  --color-dining-error-message-a: #d32f2f;
+  --color-dining-section-title-a: #4a148c; /* like "whitman's menu" */
+  --color-dining-footer: #777;
+  --color-dining-meal-content-table: #f0f0f0; /* no clue what this does */
+  /* goodrich not included because it doesn't seem to be called anywhere? */
+  /* TODO: add goodrich */
+  /* major builder colors */
+  --color-major-builder-container-bg: #fff;
+  --color-major-builder-container-h2: #4b2771;
+  --color-major-builder-container-h2-border: #eee;
+  --color-major-builder-container-h3: #4b2771;
+  --color-major-builder-container-h3-border: #eee;
+  --color-major-builder-grid-table-borders: #ccc;
+  --color-major-builder-grid-table-headers: #f2f2f2;
+  --color-major-builder-grid-semester-header: #4b2771;
+  --color-major-builder-grid-semester-header-hover: #e0d8eb;
+  --color-major-builder-grid-semester-edit-select: #ccc;
+  --color-major-builder-grid-autocomplete-bg: white;
+  --color-major-builder-grid-autocomplete-border: #ccc;
+  --color-major-builder-grid-autocomplete-results-bg: #ccc;
+  --color-major-builder-grid-autocomplete-no-results-a: #888;
+  --color-major-builder-grid-apr-info-bg: #f8f9fa;
+  --color-major-builder-grid-apr-info-border: #eee;
+  --color-major-builder-requirements-border: #d3d3d3; /* doesn't seem to do anything */
+  --color-major-builder-requirements-bg: #ffffff;
+  --color-major-builder-requirements-fg: #555; /* doesn't seem to do anything */
+  --color-major-builder-requirements-controls-border: #eee;
+  --color-major-builder-requirements-controls-bg: #e0e0e0;
+  --color-major-builder-requirements-bucket-border: #e0e0e0;
+  --color-major-builder-requirements-bucket-bg: #fff;
+  --color-major-builder-requirements-header: #f7f7f7;
+  --color-major-builder-requirements-header-border: #eee;
+  --color-major-builder-requirements-header-hover: #ededed;
+  --color-major-builder-expand-collapse-icon: #4b2771;
+  --color-major-builder-requirements-text: #666;
+  --color-major-builder-requirements-list-bg: #fff;
+  --color-major-builder-requirements-list-item-border: #f0f0f0;
+  --color-major-builder-requirements-one-or-group-text: #555;
+  --color-major-builder-requirements-list-border: #f0f0f0;
+  --color-major-builder-requirements-list-item-placeholder: #555;
+  --color-major-builder-requirements-met: #1a8754;
+  --color-major-builder-requirements-notmet: #dc3545;
+  --color-major-builder-grid-semester-header-corner: #f2f2f2;
+  --color-major-builder-grid-clear-grid-button-bg: #f0e6f5;
+  --color-major-builder-grid-clear-grid-button-border: #e0d8eb;
+  --color-major-builder-grid-clear-grid-button-color: #6a2d7a;
+  --color-major-builder-grid-clear-grid-button-hover: #e0d8eb;
+  --color-major-builder-info-links: #4b2771; /* seen at the top of the page */
+  --color-major-builder-override-input: #4b2771; /* unsure where it's seen */
+  /* major editor colors */
+  /* TODO: document what all these actually do */
+  --color-major-editor-info: #2a2f41;
+  --color-major-editor-editor-tab-borders: #e0e0e0;
+  --color-major-editor-inactive-tab-borders: #553871;
+  --color-major-editor-active-tab-borders: white;
+  --color-major-editor-input-border: #ccc;
+  --color-major-editor-input-focus-border: #553871;
+  --color-major-editor-select-field-border: #ccc;
+  --color-major-editor-select-bg: #ffffff;
+  --color-major-editor-button-primary-bg: #553871;
+  --color-major-editor-button-primary-fg: #ffffff;
+  --color-major-editor-button-primary-hover-bg: #452d5e;
+  --color-major-editor-button-secondary-bg: #f0f0f0;
+  --color-major-editor-button-secondary-fg: #2a2f41;
+  --color-major-editor-button-secondary-hover-bg: #e0e0e0;
+  --color-major-editor-button-danger-bg: #f44336;
+  --color-major-editor-button-danger-fg: #ffffff;
+  --color-major-editor-button-danger-hover: #d32f2f;
+  --color-major-editor-button-icon: #8884a6; /* this is the x in the add info screen */
+  --color-major-editor-button-icon-hover-bg: #f0f0f0;
+  --color-major-editor-button-icon-hover-fg: #f44336;
+  --color-major-editor-requirement-card-bg: #fff;
+  --color-major-editor-requirement-card-border: #ddd;
+  --color-major-editor-requirement-header-border: #eee;
+  --color-major-editor-groups-container-border: #ddd;
+  --color-major-editor-group-card-bg: #fafafa;
+  --color-major-editor-group-card-border: #ccc;
+  --color-major-editor-group-label: #2a2f41;
+  --color-major-editor-item-row-bg: #fff;
+  --color-major-editor-item-row-border: #eee;
+  --color-major-editor-json-preview-bg: #f8f8f8;
+  --color-major-editor-json-preview-border: #ccc;
+  --color-major-editor-confirmation-toast-bg: #282e42;
+  --color-major-editor-confirmation-toast-fg: #ffffff;
+  /* additional options colors */
+  --color-additional-options-container-bg: white;
+  --color-additional-options-reset-filters-button-bg: lavender;
+  --color-additional-options-reset-filters-button-fg: indigo;
+  /* notification colors */
+  --color-notification-bg: #fff;
+  --color-notification-ack-bg: #f3f3f6;
+  --color-notification-ack-border: #c3c3d0;
+  --color-notification-button: #3c1f5a;
+  /* spinner colors */
+  --color-spinner-border: #ccc;
+  --color-spinner-border-top: #6f4993;
+  /* schedule (timetable) colors */
+  --color-schedule-day-horizontal-border: #ddd;
+  --color-schedule-day-vertical-border: #ddd;
+  --color-schedule-course-slot-bg: orange;
+  --color-schedule-course-slot-border: red;
+  --color-schedule-hour-vertical-even-border: #fff;
+  --color-schedule-hour-vertical-odd-border: #eee;
+  --color-schedule-hour-horizontal-odd-border: #eee;
+  --color-schedule-hour-horizontal-even-border: #fff;
 }
 
-.bg-primary {
-  background-color: #553871;
-}
-.bg-success {
-  background-color: #508e5b;
-}
-.bg-info {
-  background-color: #2a2f41;
-}
-.bg-warning {
-  background-color: #ce7e23;
-}
-.bg-danger {
-  background-color: #f44336;
-}
-.bg-light-accent-pop {
-  background-color: #dfaa87;
-}
-.bg-dark-accent-pop {
-  background-color: #c45182;
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* course colors */
+    --color-course-hover: #7986cb; /* indigo pulled toward luminance */
+    --color-course-bg: #1e1e2e;
+    --color-course-button-bg: #2a2a3d;
+    --color-course-button-fg: #7986cb;
+    --color-course-title-border: #3a3a4d;
+    --color-course-header-info: #9e9ea8;
+    --color-course-a: #c8c8d4; /* prof titles — readable on dark, not screaming white */
+    --color-course-added-course: #1a4a4a; /* paleturquoise → deep teal; still weird, still purposeful */
+    --color-course-divs: #4a7f81; /* desaturated slightly for dark bg legibility */
+    --color-course-reqs: #7a7f4a; /* same olive family, darker */
+    --color-course-divreqs-a: #1e1e2e; /* was white-on-color; now dark-on-color */
+    --color-course-factrak-rating-bg: #6b2e2a;
+    --color-course-factrak-rating-fg: #f0d0ce;
+    --color-course-factrak-rating-hover: #5a2522;
+    --color-course-rating-tooltip-bg: #111118;
+    --color-course-rating-tooltip-fg: #e8e8ec;
+
+    /* homepage colors */
+    --color-homepage-button-borders: #8a6bb5;
+    --color-homepage-table-tr: #1a1a28;
+    --color-homepage-table-td: #1a1a28;
+    --color-homepage-warning: #ff5555; /* red that doesn't get lost on dark surfaces */
+    --color-homepage-active-filters-bg: #2a2518;
+    --color-homepage-active-filters-fg: #b08de0;
+
+    /* timetable colors */
+    --color-timetable-header: #9a7bb8; /* lightened purple — needs to read as a header on dark */
+    --color-timetable-header-button-bg: #2a2a3d;
+    --color-timetable-header-button-fg: #9a7bb8;
+    --color-timetable-unselectable-bg: #2a2a38;
+    --color-timetable-unselectable-fg: #5a5a68;
+    --color-timetable-export-bg: #2a2a3d;
+    --color-timetable-export-fg: #7986cb;
+    --color-timetable-course-warning-bg: #3d2e1a;
+    --color-timetable-course-warning-top: #d4872a;
+    --color-timetable-bg: #1e1e2e;
+
+    /* booktrak colors */
+    --color-booktrak-missing-image-border: #3a3a4d;
+    --color-booktrak-missing-image-bg: #222232;
+    --color-booktrak-missing-image-fg: #666676;
+    --color-booktrak-unavailable: #4a4a5a;
+    --color-booktrak-search-input-border: #7a5db5;
+    --color-booktrak-search-input-fg: #c0c0cc;
+    --color-booktrak-course-suggestions-fg: #7a5db5;
+    --color-booktrak-course-suggestions-border: #3a3a4d;
+    --color-booktrak-course-suggestions-option-fg: #9a7bd4;
+    --color-booktrak-course-container-bg: #2e2345; /* deep purple container */
+    --color-booktrak-course-container-fg: #c8c0d8;
+    --color-booktrak-course-container-remove-course-button-bg: #1e1e2e;
+    --color-booktrak-course-container-remove-course-button-fg: #c8a888;
+
+    /* bulletin colors */
+    --color-bulletin-title-background: #2e2345;
+    --color-bulletin-title-bottom-border: #3a3a4d;
+    --color-bulletin-link: #d8d0e8;
+    --color-bulletin-list-date-bg: #1a1a28;
+    --color-bulletin-list-date-fg: #888896;
+
+    /* search on course scheduler colors */
+    --color-course-sel-search-bg: #1e1e2e;
+    --color-course-sel-search-borders: #3a3a4d;
+    --color-course-sel-search-cursor: #c8c8d4;
+
+    /* ephmatch colors */
+    --color-ephmatch-icon: #5a5a6a;
+
+    /* dining colors */
+    --color-dining-maintitle: #c8c8d4;
+    --color-dining-navbutton-bg: #222232;
+    --color-dining-navbutton-fg: #9a7bd4;
+    --color-dining-navbutton-border: #7a5db5;
+    --color-dining-menu-table-bg: #1a1a28;
+    --color-dining-menu-table-border: #2e2e3e;
+    --color-dining-menu-table-course-border: #28283a;
+    --color-dining-menu-table-meal-title-bg: #2e2345; /* vestigial but kept consistent */
+    --color-dining-menu-table-meal-title-fg: #d8d0e8;
+    --color-dining-menu-table-meal-header-bg: #2e2345;
+    --color-dining-menu-table-meal-header-fg: #d8d0e8;
+    --color-dining-menu-table-meal-header-hover-bg: #3a2e52;
+    --color-dining-menu-table-meal-header-hover-fg: #c8b8e8;
+    --color-dining-menu-table-course-title-bg: #252535;
+    --color-dining-menu-table-course-title-fg: #9e9ea8;
+    --color-dining-menu-item-details-bg: #1e1e2e;
+    --color-dining-menu-item-details-vegetarian: #5b9bf5; /* blue lifted for dark bg */
+    --color-dining-menu-item-details-vegan: #4ade80; /* green lifted */
+    --color-dining-menu-item-details-glutenfree: #c084fc; /* purple lifted */
+    --color-dining-status-open: #4ade80;
+    --color-dining-status-closed: #f87171;
+    --color-dining-status-opening: #67e8f9;
+    --color-dining-status-closing: #fb923c;
+    --color-dining-loading-message-a: #888896;
+    --color-dining-error-message-a: #f87171;
+    --color-dining-section-title-a: #9a7bd4;
+    --color-dining-footer: #5a5a6a;
+    --color-dining-meal-content-table: #222232;
+
+    /* major builder colors */
+    --color-major-builder-container-bg: #1e1e2e;
+    --color-major-builder-container-h2: #9a7bb8;
+    --color-major-builder-container-h2-border: #2e2e3e;
+    --color-major-builder-container-h3: #9a7bb8;
+    --color-major-builder-container-h3-border: #2e2e3e;
+    --color-major-builder-grid-table-borders: #3a3a4d;
+    --color-major-builder-grid-table-headers: #252535;
+    --color-major-builder-grid-semester-header: #9a7bb8;
+    --color-major-builder-grid-semester-header-hover: #2e2345;
+    --color-major-builder-grid-semester-edit-select: #3a3a4d;
+    --color-major-builder-grid-autocomplete-bg: #1e1e2e;
+    --color-major-builder-grid-autocomplete-border: #3a3a4d;
+    --color-major-builder-grid-autocomplete-results-bg: #252535;
+    --color-major-builder-grid-autocomplete-no-results-a: #666676;
+    --color-major-builder-grid-apr-info-bg: #222232;
+    --color-major-builder-grid-apr-info-border: #2e2e3e;
+    --color-major-builder-requirements-border: #3a3a4d;
+    --color-major-builder-requirements-bg: #1e1e2e;
+    --color-major-builder-requirements-fg: #9e9ea8;
+    --color-major-builder-requirements-controls-border: #2e2e3e;
+    --color-major-builder-requirements-controls-bg: #252535;
+    --color-major-builder-requirements-bucket-border: #2e2e3e;
+    --color-major-builder-requirements-bucket-bg: #1e1e2e;
+    --color-major-builder-requirements-header: #222232;
+    --color-major-builder-requirements-header-border: #2e2e3e;
+    --color-major-builder-requirements-header-hover: #2a2a3a;
+    --color-major-builder-expand-collapse-icon: #9a7bb8;
+    --color-major-builder-requirements-text: #888896;
+    --color-major-builder-requirements-list-bg: #1e1e2e;
+    --color-major-builder-requirements-list-item-border: #28283a;
+    --color-major-builder-requirements-one-or-group-text: #9e9ea8;
+    --color-major-builder-requirements-list-border: #28283a;
+    --color-major-builder-requirements-list-item-placeholder: #666676;
+    --color-major-builder-requirements-met: #4ade80; /* lifted green — success must pop */
+    --color-major-builder-requirements-notmet: #f87171; /* lifted red — failure must pop */
+    --color-major-builder-grid-semester-header-corner: #252535;
+    --color-major-builder-grid-clear-grid-button-bg: #2e2345;
+    --color-major-builder-grid-clear-grid-button-border: #3a2e52;
+    --color-major-builder-grid-clear-grid-button-color: #c8a0e0;
+    --color-major-builder-grid-clear-grid-button-hover: #3a2e52;
+    --color-major-builder-info-links: #9a7bb8;
+    --color-major-builder-override-input: #9a7bb8;
+
+    /* major editor colors */
+    --color-major-editor-info: #c8c8d4;
+    --color-major-editor-editor-tab-borders: #3a3a4d;
+    --color-major-editor-inactive-tab-borders: #553871;
+    --color-major-editor-active-tab-borders: #1e1e2e; /* matches bg — "active = flush" */
+    --color-major-editor-input-border: #3a3a4d;
+    --color-major-editor-input-focus-border: #7a5db5;
+    --color-major-editor-select-field-border: #3a3a4d;
+    --color-major-editor-select-bg: #1e1e2e;
+    --color-major-editor-button-primary-bg: #6a4d8a;
+    --color-major-editor-button-primary-fg: #f0e8f8;
+    --color-major-editor-button-primary-hover-bg: #7a5d9a;
+    --color-major-editor-button-secondary-bg: #2a2a3d;
+    --color-major-editor-button-secondary-fg: #c8c8d4;
+    --color-major-editor-button-secondary-hover-bg: #353548;
+    --color-major-editor-button-danger-bg: #b33a3a;
+    --color-major-editor-button-danger-fg: #f8e8e8;
+    --color-major-editor-button-danger-hover: #c44040;
+    --color-major-editor-button-icon: #6a6a80;
+    --color-major-editor-button-icon-hover-bg: #2a2a3d;
+    --color-major-editor-button-icon-hover-fg: #f87171;
+    --color-major-editor-requirement-card-bg: #222232;
+    --color-major-editor-requirement-card-border: #3a3a4d;
+    --color-major-editor-requirement-header-border: #2e2e3e;
+    --color-major-editor-groups-container-border: #3a3a4d;
+    --color-major-editor-group-card-bg: #1a1a28;
+    --color-major-editor-group-card-border: #2e2e3e;
+    --color-major-editor-group-label: #c8c8d4;
+    --color-major-editor-item-row-bg: #1e1e2e;
+    --color-major-editor-item-row-border: #28283a;
+    --color-major-editor-json-preview-bg: #161620;
+    --color-major-editor-json-preview-border: #2e2e3e;
+    --color-major-editor-confirmation-toast-bg: #2a2e42;
+    --color-major-editor-confirmation-toast-fg: #e8e8ec;
+
+    /* additional options colors */
+    --color-additional-options-container-bg: #1e1e2e;
+    --color-additional-options-reset-filters-button-bg: #2a2a3d;
+    --color-additional-options-reset-filters-button-fg: #7986cb;
+
+    /* notification colors */
+    --color-notification-bg: #1e1e2e;
+    --color-notification-ack-bg: #222232;
+    --color-notification-ack-border: #3a3a4d;
+    --color-notification-button: #9a7bd4;
+
+    /* spinner colors */
+    --color-spinner-border: #2e2e3e;
+    --color-spinner-border-top: #7a5db5;
+
+    /* schedule (timetable) colors */
+    --color-schedule-day-horizontal-border: #2e2e3e;
+    --color-schedule-day-vertical-border: #2e2e3e;
+    --color-schedule-course-slot-bg: #b86a1a; /* orange that survives dark */
+    --color-schedule-course-slot-border: #d44040;
+    --color-schedule-hour-vertical-even-border: #1e1e2e;
+    --color-schedule-hour-vertical-odd-border: #252535;
+    --color-schedule-hour-horizontal-odd-border: #252535;
+    --color-schedule-hour-horizontal-even-border: #1e1e2e;
+  }
 }
 
-.cl-primary {
-  color: #553871;
-}
-.cl-success {
-  color: #508e5b;
-}
-.cl-info {
-  color: #2a2f41;
-}
-.cl-warning {
-  color: #ce7e23;
-}
-.cl-danger {
-  color: #f44336;
-}
-.cl-light-accent-pop {
-  color: #dfaa87;
-}
-.cl-dark-accent-pop {
-  color: #c45182;
-}
+/* TODO: put a dark mode here! */
+
+/* here lies the ruins of the last bad refactor
+     don't use this. but you can steal its colors */
+/* --color-main: #553871; */
+/* --color-light-accent: #9796b9; */
+/* --color-light-accent-pop: #dfaa87; */
+/* --color-light-shade: #ffffff; */
+/* --color-dark-accent: #8884a6; */
+/* --color-dark-accent-pop: #c45182; */
+/* --color-dark-shade: #282e42; */
+
+/* --color-primary: #553871; */
+/* --color-success: #508e5b; */
+/* --color-info: #2a2f41; */
+/* --color-warning: #ce7e23; */
+/* --color-danger: #f44336; */

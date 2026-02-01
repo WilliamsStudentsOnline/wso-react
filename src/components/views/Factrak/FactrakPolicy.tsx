@@ -104,7 +104,7 @@ const FactrakPolicy = () => {
           <p>
             By using Factrak users agree to abide by this policy. The use of
             Factrak is also governed by the wider WSO policy and the{" "}
-            <a href="http://oit.williams.edu/w/?u=docs/Computing+Ethics+and+Responsibilities">
+            <a href="https://oit.williams.edu/policies/ethics/">
               OIT Computing Ethics and Responsibilities Statement
             </a>
             .

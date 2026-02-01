@@ -11,7 +11,7 @@
   flex-basis: 100%;
   flex: 0.4;
   padding: 15px;
-  background-color: white;
+  background-color: var(--color-additional-options-container-bg);
   box-shadow: -1px -1px 3px hsla(0, 0%, 0%, 0.2);
   min-height: 1200px;
   position: sticky;
@@ -47,8 +47,8 @@
 
 .reset-filters button {
   margin-top: 20px;
-  background-color: lavender;
-  color: indigo;
+  background-color: var(--color-additional-options-reset-filters-button-bg);
+  color: var(--color-additional-options-reset-filters-button-fg);
   border-radius: 10px;
   padding: 5px 10px;
 }
