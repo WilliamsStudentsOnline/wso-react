@@ -48,22 +48,33 @@ const LibraryHoursTable = () => {
         </thead>
         <tbody>
           {services.map((svc) =>
-            svc.hours.open.map((open, i) => (
-              <tr key={`${svc.name}-${i}`}>
-                {i === 0 && (
-                  <td
-                    style={{ backgroundColor: "#fcfcfc" }}
-                    rowSpan={svc.hours.open.length}
-                  >
-                    <b>{svc.name}</b>
-                  </td>
-                )}
-                <td style={{ backgroundColor: "#fcfcfc" }}>{open}</td>
+            svc.hours.open === null ? (
+              <tr key={`${svc.name}-no-hours`}>
                 <td style={{ backgroundColor: "#fcfcfc" }}>
-                  {svc.hours.close[i] || ""}
+                  <b>{svc.name}</b>
+                </td>
+                <td colSpan={2} style={{ backgroundColor: "#fcfcfc" }}>
+                  (no hours)
                 </td>
               </tr>
-            ))
+            ) : (
+              svc.hours.open.map((open, i) => (
+                <tr key={`${svc.name}-${i}`}>
+                  {i === 0 && (
+                    <td
+                      style={{ backgroundColor: "#fcfcfc" }}
+                      rowSpan={svc.hours.open.length}
+                    >
+                      <b>{svc.name}</b>
+                    </td>
+                  )}
+                  <td style={{ backgroundColor: "#fcfcfc" }}>{open}</td>
+                  <td style={{ backgroundColor: "#fcfcfc" }}>
+                    {svc.hours.close[i] || ""}
+                  </td>
+                </tr>
+              ))
+            )
           )}
         </tbody>
       </table>
