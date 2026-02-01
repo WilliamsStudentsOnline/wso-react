@@ -62,8 +62,9 @@ const Homepage = () => {
     );
   };
 
-  const joinHeaderText = "Join the WSO Mobile Beta!"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
-  const joinHeaderLink = "https://groupme.com/join_group/111686917/rZoq4jPX";
+  const joinHeaderText = "Install the new WSO Mobile iOS app!"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
+  const joinHeaderLink =
+    "https://apps.apple.com/us/app/wso-mobile-rewritten/id6755857250";
 
   return (
     <div className="home">
@@ -79,7 +80,7 @@ const Homepage = () => {
               WSO
             </h2>
             <h4 className="text-center" id="tagline">
-              By Students, For Students!
+              <i>By Students, For Students!</i>
             </h4>
           </div>
           <br />
@@ -88,7 +89,7 @@ const Homepage = () => {
               <input
                 aria-label="Search box for Facebook"
                 type="search"
-                placeholder="Search Facebook"
+                placeholder="Search Facebook..."
                 value={searchInputValue}
                 onChange={handleInputChange}
               />
