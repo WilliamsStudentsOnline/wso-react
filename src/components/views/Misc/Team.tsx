@@ -30,7 +30,6 @@ const ContributorMap = {
   "Matthew Chin": 15568,
   "Melanie Wang": 14710,
   "Natalia Avila-Hernandez": 14835,
-  "Nathaniel Flores": 14643,
   "Nick Canora": 13953,
   "Nikhil Radosevich": 15099,
   "Niklas Obermüller": 15681,
