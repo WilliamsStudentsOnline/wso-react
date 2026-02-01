@@ -15,7 +15,7 @@ const LibraryHoursTable = () => {
       headers: axiosHeaders,
     })
       .then((response) => {
-        if (response.status !== 200 || response.statusText !== "OK") {
+        if (response.status !== 200) {
           if (!retry) loadLibraryHours(true);
           else setError(true);
         } else {
