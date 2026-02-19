@@ -13,11 +13,11 @@
 
 .input-container {
   position: relative;
-  border: solid 2px #6f4993;
+  border: solid 2px var(--color-booktrak-search-input-border);
   border-radius: 5px;
   padding: 5px;
   margin-right: 5px;
-  color: #444;
+  color: var(--color-booktrak-search-input-fg);
   display: flex;
   flex-grow: 1;
 
@@ -32,10 +32,10 @@
 
 .course-suggestions {
   position: absolute;
-  color: #6f4993;
+  color: var(--color-booktrak-course-suggestions-fg);
   cursor: pointer;
   width: 100%;
-  border: 2px solid #d9d9d9;
+  border: 2px solid var(--color-booktrak-course-suggestions-border);
   z-index: 999 !important;
   left: 0px;
   top: 14px;
@@ -47,7 +47,7 @@
 
 .course-suggestion-option {
   background: none;
-  color: #6f4399;
+  color: var(--color-booktrak-course-suggestions-option-fg);
   padding: 0;
   min-width: 0;
   white-space: normal;
@@ -61,11 +61,11 @@
 
   .course {
     position: relative;
-    border: solid 2px #6f4993;
+    border: solid 2px var(--color-booktrak-course-container-bg);
     border-radius: 5px;
     padding: 5px;
     margin: 5px 0px 5px 0px;
-    color: #444;
+    color: var(--color-booktrak-course-container-fg);
     display: inline-block;
   }
 }
@@ -74,7 +74,7 @@
   display: inline;
   padding: 0px 5px 0px 5px;
   margin: 0px;
-  background: rgb(255, 255, 255);
-  color: rgb(111, 73, 51);
+  background: var(--color-booktrak-container-remove-course-button-bg);
+  color: var(--color-booktrak-container-remove-course-button-fg);
   min-width: 0px;
 }

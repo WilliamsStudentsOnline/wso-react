@@ -83,7 +83,7 @@ To aid in your development process, we also suggest installing the following:
 - Configuring [ES-Lint](https://eslint.org/) to work with your editor. Like Prettier, we have a pre-commit hook to ensure that your code fits our standards, but unlike the Prettier hook, the commit will fail if there are errors, so it will help your development loop if it is configured with your editor.
 
 **Styling**
-Styling is currently done via vanilla CSS. Edit existing stylesheets or, for larger features, create new ones, and make sure to include them in the appropriate `.tsx`/`.jsx` files.
+Styling is currently done via vanilla CSS. Edit existing stylesheets or, for larger features, create new ones, and make sure to include them in the appropriate `.tsx`/`.jsx` files. If you add a color, it must go into `Colors.css`, otherwise you will feel the weight of your heavy karmic debt forever and ever for the sin of having broken the dark theme. Ignore this warning only at your own peril!
 
 **Where to begin:**
 

@@ -213,6 +213,33 @@ nav .nav-container {
   margin-right: auto;
   padding: 0 0.5rem;
 }
+nav .nav-container li {
+  position: relative;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%; /* sit just below parent li */
+  left: 0;
+  background: #282f42;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  text-align: left;
+  width: max-content;
+  min-width: unset;
+  z-index: 500;
+}
+.dropdown-content li a {
+  padding: 0.5rem;
+  white-space: nowrap;
+  color: white;
+}
+.dropdown.open .dropdown-content {
+  display: flex; /* override from .nav */
+  flex-direction: column; /* stack items vertically */
+}
 .facebook .facebook-results:before,
 .facebook .facebook-profile:before,
 .factrak .facebook-results:before,
