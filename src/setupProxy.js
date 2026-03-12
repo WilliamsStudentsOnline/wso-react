@@ -4,7 +4,7 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 module.exports = function (app) {
   app.use(
     createProxyMiddleware("/api", {
-      target: "https://wso-dev.williams.edu",
+      target: "https://wso.williams.edu",
       changeOrigin: true,
       secure: false,
     })
@@ -13,7 +13,7 @@ module.exports = function (app) {
   app.use(
     // note that we do not currently deploy image service on dev server
     createProxyMiddleware("/pic", {
-      target: "https://wso-dev.williams.edu",
+      target: "https://wso.williams.edu",
       changeOrigin: true,
       secure: false,
     })
@@ -29,6 +29,13 @@ module.exports = function (app) {
   );
   app.use(
     createProxyMiddleware("/courses.json", {
+      target: "https://wso.williams.edu",
+      changeOrigin: true,
+      secure: false,
+    })
+  );
+  app.use(
+    createProxyMiddleware("/library.json", {
       target: "https://wso.williams.edu",
       changeOrigin: true,
       secure: false,

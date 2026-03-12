@@ -595,7 +595,7 @@ const Footer = ({ updateTime }: { updateTime: string | null }) => {
     <div className="dining-footer">
       {" "}
       Dining info last updated: {updateTime || "N/A"}. Menus typically refresh
-      daily around 2:00 AM.{" "}
+      on Sundays around 1:00 AM.{" "}
     </div>
   );
 };

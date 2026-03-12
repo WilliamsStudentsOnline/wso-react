@@ -92,7 +92,7 @@ const Scheduler = ({
         url: jsonURL,
         headers: axios_headers,
       }).then((response) => {
-        if (response.status !== 200 || response.statusText !== "OK") {
+        if (response.status !== 200) {
           loadCatalogCourses(true);
         } else {
           loadCatalog(response.data);

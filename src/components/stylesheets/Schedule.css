@@ -3,7 +3,7 @@
   min-height: 1em;
   display: flex;
   max-width: 1300px;
-  border: 0.5px solid #ddd;
+  border: 0.5px solid var(--color-schedule-day-horizontal-border);
   margin: 0 auto;
 }
 
@@ -61,7 +61,7 @@
   display: inline-block;
   width: 50px;
   text-align: center;
-  border: 0.5px solid #ddd;
+  border: 0.5px solid var(--color-schedule-day-horizontal-border);
 }
 
 .day-title-horizontal span {
@@ -76,7 +76,7 @@
   display: inline-block;
   height: 30px;
   text-align: center;
-  border: 0.5px solid #ddd;
+  border: 0.5px solid var(--color-schedule-day-vertical-border);
 }
 
 .day-title-vertical span {
@@ -90,10 +90,10 @@
 .course-slot {
   box-sizing: border-box;
   position: absolute;
-  background-color: orange;
+  background-color: var(--color-schedule-course-slot-bg);
   display: inline-block;
-  border-bottom: 3px solid red;
-  border-right: 2px solid red;
+  border-bottom: 3px solid var(--color-schedule-course-slot-border);
+  border-right: 2px solid var(--color-schedule-course-slot-border);
   height: 90px;
   padding: 2px 0px 4px 4px;
   margin-bottom: 3px;
@@ -114,14 +114,14 @@
 }
 
 .course-day-horizontal {
-  border: 0.5px solid #ddd;
+  border: 0.5px solid var(--color-schedule-day-horizontal-border);
   position: relative;
   min-height: 70px;
   overflow: hidden;
 }
 
 .course-day-vertical {
-  border: 0.5px solid #ddd;
+  border: 0.5px solid var(--color-schedule-day-vertical-border);
   position: relative;
   min-width: 70px;
   overflow: hidden;
@@ -137,7 +137,7 @@
 }
 
 .days-container-vertical {
-  border: 0.5px solid #ddd;
+  border: 0.5px solid var(--color-schedule-day-vertical-border);
 }
 
 .day-container-vertical {
@@ -145,26 +145,26 @@
 }
 
 .hour-in-days-horizontal {
-  background: #fff;
+  background: var(--color-schedule-hour-horizontal-even-border);
   width: 80px;
   height: 100%;
 }
 
 .hour-in-days-horizontal-odd {
-  background: #eee;
+  background: var(--color-schedule-hour-horizontal-odd-border);
   width: 80px;
   height: 100%;
 }
 
 .hour-in-days-vertical {
-  background: #fff;
+  background: var(--color-schedule-hour-vertical-even-border);
   height: 70px;
   min-height: 70px;
   width: 100%;
 }
 
 .hour-in-days-vertical-odd {
-  background: #eee;
+  background: var(--color-schedule-hour-vertical-odd-border);
   height: 70px;
   min-height: 70px;
   width: 100%;

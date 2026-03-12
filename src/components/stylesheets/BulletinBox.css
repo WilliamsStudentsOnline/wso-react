@@ -11,9 +11,9 @@
     #f2a2e8
   ); */
   /*STANDARD*/
-  background: #6f4993;
+  background: var(--color-bulletin-title-background);
   padding: 1rem 0.5rem;
-  border-bottom: 2px solid #d9d9d9;
+  border-bottom: 2px solid var(--color-bulletin-title-bottom-border);
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
 }
@@ -22,7 +22,7 @@
   /*APRIL FOOL'S*/
   /* color: #20012e; */
   /*STANDARD*/
-  color: white;
+  color: var(--color-bulletin-link);
   font-weight: bold;
   font-size: 1.25em;
 }
@@ -42,11 +42,11 @@
 
 .list-date {
   display: block;
-  background: #fcfcfc;
+  background: var(--color-bulletin-list-date-bg);
   padding-left: 5px;
   font-variant: small-caps;
   font-weight: bold;
-  color: #666;
+  color: var(--color-bulletin-list-date-fg);
   /*APRIL FOOL'S*/
   /*   font-size: 0.8em; */
   /*STANDARD*/

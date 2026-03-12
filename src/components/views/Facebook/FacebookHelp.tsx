@@ -21,9 +21,9 @@ const FacebookHelp = () => {
             are, the easier the bug is to fix. Better yet, come to a meeting
             (join the{" "}
             <a
-              href="https://wso.williams.edu/mailman/listinfo/wso-general_wso.williams.edu"
+              href="https://listserv-wso.williams.edu/postorius/lists/wso-general.wso.williams.edu/"
               className="urlextern"
-              title="https://wso.williams.edu/mailman/listinfo/wso-general_wso.williams.edu"
+              title="https://listserv-wso.williams.edu/postorius/lists/wso-general.wso.williams.edu/"
               rel="nofollow"
             >
               wso-general

@@ -110,7 +110,7 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
               <input
                 aria-label="Search box for Facebook"
                 type="search"
-                placeholder="Search Facebook"
+                placeholder="Search Facebook..."
                 value={searchInputValue}
                 onChange={handleInputChange}
               />

@@ -3,9 +3,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const BoardMap = {
-  "Matt Laws": 13268,
   "Charlie Tharas": 14774,
   "Nathan Vosburg": 14656,
+  "Nathaniel Flores": 14643,
 };
 
 const ContributorMap = {
@@ -30,13 +30,13 @@ const ContributorMap = {
   "Matthew Chin": 15568,
   "Melanie Wang": 14710,
   "Natalia Avila-Hernandez": 14835,
-  "Nathaniel Flores": 14643,
   "Nick Canora": 13953,
   "Nikhil Radosevich": 15099,
   "Niklas Obermüller": 15681,
   "Ronald Deng": 15674,
   "Savannah Bolton": 14892,
   "Simon Angoluan": 13089,
+  "Simon Socolow": 12501,
   "Susanna Boberg": 14715,
   "Tao Chen": 15850,
   "Temani Knight": 14872,

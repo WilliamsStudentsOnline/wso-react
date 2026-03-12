@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../lib/store";
 import { selectGeneratedQuery } from "../lib/queryBuilderSlice";
 import { PostType } from "../lib/types";
+import LibraryHoursTable from "./LibraryHours";
 
 const Homepage = () => {
   const navigateTo = useNavigate();
@@ -62,9 +63,9 @@ const Homepage = () => {
     );
   };
 
-  const joinHeaderText = "Important notes about an upcoming server move"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
+  const joinHeaderText = "Install the new WSO Mobile iOS app!"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
   const joinHeaderLink =
-    "https://github.com/WilliamsStudentsOnline/wso-config/issues/22";
+    "https://apps.apple.com/us/app/wso-mobile-rewritten/id6755857250";
 
   return (
     <div className="home">
@@ -80,7 +81,7 @@ const Homepage = () => {
               WSO
             </h2>
             <h4 className="text-center" id="tagline">
-              By Students, For Students!
+              <i>By Students, For Students!</i>
             </h4>
           </div>
           <br />
@@ -89,7 +90,7 @@ const Homepage = () => {
               <input
                 aria-label="Search box for Facebook"
                 type="search"
-                placeholder="Search Facebook"
+                placeholder="Search Facebook..."
                 value={searchInputValue}
                 onChange={handleInputChange}
               />
@@ -128,6 +129,9 @@ const Homepage = () => {
             </div>
           )}
         </header>
+        <article>
+          <LibraryHoursTable />
+        </article>
         <article>
           <section>
             <div className="bulletin-list">

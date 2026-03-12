@@ -26,30 +26,30 @@
 }
 
 .advanced-query {
-  border: 3px solid #6f4399;
+  border: 3px solid var(--color-homepage-button-borders);
   border-radius: 20px;
 }
 
 .advanced-query-facebook {
-  border: 3px solid #6f4399;
+  border: 3px solid var(--color-homepage-button-borders);
   border-radius: 20px;
   margin-top: 290px;
 }
 
 input[type="submit"] {
-  border: 1px solid #6f4399;
+  border: 1px solid var(--color-homepage-button-borders);
 }
 
 .button-default {
   box-sizing: border-box;
   display: inline-block;
   background: none;
-  color: #6f4993;
-  border: 1px solid #6f4399;
+  color: var(--color-homepage-buttons);
+  border: 1px solid var(--color-homepage-button-borders);
 }
 
 .button-toggled {
-  border: 1px solid #6f4399;
+  border: 1px solid var(--color-homepage-button-borders);
 }
 
 .invisible {
@@ -64,13 +64,13 @@ input[type="submit"] {
 
 #homepage-table,
 #homepage-table tr {
-  background-color: #fcfcfc;
+  background-color: var(--color-homepage-table-tr);
   border: none;
   padding-bottom: 20px;
 }
 
 #homepage-table td {
-  background-color: #fcfcfc;
+  background-color: var(--color-homepage-table-td);
   border: none;
   vertical-align: middle;
   padding: 8px 4px;
@@ -96,12 +96,12 @@ input[type="submit"] {
 .warning {
   width: fit-content;
   margin: auto;
-  color: red;
+  color: var(--color-homepage-warning);
 }
 
 .active-filters {
-  background-color: #fff6bf;
-  color: #6f4399;
+  background-color: var(--color-homepage-active-filters-bg);
+  color: var(--color-homepage-active-filters-fg);
   border-radius: 5px;
   padding-left: 10px;
   padding-right: 10px;
