@@ -15,10 +15,6 @@ const dietaryPreferenceMap = {
   "0": "No preference",
   "1": "Vegetarian",
   "2": "Vegan",
-  "3": "Halal",
-  "4": "Kosher",
-  "5": "Gluten Free",
-  "6": "Dairy Free",
 } as const;
 
 const FacebookUser = () => {

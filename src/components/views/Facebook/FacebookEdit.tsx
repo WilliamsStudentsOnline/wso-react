@@ -206,10 +206,6 @@ const FacebookEdit = () => {
                   <option value="0">No preference</option>
                   <option value="1">Vegetarian</option>
                   <option value="2">Vegan</option>
-                  <option value="3">Halal</option>
-                  <option value="4">Kosher</option>
-                  <option value="5">Gluten Free</option>
-                  <option value="6">Dairy Free</option>
                 </select>
                 <strong>Dietary Preference Visibility:</strong>
                 <br />
