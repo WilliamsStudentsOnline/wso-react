@@ -2065,7 +2065,7 @@ export const MAJORS = {
               attributes: "^(ENVI_ENVIHUM|EVST_EVSTCULHUM)",
             },
             {
-              description: "Enviornmental Science course",
+              description: "Environmental Science course",
               attributes: "^(ENVI_ENVINATW|EVST_EVSTENVS)",
             },
             {
@@ -4278,7 +4278,7 @@ export const CONCENTRATIONS = {
       },
     ],
   },
-  "Environmental Studies": {
+  "Environmental Studies (Concentration)": {
     Link: "https://www.williams.edu/environmental-studies/curriculum/concentration/",
     Prefix: "ENVI",
     Division: 2,
