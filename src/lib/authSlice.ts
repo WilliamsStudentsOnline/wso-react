@@ -103,6 +103,8 @@ const authSlice = createSlice({
         factrakSurveyDeficit: newUser.factrakSurveyDeficit,
         williamsID: newUser.williamsID,
         cellPhone: newUser.cellPhone,
+        dietaryPref: newUser.dietaryPref,
+        dietaryPrefVisible: newUser.dietaryPrefVisible,
       };
     },
     updateRemember: (state, action: PayloadAction<boolean>) => {

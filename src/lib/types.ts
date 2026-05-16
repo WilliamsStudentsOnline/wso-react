@@ -32,6 +32,8 @@ export interface User {
   factrakSurveyDeficit?: number;
   williamsID?: string;
   cellPhone?: string;
+  dietaryPref?: boolean;
+  dietaryPrefVisible?: boolean;
 }
 
 export interface WSOToken extends JwtPayload {

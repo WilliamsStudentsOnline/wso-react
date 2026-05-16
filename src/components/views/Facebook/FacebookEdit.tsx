@@ -23,8 +23,11 @@ const FacebookEdit = () => {
   const [pronoun] = useState(currUser?.pronoun);
   const [visible, setVisible] = useState(currUser?.visible);
   const [homeVisible, setHomeVisible] = useState(currUser?.homeVisible);
-  const [dietaryVisible, setDietaryVisible] = useState(false);
-  const [dietaryPreference, setDietaryPreference] = useState("0");
+
+  const [dietaryPrefVisible, setDietaryPrefVisible] = useState(
+    currUser?.dietaryPrefVisible
+  );
+  const [dietaryPref, setDietaryPref] = useState(currUser?.dietaryPref);
 
   const [dormVisible, setDormVisible] = useState(currUser?.dormVisible);
   const [offCycle, setOffCycle] = useState(currUser?.offCycle);
@@ -76,6 +79,8 @@ const FacebookEdit = () => {
 
       // Update User
       const updatedUser = {
+        dietaryPref,
+        dietaryPrefVisible,
         dormVisible,
         homeVisible,
         offCycle,
@@ -196,30 +201,35 @@ const FacebookEdit = () => {
                 (Checking this box will subtract 0.5 from your class year.)
                 <br />
                 <br />
-                <strong>Dietary Preference</strong>
+                <strong>Dietary Preference:</strong>
+                <br />
+                No Preference&nbsp;
+                <input
+                  type="radio"
+                  checked={!dietaryPref}
+                  onChange={() => setDietaryPref(false)}
+                />
+                Vegetarian&nbsp;
+                <input
+                  type="radio"
+                  checked={dietaryPref}
+                  onChange={() => setDietaryPref(true)}
+                />
                 <br />
                 <br />
-                <select
-                  value={dietaryPreference}
-                  onChange={(e) => setDietaryPreference(e.target.value)}
-                >
-                  <option value="0">No preference</option>
-                  <option value="1">Vegetarian</option>
-                  <option value="2">Vegan</option>
-                </select>
                 <strong>Dietary Preference Visibility:</strong>
                 <br />
                 Show&nbsp;
                 <input
                   type="radio"
-                  checked={dietaryVisible}
-                  onChange={() => setDietaryVisible(true)}
+                  checked={dietaryPrefVisible}
+                  onChange={() => setDietaryPrefVisible(true)}
                 />
                 Hide&nbsp;
                 <input
                   type="radio"
-                  checked={!dietaryVisible}
-                  onChange={() => setDietaryVisible(false)}
+                  checked={!dietaryPrefVisible}
+                  onChange={() => setDietaryPrefVisible(false)}
                 />
                 <br />
                 <br />
