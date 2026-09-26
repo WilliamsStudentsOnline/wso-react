@@ -4,7 +4,7 @@ import {
   ModelsBook,
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
-import Button from "../../Button";
+import { Button } from "../../ui";
 import "../../stylesheets/Booktrak.css";
 
 const BooktrakBookSearchResults = ({
@@ -109,7 +109,7 @@ const BooktrakBookSearchResults = ({
                         },
                       })
                     }
-                    className="inline-button"
+                    variant="secondary"
                   >
                     Buy
                   </Button>
@@ -122,7 +122,8 @@ const BooktrakBookSearchResults = ({
                         },
                       })
                     }
-                    className="inline-button create-listing-button"
+                    variant="secondary"
+                    className="create-listing-button"
                   >
                     Sell
                   </Button>

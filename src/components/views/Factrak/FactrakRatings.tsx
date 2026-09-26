@@ -1,6 +1,6 @@
 // React imports
 import React from "react";
-import { Line } from "../../Skeleton";
+import { Line } from "../../ui";
 import { ModelsFactrakSurveyAvgRatings } from "wso-api-client/lib/services/types";
 
 const FactrakRatings = ({

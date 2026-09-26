@@ -1,5 +1,6 @@
 // React imports
 import React from "react";
+import { HelpAbbr } from "../../ui";
 
 const FacebookHelp = () => {
   return (
@@ -7,16 +8,17 @@ const FacebookHelp = () => {
       <section>
         <article>
           <p className="intro-paragraph">
-            The <abbr title="Williams Students Online">WSO</abbr> Facebook
+            The <HelpAbbr title="Williams Students Online">WSO</HelpAbbr>{" "}
+            Facebook
             <a href="#fn__1" id="fnt__1" className="fn_top">
               <sup>1</sup>
             </a>{" "}
             is an online campus directory. It is accessible on campus without
             login and off campus by logging in with your Williams Username
             (previously called Unix, Williams ID, or{" "}
-            <abbr title="Office for Information Technology">OIT</abbr> ID) and
-            password. Please report any strange behavior (after looking over the
-            info below) to <code>wso-dev</code> <code>[at]</code>{" "}
+            <HelpAbbr title="Office for Information Technology">OIT</HelpAbbr>{" "}
+            ID) and password. Please report any strange behavior (after looking
+            over the info below) to <code>wso-dev</code> <code>[at]</code>{" "}
             <code>wso.williams.edu</code>. The more descriptive your bug reports
             are, the easier the bug is to fix. Better yet, come to a meeting
             (join the{" "}
@@ -429,9 +431,9 @@ const FacebookHelp = () => {
               <a href="#fnt__1" id="fn__1" className="fn_bot">
                 1){" "}
               </a>
-              The <abbr title="Williams Students Online">WSO</abbr> Facebook
-              actually predates Facebook.com by a bit and has been called
-              &ldquo;the Facebook&rdquo; since its inception.
+              The <HelpAbbr title="Williams Students Online">WSO</HelpAbbr>{" "}
+              Facebook actually predates Facebook.com by a bit and has been
+              called &ldquo;the Facebook&rdquo; since its inception.
               <br />
               <br />
             </div>

@@ -2,28 +2,20 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-// Additional imports
-import { Link } from "react-router-dom";
+import { ServiceHeader, ContentPane } from "../../ui";
 
 const DiscussionLayout = ({ children }) => {
   return (
     <>
-      <header>
-        <div className="page-head">
-          <h1>
-            <Link to="/discussions">Discussions</Link>
-          </h1>
-          <ul>
-            <li>
-              <Link to="/discussions">Home</Link>
-            </li>
-            <li>
-              <Link to="/discussions/new">New</Link>
-            </li>
-          </ul>
-        </div>
-      </header>
-      <article className="main-table">{children}</article>
+      <ServiceHeader
+        title="Discussions"
+        titleTo="/discussions"
+        tabs={[
+          { to: "/discussions", label: "Home", end: true },
+          { to: "/discussions/new", label: "New" },
+        ]}
+      />
+      <ContentPane variant="main-table">{children}</ContentPane>
     </>
   );
 };

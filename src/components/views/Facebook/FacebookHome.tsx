@@ -8,7 +8,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 // Additional Imports
 import { userTypeStudent } from "../../../constants/general";
-import PaginationButtons from "../../PaginationButtons";
+import { Pagination } from "../../ui";
 import FacebookGridUser from "./FacebookGridUser";
 import { ResponsesGetUserResponseUser } from "wso-api-client/lib/services/types";
 
@@ -120,7 +120,7 @@ const FacebookHome = () => {
               })}
           </tbody>
         </table>
-        <PaginationButtons
+        <Pagination
           clickHandler={clickHandler}
           page={page}
           total={total}

@@ -1,0 +1,15 @@
+.wso-pagination {
+  text-align: center;
+}
+
+.wso-pagination__pages {
+  display: inline;
+}
+
+.wso-pagination__btn {
+  background-color: var(--surface-page);
+  color: var(--brand-deep);
+  min-width: 0;
+  line-height: normal;
+  padding: 0.25rem 0.5rem;
+}

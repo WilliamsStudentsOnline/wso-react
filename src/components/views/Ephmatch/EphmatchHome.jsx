@@ -1,7 +1,6 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PaginationButtons from "../../PaginationButtons";
-import Select from "../../Select";
+import { Pagination, Select } from "../../ui";
 
 // Redux/ routing imports
 import { useAppSelector } from "../../../lib/store";
@@ -131,7 +130,7 @@ const EphmatchHome = () => {
                   }}
                 />
               </div>
-              <PaginationButtons
+              <Pagination
                 selectionHandler={selectionHandler}
                 clickHandler={clickHandler}
                 page={page}
@@ -156,7 +155,7 @@ const EphmatchHome = () => {
                 )}
               </div>
               <br />
-              <PaginationButtons
+              <Pagination
                 selectionHandler={selectionHandler}
                 clickHandler={clickHandler}
                 page={page}

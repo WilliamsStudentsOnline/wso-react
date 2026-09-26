@@ -12,7 +12,7 @@ import {
 } from "react-router-dom";
 
 import { AutocompleteACEntry } from "wso-api-client/lib/services/types";
-import { StylizedLink } from "../../StylizedLink";
+import { ServiceHeader, SearchBar } from "../../ui";
 
 const FactrakLayout = ({ children }: { children: ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
@@ -33,7 +33,7 @@ const FactrakLayout = ({ children }: { children: ReactElement }) => {
         setQuery(searchParams.get("q") ?? "");
       } else {
         setQuery("");
-      } // Needed to reset if user clears the box.
+      }
     };
 
     if (isMounted) {
@@ -46,30 +46,25 @@ const FactrakLayout = ({ children }: { children: ReactElement }) => {
     };
   }, [searchParams]);
 
-  // When navigated to new page (e.g. by following autosuggestion), hide it
   useEffect(() => {
     setShowSuggestions(false);
   }, [location.pathname]);
 
-  // Initiates new autocomplete
-  const factrakAutocomplete: React.ChangeEventHandler<
-    HTMLInputElement
-  > = async (event) => {
-    setQuery(event.target.value);
+  const factrakAutocomplete = async (value: string) => {
+    setQuery(value);
     let suggestData: AutocompleteACEntry[] = [];
 
     try {
       const factrakResponse = await wso.autocompleteService.autocompleteFactrak(
-        query
+        value
       );
       if (factrakResponse.data) {
         suggestData = factrakResponse.data;
       }
     } catch {
-      // No need to do anything - it's alright if we don't have autocomplete.
+      // alright if we don't have autocomplete
     }
 
-    // Limit the number of factrak suggestions to 5.
     if (suggestData.length > 5) {
       setSuggestions(suggestData.slice(0, 5));
     } else {
@@ -78,18 +73,9 @@ const FactrakLayout = ({ children }: { children: ReactElement }) => {
     setShowSuggestions(true);
   };
 
-  const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
+  const submitHandler = (event: React.FormEvent) => {
     event.preventDefault();
-
     navigateTo(`/factrak/serch?q=${query}`);
-  };
-
-  const focusHandler = () => {
-    setShowSuggestions(true);
-  };
-
-  const blurHandler = () => {
-    setShowSuggestions(false);
   };
 
   const suggestionRow = (suggestion: AutocompleteACEntry) => {
@@ -97,7 +83,6 @@ const FactrakLayout = ({ children }: { children: ReactElement }) => {
       return (
         <Link
           to={`/factrak/areasOfStudy/${suggestion.id}`}
-          // prevent the blur event, which causes the Link to disappear
           onMouseDown={(e) => e.preventDefault()}
         >
           {suggestion.value}
@@ -125,7 +110,6 @@ const FactrakLayout = ({ children }: { children: ReactElement }) => {
       );
     }
 
-    // Just to handle weird cases
     return null;
   };
 
@@ -147,73 +131,44 @@ const FactrakLayout = ({ children }: { children: ReactElement }) => {
     );
   };
 
-  if (currUser) {
-    return (
-      <>
-        <header>
-          <div className="page-head">
-            <h1>
-              <Link to="/factrak">Factrak</Link>
-            </h1>
-
-            <ul>
-              <li>
-                <StylizedLink to="/factrak" end>
-                  Home
-                </StylizedLink>
-              </li>
-              <li>
-                <StylizedLink to="/factrak/policy">Policy</StylizedLink>
-              </li>
-              <li>
-                <StylizedLink to="/factrak/surveys">Your Reviews</StylizedLink>
-              </li>
-              <li>
-                <StylizedLink to="/factrak/professor-rankings">
-                  Professor Rankings
-                </StylizedLink>
-              </li>
-              <li>
-                <StylizedLink to="/factrak/course-rankings">
-                  Course Rankings
-                </StylizedLink>
-              </li>
-              {currUser.factrakAdmin && (
-                <li>
-                  <StylizedLink to="/factrak/moderate">Moderate</StylizedLink>
-                </li>
-              )}
-            </ul>
-          </div>
-          <form
-            onSubmit={submitHandler}
-            onFocus={focusHandler}
-            onBlur={blurHandler}
-          >
-            <input
-              type="search"
-              id="search"
-              placeholder="Search for a professor or course"
-              onChange={factrakAutocomplete}
-              style={{ marginBottom: "0px" }}
-              value={query}
-            />
-            <input
-              type="submit"
-              value="Search"
-              className="submit"
-              data-disable-with="Search"
-            />
-            {factrakSuggestions()}
-          </form>
-        </header>
-        {children}
-      </>
-    );
+  if (!currUser) {
+    return null;
   }
 
-  // Just to handle weird cases (when API Token is loaded, but user is not)
-  return null;
+  const tabs = [
+    { to: "/factrak", label: "Home", end: true },
+    { to: "/factrak/policy", label: "Policy" },
+    { to: "/factrak/surveys", label: "Your Reviews" },
+    { to: "/factrak/professor-rankings", label: "Professor Rankings" },
+    { to: "/factrak/course-rankings", label: "Course Rankings" },
+    ...(currUser.factrakAdmin
+      ? [{ to: "/factrak/moderate", label: "Moderate" }]
+      : []),
+  ];
+
+  return (
+    <>
+      <ServiceHeader
+        title="Factrak"
+        titleTo="/factrak"
+        tabs={tabs}
+        search={
+          <SearchBar
+            value={query}
+            onChange={factrakAutocomplete}
+            onSubmit={submitHandler}
+            placeholder="Search for a professor or course"
+            inputStyle={{ marginBottom: "0px" }}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setShowSuggestions(false)}
+          >
+            {factrakSuggestions()}
+          </SearchBar>
+        }
+      />
+      {children}
+    </>
+  );
 };
 
 export default FactrakLayout;

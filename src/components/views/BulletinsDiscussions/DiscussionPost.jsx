@@ -1,7 +1,7 @@
 // React imports
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Line, Paragraph } from "../../Skeleton";
+import { Line, Paragraph } from "../../ui";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
