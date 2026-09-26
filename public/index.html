@@ -23,6 +23,25 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>WSO: Williams Students Online</title>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("wso-theme");
+          var preference =
+            stored === "light" || stored === "dark" || stored === "system"
+              ? stored
+              : "system";
+          var resolved =
+            preference === "system"
+              ? window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light"
+              : preference;
+          document.documentElement.setAttribute("data-theme", resolved);
+          document.documentElement.style.colorScheme = resolved;
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

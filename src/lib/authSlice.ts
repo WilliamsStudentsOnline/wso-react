@@ -25,6 +25,7 @@ export interface AuthState {
   currUser: User | null;
   remember: boolean;
   wso: WSO;
+  authReady: boolean;
 }
 
 export const INITIAL_STATE: AuthState = {
@@ -36,6 +37,7 @@ export const INITIAL_STATE: AuthState = {
   remember: false,
   tokenLevel: 0,
   wso: DEFAULT_API_CLIENT,
+  authReady: false,
 };
 
 // Method to get scopes.
@@ -52,7 +54,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState: INITIAL_STATE,
   reducers: {
-    removeCredentials: () => INITIAL_STATE,
+    removeCredentials: () => ({ ...INITIAL_STATE, authReady: true }),
     updateIdentityToken: (state, action: PayloadAction<string>) => {
       state.identityToken = action.payload;
     },
@@ -75,6 +77,15 @@ const authSlice = createSlice({
       configureInterceptors(updatedWSO);
 
       state.wso = updatedWSO;
+
+      if (decoded.tokenLevel === 3) {
+        if (!state.currUser) {
+          state.authReady = false;
+        }
+      } else {
+        state.currUser = null;
+        state.authReady = true;
+      }
     },
     updateUser: (
       state,
@@ -104,9 +115,13 @@ const authSlice = createSlice({
         williamsID: newUser.williamsID,
         cellPhone: newUser.cellPhone,
       };
+      state.authReady = true;
     },
     updateRemember: (state, action: PayloadAction<boolean>) => {
       state.remember = action.payload;
+    },
+    setAuthReady: (state, action: PayloadAction<boolean>) => {
+      state.authReady = action.payload;
     },
   },
 });
@@ -118,6 +133,7 @@ export const {
   updateAPIToken,
   updateUser,
   updateRemember,
+  setAuthReady,
 } = authSlice.actions;
 
 // selectors
@@ -129,6 +145,7 @@ export const getIdentityToken = (state: RootState) =>
 export const getScopes = (state: RootState) => state.authState.scope;
 export const getTokenLevel = (state: RootState) => state.authState.tokenLevel;
 export const getWSO = (state: RootState) => state.authState.wso;
+export const getAuthReady = (state: RootState) => state.authState.authReady;
 
 // reducer
 export default authSlice.reducer;

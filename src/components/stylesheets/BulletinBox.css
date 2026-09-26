@@ -27,17 +27,32 @@
   font-size: 1.25em;
 }
 
+.bulletin-link:hover {
+  opacity: 0.75;
+  color: var(--color-bulletin-link);
+  text-decoration: none;
+}
+
 .bulletin-children {
   padding: 1em;
-  box-shadow: inset 2px -2px 0 #d9d9d9, inset -2px 0 0 #d9d9d9;
+  box-shadow: inset 2px -2px 0 var(--border-table),
+    inset -2px 0 0 var(--border-table);
   display: grid;
   grid-template-columns: 7fr 3fr;
+  background: var(--surface-muted);
 }
 
 .thread-link {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--text-body);
+}
+
+.thread-link:hover {
+  opacity: 1;
+  color: var(--brand-primary);
+  text-decoration: none;
 }
 
 .list-date {

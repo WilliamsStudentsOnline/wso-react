@@ -15,6 +15,7 @@ import { Provider } from "react-redux";
 import store, { persistor } from "./lib/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { injectStore } from "./lib/axiosAuth";
+import { ThemeProvider } from "./lib/ThemeProvider";
 
 // Router imports
 import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
@@ -29,9 +30,11 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <HistoryRouter history={history}>
-          <App />
-        </HistoryRouter>
+        <ThemeProvider>
+          <HistoryRouter history={history}>
+            <App />
+          </HistoryRouter>
+        </ThemeProvider>
       </PersistGate>
     </Provider>
   </React.StrictMode>,

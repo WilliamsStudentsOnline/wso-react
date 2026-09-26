@@ -1,4 +1,3 @@
-/* Beat global `button { padding: 14px 20px }` from i.css */
 button.wso-service-header__tab {
   background: none;
   border: none;
@@ -18,7 +17,6 @@ button.wso-service-header__tab {
 
 button.wso-service-header__tab:active {
   background: none;
-  color: var(--brand-primary);
 }
 
 .wso-service-header__tab--active {
@@ -27,13 +25,26 @@ button.wso-service-header__tab:active {
   text-underline-offset: 3px;
 }
 
+[data-theme="dark"] button.wso-service-header__tab {
+  color: var(--text-heading);
+  background: none;
+}
+
+[data-theme="dark"] button.wso-service-header__tab--active {
+  color: var(--text-heading);
+  background: none;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  box-shadow: none;
+}
+
 .wso-service-header::after {
   content: "";
   display: table;
   clear: both;
 }
 
-/* page-head's 4em bottom margin is for the search row; skip it when absent */
 .wso-service-header > .page-head:last-child {
   margin-bottom: 1.5rem;
 }

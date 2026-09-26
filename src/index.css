@@ -1,6 +1,8 @@
 body {
   margin: 0;
   font-family: var(--font-family-sans);
+  background-color: var(--surface-page);
+  color: var(--text-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -12,4 +14,25 @@ code {
 
 .text-center {
   text-align: center;
+}
+
+@supports (view-transition-name: none) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.2s;
+    animation-timing-function: ease;
+  }
+
+  html:active-view-transition,
+  html:active-view-transition *:not(a) {
+    transition: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
