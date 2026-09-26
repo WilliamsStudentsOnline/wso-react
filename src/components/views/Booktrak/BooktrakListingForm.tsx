@@ -13,7 +13,7 @@ import {
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
 import BooktrakCourseSearch from "./BooktrakCourseSearch";
-import Tooltip from "../../Tooltip";
+import { Tooltip } from "../../ui";
 import BooktrakConditionSelection from "./BooktrakConditionSelection";
 
 type BooktrakListingFormState = {

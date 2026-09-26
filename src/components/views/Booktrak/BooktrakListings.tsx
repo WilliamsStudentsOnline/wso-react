@@ -12,13 +12,11 @@ import {
   ModelsBook,
   ModelsBookListing,
 } from "wso-api-client/lib/services/types";
-import PaginationButtons from "../../PaginationButtons";
+import { Button, Pagination, Tooltip } from "../../ui";
 import BooktrakListingsTable from "./BooktrakListingsTable";
 import "../../stylesheets/Booktrak.css";
 import BooktrakCourseSearch from "./BooktrakCourseSearch";
-import Tooltip from "../../Tooltip";
 import BooktrakConditionSelection from "./BooktrakConditionSelection";
-import Button from "../../Button";
 
 const ListingTypeEnum = ModelsBookListing.ListingTypeEnum;
 const BooktrakListings = ({
@@ -161,7 +159,7 @@ const BooktrakListings = ({
                   },
                 })
               }
-              className="inline-button"
+              variant="secondary"
             >
               Create Buy Listing
             </Button>
@@ -180,7 +178,7 @@ const BooktrakListings = ({
                   },
                 })
               }
-              className="inline-button"
+              variant="secondary"
             >
               Create Sell Listing
             </Button>
@@ -257,7 +255,7 @@ const BooktrakListings = ({
           </div>
         </div>
       )}
-      <PaginationButtons
+      <Pagination
         selectionHandler={(newPage: number) => {
           updateCurrentPage(newPage);
         }}

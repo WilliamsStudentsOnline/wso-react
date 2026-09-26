@@ -1,7 +1,6 @@
 // React imports
 import React, { useState } from "react";
-import { Paragraph, Line } from "../../Skeleton";
-import Button from "../../Button";
+import { Button, CommentCard, Line, Paragraph } from "../../ui";
 
 // Redux/ Router imports
 import { useAppSelector, useAppDispatch } from "../../../lib/store";
@@ -120,12 +119,12 @@ const FactrakComment = ({
         <p className="survey-detail">
           <Button
             onClick={() => navigateTo(`/factrak/surveys/edit/${survey.id}`)}
-            className="inline-button"
+            variant="secondary"
           >
             Edit
           </Button>
 
-          <Button onClick={deleteHandler} className="inline-button">
+          <Button onClick={deleteHandler} variant="secondary">
             Delete
           </Button>
         </p>
@@ -199,10 +198,10 @@ const FactrakComment = ({
     return (
       <>
         <Button
-          className={
+          variant={
             survey.clientAgreement !== undefined && survey.clientAgreement
-              ? "inline-button-inverted"
-              : "inline-button"
+              ? "inverted"
+              : "secondary"
           }
           onClick={() => agreeHandler(true)}
         >
@@ -210,10 +209,10 @@ const FactrakComment = ({
         </Button>
         &ensp;
         <Button
-          className={
+          variant={
             survey.clientAgreement !== undefined && !survey.clientAgreement
-              ? "inline-button-inverted"
-              : "inline-button"
+              ? "inverted"
+              : "secondary"
           }
           onClick={() => agreeHandler(false)}
         >
@@ -221,7 +220,7 @@ const FactrakComment = ({
         </Button>
         {!abridged && !survey.flagged && (
           <span>
-            <Button className="inline-button" onClick={flagHandler}>
+            <Button variant="secondary" onClick={flagHandler}>
               Flag for moderator attention
             </Button>
           </span>
@@ -343,7 +342,7 @@ const FactrakComment = ({
 
   if (survey.userID === -1)
     return (
-      <div className="comment">
+      <CommentCard>
         <div className="comment-content blurred">
           <h1>
             {showProf && (
@@ -365,24 +364,25 @@ const FactrakComment = ({
             posted about <span className="blurred">1793</span>
           </p>
         </div>
-      </div>
+      </CommentCard>
     );
 
   return (
-    <div className="comment">
-      <div className="comment-content">
-        <h1>
-          {profName()}
-          {courseLink()}
-          {semesterInfo()}
-          {courseFormat()}
-        </h1>
-
-        {agreeCount()}
-        {surveyText()}
-        {surveyDetail()}
-      </div>
-    </div>
+    <CommentCard
+      header={
+        <>
+          <h1>
+            {profName()}
+            {courseLink()}
+            {semesterInfo()}
+            {courseFormat()}
+          </h1>
+          {agreeCount()}
+        </>
+      }
+      body={surveyText()}
+      meta={surveyDetail()}
+    />
   );
 };
 

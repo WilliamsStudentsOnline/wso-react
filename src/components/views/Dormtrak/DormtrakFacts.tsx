@@ -1,6 +1,6 @@
 // React imports
 import React, { useEffect, useState } from "react";
-import { Circle } from "../../Skeleton";
+import { Circle } from "../../ui";
 
 // External Imports
 import { Chart } from "react-google-charts";

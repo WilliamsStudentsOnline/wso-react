@@ -1,7 +1,6 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import PaginationButtons from "../../PaginationButtons";
-import { Line } from "../../Skeleton";
+import { Line, Pagination } from "../../ui";
 
 // Redux/Routing imports
 import { useAppSelector } from "../../../lib/store";
@@ -178,7 +177,7 @@ const DiscussionIndex = () => {
 
   return (
     <section className="margin-vertical-small">
-      <PaginationButtons
+      <Pagination
         selectionHandler={selectionHandler}
         clickHandler={clickHandler}
         page={page}
@@ -190,7 +189,7 @@ const DiscussionIndex = () => {
         ? threads.map((thread) => discussion(thread))
         : [...Array(20)].map((_, i) => discussionSkeleton(i))}
 
-      <PaginationButtons
+      <Pagination
         selectionHandler={selectionHandler}
         clickHandler={clickHandler}
         page={page}

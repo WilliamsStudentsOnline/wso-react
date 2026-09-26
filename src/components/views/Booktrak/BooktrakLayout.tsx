@@ -5,42 +5,21 @@ import React from "react";
 import { useAppSelector } from "../../../lib/store";
 import { getCurrUser } from "../../../lib/authSlice";
 
-// Additional imports
-import { Link } from "react-router-dom";
-import { StylizedLink } from "../../StylizedLink";
+import { ServiceHeader, ServiceTab } from "../../ui";
 
 const BooktrakLayout = ({ children }: { children: React.ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
 
+  const tabs: ServiceTab[] = [
+    { to: "/booktrak", label: "Search Books", end: true },
+    { to: "/booktrak/buy", label: "Buy Listings" },
+    { to: "/booktrak/sell", label: "Sell Listings" },
+    ...(currUser ? [{ to: "/booktrak/edit", label: "My Listings" }] : []),
+  ];
+
   return (
     <div className="facebook">
-      <header>
-        <div className="page-head">
-          <h1>
-            <Link to="/booktrak">Booktrak</Link>
-          </h1>
-          <ul>
-            <li>
-              <StylizedLink to="/booktrak" end>
-                Search Books
-              </StylizedLink>
-            </li>
-            <li>
-              <StylizedLink to="/booktrak/buy">Buy Listings</StylizedLink>
-            </li>
-            <li>
-              <StylizedLink to="/booktrak/sell">Sell Listings</StylizedLink>
-            </li>
-            {currUser === null
-              ? null
-              : [
-                  <li key="edit">
-                    <StylizedLink to="/booktrak/edit">My Listings</StylizedLink>
-                  </li>,
-                ]}
-          </ul>
-        </div>
-      </header>
+      <ServiceHeader title="Booktrak" titleTo="/booktrak" tabs={tabs} />
       {children}
     </div>
   );

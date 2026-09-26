@@ -1,0 +1,51 @@
+.wso-btn {
+  font-family: var(--font-family-sans);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.wso-btn--primary,
+.wso-btn--submit {
+  background: var(--brand-primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--brand-primary);
+  border-radius: 2px;
+  padding: 0.5rem 1.25rem;
+  margin: 0.5rem;
+}
+
+.wso-btn--primary:active,
+.wso-btn--submit:active {
+  background: var(--brand-primary-active);
+}
+
+.wso-btn--primary:disabled,
+.wso-btn--submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wso-btn--secondary {
+  color: var(--brand-primary);
+  border-color: var(--brand-primary-hover);
+}
+
+.wso-btn--inverted {
+  background: var(--brand-primary-hover);
+}
+
+.wso-btn--toggle {
+  background: none;
+  color: var(--brand-primary);
+  border: 1px solid var(--brand-primary-hover);
+}
+
+.wso-btn--link {
+  background: none;
+  border: none;
+  color: var(--brand-primary);
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  text-align: left;
+}

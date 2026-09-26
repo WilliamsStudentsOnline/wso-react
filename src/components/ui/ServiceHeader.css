@@ -1,0 +1,45 @@
+/* Beat global `button { padding: 14px 20px }` from i.css */
+button.wso-service-header__tab {
+  background: none;
+  border: none;
+  border-radius: 0;
+  color: var(--brand-primary);
+  font: inherit;
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: inherit;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  display: inline;
+  line-height: inherit;
+}
+
+button.wso-service-header__tab:active {
+  background: none;
+  color: var(--brand-primary);
+}
+
+.wso-service-header__tab--active {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.wso-service-header::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* page-head's 4em bottom margin is for the search row; skip it when absent */
+.wso-service-header > .page-head:last-child {
+  margin-bottom: 1.5rem;
+}
+
+.wso-service-header > .page-head + * {
+  clear: both;
+  width: 100%;
+  box-sizing: border-box;
+}

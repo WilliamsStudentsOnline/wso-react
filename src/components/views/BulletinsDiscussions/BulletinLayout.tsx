@@ -1,11 +1,9 @@
 // React imports
 import React, { ReactNode } from "react";
 
-// Redux and Routing imports
-import { Link } from "react-router-dom";
-
 // Additional imports
 import { PostType, PostTypeName } from "../../../lib/types";
+import { ServiceHeader, ContentPane, ServiceTab } from "../../ui";
 
 const BulletinLayout = ({
   children,
@@ -14,48 +12,48 @@ const BulletinLayout = ({
   children: ReactNode;
   type: PostType;
 }) => {
-  // specialized title for Lost + Found
-  const titleGenerator = (type: PostType): string => {
-    if (type === PostType.LostAndFound) {
+  const titleGenerator = (bulletinType: PostType): string => {
+    if (bulletinType === PostType.LostAndFound) {
       return "Lost + Found";
     }
-    return PostTypeName.get(type) ?? "Bulletin";
+    return PostTypeName.get(bulletinType) ?? "Bulletin";
   };
 
-  // Generator for bulletin links
-  const bulletinLinkGenerator = (bulletinType: PostType) => {
-    return (
-      <li>
-        <Link to={`/bulletins/${bulletinType}`}>
-          {titleGenerator(bulletinType)}
-        </Link>
-      </li>
-    );
-  };
+  const tabs: ServiceTab[] = [
+    {
+      to: `/bulletins/${type}/new`,
+      label: `New ${titleGenerator(type)} Post`,
+    },
+    {
+      to: `/bulletins/${PostType.Announcements}`,
+      label: titleGenerator(PostType.Announcements),
+    },
+    {
+      to: `/bulletins/${PostType.Exchanges}`,
+      label: titleGenerator(PostType.Exchanges),
+    },
+    {
+      to: `/bulletins/${PostType.LostAndFound}`,
+      label: titleGenerator(PostType.LostAndFound),
+    },
+    {
+      to: `/bulletins/${PostType.Jobs}`,
+      label: titleGenerator(PostType.Jobs),
+    },
+    {
+      to: `/bulletins/${PostType.Rides}`,
+      label: titleGenerator(PostType.Rides),
+    },
+  ];
 
   return (
     <>
-      <header>
-        <div className="page-head">
-          <h1>
-            <Link to={`/bulletins/${type}`}>{PostTypeName.get(type)}</Link>
-          </h1>
-          <ul>
-            <li>
-              <Link to={`/bulletins/${type}/new`}>
-                {`New ${titleGenerator(type)} Post`}
-              </Link>
-            </li>
-            {/* // Generate links for all bulletin types */}
-            {bulletinLinkGenerator(PostType.Announcements)}
-            {bulletinLinkGenerator(PostType.Exchanges)}
-            {bulletinLinkGenerator(PostType.LostAndFound)}
-            {bulletinLinkGenerator(PostType.Jobs)}
-            {bulletinLinkGenerator(PostType.Rides)}
-          </ul>
-        </div>
-      </header>
-      <article className="main-table">{children}</article>
+      <ServiceHeader
+        title={PostTypeName.get(type)}
+        titleTo={`/bulletins/${type}`}
+        tabs={tabs}
+      />
+      <ContentPane variant="main-table">{children}</ContentPane>
     </>
   );
 };

@@ -1,8 +1,22 @@
-// this sucks, sorry!
-
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 import "../../stylesheets/Dining.css";
+import { ServiceHeader, ContentPane } from "../../ui";
+
+const DINING_TABS = [
+  { to: "/dining", label: "All", view: "all" },
+  { to: "/dining/whitmans", label: "Whitman's", view: "whitmans" },
+  { to: "/dining/mission", label: "Mission", view: "mission" },
+  { to: "/dining/driscoll", label: "Driscoll", view: "driscoll" },
+] as const;
+
+const viewFromPath = (pathname: string): string => {
+  const match = DINING_TABS.find(
+    (tab) => tab.to !== "/dining" && pathname.startsWith(tab.to)
+  );
+  return match?.view ?? "all";
+};
 
 interface MealHours {
   open: string;
@@ -590,19 +604,10 @@ const DiningMenu = ({
   );
 };
 
-const Footer = ({ updateTime }: { updateTime: string | null }) => {
-  return (
-    <div className="dining-footer">
-      {" "}
-      Dining info last updated: {updateTime || "N/A"}. Menus typically refresh
-      on Sundays around 1:00 AM.{" "}
-    </div>
-  );
-};
-
 const App = () => {
   const { diningData, loading, error, updateTime } = useDiningData();
-  const [currentView, setCurrentView] = useState("all");
+  const { pathname } = useLocation();
+  const currentView = viewFromPath(pathname);
 
   const renderContent = () => {
     if (loading)
@@ -623,40 +628,25 @@ const App = () => {
   };
 
   return (
-    <div className="app-container">
-      <h1 className="main-title">Williams Dining</h1>
-      <Footer updateTime={updateTime} />
-      <nav className="quick-nav">
-        <button
-          className={`nav-button ${currentView === "all" ? "active" : ""}`}
-          onClick={() => setCurrentView("all")}
-        >
-          {" "}
-          All{" "}
-        </button>
-        <button
-          className={`nav-button ${currentView === "whitmans" ? "active" : ""}`}
-          onClick={() => setCurrentView("whitmans")}
-        >
-          {" "}
-          Whitman&apos;s{" "}
-        </button>
-        <button
-          className={`nav-button ${currentView === "mission" ? "active" : ""}`}
-          onClick={() => setCurrentView("mission")}
-        >
-          {" "}
-          Mission{" "}
-        </button>
-        <button
-          className={`nav-button ${currentView === "driscoll" ? "active" : ""}`}
-          onClick={() => setCurrentView("driscoll")}
-        >
-          {" "}
-          Driscoll{" "}
-        </button>
-      </nav>
-      {renderContent()}
+    <div className="dining">
+      <ServiceHeader
+        title="Dining"
+        titleTo="/dining"
+        tabs={DINING_TABS.map(({ to, label, view }) => ({
+          to,
+          label,
+          end: view === "all",
+        }))}
+      />
+      <ContentPane>
+        <section>
+          <p className="dining-footer">
+            Dining info last updated: {updateTime || "N/A"}. Menus typically
+            refresh on Sundays around 1:00 AM.
+          </p>
+          {renderContent()}
+        </section>
+      </ContentPane>
     </div>
   );
 };

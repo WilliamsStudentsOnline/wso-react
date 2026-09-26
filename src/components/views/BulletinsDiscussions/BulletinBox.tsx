@@ -1,7 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import "../../stylesheets/BulletinBox.css";
-import { Line } from "../../Skeleton";
+import { Line } from "../../ui";
 
 // Redux/Routing imports
 import { getWSO } from "../../../lib/authSlice";

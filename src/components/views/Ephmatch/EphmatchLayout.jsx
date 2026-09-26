@@ -3,10 +3,9 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // Additional imports
-import { Link } from "react-router-dom";
 import { format } from "timeago.js";
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import { StylizedLink } from "../../StylizedLink";
+import { ServiceHeader } from "../../ui";
 
 const EphmatchLayout = ({
   available,
@@ -15,47 +14,44 @@ const EphmatchLayout = ({
   matchesTotalCount,
   token,
 }) => {
+  const tabs = [
+    { to: "/ephmatch", label: "Home", end: true },
+    ...(containsOneOfScopes(token, [
+      scopes.ScopeEphmatchMatches,
+      scopes.ScopeEphmatchProfiles,
+    ])
+      ? [
+          {
+            to: "/ephmatch/matches",
+            label: (
+              <>
+                Matches
+                <span className="ephmatch-badge" title="Matches!">
+                  {matchesTotalCount}
+                </span>
+              </>
+            ),
+          },
+          { to: "/ephmatch/profile", label: "Profile" },
+          { to: "/ephmatch/opt-out", label: "Opt Out" },
+        ]
+      : []),
+  ];
+
   return (
     <>
-      <header>
-        {available && closingTime && (
-          <section className="notice">
-            Ephmatch closes {format(closingTime)}
-          </section>
-        )}
-
-        <div className="page-head">
-          <h1>
-            <Link to="/ephmatch">Ephmatch</Link>
-          </h1>
-          <ul>
-            <li>
-              <StylizedLink to="/ephmatch" end>
-                Home
-              </StylizedLink>
-            </li>
-            {containsOneOfScopes(token, [
-              scopes.ScopeEphmatchMatches,
-              scopes.ScopeEphmatchProfiles,
-            ]) && (
-              <>
-                <li>
-                  <StylizedLink to="/ephmatch/matches">Matches</StylizedLink>
-                  <span className="ephmatch-badge" title="Matches!">
-                    {matchesTotalCount}
-                  </span>
-                </li>
-                <li>
-                  <StylizedLink to="/ephmatch/profile">Profile</StylizedLink>
-                </li>
-                <li>
-                  <StylizedLink to="/ephmatch/opt-out">Opt Out</StylizedLink>
-                </li>
-              </>
-            )}
-          </ul>
-        </div>
-      </header>
+      <ServiceHeader
+        title="Ephmatch"
+        titleTo="/ephmatch"
+        tabs={tabs}
+        notice={
+          available && closingTime ? (
+            <section className="notice">
+              Ephmatch closes {format(closingTime)}
+            </section>
+          ) : null
+        }
+      />
       {children}
     </>
   );

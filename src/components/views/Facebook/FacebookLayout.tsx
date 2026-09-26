@@ -7,8 +7,8 @@ import { getCurrUser } from "../../../lib/authSlice";
 import { selectGeneratedQuery } from "../../../lib/queryBuilderSlice";
 
 // Additional imports
-import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { StylizedLink } from "../../StylizedLink";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { ServiceHeader, SearchBar, Button, ServiceTab } from "../../ui";
 
 // Component Imports
 import QueryTable from "../../QueryTable";
@@ -31,7 +31,7 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
     }
   }, [advancedFiltersSelected, generatedQuery]);
 
-  const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
+  const submitHandler = (event: React.FormEvent) => {
     event.preventDefault();
     const finalQuery = advancedFiltersSelected
       ? generatedQuery
@@ -46,92 +46,44 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
     setAdvancedFiltersSelected(false);
   };
 
-  const handleAdvancedToggleClick = () => {
-    setAdvancedFiltersSelected(!advancedFiltersSelected);
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInputValue(event.target.value);
-  };
-
-  const FilterButton = () => {
-    return (
-      <button
-        onClick={handleAdvancedToggleClick}
-        className={
-          advancedFiltersSelected ? "button-toggled" : "button-default"
-        }
-        style={{ marginLeft: "0px" }}
-      >
-        Advanced
-      </button>
-    );
-  };
+  const tabs: ServiceTab[] = [
+    { to: "/facebook", label: "Search", end: true },
+    { to: "/facebook/help", label: "Help" },
+    ...(currUser
+      ? [
+          { to: `/facebook/users/${currUser.id}`, label: "View" },
+          { to: "/facebook/edit", label: "Edit" },
+        ]
+      : []),
+  ];
 
   return (
     <div className="facebook">
-      <header>
-        <div className="page-head">
-          <h1>
-            <Link to="/facebook">Facebook</Link>
-          </h1>
-          <ul>
-            <li>
-              <StylizedLink to="/facebook" end>
-                Search
-              </StylizedLink>
-            </li>
-            <li>
-              <StylizedLink to="/facebook/help">Help</StylizedLink>
-            </li>
-            {currUser === null
-              ? null
-              : [
-                  <li key="view">
-                    <StylizedLink to={`/facebook/users/${currUser.id}`}>
-                      View
-                    </StylizedLink>
-                  </li>,
-                  <li key="edit">
-                    <StylizedLink to="/facebook/edit"> Edit </StylizedLink>
-                  </li>,
-                ]}
-          </ul>
-        </div>
-        <div>
-          <form onSubmit={submitHandler}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-              }}
-            >
-              <input
-                aria-label="Search box for Facebook"
-                type="search"
-                placeholder="Search Facebook..."
-                value={searchInputValue}
-                onChange={handleInputChange}
-              />
-              <input
-                data-disable-with="Search"
-                type="submit"
-                value="Search"
-                className="submit"
-              />
-              <div
-                style={{
-                  marginLeft: "30px",
-                  display: "flex",
-                  flexDirection: "row",
-                }}
+      <ServiceHeader
+        title="Facebook"
+        titleTo="/facebook"
+        tabs={tabs}
+        search={
+          <SearchBar
+            value={searchInputValue}
+            onChange={setSearchInputValue}
+            onSubmit={submitHandler}
+            placeholder="Search Facebook..."
+            id="facebook-search"
+            actions={
+              <Button
+                variant={advancedFiltersSelected ? "toggleActive" : "toggle"}
+                onClick={() =>
+                  setAdvancedFiltersSelected(!advancedFiltersSelected)
+                }
+                style={{ marginLeft: 0 }}
               >
-                <FilterButton />
-              </div>
-            </div>
-          </form>
-        </div>
+                Advanced
+              </Button>
+            }
+          />
+        }
+      >
         {advancedFiltersSelected && (
           <div className="advanced-query advanced-query-facebook">
             <br />
@@ -149,7 +101,7 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
             <QueryTable />
           </div>
         )}
-      </header>
+      </ServiceHeader>
       {children}
     </div>
   );

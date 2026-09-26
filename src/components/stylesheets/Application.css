@@ -37,49 +37,23 @@
 
 .inline-button {
   padding: 0.5rem 2rem;
-  /*APRIL FOOLS*/
-  /*   background: linear-gradient(
-    to left,
-    #fea3aa,
-    #f8b88b,
-    #faf884,
-    #baed91,
-    #b2cefe,
-    #f2a2e8
-  );
-  color: #20012e;
-  border: 1px solid #20012e; */
-  /*STANDARD*/
   background: none;
-  color: #6f4993;
-  border: 1px solid #6f4399;
+  color: var(--brand-primary);
+  border: 1px solid var(--brand-primary-hover);
   margin: 0.5rem;
 }
 
 .inline-button-inverted {
-  /*APRIL FOOLS*/
-  /*   background: linear-gradient(
-    to left,
-    #fea3aa,
-    #f8b88b,
-    #faf884,
-    #baed91,
-    #b2cefe,
-    #f2a2e8
-  );
-  color: #20012e;
-  border: 1px solid #20012e; */
-  /*STANDARD*/
-  background: #6f4399;
-  color: #fff;
-  border: 1px solid #fff;
+  background: var(--brand-primary-hover);
+  color: var(--text-inverse);
+  border: 1px solid var(--text-inverse);
   padding: 0.5rem 2rem;
   margin: 0.5rem;
 }
 
 .autocomplete-option {
   background: none;
-  color: #6f4399;
+  color: var(--brand-primary-hover);
   padding: 0;
   min-width: 0;
   white-space: normal;

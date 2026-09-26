@@ -1,7 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import DiscussionPost, { DiscussionPostSkeleton } from "./DiscussionPost";
-import { Line } from "../../Skeleton";
+import { Line } from "../../ui";
 
 // Redux/Routing imports
 import { useAppSelector } from "../../../lib/store";

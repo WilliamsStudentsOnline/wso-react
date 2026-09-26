@@ -1,0 +1,40 @@
+:root {
+  --brand-primary: #6f4993;
+  --brand-primary-hover: #6f4399;
+  --brand-primary-active: #553871;
+  --brand-deep: #4b2771;
+  --brand-tint: #f8f5fa;
+  --brand-tint-strong: #f0eafa;
+
+  --text-body: #444;
+  --text-muted: #666;
+  --text-subtle: #999;
+  --text-inverse: #fff;
+  --text-heading: #333;
+
+  --surface-page: #fff;
+  --surface-muted: #fcfcfc;
+  --surface-subtle: #f9f9f9;
+  --surface-raised: #f2f2f2;
+
+  --border-default: #ccc;
+  --border-subtle: #eee;
+  --border-strong: #e0e0e0;
+
+  --status-success: #1a8754;
+  --status-danger: #dc3545;
+  --status-warning: #ce7e23;
+  --status-info: #68c0e3;
+
+  --nav-bg: #282e42;
+
+  --font-family-sans: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  --font-family-mono: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+  --font-size-body: 1rem;
+  --font-size-small: 0.75em;
+  --line-height-body: 1.5;
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+}

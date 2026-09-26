@@ -1,8 +1,6 @@
 // React imports
 import React, { useState, useEffect } from "react";
-// import FactrakComment, { FactrakCommentSkeleton } from "./FactrakComment";
-import { Line } from "../../Skeleton";
-import Select from "../../Select";
+import { RankingsTable } from "../../ui";
 
 import FactrakDeficitMessage from "./FactrakUtils";
 
@@ -20,6 +18,27 @@ import {
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { FactrakProfessorMetric } from "wso-api-client/lib/services/factrak";
 import { ModelsUser } from "wso-api-client/lib/services/types";
+
+const PROFESSOR_METRIC_OPTIONS = [
+  {
+    label: "Approachability",
+    value: FactrakProfessorMetric.Approachability,
+  },
+  { label: "Course Workload", value: FactrakProfessorMetric.CourseWorkload },
+  {
+    label: "Discussion Promotion",
+    value: FactrakProfessorMetric.PromoteDiscussion,
+  },
+  { label: "Lecture Ability", value: FactrakProfessorMetric.LeadLecture },
+  {
+    label: "Outside Helpfulness",
+    value: FactrakProfessorMetric.OutsideHelpfulness,
+  },
+  {
+    label: "Overall Recommendation",
+    value: FactrakProfessorMetric.WouldTakeAnother,
+  },
+];
 
 const FactrakProfessorRankingsTable = () => {
   const currUser = useAppSelector(getCurrUser);
@@ -86,108 +105,35 @@ const FactrakProfessorRankingsTable = () => {
     );
   };
 
-  // Generate a skeleton of prof information
-  const profSkeleton = (key: number) => (
-    <tr key={key}>
-      <td>
-        <Line width="30%" />
-      </td>
-      <td>
-        <Line width="80%" />
-      </td>
-      <td>
-        <Line width="30%" />
-      </td>
-    </tr>
-  );
-
-  // Generates the component which holds the list of professors
-  const generateProfs = () => {
-    return (
-      <>
-        <br />
-        <table>
-          <thead>
-            <tr>
-              <th> Name </th>
-              <th>
-                <Link
-                  to={`/factrak/professor-rankings/${
-                    params.aos ?? ""
-                  }?${searchParams.toString()}`}
-                  onClick={() => {
-                    updateAscending(!ascending);
-                    if (profs === undefined) {
-                      return;
-                    }
-                    updateProfs(profs.reverse());
-                  }}
-                  style={{
-                    color: "#FFFFFF",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Average Ratings {ascending ? "▲" : "▼"}
-                </Link>
-              </th>
-              <th className="unix-column">Unix</th>
-            </tr>
-          </thead>
-          <tbody>
-            {profs !== undefined
-              ? profs.map((prof) => generateProfRow(prof))
-              : [...Array(5)].map((_, i) => profSkeleton(i))}
-          </tbody>
-        </table>
-      </>
-    );
-  };
+  const sortLinkTo = `/factrak/professor-rankings/${
+    params.aos ?? ""
+  }?${searchParams.toString()}`;
 
   return (
-    <article className="main">
-      <section className="margin-vertical-small">
-        <h3>Top Professors</h3>
-        <div
-          className="added-sort"
-          style={{
-            float: "right",
-          }}
-        >
-          <strong>Sort By:</strong>
-          <Select
-            onChange={(event) => {
-              updateMetric(event.target.value);
-              updateProfs(undefined);
-              // TODO: Update the URL to reflect the new metric
-            }}
-            options={[
-              "Approachability",
-              "Course Workload",
-              "Discussion Promotion",
-              "Lecture Ability",
-              "Outside Helpfulness",
-              "Overall Recommendation",
-            ]}
-            value={metric}
-            valueList={[
-              FactrakProfessorMetric.Approachability,
-              FactrakProfessorMetric.CourseWorkload,
-              FactrakProfessorMetric.PromoteDiscussion,
-              FactrakProfessorMetric.LeadLecture,
-              FactrakProfessorMetric.OutsideHelpfulness,
-              FactrakProfessorMetric.WouldTakeAnother,
-            ]}
-            style={{
-              display: "inline",
-              margin: "5px 0px 5px 20px",
-              padding: "4px",
-            }}
-          />
-        </div>
-        <FactrakDeficitMessage currUser={currUser} />
-        {generateProfs()}
-      </section>
-    </article>
+    <RankingsTable
+      title="Top Professors"
+      deficitMessage={<FactrakDeficitMessage currUser={currUser} />}
+      metric={metric}
+      metricOptions={PROFESSOR_METRIC_OPTIONS}
+      onMetricChange={(value) => {
+        updateMetric(value as FactrakProfessorMetric);
+        updateProfs(undefined);
+        // TODO: Update the URL to reflect the new metric
+      }}
+      ascending={ascending}
+      onToggleAscending={() => {
+        updateAscending(!ascending);
+        if (profs === undefined) {
+          return;
+        }
+        updateProfs(profs.reverse());
+      }}
+      sortLinkTo={sortLinkTo}
+      extraHeaders={<th className="unix-column">Unix</th>}
+      skeletonColumns={3}
+      loading={profs === undefined}
+      rows={profs?.map((prof) => generateProfRow(prof))}
+    />
   );
 };
 

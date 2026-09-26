@@ -1,105 +1,63 @@
-/* Base body */
-body {
-  margin: 0;
+.dining-footer {
+  font-size: var(--font-size-small);
+  color: var(--text-muted);
+  margin: 0 0 1.25rem;
   padding: 0;
+  line-height: 1.45;
 }
 
-/* Main container */
-.app-container {
-  padding: 15px;
-}
-
-/* Title */
-.main-title {
-  text-align: center;
-  color: var(--color-dining-maintitle);
-  margin-bottom: 20px;
-}
-
-/* Navigation */
-.quick-nav {
-  text-align: center;
-  margin-bottom: 25px;
-  padding: 9px 6px;
-  border-radius: 4px;
-  margin-left: auto;
-  margin-right: auto;
-  width: fit-content;
-}
-
-.quick-nav .nav-button {
-  background-color: transparent;
-  color: var(--color-dining-navbutton-fg);
-  border: 1px solid transparent;
-  padding: 8px 12px;
-  margin: 0 3px;
-  min-width: 0;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.75em;
-  font-weight: 600;
-  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
-}
-
-.quick-nav .nav-button:hover {
-  background-color: var(--color-dining-navbutton-bg);
-  color: var(--color-dining-navbutton-fg);
-  border-color: var(--color-dining-navbutton-border);
-}
-
-.quick-nav .nav-button.active {
-  background-color: var(--color-dining-navbutton-bg);
-  border-color: var(--color-dining-navbutton-border);
-  font-weight: bold;
-  color: var(--color-dining-navbutton-fg);
-}
-
-/* Grid layout for All Hours view */
 .hours-grid-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-gap: 25px;
-  max-width: 80%;
-  margin: 0 auto;
-  padding-bottom: 5px;
+  grid-gap: 1.5rem;
+  max-width: 100%;
+  margin: 0;
+  padding-bottom: 0.5rem;
+  justify-content: start;
 }
 
-/* Container for single menu view */
+@media screen and (max-width: 60em) {
+  .hours-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 30em) {
+  .hours-grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
 .single-dining-view {
-  max-width: 50%;
-  margin: 0 auto;
-  padding: 0 10px;
-  margin-bottom: 100px;
-  transition: none;
+  max-width: 36rem;
+  margin: 0 0 3rem;
+  padding: 0;
 }
 
-/* Grid layout for All Menus view */
 .all-menus-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  grid-gap: 30px;
-  place-content: center;
-  padding-bottom: 30px;
-  width: 90%;
-  max-width: 75%;
-  margin: 0 auto;
-  margin-bottom: 100px;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  grid-gap: 1.5rem;
+  justify-content: start;
+  place-content: start;
+  padding-bottom: 2rem;
+  width: 100%;
+  margin: 0 0 2rem;
 }
 
-/* Card styling (used for hours and menus) */
 .table-with-text {
   padding: 0;
-  margin-bottom: 5px;
+  margin-bottom: 0.25rem;
   overflow: hidden;
 }
 
 .dining-hall-text {
   margin: 0;
-  padding: 10px 12px;
+  padding: 0.5rem 0;
   font-size: 1.1em;
+  text-align: left;
 }
 
-/* Tables */
 .meal-content-table tbody tr:nth-child(even) td {
   background-color: var(--color-dining-menu-table-bg);
 }
@@ -112,13 +70,12 @@ body {
   margin: 0;
 }
 
-/* Table cells */
 .dining-children td,
 .dining-children th,
 .course-title td {
   border: none;
   border-bottom: 1px solid var(--color-dining-menu-table-course-border);
-  padding: 6px 12px;
+  padding: 0.4rem 0.75rem;
   text-align: left;
 }
 
@@ -127,7 +84,7 @@ body {
 .hours-title th,
 .meal-title th {
   border: none;
-  padding: 8px 12px;
+  padding: 0.5rem 0.75rem;
   text-align: left;
 }
 
@@ -137,10 +94,9 @@ body {
   border-bottom: none;
 }
 
-/* Table Headers (Hours, Meal) */
 .hours-title th,
 .meal-title th {
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
   background-color: var(--color-dining-menu-table-meal-title-bg);
   color: var(--color-dining-menu-table-meal-title-fg);
   cursor: default;
@@ -148,15 +104,9 @@ body {
 
 .meal-title th.meal-header {
   cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.meal-title th.meal-header {
   background-color: var(--color-dining-menu-table-meal-header-bg);
   color: var(--color-dining-menu-table-meal-header-fg);
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
   display: block;
   text-align: left;
 }
@@ -166,21 +116,18 @@ body {
   color: var(--color-dining-menu-table-meal-header-hover-fg);
 }
 
-/* Course Title Row */
 .course-title td {
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
   font-style: normal;
   background-color: var(--color-dining-menu-table-course-title-bg) !important;
   color: var(--color-dining-menu-table-course-title-fg);
-  padding-left: 20px;
+  padding-left: 1.25rem;
 }
 
-/* Menu Item Row */
 .menu-item-row td {
-  padding-left: 25px;
+  padding-left: 1.5rem;
 }
 
-/* Menu item content alignment */
 .menu-item-cell {
   display: flex;
   justify-content: space-between;
@@ -189,21 +136,20 @@ body {
 
 .menu-item-name {
   flex-grow: 1;
-  padding-right: 10px;
-  padding-left: 8px;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
 }
 
-/* Item details (tags container) */
 .item-details {
   display: flex;
-  gap: 5px;
+  gap: 0.25rem;
   flex-shrink: 0;
 }
 
 .item-details span {
   display: inline-block;
-  font-size: 0.75em;
-  padding: 2px 6px;
+  font-size: var(--font-size-small);
+  padding: 0.125rem 0.375rem;
   border-radius: 4px;
   color: var(--color-dining-menu-item-details-bg);
   white-space: nowrap;
@@ -219,29 +165,26 @@ body {
   background-color: var(--color-dining-menu-item-details-glutenfree);
 }
 
-/* Status indicators */
 .Open {
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
   color: var(--color-dining-status-open);
 }
 .Closed {
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
   color: var(--color-dining-status-closed);
 }
 .Opening {
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
   color: var(--color-dining-status-opening);
 }
 .Closing {
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
   color: var(--color-dining-status-closing);
 }
 
-/* Loading/Error messages */
 .loading-message,
 .error-message {
-  text-align: center;
-  padding: 30px 20px;
+  padding: 1rem 0;
   font-size: 1.1em;
   color: var(--color-dining-loading-message-a);
 }
@@ -250,24 +193,15 @@ body {
   color: var(--color-dining-error-message-a);
 }
 
-/* Section Titles */
 .dining-section-title {
-  text-align: center;
   font-size: 1.4em;
-  color: var(--color-dining-section-title);
-  margin-top: 35px;
-  margin-bottom: 20px;
-  padding-bottom: 5px;
+  color: var(--color-dining-section-title-a);
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.25rem;
+  font-family: var(--font-family-sans);
 }
 
-/* Footer */
-.dining-footer {
-  text-align: center;
-  font-size: 0.85em;
-  color: var(--color-dining-footer);
-}
-
-/* Collapsible Content - Applied to the wrapper div */
 .meal-content-wrapper {
   overflow: hidden;
   transition: max-height 0.2s ease-in-out;
@@ -279,10 +213,8 @@ body {
 
 .meal-content-wrapper.expanded {
   max-height: 2000px;
-  transition: max-height 0.2s ease-in-out;
 }
 
-/* Styling for rows within the collapsible section */
 .meal-content-table {
   width: 100%;
   border-collapse: collapse;
@@ -296,7 +228,7 @@ body {
   border-bottom: none;
 }
 
-table {
-  margin-top: 0px;
-  margin-bottom: 0px;
+.dining table {
+  margin-top: 0;
+  margin-bottom: 0;
 }

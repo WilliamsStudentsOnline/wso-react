@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import FactrakComment, { FactrakCommentSkeleton } from "./FactrakComment";
 import FactrakDeficitMessage from "./FactrakUtils";
 import FactrakRatings, { FactrakRatingsSkeleton } from "./FactrakRatings";
-import { Line } from "../../Skeleton";
+import { Line } from "../../ui";
 
 // Redux/ Router imports
 import { useAppSelector } from "../../../lib/store";

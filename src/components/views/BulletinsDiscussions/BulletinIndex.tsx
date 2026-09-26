@@ -1,8 +1,7 @@
 // React imports
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import PaginationButtons from "../../PaginationButtons";
-import { Line } from "../../Skeleton";
+import { EmptyState, Line, Pagination } from "../../ui";
 
 // Redux and routing imports
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
@@ -197,7 +196,7 @@ const BulletinIndex = ({ type }: { type: PostType }) => {
   // Generate Bulletin Table
   const generateBulletinTable = () => {
     if (bulletins && bulletins.length === 0) {
-      return <h1 className="no-posts">No Posts</h1>;
+      return <EmptyState variant="no-posts">No Posts</EmptyState>;
     }
     return (
       <table>
@@ -220,7 +219,7 @@ const BulletinIndex = ({ type }: { type: PostType }) => {
   return (
     <article className="main-table">
       <section>
-        <PaginationButtons
+        <Pagination
           selectionHandler={selectionHandler}
           clickHandler={clickHandler}
           page={page}
@@ -230,7 +229,7 @@ const BulletinIndex = ({ type }: { type: PostType }) => {
         />
         {generateBulletinTable()}
 
-        <PaginationButtons
+        <Pagination
           selectionHandler={selectionHandler}
           clickHandler={clickHandler}
           page={page}
