@@ -27,24 +27,27 @@ body {
   width: fit-content;
 }
 
-.nav-button {
+.quick-nav .nav-button {
   background-color: transparent;
-  color: var(--color-dining-navbutton-bg);
+  color: var(--color-dining-navbutton-fg);
   border: 1px solid transparent;
   padding: 8px 12px;
   margin: 0 3px;
+  min-width: 0;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.75em;
-  transition: background-color 0.2s, border-color 0.2s;
+  font-weight: 600;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.nav-button:hover {
+.quick-nav .nav-button:hover {
   background-color: var(--color-dining-navbutton-bg);
   color: var(--color-dining-navbutton-fg);
+  border-color: var(--color-dining-navbutton-border);
 }
 
-.nav-button.active {
+.quick-nav .nav-button.active {
   background-color: var(--color-dining-navbutton-bg);
   border-color: var(--color-dining-navbutton-border);
   font-weight: bold;
