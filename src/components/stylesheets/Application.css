@@ -1,5 +1,40 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
+.layout-scroll {
+  position: fixed;
+  top: 3rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.layout-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.layout-body {
+  flex: 1 0 auto;
+}
+
+/* footer is normally absolute to the page; pin to bottom of the scroll area when content is short */
+.layout-page > footer {
+  position: static;
+  flex-shrink: 0;
+  margin-top: auto;
+  width: 100%;
+}
+
+@media screen and (max-width: 48.125em) {
+  .layout-scroll {
+    top: 4rem;
+  }
+}
+
 .inline-button {
   padding: 0.5rem 2rem;
   /*APRIL FOOLS*/

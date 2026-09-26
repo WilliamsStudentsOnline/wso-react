@@ -10,30 +10,36 @@ const Layout = ({ children, notice, warning }) => {
     <div className="front dormtrak facebook factrak announcement">
       <Nav />
 
-      <aside>
-        {notice && <section className="notice">{notice}</section>}
-        {warning && (
-          <section className="notice">{`Warning: ${warning}`}</section>
-        )}
-      </aside>
+      <div className="layout-scroll">
+        <div className="layout-page">
+          <div className="layout-body">
+            <aside>
+              {notice && <section className="notice">{notice}</section>}
+              {warning && (
+                <section className="notice">{`Warning: ${warning}`}</section>
+              )}
+            </aside>
 
-      {children}
+            {children}
 
-      {/* Bottom right button for feedback */}
-      <a
-        href="https://forms.gle/NqYdAAbZKPQmPq866"
-        className="floating-button-link"
-        title="Provide Feedback!"
-      >
-        <i
-          className="material-icons"
-          style={{ position: "relative", left: "-8px" }}
-        >
-          feedback
-        </i>
-      </a>
+            {/* Bottom right button for feedback */}
+            <a
+              href="https://forms.gle/NqYdAAbZKPQmPq866"
+              className="floating-button-link"
+              title="Provide Feedback!"
+            >
+              <i
+                className="material-icons"
+                style={{ position: "relative", left: "-8px" }}
+              >
+                feedback
+              </i>
+            </a>
+          </div>
 
-      <Footer />
+          <Footer />
+        </div>
+      </div>
     </div>
   );
 };
