@@ -427,17 +427,11 @@ const FacebookHelp = () => {
           <div className="footnotes">
             <div className="fn">
               <a href="#fnt__1" id="fn__1" className="fn_bot">
-                1)
+                1){" "}
               </a>
               The <abbr title="Williams Students Online">WSO</abbr> Facebook
               actually predates Facebook.com by a bit and has been called
-              &ldquo;the Facebook&rdquo; since its inception. To distinguish it
-              from Facebook.com, which is commonly referred to as
-              &ldquo;Facebook,&rdquo; refer to the{" "}
-              <abbr title="Williams Students Online">WSO</abbr> Facebook as
-              &ldquo;the
-              <abbr title="Williams Students Online">WSO</abbr> Facebook,&rdquo;
-              or &ldquo;the Facebook,&rdquo; for short.
+              &ldquo;the Facebook&rdquo; since its inception.
               <br />
               <br />
             </div>
