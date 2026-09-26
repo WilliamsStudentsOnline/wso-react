@@ -51,7 +51,7 @@ const constructFacebookLink = (userID: number) => {
 const BulletList = (records: Record<string, number>) => {
   return (
     <>
-      <ul style={{ color: "#553871" }}>
+      <ul style={{ color: "var(--brand-primary-active)" }}>
         {Object.keys(records).map((name: string) => (
           <li key={name} style={{ marginBottom: "10px" }}>
             <Link

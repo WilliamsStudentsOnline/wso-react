@@ -5,7 +5,7 @@
   background-color: var(--color-major-builder-container-bg);
   margin: 50px;
   overflow-x: auto;
-  box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.1);
+  box-shadow: 0 4px 6px var(--shadow);
 }
 
 .major-builder-container h2 {
@@ -135,7 +135,7 @@
   width: 200%;
   overflow-y: visible;
   z-index: 10;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow);
 }
 
 .autocomplete-results li {
@@ -212,7 +212,7 @@
   border: 1px solid var(--college-major-builder-requirements-border);
   background-color: var(--color-major-builder-requirements-bg);
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px var(--shadow);
   flex: 1;
   min-width: 320px;
   max-width: 100%;
@@ -250,7 +250,7 @@
   margin-bottom: 12px;
   border: 1px solid var(--color-major-builder-requirements-bucket-border);
   border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px var(--shadow);
   background-color: var(--color-major-builder-requirements-bucket-bg);
 }
 
@@ -479,7 +479,7 @@
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--shadow);
 }
 
 .section {
@@ -605,7 +605,7 @@
   border-radius: 8px;
   padding: 24px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px var(--shadow);
 }
 
 .requirement-header {
@@ -779,7 +779,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 10px var(--shadow);
   animation: fadeIn 0.3s ease;
   z-index: 1000;
 }

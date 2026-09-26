@@ -26,7 +26,7 @@
 }
 
 .app {
-  background-color: hsla(210, 30%, 93%);
+  background-color: var(--surface-muted);
 }
 
 button {
@@ -36,8 +36,8 @@ button {
 .app-header {
   padding: 20px;
   text-align: center;
-  background-color: #fff;
-  box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
+  background-color: var(--surface-page);
+  box-shadow: 0 4px 6px var(--shadow);
 }
 
 .overflow-hidden {

@@ -139,7 +139,7 @@ const Ephmatcher = ({
     return (
       <div
         style={{
-          borderTop: "2px  solid #C86914",
+          borderTop: "2px solid var(--status-warning)",
           textAlign: "center",
         }}
       >

@@ -5,7 +5,7 @@
 
 .goodrich-user-order-card {
   width: 100%;
-  border: 1px solid #6f4399;
+  border: 1px solid var(--brand-bar-hover);
   border-radius: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -32,10 +32,10 @@
 }
 
 .goodrich-expand-btns button.accept {
-  background-color: green;
+  background-color: var(--status-success);
 }
 .goodrich-expand-btns button.reject {
-  background-color: red;
+  background-color: var(--status-danger);
 }
 
 .goodrich-expand-info h5,
@@ -45,7 +45,7 @@
   font-size: 0.75em;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #000000;
+  color: var(--text-heading);
 }
 
 .goodrich-modal-btn-row {
@@ -69,7 +69,7 @@
 
 .menu-item-card {
   width: 100%;
-  border: 1px solid #6f4399;
+  border: 1px solid var(--brand-bar-hover);
   border-radius: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -95,11 +95,11 @@
   border: 0 !important;
 }
 .summary thead tr {
-  border-bottom: 2px solid #d9d9d9;
+  border-bottom: 2px solid var(--border-table);
 }
 .summary thead tr th {
-  background-color: #ffffff;
-  color: #000000;
+  background-color: var(--surface-page);
+  color: var(--text-heading);
 }
 
 .summary tr th {
@@ -112,7 +112,7 @@
 
 .summary tr td {
   padding: 0.25em 1em;
-  background: #ffffff !important;
+  background: var(--surface-page) !important;
   border: 0;
 }
 
@@ -121,7 +121,7 @@
 }
 
 .summary tr.subtotal td {
-  border-top: 2px solid #d9d9d9;
+  border-top: 2px solid var(--border-table);
 }
 
 .menu-section-header {

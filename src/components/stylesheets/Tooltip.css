@@ -21,7 +21,7 @@
   visibility: hidden;
   width: 240px;
   background-color: var(--surface-muted);
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 4px var(--shadow);
   color: var(--brand-primary);
   text-align: center;
   padding: 2px;

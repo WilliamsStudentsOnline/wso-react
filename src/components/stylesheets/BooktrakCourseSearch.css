@@ -41,7 +41,7 @@
   top: 14px;
 
   *:not(:first-child) {
-    border-top: 2px solid #d9d9d9 !important;
+    border-top: 2px solid var(--border-table) !important;
   }
 }
 

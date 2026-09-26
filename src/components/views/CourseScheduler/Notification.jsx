@@ -14,11 +14,11 @@ const Notification = ({ notifType, title, body, removeNotification }) => {
   const getStyle = () => {
     switch (notifType) {
       case SUCCESS:
-        return { borderTop: "2px solid #0000FF" };
+        return { borderTop: "2px solid var(--status-success)" };
       case WARNING:
-        return { borderTop: "2px solid #00FF00" };
+        return { borderTop: "2px solid var(--status-warning)" };
       case FAILURE:
-        return { borderTop: "2px solid #FF0000" };
+        return { borderTop: "2px solid var(--status-danger)" };
       default:
         return {};
     }

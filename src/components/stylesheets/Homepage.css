@@ -137,7 +137,7 @@ input[type="submit"] {
 
 .library-hours-table thead th {
   background: var(--brand-bar);
-  color: #fff;
+  color: var(--text-on-brand);
   font-weight: bold;
   font-size: 0.75em;
   text-transform: uppercase;

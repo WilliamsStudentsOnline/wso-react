@@ -7,7 +7,7 @@
   cursor: pointer;
   box-sizing: border-box;
   background-color: var(--color-course-bg);
-  box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.2);
+  box-shadow: 0 4px 6px var(--shadow);
   max-width: 850px;
   position: relative; /* added to accomodate factrak ratings and tooltip */
 }
@@ -195,7 +195,7 @@
   font-size: 14px;
   white-space: nowrap;
   z-index: 9;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 5px var(--shadow);
 }
 
 .rating-tooltip:after {
