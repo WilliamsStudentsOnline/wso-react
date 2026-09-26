@@ -70,14 +70,15 @@ export const applyResolvedTheme = (
   }
 
   const doc = document as DocumentWithViewTransition;
+  const startViewTransition = doc.startViewTransition;
   const canAnimate =
     animate &&
     !prefersReducedMotion() &&
-    typeof doc.startViewTransition === "function";
+    typeof startViewTransition === "function";
 
   if (canAnimate) {
     root.classList.add("theme-switching");
-    const transition = doc.startViewTransition!(() => {
+    const transition = startViewTransition.call(doc, () => {
       setThemeAttributes(resolved);
     });
     transition.finished.finally(() => {

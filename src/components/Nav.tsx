@@ -151,10 +151,7 @@ const Nav = () => {
     if (ephmatchVisibility && ephmatchVisibility > 0) {
       return (
         <li>
-          <Link
-            className="ephmatch-link"
-            to="ephmatch"
-          >
+          <Link className="ephmatch-link" to="ephmatch">
             {ephmatchVisibility === 2 ? "Senior " : ""}Ephmatch
           </Link>
         </li>
