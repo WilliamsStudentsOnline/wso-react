@@ -71,30 +71,30 @@ export const applyResolvedTheme = (
 
   const doc = document as DocumentWithViewTransition;
   const startViewTransition = doc.startViewTransition;
-  const canAnimate =
-    animate &&
-    !prefersReducedMotion() &&
-    typeof startViewTransition === "function";
 
-  if (canAnimate) {
+  if (
+    !animate ||
+    prefersReducedMotion() ||
+    startViewTransition === undefined
+  ) {
     root.classList.add("theme-switching");
-    const transition = startViewTransition.call(doc, () => {
-      setThemeAttributes(resolved);
+    setThemeAttributes(resolved);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        root.classList.remove("theme-switching");
+      });
     });
-    transition.finished.finally(() => {
-      root.classList.remove("theme-switching");
-    });
-    return transition;
+    return null;
   }
 
   root.classList.add("theme-switching");
-  setThemeAttributes(resolved);
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      root.classList.remove("theme-switching");
-    });
+  const transition = startViewTransition.bind(doc)(() => {
+    setThemeAttributes(resolved);
   });
-  return null;
+  transition.finished.finally(() => {
+    root.classList.remove("theme-switching");
+  });
+  return transition;
 };
 
 export const cycleThemePreference = (
