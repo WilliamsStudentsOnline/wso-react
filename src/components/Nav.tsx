@@ -153,7 +153,6 @@ const Nav = () => {
         <li>
           <Link
             className="ephmatch-link"
-            style={{ color: "#fff238" }}
             to="ephmatch"
           >
             {ephmatchVisibility === 2 ? "Senior " : ""}Ephmatch

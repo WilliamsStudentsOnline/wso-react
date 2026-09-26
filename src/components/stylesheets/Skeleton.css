@@ -2,7 +2,12 @@
   display: inline-block;
   height: 100%;
   width: 100%;
-  background: linear-gradient(-90deg, #e0e0e0 0%, #f8f8f8 50%, #e0e0e0 100%);
+  background: linear-gradient(
+    -90deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-highlight) 50%,
+    var(--skeleton-base) 100%
+  );
   background-size: 400% 400%;
   animation: pulse 1.2s ease-in-out infinite;
 }
@@ -12,7 +17,12 @@
   max-height: 300px;
   margin: 0.25em auto;
   border-radius: 2px;
-  background: linear-gradient(-90deg, #e0e0e0 0%, #f8f8f8 50%, #e0e0e0 100%);
+  background: linear-gradient(
+    -90deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-highlight) 50%,
+    var(--skeleton-base) 100%
+  );
   background-size: 400% 400%;
   animation: pulse 1.2s ease-in-out infinite;
 }

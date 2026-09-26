@@ -80,7 +80,7 @@ const RankingsTable = ({
                 <Link
                   to={sortLinkTo}
                   onClick={onToggleAscending}
-                  style={{ color: "#FFFFFF", fontWeight: "bold" }}
+                  style={{ color: "var(--text-on-brand)", fontWeight: "bold" }}
                 >
                   Average Ratings {ascending ? "▲" : "▼"}
                 </Link>
