@@ -185,6 +185,7 @@ describe("Authentication Reducer", () => {
       scope: [],
       tokenLevel: 0,
       wso: DEFAULT_API_CLIENT,
+      authReady: true,
     };
     expect(changedState).toEqual(expectedNewState);
   });
@@ -238,6 +239,7 @@ describe("Authentication Reducer", () => {
       currUser: user,
       remember: false,
       tokenLevel: 0,
+      authReady: true,
     };
     expect(changedState).toEqual(expectedNewState);
   });

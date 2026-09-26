@@ -36,9 +36,9 @@ const LibraryHoursTable = () => {
   if (!services) return <p>Loading…</p>;
 
   return (
-    <div style={{ maxWidth: "60%", marginLeft: "auto", marginRight: "auto" }}>
+    <div className="library-hours">
       <h3>Library Hours</h3>
-      <table style={{ border: "2px solid #D9D9D9" }}>
+      <table className="library-hours-table">
         <thead>
           <tr>
             <th>Library</th>
@@ -50,28 +50,21 @@ const LibraryHoursTable = () => {
           {services.map((svc) =>
             svc.hours.open === null ? (
               <tr key={`${svc.name}-no-hours`}>
-                <td style={{ backgroundColor: "#fcfcfc" }}>
+                <td>
                   <b>{svc.name}</b>
                 </td>
-                <td colSpan={2} style={{ backgroundColor: "#fcfcfc" }}>
-                  (no hours)
-                </td>
+                <td colSpan={2}>(no hours)</td>
               </tr>
             ) : (
               svc.hours.open.map((open, i) => (
                 <tr key={`${svc.name}-${i}`}>
                   {i === 0 && (
-                    <td
-                      style={{ backgroundColor: "#fcfcfc" }}
-                      rowSpan={svc.hours.open.length}
-                    >
+                    <td rowSpan={svc.hours.open.length}>
                       <b>{svc.name}</b>
                     </td>
                   )}
-                  <td style={{ backgroundColor: "#fcfcfc" }}>{open}</td>
-                  <td style={{ backgroundColor: "#fcfcfc" }}>
-                    {svc.hours.close[i] || ""}
-                  </td>
+                  <td>{open}</td>
+                  <td>{svc.hours.close[i] || ""}</td>
                 </tr>
               ))
             )

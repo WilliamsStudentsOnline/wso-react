@@ -7,8 +7,11 @@
   right: 0;
   bottom: 0;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
   -webkit-overflow-scrolling: touch;
+  background-color: var(--surface-page);
+  color: var(--text-body);
 }
 
 .layout-page {
@@ -21,7 +24,6 @@
   flex: 1 0 auto;
 }
 
-/* footer is normally absolute to the page; pin to bottom of the scroll area when content is short */
 .layout-page > footer {
   position: static;
   flex-shrink: 0;
@@ -39,14 +41,14 @@
   padding: 0.5rem 2rem;
   background: none;
   color: var(--brand-primary);
-  border: 1px solid var(--brand-primary-hover);
+  border: 1px solid var(--brand-bar-hover);
   margin: 0.5rem;
 }
 
 .inline-button-inverted {
-  background: var(--brand-primary-hover);
-  color: var(--text-inverse);
-  border: 1px solid var(--text-inverse);
+  background: var(--brand-bar-hover);
+  color: var(--text-on-brand);
+  border: 1px solid var(--text-on-brand);
   padding: 0.5rem 2rem;
   margin: 0.5rem;
 }
@@ -73,8 +75,8 @@
   );
   color: #20012e; */
   /*STANDARD*/
-  background: #6f4399;
-  color: #fff;
+  background: var(--brand-bar-hover);
+  color: var(--text-on-brand);
   padding: 0.5rem 2rem;
   position: fixed;
   width: 70px;
@@ -92,5 +94,115 @@
   /*APRIL FOOLS*/
   /*   color: #20012e; */
   /*STANDARD*/
-  color: #fff;
+  color: var(--text-on-brand);
+}
+
+nav.site-nav ul.nav-right {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  height: var(--site-nav-item-height, 3rem);
+  line-height: var(--site-nav-item-height, 3rem);
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  list-style: none;
+}
+
+nav.site-nav .nav-right > li {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0;
+  vertical-align: middle;
+  float: none;
+}
+
+nav.site-nav .nav-right > li.nav-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: var(--site-nav-item-height, 3rem);
+  position: relative;
+  top: 0;
+}
+
+nav.site-nav .nav-user-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+  height: 30px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  font-size: 0.75rem;
+  padding: 0;
+}
+
+nav.site-nav .nav-account .avatar {
+  top: 0;
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  flex: 0 0 30px;
+  display: block;
+  border-radius: 15px;
+  position: relative;
+}
+
+nav.site-nav .nav-account .avatar img {
+  display: block;
+  width: 30px;
+  height: 30px;
+  position: static;
+  top: 0;
+}
+
+nav.site-nav .nav-user-caret {
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--text-on-nav);
+}
+
+nav.site-nav .nav-account .dropdown-content {
+  left: auto;
+  right: 0;
+}
+
+/* Beat global button { padding: 14px 20px } from i.css (loads later) */
+nav.site-nav button.theme-toggle {
+  background: transparent;
+  color: var(--text-on-nav);
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  line-height: 1;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+nav.site-nav button.theme-toggle .material-icons {
+  font-size: 1.25rem;
+  line-height: 1;
+  color: inherit;
+}
+
+nav.site-nav button.theme-toggle:hover {
+  opacity: 0.75;
+}
+
+nav.site-nav button.theme-toggle:active {
+  background: transparent;
+  color: var(--text-on-nav);
 }

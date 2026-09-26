@@ -10,6 +10,7 @@ import Homepage from "./Homepage";
 import { getWSO, getIdentityToken, getAPIToken } from "../lib/authSlice";
 import {
   removeCredentials,
+  setAuthReady,
   updateAPIToken,
   updateIdentityToken,
   updateUser,
@@ -133,18 +134,25 @@ const App = () => {
   useEffect(() => {
     let isMounted = true;
     const updateUserInfo = async () => {
-      if (apiToken !== "") {
-        try {
-          const decoded = jwtDecode<WSOToken>(apiToken);
-          if (decoded?.tokenLevel === 3) {
-            const userResponse = await wso.userService.getUser("me");
-            if (isMounted) {
-              dispatch(updateUser(userResponse.data));
-            }
+      if (apiToken === "") {
+        return;
+      }
+
+      try {
+        const decoded = jwtDecode<WSOToken>(apiToken);
+        if (decoded?.tokenLevel === 3) {
+          const userResponse = await wso.userService.getUser("me");
+          if (isMounted) {
+            dispatch(updateUser(userResponse.data));
           }
-        } catch (error) {
-          navigateTo("/error", { replace: true, state: { error } });
+        } else if (isMounted) {
+          dispatch(setAuthReady(true));
         }
+      } catch (error) {
+        if (isMounted) {
+          dispatch(setAuthReady(true));
+        }
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 

@@ -1,30 +1,43 @@
 :root {
+  color-scheme: light;
+
   --brand-primary: #6f4993;
   --brand-primary-hover: #6f4399;
   --brand-primary-active: #553871;
   --brand-deep: #4b2771;
   --brand-tint: #f8f5fa;
   --brand-tint-strong: #f0eafa;
+  --brand-bar: #6f4993;
+  --brand-bar-hover: #6f4399;
+  --brand-bar-active: #553871;
 
   --text-body: #444;
   --text-muted: #666;
   --text-subtle: #999;
   --text-inverse: #fff;
+  --text-on-brand: #fff;
   --text-heading: #333;
+  --text-on-nav: #fcfcfc;
 
   --surface-page: #fff;
   --surface-muted: #fcfcfc;
   --surface-subtle: #f9f9f9;
   --surface-raised: #f2f2f2;
+  --surface-zebra: #f3f3f3;
 
   --border-default: #ccc;
   --border-subtle: #eee;
   --border-strong: #e0e0e0;
+  --border-table: #d9d9d9;
+  --border-input: rgba(17, 17, 17, 0.15);
+  --border-divider: rgba(68, 68, 68, 0.12);
 
   --status-success: #1a8754;
   --status-danger: #dc3545;
   --status-warning: #ce7e23;
   --status-info: #68c0e3;
+  --status-notice-bg: #fff6bf;
+  --status-notice-fg: #8c7800;
 
   --nav-bg: #282e42;
 
@@ -37,4 +50,48 @@
   --line-height-body: 1.5;
   --font-weight-normal: 400;
   --font-weight-bold: 700;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --brand-primary: #c4a0ef;
+  --brand-primary-hover: #d4b8f5;
+  --brand-primary-active: #a87de0;
+  --brand-deep: #e0c8ff;
+  --brand-tint: #1c1828;
+  --brand-tint-strong: #2a2238;
+  --brand-bar: #6f4993;
+  --brand-bar-hover: #6f4399;
+  --brand-bar-active: #553871;
+
+  --text-body: #d6d6de;
+  --text-muted: #a8a8b4;
+  --text-subtle: #808090;
+  --text-inverse: #121218;
+  --text-on-brand: #fff;
+  --text-heading: #f2f2f6;
+  --text-on-nav: #fcfcfc;
+
+  --surface-page: #121218;
+  --surface-muted: #18181f;
+  --surface-subtle: #1c1c24;
+  --surface-raised: #22222c;
+  --surface-zebra: #1a1a22;
+
+  --border-default: #26262f;
+  --border-subtle: #1e1e26;
+  --border-strong: #2c2c36;
+  --border-table: #26262f;
+  --border-input: rgba(242, 242, 246, 0.28);
+  --border-divider: rgba(242, 242, 246, 0.14);
+
+  --status-success: #4ade80;
+  --status-danger: #f87171;
+  --status-warning: #fb923c;
+  --status-info: #67e8f9;
+  --status-notice-bg: #2a2518;
+  --status-notice-fg: #e8d48a;
+
+  --nav-bg: #1a1e2c;
 }
