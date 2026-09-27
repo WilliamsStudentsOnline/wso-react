@@ -178,7 +178,7 @@ a {
 .jobs .comment h5,
 .rides .comment h5,
 .list-creation .field,
-.discussion-thread h5,
+.discussion-thread .thread-title,
 .discussion-thread .comment-content {
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -1616,6 +1616,49 @@ section:after {
 .comment {
   display: table;
   width: 100%;
+  position: relative;
+}
+.comment.has-corner-actions {
+  display: block;
+}
+.comment.has-corner-actions .comment-content {
+  display: block;
+  width: auto;
+}
+.comment-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.comment-header {
+  flex: 1;
+  min-width: 0;
+}
+.comment-corner-actions,
+.main-table-corner-actions {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0.5rem;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.35rem;
+}
+.main-table-corner-actions {
+  top: 0.75rem;
+}
+.comment-corner-actions .inline-button,
+.comment-corner-actions .wso-btn--secondary,
+.main-table-corner-actions .inline-button,
+.main-table-corner-actions .wso-btn--secondary {
+  padding: 0.2rem 0.65rem;
+  margin: 0;
+  font-size: 0.85em;
+}
+.comment:not(:last-child) {
   margin-bottom: 1.5em;
   padding-bottom: 1em;
   border-bottom: 1px solid var(--border-divider);
@@ -1655,6 +1698,18 @@ section:after {
   font-style: italic;
   font-size: 0.9em;
   color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  margin-top: 0.75em;
+}
+.comment .comment-detail .inline-button,
+.comment .comment-detail .wso-btn--secondary {
+  padding: 0.2rem 0.65rem;
+  margin: 0;
+  font-size: 0.85em;
+  font-style: normal;
 }
 #errors {
   color: var(--status-danger);
@@ -1679,7 +1734,7 @@ section:after {
   background-color: var(--status-danger);
   color: var(--text-on-nav);
 }
-a.home-notice#join-header,
+#join-header.home-notice,
 .home-notice {
   display: flex;
   align-items: center;
@@ -1693,37 +1748,15 @@ a.home-notice#join-header,
   background: var(--brand-tint);
   color: var(--brand-deep);
   border-bottom: 1px solid var(--border-strong);
-  text-decoration: none;
   text-align: left;
 }
 
-a.home-notice#join-header:hover,
-a.home-notice#join-header:focus,
-a.home-notice#join-header:visited,
-a.home-notice#join-header:active,
-.home-notice:hover,
-.home-notice:focus,
-.home-notice:visited,
-.home-notice:active {
-  color: var(--brand-deep);
-  text-decoration: none;
-  opacity: 1;
-  background: var(--brand-tint-strong);
-}
-
-.home-notice-badge {
+.home-notice-badge.list-date {
   flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  padding: 0.15rem 0.55rem;
-  border-radius: 999px;
-  background: var(--brand-bar);
-  color: var(--text-on-brand);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 1.4;
+  display: inline-block;
+  padding: 0.2em 0.65em;
+  background: var(--status-notice-bg);
+  color: var(--status-notice-fg);
 }
 
 .home-notice-copy {
@@ -1734,46 +1767,34 @@ a.home-notice#join-header:active,
 }
 
 .home-notice-title {
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: 0.01em;
 }
 
-.home-notice-sub {
-  font-size: 0.78rem;
+a.home-notice-sub {
+  font-size: 0.9rem;
   font-weight: 400;
   color: var(--text-muted);
   line-height: 1.3;
+  text-decoration: none;
+  width: fit-content;
 }
 
-.home-notice-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  margin-left: 0.35rem;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid var(--brand-bar);
-  background: var(--surface-page);
-  color: var(--brand-deep);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  white-space: nowrap;
+a.home-notice-sub:hover {
+  opacity: 0.6;
+  color: var(--text-muted);
 }
 
-.home-notice:hover .home-notice-cta,
-.home-notice:focus .home-notice-cta {
-  background: var(--brand-bar);
-  border-color: var(--brand-bar);
-  color: var(--text-on-brand);
+[data-theme="dark"] a.home-notice-sub:hover {
+  opacity: 1;
+  color: var(--brand-primary-hover);
 }
 
-.home-notice-cta .material-icons {
-  font-size: 0.95rem;
-  line-height: 1;
+a.home-notice-sub:active,
+a.home-notice-sub:focus {
+  color: var(--brand-primary-active);
 }
 
 @media screen and (max-width: 43.75em) {
@@ -1781,14 +1802,6 @@ a.home-notice#join-header:active,
     gap: 0.55rem;
     padding: 0.75rem 1rem;
     justify-content: flex-start;
-  }
-
-  .home-notice-cta {
-    margin-left: 0;
-  }
-
-  .home-notice-sub {
-    display: none;
   }
 }
 /*APRIL FOOL'S*/
@@ -3363,11 +3376,55 @@ ul#tag-list .tag-input {
 }
 .discussion-thread {
   margin-top: 1em;
+  max-width: 48em;
 }
 @media screen and (max-width: 43.75em) {
   .discussion-thread {
     padding: 0;
   }
+}
+.discussion-thread .thread-title {
+  color: var(--text-heading);
+  font-size: 1.5em;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+}
+.thread-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0 0 1.25rem;
+}
+.thread-title-row .thread-title {
+  flex: 1;
+  min-width: 0;
+}
+.thread-title-row .main-table-corner-actions {
+  position: static;
+}
+.discussion-thread .discussion-post .comment-content h1 {
+  font-size: 1em;
+  font-weight: 700;
+  margin: 0;
+}
+.discussion-thread .discussion-post .comment-header-row {
+  margin-bottom: 0.5em;
+}
+.discussion-thread .discussion-post .markdown-content {
+  margin-bottom: 0.25em;
+}
+.thread-list-item .comment-content h5 {
+  margin: 0;
+  font-size: 1.1em;
+  line-height: 1.3;
+}
+.thread-list-item .comment-header-row {
+  margin-bottom: 0.35em;
+}
+.thread-list-item .small-font {
+  color: var(--text-muted);
 }
 .discussion-thread article {
   float: left;
@@ -3409,7 +3466,25 @@ ul#tag-list .tag-input {
   margin-top: 0;
 }
 .discussion-thread .reply {
-  width: 75%;
+  width: 100%;
+  margin-top: 1.25rem;
+  padding-top: 0;
+  border-top: none;
+}
+.discussion-thread .reply strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-heading);
+}
+.discussion-thread .reply textarea {
+  display: block;
+  width: 100%;
+  min-height: 8em;
+  margin-bottom: 0.75em;
+}
+.discussion-thread .reply .wso-btn--submit,
+.discussion-thread .reply .submit {
+  margin-left: 0;
 }
 .home header {
   padding-top: 3em;
@@ -4100,16 +4175,19 @@ footer section small a {
 }
 .ephmatch-badge {
   background-color: var(--brand-bar);
-  border-radius: 20px;
-  border: 2px;
+  border-radius: 999px;
   display: inline-block;
-  min-width: 10px;
-  padding: 3px 7px;
-  line-height: 10px;
-  color: var(--text-on-nav);
+  min-width: 1.25em;
+  margin-left: 0.35em;
+  padding: 0.2em 0.55em;
+  line-height: 1.4;
+  color: var(--text-on-brand);
+  font-size: 0.75em;
+  font-weight: bold;
   white-space: nowrap;
   text-align: center;
-  cursor: pointer;
+  vertical-align: middle;
+  box-sizing: border-box;
 }
 .account header,
 .login header {

@@ -1,7 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 import DiscussionPost, { DiscussionPostSkeleton } from "./DiscussionPost";
-import { Line } from "../../ui";
+import { Button, Line } from "../../ui";
 
 // Redux/Routing imports
 import { useAppSelector } from "../../../lib/store";
@@ -90,12 +90,9 @@ const DiscussionShow = () => {
             </div>
           )}
 
-          <input
-            type="submit"
-            value="Submit"
-            className="submit"
-            data-disable-with="Submit"
-          />
+          <Button type="submit" variant="submit">
+            Submit
+          </Button>
         </form>
       </div>
     );
@@ -103,12 +100,9 @@ const DiscussionShow = () => {
 
   return (
     <section className="discussion-thread">
-      <h5>
-        <b>{discussion ? discussion.title : <Line width="50%" />}</b>
-        <br />
-        <br />
-        <br />
-      </h5>
+      <h3 className="thread-title">
+        {discussion ? discussion.title : <Line width="50%" />}
+      </h3>
 
       {renderPosts()}
       {replyArea()}
