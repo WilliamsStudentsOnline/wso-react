@@ -45,10 +45,18 @@
   --color-booktrak-course-suggestions-fg: var(--brand-primary);
   --color-booktrak-course-suggestions-border: var(--border-table);
   --color-booktrak-course-suggestions-option-fg: var(--brand-primary-hover);
-  --color-booktrak-course-container-bg: var(--brand-bar); /* border of a selected course in search*/
-  --color-booktrak-course-container-fg: var(--text-body); /* text color of selected course */
-  --color-booktrak-course-container-remove-course-button-bg: var(--surface-page);
-  --color-booktrak-course-container-remove-course-button-fg: var(--brand-primary-active);
+  --color-booktrak-course-container-bg: var(
+    --brand-bar
+  ); /* border of a selected course in search*/
+  --color-booktrak-course-container-fg: var(
+    --text-body
+  ); /* text color of selected course */
+  --color-booktrak-course-container-remove-course-button-bg: var(
+    --surface-page
+  );
+  --color-booktrak-course-container-remove-course-button-fg: var(
+    --brand-primary-active
+  );
   /* bulletin colors */
   --color-bulletin-title-background: var(--brand-bar); /* on home page */
   --color-bulletin-title-bottom-border: var(--border-table); /* on home page */
@@ -69,7 +77,9 @@
   --color-dining-menu-table-bg: var(--surface-muted); /* per dining hall */
   --color-dining-menu-table-border: var(--border-strong);
   --color-dining-menu-table-course-border: var(--border-subtle);
-  --color-dining-menu-table-meal-title-bg: var(--brand-bar); /* doesn't do anything */
+  --color-dining-menu-table-meal-title-bg: var(
+    --brand-bar
+  ); /* doesn't do anything */
   --color-dining-menu-table-meal-title-fg: var(--text-on-brand);
   --color-dining-menu-table-meal-header-bg: var(--brand-bar);
   --color-dining-menu-table-meal-header-fg: var(--text-on-brand);
@@ -89,7 +99,9 @@
   --color-dining-error-message-a: var(--status-danger);
   --color-dining-section-title-a: var(--brand-deep); /* like "whitman's menu" */
   --color-dining-footer: var(--text-muted);
-  --color-dining-meal-content-table: var(--border-subtle); /* no clue what this does */
+  --color-dining-meal-content-table: var(
+    --border-subtle
+  ); /* no clue what this does */
   /* goodrich not included because it doesn't seem to be called anywhere? */
   /* TODO: add goodrich */
   /* major builder colors */
@@ -109,9 +121,13 @@
   --color-major-builder-grid-autocomplete-no-results-a: var(--text-subtle);
   --color-major-builder-grid-apr-info-bg: var(--surface-subtle);
   --color-major-builder-grid-apr-info-border: var(--border-subtle);
-  --color-major-builder-requirements-border: var(--border-default); /* doesn't seem to do anything */
+  --color-major-builder-requirements-border: var(
+    --border-default
+  ); /* doesn't seem to do anything */
   --color-major-builder-requirements-bg: var(--surface-page);
-  --color-major-builder-requirements-fg: var(--text-muted); /* doesn't seem to do anything */
+  --color-major-builder-requirements-fg: var(
+    --text-muted
+  ); /* doesn't seem to do anything */
   --color-major-builder-requirements-controls-border: var(--border-subtle);
   --color-major-builder-requirements-controls-bg: var(--border-strong);
   --color-major-builder-requirements-bucket-border: var(--border-strong);
@@ -133,8 +149,12 @@
   --color-major-builder-grid-clear-grid-button-border: var(--brand-tint-strong);
   --color-major-builder-grid-clear-grid-button-color: var(--brand-deep);
   --color-major-builder-grid-clear-grid-button-hover: var(--brand-tint-strong);
-  --color-major-builder-info-links: var(--brand-deep); /* seen at the top of the page */
-  --color-major-builder-override-input: var(--brand-deep); /* unsure where it's seen */
+  --color-major-builder-info-links: var(
+    --brand-deep
+  ); /* seen at the top of the page */
+  --color-major-builder-override-input: var(
+    --brand-deep
+  ); /* unsure where it's seen */
   /* major editor colors */
   /* TODO: document what all these actually do */
   --color-major-editor-info: var(--text-heading);
@@ -154,7 +174,9 @@
   --color-major-editor-button-danger-bg: var(--status-danger);
   --color-major-editor-button-danger-fg: var(--surface-page);
   --color-major-editor-button-danger-hover: var(--status-danger);
-  --color-major-editor-button-icon: var(--text-subtle); /* this is the x in the add info screen */
+  --color-major-editor-button-icon: var(
+    --text-subtle
+  ); /* this is the x in the add info screen */
   --color-major-editor-button-icon-hover-bg: var(--surface-raised);
   --color-major-editor-button-icon-hover-fg: var(--status-danger);
   --color-major-editor-requirement-card-bg: var(--surface-page);

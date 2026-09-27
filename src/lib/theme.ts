@@ -72,11 +72,7 @@ export const applyResolvedTheme = (
   const doc = document as DocumentWithViewTransition;
   const startViewTransition = doc.startViewTransition;
 
-  if (
-    !animate ||
-    prefersReducedMotion() ||
-    startViewTransition === undefined
-  ) {
+  if (!animate || prefersReducedMotion() || startViewTransition === undefined) {
     root.classList.add("theme-switching");
     setThemeAttributes(resolved);
     requestAnimationFrame(() => {

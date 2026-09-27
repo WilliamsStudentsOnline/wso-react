@@ -1409,8 +1409,10 @@ dl dd {
 .dormtrak .grid-wrap aside ul li,
 .home article aside ul li {
   padding: 1em;
-  -webkit-box-shadow: inset 2px -2px 0 var(--border-table), inset -2px 0 0 var(--border-table);
-  box-shadow: inset 2px -2px 0 var(--border-table), inset -2px 0 0 var(--border-table);
+  -webkit-box-shadow: inset 2px -2px 0 var(--border-table),
+    inset -2px 0 0 var(--border-table);
+  box-shadow: inset 2px -2px 0 var(--border-table),
+    inset -2px 0 0 var(--border-table);
 }
 @media screen and (max-width: 43.75em) {
   .facebook .grid-wrap aside ul li,
@@ -2215,7 +2217,13 @@ a.home-notice#join-header:active,
 [data-theme="dark"] .facebook header .page-head ul li a.active-stylized-link,
 [data-theme="dark"] .factrak header .page-head ul li a.active-stylized-link,
 [data-theme="dark"] .dormtrak header .page-head ul li a.active-stylized-link,
-[data-theme="dark"] .announcement header .page-head ul li a.active-stylized-link,
+[data-theme="dark"]
+  .announcement
+  header
+  .page-head
+  ul
+  li
+  a.active-stylized-link,
 [data-theme="dark"] .lost-found header .page-head ul li a.active-stylized-link,
 [data-theme="dark"] .jobs header .page-head ul li a.active-stylized-link,
 [data-theme="dark"] .rides header .page-head ul li a.active-stylized-link,
