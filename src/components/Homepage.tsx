@@ -33,27 +33,20 @@ const Homepage = () => {
     <div className="home">
       <div className="full-width">
         {joinHeaderText && (
-          <a
-            id="join-header"
-            className="home-notice"
-            href={joinHeaderLink}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span className="home-notice-badge">New</span>
+          <div id="join-header" className="home-notice">
+            <span className="list-date home-notice-badge">New</span>
             <span className="home-notice-copy">
               <span className="home-notice-title">{joinHeaderText}</span>
-              <span className="home-notice-sub">
-                Dining, Facebook, and WCFM
-              </span>
+              <a
+                className="home-notice-sub"
+                href={joinHeaderLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Click to download on the App Store
+              </a>
             </span>
-            <span className="home-notice-cta">
-              App Store
-              <i className="material-icons" aria-hidden="true">
-                arrow_forward
-              </i>
-            </span>
-          </a>
+          </div>
         )}
         <header>
           <div className="logo">
