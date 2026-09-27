@@ -1,66 +1,28 @@
 // React imports
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 // Component imports
-import QueryTable from "./QueryTable";
 import "./stylesheets/Homepage.css";
 import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 
 // Redux Imports
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../lib/store";
-import { selectGeneratedQuery } from "../lib/queryBuilderSlice";
 import { PostType } from "../lib/types";
 import LibraryHoursTable from "./LibraryHours";
 
 const Homepage = () => {
   const navigateTo = useNavigate();
   const [searchInputValue, setSearchInputValue] = useState("");
-  const [advancedFiltersSelected, setAdvancedFiltersSelected] = useState(false);
-
-  const { query: generatedQuery, warning: queryWarning } =
-    useAppSelector(selectGeneratedQuery);
-
-  useEffect(() => {
-    if (advancedFiltersSelected) {
-      setSearchInputValue(generatedQuery);
-    }
-  }, [advancedFiltersSelected, generatedQuery]);
 
   const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    // use the generated query if advanced filters are active, otherwise use the input value
-    const finalQuery = advancedFiltersSelected
-      ? generatedQuery
-      : searchInputValue;
-    // navigate only if there's a query to prevent empty searches
-    if (finalQuery.trim()) {
-      navigateTo(`/facebook?q=${encodeURIComponent(finalQuery.trim())}`);
+    if (searchInputValue.trim()) {
+      navigateTo(`/facebook?q=${encodeURIComponent(searchInputValue.trim())}`);
     }
-    setAdvancedFiltersSelected(false);
-  };
-
-  const handleAdvancedToggleClick = () => {
-    setAdvancedFiltersSelected(!advancedFiltersSelected);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    setSearchInputValue(newValue);
-  };
-
-  const FilterButton = () => {
-    return (
-      <button
-        onClick={handleAdvancedToggleClick}
-        className={`${
-          advancedFiltersSelected ? "button-toggled" : "button-default"
-        }`}
-        style={{ marginLeft: "20px" }}
-      >
-        Advanced
-      </button>
-    );
+    setSearchInputValue(event.target.value);
   };
 
   const joinHeaderText = "Install the new WSO Mobile iOS app!"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
@@ -100,34 +62,8 @@ const Homepage = () => {
                 value="Search"
                 className="submit"
               />
-              <div
-                style={{
-                  marginLeft: "30px",
-                  display: "flex",
-                  flexDirection: "row",
-                }}
-              >
-                <FilterButton />
-              </div>
             </form>
           </div>
-          {advancedFiltersSelected && (
-            <div className="advanced-query">
-              <br />
-              <div className="active-filters-container">
-                {generatedQuery ? (
-                  <div className="active-filters">{generatedQuery}</div>
-                ) : (
-                  <div className="active-filters">
-                    <span id="italic">empty query - add filters below</span>
-                  </div>
-                )}
-                {queryWarning && <div className="warning">{queryWarning}</div>}
-              </div>
-              <br />
-              <QueryTable />
-            </div>
-          )}
         </header>
         <article>
           <LibraryHoursTable />
