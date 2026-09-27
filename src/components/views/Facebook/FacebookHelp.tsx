@@ -35,7 +35,7 @@ const FacebookHelp = () => {
           <br />
 
           <h3>Quick syntax guide for searching</h3>
-          <table className="inline">
+          <table className="inline help-query-table">
             <tbody>
               <tr>
                 <th> Query </th>
@@ -213,154 +213,97 @@ const FacebookHelp = () => {
             It&rsquo;s quite likely that you could guess the right label name
             for the job, but here is a list of labels are currently supported.
           </p>
-          <table className="inline">
+          <table className="inline help-query-table">
             <tbody>
               <tr>
-                <th> Label </th>
-                <th> Searches by </th>
-                <th> Pertains to </th>
+                <th>Label</th>
+                <th>Searches by</th>
+                <th>Pertains to</th>
               </tr>
               <tr>
-                <td className="inline-display-text">
-                  <pre className="code">building:</pre>
-                  <p>,&nbsp;</p>
-                  <pre className="code">bldg:</pre>
-                  <p>, or&nbsp;</p>
-                  <pre className="code">dorm:</pre>{" "}
-                </td>
-                <td> dorm (students) or building (faculty, staff) </td>
-                <td> everyone </td>
+                <td className="code">building:, bldg:, or dorm:</td>
+                <td>dorm (students) or building (faculty, staff)</td>
+                <td>everyone</td>
               </tr>
               <tr>
-                <td className="inline-display-text">
-                  <pre className="code">city:</pre>
-                  <p>&nbsp;or&nbsp;</p>
-                  <pre className="code">town:</pre>
-                </td>
-                <td> hometown </td>
-                <td> students </td>
+                <td className="code">city: or town:</td>
+                <td>hometown</td>
+                <td>students</td>
               </tr>
               <tr>
-                <td className="inline-display-text">
-                  <pre className="code">class:</pre>
-                  <p>&nbsp;or&nbsp;</p>
-                  <pre className="code">year:</pre>
-                </td>
-                <td> class year </td>
-                <td> students </td>
+                <td className="code">class: or year:</td>
+                <td>class year</td>
+                <td>students</td>
               </tr>
               <tr>
                 <td className="code">country:</td>
-                <td> home country </td>
-                <td> students </td>
+                <td>home country</td>
+                <td>students</td>
               </tr>
               <tr>
-                <td className="inline-display-text">
-                  <pre className="code">dept:</pre>
-                  <p>&nbsp;or&nbsp;</p>
-                  <pre className="code">department:</pre>
-                </td>
-                <td> department </td>
-                <td> faculty, staff </td>
+                <td className="code">dept: or department:</td>
+                <td>department</td>
+                <td>faculty, staff</td>
               </tr>
               <tr>
-                <td className="code">
-                  {" "}
-                  <code>email:</code>{" "}
-                </td>
-                <td> Williams email </td>
-                <td> everyone </td>
+                <td className="code">email:</td>
+                <td>East email</td>
+                <td>everyone</td>
               </tr>
               <tr>
-                <td className="code">
-                  {" "}
-                  <code>entry:</code>{" "}
-                </td>
-                <td> dorm entry letter or number </td>
-                <td> students </td>
+                <td className="code">entry:</td>
+                <td>dorm entry letter or number</td>
+                <td>students</td>
               </tr>
               <tr>
-                <td className="code">
-                  {" "}
-                  <code>major:</code>{" "}
-                </td>
-                <td> major (abbreviation) </td>
-                <td> students </td>
+                <td className="code">major:</td>
+                <td>major (abbreviation)</td>
+                <td>students</td>
               </tr>
               <tr>
-                <td className="code">
-                  {" "}
-                  <code>name:</code>{" "}
-                </td>
-                <td> name </td>
-                <td> everyone </td>
+                <td className="code">name:</td>
+                <td>name</td>
+                <td>everyone</td>
               </tr>
               <tr>
-                <td className="inline-display-text">
-                  <pre className="code">neighborhood:</pre>
-                  <p>&nbsp;or&nbsp;</p>
-                  <pre className="code">cluster:</pre>
-                </td>
-                <td> campus neighborhood </td>
-                <td> students </td>
+                <td className="code">neighborhood: or cluster:</td>
+                <td>campus neighborhood</td>
+                <td>students</td>
               </tr>
               <tr>
-                <td className="inline-display-text">
-                  <pre className="code">phone:</pre>
-                  <p>&nbsp;or&nbsp;</p>
-                  <pre className="code">ext:</pre>{" "}
-                </td>
-                <td> campus phone number </td>
-                <td> everyone </td>
+                <td className="code">phone: or ext:</td>
+                <td>campus phone number</td>
+                <td>everyone</td>
               </tr>
               <tr>
-                <td className="code">
-                  {" "}
-                  <code>room:</code>{" "}
-                </td>
-                <td> room number </td>
-                <td> students</td>
+                <td className="code">room:</td>
+                <td>room number</td>
+                <td>students</td>
               </tr>
               <tr>
-                <td className="code">
-                  {" "}
-                  <code>state:</code>{" "}
-                </td>
-                <td> home state </td>
-                <td> students </td>
+                <td className="code">state:</td>
+                <td>home state</td>
+                <td>students</td>
               </tr>
               <tr>
-                <td className="inline-display-text">
-                  <pre className="code">tag:</pre>
-                  <p>&nbsp;or&nbsp;</p>
-                  <pre className="code">tags:</pre>
-                </td>
-                <td> user tag </td>
-                <td> students </td>
+                <td className="code">tag: or tags:</td>
+                <td>user tag</td>
+                <td>students</td>
               </tr>
               <tr>
-                <td className="code">
-                  {" "}
-                  <code>title:</code>{" "}
-                </td>
-                <td> title </td>
-                <td> everyone </td>
+                <td className="code">title:</td>
+                <td>title</td>
+                <td>everyone</td>
               </tr>
               <tr>
-                <td className="code">
-                  {" "}
-                  <code>unix:</code>{" "}
-                </td>
-                <td> Williams Username (previously Unix) </td>
-                <td> everyone </td>
+                <td className="code">unix:</td>
+                <td>Williams Username (previously Unix)</td>
+                <td>everyone</td>
               </tr>
               <tr>
-                <td className="code">
-                  {" "}
-                  <code>zip:</code>{" "}
-                </td>
-                <td> zip (postal) code of hometown </td>
-                <td> students </td>
+                <td className="code">zip:</td>
+                <td>zip (postal) code of hometown</td>
+                <td>students</td>
               </tr>
             </tbody>
           </table>

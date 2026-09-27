@@ -40,12 +40,7 @@ const FacebookGridUser = ({
   // Generates the unix id field in grid view
   const gridUnixID = (user: ResponsesGetUserResponseUser) => {
     if (user.unixID) {
-      return (
-        <>
-          <li className="list-headers">Williams Username</li>
-          <li className="list-contents">{user.unixID}</li>
-        </>
-      );
+      return <li className="unix-id">{user.unixID}</li>;
     }
     return null;
   };
@@ -71,14 +66,6 @@ const FacebookGridUser = ({
         <>
           <li className="list-headers"> Campus Status</li>
           <li className="list-contents">{user.campusStatus}</li>
-        </>
-      );
-    }
-    if (user.type !== userTypeStudent && user.office) {
-      return (
-        <>
-          <li className="list-headers"> Office</li>
-          <li className="list-contents">{user.office.number}</li>
         </>
       );
     }

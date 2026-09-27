@@ -69,7 +69,7 @@ const QueryTable = () => {
           <td align="left">
             <input
               type="text"
-              placeholder="e.g. Williams"
+              placeholder="e.g. East"
               value={filters.building}
               onChange={(e) => handleFieldChange("building", e.target.value)}
             />
