@@ -4,6 +4,7 @@ on:
     branches:
       - '**' # matches every branch
       - '!production' # excludes production (handled by Jenkins for deployment)
+      - '!gh-readonly-queue/**'
   pull_request:
   merge_group:
 env:
