@@ -241,7 +241,7 @@ export const useVendorStatus = (vendorMeals: Record<string, Meal>) => {
           message:
             diffMinutes < 60
               ? `Closes in ${Math.round(diffMinutes)} min`
-              : `Open until ${meal.hours.close}`,
+              : `Open until ${normalizeClockTime(meal.hours.close)}`,
           isOpen: true,
           currentMealName: meal.name,
           nextMealName: null,
@@ -273,7 +273,9 @@ export const useVendorStatus = (vendorMeals: Record<string, Meal>) => {
               openProgress: null,
             };
           } else {
-            tempNextOpenMessage = `Opens at ${meal.hours.open}`;
+            tempNextOpenMessage = `Opens at ${normalizeClockTime(
+              meal.hours.open
+            )}`;
             if (calculatedStatus.style === "Closed") {
               calculatedStatus = {
                 style: "Closed",
