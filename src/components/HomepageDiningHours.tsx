@@ -58,17 +58,22 @@ const HomepageDiningVendorRow = ({
     clientX: number
   ) => void;
 }) => {
-  const { style, message, currentMealName, nextMealName, openProgress } =
-    useVendorStatus(vendor.meals);
+  const {
+    style,
+    message,
+    isOpen,
+    currentMealName,
+    nextMealName,
+    openProgress,
+  } = useVendorStatus(vendor.meals);
   const pill = getDiningStatusPill(style);
-  const highlightMealName =
-    pill.kind === "open"
-      ? currentMealName
-      : pill.kind === "soon"
-      ? nextMealName
-      : null;
+  const highlightMealName = isOpen
+    ? currentMealName
+    : pill.kind === "soon"
+    ? nextMealName
+    : null;
   const openProgressStyle =
-    pill.kind === "open" && openProgress !== null
+    isOpen && openProgress !== null
       ? ({
           ["--open-progress" as string]: `${Math.round(openProgress * 100)}%`,
         } as React.CSSProperties)
@@ -102,8 +107,7 @@ const HomepageDiningVendorRow = ({
         const showMenu = mealHasMenu(meal);
         const isHighlighted =
           highlightMealName !== null && meal.name === highlightMealName;
-        const isOpenProgress =
-          isHighlighted && pill.kind === "open" && openProgress !== null;
+        const isOpenProgress = isHighlighted && isOpen && openProgress !== null;
 
         return (
           <td
