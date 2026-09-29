@@ -354,7 +354,7 @@ input[type="submit"] {
   color: var(--text-body);
   border: 1px solid var(--border-strong);
   box-shadow: 0 2px 8px var(--shadow);
-  font-size: 0.8em;
+  font-size: 0.95em;
   font-weight: normal;
   line-height: 1.3;
   white-space: nowrap;
