@@ -251,6 +251,9 @@ const Nav = () => {
             </li>
             {renderFactrakSlot()}
             <li>
+              <Link to="schedulecourses">Course Scheduler</Link>
+            </li>
+            <li>
               <a href="https://listserv-wso.williams.edu">Listserv</a>
             </li>
             <li

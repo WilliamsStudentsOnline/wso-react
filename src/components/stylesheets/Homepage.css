@@ -154,11 +154,12 @@ input[type="submit"] {
   margin-right: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.15rem;
 }
 
 .library-hours h3 {
   margin: 0;
+  line-height: 1.1;
 }
 
 .library-hours-table {
