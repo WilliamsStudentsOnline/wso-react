@@ -37,7 +37,9 @@ const activeSlotsForVendors = (vendors: Vendor[]): DiningMealSlot[] => {
       if (slot) present.add(slot);
     });
   });
-  return DINING_MEAL_SLOTS.filter((slot) => present.has(slot));
+  return DINING_MEAL_SLOTS.filter(
+    (slot) => slot !== "late night" && present.has(slot)
+  );
 };
 
 const HomepageDiningVendorRow = ({
