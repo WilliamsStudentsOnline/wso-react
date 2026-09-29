@@ -31,20 +31,19 @@ const DiningHoursCard = ({
     clientX: number
   ) => void;
 }) => {
-  const { style, currentMealName, nextMealName, openProgress } =
+  const { style, isOpen, currentMealName, nextMealName, openProgress } =
     useVendorStatus(vendor.meals);
   const pill = getDiningStatusPill(style);
-  const highlightMealName =
-    pill.kind === "open"
-      ? currentMealName
-      : pill.kind === "soon"
-      ? nextMealName
-      : null;
+  const highlightMealName = isOpen
+    ? currentMealName
+    : pill.kind === "soon"
+    ? nextMealName
+    : null;
   const sortedMealEntries = Object.entries(vendor.meals).sort(
     ([, a], [, b]) => getMealOrder(a.name) - getMealOrder(b.name)
   );
   const openProgressStyle =
-    pill.kind === "open" && openProgress !== null
+    isOpen && openProgress !== null
       ? ({
           ["--open-progress" as string]: `${Math.round(openProgress * 100)}%`,
         } as React.CSSProperties)
@@ -90,7 +89,7 @@ const DiningHoursCard = ({
               const isHighlighted =
                 highlightMealName !== null && meal.name === highlightMealName;
               const isOpenProgress =
-                isHighlighted && pill.kind === "open" && openProgress !== null;
+                isHighlighted && isOpen && openProgress !== null;
               const hoursLabel = meal.hours
                 ? `${meal.hours.open} – ${meal.hours.close}`
                 : "No Times";
