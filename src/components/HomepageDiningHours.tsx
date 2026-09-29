@@ -77,12 +77,12 @@ const HomepageDiningVendorRow = ({
   return (
     <tr className={`homepage-dining-row-status-${pill.kind}`}>
       <td>
-        <span className="homepage-dining-hall">
+        <span className="homepage-hours-name">
           <span
-            className={`homepage-dining-status-dot homepage-dining-status-dot-${pill.kind}`}
+            className={`homepage-status-dot homepage-status-dot-${pill.kind}`}
             aria-label={`${pill.label}: ${message}`}
           >
-            <span className="homepage-dining-status-tooltip" role="tooltip">
+            <span className="homepage-status-tooltip" role="tooltip">
               {message}
             </span>
           </span>

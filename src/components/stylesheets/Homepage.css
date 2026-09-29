@@ -301,6 +301,7 @@ input[type="submit"] {
   z-index: 1;
 }
 
+.home-hours-row .library-hours-table td:first-child,
 .homepage-dining-table th:first-child,
 .homepage-dining-table td:first-child {
   width: 22%;
@@ -308,6 +309,8 @@ input[type="submit"] {
   overflow: visible;
 }
 
+.home-hours-row .library-hours-table td:first-child:hover,
+.home-hours-row .library-hours-table td:first-child:focus-within,
 .homepage-dining-table td:first-child:hover,
 .homepage-dining-table td:first-child:focus-within {
   position: relative;
@@ -319,21 +322,21 @@ input[type="submit"] {
   text-align: center;
 }
 
-.homepage-dining-hall {
+.homepage-hours-name {
   display: flex;
   align-items: center;
   gap: 0.45rem;
   min-width: 0;
 }
 
-.homepage-dining-hall b {
+.homepage-hours-name b {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.homepage-dining-status-dot {
+.homepage-status-dot {
   flex: 0 0 auto;
   position: relative;
   display: inline-block;
@@ -347,7 +350,7 @@ input[type="submit"] {
   z-index: 1;
 }
 
-.homepage-dining-status-tooltip {
+.homepage-status-tooltip {
   visibility: hidden;
   position: absolute;
   z-index: 20;
@@ -368,20 +371,20 @@ input[type="submit"] {
   pointer-events: none;
 }
 
-.homepage-dining-status-dot:hover .homepage-dining-status-tooltip,
-.homepage-dining-status-dot:focus-visible .homepage-dining-status-tooltip {
+.homepage-status-dot:hover .homepage-status-tooltip,
+.homepage-status-dot:focus-visible .homepage-status-tooltip {
   visibility: visible;
 }
 
-.homepage-dining-status-dot-open {
+.homepage-status-dot-open {
   border-color: var(--dining-open-border);
 }
 
-.homepage-dining-status-dot-soon {
+.homepage-status-dot-soon {
   border-color: var(--dining-soon-border);
 }
 
-.homepage-dining-status-dot-closed {
+.homepage-status-dot-closed {
   border-color: var(--dining-closed-border);
 }
 

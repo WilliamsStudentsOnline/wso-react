@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { formatCompactHours, normalizeClockTime } from "../lib/timeFormat";
-import { parseAndAdjustTime } from "./views/Dining/diningShared";
+import {
+  getDiningStatusPill,
+  parseAndAdjustTime,
+} from "./views/Dining/diningShared";
 import "./stylesheets/Dining.css";
 
 type LibraryService = {
@@ -11,6 +14,8 @@ type LibraryService = {
     close: string[] | null;
   };
 };
+
+type Interval = { open: string; close: string };
 
 const useOpenProgress = (open: string | null, close: string | null) => {
   const [progress, setProgress] = useState<number | null>(null);
@@ -46,6 +51,82 @@ const useOpenProgress = (open: string | null, close: string | null) => {
   return progress;
 };
 
+const useLibraryStatus = (intervals: Interval[]) => {
+  const [status, setStatus] = useState({
+    style: "Closed",
+    message: "Closed",
+  });
+
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      let nextOpenTime: Date | null = null;
+      let nextOpenLabel = "";
+      let nextOpenMessage = "";
+
+      for (const { open, close } of intervals) {
+        if (!open || !close) continue;
+        const openNorm = normalizeClockTime(open);
+        const closeNorm = normalizeClockTime(close);
+        const openDateTime = parseAndAdjustTime(openNorm, now, false);
+        const closeDateTime = parseAndAdjustTime(
+          closeNorm,
+          now,
+          true,
+          openNorm
+        );
+
+        if (now >= openDateTime && now < closeDateTime) {
+          const diffMinutes =
+            (closeDateTime.getTime() - now.getTime()) / 1000 / 60;
+          setStatus({
+            style: diffMinutes < 60 ? "Closing" : "Open",
+            message:
+              diffMinutes < 60
+                ? `Closes in ${Math.round(diffMinutes)} min`
+                : `Open until ${
+                    formatCompactHours(open, close).split("–")[1] || close
+                  }`,
+          });
+          return;
+        }
+
+        if (now < openDateTime) {
+          if (!nextOpenTime || openDateTime < nextOpenTime) {
+            nextOpenTime = openDateTime;
+            nextOpenLabel = open;
+            const diffMinutes =
+              (openDateTime.getTime() - now.getTime()) / 1000 / 60;
+            nextOpenMessage =
+              diffMinutes < 60
+                ? `Opens in ${Math.round(diffMinutes)} min`
+                : `Opens at ${
+                    formatCompactHours(open, close).split("–")[0] || open
+                  }`;
+          }
+        }
+      }
+
+      if (nextOpenTime && nextOpenMessage.includes("Opens in")) {
+        setStatus({ style: "Opening", message: nextOpenMessage });
+      } else if (nextOpenTime) {
+        setStatus({
+          style: "Closed",
+          message: nextOpenMessage || `Opens at ${nextOpenLabel}`,
+        });
+      } else {
+        setStatus({ style: "Closed", message: "Closed for the day" });
+      }
+    };
+
+    tick();
+    const timer = window.setInterval(tick, 60 * 1000);
+    return () => window.clearInterval(timer);
+  }, [intervals]);
+
+  return status;
+};
+
 const LibraryHoursInterval = ({
   open,
   close,
@@ -78,6 +159,68 @@ const LibraryHoursInterval = ({
         {formatCompactHours(open, close)}
       </span>
     </td>
+  );
+};
+
+const LibraryServiceRows = ({ service }: { service: LibraryService }) => {
+  const openTimes = service.hours.open;
+  const intervals: Interval[] =
+    openTimes === null
+      ? []
+      : openTimes.map((open, i) => ({
+          open,
+          close: service.hours.close?.[i] || "",
+        }));
+  const { style, message } = useLibraryStatus(intervals);
+  const pill = getDiningStatusPill(style);
+
+  if (openTimes === null) {
+    return (
+      <tr key={`${service.name}-no-hours`}>
+        <td>
+          <span className="homepage-hours-name">
+            <span
+              className={`homepage-status-dot homepage-status-dot-closed`}
+              aria-label="Closed: No hours"
+            >
+              <span className="homepage-status-tooltip" role="tooltip">
+                No hours
+              </span>
+            </span>
+            <b>{service.name}</b>
+          </span>
+        </td>
+        <td className="library-hours-empty">(no hours)</td>
+      </tr>
+    );
+  }
+
+  return (
+    <>
+      {openTimes.map((open, i) => (
+        <tr key={`${service.name}-${i}`}>
+          {i === 0 && (
+            <td rowSpan={openTimes.length}>
+              <span className="homepage-hours-name">
+                <span
+                  className={`homepage-status-dot homepage-status-dot-${pill.kind}`}
+                  aria-label={`${pill.label}: ${message}`}
+                >
+                  <span className="homepage-status-tooltip" role="tooltip">
+                    {message}
+                  </span>
+                </span>
+                <b>{service.name}</b>
+              </span>
+            </td>
+          )}
+          <LibraryHoursInterval
+            open={open}
+            close={service.hours.close?.[i] || ""}
+          />
+        </tr>
+      ))}
+    </>
   );
 };
 
@@ -128,32 +271,9 @@ const LibraryHoursTable = () => {
           </tr>
         </thead>
         <tbody>
-          {services.map((svc) => {
-            const openTimes = svc.hours.open;
-            if (openTimes === null) {
-              return (
-                <tr key={`${svc.name}-no-hours`}>
-                  <td>
-                    <b>{svc.name}</b>
-                  </td>
-                  <td className="library-hours-empty">(no hours)</td>
-                </tr>
-              );
-            }
-            return openTimes.map((open, i) => (
-              <tr key={`${svc.name}-${i}`}>
-                {i === 0 && (
-                  <td rowSpan={openTimes.length}>
-                    <b>{svc.name}</b>
-                  </td>
-                )}
-                <LibraryHoursInterval
-                  open={open}
-                  close={svc.hours.close?.[i] || ""}
-                />
-              </tr>
-            ));
-          })}
+          {services.map((svc) => (
+            <LibraryServiceRows key={svc.name} service={svc} />
+          ))}
         </tbody>
       </table>
     </div>
