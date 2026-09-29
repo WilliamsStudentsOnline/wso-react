@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { formatCompactHours, normalizeClockTime } from "../lib/timeFormat";
 import {
@@ -164,13 +164,17 @@ const LibraryHoursInterval = ({
 
 const LibraryServiceRows = ({ service }: { service: LibraryService }) => {
   const openTimes = service.hours.open;
-  const intervals: Interval[] =
-    openTimes === null
-      ? []
-      : openTimes.map((open, i) => ({
-          open,
-          close: service.hours.close?.[i] || "",
-        }));
+  const closeTimes = service.hours.close;
+  const intervals: Interval[] = useMemo(
+    () =>
+      openTimes === null
+        ? []
+        : openTimes.map((open, i) => ({
+            open,
+            close: closeTimes?.[i] || "",
+          })),
+    [openTimes, closeTimes]
+  );
   const { style, message } = useLibraryStatus(intervals);
   const pill = getDiningStatusPill(style);
 

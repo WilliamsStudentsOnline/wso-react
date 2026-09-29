@@ -100,7 +100,6 @@
   border-radius: 4px;
 }
 
-/* Slot backgrounds come from the fixed pastel PALETTE, so text must stay dark in every theme. */
 .course-slot,
 .course-slot div {
   color: #1f2328;

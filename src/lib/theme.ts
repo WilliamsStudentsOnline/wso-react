@@ -96,7 +96,6 @@ export const applyResolvedTheme = (
   });
   activeTransition = transition;
 
-  // A stalled transition leaves the snapshot overlay up and freezes the page.
   const timeout = window.setTimeout(() => {
     transition.skipTransition?.();
   }, VIEW_TRANSITION_TIMEOUT_MS);
@@ -109,7 +108,6 @@ export const applyResolvedTheme = (
         activeTransition = null;
         root.classList.remove("theme-switching");
       }
-      // Ensure the theme lands even if the transition was skipped before its callback ran.
       if (getDocumentTheme() !== resolved && activeTransition === null) {
         setThemeAttributes(resolved);
       }
