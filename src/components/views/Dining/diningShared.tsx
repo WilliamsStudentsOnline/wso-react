@@ -46,7 +46,6 @@ export type OpenMenu = {
   visible: boolean;
 };
 
-/** Canonical meal slots for compact / matrix views. */
 export const DINING_MEAL_SLOTS = [
   "breakfast",
   "brunch",
@@ -149,7 +148,6 @@ export const mealHasMenu = (meal: Meal): boolean =>
     (course) => !!course.items && course.items.length > 0
   );
 
-/** Vendors to never show, even if present in dining.json. */
 export const HIDDEN_VENDOR_IDS = new Set(["goodrich"]);
 
 export const useDiningData = () => {
@@ -314,10 +312,6 @@ export const MealMenuButton = ({
 
 type DiningMenusMode = "dual" | "left-only";
 
-/**
- * Shared open/close animation + Escape / scroll-lock for dining meal menus.
- * `dual` prefers left/right by click X; `left-only` always uses the left panel.
- */
 export const useDiningMenus = (mode: DiningMenusMode = "dual") => {
   const [leftMenu, setLeftMenu] = useState<OpenMenu | null>(null);
   const [rightMenu, setRightMenu] = useState<OpenMenu | null>(null);

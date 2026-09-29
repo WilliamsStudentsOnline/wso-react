@@ -164,7 +164,6 @@ input[type="submit"] {
 
 .library-hours-table {
   width: 100%;
-  /* Override global `table { margin: 1.5em 0 }` from i.css */
   margin: 0;
   border-collapse: collapse;
   border: 1px solid var(--border-table);
@@ -192,7 +191,6 @@ input[type="submit"] {
   padding: 0.75em 1.5em;
 }
 
-/* Homepage: Library Hours + Dining Hours side by side (~1:2) */
 .home-hours-row {
   display: flex;
   align-items: flex-start;
