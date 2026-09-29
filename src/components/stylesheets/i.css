@@ -1266,6 +1266,10 @@ td {
 tbody tr:nth-child(even) td {
   background: var(--surface-zebra);
 }
+.help-query-table {
+  /* Override global `table { margin: 1.5em 0 }` top gap under headings */
+  margin-top: 0.35rem;
+}
 .help-query-table td,
 .help-query-table tbody tr:nth-child(even) td,
 .help-query-table tbody tr:nth-child(odd) td {
