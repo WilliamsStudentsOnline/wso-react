@@ -54,7 +54,6 @@ const FactrakPolicy = () => {
       <section>
         <article>
           <h3>Policy</h3>
-          <br />
           <h4>IMPORTANT &mdash; new in 2016:</h4>
           <p>
             <strong>

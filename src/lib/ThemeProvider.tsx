@@ -8,6 +8,7 @@ import React, {
   useState,
   ReactNode,
 } from "react";
+import { flushSync } from "react-dom";
 import {
   ThemePreference,
   ResolvedTheme,
@@ -46,18 +47,13 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     preferenceRef.current = next;
     writeThemePreference(next);
     const nextResolved = resolveTheme(next);
-    const transition = applyResolvedTheme(nextResolved, { animate: true });
 
-    const commitReactState = () => {
+    // Paint the new icon before the view transition so it flips at the start.
+    flushSync(() => {
       setPreferenceState(next);
       setResolved(nextResolved);
-    };
-
-    if (transition && transition.finished) {
-      transition.finished.then(commitReactState, commitReactState);
-    } else {
-      commitReactState();
-    }
+    });
+    applyResolvedTheme(nextResolved, { animate: true });
   }, []);
 
   const cyclePreference = useCallback(() => {
@@ -70,13 +66,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => {
       const nextResolved = getResolvedFromMedia(media);
-      const transition = applyResolvedTheme(nextResolved, { animate: true });
-      const commit = () => setResolved(nextResolved);
-      if (transition && transition.finished) {
-        transition.finished.then(commit, commit);
-      } else {
-        commit();
-      }
+      flushSync(() => {
+        setResolved(nextResolved);
+      });
+      applyResolvedTheme(nextResolved, { animate: true });
     };
 
     if (media.addEventListener) {

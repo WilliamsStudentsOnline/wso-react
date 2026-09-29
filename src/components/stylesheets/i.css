@@ -1266,6 +1266,9 @@ td {
 tbody tr:nth-child(even) td {
   background: var(--surface-zebra);
 }
+.help-query-table {
+  margin-top: 0.35rem;
+}
 .help-query-table td,
 .help-query-table tbody tr:nth-child(even) td,
 .help-query-table tbody tr:nth-child(odd) td {
@@ -1615,6 +1618,9 @@ section:after {
   padding-top: 1em;
   padding-bottom: 0em;
   margin-bottom: 0em;
+}
+.main-table > .margin-vertical-small {
+  padding-top: 0.35rem;
 }
 .avatar {
   width: 30px;
@@ -3414,7 +3420,7 @@ ul#tag-list .tag-input {
   font-size: 0.75em;
 }
 .discussion-thread {
-  margin-top: 1em;
+  margin-top: 0.35rem;
   max-width: 48em;
 }
 @media screen and (max-width: 43.75em) {
@@ -3434,7 +3440,7 @@ ul#tag-list .tag-input {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  margin: 0 0 1.25rem;
+  margin: 0 0 0.5rem;
 }
 .thread-title-row .thread-title {
   flex: 1;
@@ -4098,6 +4104,11 @@ nav.site-nav .nav-skeleton-user {
 }
 nav.site-nav .nav-skeleton-user .nav-user-caret {
   visibility: hidden;
+}
+nav.site-nav .nav-account .nav-login-link {
+  justify-content: center;
+  min-width: calc(30px + 0.05rem + 1.15rem);
+  box-sizing: border-box;
 }
 nav.site-nav .avatar .nav-skeleton-circle {
   display: block;

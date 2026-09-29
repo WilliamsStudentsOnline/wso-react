@@ -1,8 +1,20 @@
+.bulletin-list,
+.home-hours-row {
+  --home-col: 340px;
+  --home-gap: 30px;
+}
+
 .bulletin-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 340px);
+  grid-template-columns: repeat(auto-fill, var(--home-col));
   place-content: center;
-  grid-gap: 30px;
+  grid-gap: var(--home-gap);
+}
+
+.home-bulletins-heading {
+  margin: 0 0 0.75rem;
+  line-height: 1.1;
+  text-align: center;
 }
 
 .search-bar {
@@ -154,15 +166,17 @@ input[type="submit"] {
   margin-right: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .library-hours h3 {
   margin: 0;
+  line-height: 1.1;
 }
 
 .library-hours-table {
   width: 100%;
+  margin: 0;
   border-collapse: collapse;
   border: 1px solid var(--border-table);
   background: var(--surface-muted);
@@ -187,4 +201,292 @@ input[type="submit"] {
   letter-spacing: 1px;
   border: none;
   padding: 0.75em 1.5em;
+}
+
+.library-hours-cell {
+  position: relative;
+  overflow: hidden;
+}
+
+.library-hours-cell-label {
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.library-hours-empty {
+  color: var(--text-subtle);
+}
+
+.home-hours-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--home-gap);
+  width: min(100%, calc(var(--home-col) * 3 + var(--home-gap) * 2));
+  box-sizing: border-box;
+  overflow: visible;
+  margin: 0 auto;
+}
+
+.home-hours-row .library-hours {
+  flex: 1 1 0;
+  max-width: none;
+  margin: 0;
+  min-width: 0;
+}
+
+.home-hours-row .library-hours-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: visible;
+}
+
+.home-hours-row .library-hours-table th,
+.home-hours-row .library-hours-table td,
+.homepage-dining-table th,
+.homepage-dining-table td {
+  height: 2.75rem;
+  max-height: 2.75rem;
+  box-sizing: border-box;
+  padding: 0 0.75rem;
+  font-size: inherit;
+  line-height: 1.2;
+  vertical-align: middle;
+}
+
+.home-hours-row .library-hours-table thead th,
+.homepage-dining-table thead th {
+  height: 2.75rem;
+  max-height: 2.75rem;
+  padding: 0 0.75rem;
+  font-size: 0.75em;
+  letter-spacing: 1px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.home-hours-row .library-hours-table tr,
+.homepage-dining-table tr {
+  height: 2.75rem;
+}
+
+.homepage-dining-hours {
+  flex: 2 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  overflow: visible;
+}
+
+.homepage-dining-hours h3 {
+  margin: 0;
+  line-height: 1.1;
+}
+
+.homepage-dining-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--border-table);
+  background: var(--surface-muted);
+  color: var(--text-body);
+  table-layout: fixed;
+  overflow: visible;
+}
+
+.homepage-dining-table th,
+.homepage-dining-table td {
+  border: 1px solid var(--border-table);
+  background: var(--surface-muted);
+  color: var(--text-body);
+  text-align: left;
+}
+
+.homepage-dining-table thead th {
+  background: var(--brand-bar);
+  color: var(--text-on-brand);
+  font-weight: bold;
+  text-transform: uppercase;
+  border: none;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+}
+
+.home-hours-row .library-hours-table td:first-child,
+.homepage-dining-table th:first-child,
+.homepage-dining-table td:first-child {
+  width: 22%;
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.home-hours-row .library-hours-table td:first-child:hover,
+.home-hours-row .library-hours-table td:first-child:focus-within,
+.homepage-dining-table td:first-child:hover,
+.homepage-dining-table td:first-child:focus-within {
+  position: relative;
+  z-index: 8;
+}
+
+.homepage-dining-empty {
+  color: var(--text-subtle);
+  text-align: center;
+}
+
+.homepage-hours-name {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.homepage-hours-name b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.homepage-status-dot {
+  flex: 0 0 auto;
+  position: relative;
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  box-sizing: border-box;
+  background: transparent;
+  border: 2px solid var(--dining-closed-border);
+  cursor: default;
+  z-index: 1;
+}
+
+.homepage-status-tooltip {
+  visibility: hidden;
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  bottom: calc(100% + 0.35rem);
+  width: max-content;
+  max-width: 14rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background: var(--surface-raised);
+  color: var(--text-body);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 2px 8px var(--shadow);
+  font-size: 0.95em;
+  font-weight: normal;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.homepage-status-dot:hover .homepage-status-tooltip,
+.homepage-status-dot:focus-visible .homepage-status-tooltip {
+  visibility: visible;
+}
+
+.homepage-status-dot-open {
+  border-color: var(--dining-open-border);
+}
+
+.homepage-status-dot-soon {
+  border-color: var(--dining-soon-border);
+}
+
+.homepage-status-dot-closed {
+  border-color: var(--dining-closed-border);
+}
+
+.homepage-dining-meal-cell {
+  position: relative;
+  overflow: hidden;
+}
+
+.homepage-dining-meal-cell .homepage-dining-cell {
+  position: relative;
+  z-index: 1;
+}
+
+.homepage-dining-meal-cell.dining-meal-status-soon {
+  background: var(--dining-soon-bg);
+}
+
+.homepage-dining-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.homepage-dining-cell-hours {
+  min-width: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.homepage-dining-hours .dining-meal-menu-btn {
+  flex: 0 0 auto;
+}
+
+.homepage-skeleton-line {
+  display: inline-block;
+  height: 0.75em;
+  max-width: 100%;
+  border-radius: 2px;
+  vertical-align: middle;
+  background: linear-gradient(
+    -90deg,
+    var(--border-divider) 0%,
+    var(--border-input) 50%,
+    var(--border-divider) 100%
+  );
+  background-size: 400% 400%;
+  animation: homepage-skeleton-pulse 1.2s ease-in-out infinite;
+}
+
+.homepage-skeleton-dot {
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 2px solid var(--border-divider);
+  background: linear-gradient(
+    -90deg,
+    var(--border-divider) 0%,
+    var(--border-input) 50%,
+    var(--border-divider) 100%
+  );
+  background-size: 400% 400%;
+  animation: homepage-skeleton-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes homepage-skeleton-pulse {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: -135% 0%;
+  }
+}
+
+@media screen and (max-width: 48.125em) {
+  .home-hours-row {
+    flex-direction: column;
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  .home-hours-row .library-hours,
+  .homepage-dining-hours {
+    flex: none;
+    width: 100%;
+  }
 }
