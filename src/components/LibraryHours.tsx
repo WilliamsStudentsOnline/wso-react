@@ -54,24 +54,24 @@ const LibraryHoursInterval = ({
   close: string;
 }) => {
   const progress = useOpenProgress(open, close);
-  const isOpenProgress = progress !== null;
-  const openProgressStyle = isOpenProgress
-    ? ({
-        ["--open-progress" as string]: `${Math.round(progress * 100)}%`,
-      } as React.CSSProperties)
-    : undefined;
+  const openProgressStyle =
+    progress === null
+      ? undefined
+      : ({
+          ["--open-progress" as string]: `${Math.round(progress * 100)}%`,
+        } as React.CSSProperties);
 
   return (
     <td
       className={[
         "library-hours-cell",
-        isOpenProgress ? "dining-meal-has-progress" : "",
+        progress !== null ? "dining-meal-has-progress" : "",
       ]
         .filter(Boolean)
         .join(" ")}
       style={openProgressStyle}
     >
-      {isOpenProgress ? (
+      {progress !== null ? (
         <div className="dining-meal-progress-fill" aria-hidden />
       ) : null}
       <span className="library-hours-cell-label">
@@ -128,30 +128,32 @@ const LibraryHoursTable = () => {
           </tr>
         </thead>
         <tbody>
-          {services.map((svc) =>
-            svc.hours.open === null ? (
-              <tr key={`${svc.name}-no-hours`}>
-                <td>
-                  <b>{svc.name}</b>
-                </td>
-                <td className="library-hours-empty">(no hours)</td>
-              </tr>
-            ) : (
-              svc.hours.open.map((open, i) => (
-                <tr key={`${svc.name}-${i}`}>
-                  {i === 0 && (
-                    <td rowSpan={svc.hours.open.length}>
-                      <b>{svc.name}</b>
-                    </td>
-                  )}
-                  <LibraryHoursInterval
-                    open={open}
-                    close={svc.hours.close?.[i] || ""}
-                  />
+          {services.map((svc) => {
+            const openTimes = svc.hours.open;
+            if (openTimes === null) {
+              return (
+                <tr key={`${svc.name}-no-hours`}>
+                  <td>
+                    <b>{svc.name}</b>
+                  </td>
+                  <td className="library-hours-empty">(no hours)</td>
                 </tr>
-              ))
-            )
-          )}
+              );
+            }
+            return openTimes.map((open, i) => (
+              <tr key={`${svc.name}-${i}`}>
+                {i === 0 && (
+                  <td rowSpan={openTimes.length}>
+                    <b>{svc.name}</b>
+                  </td>
+                )}
+                <LibraryHoursInterval
+                  open={open}
+                  close={svc.hours.close?.[i] || ""}
+                />
+              </tr>
+            ));
+          })}
         </tbody>
       </table>
     </div>
