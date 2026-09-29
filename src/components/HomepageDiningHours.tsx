@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import "../stylesheets/Dining.css";
+import "./stylesheets/Dining.css";
 import {
   DINING_MEAL_SLOTS,
   DiningMealSlot,
