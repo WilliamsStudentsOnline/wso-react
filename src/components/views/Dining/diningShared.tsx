@@ -162,7 +162,7 @@ export const getDiningStatusPill = (style: string): DiningStatusPill => {
     return { label: "Open", kind: "open" };
   }
   if (style === "Closing") {
-    return { label: "Open", kind: "soon" };
+    return { label: "Open", kind: "open" };
   }
   if (style === "Opening") {
     return { label: "Soon", kind: "soon" };
