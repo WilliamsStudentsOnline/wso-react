@@ -317,6 +317,7 @@ input[type="submit"] {
 
 .homepage-dining-status-dot {
   flex: 0 0 auto;
+  position: relative;
   display: inline-block;
   width: 0.65rem;
   height: 0.65rem;
@@ -325,6 +326,33 @@ input[type="submit"] {
   background: transparent;
   border: 2px solid var(--dining-closed-border);
   cursor: default;
+}
+
+.homepage-dining-status-tooltip {
+  visibility: hidden;
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: calc(100% + 0.35rem);
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 14rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background: var(--surface-raised);
+  color: var(--text-body);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 2px 8px var(--shadow);
+  font-size: 0.8em;
+  font-weight: normal;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.homepage-dining-status-dot:hover .homepage-dining-status-tooltip,
+.homepage-dining-status-dot:focus-visible .homepage-dining-status-tooltip {
+  visibility: visible;
 }
 
 .homepage-dining-status-dot-open {

@@ -78,9 +78,12 @@ const HomepageDiningVendorRow = ({
         <span className="homepage-dining-hall">
           <span
             className={`homepage-dining-status-dot homepage-dining-status-dot-${pill.kind}`}
-            title={message}
             aria-label={`${pill.label}: ${message}`}
-          />
+          >
+            <span className="homepage-dining-status-tooltip" role="tooltip">
+              {message}
+            </span>
+          </span>
           <b>{vendor.name}</b>
         </span>
       </td>
