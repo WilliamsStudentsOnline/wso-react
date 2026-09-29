@@ -1,31 +1,15 @@
 // React imports
-import React, { useState } from "react";
+import React from "react";
 
 // Component imports
 import "./stylesheets/Homepage.css";
 import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 
-// Redux Imports
-import { useNavigate } from "react-router-dom";
 import { PostType } from "../lib/types";
 import LibraryHoursTable from "./LibraryHours";
 import HomepageDiningHours from "./HomepageDiningHours";
 
 const Homepage = () => {
-  const navigateTo = useNavigate();
-  const [searchInputValue, setSearchInputValue] = useState("");
-
-  const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
-    if (searchInputValue.trim()) {
-      navigateTo(`/facebook?q=${encodeURIComponent(searchInputValue.trim())}`);
-    }
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInputValue(event.target.value);
-  };
-
   const joinHeaderText = "Install the new WSO Mobile iOS app!"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
   const joinHeaderLink =
     "https://apps.apple.com/us/app/wso-mobile-rewritten/id6755857250";
@@ -57,24 +41,6 @@ const Homepage = () => {
             <h4 className="text-center" id="tagline">
               <i>By Students, For Students!</i>
             </h4>
-          </div>
-          <br />
-          <div className="search-bar">
-            <form onSubmit={submitHandler}>
-              <input
-                aria-label="Search box for Facebook"
-                type="search"
-                placeholder="Search Facebook..."
-                value={searchInputValue}
-                onChange={handleInputChange}
-              />
-              <input
-                data-disable-with="Search"
-                type="submit"
-                value="Search"
-                className="submit"
-              />
-            </form>
           </div>
         </header>
         <article className="home-hours-row">
