@@ -52,7 +52,19 @@
   padding-bottom: 0 !important;
   padding-left: 0.75em;
   padding-right: 0.75em;
-  border: 2px solid rgba(17, 17, 17, 0.15);
+  border: 2px solid var(--border-input);
+  background-color: var(--surface-page);
+  color: var(--text-body);
+  transition: none;
+  box-shadow: none;
+}
+
+.wso-search-bar__row input[type="search"]:hover,
+.wso-search-bar__row input[type="search"]:focus {
+  border-color: var(--border-input);
+  background-color: var(--surface-page);
+  box-shadow: none;
+  outline: none;
 }
 
 .wso-search-bar__row input[type="submit"],
@@ -63,7 +75,17 @@
   padding-bottom: 0 !important;
   padding-left: 1.25em;
   padding-right: 1.25em;
-  border: 1px solid var(--brand-primary-hover, #6f4399);
+  border: 1px solid var(--brand-bar-hover);
+  background: var(--brand-bar);
+  color: var(--text-on-brand);
+}
+
+.wso-search-bar__row input[type="submit"]:hover,
+.wso-search-bar__row input[type="submit"]:active,
+.wso-search-bar__row input[type="submit"].submit:hover,
+.wso-search-bar__row input[type="submit"].submit:active {
+  background: var(--brand-bar-active);
+  border-color: var(--brand-bar-active);
 }
 
 .wso-search-bar__actions {

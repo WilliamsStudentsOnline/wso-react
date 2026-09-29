@@ -530,7 +530,7 @@ const MajorBuilder = ({
     return reqs.map((req, index) => {
       const count = aprData[req.key];
       const isMet = count >= req.target;
-      const color = isMet ? "#1a8754" : "#6c757d";
+      const color = isMet ? "var(--status-success)" : "var(--text-muted)";
 
       return (
         <span
@@ -540,7 +540,11 @@ const MajorBuilder = ({
           {req.label}: {count}/{req.target}
           {index < reqs.length - 1 && (
             <span
-              style={{ color: "#ccc", marginLeft: "10px", marginRight: "0px" }}
+              style={{
+                color: "var(--border-default)",
+                marginLeft: "10px",
+                marginRight: "0px",
+              }}
             >
               |
             </span>

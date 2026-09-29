@@ -6,9 +6,9 @@
 
 .wso-btn--primary,
 .wso-btn--submit {
-  background: var(--brand-primary);
-  color: var(--text-inverse);
-  border: 1px solid var(--brand-primary);
+  background: var(--brand-bar);
+  color: var(--text-on-brand);
+  border: 1px solid var(--brand-bar);
   border-radius: 2px;
   padding: 0.5rem 1.25rem;
   margin: 0.5rem;
@@ -16,7 +16,7 @@
 
 .wso-btn--primary:active,
 .wso-btn--submit:active {
-  background: var(--brand-primary-active);
+  background: var(--brand-bar-active);
 }
 
 .wso-btn--primary:disabled,
@@ -27,17 +27,18 @@
 
 .wso-btn--secondary {
   color: var(--brand-primary);
-  border-color: var(--brand-primary-hover);
+  border-color: var(--brand-bar-hover);
 }
 
 .wso-btn--inverted {
-  background: var(--brand-primary-hover);
+  background: var(--brand-bar-hover);
+  color: var(--text-on-brand);
 }
 
 .wso-btn--toggle {
   background: none;
   color: var(--brand-primary);
-  border: 1px solid var(--brand-primary-hover);
+  border: 1px solid var(--brand-bar-hover);
 }
 
 .wso-btn--link {

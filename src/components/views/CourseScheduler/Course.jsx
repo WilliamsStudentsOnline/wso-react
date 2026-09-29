@@ -48,10 +48,10 @@ const FactrakRatingBox = ({ showFactrakScore, course }) => {
   };
 
   const getRatingColor = (rating) => {
-    if (rating >= 80) return "#1a8754";
-    if (rating >= 60) return "#ffc107";
-    if (rating >= 40) return "#fd7e14";
-    return "#dc3545";
+    if (rating >= 80) return "var(--status-success)";
+    if (rating >= 60) return "var(--status-warning)";
+    if (rating >= 40) return "var(--status-warning)";
+    return "var(--status-danger)";
   };
 
   const getFactrakRating = () => {
@@ -294,7 +294,7 @@ const Course = ({
         }&courseDisplayName=${course.number}&sectionDisplayName=${
           course.section
         }`}
-        style={{ color: "rebeccapurple" }}
+        style={{ color: "var(--brand-primary)" }}
       >
         View Course Book Information
       </a>
@@ -307,7 +307,7 @@ const Course = ({
     return (
       <a
         href={`${baseCatalogLink}/${course.department}/detail/?strm=${course.semID}&cn=${course.number}&crsid=${course.courseID}&req_year=0`}
-        style={{ color: "rebeccapurple" }}
+        style={{ color: "var(--brand-primary)" }}
       >
         View Catalog Information
       </a>
