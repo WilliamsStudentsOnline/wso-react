@@ -6,6 +6,7 @@ import React, {
   ReactNode,
 } from "react";
 import { MdClose, MdRestaurantMenu } from "react-icons/md";
+import { normalizeClockTime } from "../../../lib/timeFormat";
 
 export const MENU_ANIM_MS = 220;
 
@@ -62,7 +63,8 @@ export const parseAndAdjustTime = (
   isCloseTime: boolean,
   openTimeStr?: string
 ): Date => {
-  const timeMatch = timeStr.match(/(\d{1,2}):(\d{2})(am|pm)/i);
+  const normalized = normalizeClockTime(timeStr);
+  const timeMatch = normalized.match(/(\d{1,2}):(\d{2})(am|pm)/i);
   if (!timeMatch) {
     console.warn("Invalid time format:", timeStr);
     const invalidDate = new Date();

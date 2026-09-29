@@ -197,6 +197,21 @@ input[type="submit"] {
   padding: 0.75em 1.5em;
 }
 
+.library-hours-cell {
+  position: relative;
+  overflow: hidden;
+}
+
+.library-hours-cell-label {
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.library-hours-empty {
+  color: var(--text-subtle);
+}
+
 .home-hours-row {
   display: flex;
   align-items: flex-start;

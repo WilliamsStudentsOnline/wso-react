@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import "./stylesheets/Dining.css";
+import { formatCompactHours } from "../lib/timeFormat";
 import {
   DINING_MEAL_SLOTS,
   DiningMealSlot,
@@ -26,24 +27,6 @@ const findMealForSlot = (
   );
   if (!entry) return null;
   return { key: entry[0], meal: entry[1] };
-};
-
-const compactTimePart = (time: string): string =>
-  time.replace(/:00(?=[ap]m)/i, "");
-
-const formatCompactHours = (open: string, close: string): string => {
-  let openPart = compactTimePart(open);
-  const closePart = compactTimePart(close);
-  const openMeridiem = openPart.match(/([ap]m)$/i)?.[1];
-  const closeMeridiem = closePart.match(/([ap]m)$/i)?.[1];
-  if (
-    openMeridiem &&
-    closeMeridiem &&
-    openMeridiem.toLowerCase() === closeMeridiem.toLowerCase()
-  ) {
-    openPart = openPart.replace(/[ap]m$/i, "");
-  }
-  return `${openPart}–${closePart}`;
 };
 
 const activeSlotsForVendors = (vendors: Vendor[]): DiningMealSlot[] => {
