@@ -144,7 +144,6 @@ const HomepageDiningVendorRow = ({
   );
 };
 
-/** Cafe / retail spots — still shown on the Dining page, not the homepage summary. */
 const HOMEPAGE_HIDDEN_VENDOR_IDS = new Set([
   "82-grill",
   "lees-snack-bar",

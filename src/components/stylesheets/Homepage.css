@@ -17,21 +17,11 @@
   text-align: center;
 }
 
-.home header {
-  padding-bottom: 0.75em;
-}
-
-@media screen and (max-width: 43.75em) {
-  .home header {
-    padding-bottom: 1em;
-  }
-}
-
 .search-bar {
   display: flex;
   flex-direction: row;
   margin-right: 80px;
-  padding: 8px 0;
+  padding: 8px 0 0;
 }
 
 .search-bar input[type="search"],
@@ -228,18 +218,27 @@ input[type="submit"] {
   color: var(--text-subtle);
 }
 
+.home-hours-row::before,
+.home-hours-row::after {
+  content: none;
+  display: none;
+}
+
 .home-hours-row {
-  display: flex;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: repeat(3, var(--home-col));
   gap: var(--home-gap);
-  width: min(100%, calc(var(--home-col) * 3 + var(--home-gap) * 2));
+  justify-content: center;
+  align-items: start;
+  width: 100%;
   box-sizing: border-box;
   overflow: visible;
   margin: 0 auto;
 }
 
 .home-hours-row .library-hours {
-  flex: 1 1 0;
+  grid-column: 1;
+  width: 100%;
   max-width: none;
   margin: 0;
   min-width: 0;
@@ -281,7 +280,8 @@ input[type="submit"] {
 }
 
 .homepage-dining-hours {
-  flex: 2 1 0;
+  grid-column: 2 / span 2;
+  width: 100%;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -489,14 +489,14 @@ input[type="submit"] {
 
 @media screen and (max-width: 48.125em) {
   .home-hours-row {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     width: 100%;
     padding: 0 1rem;
   }
 
   .home-hours-row .library-hours,
   .homepage-dining-hours {
-    flex: none;
+    grid-column: 1;
     width: 100%;
   }
 }

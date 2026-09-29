@@ -3533,11 +3533,11 @@ ul#tag-list .tag-input {
 }
 .home header {
   padding-top: 3em;
-  padding-bottom: 2em;
+  padding-bottom: 0.5em;
 }
 @media screen and (max-width: 43.75em) {
   .home header {
-    padding-bottom: 4em;
+    padding-bottom: 0.75em;
   }
 }
 .home header h1 {

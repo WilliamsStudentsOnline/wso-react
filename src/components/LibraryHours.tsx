@@ -84,9 +84,7 @@ const useLibraryStatus = (intervals: Interval[]) => {
             message:
               diffMinutes < 60
                 ? `Closes in ${Math.round(diffMinutes)} min`
-                : `Open until ${
-                    formatCompactHours(open, close).split("–")[1] || close
-                  }`,
+                : `Open until ${normalizeClockTime(close)}`,
           });
           return;
         }
@@ -94,15 +92,13 @@ const useLibraryStatus = (intervals: Interval[]) => {
         if (now < openDateTime) {
           if (!nextOpenTime || openDateTime < nextOpenTime) {
             nextOpenTime = openDateTime;
-            nextOpenLabel = open;
+            nextOpenLabel = normalizeClockTime(open);
             const diffMinutes =
               (openDateTime.getTime() - now.getTime()) / 1000 / 60;
             nextOpenMessage =
               diffMinutes < 60
                 ? `Opens in ${Math.round(diffMinutes)} min`
-                : `Opens at ${
-                    formatCompactHours(open, close).split("–")[0] || open
-                  }`;
+                : `Opens at ${normalizeClockTime(open)}`;
           }
         }
       }
