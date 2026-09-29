@@ -5,7 +5,12 @@ export const THEME_STORAGE_KEY = "wso-theme";
 
 type ViewTransitionLike = {
   finished: Promise<void>;
+  skipTransition?: () => void;
 };
+
+const VIEW_TRANSITION_TIMEOUT_MS = 1000;
+
+let activeTransition: ViewTransitionLike | null = null;
 
 type DocumentWithViewTransition = Document & {
   startViewTransition?: (
@@ -83,13 +88,30 @@ export const applyResolvedTheme = (
     return null;
   }
 
+  activeTransition?.skipTransition?.();
+
   root.classList.add("theme-switching");
   const transition = startViewTransition.bind(doc)(() => {
     setThemeAttributes(resolved);
   });
-  transition.finished.finally(() => {
-    root.classList.remove("theme-switching");
-  });
+  activeTransition = transition;
+
+  const timeout = window.setTimeout(() => {
+    transition.skipTransition?.();
+  }, VIEW_TRANSITION_TIMEOUT_MS);
+
+  transition.finished
+    .catch(() => undefined)
+    .finally(() => {
+      window.clearTimeout(timeout);
+      if (activeTransition === transition) {
+        activeTransition = null;
+        root.classList.remove("theme-switching");
+      }
+      if (getDocumentTheme() !== resolved && activeTransition === null) {
+        setThemeAttributes(resolved);
+      }
+    });
   return transition;
 };
 

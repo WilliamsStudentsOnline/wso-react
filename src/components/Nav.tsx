@@ -287,9 +287,6 @@ const Nav = () => {
                 type="button"
                 className="theme-toggle"
                 onClick={cyclePreference}
-                title={`Theme: ${themePreferenceLabel(
-                  preference
-                )} (click to cycle Light / Dark / System)`}
                 aria-label={`Theme ${themePreferenceLabel(
                   preference
                 )}. Click to cycle.`}

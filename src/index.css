@@ -17,6 +17,10 @@ code {
 }
 
 @supports (view-transition-name: none) {
+  ::view-transition {
+    pointer-events: none;
+  }
+
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation-duration: 0.2s;
