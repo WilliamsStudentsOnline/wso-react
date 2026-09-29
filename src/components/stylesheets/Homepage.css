@@ -241,13 +241,6 @@ input[type="submit"] {
   vertical-align: middle;
 }
 
-.home-hours-row .library-hours-table tbody tr:nth-child(even) td,
-.home-hours-row .library-hours-table tbody tr:nth-child(odd) td,
-.homepage-dining-table tbody tr:nth-child(even) td,
-.homepage-dining-table tbody tr:nth-child(odd) td {
-  background: var(--surface-muted);
-}
-
 .home-hours-row .library-hours-table thead th,
 .homepage-dining-table thead th {
   height: 2.75rem;
