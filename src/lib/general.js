@@ -19,12 +19,6 @@ export const scopes = {
   // admin endpoints and allowing certain admin-level write actions (need write-self for normal actions, though).
   ScopeFactrakAdmin: "service:factrak:admin",
 
-  // Service: Dormtrak
-  // Access to dormtrak reviews, etc.
-  ScopeDormtrak: "service:dormtrak",
-  // Ability to create reviews, etc. (must be upperclass)
-  ScopeDormtrakWrite: "service:dormtrak:write",
-
   ScopeEphcatch: "service:ephcatch",
   ScopeBulletin: "service:bulletin",
   // This is for facebook & users

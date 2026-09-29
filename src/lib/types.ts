@@ -20,7 +20,6 @@ export interface User {
   unixID: string;
   dormRoomID?: number;
   dormRoom?: ModelsDormRoom;
-  hasAcceptedDormtrakPolicy?: boolean;
   type?: string;
   pronoun?: string;
   visible?: boolean;

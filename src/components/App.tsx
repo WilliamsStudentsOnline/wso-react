@@ -35,7 +35,6 @@ const MobilePrivacyPolicy = lazy(
   () => import("./views/Misc/MobilePrivacyPolicy")
 );
 const FacebookMain = lazy(() => import("./views/Facebook/FacebookMain"));
-const DormtrakMain = lazy(() => import("./views/Dormtrak/DormtrakMain"));
 const FactrakMain = lazy(() => import("./views/Factrak/FactrakMain"));
 const BooktrakMain = lazy(() => import("./views/Booktrak/BooktrakMain"));
 const EphmatchMain = lazy(() => import("./views/Ephmatch/EphmatchMain"));
@@ -193,14 +192,6 @@ const App = () => {
             element={
               <RequireScope token={apiToken} name="booktrak">
                 <BooktrakMain />
-              </RequireScope>
-            }
-          />
-          <Route
-            path="dormtrak/*"
-            element={
-              <RequireScope token={apiToken} name="dormtrak">
-                <DormtrakMain />
               </RequireScope>
             }
           />

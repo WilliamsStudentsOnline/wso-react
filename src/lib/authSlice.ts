@@ -102,7 +102,6 @@ const authSlice = createSlice({
         admin: newUser.admin,
         unixID: newUser.unixID ?? "",
         dormRoomID: newUser.dormRoomID,
-        hasAcceptedDormtrakPolicy: newUser.hasAcceptedDormtrakPolicy,
         type: newUser.type,
         pronoun: newUser.pronoun,
         visible: newUser.visible,

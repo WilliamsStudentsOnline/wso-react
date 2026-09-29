@@ -217,7 +217,6 @@ describe("Authentication Reducer", () => {
       dormVisible: true,
       factrakAdmin: false,
       factrakSurveyDeficit: 2,
-      hasAcceptedDormtrakPolicy: true,
       hasAcceptedFactrakPolicy: true,
       homeVisible: false,
       id: 2,

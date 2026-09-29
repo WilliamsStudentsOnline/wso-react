@@ -81,12 +81,12 @@ const About = () => {
           <p>
             WSO claims no responsibility for its users&rsquo; content in pages
             hosted on our servers, including forum posts, announcements,
-            Factrak, Dormtrak, Willipedia pages, or other material. These do not
-            reflect the actions and views of WSO, its administrators and staff,
-            or other users. WSO neither endorses nor opposes any political
-            candidate or organization. Given that we are a small, student-run
-            organization, we rely on the users themselves to notify us when they
-            deem something offensive, personal, or inappropriate to the general
+            Factrak, Willipedia pages, or other material. These do not reflect
+            the actions and views of WSO, its administrators and staff, or other
+            users. WSO neither endorses nor opposes any political candidate or
+            organization. Given that we are a small, student-run organization,
+            we rely on the users themselves to notify us when they deem
+            something offensive, personal, or inappropriate to the general
             public. If you deem something unfit for the site, please contact
             wso-staff [at] wso.williams.edu identifying the offending
             information and where it can be found. Thank you for your
