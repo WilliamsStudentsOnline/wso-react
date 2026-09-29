@@ -58,7 +58,8 @@
 .list-date {
   display: block;
   background: var(--color-bulletin-list-date-bg);
-  padding-left: 5px;
+  padding: 0.2em 0.65em;
+  border-radius: 999px;
   font-variant: small-caps;
   font-weight: bold;
   color: var(--color-bulletin-list-date-fg);
@@ -67,6 +68,8 @@
   /*STANDARD*/
   font-size: 0.9em;
   text-align: center;
+  line-height: 1.4;
+  box-sizing: border-box;
 }
 
 .bulletin {
