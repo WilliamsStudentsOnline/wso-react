@@ -136,7 +136,6 @@ const FactrakProfessor = () => {
           <FactrakRatingsSkeleton />
           <br />
           <h3>Comments</h3>
-          <br />
           <FactrakDeficitMessage currUser={currUser} />
           <div id="factrak-comments-section">
             {[...Array(10)].map((_, i) => (
@@ -171,7 +170,6 @@ const FactrakProfessor = () => {
         <br />
 
         <h3>Comments</h3>
-        <br />
         <FactrakDeficitMessage currUser={currUser} />
         <div id="factrak-comments-section">
           {surveys && surveys.length > 0
