@@ -29,7 +29,7 @@
     "serialize-javascript": "6.0.2",
     "timeago.js": "^4.0.0-beta.2",
     "typeface-source-sans-pro": "^0.0.75",
-    "wso-api-client": "24.02.19"
+    "wso-api-client": "^24.11.10"
   },
   "devDependencies": {
     "@types/jest": "^27.5.1",
