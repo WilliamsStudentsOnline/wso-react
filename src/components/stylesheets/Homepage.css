@@ -17,21 +17,11 @@
   text-align: center;
 }
 
-.home header {
-  padding-bottom: 0.4em;
-}
-
-@media screen and (max-width: 43.75em) {
-  .home header {
-    padding-bottom: 0.6em;
-  }
-}
-
 .search-bar {
   display: flex;
   flex-direction: row;
   margin-right: 80px;
-  padding: 8px 0;
+  padding: 8px 0 0;
 }
 
 .search-bar input[type="search"],
