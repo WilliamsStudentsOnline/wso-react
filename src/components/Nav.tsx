@@ -17,6 +17,9 @@ const Nav = () => {
   const wso = useAppSelector(getWSO);
 
   const [menuVisible, updateMenuVisibility] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<"games" | "more" | null>(
+    null
+  );
   const [userPhoto, updateUserPhoto] = useState<string | undefined>(undefined);
   const [ephmatchVisibility, updateEphmatchVisibility] = useState(0);
   // 0 - off, 1 - on, 2 - senior only
@@ -67,14 +70,19 @@ const Nav = () => {
     }
 
     updateMenuVisibility(false);
+    setOpenDropdown(null);
   }, [currUser, wso]);
 
   const logout = () => {
     dispatch(removeCredentials());
   };
 
+  const toggleDropdown = (id: "games" | "more") => {
+    setOpenDropdown((prev) => (prev === id ? null : id));
+  };
+
   return (
-    <nav>
+    <nav className="site-nav">
       <div className="nav-container">
         <span className="nav-left-container">
           <a
@@ -103,40 +111,58 @@ const Nav = () => {
             <li>
               <Link to="facebook">Facebook</Link>
             </li>
-            <li>
-              <Link to="booktrak">Booktrak</Link>
-            </li>
             {currUser?.type === userTypeStudent && (
-              <>
-                <li>
-                  <Link to="factrak">Factrak</Link>
-                </li>
-                <li>
-                  <Link to="dormtrak">Dormtrak</Link>
-                </li>
-              </>
+              <li>
+                <Link to="factrak">Factrak</Link>
+              </li>
             )}
-
             <li>
-              <Link to="faq">FAQ</Link>
-            </li>
-
-            <li>
-              <Link to="schedulecourses">Course Scheduler</Link>
+              <a href="https://listserv-wso.williams.edu">Listserv</a>
             </li>
             <li
-              className="dropdown"
-              onClick={(e) => e.currentTarget.classList.toggle("open")}
+              className={`dropdown${openDropdown === "games" ? " open" : ""}`}
             >
-              <a href="#" className="dropbtn">
-                more ▾
+              <a
+                href="#"
+                className="dropbtn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  toggleDropdown("games");
+                }}
+              >
+                Games ▾
+              </a>
+              <ul className="dropdown-content">
+                <li>
+                  <a href="https://wso.williams.edu/orgs/trivia/index.html">
+                    Williams Trivia
+                  </a>
+                </li>
+                <li>
+                  <a href="https://wso.williams.edu/bluemap/">Minecraft</a>
+                </li>
+                <li>
+                  <a href="https://warp-wso.williams.edu">Warp Foundry</a>
+                </li>
+              </ul>
+            </li>
+            <li className={`dropdown${openDropdown === "more" ? " open" : ""}`}>
+              <a
+                href="#"
+                className="dropbtn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  toggleDropdown("more");
+                }}
+              >
+                More ▾
               </a>
               <ul className="dropdown-content">
                 <li>
                   <a href="/about">About</a>
                 </li>
                 <li>
-                  <a href="https://listserv-wso.williams.edu">Listserv</a>
+                  <Link to="faq">FAQ</Link>
                 </li>
                 <li>
                   <a href="https://status-wso.williams.edu">Status</a>
@@ -148,20 +174,7 @@ const Nav = () => {
                   <a href="/wiki/">Developer Wiki</a>
                 </li>
                 <li>
-                  <a href="https://wso.williams.edu/bluemap/">Minecraft</a>
-                </li>
-                <li>
-                  <a href="https://wso.williams.edu/orgs/trivia/index.html">
-                    Williams Trivia
-                  </a>
-                </li>
-                <li>
-                  <a href="https://warp-wso.williams.edu">WARP Foundry</a>
-                </li>
-                <li>
-                  <a href="https://github.com/WilliamsStudentsOnline">
-                    WSO Github
-                  </a>
+                  <a href="https://github.com/WilliamsStudentsOnline">Github</a>
                 </li>
               </ul>
             </li>
