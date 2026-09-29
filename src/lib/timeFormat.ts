@@ -9,6 +9,9 @@ export const normalizeClockTime = (timeStr: string): string => {
 const compactTimePart = (time: string): string =>
   normalizeClockTime(time).replace(/:00(?=[ap]m)/i, "");
 
+const isNoonOrMidnight = (part: string): boolean =>
+  /^12(:\d{2})?[ap]m$/i.test(part);
+
 export const formatCompactHours = (open: string, close: string): string => {
   let openPart = compactTimePart(open);
   const closePart = compactTimePart(close);
@@ -17,7 +20,9 @@ export const formatCompactHours = (open: string, close: string): string => {
   if (
     openMeridiem &&
     closeMeridiem &&
-    openMeridiem.toLowerCase() === closeMeridiem.toLowerCase()
+    openMeridiem.toLowerCase() === closeMeridiem.toLowerCase() &&
+    !isNoonOrMidnight(openPart) &&
+    !isNoonOrMidnight(closePart)
   ) {
     openPart = openPart.replace(/[ap]m$/i, "");
   }

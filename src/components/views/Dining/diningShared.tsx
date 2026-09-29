@@ -87,6 +87,7 @@ export const parseAndAdjustTime = (
     if (date.getTime() <= openDate.getTime()) {
       date.setDate(date.getDate() + 1);
     }
+    return date;
   }
 
   const currentHour = baseDate.getHours();
