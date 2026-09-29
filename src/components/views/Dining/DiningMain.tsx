@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import "../../stylesheets/Dining.css";
 import ServiceHeader from "../../ui/ServiceHeader";
@@ -7,174 +7,15 @@ import {
   Meal,
   Vendor,
   capitalizeMeal,
+  getDiningStatusPill,
   getMealOrder,
   mealHasMenu,
   mealMenuId,
-  parseAndAdjustTime,
   useDiningData,
   useDiningMenus,
+  useVendorStatus,
   MealMenuButton,
 } from "./diningShared";
-
-const useVendorStatus = (vendorMeals: Record<string, Meal>) => {
-  const [status, setStatus] = useState<{
-    style: string;
-    message: string;
-    isOpen: boolean;
-    currentMealName: string | null;
-    nextMealName: string | null;
-    nextMealKey: string | null;
-    openProgress: number | null;
-  }>({
-    style: "Closed",
-    message: "Closed",
-    isOpen: false,
-    currentMealName: null,
-    nextMealName: null,
-    nextMealKey: null,
-    openProgress: null,
-  });
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 60 * 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    let calculatedStatus: typeof status = {
-      style: "Closed",
-      message: "Closed for the day",
-      isOpen: false,
-      currentMealName: null,
-      nextMealName: null,
-      nextMealKey: null,
-      openProgress: null,
-    };
-    let nextOpenTime: Date | null = null;
-    let tempNextMealName: string | null = null;
-    let tempNextMealKey: string | null = null;
-    let tempNextOpenMessage = "";
-
-    const sortedMealEntries = Object.entries(vendorMeals)
-      .filter(([, meal]) => meal.hours)
-      .sort(([, a], [, b]) => getMealOrder(a.name) - getMealOrder(b.name));
-
-    for (const [mealKey, meal] of sortedMealEntries) {
-      if (!meal.hours) continue;
-
-      const openDateTime = parseAndAdjustTime(
-        meal.hours.open,
-        currentTime,
-        false
-      );
-      const closeDateTime = parseAndAdjustTime(
-        meal.hours.close,
-        currentTime,
-        true,
-        meal.hours.open
-      );
-
-      if (currentTime >= openDateTime && currentTime < closeDateTime) {
-        const diffMinutes =
-          (closeDateTime.getTime() - currentTime.getTime()) / 1000 / 60;
-        const totalMs = closeDateTime.getTime() - openDateTime.getTime();
-        const elapsedMs = currentTime.getTime() - openDateTime.getTime();
-        const openProgress =
-          totalMs > 0 ? Math.min(1, Math.max(0, elapsedMs / totalMs)) : 0;
-        calculatedStatus = {
-          style: diffMinutes < 60 ? "Closing" : "Open",
-          message:
-            diffMinutes < 60
-              ? `Closes in ${Math.round(diffMinutes)} min`
-              : `Open until ${meal.hours.close}`,
-          isOpen: true,
-          currentMealName: meal.name,
-          nextMealName: null,
-          nextMealKey: null,
-          openProgress,
-        };
-        nextOpenTime = null;
-        tempNextMealName = null;
-        tempNextMealKey = null;
-        break;
-      }
-
-      if (currentTime < openDateTime) {
-        if (!nextOpenTime || openDateTime < nextOpenTime) {
-          nextOpenTime = openDateTime;
-          tempNextMealName = meal.name;
-          tempNextMealKey = mealKey;
-          const diffMinutes =
-            (openDateTime.getTime() - currentTime.getTime()) / 1000 / 60;
-          if (diffMinutes < 60) {
-            tempNextOpenMessage = `Opens in ${Math.round(diffMinutes)} min`;
-            calculatedStatus = {
-              style: "Opening",
-              message: tempNextOpenMessage,
-              isOpen: false,
-              currentMealName: null,
-              nextMealName: meal.name,
-              nextMealKey: mealKey,
-              openProgress: null,
-            };
-          } else {
-            tempNextOpenMessage = `Opens at ${meal.hours.open}`;
-            if (calculatedStatus.style === "Closed") {
-              calculatedStatus = {
-                style: "Closed",
-                message: tempNextOpenMessage,
-                isOpen: false,
-                currentMealName: null,
-                nextMealName: meal.name,
-                nextMealKey: mealKey,
-                openProgress: null,
-              };
-            } else {
-              calculatedStatus.nextMealName = meal.name;
-              calculatedStatus.nextMealKey = mealKey;
-            }
-          }
-        }
-      }
-    }
-
-    if (!calculatedStatus.isOpen && !nextOpenTime) {
-      calculatedStatus = {
-        style: "Closed",
-        message: "Closed for the day",
-        isOpen: false,
-        currentMealName: null,
-        nextMealName: null,
-        nextMealKey: null,
-        openProgress: null,
-      };
-    } else if (calculatedStatus.style === "Closed" && tempNextOpenMessage) {
-      calculatedStatus.message = tempNextOpenMessage;
-      calculatedStatus.nextMealName = tempNextMealName;
-      calculatedStatus.nextMealKey = tempNextMealKey;
-    }
-
-    setStatus(calculatedStatus);
-  }, [vendorMeals, currentTime]);
-
-  return status;
-};
-
-type DiningStatusPill = {
-  label: "Open" | "Soon" | "Closed";
-  kind: "open" | "soon" | "closed";
-};
-
-const getDiningStatusPill = (style: string): DiningStatusPill => {
-  if (style === "Open" || style === "Closing") {
-    return { label: "Open", kind: "open" };
-  }
-  if (style === "Opening") {
-    return { label: "Soon", kind: "soon" };
-  }
-  return { label: "Closed", kind: "closed" };
-};
 
 const DiningHoursCard = ({
   vendor,

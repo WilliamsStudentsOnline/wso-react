@@ -6,12 +6,14 @@ import {
   Meal,
   Vendor,
   capitalizeMeal,
+  getDiningStatusPill,
   mealHasMenu,
   mealMenuId,
   mealSlotForName,
   mealSlotLabel,
   useDiningData,
   useDiningMenus,
+  useVendorStatus,
   MealMenuButton,
 } from "./views/Dining/diningShared";
 
@@ -55,6 +57,105 @@ const activeSlotsForVendors = (vendors: Vendor[]): DiningMealSlot[] => {
   return DINING_MEAL_SLOTS.filter((slot) => present.has(slot));
 };
 
+const HomepageDiningVendorRow = ({
+  vendor,
+  slots,
+  openMenuIds,
+  onToggleMenu,
+}: {
+  vendor: Vendor;
+  slots: DiningMealSlot[];
+  openMenuIds: Set<string>;
+  onToggleMenu: (
+    id: string,
+    vendorName: string,
+    meal: Meal,
+    clientX: number
+  ) => void;
+}) => {
+  const { style, message, currentMealName, nextMealName, openProgress } =
+    useVendorStatus(vendor.meals);
+  const pill = getDiningStatusPill(style);
+  const highlightMealName =
+    pill.kind === "open"
+      ? currentMealName
+      : pill.kind === "soon"
+      ? nextMealName
+      : null;
+  const openProgressStyle =
+    pill.kind === "open" && openProgress !== null
+      ? ({
+          ["--open-progress" as string]: `${Math.round(openProgress * 100)}%`,
+        } as React.CSSProperties)
+      : undefined;
+
+  return (
+    <tr className={`homepage-dining-row-status-${pill.kind}`}>
+      <td>
+        <span className="homepage-dining-hall">
+          <span
+            className={`homepage-dining-status-dot homepage-dining-status-dot-${pill.kind}`}
+            title={message}
+            aria-label={`${pill.label}: ${message}`}
+          />
+          <b>{vendor.name}</b>
+        </span>
+      </td>
+      {slots.map((slot) => {
+        const match = findMealForSlot(vendor, slot);
+        if (!match) {
+          return (
+            <td key={slot} className="homepage-dining-empty">
+              —
+            </td>
+          );
+        }
+        const { key, meal } = match;
+        const hoursLabel = meal.hours
+          ? formatCompactHours(meal.hours.open, meal.hours.close)
+          : "—";
+        const id = mealMenuId(vendor.id, key);
+        const showMenu = mealHasMenu(meal);
+        const isHighlighted =
+          highlightMealName !== null && meal.name === highlightMealName;
+        const isOpenProgress =
+          isHighlighted && pill.kind === "open" && openProgress !== null;
+
+        return (
+          <td
+            key={slot}
+            className={[
+              "homepage-dining-meal-cell",
+              isHighlighted ? `dining-meal-status-${pill.kind}` : "",
+              isOpenProgress ? "dining-meal-has-progress" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            style={isOpenProgress ? openProgressStyle : undefined}
+          >
+            {isOpenProgress ? (
+              <div className="dining-meal-progress-fill" aria-hidden />
+            ) : null}
+            <span className="homepage-dining-cell">
+              <span className="homepage-dining-cell-hours">{hoursLabel}</span>
+              {showMenu ? (
+                <MealMenuButton
+                  isActive={openMenuIds.has(id)}
+                  label={`${vendor.name} ${capitalizeMeal(meal.name)}`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onToggleMenu(id, vendor.name, meal, event.clientX);
+                  }}
+                />
+              ) : null}
+            </span>
+          </td>
+        );
+      })}
+    </tr>
+  );
+};
+
 const HomepageDiningHours = () => {
   const { diningData, loading, error } = useDiningData();
   const { openMenuIds, onToggleMenu, anyOpen, menuPanels } =
@@ -94,47 +195,13 @@ const HomepageDiningHours = () => {
         </thead>
         <tbody>
           {vendors.map((vendor) => (
-            <tr key={vendor.id}>
-              <td>
-                <b>{vendor.name}</b>
-              </td>
-              {slots.map((slot) => {
-                const match = findMealForSlot(vendor, slot);
-                if (!match) {
-                  return (
-                    <td key={slot} className="homepage-dining-empty">
-                      —
-                    </td>
-                  );
-                }
-                const { key, meal } = match;
-                const hoursLabel = meal.hours
-                  ? formatCompactHours(meal.hours.open, meal.hours.close)
-                  : "—";
-                const id = mealMenuId(vendor.id, key);
-                const showMenu = mealHasMenu(meal);
-
-                return (
-                  <td key={slot}>
-                    <span className="homepage-dining-cell">
-                      <span className="homepage-dining-cell-hours">
-                        {hoursLabel}
-                      </span>
-                      {showMenu ? (
-                        <MealMenuButton
-                          isActive={openMenuIds.has(id)}
-                          label={`${vendor.name} ${capitalizeMeal(meal.name)}`}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            onToggleMenu(id, vendor.name, meal, event.clientX);
-                          }}
-                        />
-                      ) : null}
-                    </span>
-                  </td>
-                );
-              })}
-            </tr>
+            <HomepageDiningVendorRow
+              key={vendor.id}
+              vendor={vendor}
+              slots={slots}
+              openMenuIds={openMenuIds}
+              onToggleMenu={onToggleMenu}
+            />
           ))}
         </tbody>
       </table>

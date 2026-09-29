@@ -286,6 +286,58 @@ input[type="submit"] {
   text-align: center;
 }
 
+.homepage-dining-hall {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.homepage-dining-hall b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.homepage-dining-status-dot {
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  box-sizing: border-box;
+  background: transparent;
+  border: 2px solid var(--dining-closed-border);
+  cursor: default;
+}
+
+.homepage-dining-status-dot-open {
+  border-color: var(--dining-open-border);
+}
+
+.homepage-dining-status-dot-soon {
+  border-color: var(--dining-soon-border);
+}
+
+.homepage-dining-status-dot-closed {
+  border-color: var(--dining-closed-border);
+}
+
+.homepage-dining-meal-cell {
+  position: relative;
+  overflow: hidden;
+}
+
+.homepage-dining-meal-cell .homepage-dining-cell {
+  position: relative;
+  z-index: 1;
+}
+
+.homepage-dining-meal-cell.dining-meal-status-soon {
+  background: var(--dining-soon-bg);
+}
+
 .homepage-dining-cell {
   display: flex;
   align-items: center;
