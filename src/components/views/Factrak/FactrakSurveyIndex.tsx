@@ -46,8 +46,6 @@ const FactrakSurveyIndex = () => {
           {surveys.length > 0 ? (
             <>
               <h3>Your Reviews</h3>
-              <br />
-              <br />
               {surveys.map((survey) => (
                 <FactrakComment
                   comment={survey}
