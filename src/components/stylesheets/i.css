@@ -4105,6 +4105,11 @@ nav.site-nav .nav-skeleton-user {
 nav.site-nav .nav-skeleton-user .nav-user-caret {
   visibility: hidden;
 }
+nav.site-nav .nav-account .nav-login-link {
+  justify-content: center;
+  min-width: calc(30px + 0.05rem + 1.15rem);
+  box-sizing: border-box;
+}
 nav.site-nav .avatar .nav-skeleton-circle {
   display: block;
   width: 30px;

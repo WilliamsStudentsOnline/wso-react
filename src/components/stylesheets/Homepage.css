@@ -1,8 +1,14 @@
+.bulletin-list,
+.home-hours-row {
+  --home-col: 340px;
+  --home-gap: 30px;
+}
+
 .bulletin-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 340px);
+  grid-template-columns: repeat(auto-fill, var(--home-col));
   place-content: center;
-  grid-gap: 30px;
+  grid-gap: var(--home-gap);
 }
 
 .home-bulletins-heading {
@@ -215,12 +221,11 @@ input[type="submit"] {
 .home-hours-row {
   display: flex;
   align-items: flex-start;
-  gap: 1.25rem;
-  width: 94%;
-  max-width: 72rem;
-  margin: 0 auto;
+  gap: var(--home-gap);
+  width: min(100%, calc(var(--home-col) * 3 + var(--home-gap) * 2));
   box-sizing: border-box;
   overflow: visible;
+  margin: 0 auto;
 }
 
 .home-hours-row .library-hours {
@@ -230,23 +235,39 @@ input[type="submit"] {
   min-width: 0;
 }
 
+.home-hours-row .library-hours-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: visible;
+}
+
 .home-hours-row .library-hours-table th,
 .home-hours-row .library-hours-table td,
 .homepage-dining-table th,
 .homepage-dining-table td {
   height: 2.75rem;
+  max-height: 2.75rem;
   box-sizing: border-box;
-  padding: 0.5rem 0.75rem;
+  padding: 0 0.75rem;
   font-size: inherit;
+  line-height: 1.2;
   vertical-align: middle;
 }
 
 .home-hours-row .library-hours-table thead th,
 .homepage-dining-table thead th {
   height: 2.75rem;
-  padding: 0.5rem 0.75rem;
+  max-height: 2.75rem;
+  padding: 0 0.75rem;
   font-size: 0.75em;
   letter-spacing: 1px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.home-hours-row .library-hours-table tr,
+.homepage-dining-table tr {
+  height: 2.75rem;
 }
 
 .homepage-dining-hours {
@@ -411,6 +432,49 @@ input[type="submit"] {
 
 .homepage-dining-hours .dining-meal-menu-btn {
   flex: 0 0 auto;
+}
+
+.homepage-skeleton-line {
+  display: inline-block;
+  height: 0.75em;
+  max-width: 100%;
+  border-radius: 2px;
+  vertical-align: middle;
+  background: linear-gradient(
+    -90deg,
+    var(--border-divider) 0%,
+    var(--border-input) 50%,
+    var(--border-divider) 100%
+  );
+  background-size: 400% 400%;
+  animation: homepage-skeleton-pulse 1.2s ease-in-out infinite;
+}
+
+.homepage-skeleton-dot {
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 2px solid var(--border-divider);
+  background: linear-gradient(
+    -90deg,
+    var(--border-divider) 0%,
+    var(--border-input) 50%,
+    var(--border-divider) 100%
+  );
+  background-size: 400% 400%;
+  animation: homepage-skeleton-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes homepage-skeleton-pulse {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: -135% 0%;
+  }
 }
 
 @media screen and (max-width: 48.125em) {

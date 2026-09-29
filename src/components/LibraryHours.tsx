@@ -224,6 +224,41 @@ const LibraryServiceRows = ({ service }: { service: LibraryService }) => {
   );
 };
 
+const LibraryHoursSkeleton = () => (
+  <div className="library-hours dining" aria-busy="true" aria-hidden="true">
+    <h3>Library Hours</h3>
+    <table className="library-hours-table">
+      <thead>
+        <tr>
+          <th>Library</th>
+          <th>Hours</th>
+        </tr>
+      </thead>
+      <tbody>
+        {[0, 1, 2, 3, 4].map((i) => (
+          <tr key={i}>
+            <td>
+              <span className="homepage-hours-name">
+                <span className="homepage-skeleton-dot" />
+                <span
+                  className="homepage-skeleton-line"
+                  style={{ width: "70%" }}
+                />
+              </span>
+            </td>
+            <td>
+              <span
+                className="homepage-skeleton-line"
+                style={{ width: "55%" }}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
 const LibraryHoursTable = () => {
   const [services, setServices] = useState<LibraryService[] | null>(null);
   const [error, setError] = useState(false);
@@ -258,7 +293,7 @@ const LibraryHoursTable = () => {
   }, []);
 
   if (error) return <p>Unable to load hours.</p>;
-  if (!services) return <p>Loading…</p>;
+  if (!services) return <LibraryHoursSkeleton />;
 
   return (
     <div className="library-hours dining">

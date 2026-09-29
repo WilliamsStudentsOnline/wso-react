@@ -413,15 +413,33 @@ export const MealMenuCard = ({
   openMenu: OpenMenu;
   onClose: () => void;
 }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!openMenu.visible) return undefined;
+    cardRef.current?.focus();
+    return undefined;
+  }, [openMenu.visible, openMenu.id]);
+
   return (
     <div
+      ref={cardRef}
       className={`dining-menu-card dining-menu-card--${openMenu.side}${
         openMenu.visible ? " is-visible" : ""
       }`}
       role="dialog"
+      aria-modal="true"
+      tabIndex={-1}
       aria-label={`${openMenu.vendorName} ${capitalizeMeal(
         openMenu.meal.name
       )} menu`}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          event.stopPropagation();
+          onClose();
+        }
+      }}
     >
       <div className="dining-menu-card-header">
         <div className="dining-menu-card-title">
@@ -585,24 +603,32 @@ export const useDiningMenus = (mode: DiningMenusMode = "dual") => {
   useEffect(() => {
     const anyOpen = !!(leftMenu || rightMenu);
     if (!anyOpen) return undefined;
-    const previousOverflow = document.body.style.overflow;
+
+    const scrollEl = document.querySelector(
+      ".layout-scroll"
+    ) as HTMLElement | null;
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousScrollOverflow = scrollEl?.style.overflow ?? "";
     document.body.style.overflow = "hidden";
+    if (scrollEl) scrollEl.style.overflow = "hidden";
+
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      if (lastSideRef.current) closeSide(lastSideRef.current);
-      else if (rightMenu) closeSide("right");
-      else if (leftMenu) closeSide("left");
+      event.preventDefault();
+      if (leftMenu) closeSide("left");
+      if (rightMenu) closeSide("right");
     };
     const onWheel = (event: WheelEvent) => {
       const target = event.target as HTMLElement | null;
       if (target?.closest(".dining-menu-card-body")) return;
       event.preventDefault();
     };
-    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keydown", onKeyDown, true);
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousBodyOverflow;
+      if (scrollEl) scrollEl.style.overflow = previousScrollOverflow;
+      window.removeEventListener("keydown", onKeyDown, true);
       window.removeEventListener("wheel", onWheel);
     };
   }, [leftMenu, rightMenu, closeSide]);

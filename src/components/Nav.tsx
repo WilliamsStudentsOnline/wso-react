@@ -2,8 +2,12 @@
 import React, { useEffect, useState } from "react";
 
 // Redux imports
-import { getWSO, getCurrUser, getAuthReady } from "../lib/authSlice";
-import { removeCredentials } from "../lib/authSlice";
+import {
+  getWSO,
+  getCurrUser,
+  getAuthReady,
+  removeCredentials,
+} from "../lib/authSlice";
 import { useAppSelector, useAppDispatch } from "../lib/store";
 
 // External imports
@@ -18,8 +22,6 @@ const themeIcon = (preference: ThemePreference): string => {
   if (preference === "dark") return "dark_mode";
   return "brightness_auto";
 };
-
-type EphmatchVisibility = null | 0 | 1 | 2;
 
 const NavSkeletonLink = ({ label }: { label: string }) => (
   <li aria-hidden="true">
@@ -39,10 +41,6 @@ const Nav = () => {
     "games" | "more" | "user" | null
   >(null);
   const [userPhoto, updateUserPhoto] = useState<string | undefined>(undefined);
-  const [ephmatchVisibility, updateEphmatchVisibility] =
-    useState<EphmatchVisibility>(null);
-
-  const navSettled = authReady && ephmatchVisibility !== null;
 
   useEffect(() => {
     let photoUrl: string | undefined;
@@ -66,48 +64,14 @@ const Nav = () => {
       }
     };
 
-    const checkEphmatchVisibility = async () => {
-      try {
-        const ephmatchAvailabilityResp =
-          await wso.ephmatchService.getAvailability();
-
-        if (cancelled) {
-          return;
-        }
-
-        if (
-          ephmatchAvailabilityResp?.data?.available ||
-          (ephmatchAvailabilityResp?.data?.nextOpenTime &&
-            new Date(ephmatchAvailabilityResp?.data?.nextOpenTime).valueOf() -
-              new Date().valueOf() <
-              4 * 604800000) // used to be 1 week: 604800000. Now 4 weeks: 3024000000
-        ) {
-          if (ephmatchAvailabilityResp?.data?.seniorOnly) {
-            updateEphmatchVisibility(2);
-          } else {
-            updateEphmatchVisibility(1);
-          }
-        } else {
-          updateEphmatchVisibility(0);
-        }
-      } catch {
-        if (!cancelled) {
-          updateEphmatchVisibility(0);
-        }
-      }
-    };
-
     if (!authReady) {
-      updateEphmatchVisibility(null);
       updateUserPhoto(undefined);
       return undefined;
     }
 
     if (currUser) {
       loadPhoto();
-      checkEphmatchVisibility();
     } else {
-      updateEphmatchVisibility(0);
       updateUserPhoto(undefined);
     }
 
@@ -131,7 +95,7 @@ const Nav = () => {
   };
 
   const renderFactrakSlot = () => {
-    if (!navSettled) {
+    if (!authReady) {
       return <NavSkeletonLink label="Factrak" />;
     }
     if (currUser?.type === userTypeStudent) {
@@ -144,24 +108,8 @@ const Nav = () => {
     return null;
   };
 
-  const renderEphmatchSlot = () => {
-    if (!navSettled) {
-      return <NavSkeletonLink label="Ephmatch" />;
-    }
-    if (ephmatchVisibility && ephmatchVisibility > 0) {
-      return (
-        <li>
-          <Link className="ephmatch-link" to="ephmatch">
-            {ephmatchVisibility === 2 ? "Senior " : ""}Ephmatch
-          </Link>
-        </li>
-      );
-    }
-    return null;
-  };
-
   const renderAccountControls = () => {
-    if (!navSettled) {
+    if (!authReady) {
       return (
         <span className="nav-user-toggle nav-skeleton-user" aria-hidden="true">
           <span className="avatar">
@@ -216,7 +164,11 @@ const Nav = () => {
       );
     }
 
-    return <Link to="login">Login</Link>;
+    return (
+      <Link to="login" className="nav-user-toggle nav-login-link">
+        Login
+      </Link>
+    );
   };
 
   return (
@@ -315,15 +267,6 @@ const Nav = () => {
                 </li>
               </ul>
             </li>
-            {renderEphmatchSlot()}
-            {/* userScopes &&
-              scopesContainsOneOfScopes(userScopes, [scopes.ScopeGoodrich]) && (
-                <>
-                  <li>
-                    <Link routeName="goodrich">Goodrich</Link>
-                  </li>
-                </>
-              ) */}
           </ul>
         </span>
 
@@ -332,8 +275,8 @@ const Nav = () => {
             <li
               className={[
                 "nav-account",
-                navSettled && currUser?.id ? "dropdown" : "",
-                navSettled && currUser?.id && openDropdown === "user"
+                authReady && currUser?.id ? "dropdown" : "",
+                authReady && currUser?.id && openDropdown === "user"
                   ? "open"
                   : "",
               ]

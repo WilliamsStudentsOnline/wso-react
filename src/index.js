@@ -8,7 +8,6 @@ import "./components/ui/tokens.css";
 import "./components/stylesheets/Colors.css";
 import "./index.css";
 import "./components/stylesheets/i.css";
-import "typeface-source-sans-pro";
 
 // Redux/store imports
 import { Provider } from "react-redux";

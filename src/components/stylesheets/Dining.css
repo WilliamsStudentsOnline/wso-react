@@ -255,6 +255,7 @@ button.dining-meal-menu-btn svg {
   transition: opacity 0.22s ease, transform 0.22s ease;
   overflow: hidden;
   pointer-events: auto;
+  outline: none;
 }
 
 .dining-menu-card--left {

@@ -140,6 +140,57 @@ const HomepageDiningVendorRow = ({
   );
 };
 
+const HOMEPAGE_DINING_SKELETON_SLOTS = [
+  "Breakfast",
+  "Lunch",
+  "Dinner",
+] as const;
+const HOMEPAGE_DINING_SKELETON_ROWS = 7;
+
+const HomepageDiningSkeleton = () => (
+  <div
+    className="dining homepage-dining-hours"
+    aria-busy="true"
+    aria-hidden="true"
+  >
+    <h3>Dining Hours</h3>
+    <table className="homepage-dining-table">
+      <thead>
+        <tr>
+          <th />
+          {HOMEPAGE_DINING_SKELETON_SLOTS.map((slot) => (
+            <th key={slot}>{slot}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {[...Array(HOMEPAGE_DINING_SKELETON_ROWS)].map((_, row) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <tr key={row}>
+            <td>
+              <span className="homepage-hours-name">
+                <span className="homepage-skeleton-dot" />
+                <span
+                  className="homepage-skeleton-line"
+                  style={{ width: "70%" }}
+                />
+              </span>
+            </td>
+            {HOMEPAGE_DINING_SKELETON_SLOTS.map((slot) => (
+              <td key={slot}>
+                <span
+                  className="homepage-skeleton-line"
+                  style={{ width: "55%" }}
+                />
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
 const HomepageDiningHours = () => {
   const { diningData, loading, error } = useDiningData();
   const { openMenuIds, onToggleMenu, anyOpen, menuPanels } =
@@ -156,7 +207,7 @@ const HomepageDiningHours = () => {
   const slots = useMemo(() => activeSlotsForVendors(vendors), [vendors]);
 
   if (error) return <p>Unable to load dining hours.</p>;
-  if (loading) return <p>Loading…</p>;
+  if (loading) return <HomepageDiningSkeleton />;
   if (vendors.length === 0) {
     return <p>No dining hours available.</p>;
   }
