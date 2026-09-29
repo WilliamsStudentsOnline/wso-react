@@ -220,6 +220,7 @@ input[type="submit"] {
   max-width: 72rem;
   margin: 0 auto;
   box-sizing: border-box;
+  overflow: visible;
 }
 
 .home-hours-row .library-hours {
@@ -254,6 +255,7 @@ input[type="submit"] {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  overflow: visible;
 }
 
 .homepage-dining-hours h3 {
@@ -264,11 +266,13 @@ input[type="submit"] {
 .homepage-dining-table {
   width: 100%;
   margin: 0;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   border: 1px solid var(--border-table);
   background: var(--surface-muted);
   color: var(--text-body);
   table-layout: fixed;
+  overflow: visible;
 }
 
 .homepage-dining-table th,
@@ -286,14 +290,21 @@ input[type="submit"] {
   text-transform: uppercase;
   border: none;
   white-space: nowrap;
+  position: relative;
+  z-index: 1;
 }
 
 .homepage-dining-table th:first-child,
 .homepage-dining-table td:first-child {
   width: 22%;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
+}
+
+.homepage-dining-table td:first-child:hover,
+.homepage-dining-table td:first-child:focus-within {
+  position: relative;
+  z-index: 8;
 }
 
 .homepage-dining-empty {
@@ -326,15 +337,15 @@ input[type="submit"] {
   background: transparent;
   border: 2px solid var(--dining-closed-border);
   cursor: default;
+  z-index: 1;
 }
 
 .homepage-dining-status-tooltip {
   visibility: hidden;
   position: absolute;
-  z-index: 5;
-  left: 50%;
+  z-index: 20;
+  left: 0;
   bottom: calc(100% + 0.35rem);
-  transform: translateX(-50%);
   width: max-content;
   max-width: 14rem;
   padding: 0.25rem 0.5rem;
