@@ -103,7 +103,11 @@ const FactrakModerate = () => {
     <article className="facebook-profile">
       <section className="margin-vertical-small">
         <h3>Moderation</h3>
-        {generateFlaggedSurveys()}
+        {flagged.length === 0 ? (
+          <p>No flagged reviews.</p>
+        ) : (
+          generateFlaggedSurveys()
+        )}
       </section>
     </article>
   );
