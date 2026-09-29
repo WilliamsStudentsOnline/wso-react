@@ -9,6 +9,7 @@ import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 import { useNavigate } from "react-router-dom";
 import { PostType } from "../lib/types";
 import LibraryHoursTable from "./LibraryHours";
+import HomepageDiningHours from "./HomepageDiningHours";
 
 const Homepage = () => {
   const navigateTo = useNavigate();
@@ -76,8 +77,9 @@ const Homepage = () => {
             </form>
           </div>
         </header>
-        <article>
+        <article className="home-hours-row">
           <LibraryHoursTable />
+          <HomepageDiningHours />
         </article>
         <article>
           <section>

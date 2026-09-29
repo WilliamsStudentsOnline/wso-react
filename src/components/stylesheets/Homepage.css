@@ -191,3 +191,127 @@ input[type="submit"] {
   border: none;
   padding: 0.75em 1.5em;
 }
+
+/* Homepage: Library Hours + Dining Hours side by side (~1:2) */
+.home-hours-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  width: 94%;
+  max-width: 72rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.home-hours-row .library-hours {
+  flex: 1 1 0;
+  max-width: none;
+  margin: 0;
+  min-width: 0;
+}
+
+.home-hours-row .library-hours-table th,
+.home-hours-row .library-hours-table td {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.9em;
+}
+
+.home-hours-row .library-hours-table thead th {
+  padding: 0.5em 0.65em;
+  letter-spacing: 0.5px;
+}
+
+.homepage-dining-hours {
+  flex: 2 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.homepage-dining-hours h3 {
+  margin: 0;
+  line-height: 1.1;
+}
+
+.homepage-dining-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  border: 1px solid var(--border-table);
+  background: var(--surface-muted);
+  color: var(--text-body);
+  table-layout: fixed;
+}
+
+.homepage-dining-table th,
+.homepage-dining-table td {
+  border: 1px solid var(--border-table);
+  background: var(--surface-muted);
+  color: var(--text-body);
+  padding: 0.35rem 0.4rem;
+  text-align: left;
+  font-size: 0.85em;
+  vertical-align: middle;
+}
+
+.homepage-dining-table thead th {
+  background: var(--brand-bar);
+  color: var(--text-on-brand);
+  font-weight: bold;
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  padding: 0.5em 0.45em;
+  white-space: nowrap;
+}
+
+.homepage-dining-table th:first-child,
+.homepage-dining-table td:first-child {
+  width: 22%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.homepage-dining-empty {
+  color: var(--text-subtle);
+  text-align: center;
+}
+
+.homepage-dining-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.homepage-dining-cell-hours {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.homepage-dining-hours .dining-meal-menu-btn {
+  flex: 0 0 auto;
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+@media screen and (max-width: 48.125em) {
+  .home-hours-row {
+    flex-direction: column;
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  .home-hours-row .library-hours,
+  .homepage-dining-hours {
+    flex: none;
+    width: 100%;
+  }
+}

@@ -1,167 +1,20 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { MdClose, MdRestaurantMenu } from "react-icons/md";
+import React, { useState, useEffect } from "react";
 
 import "../../stylesheets/Dining.css";
 import ServiceHeader from "../../ui/ServiceHeader";
 import ContentPane from "../../ui/ContentPane";
-
-const MENU_ANIM_MS = 220;
-
-interface MealHours {
-  open: string;
-  close: string;
-}
-interface MenuItem {
-  name: string;
-  vegetarian: boolean;
-  vegan: boolean;
-  glutenFree: boolean;
-}
-interface Course {
-  name: string;
-  items: MenuItem[];
-}
-interface Meal {
-  name: string;
-  hours: MealHours | null;
-  courses: Record<string, Course> | null;
-}
-interface Vendor {
-  id: string;
-  name: string;
-  meals: Record<string, Meal>;
-  onlineOrder: boolean;
-  operating: boolean;
-}
-
-type MenuSide = "left" | "right";
-
-type OpenMenu = {
-  id: string;
-  vendorName: string;
-  meal: Meal;
-  side: MenuSide;
-  visible: boolean;
-};
-
-const parseAndAdjustTime = (
-  timeStr: string,
-  baseDate: Date,
-  isCloseTime: boolean,
-  openTimeStr?: string
-): Date => {
-  const timeMatch = timeStr.match(/(\d{1,2}):(\d{2})(am|pm)/i);
-  if (!timeMatch) {
-    console.warn("Invalid time format:", timeStr);
-    const invalidDate = new Date();
-    invalidDate.setTime(0);
-    return invalidDate;
-  }
-  const [, hoursStr, minutesStr, modifier] = timeMatch;
-  const hours = parseInt(hoursStr, 10);
-  const minutes = parseInt(minutesStr, 10);
-  let newHours = hours;
-
-  if (modifier.toLowerCase() === "pm" && hours !== 12) newHours += 12;
-  if (modifier.toLowerCase() === "am" && hours === 12) newHours = 0; // Handle 12am
-
-  const date = new Date(baseDate);
-  date.setHours(newHours, minutes, 0, 0);
-
-  if (isCloseTime && openTimeStr) {
-    const openDate = parseAndAdjustTime(openTimeStr, baseDate, false);
-    if (date.getTime() <= openDate.getTime()) {
-      // Use <= to handle same minute closing next day
-      date.setDate(date.getDate() + 1);
-    }
-  }
-
-  const currentHour = baseDate.getHours();
-  if (currentHour < 6 && newHours > 18) {
-    date.setDate(date.getDate() - 1);
-  } else if (currentHour > 18 && newHours < 6) {
-    date.setDate(date.getDate() + 1);
-  }
-
-  return date;
-};
-
-const getMealOrder = (mealName: string): number => {
-  const lowerCaseName = mealName.toLowerCase();
-  if (lowerCaseName.includes("breakfast")) return 1;
-  if (lowerCaseName.includes("brunch")) return 2;
-  if (lowerCaseName.includes("lunch")) return 3;
-  if (lowerCaseName.includes("dinner")) return 4;
-  if (
-    lowerCaseName.includes("late night") ||
-    lowerCaseName.includes("latenight")
-  )
-    return 5;
-  return 99; // unknown meals last
-};
-
-const capitalizeMeal = (str: string): string => {
-  if (!str) return "";
-  return str
-    .replaceAll("williams' ", "")
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
-};
-
-const mealMenuId = (vendorId: string, mealKey: string) =>
-  `${vendorId}::${mealKey}`;
-
-const mealHasMenu = (meal: Meal): boolean =>
-  !!meal.courses &&
-  Object.values(meal.courses).some(
-    (course) => !!course.items && course.items.length > 0
-  );
-
-/** Vendors to never show, even if present in dining.json. */
-const HIDDEN_VENDOR_IDS = new Set(["goodrich"]);
-
-const useDiningData = () => {
-  const [diningData, setDiningData] = useState<Record<string, Vendor>>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [updateTime, setUpdateTime] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await fetch("/dining.json");
-        if (!response.ok)
-          throw new Error(`Error fetching dining JSON: ${response.status}`);
-        const responseJSON = await response.json();
-
-        if (responseJSON && responseJSON.vendors) {
-          const vendorsWithId: Record<string, Vendor> = {};
-          Object.entries(responseJSON.vendors).forEach(([key, vendor]) => {
-            if (HIDDEN_VENDOR_IDS.has(key.toLowerCase())) return;
-            vendorsWithId[key] = { ...(vendor as Omit<Vendor, "id">), id: key };
-          });
-          setDiningData(vendorsWithId);
-          setUpdateTime(responseJSON.updateTime || "Not specified");
-        } else {
-          throw new Error("Invalid data format received.");
-        }
-      } catch (err) {
-        console.error("Fetch error:", err);
-        setError(
-          err instanceof Error ? err.message : "An unknown error occurred."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  return { diningData, loading, error, updateTime };
-};
+import {
+  Meal,
+  Vendor,
+  capitalizeMeal,
+  getMealOrder,
+  mealHasMenu,
+  mealMenuId,
+  parseAndAdjustTime,
+  useDiningData,
+  useDiningMenus,
+  MealMenuButton,
+} from "./diningShared";
 
 const useVendorStatus = (vendorMeals: Record<string, Meal>) => {
   const [status, setStatus] = useState<{
@@ -222,7 +75,6 @@ const useVendorStatus = (vendorMeals: Record<string, Meal>) => {
         meal.hours.open
       );
 
-      // check if currently open
       if (currentTime >= openDateTime && currentTime < closeDateTime) {
         const diffMinutes =
           (closeDateTime.getTime() - currentTime.getTime()) / 1000 / 60;
@@ -238,27 +90,25 @@ const useVendorStatus = (vendorMeals: Record<string, Meal>) => {
               : `Open until ${meal.hours.close}`,
           isOpen: true,
           currentMealName: meal.name,
-          nextMealName: null, // not needed if open
+          nextMealName: null,
           nextMealKey: null,
           openProgress,
         };
-        nextOpenTime = null; // clear next open time since it's open now
+        nextOpenTime = null;
         tempNextMealName = null;
         tempNextMealKey = null;
-        break; // found open meal, no need to check further
+        break;
       }
 
-      // check for the *next* opening time if not already open
       if (currentTime < openDateTime) {
         if (!nextOpenTime || openDateTime < nextOpenTime) {
           nextOpenTime = openDateTime;
-          tempNextMealName = meal.name; // store potential next meal
+          tempNextMealName = meal.name;
           tempNextMealKey = mealKey;
           const diffMinutes =
             (openDateTime.getTime() - currentTime.getTime()) / 1000 / 60;
           if (diffMinutes < 60) {
             tempNextOpenMessage = `Opens in ${Math.round(diffMinutes)} min`;
-            // Tentatively set status to Opening, might be overridden by Closed later if needed
             calculatedStatus = {
               style: "Opening",
               message: tempNextOpenMessage,
@@ -270,7 +120,6 @@ const useVendorStatus = (vendorMeals: Record<string, Meal>) => {
             };
           } else {
             tempNextOpenMessage = `Opens at ${meal.hours.open}`;
-            // Only update message if still Closed, don't override Opening status
             if (calculatedStatus.style === "Closed") {
               calculatedStatus = {
                 style: "Closed",
@@ -282,7 +131,6 @@ const useVendorStatus = (vendorMeals: Record<string, Meal>) => {
                 openProgress: null,
               };
             } else {
-              // if already opening, ensure next meal details are correct
               calculatedStatus.nextMealName = meal.name;
               calculatedStatus.nextMealKey = mealKey;
             }
@@ -291,7 +139,6 @@ const useVendorStatus = (vendorMeals: Record<string, Meal>) => {
       }
     }
 
-    // Final check: if not open and no future opening time found today, it's closed for the day
     if (!calculatedStatus.isOpen && !nextOpenTime) {
       calculatedStatus = {
         style: "Closed",
@@ -302,11 +149,8 @@ const useVendorStatus = (vendorMeals: Record<string, Meal>) => {
         nextMealKey: null,
         openProgress: null,
       };
-    }
-    // if status is still 'Closed' but we found a next opening time message, use it
-    else if (calculatedStatus.style === "Closed" && tempNextOpenMessage) {
+    } else if (calculatedStatus.style === "Closed" && tempNextOpenMessage) {
       calculatedStatus.message = tempNextOpenMessage;
-      // Ensure next meal details are set even if not "Opening" style
       calculatedStatus.nextMealName = tempNextMealName;
       calculatedStatus.nextMealKey = tempNextMealKey;
     }
@@ -331,124 +175,6 @@ const getDiningStatusPill = (style: string): DiningStatusPill => {
   }
   return { label: "Closed", kind: "closed" };
 };
-
-const MealMenuContent = ({ meal }: { meal: Meal }) => {
-  if (!meal.courses || Object.keys(meal.courses).length === 0) {
-    return (
-      <p className="dining-menu-empty">
-        <i>No courses listed for this meal.</i>
-      </p>
-    );
-  }
-
-  return (
-    <table className="meal-content-table">
-      <tbody>
-        {Object.entries(meal.courses)
-          .sort(([, a], [, b]) => a.name.localeCompare(b.name))
-          .map(([courseKey, course]) => (
-            <React.Fragment key={courseKey}>
-              <tr className="course-title menu-item-row">
-                <td>
-                  <b>{course.name}</b>
-                </td>
-              </tr>
-              {course.items && course.items.length > 0 ? (
-                course.items.map((item, i) => (
-                  <tr key={`${courseKey}-${i}`} className="menu-item-row">
-                    <td className="menu-item-cell">
-                      <span className="menu-item-name">{item.name}</span>
-                      <div className="item-details">
-                        {item.vegetarian && (
-                          <span className="vegetarian">VGT</span>
-                        )}
-                        {item.vegan && <span className="vegan">V</span>}
-                        {item.glutenFree && (
-                          <span className="glutenFree">GF</span>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr className="menu-item-row">
-                  <td className="menu-item-cell">
-                    <i>No items listed for this course.</i>
-                  </td>
-                </tr>
-              )}
-            </React.Fragment>
-          ))}
-      </tbody>
-    </table>
-  );
-};
-
-const MealMenuCard = ({
-  openMenu,
-  onClose,
-}: {
-  openMenu: OpenMenu;
-  onClose: () => void;
-}) => {
-  return (
-    <div
-      className={`dining-menu-card dining-menu-card--${openMenu.side}${
-        openMenu.visible ? " is-visible" : ""
-      }`}
-      role="dialog"
-      aria-label={`${openMenu.vendorName} ${capitalizeMeal(
-        openMenu.meal.name
-      )} menu`}
-    >
-      <div className="dining-menu-card-header">
-        <div className="dining-menu-card-title">
-          <span className="dining-menu-card-vendor">{openMenu.vendorName}</span>
-          <span className="dining-menu-card-meal">
-            {capitalizeMeal(openMenu.meal.name)}
-            {openMenu.meal.hours
-              ? ` · ${openMenu.meal.hours.open} – ${openMenu.meal.hours.close}`
-              : ""}
-          </span>
-        </div>
-        <button
-          type="button"
-          className="dining-menu-card-close"
-          onClick={onClose}
-          aria-label="Close menu"
-        >
-          <MdClose size={18} />
-        </button>
-      </div>
-      <div
-        className="dining-menu-card-body"
-        onWheel={(event) => event.stopPropagation()}
-      >
-        <MealMenuContent meal={openMenu.meal} />
-      </div>
-    </div>
-  );
-};
-
-const MealMenuButton = ({
-  isActive,
-  onClick,
-  label,
-}: {
-  isActive: boolean;
-  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  label: string;
-}) => (
-  <button
-    type="button"
-    className={`dining-meal-menu-btn${isActive ? " is-active" : ""}`}
-    onClick={onClick}
-    aria-label={isActive ? `Close ${label} menu` : `Open ${label} menu`}
-    aria-expanded={isActive}
-  >
-    <MdRestaurantMenu size={16} aria-hidden />
-  </button>
-);
 
 const DiningHoursCard = ({
   vendor,
@@ -605,132 +331,8 @@ const DiningHours = ({
 
 const App = () => {
   const { diningData, loading, error, updateTime } = useDiningData();
-
-  const [leftMenu, setLeftMenu] = useState<OpenMenu | null>(null);
-  const [rightMenu, setRightMenu] = useState<OpenMenu | null>(null);
-  const lastSideRef = useRef<MenuSide | null>(null);
-  const closeTimersRef = useRef<Partial<Record<MenuSide, number>>>({});
-
-  const clearCloseTimer = (side: MenuSide) => {
-    const timer = closeTimersRef.current[side];
-    if (timer !== undefined) {
-      window.clearTimeout(timer);
-      delete closeTimersRef.current[side];
-    }
-  };
-
-  const setSlot = useCallback((side: MenuSide, menu: OpenMenu | null) => {
-    if (side === "left") setLeftMenu(menu);
-    else setRightMenu(menu);
-  }, []);
-
-  const closeSide = useCallback(
-    (side: MenuSide) => {
-      const current = side === "left" ? leftMenu : rightMenu;
-      if (!current) return;
-      setSlot(side, { ...current, visible: false });
-      clearCloseTimer(side);
-      closeTimersRef.current[side] = window.setTimeout(() => {
-        setSlot(side, null);
-        delete closeTimersRef.current[side];
-        if (lastSideRef.current === side) {
-          lastSideRef.current = side === "left" ? "right" : "left";
-          if (!(side === "left" ? rightMenu : leftMenu)) {
-            lastSideRef.current = null;
-          }
-        }
-      }, MENU_ANIM_MS);
-    },
-    [leftMenu, rightMenu, setSlot]
-  );
-
-  const showInSide = useCallback(
-    (side: MenuSide, id: string, vendorName: string, meal: Meal) => {
-      clearCloseTimer(side);
-      lastSideRef.current = side;
-      setSlot(side, { id, vendorName, meal, side, visible: false });
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setSlot(side, { id, vendorName, meal, side, visible: true });
-        });
-      });
-    },
-    [setSlot]
-  );
-
-  const onToggleMenu = useCallback(
-    (id: string, vendorName: string, meal: Meal, clientX: number) => {
-      if (leftMenu?.id === id) {
-        closeSide("left");
-        return;
-      }
-      if (rightMenu?.id === id) {
-        closeSide("right");
-        return;
-      }
-
-      const preferred: MenuSide =
-        clientX > window.innerWidth / 2 ? "right" : "left";
-      const leftOpen = !!leftMenu;
-      const rightOpen = !!rightMenu;
-
-      if (!leftOpen && !rightOpen) {
-        showInSide(preferred, id, vendorName, meal);
-        return;
-      }
-
-      if (leftOpen && !rightOpen) {
-        showInSide("right", id, vendorName, meal);
-        return;
-      }
-
-      if (!leftOpen && rightOpen) {
-        showInSide("left", id, vendorName, meal);
-        return;
-      }
-
-      const replaceSide = lastSideRef.current ?? preferred;
-      showInSide(replaceSide, id, vendorName, meal);
-    },
-    [leftMenu, rightMenu, closeSide, showInSide]
-  );
-
-  useEffect(
-    () => () => {
-      clearCloseTimer("left");
-      clearCloseTimer("right");
-    },
-    []
-  );
-
-  useEffect(() => {
-    const anyOpen = !!(leftMenu || rightMenu);
-    if (!anyOpen) return undefined;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      if (lastSideRef.current) closeSide(lastSideRef.current);
-      else if (rightMenu) closeSide("right");
-      else if (leftMenu) closeSide("left");
-    };
-    const onWheel = (event: WheelEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (target?.closest(".dining-menu-card-body")) return;
-      event.preventDefault();
-    };
-    window.addEventListener("keydown", onKeyDown);
-    window.addEventListener("wheel", onWheel, { passive: false });
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("wheel", onWheel);
-    };
-  }, [leftMenu, rightMenu, closeSide]);
-
-  const openMenuIds = new Set<string>();
-  if (leftMenu) openMenuIds.add(leftMenu.id);
-  if (rightMenu) openMenuIds.add(rightMenu.id);
+  const { openMenuIds, onToggleMenu, anyOpen, menuPanels } =
+    useDiningMenus("dual");
 
   const renderContent = () => {
     if (loading)
@@ -752,9 +354,7 @@ const App = () => {
   };
 
   return (
-    <div
-      className={`dining${leftMenu || rightMenu ? " dining--menu-open" : ""}`}
-    >
+    <div className={`dining${anyOpen ? " dining--menu-open" : ""}`}>
       <ServiceHeader title="Dining" titleTo="/dining" />
       <ContentPane>
         <section className="dining-main">
@@ -765,12 +365,7 @@ const App = () => {
           </p>
         </section>
       </ContentPane>
-      {leftMenu && (
-        <MealMenuCard openMenu={leftMenu} onClose={() => closeSide("left")} />
-      )}
-      {rightMenu && (
-        <MealMenuCard openMenu={rightMenu} onClose={() => closeSide("right")} />
-      )}
+      {menuPanels}
     </div>
   );
 };
