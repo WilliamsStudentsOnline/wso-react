@@ -239,11 +239,12 @@ button.dining-meal-menu-btn svg {
   position: fixed;
   z-index: 41;
   top: var(--dining-menu-top);
-  bottom: var(--dining-menu-bottom);
+  bottom: auto;
   width: 40vw;
   max-width: 28rem;
   min-width: 16rem;
-  max-height: none;
+  max-height: calc(100vh - var(--dining-menu-top) - var(--dining-menu-bottom));
+  height: fit-content;
   display: flex;
   flex-direction: column;
   background: var(--surface-page);
@@ -336,6 +337,7 @@ button.dining-menu-card-close:active {
 
 .dining-menu-card-body {
   flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
