@@ -90,16 +90,12 @@ const HomepageDiningVendorRow = ({
       {slots.map((slot) => {
         const match = findMealForSlot(vendor, slot);
         if (!match) {
-          return (
-            <td key={slot} className="homepage-dining-empty">
-              —
-            </td>
-          );
+          return <td key={slot} className="homepage-dining-empty" />;
         }
         const { key, meal } = match;
         const hoursLabel = meal.hours
           ? formatCompactHours(meal.hours.open, meal.hours.close)
-          : "—";
+          : "";
         const id = mealMenuId(vendor.id, key);
         const showMenu = mealHasMenu(meal);
         const isHighlighted =
@@ -173,7 +169,7 @@ const HomepageDiningHours = () => {
       <table className="homepage-dining-table">
         <thead>
           <tr>
-            <th>Hall</th>
+            <th />
             {slots.map((slot) => (
               <th key={slot}>{mealSlotLabel(slot)}</th>
             ))}
