@@ -144,12 +144,19 @@ const HomepageDiningVendorRow = ({
   );
 };
 
+/** Cafe / retail spots — still shown on the Dining page, not the homepage summary. */
+const HOMEPAGE_HIDDEN_VENDOR_IDS = new Set([
+  "82-grill",
+  "lees-snack-bar",
+  "fresh-n-go",
+]);
+
 const HOMEPAGE_DINING_SKELETON_SLOTS = [
   "Breakfast",
   "Lunch",
   "Dinner",
 ] as const;
-const HOMEPAGE_DINING_SKELETON_ROWS = 7;
+const HOMEPAGE_DINING_SKELETON_ROWS = 4;
 
 const HomepageDiningSkeleton = () => (
   <div
@@ -203,7 +210,11 @@ const HomepageDiningHours = () => {
   const vendors = useMemo(
     () =>
       Object.values(diningData)
-        .filter((vendor) => vendor.operating)
+        .filter(
+          (vendor) =>
+            vendor.operating &&
+            !HOMEPAGE_HIDDEN_VENDOR_IDS.has(vendor.id.toLowerCase())
+        )
         .sort((a, b) => a.name.localeCompare(b.name)),
     [diningData]
   );

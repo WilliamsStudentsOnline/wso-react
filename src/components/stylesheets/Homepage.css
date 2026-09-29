@@ -17,6 +17,16 @@
   text-align: center;
 }
 
+.home header {
+  padding-bottom: 0.75em;
+}
+
+@media screen and (max-width: 43.75em) {
+  .home header {
+    padding-bottom: 1em;
+  }
+}
+
 .search-bar {
   display: flex;
   flex-direction: row;
