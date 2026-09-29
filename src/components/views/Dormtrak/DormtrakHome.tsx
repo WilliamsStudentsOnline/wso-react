@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import DormtrakRanking from "./DormtrakRanking";
 import DormtrakRecentComments from "./DormtrakRecentComments";
-import Button from "../../Button";
+import { Button } from "../../ui";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
@@ -84,14 +84,14 @@ const DormtrakHome = () => {
         <p>
           <Button
             onClick={() => navigateTo(`/dormtrak/reviews/edit/${userReviewID}`)}
-            className="inline-button"
+            variant="secondary"
           >
             Edit
           </Button>
 
           <Button
             onClick={() => deleteHandler(userReviewID)}
-            className="inline-button"
+            variant="secondary"
           >
             Delete
           </Button>

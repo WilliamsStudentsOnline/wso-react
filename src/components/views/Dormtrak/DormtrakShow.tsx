@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import DormtrakFacts from "./DormtrakFacts";
 import DormtrakRooms from "./DormtrakRooms";
 import DormtrakRecentComments from "./DormtrakRecentComments";
-import { Line, Photo, Paragraph } from "../../Skeleton";
+import { Line, Paragraph, Photo } from "../../ui";
 
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";

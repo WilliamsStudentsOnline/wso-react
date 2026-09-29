@@ -625,12 +625,10 @@ input[type="submit"]:disabled,
 }
 
 body {
-  color: #444;
-  /*APRIL FOOL'S*/
-  /*   font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif; */
-  /*STANDARD*/
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 1em;
+  color: var(--text-body);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
 
   -webkit-font-smoothing: antialiased;
   line-height: 1.5em;
@@ -1860,8 +1858,8 @@ section:after {
   border-bottom: none;
 }
 .article .code {
-  font-family: monospace;
-  font-size: 1.25em;
+  font-family: var(--font-family-mono);
+  font-size: 0.9em;
 }
 .article .inline-display-text * {
   float: left;

@@ -4,7 +4,7 @@ import { ModelsBookListing } from "wso-api-client/lib/services/types";
 import { BookConditionEnumToString } from "./BooktrakUtils";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
-import Button from "../../Button";
+import { Button } from "../../ui";
 
 const BooktrakListingsTable = ({
   listings,
@@ -64,7 +64,7 @@ const BooktrakListingsTable = ({
                       onClick={() =>
                         navigateTo(`/booktrak/listings/${listing.id}`)
                       }
-                      className="inline-button"
+                      variant="secondary"
                     >
                       Edit
                     </Button>
@@ -81,7 +81,7 @@ const BooktrakListingsTable = ({
                           loadListings?.();
                         }
                       }}
-                      className="inline-button"
+                      variant="secondary"
                     >
                       Delete
                     </Button>

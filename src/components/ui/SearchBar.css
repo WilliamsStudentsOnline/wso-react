@@ -1,0 +1,109 @@
+.wso-search-bar {
+  float: left;
+  display: block;
+  clear: both;
+  width: 82.9403914003%;
+  margin-left: 8.5298042998%;
+  margin-right: 0;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 48.125em) {
+  .wso-search-bar {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+.wso-search-bar form {
+  float: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  display: block;
+}
+
+.wso-search-bar__row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  width: 100%;
+  gap: 1rem;
+}
+
+.wso-search-bar__row input[type="search"],
+.wso-search-bar__row input[type="submit"],
+.wso-search-bar__row input[type="submit"].submit {
+  float: none !important;
+  display: block;
+  box-sizing: border-box !important;
+  height: 52px !important;
+  margin: 0 !important;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+
+.wso-search-bar__row input[type="search"] {
+  flex: 1 1 auto;
+  width: auto !important;
+  min-width: 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+  border: 2px solid rgba(17, 17, 17, 0.15);
+}
+
+.wso-search-bar__row input[type="submit"],
+.wso-search-bar__row input[type="submit"].submit {
+  flex: 0 0 auto;
+  width: auto !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 1.25em;
+  padding-right: 1.25em;
+  border: 1px solid var(--brand-primary-hover, #6f4399);
+}
+
+.wso-search-bar__actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 0.875rem;
+  flex: 0 0 auto;
+  height: 52px;
+}
+
+.wso-search-bar__actions .wso-btn,
+.wso-search-bar__actions .button-default,
+.wso-search-bar__actions .button-toggled,
+.wso-search-bar__actions button {
+  box-sizing: border-box !important;
+  height: 52px !important;
+  margin: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 1.25em;
+  padding-right: 1.25em;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (max-width: 43.75em) {
+  .wso-search-bar__row {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .wso-search-bar__row input[type="search"] {
+    flex: 1 1 100%;
+    width: 100% !important;
+  }
+
+  .wso-search-bar__actions {
+    margin-left: 0;
+  }
+}

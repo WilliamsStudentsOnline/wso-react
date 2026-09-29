@@ -1,7 +1,7 @@
 // React imports
 import React, { useState, useEffect } from "react";
 // import FactrakComment, { FactrakCommentSkeleton } from "./FactrakComment";
-import { List } from "../../Skeleton";
+import { List } from "../../ui";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";

@@ -1,7 +1,7 @@
 // React Imports
 import React, { useState, useEffect, createRef } from "react";
 import Errors from "../../Errors";
-import { CircularLoader } from "../../Skeleton";
+import { CircularLoader } from "../../ui";
 
 // Redux/Routing imports
 import { useAppSelector, useAppDispatch } from "../../../lib/store";

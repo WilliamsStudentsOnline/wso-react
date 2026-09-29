@@ -1,5 +1,6 @@
 // React imports
 import React, { useState, useEffect } from "react";
+import { EmptyState } from "../../ui";
 
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
@@ -44,7 +45,7 @@ const DormtrakSearch = () => {
         {!dorms || dorms.length === 0 ? (
           <>
             <br />
-            <h1 className="no-matches-found">No matches were found.</h1>
+            <EmptyState>No matches were found.</EmptyState>
           </>
         ) : (
           <table>

@@ -1,6 +1,6 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import { Line, Paragraph } from "../../Skeleton";
+import { Line, Paragraph } from "../../ui";
 import Markdown from "markdown-to-jsx";
 
 // Redux and Routing imports

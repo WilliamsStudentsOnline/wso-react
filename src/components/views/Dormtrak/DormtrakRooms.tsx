@@ -1,7 +1,6 @@
 // React imports
 import React, { useState } from "react";
-import PaginationButtons from "../../PaginationButtons";
-import { Line } from "../../Skeleton";
+import { Line, Pagination } from "../../ui";
 
 // Additional imports
 import { capitalize } from "../../../lib/general";
@@ -95,7 +94,7 @@ const DormtrakRooms = ({ rooms }: { rooms?: ModelsDormRoom[] }) => {
 
   return (
     <>
-      <PaginationButtons
+      <Pagination
         clickHandler={clickHandler}
         page={page}
         total={rooms.length}
@@ -146,7 +145,7 @@ const DormtrakRooms = ({ rooms }: { rooms?: ModelsDormRoom[] }) => {
             );
           })
         : "No room-level information yet!"}
-      <PaginationButtons
+      <Pagination
         clickHandler={clickHandler}
         page={page}
         total={rooms.length}

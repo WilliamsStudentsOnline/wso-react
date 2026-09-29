@@ -1,7 +1,6 @@
 // React imports
 import React, { useEffect, useState } from "react";
-import { Line, Paragraph, Photo } from "../../Skeleton";
-import Button from "../../Button";
+import { Button, CommentCard, Line, Paragraph, Photo } from "../../ui";
 
 // redux imports
 import { useAppSelector } from "../../../lib/store";
@@ -55,7 +54,7 @@ const DormtrakRecentComments = ({
         <p>
           <Button
             onClick={() => navigateTo(`/dormtrak/reviews/edit/${review.id}`)}
-            className="inline-button"
+            variant="secondary"
           >
             Edit
           </Button>
@@ -63,7 +62,7 @@ const DormtrakRecentComments = ({
           <Button
             // We need to fix the API so it never returns undefined ids
             onClick={() => (review.id ? deleteHandler(review.id) : null)}
-            className="inline-button"
+            variant="secondary"
           >
             Delete
           </Button>
@@ -82,28 +81,31 @@ const DormtrakRecentComments = ({
       review.createdTime
     )
       return (
-        <div className="comment" key={review.id}>
-          <div className="comment-image">
-            <img
-              alt="dorm avatar"
-              src={avatarHelper(review.dormRoom.dorm.name)}
-            />
-          </div>
-
-          <div className="comment-content">
+        <CommentCard
+          key={review.id}
+          media={
+            <div className="comment-image">
+              <img
+                alt="dorm avatar"
+                src={avatarHelper(review.dormRoom.dorm.name)}
+              />
+            </div>
+          }
+          header={
             <h1>
               <Link to={`/dormtrak/dorms/${review.dormRoom.dorm.id}`}>
                 {review.dormRoom.dorm.name}
               </Link>
             </h1>
-
-            <p>{review.comment.substring(0, 200)}</p>
+          }
+          body={<p>{review.comment.substring(0, 200)}</p>}
+          meta={
             <p className="comment-detail">
               {`Posted ${format(new Date(review.createdTime))}`}
             </p>
-            {editDeleteButtons(review)}
-          </div>
-        </div>
+          }
+          actions={editDeleteButtons(review)}
+        />
       );
     return null;
   };
@@ -112,13 +114,18 @@ const DormtrakRecentComments = ({
   const renderFullComment = (review: ModelsDormtrakReview) => {
     if (review.createdTime) {
       return (
-        <div className="comment" key={review.id}>
-          <p>{review.comment}</p>
-          <p className="comment-detail">
-            {`posted about ${format(new Date(review.createdTime))}`}
-          </p>
-          <span className="comment-detail">{editDeleteButtons(review)}</span>
-        </div>
+        <CommentCard
+          key={review.id}
+          body={<p>{review.comment}</p>}
+          meta={
+            <p className="comment-detail">
+              {`posted about ${format(new Date(review.createdTime))}`}
+            </p>
+          }
+          actions={
+            <span className="comment-detail">{editDeleteButtons(review)}</span>
+          }
+        />
       );
     }
     return null;

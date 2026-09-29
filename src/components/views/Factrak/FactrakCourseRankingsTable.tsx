@@ -1,7 +1,6 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import { Line } from "../../Skeleton";
-import Select from "../../Select";
+import { RankingsTable } from "../../ui";
 
 import FactrakDeficitMessage from "./FactrakUtils";
 
@@ -19,6 +18,18 @@ import {
 import { containsOneOfScopes, scopes } from "../../../lib/general";
 import { FactrakCourseMetric } from "wso-api-client/lib/services/factrak";
 import { ModelsCourse } from "wso-api-client/lib/services/types";
+
+const COURSE_METRIC_OPTIONS = [
+  {
+    label: "Overall Recommendation",
+    value: FactrakCourseMetric.WouldRecommendCourse,
+  },
+  { label: "Course Workload", value: FactrakCourseMetric.CourseWorkload },
+  {
+    label: "Course Stimulating",
+    value: FactrakCourseMetric.CourseStimulating,
+  },
+];
 
 const FactrakCourseRankingsTable = () => {
   const currUser = useAppSelector(getCurrUser);
@@ -87,98 +98,33 @@ const FactrakCourseRankingsTable = () => {
     );
   };
 
-  // Generate a skeleton of course information
-  const courseSkeleton = (key: number) => (
-    <tr key={key}>
-      <td>
-        <Line width="50%" />
-      </td>
-      <td>
-        <Line width="50%" />
-      </td>
-    </tr>
-  );
-
-  // Generates the component which holds the list of courses
-  const generateCourses = () => {
-    return (
-      <>
-        <br />
-        <table>
-          <thead>
-            <tr>
-              <th> Name </th>
-              <th>
-                <Link
-                  to={`/factrak/course-rankings/${
-                    params.aos ?? ""
-                  }?${searchParams.toString()}`}
-                  onClick={() => {
-                    updateAscending(!ascending);
-                    if (courses === undefined) {
-                      return;
-                    }
-                    updateCourses(courses.reverse());
-                  }}
-                  style={{
-                    color: "#FFFFFF",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Average Ratings {ascending ? "▲" : "▼"}
-                </Link>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {courses !== undefined
-              ? courses.map((course) => generateCourseRow(course))
-              : [...Array(5)].map((_, i) => courseSkeleton(i))}
-          </tbody>
-        </table>
-      </>
-    );
-  };
+  const sortLinkTo = `/factrak/course-rankings/${
+    params.aos ?? ""
+  }?${searchParams.toString()}`;
 
   return (
-    <article className="main">
-      <section className="margin-vertical-small">
-        <h3>Top Courses</h3>
-        <div
-          className="added-sort"
-          style={{
-            float: "right",
-          }}
-        >
-          <strong>Sort By:</strong>
-          <Select
-            onChange={(event) => {
-              updateMetric(event.target.value);
-              updateCourses(undefined);
-              // TODO: Update the URL to reflect the new metric
-            }}
-            options={[
-              "Overall Recommendation",
-              "Course Workload",
-              "Course Stimulating",
-            ]}
-            value={metric}
-            valueList={[
-              FactrakCourseMetric.WouldRecommendCourse,
-              FactrakCourseMetric.CourseWorkload,
-              FactrakCourseMetric.CourseStimulating,
-            ]}
-            style={{
-              display: "inline",
-              margin: "5px 0px 5px 20px",
-              padding: "4px",
-            }}
-          />
-        </div>
-        <FactrakDeficitMessage currUser={currUser} />
-        {generateCourses()}
-      </section>
-    </article>
+    <RankingsTable
+      title="Top Courses"
+      deficitMessage={<FactrakDeficitMessage currUser={currUser} />}
+      metric={metric}
+      metricOptions={COURSE_METRIC_OPTIONS}
+      onMetricChange={(value) => {
+        updateMetric(value as FactrakCourseMetric);
+        updateCourses(undefined);
+        // TODO: Update the URL to reflect the new metric
+      }}
+      ascending={ascending}
+      onToggleAscending={() => {
+        updateAscending(!ascending);
+        if (courses === undefined) {
+          return;
+        }
+        updateCourses(courses.reverse());
+      }}
+      sortLinkTo={sortLinkTo}
+      loading={courses === undefined}
+      rows={courses?.map((course) => generateCourseRow(course))}
+    />
   );
 };
 

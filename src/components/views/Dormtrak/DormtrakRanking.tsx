@@ -1,6 +1,6 @@
 // React Imports
 import React, { useState, useEffect } from "react";
-import { Line } from "../../Skeleton";
+import { Line } from "../../ui";
 
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
