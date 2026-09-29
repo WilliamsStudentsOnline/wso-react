@@ -8,6 +8,8 @@ module.exports = {
     /^dining-table-status-/,
     /^dining-meal-status-/,
     /^homepage-dining-row-status-/,
+    /^dining-menu-card--/,
+    /^dining--menu-open$/,
   ],
   whitelistPatternsChildren: [/react-date-picker/],
   rejected: false,
