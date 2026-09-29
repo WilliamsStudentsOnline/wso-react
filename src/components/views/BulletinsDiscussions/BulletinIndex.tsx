@@ -1,7 +1,8 @@
 // React imports
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { EmptyState, Line, Pagination } from "../../ui";
+import { EmptyState, Pagination } from "../../ui";
+import ThreadListItem from "./ThreadListItem";
 
 // Redux and routing imports
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
@@ -25,9 +26,10 @@ const BulletinIndex = ({ type }: { type: PostType }) => {
   const [bulletins, updateBulletins] = useState<Bulletin[] | undefined>(
     undefined
   );
-  const [page, updatePage] = useState(0); // 0-indexed page number (i.e. 0 represents the first page)
+  const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
   const perPage = 20;
+
   const loadBulletins = async (newPage: number) => {
     const params = {
       type,
@@ -49,8 +51,6 @@ const BulletinIndex = ({ type }: { type: PostType }) => {
       preload: ["user"],
       limit: 20,
       offset: perPage * newPage,
-      // We don't generally need to add start as a param because the backend automatically
-      // filters for only future rides.
     };
     try {
       const ridesResponse = await wso.bulletinService.listRides(params);
@@ -61,14 +61,11 @@ const BulletinIndex = ({ type }: { type: PostType }) => {
     }
   };
 
-  // Loads the next page appropriately
   const loadNext = (newPage: number) => {
-    // Different because the wso endpoints are different
     if (type === PostType.Rides) loadRides(newPage);
     else loadBulletins(newPage);
   };
 
-  // Handles clicking of the next/previous page
   const clickHandler = (number: number) => {
     if (number === -1 && page > 0) {
       loadNext(page - 1);
@@ -79,7 +76,6 @@ const BulletinIndex = ({ type }: { type: PostType }) => {
     }
   };
 
-  // Handles selection of page
   const selectionHandler = (newPage: number) => {
     updatePage(newPage);
     loadNext(newPage);
@@ -90,12 +86,7 @@ const BulletinIndex = ({ type }: { type: PostType }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, wso]);
 
-  // Handles deletion
-  const deleteHandler = async (
-    event: React.MouseEvent<HTMLAnchorElement>,
-    bulletinID?: number
-  ) => {
-    event.preventDefault();
+  const deleteHandler = async (bulletinID?: number) => {
     // eslint-disable-next-line no-restricted-globals, no-alert
     const confirmDelete = confirm("Are you sure?");
     if (!confirmDelete) return;
@@ -115,130 +106,64 @@ const BulletinIndex = ({ type }: { type: PostType }) => {
     }
   };
 
-  // Creates the Bulletin Title link
-  const generateBulletinTitleLink = (bulletin: Bulletin) => {
-    const title = generateBulletinTitle(bulletin);
-
-    return <Link to={`/bulletins/${type}/${bulletin.id}`}>{title}</Link>;
-  };
-
-  // Link to edit bulletin
-  const editLink = (bulletin: Bulletin) => {
-    if (currUser && currUser?.id === bulletin?.user?.id) {
-      return (
-        <>
-          <Link to={`/bulletins/${type}/${bulletin.id}/edit`}>Edit</Link>
-          &nbsp;|&nbsp;
-        </>
-      );
-    }
-    return null;
-  };
-
-  // Edit/Delete Links
-  const editDeleteLinks = (bulletin: Bulletin) => {
-    if (
-      (bulletin.user && currUser?.id === bulletin.user.id) ||
-      currUser?.admin
-    ) {
-      return (
-        <>
-          &nbsp;[&nbsp;
-          {editLink(bulletin)}
-          <Link
-            to={`/bulletins/${type}`}
-            onClick={(event) => deleteHandler(event, bulletin.id)}
-          >
-            Delete
-          </Link>
-          &nbsp;]
-        </>
-      );
-    }
-    return null;
-  };
-
-  // Returns the name of the bulletin user
   const bulletinUser = (bulletin: Bulletin) => {
     if (bulletin.user) return bulletin.user.name;
-
     return "WSO User";
   };
 
-  // Populate Bulletin
-  const generateBulletin = (bulletin: Bulletin) => {
-    return (
-      <tr key={bulletin.id}>
-        <td className="col-60">
-          {generateBulletinTitleLink(bulletin)}
-          {editDeleteLinks(bulletin)}
-        </td>
-        <td className="col-20">{bulletinUser(bulletin)}</td>
-        <td className="col-20">{generateBulletinDate(bulletin)}</td>
-      </tr>
+  const canDelete = (bulletin: Bulletin) =>
+    Boolean(
+      (bulletin.user && currUser?.id === bulletin.user.id) || currUser?.admin
     );
-  };
 
-  const bulletinSkeleton = (key: React.Key) => (
-    <tr key={key}>
-      <td className="col-60">
-        <Line width="70%" />
-      </td>
-      <td className="col-20">
-        <Line width="80%" />
-      </td>
-      <td className="col-20">
-        <Line width="80%" />
-      </td>
-    </tr>
-  );
-
-  // Generate Bulletin Table
-  const generateBulletinTable = () => {
-    if (bulletins && bulletins.length === 0) {
-      return <EmptyState variant="no-posts">No Posts</EmptyState>;
-    }
+  if (bulletins && bulletins.length === 0) {
     return (
-      <table>
-        <thead>
-          <tr>
-            <th className="col-60">Summary</th>
-            <th className="col-6020">Posted by</th>
-            <th className="col-20">Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {bulletins
-            ? bulletins.map((bulletin) => generateBulletin(bulletin))
-            : [...Array(20)].map((_, i) => bulletinSkeleton(i))}
-        </tbody>
-      </table>
+      <section className="margin-vertical-small">
+        <EmptyState variant="no-posts">No Posts</EmptyState>
+      </section>
     );
-  };
+  }
 
   return (
-    <article className="main-table">
-      <section>
-        <Pagination
-          selectionHandler={selectionHandler}
-          clickHandler={clickHandler}
-          page={page}
-          total={total}
-          perPage={perPage}
-          showPages
-        />
-        {generateBulletinTable()}
+    <section className="margin-vertical-small">
+      <Pagination
+        selectionHandler={selectionHandler}
+        clickHandler={clickHandler}
+        page={page}
+        total={total}
+        perPage={perPage}
+        showPages
+      />
+      {bulletins
+        ? bulletins.map((bulletin) => (
+            <ThreadListItem
+              key={bulletin.id}
+              title={
+                <Link to={`/bulletins/${type}/${bulletin.id}`}>
+                  {generateBulletinTitle(bulletin)}
+                </Link>
+              }
+              meta={`Posted ${generateBulletinDate(bulletin)} by ${bulletinUser(
+                bulletin
+              )}`}
+              showDelete={canDelete(bulletin)}
+              onDelete={() => deleteHandler(bulletin.id)}
+            />
+          ))
+        : [...Array(20)].map((_, i) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <ThreadListItem key={i} skeleton />
+          ))}
 
-        <Pagination
-          selectionHandler={selectionHandler}
-          clickHandler={clickHandler}
-          page={page}
-          total={total}
-          perPage={perPage}
-          showPages
-        />
-      </section>
-    </article>
+      <Pagination
+        selectionHandler={selectionHandler}
+        clickHandler={clickHandler}
+        page={page}
+        total={total}
+        perPage={perPage}
+        showPages
+      />
+    </section>
   );
 };
 

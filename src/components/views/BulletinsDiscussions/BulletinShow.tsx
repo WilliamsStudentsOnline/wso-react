@@ -1,6 +1,6 @@
 // React imports
 import React, { useState, useEffect } from "react";
-import { Line, Paragraph } from "../../ui";
+import { Button, CommentCard, Line, Paragraph } from "../../ui";
 import Markdown from "markdown-to-jsx";
 
 // Redux and Routing imports
@@ -15,6 +15,17 @@ import type {
   ModelsBulletin,
 } from "wso-api-client/lib/services/types";
 import { generateBulletinDate, generateBulletinTitle } from "./BulletinUtils";
+
+const markdownOptions = {
+  overrides: {
+    h1: { component: "h2" as const, props: {} },
+    h2: { component: "h2" as const, props: {} },
+    h3: { component: "h2" as const, props: {} },
+    h4: { component: "h5" as const, props: {} },
+    h5: { component: "h5" as const, props: {} },
+    h6: { component: "h5" as const, props: {} },
+  },
+};
 
 const BulletinShow = () => {
   const wso = useAppSelector(getWSO);
@@ -75,7 +86,6 @@ const BulletinShow = () => {
     loadBulletin();
   }, [params.bulletinID, params.type, wso]);
 
-  // Generate bulletin creator name
   const generateBulletinStarter = () => {
     if (bulletin?.userID && bulletin.user?.name) {
       return (
@@ -90,38 +100,23 @@ const BulletinShow = () => {
     return "WSO User";
   };
 
-  // Generate the edit button only if the current user is the bulletin starter
-  const editButton = () => {
-    if (currUser && currUser.id === bulletin?.user?.id) {
-      return (
-        <button
-          type="button"
-          onClick={() => navigateTo("edit")}
-          className="inline-button"
-        >
-          Edit
-        </button>
-      );
-    }
-
-    return null;
-  };
-
-  // Generate the edit + delete buttons
   const editDeleteButtons = () => {
     if (currUser && (currUser.id === bulletin?.user?.id || currUser.admin)) {
       return (
-        <>
-          <br />
-          {editButton()}
-          <button
-            type="button"
-            onClick={deleteHandler}
-            className="inline-button"
-          >
+        <div className="main-table-corner-actions">
+          {currUser.id === bulletin?.user?.id ? (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => navigateTo("edit")}
+            >
+              Edit
+            </Button>
+          ) : null}
+          <Button type="button" variant="secondary" onClick={deleteHandler}>
             Delete
-          </button>
-        </>
+          </Button>
+        </div>
       );
     }
     return null;
@@ -129,73 +124,41 @@ const BulletinShow = () => {
 
   if (!bulletin)
     return (
-      <article className="list-creation">
-        <section>
-          <div className="field">
-            <h3>
-              <br />
-              <Line width="100%" />
-              <br />
-              <br />
-            </h3>
-            <Line width="30%" />
-            <br />
-            <br />
-            <Paragraph numRows={5} />
-          </div>
-          <br />
-        </section>
-      </article>
+      <section className="discussion-thread">
+        <div className="thread-title-row">
+          <h3 className="thread-title">
+            <Line width="50%" />
+          </h3>
+        </div>
+        <CommentCard
+          className="discussion-post"
+          header={<Line width="30%" />}
+          body={<Paragraph numRows={5} />}
+          meta={<Line width="25%" />}
+        />
+      </section>
     );
 
   return (
-    <article className="list-creation">
-      <section>
-        <div className="field">
-          <h3>
-            <br />
-            {generateBulletinTitle(bulletin)}
-            <br />
-            <br />
-          </h3>
-          {`${generateBulletinDate(bulletin)} by `}
-          {generateBulletinStarter()}
-          {editDeleteButtons()}
-          <br />
-          <br />
+    <section className="discussion-thread">
+      <div className="thread-title-row">
+        <h3 className="thread-title">{generateBulletinTitle(bulletin)}</h3>
+        {editDeleteButtons()}
+      </div>
+      <CommentCard
+        className="discussion-post"
+        header={<h1>{generateBulletinStarter()}</h1>}
+        body={
           <div className="markdown-content">
-            <Markdown
-              options={{
-                overrides: {
-                  h1: {
-                    component: "h2",
-                  },
-                  h2: {
-                    component: "h2",
-                  },
-                  h3: {
-                    component: "h2",
-                  },
-                  h4: {
-                    component: "h5",
-                  },
-                  h5: {
-                    component: "h5",
-                  },
-                  h6: {
-                    component: "h5",
-                  },
-                },
-              }}
-            >
+            <Markdown options={markdownOptions}>
               {bulletin.body ||
                 "There was an error displaying the content for this post."}
             </Markdown>
-          </div>{" "}
-        </div>
-        <br />
-      </section>
-    </article>
+          </div>
+        }
+        meta={<span>{generateBulletinDate(bulletin)}</span>}
+      />
+    </section>
   );
 };
 
