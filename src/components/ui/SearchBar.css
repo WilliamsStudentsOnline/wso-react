@@ -2,15 +2,29 @@
   float: left;
   display: block;
   clear: both;
+  /* Match content pane (.facebook-results section, etc.) */
   width: 82.9403914003%;
+  max-width: 100%;
   margin-left: 8.5298042998%;
   margin-right: 0;
   margin-bottom: 1rem;
   box-sizing: border-box;
 }
 
+/* Beat ServiceHeader's adjacent-sibling width:100% so the bar
+   stays aligned with the content pane instead of overflowing. */
+.wso-service-header > .page-head + .wso-search-bar,
+.wso-service-header > .wso-search-bar {
+  width: 82.9403914003%;
+  max-width: 100%;
+  margin-left: 8.5298042998%;
+  box-sizing: border-box;
+}
+
 @media screen and (max-width: 48.125em) {
-  .wso-search-bar {
+  .wso-search-bar,
+  .wso-service-header > .page-head + .wso-search-bar,
+  .wso-service-header > .wso-search-bar {
     width: 100%;
     margin-left: 0;
   }
@@ -29,7 +43,10 @@
   align-items: center;
   flex-wrap: nowrap;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   gap: 1rem;
+  box-sizing: border-box;
 }
 
 .wso-search-bar__row input[type="search"],
@@ -92,7 +109,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-left: 0.875rem;
+  margin-left: 0;
   flex: 0 0 auto;
   height: 52px;
 }

@@ -19,11 +19,11 @@
   /* homepage colors */
   --color-homepage-buttons: var(--brand-primary);
   --color-homepage-button-borders: var(--brand-bar-hover);
-  --color-homepage-table-tr: var(--surface-muted);
-  --color-homepage-table-td: var(--surface-muted);
+  --color-homepage-table-tr: transparent;
+  --color-homepage-table-td: transparent;
   --color-homepage-warning: var(--status-danger);
-  --color-homepage-active-filters-bg: var(--status-notice-bg);
-  --color-homepage-active-filters-fg: var(--brand-primary-hover);
+  --color-homepage-active-filters-bg: var(--surface-page);
+  --color-homepage-active-filters-fg: var(--text-body);
   /* timetable colors */
   --color-timetable-header: var(--brand-deep);
   --color-timetable-header-button-bg: var(--surface-page);

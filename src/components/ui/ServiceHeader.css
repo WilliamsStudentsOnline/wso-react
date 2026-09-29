@@ -46,7 +46,11 @@ button.wso-service-header__tab:active {
 }
 
 .wso-service-header > .page-head:last-child {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.wso-service-header > .page-head h1 {
+  margin-bottom: 0.35rem;
 }
 
 .wso-service-header > .page-head + * {

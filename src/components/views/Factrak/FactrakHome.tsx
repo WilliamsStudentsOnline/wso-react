@@ -91,7 +91,6 @@ const FactrakHome = () => {
         <article className="main">
           <section className="lead">
             <h3>Recent Comments</h3>
-            <br />
             <FactrakDeficitMessage currUser={currUser} />
 
             {surveys

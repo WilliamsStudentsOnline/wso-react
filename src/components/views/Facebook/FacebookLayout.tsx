@@ -12,6 +12,7 @@ import { ServiceHeader, SearchBar, Button, ServiceTab } from "../../ui";
 
 // Component Imports
 import QueryTable from "../../QueryTable";
+import "../../stylesheets/Homepage.css";
 
 const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
@@ -86,18 +87,12 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
       >
         {advancedFiltersSelected && (
           <div className="advanced-query advanced-query-facebook">
-            <br />
             <div className="active-filters-container">
               {generatedQuery ? (
                 <div className="active-filters">{generatedQuery}</div>
-              ) : (
-                <div className="active-filters">
-                  <span id="italic">empty query - add filters below</span>
-                </div>
-              )}
+              ) : null}
               {queryWarning && <div className="warning">{queryWarning}</div>}
             </div>
-            <br />
             <QueryTable />
           </div>
         )}

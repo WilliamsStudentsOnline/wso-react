@@ -26,14 +26,31 @@
 }
 
 .advanced-query {
-  border: 3px solid var(--color-homepage-button-borders);
-  border-radius: 20px;
+  clear: both;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  padding: 1rem 1.25rem 1.25rem;
+  background: var(--surface-muted);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
 }
 
 .advanced-query-facebook {
-  border: 3px solid var(--color-homepage-button-borders);
-  border-radius: 20px;
-  margin-top: 290px;
+  float: left;
+  width: 82.9403914003%;
+  margin-left: 8.5298042998%;
+  margin-right: 0;
+  margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 48.125em) {
+  .advanced-query-facebook {
+    width: 100%;
+    margin-left: 0;
+  }
 }
 
 input[type="submit"] {
@@ -58,22 +75,25 @@ input[type="submit"] {
 }
 
 #homepage-table {
-  margin-top: 0px;
-  margin-bottom: 20px;
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  background: transparent;
 }
 
 #homepage-table,
 #homepage-table tr {
-  background-color: var(--color-homepage-table-tr);
+  background: transparent;
   border: none;
-  padding-bottom: 20px;
 }
 
-#homepage-table td {
-  background-color: var(--color-homepage-table-td);
+#homepage-table td,
+#homepage-table tbody tr:nth-child(even) td,
+#homepage-table tbody tr:nth-child(odd) td {
+  background: transparent;
   border: none;
   vertical-align: middle;
-  padding: 8px 4px;
+  padding: 0.4rem 0.5rem;
 }
 
 #homepage-table td > input,
@@ -87,6 +107,9 @@ input[type="submit"] {
 #homepage-table td strong {
   display: inline-block;
   vertical-align: middle;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 #italic {
@@ -95,27 +118,47 @@ input[type="submit"] {
 
 .warning {
   width: fit-content;
-  margin: auto;
+  margin: 0.35rem auto 0;
   color: var(--color-homepage-warning);
+  font-size: 0.85em;
+}
+
+.active-filters-container {
+  text-align: center;
 }
 
 .active-filters {
-  background-color: var(--color-homepage-active-filters-bg);
-  color: var(--color-homepage-active-filters-fg);
-  border-radius: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 0;
-  padding-bottom: 0;
-  width: fit-content;
-  height: fit-content;
-  margin: auto;
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0.35rem 0.75rem;
+  background: var(--surface-page);
+  color: var(--text-body);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  font-family: var(--font-family-mono);
+  font-size: 0.85em;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.active-filters #italic {
+  color: var(--text-subtle);
+  font-family: var(--font-family-sans);
 }
 
 .library-hours {
   max-width: 60%;
   margin-left: auto;
   margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.library-hours h3 {
+  margin: 0;
 }
 
 .library-hours-table {
