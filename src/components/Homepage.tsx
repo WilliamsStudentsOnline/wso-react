@@ -83,6 +83,7 @@ const Homepage = () => {
         </article>
         <article>
           <section>
+            <h3 className="home-bulletins-heading">Bulletin</h3>
             <div className="bulletin-list">
               {Object.values(PostType).map((type) => (
                 <BulletinBox type={type} key={type} />
