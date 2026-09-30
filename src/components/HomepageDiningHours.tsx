@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./stylesheets/Dining.css";
 import { formatCompactHours } from "../lib/timeFormat";
 import {
@@ -12,11 +12,58 @@ import {
   mealMenuId,
   mealSlotForName,
   mealSlotLabel,
+  parseAndAdjustTime,
   useDiningData,
   useDiningMenus,
   useVendorStatus,
   MealMenuButton,
 } from "./views/Dining/diningShared";
+
+const WHITMANS_VENDOR_ID = "whitmans";
+const SNAR_DISPLAY = "SNAR!!!";
+const SNAR_REPEAT_COUNT = 12;
+
+const findWhitmansLateNight = (
+  vendors: Vendor[]
+): { vendor: Vendor; key: string; meal: Meal } | null => {
+  const whitmans = vendors.find(
+    (vendor) => vendor.id.toLowerCase() === WHITMANS_VENDOR_ID
+  );
+  if (!whitmans) return null;
+  const entry = Object.entries(whitmans.meals).find(
+    ([, meal]) => mealSlotForName(meal.name) === "late night"
+  );
+  if (!entry) return null;
+  return { vendor: whitmans, key: entry[0], meal: entry[1] };
+};
+
+const isAfterNineUntilLateNightClose = (
+  now: Date,
+  lateNight: Meal
+): boolean => {
+  if (!lateNight.hours) return false;
+  const ninePm = new Date(now);
+  ninePm.setHours(21, 0, 0, 0);
+  if (now.getHours() < 6) {
+    ninePm.setDate(ninePm.getDate() - 1);
+  }
+  const close = parseAndAdjustTime(
+    lateNight.hours.close,
+    now,
+    true,
+    lateNight.hours.open
+  );
+  return now >= ninePm && now < close;
+};
+
+const useNowMinute = () => {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60 * 1000);
+    return () => clearInterval(timer);
+  }, []);
+  return now;
+};
 
 const findMealForSlot = (
   vendor: Vendor,
@@ -39,6 +86,74 @@ const activeSlotsForVendors = (vendors: Vendor[]): DiningMealSlot[] => {
   });
   return DINING_MEAL_SLOTS.filter(
     (slot) => slot !== "late night" && present.has(slot)
+  );
+};
+
+const HomepageSnarRow = ({
+  vendor,
+  mealKey,
+  meal,
+  colSpan,
+  openMenuIds,
+  onToggleMenu,
+}: {
+  vendor: Vendor;
+  mealKey: string;
+  meal: Meal;
+  colSpan: number;
+  openMenuIds: Set<string>;
+  onToggleMenu: (
+    id: string,
+    vendorName: string,
+    meal: Meal,
+    clientX: number
+  ) => void;
+}) => {
+  const hoursLabel = meal.hours
+    ? formatCompactHours(meal.hours.open, meal.hours.close)
+    : "";
+  const id = mealMenuId(vendor.id, mealKey);
+  const showMenu = mealHasMenu(meal);
+  const snarSegment = Array.from(
+    { length: SNAR_REPEAT_COUNT },
+    () => SNAR_DISPLAY
+  ).join(" ");
+
+  return (
+    <tr className="homepage-dining-snar-row">
+      <td colSpan={colSpan} className="homepage-dining-snar-cell">
+        <div className="homepage-dining-snar">
+          {hoursLabel ? (
+            <span className="homepage-status-tooltip" role="tooltip">
+              {hoursLabel}
+            </span>
+          ) : null}
+          <div className="homepage-dining-snar-marquee" aria-hidden>
+            <div className="homepage-dining-snar-track">
+              <span className="homepage-dining-snar-segment">
+                {snarSegment}
+              </span>
+              <span className="homepage-dining-snar-segment">
+                {snarSegment}
+              </span>
+            </div>
+          </div>
+          <span className="homepage-dining-snar-label">{SNAR_DISPLAY}</span>
+          {showMenu ? (
+            <span className="homepage-dining-snar-menu">
+              <MealMenuButton
+                isActive={openMenuIds.has(id)}
+                label={`${vendor.name} ${capitalizeMeal(meal.name)}`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onToggleMenu(id, vendor.name, meal, event.clientX);
+                }}
+              />
+            </span>
+          ) : null}
+        </div>
+      </td>
+    </tr>
   );
 };
 
@@ -205,6 +320,7 @@ const HomepageDiningHours = () => {
   const { diningData, loading, error } = useDiningData();
   const { openMenuIds, onToggleMenu, anyOpen, menuPanels } =
     useDiningMenus("left-only");
+  const now = useNowMinute();
 
   const vendors = useMemo(
     () =>
@@ -219,6 +335,13 @@ const HomepageDiningHours = () => {
   );
 
   const slots = useMemo(() => activeSlotsForVendors(vendors), [vendors]);
+  const whitmansLateNight = useMemo(
+    () => findWhitmansLateNight(vendors),
+    [vendors]
+  );
+  const showSnarRow =
+    !!whitmansLateNight &&
+    isAfterNineUntilLateNightClose(now, whitmansLateNight.meal);
 
   if (error) return <p>Unable to load dining hours.</p>;
   if (loading) return <HomepageDiningSkeleton />;
@@ -244,13 +367,26 @@ const HomepageDiningHours = () => {
         </thead>
         <tbody>
           {vendors.map((vendor) => (
-            <HomepageDiningVendorRow
-              key={vendor.id}
-              vendor={vendor}
-              slots={slots}
-              openMenuIds={openMenuIds}
-              onToggleMenu={onToggleMenu}
-            />
+            <React.Fragment key={vendor.id}>
+              <HomepageDiningVendorRow
+                vendor={vendor}
+                slots={slots}
+                openMenuIds={openMenuIds}
+                onToggleMenu={onToggleMenu}
+              />
+              {showSnarRow &&
+              whitmansLateNight &&
+              vendor.id === whitmansLateNight.vendor.id ? (
+                <HomepageSnarRow
+                  vendor={whitmansLateNight.vendor}
+                  mealKey={whitmansLateNight.key}
+                  meal={whitmansLateNight.meal}
+                  colSpan={slots.length + 1}
+                  openMenuIds={openMenuIds}
+                  onToggleMenu={onToggleMenu}
+                />
+              ) : null}
+            </React.Fragment>
           ))}
         </tbody>
       </table>
