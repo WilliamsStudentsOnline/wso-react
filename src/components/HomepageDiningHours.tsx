@@ -20,7 +20,7 @@ import {
 } from "./views/Dining/diningShared";
 
 const WHITMANS_VENDOR_ID = "whitmans";
-const SNAR_DISPLAY = "SNAR!!!";
+const SNAR_DISPLAY = "SNAR!!";
 const SNAR_REPEAT_COUNT = 12;
 
 const findWhitmansLateNight = (
@@ -37,23 +37,16 @@ const findWhitmansLateNight = (
   return { vendor: whitmans, key: entry[0], meal: entry[1] };
 };
 
-const isAfterNineUntilLateNightClose = (
-  now: Date,
-  lateNight: Meal
-): boolean => {
+const isLateNightOpen = (now: Date, lateNight: Meal): boolean => {
   if (!lateNight.hours) return false;
-  const ninePm = new Date(now);
-  ninePm.setHours(21, 0, 0, 0);
-  if (now.getHours() < 6) {
-    ninePm.setDate(ninePm.getDate() - 1);
-  }
+  const open = parseAndAdjustTime(lateNight.hours.open, now, false);
   const close = parseAndAdjustTime(
     lateNight.hours.close,
     now,
     true,
     lateNight.hours.open
   );
-  return now >= ninePm && now < close;
+  return now >= open && now < close;
 };
 
 const useNowMinute = () => {
@@ -93,14 +86,14 @@ const HomepageSnarRow = ({
   vendor,
   mealKey,
   meal,
-  colSpan,
+  mealColSpan,
   openMenuIds,
   onToggleMenu,
 }: {
   vendor: Vendor;
   mealKey: string;
   meal: Meal;
-  colSpan: number;
+  mealColSpan: number;
   openMenuIds: Set<string>;
   onToggleMenu: (
     id: string,
@@ -113,19 +106,37 @@ const HomepageSnarRow = ({
     x: number;
     y: number;
   } | null>(null);
+  const lateNightMeals = useMemo(() => ({ [mealKey]: meal }), [mealKey, meal]);
+  const { style, message } = useVendorStatus(lateNightMeals);
+  const pill = getDiningStatusPill(style);
   const hoursLabel = meal.hours
     ? formatCompactHours(meal.hours.open, meal.hours.close)
     : "";
   const id = mealMenuId(vendor.id, mealKey);
   const showMenu = mealHasMenu(meal);
-  const snarSegment = Array.from(
-    { length: SNAR_REPEAT_COUNT },
-    () => SNAR_DISPLAY
-  ).join(" ");
+  const snarItems = (keyPrefix: string) =>
+    Array.from({ length: SNAR_REPEAT_COUNT }, (_, index) => (
+      <span key={`${keyPrefix}-${index}`} className="homepage-dining-snar-item">
+        {SNAR_DISPLAY}
+      </span>
+    ));
 
   return (
     <tr className="homepage-dining-snar-row">
-      <td colSpan={colSpan} className="homepage-dining-snar-cell">
+      <td>
+        <span className="homepage-hours-name">
+          <span
+            className={`homepage-status-dot homepage-status-dot-${pill.kind}`}
+            aria-label={`${pill.label}: ${message}`}
+          >
+            <span className="homepage-status-tooltip" role="tooltip">
+              {message}
+            </span>
+          </span>
+          <b>{vendor.name}</b>
+        </span>
+      </td>
+      <td colSpan={mealColSpan} className="homepage-dining-snar-cell">
         <div
           className="homepage-dining-snar"
           onMouseMove={(event) => {
@@ -154,12 +165,8 @@ const HomepageSnarRow = ({
           ) : null}
           <div className="homepage-dining-snar-marquee" aria-hidden>
             <div className="homepage-dining-snar-track">
-              <span className="homepage-dining-snar-segment">
-                {snarSegment}
-              </span>
-              <span className="homepage-dining-snar-segment">
-                {snarSegment}
-              </span>
+              {snarItems("a")}
+              {snarItems("b")}
             </div>
           </div>
           <span className="homepage-dining-snar-label">{SNAR_DISPLAY}</span>
@@ -364,8 +371,7 @@ const HomepageDiningHours = () => {
     [vendors]
   );
   const showSnarRow =
-    !!whitmansLateNight &&
-    isAfterNineUntilLateNightClose(now, whitmansLateNight.meal);
+    !!whitmansLateNight && isLateNightOpen(now, whitmansLateNight.meal);
 
   if (error) return <p>Unable to load dining hours.</p>;
   if (loading) return <HomepageDiningSkeleton />;
@@ -405,7 +411,7 @@ const HomepageDiningHours = () => {
                   vendor={whitmansLateNight.vendor}
                   mealKey={whitmansLateNight.key}
                   meal={whitmansLateNight.meal}
-                  colSpan={slots.length + 1}
+                  mealColSpan={slots.length}
                   openMenuIds={openMenuIds}
                   onToggleMenu={onToggleMenu}
                 />

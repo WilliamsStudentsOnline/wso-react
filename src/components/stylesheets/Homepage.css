@@ -491,9 +491,9 @@ input[type="submit"] {
   animation: homepage-dining-snar-roll 18s linear infinite;
 }
 
-.homepage-dining-snar-segment {
+.homepage-dining-snar-item {
   flex: 0 0 auto;
-  padding-right: 1.25rem;
+  padding-right: 2.25rem;
   font-weight: bold;
   letter-spacing: 0.08em;
   white-space: nowrap;
