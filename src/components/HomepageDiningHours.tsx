@@ -160,6 +160,7 @@ const HomepageSnarRow = ({
   const [burgerRaining, setBurgerRaining] = useState(false);
   const holdTimerRef = useRef<number | null>(null);
   const holdActivatedRef = useRef(false);
+  const holdDoneListenerRef = useRef<(() => void) | null>(null);
   const lateNightMeals = useMemo(() => ({ [mealKey]: meal }), [mealKey, meal]);
   const { style, message } = useVendorStatus(lateNightMeals);
   const pill = getDiningStatusPill(style);
@@ -175,24 +176,22 @@ const HomepageSnarRow = ({
       </span>
     ));
 
-  const clearHoldTimer = () => {
-    if (holdTimerRef.current !== null) {
-      window.clearTimeout(holdTimerRef.current);
-      holdTimerRef.current = null;
-    }
-  };
+  useEffect(() => {
+    const onHoldDone = () => {
+      if (holdTimerRef.current !== null) {
+        window.clearTimeout(holdTimerRef.current);
+        holdTimerRef.current = null;
+      }
+      setBurgerRaining(false);
+      window.removeEventListener("pointerup", onHoldDone);
+      window.removeEventListener("pointercancel", onHoldDone);
+    };
+    holdDoneListenerRef.current = onHoldDone;
+    return () => {
+      onHoldDone();
+    };
+  }, []);
 
-  const stopBurgerHold = () => {
-    clearHoldTimer();
-    setBurgerRaining(false);
-  };
-
-  useEffect(
-    () => () => {
-      clearHoldTimer();
-    },
-    []
-  );
   return (
     <tr className="homepage-dining-snar-row">
       <td>
@@ -222,17 +221,17 @@ const HomepageSnarRow = ({
               className="homepage-dining-snar-menu"
               onPointerDown={(event) => {
                 if (event.button !== 0) return;
+                const onHoldDone = holdDoneListenerRef.current;
+                if (!onHoldDone) return;
                 holdActivatedRef.current = false;
-                clearHoldTimer();
-                event.currentTarget.setPointerCapture(event.pointerId);
+                onHoldDone();
                 holdTimerRef.current = window.setTimeout(() => {
                   holdActivatedRef.current = true;
                   setBurgerRaining(true);
                 }, SNAR_BURGER_HOLD_MS);
+                window.addEventListener("pointerup", onHoldDone);
+                window.addEventListener("pointercancel", onHoldDone);
               }}
-              onPointerUp={stopBurgerHold}
-              onPointerCancel={stopBurgerHold}
-              onLostPointerCapture={stopBurgerHold}
             >
               {hoursLabel ? (
                 <span className="homepage-status-tooltip" role="tooltip">
