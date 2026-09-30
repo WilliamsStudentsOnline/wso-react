@@ -25,7 +25,7 @@ const SNAR_DISPLAY = "SNAR!!";
 const SNAR_REPEAT_COUNT = 12;
 const SNAR_BURGER_HOLD_MS = 1000;
 const SNAR_BURGER_SPAWN_MS = 110;
-const SNAR_BURGER_MAX = 48;
+const SNAR_BURGER_MAX = 96;
 
 type SnarBurger = {
   id: number;
