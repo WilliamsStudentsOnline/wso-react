@@ -466,13 +466,15 @@ input[type="submit"] {
   color: var(--status-notice-fg);
 }
 
-.homepage-dining-snar .homepage-status-tooltip {
-  left: 0.75rem;
-  bottom: calc(100% + 0.35rem);
+.homepage-dining-snar .homepage-dining-snar-tooltip {
+  left: 0;
+  top: 0;
+  bottom: auto;
+  transform: translate(-50%, calc(-100% - 0.35rem));
+  pointer-events: none;
 }
 
-.homepage-dining-snar:hover .homepage-status-tooltip,
-.homepage-dining-snar:focus-within .homepage-status-tooltip {
+.homepage-dining-snar .homepage-dining-snar-tooltip.is-visible {
   visibility: visible;
 }
 
@@ -523,10 +525,10 @@ input[type="submit"] {
 
 @keyframes homepage-dining-snar-roll {
   from {
-    transform: translateX(-50%);
+    transform: translateX(0);
   }
   to {
-    transform: translateX(0);
+    transform: translateX(-50%);
   }
 }
 

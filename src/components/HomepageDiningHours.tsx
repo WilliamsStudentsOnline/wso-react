@@ -109,6 +109,10 @@ const HomepageSnarRow = ({
     clientX: number
   ) => void;
 }) => {
+  const [tooltipPos, setTooltipPos] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const hoursLabel = meal.hours
     ? formatCompactHours(meal.hours.open, meal.hours.close)
     : "";
@@ -122,10 +126,30 @@ const HomepageSnarRow = ({
   return (
     <tr className="homepage-dining-snar-row">
       <td colSpan={colSpan} className="homepage-dining-snar-cell">
-        <div className="homepage-dining-snar">
+        <div
+          className="homepage-dining-snar"
+          onMouseMove={(event) => {
+            const rect = event.currentTarget.getBoundingClientRect();
+            setTooltipPos({
+              x: event.clientX - rect.left,
+              y: event.clientY - rect.top,
+            });
+          }}
+          onMouseLeave={() => setTooltipPos(null)}
+        >
           {hoursLabel ? (
-            <span className="homepage-status-tooltip" role="tooltip">
-              {hoursLabel}
+            <span
+              className={`homepage-status-tooltip homepage-dining-snar-tooltip${
+                tooltipPos ? " is-visible" : ""
+              }`}
+              role="tooltip"
+              style={
+                tooltipPos
+                  ? { left: tooltipPos.x, top: tooltipPos.y }
+                  : undefined
+              }
+            >
+              {`Open ${hoursLabel}`}
             </span>
           ) : null}
           <div className="homepage-dining-snar-marquee" aria-hidden>
