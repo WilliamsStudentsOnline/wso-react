@@ -27,80 +27,53 @@ const SNAR_BURGER_HOLD_MS = 1000;
 const SNAR_BURGER_SPAWN_MS = 110;
 const SNAR_BURGER_MAX = 96;
 
-type SnarBurger = {
-  id: number;
-  left: number;
-  size: number;
-  duration: number;
-  spinDuration: number;
-  spinDirection: 1 | -1;
-  sway: number;
-};
-
 const SnarBurgerRain = ({ raining }: { raining: boolean }) => {
-  const [burgers, setBurgers] = useState<SnarBurger[]>([]);
-  const nextIdRef = useRef(0);
+  const layerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!raining) return undefined;
+    const layer = layerRef.current;
+    if (!layer) return undefined;
+
     const spawn = () => {
-      const id = nextIdRef.current;
-      nextIdRef.current += 1;
-      const burger: SnarBurger = {
-        id,
-        left: Math.random() * 100,
-        size: 1.35 + Math.random() * 1.4,
-        duration: 2.2 + Math.random() * 2.4,
-        spinDuration: 0.55 + Math.random() * 1.1,
-        spinDirection: Math.random() < 0.5 ? 1 : -1,
-        sway: (Math.random() * 2 - 1) * 120,
-      };
-      setBurgers((prev) => {
-        const next = [...prev, burger];
-        return next.length > SNAR_BURGER_MAX
-          ? next.slice(next.length - SNAR_BURGER_MAX)
-          : next;
+      while (layer.childElementCount >= SNAR_BURGER_MAX) {
+        layer.firstElementChild?.remove();
+      }
+
+      const duration = 2.4 + Math.random() * 2.2;
+      const spinDuration = 0.7 + Math.random() * 1.2;
+      const spinDirection = Math.random() < 0.5 ? 1 : -1;
+      const sway = (Math.random() * 2 - 1) * 80;
+
+      const burger = document.createElement("span");
+      burger.className = "homepage-snar-burger";
+      burger.style.left = `${Math.random() * 100}%`;
+      burger.style.fontSize = `${1.35 + Math.random() * 1.4}rem`;
+      burger.style.animationDuration = `${duration}s`;
+      burger.style.setProperty("--sway", `${sway}px`);
+
+      const inner = document.createElement("span");
+      inner.className = "homepage-snar-burger-inner";
+      inner.style.animationDuration = `${spinDuration}s`;
+      inner.style.setProperty("--spin-dir", String(spinDirection));
+      inner.textContent = "🍔";
+
+      burger.appendChild(inner);
+      burger.addEventListener("animationend", () => burger.remove(), {
+        once: true,
       });
+      layer.appendChild(burger);
     };
+
     spawn();
     const timer = window.setInterval(spawn, SNAR_BURGER_SPAWN_MS);
     return () => window.clearInterval(timer);
   }, [raining]);
 
-  if (burgers.length === 0 || typeof document === "undefined") return null;
+  if (typeof document === "undefined") return null;
 
   return createPortal(
-    <div className="homepage-snar-burger-rain" aria-hidden>
-      {burgers.map((burger) => (
-        <span
-          key={burger.id}
-          className="homepage-snar-burger"
-          style={
-            {
-              left: `${burger.left}%`,
-              fontSize: `${burger.size}rem`,
-              animationDuration: `${burger.duration}s`,
-              ["--sway" as string]: `${burger.sway}px`,
-            } as React.CSSProperties
-          }
-          onAnimationEnd={() => {
-            setBurgers((prev) => prev.filter((item) => item.id !== burger.id));
-          }}
-        >
-          <span
-            className="homepage-snar-burger-inner"
-            style={
-              {
-                animationDuration: `${burger.spinDuration}s`,
-                ["--spin-dir" as string]: burger.spinDirection,
-              } as React.CSSProperties
-            }
-          >
-            🍔
-          </span>
-        </span>
-      ))}
-    </div>,
+    <div ref={layerRef} className="homepage-snar-burger-rain" aria-hidden />,
     document.body
   );
 };
