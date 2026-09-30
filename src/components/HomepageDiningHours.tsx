@@ -26,6 +26,24 @@ const SNAR_REPEAT_COUNT = 12;
 const SNAR_BURGER_HOLD_MS = 1000;
 const SNAR_BURGER_SPAWN_MS = 110;
 const SNAR_BURGER_MAX = 96;
+const SNAR_PLAIN_STORAGE_KEY = "wso-homepage-snar-plain";
+
+const readSnarPlainPreference = (): boolean => {
+  try {
+    return localStorage.getItem(SNAR_PLAIN_STORAGE_KEY) === "1";
+  } catch (err) {
+    void err;
+    return false;
+  }
+};
+
+const writeSnarPlainPreference = (plain: boolean): void => {
+  try {
+    localStorage.setItem(SNAR_PLAIN_STORAGE_KEY, plain ? "1" : "0");
+  } catch (err) {
+    void err;
+  }
+};
 
 const SnarBurgerRain = ({
   raining,
@@ -166,7 +184,7 @@ const HomepageSnarRow = ({
   ) => void;
 }) => {
   const [burgerRaining, setBurgerRaining] = useState(false);
-  const [plainFormat, setPlainFormat] = useState(false);
+  const [plainFormat, setPlainFormat] = useState(readSnarPlainPreference);
   const holdTimerRef = useRef<number | null>(null);
   const holdActivatedRef = useRef(false);
   const holdDoneListenerRef = useRef<(() => void) | null>(null);
@@ -258,7 +276,13 @@ const HomepageSnarRow = ({
       <td
         colSpan={mealColSpan}
         className={`homepage-dining-snar-cell${plainFormat ? " is-plain" : ""}`}
-        onClick={() => setPlainFormat((plain) => !plain)}
+        onClick={() =>
+          setPlainFormat((plain) => {
+            const next = !plain;
+            writeSnarPlainPreference(next);
+            return next;
+          })
+        }
       >
         <div className="homepage-dining-snar">
           {plainFormat ? (
