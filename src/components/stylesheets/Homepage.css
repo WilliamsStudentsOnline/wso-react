@@ -460,7 +460,6 @@ input[type="submit"] {
 
 .homepage-dining-snar-cell.is-plain {
   background: var(--surface-muted) !important;
-  padding: 0 0.75rem !important;
 }
 
 .homepage-dining-snar {
@@ -476,14 +475,6 @@ input[type="submit"] {
   color: var(--text-body);
 }
 
-.homepage-dining-snar-cell.is-plain .homepage-dining-snar-menu {
-  position: static;
-  right: auto;
-  top: auto;
-  transform: none;
-  margin-left: auto;
-}
-
 .homepage-dining-snar-marquee {
   flex: 1 1 auto;
   min-width: 0;
@@ -494,7 +485,8 @@ input[type="submit"] {
 .homepage-dining-snar-cell.is-plain .homepage-dining-cell {
   flex: 1 1 auto;
   min-width: 0;
-  padding-right: 0.35rem;
+  padding: 0 2.75rem 0 0.75rem;
+  box-sizing: border-box;
 }
 
 .homepage-dining-snar-track {
