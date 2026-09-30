@@ -450,6 +450,14 @@ input[type="submit"] {
   z-index: 8;
 }
 
+.homepage-dining-snar-row {
+  cursor: pointer;
+}
+
+.homepage-dining-snar-row.is-paused .homepage-dining-snar-track {
+  animation-play-state: paused;
+}
+
 .homepage-dining-snar-cell {
   position: relative;
   padding: 0 !important;
@@ -511,6 +519,7 @@ input[type="submit"] {
   justify-content: flex-end;
   touch-action: none;
   user-select: none;
+  cursor: pointer;
 }
 
 .homepage-dining-snar-menu:hover,

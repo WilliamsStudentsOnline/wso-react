@@ -158,6 +158,7 @@ const HomepageSnarRow = ({
   ) => void;
 }) => {
   const [burgerRaining, setBurgerRaining] = useState(false);
+  const [marqueePaused, setMarqueePaused] = useState(false);
   const holdTimerRef = useRef<number | null>(null);
   const holdActivatedRef = useRef(false);
   const holdDoneListenerRef = useRef<(() => void) | null>(null);
@@ -193,7 +194,10 @@ const HomepageSnarRow = ({
   }, []);
 
   return (
-    <tr className="homepage-dining-snar-row">
+    <tr
+      className={`homepage-dining-snar-row${marqueePaused ? " is-paused" : ""}`}
+      onClick={() => setMarqueePaused((paused) => !paused)}
+    >
       <td>
         <span className="homepage-hours-name">
           <span
@@ -219,6 +223,7 @@ const HomepageSnarRow = ({
           {showMenu ? (
             <span
               className="homepage-dining-snar-menu"
+              onClick={(event) => event.stopPropagation()}
               onPointerDown={(event) => {
                 if (event.button !== 0) return;
                 const onHoldDone = holdDoneListenerRef.current;
