@@ -450,19 +450,17 @@ input[type="submit"] {
   z-index: 8;
 }
 
-.homepage-dining-snar-row {
-  cursor: pointer;
-}
-
-.homepage-dining-snar-row.is-paused .homepage-dining-snar-track {
-  animation-play-state: paused;
-}
-
 .homepage-dining-snar-cell {
   position: relative;
   padding: 0 !important;
   overflow: visible;
   background: var(--status-notice-bg) !important;
+  cursor: pointer;
+}
+
+.homepage-dining-snar-cell.is-plain {
+  background: var(--surface-muted) !important;
+  padding: 0 0.75rem !important;
 }
 
 .homepage-dining-snar {
@@ -474,11 +472,29 @@ input[type="submit"] {
   color: var(--status-notice-fg);
 }
 
+.homepage-dining-snar-cell.is-plain .homepage-dining-snar {
+  color: var(--text-body);
+}
+
+.homepage-dining-snar-cell.is-plain .homepage-dining-snar-menu {
+  position: static;
+  right: auto;
+  top: auto;
+  transform: none;
+  margin-left: auto;
+}
+
 .homepage-dining-snar-marquee {
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
   padding-right: 2.75rem;
+}
+
+.homepage-dining-snar-cell.is-plain .homepage-dining-cell {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-right: 0.35rem;
 }
 
 .homepage-dining-snar-track {

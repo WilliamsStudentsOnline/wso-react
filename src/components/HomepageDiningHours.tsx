@@ -27,8 +27,16 @@ const SNAR_BURGER_HOLD_MS = 1000;
 const SNAR_BURGER_SPAWN_MS = 110;
 const SNAR_BURGER_MAX = 96;
 
-const SnarBurgerRain = ({ raining }: { raining: boolean }) => {
+const SnarBurgerRain = ({
+  raining,
+  emoji,
+}: {
+  raining: boolean;
+  emoji: string;
+}) => {
   const layerRef = useRef<HTMLDivElement | null>(null);
+  const emojiRef = useRef(emoji);
+  emojiRef.current = emoji;
 
   useEffect(() => {
     if (!raining) return undefined;
@@ -56,7 +64,7 @@ const SnarBurgerRain = ({ raining }: { raining: boolean }) => {
       inner.className = "homepage-snar-burger-inner";
       inner.style.animationDuration = `${spinDuration}s`;
       inner.style.setProperty("--spin-dir", String(spinDirection));
-      inner.textContent = "🍔";
+      inner.textContent = emojiRef.current;
 
       burger.appendChild(inner);
       burger.addEventListener("animationend", () => burger.remove(), {
@@ -158,7 +166,7 @@ const HomepageSnarRow = ({
   ) => void;
 }) => {
   const [burgerRaining, setBurgerRaining] = useState(false);
-  const [marqueePaused, setMarqueePaused] = useState(false);
+  const [plainFormat, setPlainFormat] = useState(false);
   const holdTimerRef = useRef<number | null>(null);
   const holdActivatedRef = useRef(false);
   const holdDoneListenerRef = useRef<(() => void) | null>(null);
@@ -170,6 +178,7 @@ const HomepageSnarRow = ({
     : "";
   const id = mealMenuId(vendor.id, mealKey);
   const showMenu = mealHasMenu(meal);
+  const plainHoursText = hoursLabel ? `Snar open ${hoursLabel}` : "Snar open";
   const snarItems = (keyPrefix: string) =>
     Array.from({ length: SNAR_REPEAT_COUNT }, (_, index) => (
       <span key={`${keyPrefix}-${index}`} className="homepage-dining-snar-item">
@@ -193,11 +202,46 @@ const HomepageSnarRow = ({
     };
   }, []);
 
-  return (
-    <tr
-      className={`homepage-dining-snar-row${marqueePaused ? " is-paused" : ""}`}
-      onClick={() => setMarqueePaused((paused) => !paused)}
+  const menuControls = showMenu ? (
+    <span
+      className="homepage-dining-snar-menu"
+      onClick={(event) => event.stopPropagation()}
+      onPointerDown={(event) => {
+        if (event.button !== 0) return;
+        const onHoldDone = holdDoneListenerRef.current;
+        if (!onHoldDone) return;
+        holdActivatedRef.current = false;
+        onHoldDone();
+        holdTimerRef.current = window.setTimeout(() => {
+          holdActivatedRef.current = true;
+          setBurgerRaining(true);
+        }, SNAR_BURGER_HOLD_MS);
+        window.addEventListener("pointerup", onHoldDone);
+        window.addEventListener("pointercancel", onHoldDone);
+      }}
     >
+      {hoursLabel && !plainFormat ? (
+        <span className="homepage-status-tooltip" role="tooltip">
+          {`Open ${hoursLabel}`}
+        </span>
+      ) : null}
+      <MealMenuButton
+        isActive={openMenuIds.has(id)}
+        label={`${vendor.name} ${capitalizeMeal(meal.name)}`}
+        onClick={(event) => {
+          event.stopPropagation();
+          if (holdActivatedRef.current) {
+            holdActivatedRef.current = false;
+            return;
+          }
+          onToggleMenu(id, vendor.name, meal, event.clientX);
+        }}
+      />
+    </span>
+  ) : null;
+
+  return (
+    <tr className="homepage-dining-snar-row">
       <td>
         <span className="homepage-hours-name">
           <span
@@ -211,54 +255,35 @@ const HomepageSnarRow = ({
           <b>{vendor.name}</b>
         </span>
       </td>
-      <td colSpan={mealColSpan} className="homepage-dining-snar-cell">
+      <td
+        colSpan={mealColSpan}
+        className={`homepage-dining-snar-cell${plainFormat ? " is-plain" : ""}`}
+        onClick={() => setPlainFormat((plain) => !plain)}
+      >
         <div className="homepage-dining-snar">
-          <div className="homepage-dining-snar-marquee" aria-hidden>
-            <div className="homepage-dining-snar-track">
-              {snarItems("a")}
-              {snarItems("b")}
-            </div>
-          </div>
-          <span className="homepage-dining-snar-label">{SNAR_DISPLAY}</span>
-          {showMenu ? (
-            <span
-              className="homepage-dining-snar-menu"
-              onClick={(event) => event.stopPropagation()}
-              onPointerDown={(event) => {
-                if (event.button !== 0) return;
-                const onHoldDone = holdDoneListenerRef.current;
-                if (!onHoldDone) return;
-                holdActivatedRef.current = false;
-                onHoldDone();
-                holdTimerRef.current = window.setTimeout(() => {
-                  holdActivatedRef.current = true;
-                  setBurgerRaining(true);
-                }, SNAR_BURGER_HOLD_MS);
-                window.addEventListener("pointerup", onHoldDone);
-                window.addEventListener("pointercancel", onHoldDone);
-              }}
-            >
-              {hoursLabel ? (
-                <span className="homepage-status-tooltip" role="tooltip">
-                  {`Open ${hoursLabel}`}
-                </span>
-              ) : null}
-              <MealMenuButton
-                isActive={openMenuIds.has(id)}
-                label={`${vendor.name} ${capitalizeMeal(meal.name)}`}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  if (holdActivatedRef.current) {
-                    holdActivatedRef.current = false;
-                    return;
-                  }
-                  onToggleMenu(id, vendor.name, meal, event.clientX);
-                }}
-              />
+          {plainFormat ? (
+            <span className="homepage-dining-cell">
+              <span className="homepage-dining-cell-hours">
+                {plainHoursText}
+              </span>
             </span>
-          ) : null}
+          ) : (
+            <>
+              <div className="homepage-dining-snar-marquee" aria-hidden>
+                <div className="homepage-dining-snar-track">
+                  {snarItems("a")}
+                  {snarItems("b")}
+                </div>
+              </div>
+              <span className="homepage-dining-snar-label">{SNAR_DISPLAY}</span>
+            </>
+          )}
+          {menuControls}
         </div>
-        <SnarBurgerRain raining={burgerRaining} />
+        <SnarBurgerRain
+          raining={burgerRaining}
+          emoji={plainFormat ? "😢" : "🍔"}
+        />
       </td>
     </tr>
   );
