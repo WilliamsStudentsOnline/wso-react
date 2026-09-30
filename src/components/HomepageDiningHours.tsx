@@ -157,10 +157,6 @@ const HomepageSnarRow = ({
     clientX: number
   ) => void;
 }) => {
-  const [tooltipPos, setTooltipPos] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
   const [burgerRaining, setBurgerRaining] = useState(false);
   const holdTimerRef = useRef<number | null>(null);
   const holdActivatedRef = useRef(false);
@@ -213,32 +209,7 @@ const HomepageSnarRow = ({
         </span>
       </td>
       <td colSpan={mealColSpan} className="homepage-dining-snar-cell">
-        <div
-          className="homepage-dining-snar"
-          onMouseMove={(event) => {
-            const rect = event.currentTarget.getBoundingClientRect();
-            setTooltipPos({
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top,
-            });
-          }}
-          onMouseLeave={() => setTooltipPos(null)}
-        >
-          {hoursLabel ? (
-            <span
-              className={`homepage-status-tooltip homepage-dining-snar-tooltip${
-                tooltipPos ? " is-visible" : ""
-              }`}
-              role="tooltip"
-              style={
-                tooltipPos
-                  ? { left: tooltipPos.x, top: tooltipPos.y }
-                  : undefined
-              }
-            >
-              {`Open ${hoursLabel}`}
-            </span>
-          ) : null}
+        <div className="homepage-dining-snar">
           <div className="homepage-dining-snar-marquee" aria-hidden>
             <div className="homepage-dining-snar-track">
               {snarItems("a")}
@@ -263,6 +234,11 @@ const HomepageSnarRow = ({
               onPointerCancel={stopBurgerHold}
               onLostPointerCapture={stopBurgerHold}
             >
+              {hoursLabel ? (
+                <span className="homepage-status-tooltip" role="tooltip">
+                  {`Open ${hoursLabel}`}
+                </span>
+              ) : null}
               <MealMenuButton
                 isActive={openMenuIds.has(id)}
                 label={`${vendor.name} ${capitalizeMeal(meal.name)}`}
