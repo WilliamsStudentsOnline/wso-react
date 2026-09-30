@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import "./stylesheets/Dining.css";
 import { formatCompactHours } from "../lib/timeFormat";
 import {
@@ -12,11 +13,131 @@ import {
   mealMenuId,
   mealSlotForName,
   mealSlotLabel,
+  parseAndAdjustTime,
   useDiningData,
   useDiningMenus,
   useVendorStatus,
   MealMenuButton,
 } from "./views/Dining/diningShared";
+
+const WHITMANS_VENDOR_ID = "whitmans";
+const SNAR_DISPLAY = "SNAR!!";
+const SNAR_REPEAT_COUNT = 12;
+const SNAR_BURGER_HOLD_MS = 1000;
+const SNAR_BURGER_SPAWN_MS = 110;
+const SNAR_BURGER_MAX = 96;
+const SNAR_PLAIN_STORAGE_KEY = "wso-homepage-snar-plain";
+
+const readSnarPlainPreference = (): boolean => {
+  try {
+    return localStorage.getItem(SNAR_PLAIN_STORAGE_KEY) === "1";
+  } catch (err) {
+    void err;
+    return false;
+  }
+};
+
+const writeSnarPlainPreference = (plain: boolean): void => {
+  try {
+    localStorage.setItem(SNAR_PLAIN_STORAGE_KEY, plain ? "1" : "0");
+  } catch (err) {
+    void err;
+  }
+};
+
+const SnarBurgerRain = ({
+  raining,
+  emoji,
+}: {
+  raining: boolean;
+  emoji: string;
+}) => {
+  const layerRef = useRef<HTMLDivElement | null>(null);
+  const emojiRef = useRef(emoji);
+  emojiRef.current = emoji;
+
+  useEffect(() => {
+    if (!raining) return undefined;
+    const layer = layerRef.current;
+    if (!layer) return undefined;
+
+    const spawn = () => {
+      while (layer.childElementCount >= SNAR_BURGER_MAX) {
+        layer.firstElementChild?.remove();
+      }
+
+      const duration = 2.4 + Math.random() * 2.2;
+      const spinDuration = 0.7 + Math.random() * 1.2;
+      const spinDirection = Math.random() < 0.5 ? 1 : -1;
+      const sway = (Math.random() * 2 - 1) * 80;
+
+      const burger = document.createElement("span");
+      burger.className = "homepage-snar-burger";
+      burger.style.left = `${Math.random() * 100}%`;
+      burger.style.fontSize = `${1.35 + Math.random() * 1.4}rem`;
+      burger.style.animationDuration = `${duration}s`;
+      burger.style.setProperty("--sway", `${sway}px`);
+
+      const inner = document.createElement("span");
+      inner.className = "homepage-snar-burger-inner";
+      inner.style.animationDuration = `${spinDuration}s`;
+      inner.style.setProperty("--spin-dir", String(spinDirection));
+      inner.textContent = emojiRef.current;
+
+      burger.appendChild(inner);
+      burger.addEventListener("animationend", () => burger.remove(), {
+        once: true,
+      });
+      layer.appendChild(burger);
+    };
+
+    spawn();
+    const timer = window.setInterval(spawn, SNAR_BURGER_SPAWN_MS);
+    return () => window.clearInterval(timer);
+  }, [raining]);
+
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <div ref={layerRef} className="homepage-snar-burger-rain" aria-hidden />,
+    document.body
+  );
+};
+
+const findWhitmansLateNight = (
+  vendors: Vendor[]
+): { vendor: Vendor; key: string; meal: Meal } | null => {
+  const whitmans = vendors.find(
+    (vendor) => vendor.id.toLowerCase() === WHITMANS_VENDOR_ID
+  );
+  if (!whitmans) return null;
+  const entry = Object.entries(whitmans.meals).find(
+    ([, meal]) => mealSlotForName(meal.name) === "late night"
+  );
+  if (!entry) return null;
+  return { vendor: whitmans, key: entry[0], meal: entry[1] };
+};
+
+const isLateNightOpen = (now: Date, lateNight: Meal): boolean => {
+  if (!lateNight.hours) return false;
+  const open = parseAndAdjustTime(lateNight.hours.open, now, false);
+  const close = parseAndAdjustTime(
+    lateNight.hours.close,
+    now,
+    true,
+    lateNight.hours.open
+  );
+  return now >= open && now < close;
+};
+
+const useNowMinute = () => {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60 * 1000);
+    return () => clearInterval(timer);
+  }, []);
+  return now;
+};
 
 const findMealForSlot = (
   vendor: Vendor,
@@ -39,6 +160,156 @@ const activeSlotsForVendors = (vendors: Vendor[]): DiningMealSlot[] => {
   });
   return DINING_MEAL_SLOTS.filter(
     (slot) => slot !== "late night" && present.has(slot)
+  );
+};
+
+const HomepageSnarRow = ({
+  vendor,
+  mealKey,
+  meal,
+  mealColSpan,
+  openMenuIds,
+  onToggleMenu,
+}: {
+  vendor: Vendor;
+  mealKey: string;
+  meal: Meal;
+  mealColSpan: number;
+  openMenuIds: Set<string>;
+  onToggleMenu: (
+    id: string,
+    vendorName: string,
+    meal: Meal,
+    clientX: number
+  ) => void;
+}) => {
+  const [burgerRaining, setBurgerRaining] = useState(false);
+  const [plainFormat, setPlainFormat] = useState(readSnarPlainPreference);
+  const holdTimerRef = useRef<number | null>(null);
+  const holdActivatedRef = useRef(false);
+  const holdDoneListenerRef = useRef<(() => void) | null>(null);
+  const lateNightMeals = useMemo(() => ({ [mealKey]: meal }), [mealKey, meal]);
+  const { style, message } = useVendorStatus(lateNightMeals);
+  const pill = getDiningStatusPill(style);
+  const hoursLabel = meal.hours
+    ? formatCompactHours(meal.hours.open, meal.hours.close)
+    : "";
+  const id = mealMenuId(vendor.id, mealKey);
+  const showMenu = mealHasMenu(meal);
+  const plainHoursText = hoursLabel ? `Snar open ${hoursLabel}` : "Snar open";
+  const snarItems = (keyPrefix: string) =>
+    Array.from({ length: SNAR_REPEAT_COUNT }, (_, index) => (
+      <span key={`${keyPrefix}-${index}`} className="homepage-dining-snar-item">
+        {SNAR_DISPLAY}
+      </span>
+    ));
+
+  useEffect(() => {
+    const onHoldDone = () => {
+      if (holdTimerRef.current !== null) {
+        window.clearTimeout(holdTimerRef.current);
+        holdTimerRef.current = null;
+      }
+      setBurgerRaining(false);
+      window.removeEventListener("pointerup", onHoldDone);
+      window.removeEventListener("pointercancel", onHoldDone);
+    };
+    holdDoneListenerRef.current = onHoldDone;
+    return () => {
+      onHoldDone();
+    };
+  }, []);
+
+  const menuControls = showMenu ? (
+    <span
+      className="homepage-dining-snar-menu"
+      onClick={(event) => event.stopPropagation()}
+      onPointerDown={(event) => {
+        if (event.button !== 0) return;
+        const onHoldDone = holdDoneListenerRef.current;
+        if (!onHoldDone) return;
+        holdActivatedRef.current = false;
+        onHoldDone();
+        holdTimerRef.current = window.setTimeout(() => {
+          holdActivatedRef.current = true;
+          setBurgerRaining(true);
+        }, SNAR_BURGER_HOLD_MS);
+        window.addEventListener("pointerup", onHoldDone);
+        window.addEventListener("pointercancel", onHoldDone);
+      }}
+    >
+      {hoursLabel && !plainFormat ? (
+        <span className="homepage-status-tooltip" role="tooltip">
+          {`Open ${hoursLabel}`}
+        </span>
+      ) : null}
+      <MealMenuButton
+        isActive={openMenuIds.has(id)}
+        label={`${vendor.name} ${capitalizeMeal(meal.name)}`}
+        onClick={(event) => {
+          event.stopPropagation();
+          if (holdActivatedRef.current) {
+            holdActivatedRef.current = false;
+            return;
+          }
+          onToggleMenu(id, vendor.name, meal, event.clientX);
+        }}
+      />
+    </span>
+  ) : null;
+
+  return (
+    <tr className="homepage-dining-snar-row">
+      <td>
+        <span className="homepage-hours-name">
+          <span
+            className={`homepage-status-dot homepage-status-dot-${pill.kind}`}
+            aria-label={`${pill.label}: ${message}`}
+          >
+            <span className="homepage-status-tooltip" role="tooltip">
+              {message}
+            </span>
+          </span>
+          <b>{vendor.name}</b>
+        </span>
+      </td>
+      <td
+        colSpan={mealColSpan}
+        className={`homepage-dining-snar-cell${plainFormat ? " is-plain" : ""}`}
+        onClick={() =>
+          setPlainFormat((plain) => {
+            const next = !plain;
+            writeSnarPlainPreference(next);
+            return next;
+          })
+        }
+      >
+        <div className="homepage-dining-snar">
+          {plainFormat ? (
+            <span className="homepage-dining-cell">
+              <span className="homepage-dining-cell-hours">
+                {plainHoursText}
+              </span>
+            </span>
+          ) : (
+            <>
+              <div className="homepage-dining-snar-marquee" aria-hidden>
+                <div className="homepage-dining-snar-track">
+                  {snarItems("a")}
+                  {snarItems("b")}
+                </div>
+              </div>
+              <span className="homepage-dining-snar-label">{SNAR_DISPLAY}</span>
+            </>
+          )}
+          {menuControls}
+        </div>
+        <SnarBurgerRain
+          raining={burgerRaining}
+          emoji={plainFormat ? "😢" : "🍔"}
+        />
+      </td>
+    </tr>
   );
 };
 
@@ -205,6 +476,7 @@ const HomepageDiningHours = () => {
   const { diningData, loading, error } = useDiningData();
   const { openMenuIds, onToggleMenu, anyOpen, menuPanels } =
     useDiningMenus("left-only");
+  const now = useNowMinute();
 
   const vendors = useMemo(
     () =>
@@ -219,6 +491,12 @@ const HomepageDiningHours = () => {
   );
 
   const slots = useMemo(() => activeSlotsForVendors(vendors), [vendors]);
+  const whitmansLateNight = useMemo(
+    () => findWhitmansLateNight(vendors),
+    [vendors]
+  );
+  const showSnarRow =
+    !!whitmansLateNight && isLateNightOpen(now, whitmansLateNight.meal);
 
   if (error) return <p>Unable to load dining hours.</p>;
   if (loading) return <HomepageDiningSkeleton />;
@@ -244,13 +522,26 @@ const HomepageDiningHours = () => {
         </thead>
         <tbody>
           {vendors.map((vendor) => (
-            <HomepageDiningVendorRow
-              key={vendor.id}
-              vendor={vendor}
-              slots={slots}
-              openMenuIds={openMenuIds}
-              onToggleMenu={onToggleMenu}
-            />
+            <React.Fragment key={vendor.id}>
+              <HomepageDiningVendorRow
+                vendor={vendor}
+                slots={slots}
+                openMenuIds={openMenuIds}
+                onToggleMenu={onToggleMenu}
+              />
+              {showSnarRow &&
+              whitmansLateNight &&
+              vendor.id === whitmansLateNight.vendor.id ? (
+                <HomepageSnarRow
+                  vendor={whitmansLateNight.vendor}
+                  mealKey={whitmansLateNight.key}
+                  meal={whitmansLateNight.meal}
+                  mealColSpan={slots.length}
+                  openMenuIds={openMenuIds}
+                  onToggleMenu={onToggleMenu}
+                />
+              ) : null}
+            </React.Fragment>
           ))}
         </tbody>
       </table>

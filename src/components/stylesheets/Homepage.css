@@ -444,6 +444,165 @@ input[type="submit"] {
   flex: 0 0 auto;
 }
 
+.homepage-dining-snar-row:hover,
+.homepage-dining-snar-row:focus-within {
+  position: relative;
+  z-index: 8;
+}
+
+.homepage-dining-snar-cell {
+  position: relative;
+  padding: 0 !important;
+  overflow: visible;
+  background: var(--status-notice-bg) !important;
+  cursor: pointer;
+}
+
+.homepage-dining-snar-cell.is-plain {
+  background: var(--surface-muted) !important;
+}
+
+.homepage-dining-snar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  min-height: 2.75rem;
+  color: var(--status-notice-fg);
+}
+
+.homepage-dining-snar-cell.is-plain .homepage-dining-snar {
+  color: var(--text-body);
+}
+
+.homepage-dining-snar-marquee {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  padding-right: 2.75rem;
+}
+
+.homepage-dining-snar-cell.is-plain .homepage-dining-cell {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 2.75rem 0 0.75rem;
+  box-sizing: border-box;
+}
+
+.homepage-dining-snar-track {
+  display: flex;
+  width: max-content;
+  animation: homepage-dining-snar-roll 18s linear infinite;
+}
+
+.homepage-dining-snar-item {
+  flex: 0 0 auto;
+  padding-right: 2.25rem;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.homepage-dining-snar-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.homepage-dining-snar-menu {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  touch-action: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.homepage-dining-snar-menu:hover,
+.homepage-dining-snar-menu:focus-within {
+  z-index: 9;
+}
+
+.homepage-dining-snar-menu .homepage-status-tooltip {
+  left: auto;
+  right: 0;
+  bottom: calc(100% + 0.35rem);
+}
+
+.homepage-dining-snar-menu:hover .homepage-status-tooltip,
+.homepage-dining-snar-menu:focus-within .homepage-status-tooltip {
+  visibility: visible;
+}
+
+@keyframes homepage-dining-snar-roll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.homepage-snar-burger-rain {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.homepage-snar-burger {
+  position: absolute;
+  top: 0;
+  display: block;
+  line-height: 1;
+  animation-name: homepage-snar-burger-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.homepage-snar-burger-inner {
+  display: inline-block;
+  transform-origin: center center;
+  animation-name: homepage-snar-burger-spin;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+@keyframes homepage-snar-burger-fall {
+  from {
+    transform: translate3d(0, -3rem, 0);
+  }
+  to {
+    transform: translate3d(var(--sway), calc(100vh + 3rem), 0);
+  }
+}
+
+@keyframes homepage-snar-burger-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(calc(var(--spin-dir, 1) * 360deg));
+  }
+}
+
 .homepage-skeleton-line {
   display: inline-block;
   height: 0.75em;
