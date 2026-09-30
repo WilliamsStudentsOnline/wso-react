@@ -521,6 +521,8 @@ input[type="submit"] {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  touch-action: none;
+  user-select: none;
 }
 
 @keyframes homepage-dining-snar-roll {
@@ -529,6 +531,69 @@ input[type="submit"] {
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+.homepage-snar-burger-rain {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.homepage-snar-burger {
+  position: absolute;
+  top: 0;
+  display: block;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
+  animation-name: homepage-snar-burger-fall;
+  animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+  animation-fill-mode: forwards;
+  will-change: transform, opacity;
+}
+
+.homepage-snar-burger-inner {
+  display: inline-block;
+  transform-origin: center center;
+  animation-name: homepage-snar-burger-spin;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes homepage-snar-burger-fall {
+  0% {
+    transform: translate3d(0, -3rem, 0) scale(0.4);
+    opacity: 0;
+  }
+  8% {
+    transform: translate3d(calc(var(--sway) * 0.15), 8vh, 0) scale(1.08);
+    opacity: 1;
+  }
+  30% {
+    transform: translate3d(calc(var(--sway) * 0.55), 32vh, 0) scale(1);
+  }
+  55% {
+    transform: translate3d(calc(var(--sway) * -0.2), 58vh, 0) scale(1);
+  }
+  80% {
+    transform: translate3d(calc(var(--sway) * 0.35), 84vh, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--sway), calc(100vh + 3rem), 0) scale(0.92);
+    opacity: 0.85;
+  }
+}
+
+@keyframes homepage-snar-burger-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(calc(var(--spin-dir, 1) * 360deg));
   }
 }
 

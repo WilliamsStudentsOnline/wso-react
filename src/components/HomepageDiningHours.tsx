@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import "./stylesheets/Dining.css";
 import { formatCompactHours } from "../lib/timeFormat";
 import {
@@ -22,6 +23,87 @@ import {
 const WHITMANS_VENDOR_ID = "whitmans";
 const SNAR_DISPLAY = "SNAR!!";
 const SNAR_REPEAT_COUNT = 12;
+const SNAR_BURGER_HOLD_MS = 1000;
+const SNAR_BURGER_SPAWN_MS = 110;
+const SNAR_BURGER_MAX = 48;
+
+type SnarBurger = {
+  id: number;
+  left: number;
+  size: number;
+  duration: number;
+  spinDuration: number;
+  spinDirection: 1 | -1;
+  sway: number;
+};
+
+const SnarBurgerRain = ({ raining }: { raining: boolean }) => {
+  const [burgers, setBurgers] = useState<SnarBurger[]>([]);
+  const nextIdRef = useRef(0);
+
+  useEffect(() => {
+    if (!raining) return undefined;
+    const spawn = () => {
+      const id = nextIdRef.current;
+      nextIdRef.current += 1;
+      const burger: SnarBurger = {
+        id,
+        left: Math.random() * 100,
+        size: 1.35 + Math.random() * 1.4,
+        duration: 2.2 + Math.random() * 2.4,
+        spinDuration: 0.55 + Math.random() * 1.1,
+        spinDirection: Math.random() < 0.5 ? 1 : -1,
+        sway: (Math.random() * 2 - 1) * 120,
+      };
+      setBurgers((prev) => {
+        const next = [...prev, burger];
+        return next.length > SNAR_BURGER_MAX
+          ? next.slice(next.length - SNAR_BURGER_MAX)
+          : next;
+      });
+    };
+    spawn();
+    const timer = window.setInterval(spawn, SNAR_BURGER_SPAWN_MS);
+    return () => window.clearInterval(timer);
+  }, [raining]);
+
+  if (burgers.length === 0 || typeof document === "undefined") return null;
+
+  return createPortal(
+    <div className="homepage-snar-burger-rain" aria-hidden>
+      {burgers.map((burger) => (
+        <span
+          key={burger.id}
+          className="homepage-snar-burger"
+          style={
+            {
+              left: `${burger.left}%`,
+              fontSize: `${burger.size}rem`,
+              animationDuration: `${burger.duration}s`,
+              ["--sway" as string]: `${burger.sway}px`,
+            } as React.CSSProperties
+          }
+          onAnimationEnd={() => {
+            setBurgers((prev) => prev.filter((item) => item.id !== burger.id));
+          }}
+        >
+          <span
+            className="homepage-snar-burger-inner"
+            style={
+              {
+                animationDuration: `${burger.spinDuration}s`,
+                ["--spin-dir" as string]: burger.spinDirection,
+              } as React.CSSProperties
+            }
+          >
+            🍔
+          </span>
+        </span>
+      ))}
+    </div>,
+    document.body
+  );
+};
 
 const findWhitmansLateNight = (
   vendors: Vendor[]
@@ -106,6 +188,9 @@ const HomepageSnarRow = ({
     x: number;
     y: number;
   } | null>(null);
+  const [burgerRaining, setBurgerRaining] = useState(false);
+  const holdTimerRef = useRef<number | null>(null);
+  const holdActivatedRef = useRef(false);
   const lateNightMeals = useMemo(() => ({ [mealKey]: meal }), [mealKey, meal]);
   const { style, message } = useVendorStatus(lateNightMeals);
   const pill = getDiningStatusPill(style);
@@ -121,6 +206,24 @@ const HomepageSnarRow = ({
       </span>
     ));
 
+  const clearHoldTimer = () => {
+    if (holdTimerRef.current !== null) {
+      window.clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = null;
+    }
+  };
+
+  const stopBurgerHold = () => {
+    clearHoldTimer();
+    setBurgerRaining(false);
+  };
+
+  useEffect(
+    () => () => {
+      clearHoldTimer();
+    },
+    []
+  );
   return (
     <tr className="homepage-dining-snar-row">
       <td>
@@ -171,18 +274,38 @@ const HomepageSnarRow = ({
           </div>
           <span className="homepage-dining-snar-label">{SNAR_DISPLAY}</span>
           {showMenu ? (
-            <span className="homepage-dining-snar-menu">
+            <span
+              className="homepage-dining-snar-menu"
+              onPointerDown={(event) => {
+                if (event.button !== 0) return;
+                holdActivatedRef.current = false;
+                clearHoldTimer();
+                event.currentTarget.setPointerCapture(event.pointerId);
+                holdTimerRef.current = window.setTimeout(() => {
+                  holdActivatedRef.current = true;
+                  setBurgerRaining(true);
+                }, SNAR_BURGER_HOLD_MS);
+              }}
+              onPointerUp={stopBurgerHold}
+              onPointerCancel={stopBurgerHold}
+              onLostPointerCapture={stopBurgerHold}
+            >
               <MealMenuButton
                 isActive={openMenuIds.has(id)}
                 label={`${vendor.name} ${capitalizeMeal(meal.name)}`}
                 onClick={(event) => {
                   event.stopPropagation();
+                  if (holdActivatedRef.current) {
+                    holdActivatedRef.current = false;
+                    return;
+                  }
                   onToggleMenu(id, vendor.name, meal, event.clientX);
                 }}
               />
             </span>
           ) : null}
         </div>
+        <SnarBurgerRain raining={burgerRaining} />
       </td>
     </tr>
   );
