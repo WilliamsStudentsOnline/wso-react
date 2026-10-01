@@ -3643,10 +3643,11 @@ ul#tag-list .tag-input {
 .home article section:after {
   clear: both;
 }
-@media screen and (max-width: 43.75em) {
+@media screen and (max-width: 48.125em) {
   .home article section {
-    padding-top: 0;
+    padding-top: 1.5rem;
     padding-bottom: 0;
+    margin-bottom: 2rem;
   }
 }
 .home article aside {
@@ -4061,6 +4062,8 @@ nav.site-nav .nav-left {
     min-width: 0;
     border: none;
     background: transparent;
+    padding-left: 1rem;
+    box-sizing: border-box;
   }
   nav.site-nav .nav-left .dropdown-content li a {
     display: block;

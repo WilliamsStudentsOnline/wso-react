@@ -670,7 +670,9 @@ input[type="submit"] {
   .bulletin-list {
     grid-template-columns: 1fr;
     width: 100%;
+    max-width: none;
     padding: 0;
+    place-content: stretch;
     box-sizing: border-box;
     --home-gap: 1rem;
   }
@@ -716,8 +718,9 @@ input[type="submit"] {
     margin: 0 0 0.5rem;
   }
 
-  .home article section {
-    padding-top: 1.5rem;
+  .home .bulletin {
+    width: 100%;
+    max-width: none;
   }
 
   .home-bulletins-heading {
