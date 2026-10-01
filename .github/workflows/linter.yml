@@ -36,10 +36,8 @@ jobs:
         run: yarn run lint
       - name: Check format with Prettier
         run: yarn run format:check
-      # continue-on-error: first PR fails base compare until size-limit is on master
       - name: Bundle size
         if: github.event_name == 'pull_request'
-        continue-on-error: true
         uses: andresz1/size-limit-action@v1.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
