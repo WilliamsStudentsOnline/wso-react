@@ -498,11 +498,33 @@ export const MealMenuButton = ({
 
 type DiningMenusMode = "dual" | "left-only";
 
+const DINING_SINGLE_MENU_MAX = "(max-width: 40em)";
+
+const useDiningSingleMenuViewport = () => {
+  const [singleMenu, setSingleMenu] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia(DINING_SINGLE_MENU_MAX).matches
+      : false
+  );
+
+  useEffect(() => {
+    const media = window.matchMedia(DINING_SINGLE_MENU_MAX);
+    const onChange = () => setSingleMenu(media.matches);
+    onChange();
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
+
+  return singleMenu;
+};
+
 export const useDiningMenus = (mode: DiningMenusMode = "dual") => {
   const [leftMenu, setLeftMenu] = useState<OpenMenu | null>(null);
   const [rightMenu, setRightMenu] = useState<OpenMenu | null>(null);
   const lastSideRef = useRef<MenuSide | null>(null);
   const closeTimersRef = useRef<Partial<Record<MenuSide, number>>>({});
+  const singleMenuViewport = useDiningSingleMenuViewport();
+  const singleMenu = mode === "left-only" || singleMenuViewport;
 
   const clearCloseTimer = (side: MenuSide) => {
     const timer = closeTimersRef.current[side];
@@ -553,9 +575,13 @@ export const useDiningMenus = (mode: DiningMenusMode = "dual") => {
 
   const onToggleMenu = useCallback(
     (id: string, vendorName: string, meal: Meal, clientX = 0) => {
-      if (mode === "left-only") {
+      if (singleMenu) {
         if (leftMenu?.id === id) {
           closeSide("left");
+          return;
+        }
+        if (rightMenu?.id === id) {
+          closeSide("right");
           return;
         }
         if (rightMenu) closeSide("right");
@@ -595,8 +621,14 @@ export const useDiningMenus = (mode: DiningMenusMode = "dual") => {
       const replaceSide = lastSideRef.current ?? preferred;
       showInSide(replaceSide, id, vendorName, meal);
     },
-    [mode, leftMenu, rightMenu, closeSide, showInSide]
+    [singleMenu, leftMenu, rightMenu, closeSide, showInSide]
   );
+
+  useEffect(() => {
+    if (!singleMenuViewport || !leftMenu || !rightMenu) return;
+    const keep = lastSideRef.current ?? "left";
+    closeSide(keep === "left" ? "right" : "left");
+  }, [singleMenuViewport, leftMenu, rightMenu, closeSide]);
 
   useEffect(
     () => () => {

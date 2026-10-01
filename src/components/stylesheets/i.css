@@ -1929,11 +1929,14 @@ a.home-notice-sub:focus {
 }
 @media screen and (max-width: 43.75em) {
   .article .about-header {
-    position: relative;
-    color: var(--text-heading);
-    padding-top: 6em;
-    text-shadow: none;
-    padding: 0 2em;
+    position: absolute;
+    bottom: 0.25em;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    text-shadow: 0 2px 1px var(--shadow);
   }
 }
 .article .about-header h5 {
@@ -2000,10 +2003,7 @@ a.home-notice-sub:focus {
     width: 100%;
     margin-left: 0%;
     zoom: 1;
-    /*APRIL FOOL'S*/
-    /*     color: #20012e; */
-    /*STANDARD*/
-    color: var(--brand-primary);
+    color: var(--text-on-nav);
   }
   .article .about-header h1:last-child,
   .article .about-header h5:last-child {
@@ -2167,7 +2167,10 @@ a.home-notice-sub:focus {
     margin-top: 8em;
   }
   .about-banner img {
-    display: none;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 .about-section {
@@ -2470,23 +2473,18 @@ a.home-notice-sub:focus {
   .facebook-profile .facebook section,
   .facebook .facebook-edit section,
   .facebook-edit .facebook section,
-  .facebook .dormtrak .sidebar,
-  .dormtrak .facebook .sidebar,
   .facebook .dormtrak .main,
   .dormtrak .facebook .main,
   .factrak .facebook-profile section,
   .facebook-profile .factrak section,
   .factrak .facebook-edit section,
   .facebook-edit .factrak section,
-  .factrak .dormtrak .sidebar,
-  .dormtrak .factrak .sidebar,
   .factrak .dormtrak .main,
   .dormtrak .factrak .main,
   .dormtrak .facebook-profile section,
   .facebook-profile .dormtrak section,
   .dormtrak .facebook-edit section,
   .facebook-edit .dormtrak section,
-  .dormtrak .sidebar,
   .dormtrak .main {
     padding: 0;
     border: none;
@@ -3643,10 +3641,11 @@ ul#tag-list .tag-input {
 .home article section:after {
   clear: both;
 }
-@media screen and (max-width: 43.75em) {
+@media screen and (max-width: 48.125em) {
   .home article section {
-    padding-top: 0;
+    padding-top: 1.5rem;
     padding-bottom: 0;
+    margin-bottom: 2rem;
   }
 }
 .home article aside {
@@ -4007,21 +4006,34 @@ nav.site-nav .nav-left {
   clear: none;
 }
 @media screen and (max-width: 48.125em) {
+  nav.site-nav .nav-container {
+    grid-template-columns: 1fr auto;
+  }
   nav.site-nav .nav-left-container {
-    grid-column: 1 / -1;
-    justify-self: stretch;
+    grid-column: 1;
+    justify-self: start;
     max-width: 100%;
     box-sizing: border-box;
+  }
+  nav.site-nav .nav-right-container {
+    grid-column: 2;
+    justify-self: end;
   }
   nav.site-nav ul.nav-left,
   nav.site-nav .nav-left {
     display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 601;
     text-align: left;
     width: 100%;
-    max-width: 100%;
+    max-width: none;
     box-sizing: border-box;
     margin: 0;
     padding: 0.25rem 0 0.75rem;
+    background: var(--nav-bg);
   }
 }
 @media screen and (max-width: 48.125em) {
@@ -4039,6 +4051,33 @@ nav.site-nav .nav-left {
     display: block;
     text-align: left;
     padding: 0.65rem 0;
+    line-height: 1.3;
+    font-size: 0.75rem;
+  }
+  nav.site-nav .nav-left .dropdown-content {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    padding-left: 1rem;
+    box-sizing: border-box;
+  }
+  nav.site-nav .nav-left .dropdown-content li a {
+    display: block;
+    min-height: 0;
+    padding: 0.65rem 0;
+    line-height: 1.3;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  nav.site-nav .nav-account .dropdown-content li a {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    min-height: 0;
+    padding: 0.65rem 0.75rem;
     line-height: 1.3;
   }
 }
@@ -4162,6 +4201,7 @@ nav.site-nav #nav-menu-button {
 }
 @media screen and (max-width: 48.125em) {
   nav.site-nav .nav-container {
+    position: relative;
     max-width: none;
     width: 100%;
     box-sizing: border-box;

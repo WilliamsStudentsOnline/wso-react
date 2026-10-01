@@ -252,7 +252,7 @@ input[type="submit"] {
   border-spacing: 0;
   table-layout: fixed;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .home-hours-row .library-hours-table th,
@@ -335,7 +335,7 @@ input[type="submit"] {
 .homepage-dining-table td:first-child {
   width: 22%;
   white-space: nowrap;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .home-hours-row .library-hours-table td:first-child:hover,
@@ -669,7 +669,10 @@ input[type="submit"] {
 
   .bulletin-list {
     grid-template-columns: 1fr;
-    padding: 0 1rem;
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    place-content: stretch;
     box-sizing: border-box;
     --home-gap: 1rem;
   }
@@ -712,6 +715,15 @@ input[type="submit"] {
 
   .home-hours-row .library-hours h3,
   .homepage-dining-hours h3 {
+    margin: 0 0 0.5rem;
+  }
+
+  .home .bulletin {
+    width: 100%;
+    max-width: none;
+  }
+
+  .home-bulletins-heading {
     margin: 0 0 0.5rem;
   }
 
@@ -766,13 +778,5 @@ input[type="submit"] {
   .homepage-dining-table th:first-child,
   .homepage-dining-table td:first-child {
     width: 48%;
-  }
-
-  .home article section {
-    padding-top: 1.5rem;
-  }
-
-  .home-bulletins-heading {
-    margin: 0 0 1rem;
   }
 }
