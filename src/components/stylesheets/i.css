@@ -4053,6 +4053,31 @@ nav.site-nav .nav-left {
     text-align: left;
     padding: 0.65rem 0;
     line-height: 1.3;
+    font-size: 0.75rem;
+  }
+  nav.site-nav .nav-left .dropdown-content {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    border: none;
+    background: transparent;
+  }
+  nav.site-nav .nav-left .dropdown-content li a {
+    display: block;
+    min-height: 0;
+    padding: 0.65rem 0;
+    line-height: 1.3;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  nav.site-nav .nav-account .dropdown-content li a {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    min-height: 0;
+    padding: 0.65rem 0.75rem;
+    line-height: 1.3;
   }
 }
 nav.site-nav .nav-right-container {
