@@ -669,7 +669,8 @@ input[type="submit"] {
 
   .bulletin-list {
     grid-template-columns: 1fr;
-    padding: 0 1rem;
+    width: 100%;
+    padding: 0;
     box-sizing: border-box;
     --home-gap: 1rem;
   }
