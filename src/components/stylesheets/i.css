@@ -2470,23 +2470,18 @@ a.home-notice-sub:focus {
   .facebook-profile .facebook section,
   .facebook .facebook-edit section,
   .facebook-edit .facebook section,
-  .facebook .dormtrak .sidebar,
-  .dormtrak .facebook .sidebar,
   .facebook .dormtrak .main,
   .dormtrak .facebook .main,
   .factrak .facebook-profile section,
   .facebook-profile .factrak section,
   .factrak .facebook-edit section,
   .facebook-edit .factrak section,
-  .factrak .dormtrak .sidebar,
-  .dormtrak .factrak .sidebar,
   .factrak .dormtrak .main,
   .dormtrak .factrak .main,
   .dormtrak .facebook-profile section,
   .facebook-profile .dormtrak section,
   .dormtrak .facebook-edit section,
   .facebook-edit .dormtrak section,
-  .dormtrak .sidebar,
   .dormtrak .main {
     padding: 0;
     border: none;
