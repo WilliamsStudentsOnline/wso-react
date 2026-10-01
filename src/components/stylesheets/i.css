@@ -1929,11 +1929,14 @@ a.home-notice-sub:focus {
 }
 @media screen and (max-width: 43.75em) {
   .article .about-header {
-    position: relative;
-    color: var(--text-heading);
-    padding-top: 6em;
-    text-shadow: none;
-    padding: 0 2em;
+    position: absolute;
+    bottom: 0.25em;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    text-shadow: 0 2px 1px var(--shadow);
   }
 }
 .article .about-header h5 {
@@ -2000,10 +2003,7 @@ a.home-notice-sub:focus {
     width: 100%;
     margin-left: 0%;
     zoom: 1;
-    /*APRIL FOOL'S*/
-    /*     color: #20012e; */
-    /*STANDARD*/
-    color: var(--brand-primary);
+    color: var(--text-on-nav);
   }
   .article .about-header h1:last-child,
   .article .about-header h5:last-child {
@@ -2165,6 +2165,12 @@ a.home-notice-sub:focus {
   .about-banner {
     height: 10rem;
     margin-top: 8em;
+  }
+  .about-banner img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 .about-section {
