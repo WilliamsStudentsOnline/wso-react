@@ -716,6 +716,14 @@ input[type="submit"] {
     margin: 0 0 0.5rem;
   }
 
+  .home article section {
+    padding-top: 1.5rem;
+  }
+
+  .home-bulletins-heading {
+    margin: 0 0 0.5rem;
+  }
+
   .home-hours-row .library-hours-table td:first-child,
   .homepage-dining-table th:first-child,
   .homepage-dining-table td:first-child {
@@ -767,13 +775,5 @@ input[type="submit"] {
   .homepage-dining-table th:first-child,
   .homepage-dining-table td:first-child {
     width: 48%;
-  }
-
-  .home article section {
-    padding-top: 1.5rem;
-  }
-
-  .home-bulletins-heading {
-    margin: 0 0 1rem;
   }
 }
