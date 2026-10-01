@@ -8,41 +8,7 @@ const BoardMap = {
   "Nathaniel Flores": 14643,
 };
 
-const ContributorMap = {
-  "Aaron Anidjar": 15487,
-  "Abel Mesfin": 14016,
-  "Adhip Rijal": 15897,
-  "Amirjon Ulmasov": 15538,
-  "Chris Pohlmann": 14876,
-  "Danny Hinh": 15577,
-  "David Vieten": 14200,
-  "Dimitri Meimeteas": 14839,
-  "Emmanuel Ekpenyong": 15714,
-  "Gabe Ramirez": 13920,
-  "Hayden Curfman": 15721,
-  "Helen Qian": 13718,
-  "Jaskaran Singh": 13126,
-  "Jasper Li": 14874,
-  "Jeeyon Kang": 13262,
-  "Lauren Hall": 14661,
-  "Leila Salken": 14941,
-  "Lola Casenave": 13239,
-  "Matthew Chin": 15568,
-  "Melanie Wang": 14710,
-  "Natalia Avila-Hernandez": 14835,
-  "Nick Canora": 13953,
-  "Nikhil Radosevich": 15099,
-  "Niklas Obermüller": 15681,
-  "Ronald Deng": 15674,
-  "Savannah Bolton": 14892,
-  "Simon Angoluan": 13089,
-  "Simon Socolow": 12501,
-  "Susanna Boberg": 14715,
-  "Tao Chen": 15850,
-  "Temani Knight": 14872,
-  "Vincent Hernandez": 15646,
-  "William Hallward-Driemeier": 14905,
-};
+const ContributorMap = {};
 
 const constructFacebookLink = (userID: number) => {
   return `/facebook/users/${userID}`;
@@ -50,22 +16,26 @@ const constructFacebookLink = (userID: number) => {
 
 const BulletList = (records: Record<string, number>) => {
   return (
-    <>
-      <ul style={{ color: "var(--brand-primary-active)" }}>
-        {Object.keys(records).map((name: string) => (
-          <li key={name} style={{ marginBottom: "10px" }}>
-            <Link
-              to={constructFacebookLink(records[name as keyof typeof records])}
-              style={{
-                fontSize: "1.5rem",
-              }}
-            >
-              {name}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </>
+    <ul
+      style={{
+        color: "var(--brand-primary-active)",
+        paddingLeft: "1.25em",
+        margin: "0.5em 0 1.5em",
+      }}
+    >
+      {Object.keys(records).map((name: string) => (
+        <li key={name} style={{ marginBottom: "0.35em" }}>
+          <Link
+            to={constructFacebookLink(records[name as keyof typeof records])}
+            style={{
+              fontSize: "1.5rem",
+            }}
+          >
+            {name}
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 };
 
@@ -74,21 +44,11 @@ const Team = () => {
     <div className="article">
       <section>
         <article>
-          <br />
-          <br />
-          <h1>Team</h1>
-          <br />
-          <br />
-          <h3>Board</h3>
-          <article>
-            <br />
-            <p>{BulletList(BoardMap)}</p>
-          </article>
-          <h3>2024-2025 Contributors</h3>
-          <article>
-            <br />
-            <p>{BulletList(ContributorMap)}</p>
-          </article>
+          <h1 style={{ marginBottom: "0.5em" }}>Team</h1>
+          <h3 style={{ margin: "0.75em 0 0.25em" }}>Board</h3>
+          {BulletList(BoardMap)}
+          <h3 style={{ margin: "0.75em 0 0.25em" }}>2026-2027 Contributors</h3>
+          {BulletList(ContributorMap)}
         </article>
       </section>
     </div>
