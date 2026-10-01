@@ -5,6 +5,9 @@ on:
       - master
   pull_request:
   merge_group:
+permissions:
+  contents: read
+  pull-requests: write
 env:
   NODE_VERSION: '20'
 
@@ -12,10 +15,14 @@ jobs:
   lint:
     name: Syntax & Format Linter
     runs-on: ubuntu-latest
+    env:
+      CI_JOB_NUMBER: 1
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Uses Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'yarn'
@@ -29,3 +36,11 @@ jobs:
         run: yarn run lint
       - name: Check format with Prettier
         run: yarn run format:check
+      - name: Bundle size
+        if: github.event_name == 'pull_request'
+        uses: andresz1/size-limit-action@v1.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          package_manager: yarn
+          skip_step: build
+          script: yarn size --json
