@@ -2166,9 +2166,6 @@ a.home-notice-sub:focus {
     height: 10rem;
     margin-top: 8em;
   }
-  .about-banner img {
-    display: none;
-  }
 }
 .about-section {
   position: relative;
