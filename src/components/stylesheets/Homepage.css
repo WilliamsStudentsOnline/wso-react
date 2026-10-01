@@ -252,7 +252,7 @@ input[type="submit"] {
   border-spacing: 0;
   table-layout: fixed;
   width: 100%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .home-hours-row .library-hours-table th,
@@ -335,7 +335,7 @@ input[type="submit"] {
 .homepage-dining-table td:first-child {
   width: 22%;
   white-space: nowrap;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .home-hours-row .library-hours-table td:first-child:hover,
