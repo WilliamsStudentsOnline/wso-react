@@ -4007,21 +4007,34 @@ nav.site-nav .nav-left {
   clear: none;
 }
 @media screen and (max-width: 48.125em) {
+  nav.site-nav .nav-container {
+    grid-template-columns: 1fr auto;
+  }
   nav.site-nav .nav-left-container {
-    grid-column: 1 / -1;
-    justify-self: stretch;
+    grid-column: 1;
+    justify-self: start;
     max-width: 100%;
     box-sizing: border-box;
+  }
+  nav.site-nav .nav-right-container {
+    grid-column: 2;
+    justify-self: end;
   }
   nav.site-nav ul.nav-left,
   nav.site-nav .nav-left {
     display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 601;
     text-align: left;
     width: 100%;
-    max-width: 100%;
+    max-width: none;
     box-sizing: border-box;
     margin: 0;
     padding: 0.25rem 0 0.75rem;
+    background: var(--nav-bg);
   }
 }
 @media screen and (max-width: 48.125em) {
@@ -4162,6 +4175,7 @@ nav.site-nav #nav-menu-button {
 }
 @media screen and (max-width: 48.125em) {
   nav.site-nav .nav-container {
+    position: relative;
     max-width: none;
     width: 100%;
     box-sizing: border-box;
