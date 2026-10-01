@@ -1,6 +1,12 @@
+:root {
+  --site-nav-item-height: 3rem;
+  --dining-menu-top: calc(var(--site-nav-item-height) + 0.75rem);
+  --dining-menu-bottom: calc(6rem + 0.75rem);
+}
+
 .layout-scroll {
   position: fixed;
-  top: 3rem;
+  top: var(--site-nav-item-height, 3rem);
   left: 0;
   right: 0;
   bottom: 0;
@@ -30,8 +36,8 @@
 }
 
 @media screen and (max-width: 48.125em) {
-  .layout-scroll {
-    top: 4rem;
+  .floating-button-link {
+    display: none;
   }
 }
 

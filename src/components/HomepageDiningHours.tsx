@@ -130,6 +130,26 @@ const isLateNightOpen = (now: Date, lateNight: Meal): boolean => {
   return now >= open && now < close;
 };
 
+const MOBILE_MAX = "(max-width: 48.125em)";
+
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia(MOBILE_MAX).matches
+      : false
+  );
+
+  useEffect(() => {
+    const media = window.matchMedia(MOBILE_MAX);
+    const onChange = () => setIsMobile(media.matches);
+    onChange();
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
+
+  return isMobile;
+};
+
 const useNowMinute = () => {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
@@ -161,6 +181,56 @@ const activeSlotsForVendors = (vendors: Vendor[]): DiningMealSlot[] => {
   return DINING_MEAL_SLOTS.filter(
     (slot) => slot !== "late night" && present.has(slot)
   );
+};
+
+/* Prefer currently-open meal period; else the next one to open */
+const featuredSlotsForVendors = (
+  vendors: Vendor[],
+  now: Date
+): DiningMealSlot[] => {
+  const present = activeSlotsForVendors(vendors);
+  if (present.length <= 1) return present;
+
+  let openSlot: DiningMealSlot | null = null;
+  let nextSlot: DiningMealSlot | null = null;
+  let nextOpenTime: Date | null = null;
+
+  vendors.forEach((vendor) => {
+    Object.values(vendor.meals).forEach((meal) => {
+      if (!meal.hours) return;
+      const slot = mealSlotForName(meal.name);
+      if (!slot || slot === "late night" || !present.includes(slot)) return;
+
+      const openDateTime = parseAndAdjustTime(meal.hours.open, now, false);
+      const closeDateTime = parseAndAdjustTime(
+        meal.hours.close,
+        now,
+        true,
+        meal.hours.open
+      );
+
+      if (now >= openDateTime && now < closeDateTime) {
+        if (
+          !openSlot ||
+          DINING_MEAL_SLOTS.indexOf(slot) < DINING_MEAL_SLOTS.indexOf(openSlot)
+        ) {
+          openSlot = slot;
+        }
+        return;
+      }
+
+      if (now < openDateTime) {
+        if (!nextOpenTime || openDateTime < nextOpenTime) {
+          nextOpenTime = openDateTime;
+          nextSlot = slot;
+        }
+      }
+    });
+  });
+
+  if (openSlot) return [openSlot];
+  if (nextSlot) return [nextSlot];
+  return [present[0]];
 };
 
 const HomepageSnarRow = ({
@@ -477,6 +547,7 @@ const HomepageDiningHours = () => {
   const { openMenuIds, onToggleMenu, anyOpen, menuPanels } =
     useDiningMenus("left-only");
   const now = useNowMinute();
+  const isMobile = useIsMobile();
 
   const vendors = useMemo(
     () =>
@@ -490,7 +561,11 @@ const HomepageDiningHours = () => {
     [diningData]
   );
 
-  const slots = useMemo(() => activeSlotsForVendors(vendors), [vendors]);
+  const slots = useMemo(() => {
+    const all = activeSlotsForVendors(vendors);
+    if (!isMobile) return all;
+    return featuredSlotsForVendors(vendors, now);
+  }, [vendors, now, isMobile]);
   const whitmansLateNight = useMemo(
     () => findWhitmansLateNight(vendors),
     [vendors]

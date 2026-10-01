@@ -21,6 +21,22 @@
   justify-content: start;
 }
 
+@media screen and (max-width: 48.125em) {
+  .hours-grid-container {
+    grid-template-columns: 1fr;
+    grid-gap: 1rem;
+  }
+
+  .table-with-text {
+    width: 100%;
+  }
+
+  .dining .dining-table-container {
+    width: 100%;
+    table-layout: fixed;
+  }
+}
+
 .table-with-text {
   padding: 0;
   margin-bottom: 0.25rem;
@@ -83,14 +99,14 @@
   --dining-closed-bg: var(--status-danger-bg);
   --dining-closed-fg: var(--status-danger-fg);
   --dining-closed-border: var(--status-danger);
-  --dining-menu-top: calc(3rem + 0.75rem);
+  --dining-menu-top: calc(var(--site-nav-item-height, 3rem) + 0.75rem);
   --dining-menu-bottom: calc(6rem + 0.75rem);
   position: relative;
 }
 
 @media screen and (max-width: 48.125em) {
   .dining {
-    --dining-menu-top: calc(4rem + 0.75rem);
+    --dining-menu-top: calc(var(--site-nav-item-height, 3rem) + 0.75rem);
   }
 }
 
@@ -237,7 +253,7 @@ button.dining-meal-menu-btn svg {
 
 .dining-menu-card {
   position: fixed;
-  z-index: 41;
+  z-index: 650;
   top: var(--dining-menu-top);
   bottom: auto;
   width: 40vw;
@@ -461,7 +477,7 @@ button.dining-menu-card-close:active {
 
 @media screen and (max-width: 40em) {
   .dining-menu-card {
-    width: calc(100vw - 2rem);
+    width: auto;
     max-width: none;
   }
 
@@ -473,5 +489,17 @@ button.dining-menu-card-close:active {
 
   .dining-meal-row {
     grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr) 2.1rem;
+  }
+
+  .course-title td {
+    padding-left: 0.75rem;
+  }
+
+  .menu-item-row td {
+    padding-left: 0.75rem;
+  }
+
+  .menu-item-name {
+    padding-left: 0;
   }
 }

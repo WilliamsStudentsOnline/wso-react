@@ -58,3 +58,30 @@ button.wso-service-header__tab:active {
   width: 100%;
   box-sizing: border-box;
 }
+
+@media screen and (max-width: 48.125em) {
+  .wso-service-header > .page-head ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.85rem;
+  }
+
+  .wso-service-header > .page-head ul li {
+    margin-right: 0;
+  }
+
+  button.wso-service-header__tab {
+    letter-spacing: 0.5px;
+  }
+}
+
+@media screen and (max-width: 43.75em) {
+  .wso-service-header > .page-head ul {
+    gap: 0.3rem 0.65rem;
+  }
+
+  button.wso-service-header__tab {
+    letter-spacing: 0.25px;
+  }
+}
