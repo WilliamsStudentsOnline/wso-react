@@ -409,7 +409,7 @@ footer {
   .rides .main-table section {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
   }
@@ -439,7 +439,7 @@ footer {
   .rides .main-table section {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   .facebook .facebook-results section:last-child,
@@ -477,10 +477,22 @@ footer {
   .lost-found .main-table table,
   .announcement .main-table table,
   .jobs .main-table table,
-  .rides .main-table table {
+  .rides .main-table table,
+  .dormtrak .main table,
+  .factrak .factrak-home table,
+  .factrak #factrak-survey-table {
     word-wrap: normal;
     display: block;
     overflow-x: scroll;
+    max-width: 100%;
+  }
+  /* Dining hour cards must stay display:table or they shrink and leave a dead column */
+  .dining .facebook-results table.dining-table-container,
+  .facebook .facebook-results table.dining-table-container {
+    display: table;
+    overflow-x: visible;
+    width: 100%;
+    table-layout: fixed;
   }
   .facebook .facebook-results tr td th,
   .facebook .facebook-profile tr td th,
@@ -528,7 +540,7 @@ footer {
   .factrak .grid-wrap aside,
   .dormtrak .grid-wrap aside {
     float: left;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
   }
   .facebook .grid-wrap aside:last-child,
@@ -542,7 +554,7 @@ footer {
   .factrak .grid-wrap aside,
   .dormtrak .grid-wrap aside {
     float: left;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
     margin-bottom: 1em;
   }
@@ -1190,7 +1202,7 @@ header .login .toggles:last-child {
   header .login .toggles {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
   }
@@ -1378,6 +1390,60 @@ dl dd {
 .account header .page-head ul li:last-child,
 .login header .page-head ul li:last-child {
   margin-right: 0;
+}
+@media screen and (max-width: 48.125em) {
+  .facebook header .page-head ul,
+  .factrak header .page-head ul,
+  .dormtrak header .page-head ul,
+  .lost-found header .page-head ul,
+  .announcement header .page-head ul,
+  .jobs header .page-head ul,
+  .rides header .page-head ul,
+  .account header .page-head ul,
+  .login header .page-head ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.85rem;
+  }
+  .facebook header .page-head ul li,
+  .factrak header .page-head ul li,
+  .dormtrak header .page-head ul li,
+  .lost-found header .page-head ul li,
+  .announcement header .page-head ul li,
+  .jobs header .page-head ul li,
+  .rides header .page-head ul li,
+  .account header .page-head ul li,
+  .login header .page-head ul li {
+    margin-right: 0;
+    letter-spacing: 0.5px;
+    font-size: 0.7em;
+  }
+}
+@media screen and (max-width: 43.75em) {
+  .facebook header .page-head ul,
+  .factrak header .page-head ul,
+  .dormtrak header .page-head ul,
+  .lost-found header .page-head ul,
+  .announcement header .page-head ul,
+  .jobs header .page-head ul,
+  .rides header .page-head ul,
+  .account header .page-head ul,
+  .login header .page-head ul {
+    gap: 0.3rem 0.65rem;
+  }
+  .facebook header .page-head ul li,
+  .factrak header .page-head ul li,
+  .dormtrak header .page-head ul li,
+  .lost-found header .page-head ul li,
+  .announcement header .page-head ul li,
+  .jobs header .page-head ul li,
+  .rides header .page-head ul li,
+  .account header .page-head ul li,
+  .login header .page-head ul li {
+    letter-spacing: 0.25px;
+    font-size: 0.65em;
+  }
 }
 .facebook header .page-head ul li a,
 .factrak header .page-head ul li a,
@@ -1904,7 +1970,7 @@ a.home-notice-sub:focus {
   .article .about-header h5 {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
     zoom: 1;
@@ -1930,7 +1996,7 @@ a.home-notice-sub:focus {
   .article .about-header h5 {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
     zoom: 1;
@@ -1983,7 +2049,7 @@ a.home-notice-sub:focus {
   .article article {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
   }
@@ -1995,7 +2061,7 @@ a.home-notice-sub:focus {
   .article article {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
   }
@@ -2007,7 +2073,7 @@ a.home-notice-sub:focus {
   .article {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
     padding: 0 2em;
@@ -2020,7 +2086,7 @@ a.home-notice-sub:focus {
   .article {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
     padding: 0;
@@ -2145,7 +2211,7 @@ a.home-notice-sub:focus {
   .dormtrak header .page-head {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
   }
@@ -2161,7 +2227,7 @@ a.home-notice-sub:focus {
   .dormtrak header .page-head {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
     margin-bottom: 1rem;
   }
@@ -2327,7 +2393,7 @@ a.home-notice-sub:focus {
   .dormtrak .dormtrak-search {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
   }
@@ -2355,7 +2421,7 @@ a.home-notice-sub:focus {
   .dormtrak .dormtrak-search {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   .facebook .facebook-search:last-child,
@@ -2743,7 +2809,7 @@ a.home-notice-sub:focus {
   .facebook-edit .picture {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   .facebook-profile .picture:last-child,
@@ -2821,7 +2887,7 @@ a.home-notice-sub:focus {
   .facebook-edit .info {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   .facebook-profile .info:last-child,
@@ -2960,7 +3026,7 @@ ul#tag-list .tag-input {
   .factrak .factrak-home section {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
   }
@@ -2972,7 +3038,7 @@ ul#tag-list .tag-input {
   .factrak .factrak-home section {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   .factrak .factrak-home section:last-child {
@@ -3008,8 +3074,8 @@ ul#tag-list .tag-input {
   .factrak .autocomplete {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
-    width: 74.1053340983%;
+    margin-right: 0;
+    width: 100%;
   }
   .factrak .autocomplete:last-child {
     margin-right: 0;
@@ -3019,7 +3085,7 @@ ul#tag-list .tag-input {
   .factrak .autocomplete {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   .factrak .autocomplete:last-child {
@@ -3032,7 +3098,7 @@ ul#tag-list .tag-input {
 }
 @media screen and (max-width: 48.125em) {
   .factrak .autocomplete #suggestions {
-    width: 82.6%;
+    width: 100%;
   }
 }
 @media screen and (max-width: 43.75em) {
@@ -3146,7 +3212,7 @@ ul#tag-list .tag-input {
   .dormtrak .sidebar {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
   }
@@ -3188,7 +3254,7 @@ ul#tag-list .tag-input {
     margin-left: 0%;
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   .dormtrak .main:last-child {
@@ -3198,6 +3264,14 @@ ul#tag-list .tag-input {
 @media screen and (max-width: 48.125em) {
   .dormtrak h3 {
     font-size: 32px;
+  }
+
+  .dormtrak .main .added-sort {
+    float: none;
+    display: block;
+    width: 100%;
+    margin: 0 0 0.75rem;
+    box-sizing: border-box;
   }
 }
 #piechart {
@@ -3235,7 +3309,7 @@ ul#tag-list .tag-input {
   .rides header .page-head {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
   }
@@ -3253,7 +3327,7 @@ ul#tag-list .tag-input {
   .rides header .page-head {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
     margin-bottom: 1rem;
   }
@@ -3320,7 +3394,7 @@ ul#tag-list .tag-input {
   .list-creation section {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
   }
@@ -3332,7 +3406,7 @@ ul#tag-list .tag-input {
   .list-creation section {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   .list-creation section:last-child {
@@ -3485,7 +3559,7 @@ ul#tag-list .tag-input {
   .discussion-thread article {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
     padding: 0 2em;
@@ -3498,7 +3572,7 @@ ul#tag-list .tag-input {
   .discussion-thread article {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
     padding: 0 2em;
@@ -3637,7 +3711,7 @@ ul#tag-list .tag-input {
   .home article aside {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   .home article aside:last-child {
@@ -3699,7 +3773,7 @@ header .toggles:last-child {
   header .toggles {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
   }
@@ -3713,7 +3787,7 @@ header .toggles:last-child {
   header .toggles {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
   }
@@ -3751,7 +3825,7 @@ header input[type="search"]:last-child {
   header input[type="search"] {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   header input[type="search"]:last-child {
@@ -3774,7 +3848,7 @@ header input[type="email"]:last-child {
   header input[type="email"] {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
   }
   header input[type="password"]:last-child,
@@ -3787,7 +3861,7 @@ header input[type="email"]:last-child {
   header input[type="email"] {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   header input[type="password"]:last-child,
@@ -3821,7 +3895,7 @@ header .submit:last-child {
   header .submit {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   header .submit:last-child {
@@ -3837,6 +3911,7 @@ nav.site-nav {
   left: 0;
   right: 0;
   z-index: 600;
+  box-sizing: border-box;
   /*APRIL FOOL'S*/
   /* background: linear-gradient(
     to left,
@@ -3935,17 +4010,36 @@ nav.site-nav .nav-left {
   nav.site-nav .nav-left-container {
     grid-column: 1 / -1;
     justify-self: stretch;
+    max-width: 100%;
+    box-sizing: border-box;
   }
+  nav.site-nav ul.nav-left,
   nav.site-nav .nav-left {
     display: none;
     text-align: left;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0.25rem 0 0.75rem;
   }
 }
 @media screen and (max-width: 48.125em) {
   nav.site-nav .nav-left > li {
     display: block;
-    margin-left: 1rem;
-    width: 100%;
+    width: auto;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0 1rem;
+    box-sizing: border-box;
+  }
+  nav.site-nav .nav-left > li > a,
+  nav.site-nav .nav-left > li > .dropbtn {
+    display: block;
+    text-align: left;
+    padding: 0.65rem 0;
+    line-height: 1.3;
   }
 }
 nav.site-nav .nav-right-container {
@@ -4057,13 +4151,21 @@ nav.site-nav button.theme-toggle:active {
   color: var(--text-on-nav) !important;
 }
 nav.site-nav #nav-menu-button {
-  line-height: 4;
   display: none;
   float: none;
   grid-column: 1;
   justify-self: start;
+  box-sizing: border-box;
+  height: var(--site-nav-item-height);
+  line-height: var(--site-nav-item-height);
+  padding: 0 0.25rem;
 }
 @media screen and (max-width: 48.125em) {
+  nav.site-nav .nav-container {
+    max-width: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
   nav.site-nav #nav-menu-button {
     display: block;
   }
@@ -4201,7 +4303,7 @@ footer section small:after {
   footer section small {
     float: left;
     display: block;
-    margin-right: 3.5786636068%;
+    margin-right: 0;
     width: 100%;
   }
   footer section small:last-child {
@@ -4212,7 +4314,7 @@ footer section small:after {
   footer section small {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   footer section small:last-child {
@@ -4276,7 +4378,7 @@ footer section small a {
   .login header .page-head {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
     margin-left: 0%;
     margin-bottom: 1rem;
@@ -4344,7 +4446,7 @@ header .login .toggles input[type="submit"]:last-child {
   header .login .toggles input[type="submit"] {
     float: left;
     display: block;
-    margin-right: 7.4229703521%;
+    margin-right: 0;
     width: 100%;
   }
   .account form input[type="submit"]:last-child,

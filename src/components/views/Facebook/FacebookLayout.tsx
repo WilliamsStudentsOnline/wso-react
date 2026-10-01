@@ -14,6 +14,8 @@ import { ServiceHeader, SearchBar, Button, ServiceTab } from "../../ui";
 import QueryTable from "../../QueryTable";
 import "../../stylesheets/Homepage.css";
 
+const MOBILE_MAX = "(max-width: 48.125em)";
+
 const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
   const currUser = useAppSelector(getCurrUser);
   const navigateTo = useNavigate();
@@ -23,8 +25,25 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
     searchParams.get("q") ?? ""
   );
   const [advancedFiltersSelected, setAdvancedFiltersSelected] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia(MOBILE_MAX).matches
+      : false
+  );
   const { query: generatedQuery, warning: queryWarning } =
     useAppSelector(selectGeneratedQuery);
+
+  useEffect(() => {
+    const media = window.matchMedia(MOBILE_MAX);
+    const onChange = () => {
+      const matches = media.matches;
+      setIsMobile(matches);
+      if (matches) setAdvancedFiltersSelected(false);
+    };
+    onChange();
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     if (advancedFiltersSelected) {
@@ -72,20 +91,22 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
             placeholder="Search Facebook..."
             id="facebook-search"
             actions={
-              <Button
-                variant={advancedFiltersSelected ? "toggleActive" : "toggle"}
-                onClick={() =>
-                  setAdvancedFiltersSelected(!advancedFiltersSelected)
-                }
-                style={{ marginLeft: 0 }}
-              >
-                Advanced
-              </Button>
+              isMobile ? undefined : (
+                <Button
+                  variant={advancedFiltersSelected ? "toggleActive" : "toggle"}
+                  onClick={() =>
+                    setAdvancedFiltersSelected(!advancedFiltersSelected)
+                  }
+                  style={{ marginLeft: 0 }}
+                >
+                  Advanced
+                </Button>
+              )
             }
           />
         }
       >
-        {advancedFiltersSelected && (
+        {!isMobile && advancedFiltersSelected && (
           <div className="advanced-query advanced-query-facebook">
             <div className="active-filters-container">
               {generatedQuery ? (

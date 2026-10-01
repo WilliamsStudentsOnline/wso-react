@@ -17,7 +17,7 @@
   text-align: center;
 }
 
-.search-bar {
+.home .search-bar {
   display: flex;
   flex-direction: row;
   margin-right: 80px;
@@ -211,6 +211,9 @@ input[type="submit"] {
 .library-hours-cell-label {
   position: relative;
   z-index: 1;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -247,7 +250,9 @@ input[type="submit"] {
 .home-hours-row .library-hours-table {
   border-collapse: separate;
   border-spacing: 0;
-  overflow: visible;
+  table-layout: fixed;
+  width: 100%;
+  overflow: hidden;
 }
 
 .home-hours-row .library-hours-table th,
@@ -330,7 +335,7 @@ input[type="submit"] {
 .homepage-dining-table td:first-child {
   width: 22%;
   white-space: nowrap;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .home-hours-row .library-hours-table td:first-child:hover,
@@ -646,16 +651,128 @@ input[type="submit"] {
   }
 }
 
+/* Stack hours when the fixed 3x340px grid no longer fits */
 @media screen and (max-width: 48.125em) {
   .home-hours-row {
     grid-template-columns: 1fr;
     width: 100%;
     padding: 0 1rem;
+    box-sizing: border-box;
+    gap: 1.5rem;
   }
 
   .home-hours-row .library-hours,
   .homepage-dining-hours {
     grid-column: 1;
     width: 100%;
+  }
+
+  .bulletin-list {
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    --home-gap: 1rem;
+  }
+
+  .home .search-bar {
+    width: 100%;
+    max-width: 100%;
+    margin-right: 0;
+    padding: 8px 1rem 0;
+    box-sizing: border-box;
+  }
+
+  .home .search-bar form {
+    float: none;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .home .search-bar input[type="search"] {
+    float: none;
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .home .search-bar input[type="submit"].submit {
+    float: none;
+    flex: 0 0 auto;
+    width: auto;
+    margin: 0;
+  }
+
+  .home-hours-row .library-hours h3,
+  .homepage-dining-hours h3 {
+    margin: 0 0 0.5rem;
+  }
+
+  .home-hours-row .library-hours-table td:first-child,
+  .homepage-dining-table th:first-child,
+  .homepage-dining-table td:first-child {
+    width: 42%;
+  }
+}
+
+@media screen and (max-width: 43.75em) {
+  .home .search-bar form {
+    flex-wrap: wrap;
+  }
+
+  .home .search-bar input[type="search"] {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .home .search-bar input[type="submit"].submit {
+    flex: 1 1 auto;
+  }
+
+  #homepage-table td > input,
+  #homepage-table td > select {
+    min-width: 0;
+  }
+
+  .home header {
+    padding-bottom: 1rem;
+  }
+
+  .home-hours-row {
+    margin-top: 0.5rem;
+  }
+
+  .home-hours-row .library-hours-table thead th,
+  .homepage-dining-table thead th {
+    letter-spacing: 0.5px;
+    padding: 0 0.5rem;
+  }
+
+  .home-hours-row .library-hours-table th,
+  .home-hours-row .library-hours-table td,
+  .homepage-dining-table th,
+  .homepage-dining-table td {
+    padding: 0 0.5rem;
+  }
+
+  .home-hours-row .library-hours-table td:first-child,
+  .homepage-dining-table th:first-child,
+  .homepage-dining-table td:first-child {
+    width: 48%;
+  }
+
+  .home article section {
+    padding-top: 1.5rem;
+  }
+
+  .home-bulletins-heading {
+    margin: 0 0 1rem;
   }
 }
