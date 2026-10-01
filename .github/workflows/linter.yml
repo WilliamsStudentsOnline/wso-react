@@ -43,4 +43,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           package_manager: yarn
           skip_step: build
-          script: yarn size --json
+          script: yarn --silent size --json
