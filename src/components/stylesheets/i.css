@@ -2761,18 +2761,6 @@ a.home-notice-sub:focus {
   margin-bottom: 0.5em;
 }
 
-.ephmatch-select-link {
-  cursor: pointer;
-  box-shadow: 0 6px 10px var(--shadow);
-  width: 100%;
-  border-radius: 10px;
-}
-
-.ephmatch-selected {
-  box-shadow: 0 6px 30px var(--brand-bar);
-  background: var(--brand-selected-bg);
-}
-
 .facebook-profile .name,
 .facebook-edit .name {
   margin: 0.25em 0;
@@ -4365,22 +4353,6 @@ footer section small a {
   color: var(--text-on-brand);
   border-bottom: 1px solid var(--border-divider);
 }
-.ephmatch-badge {
-  background-color: var(--brand-bar);
-  border-radius: 999px;
-  display: inline-block;
-  min-width: 1.25em;
-  margin-left: 0.35em;
-  padding: 0.2em 0.55em;
-  line-height: 1.4;
-  color: var(--text-on-brand);
-  font-size: 0.75em;
-  font-weight: bold;
-  white-space: nowrap;
-  text-align: center;
-  vertical-align: middle;
-  box-sizing: border-box;
-}
 .account header,
 .login header {
   padding-top: 4em;
@@ -4503,14 +4475,6 @@ header .login .toggles input[type="submit"]:last-child {
   font-variant: normal;
 }
 
-.ephmatch-results {
-  text-align: center;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 0.5fr));
-  grid-gap: 10px;
-  display: grid;
-  justify-content: center;
-}
-
 .tag-remove {
   display: inline;
   padding: 0px 0px 0px 12px;
@@ -4518,56 +4482,6 @@ header .login .toggles input[type="submit"]:last-child {
   background: var(--surface-page);
   color: var(--brand-primary-active);
   min-width: 0px;
-}
-
-@-webkit-keyframes ephmatch {
-  0% {
-    color: var(--text-on-brand);
-  }
-  50% {
-    color: var(--text-heading);
-  }
-  100% {
-    color: var(--text-on-brand);
-  }
-}
-
-@keyframes ephmatch {
-  0% {
-    color: var(--text-on-brand);
-  }
-  50% {
-    color: var(--text-heading);
-  }
-  100% {
-    color: var(--text-on-brand);
-  }
-}
-
-.ephmatch-link {
-  color: var(--accent-ephmatch);
-  /*animation: ephmatch 2s;
-  animation-iteration-count: 3;
-  -webkit-animation: ephmatch 2s;
-  -webkit-animation-iteration-count: 3;*/
-}
-
-.match-message {
-  padding: 10px;
-  border: 2px dashed var(--brand-primary);
-  background: var(--status-notice-bg);
-  margin-top: 10px;
-}
-
-.ephmatch-form {
-  padding: 20px;
-  box-shadow: 0 6px 10px var(--shadow);
-}
-
-.ephmatch-sample-profile {
-  width: 50%;
-  margin: 30px auto;
-  min-width: 320px;
 }
 
 #dormtrak-piechart {

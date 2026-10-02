@@ -32,7 +32,6 @@ const routePermissions = {
     scopes: [scopes.ScopeBulletin, scopes.ScopeUsers],
   },
   dormtrak: { tokenLevel: 3 },
-  ephmatch: { tokenLevel: 3 },
   facebook: { scopes: [scopes.ScopeUsers] },
   factrak: { tokenLevel: 3 },
   goodrich: { tokenLevel: 3, scopes: [scopes.ScopeGoodrich] },
