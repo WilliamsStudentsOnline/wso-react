@@ -14,7 +14,7 @@ env:
 jobs:
   lint:
     name: Syntax & Format Linter
-    runs-on: [self-hosted]
+    runs-on: [self-hosted] 
     env:
       CI_JOB_NUMBER: 1
     steps:
