@@ -1,0 +1,43 @@
+name: CI/CD Build Checker
+on:
+  push:
+    branches:
+      - production
+  pull_request:
+  merge_group:
+permissions:
+  contents: read
+  pull-requests: write
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  lint:
+    name: Syntax & Format Linter
+    runs-on: [self-hosted]
+    env:
+      CI_JOB_NUMBER: 1
+      PATH: /usr/local/bin:/usr/bin:/bin
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Uses Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+        # Now we are ready to deploy.
+      - name: Bundle site for deployment
+        run: yarn build
+        
+        # Copy it to /var/www/ 
+     - name: Deploy site
+       run: |
+                       set -euo pipefail
+          cp -r ./build/* /var/www/wso-react
+          # TODO: fix this later
+          # sudo systemctl restart nginx
