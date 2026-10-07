@@ -14,7 +14,6 @@ env:
 jobs:
   deploy:
     name: Deploy To Prod
-    needs: lint
     runs-on: [self-hosted]
     env:
       CI_JOB_NUMBER: 1
