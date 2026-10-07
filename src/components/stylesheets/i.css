@@ -3052,9 +3052,11 @@ ul#tag-list .tag-input {
 .factrak #factrak-comments-section {
   margin-bottom: 4em;
 }
-.factrak .blurred {
+.factrak .blurred,
+.factrak .comment-content.blurred * {
   color: transparent;
-  text-shadow: 0 0 5px var(--shadow);
+  text-shadow: 0 0 6px var(--text-muted);
+  user-select: none;
 }
 .factrak .autocomplete {
   position: relative;
