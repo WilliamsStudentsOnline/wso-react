@@ -5,7 +5,9 @@ on:
       - master
       - production
 
-# Placeholder until real CD is wired up.
+env:
+  NODE_VERSION: '20'
+
 jobs:
   deploy-dev:
     name: Deploy to development
@@ -27,8 +29,17 @@ jobs:
     env:
       PATH: /usr/local/bin:/usr/bin:/bin
     steps:
-      - name: Dummy deploy
+      - uses: actions/checkout@v4
+      - name: Uses Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+      - name: Bundle site for deployment
+        run: yarn build
+      - name: Deploy site
         run: |
           set -euo pipefail
-          echo "prod deploy placeholder on $(hostname) (ref=${GITHUB_REF_NAME})"
-          echo "replace this job with a real deploy when CD is ready"
+          cp -r ./build/* /var/www/wso-react
+          sudo systemctl restart nginx
