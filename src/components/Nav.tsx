@@ -37,9 +37,9 @@ const Nav = () => {
   const { preference, cyclePreference } = useTheme();
 
   const [menuVisible, updateMenuVisibility] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<
-    "games" | "more" | "user" | null
-  >(null);
+  const [openDropdown, setOpenDropdown] = useState<"more" | "user" | null>(
+    null
+  );
   const [userPhoto, updateUserPhoto] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const Nav = () => {
     dispatch(removeCredentials());
   };
 
-  const toggleDropdown = (id: "games" | "more" | "user") => {
+  const toggleDropdown = (id: "more" | "user") => {
     setOpenDropdown((prev) => (prev === id ? null : id));
   };
 
@@ -205,36 +205,6 @@ const Nav = () => {
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
             </li>
-            <li>
-              <a href="https://listserv-wso.williams.edu">Listserv</a>
-            </li>
-            <li
-              className={`dropdown${openDropdown === "games" ? " open" : ""}`}
-            >
-              <a
-                href="#"
-                className="dropbtn"
-                onClick={(e) => {
-                  e.preventDefault();
-                  toggleDropdown("games");
-                }}
-              >
-                Games ▾
-              </a>
-              <ul className="dropdown-content">
-                <li>
-                  <a href="https://wso.williams.edu/orgs/trivia/index.html">
-                    Williams Trivia
-                  </a>
-                </li>
-                <li>
-                  <a href="https://wso.williams.edu/bluemap/">Minecraft</a>
-                </li>
-                <li>
-                  <a href="https://warp-wso.williams.edu">Warp Foundry</a>
-                </li>
-              </ul>
-            </li>
             <li className={`dropdown${openDropdown === "more" ? " open" : ""}`}>
               <a
                 href="#"
@@ -251,13 +221,13 @@ const Nav = () => {
                   <a href="/about">About</a>
                 </li>
                 <li>
-                  <Link to="faq">FAQ</Link>
-                </li>
-                <li>
                   <a href="https://status-wso.williams.edu">Status</a>
                 </li>
                 <li>
-                  <a href="https://wiki-wso.williams.edu/">Willipedia</a>
+                  <a href="https://wcfm.nekoweb.org/">WCFM</a>
+                </li>
+                <li>
+                  <a href="https://wso.williams.edu/bluemap/">Minecraft</a>
                 </li>
                 <li>
                   <a href="/wiki/">Developer Wiki</a>
