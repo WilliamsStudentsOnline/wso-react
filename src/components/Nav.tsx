@@ -208,9 +208,6 @@ const Nav = () => {
             <li>
               <a href="https://wcfm.nekoweb.org/">WCFM</a>
             </li>
-            <li>
-              <a href="https://wso.williams.edu/bluemap/">Minecraft</a>
-            </li>
             <li className={`dropdown${openDropdown === "more" ? " open" : ""}`}>
               <a
                 href="#"
@@ -231,6 +228,9 @@ const Nav = () => {
                 </li>
                 <li>
                   <a href="https://status-wso.williams.edu">Status</a>
+                </li>
+                <li>
+                  <a href="https://wso.williams.edu/bluemap/">Minecraft</a>
                 </li>
                 <li>
                   <a href="/wiki/">Developer Wiki</a>
