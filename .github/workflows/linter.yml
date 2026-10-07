@@ -26,7 +26,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
       - name: Test Build
