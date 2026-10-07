@@ -344,25 +344,17 @@ const FactrakComment = ({
     return (
       <CommentCard>
         <div className="comment-content blurred">
-          <h1>
-            {showProf && (
-              <Link to="/factrak" style={{ color: "transparent" }}>
-                Ephraiem Williams
-              </Link>
-            )}
-          </h1>
+          <h1>{showProf && <Link to="/factrak">Ephraiem Williams</Link>}</h1>
 
           <h1>
-            <span style={{ color: "transparent" }}>0</span>
+            <span>0</span>
             &nbsp;agree&emsp;
-            <span style={{ color: "transparent" }}>0</span>
+            <span>0</span>
             &nbsp;disagree
           </h1>
 
           {surveyText()}
-          <p className="comment-detail">
-            posted about <span className="blurred">1793</span>
-          </p>
+          <p className="comment-detail">posted about 1793</p>
         </div>
       </CommentCard>
     );
