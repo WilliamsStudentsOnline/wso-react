@@ -14,7 +14,8 @@ env:
 jobs:
   lint:
     name: Syntax & Format Linter
-    runs-on: [self-hosted]
+    # only self-host CI when merging into prod
+    runs-on: ${{ github.event_name == 'pull_request' && github.base_ref == 'production' && fromJSON('["self-hosted", "prod"]') || 'ubuntu-latest' }}
     env:
       CI_JOB_NUMBER: 1
       PATH: /usr/local/bin:/usr/bin:/bin
@@ -26,7 +27,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
+          # don't cache on self-hosted runners
+          cache: ${{ (github.event_name != 'pull_request' || github.base_ref != 'production') && 'yarn' || '' }}
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
       - name: Test Build
