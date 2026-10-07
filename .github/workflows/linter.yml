@@ -40,7 +40,8 @@ jobs:
       - name: Check format with Prettier
         run: yarn run format:check
       - name: Bundle size
-        if: github.event_name == 'pull_request'
+        # size-limit compares against the PR base; production is often too old to have yarn size
+        if: github.event_name == 'pull_request' && github.base_ref != 'production'
         uses: andresz1/size-limit-action@v1.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
