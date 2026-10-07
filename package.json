@@ -72,7 +72,8 @@
     "format": "prettier --write './src/**/*.{js,jsx,ts,tsx,html,css,json}'",
     "format:check": "prettier --write './src/**/*.{js,jsx,ts,tsx,html,css,json}'",
     "size": "size-limit",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "sync-prod": "bash .github/scripts/open-sync-prod.sh"
   },
   "size-limit": [
     {
