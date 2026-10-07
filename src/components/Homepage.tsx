@@ -26,7 +26,7 @@ const Homepage = () => {
     setSearchInputValue(event.target.value);
   };
 
-  const joinHeaderText = "Install the new WSO Mobile iOS app!"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
+  const joinHeaderText = ""; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
   const joinHeaderLink =
     "https://apps.apple.com/us/app/wso-mobile-rewritten/id6755857250";
 
