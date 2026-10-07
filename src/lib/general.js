@@ -25,20 +25,11 @@ export const scopes = {
   // Ability to create reviews, etc. (must be upperclass)
   ScopeDormtrakWrite: "service:dormtrak:write",
 
-  ScopeEphcatch: "service:ephcatch",
   ScopeBulletin: "service:bulletin",
   // This is for facebook & users
   ScopeUsers: "service:users",
   // Allows you to access other services not mentioned above
   ScopeAllOther: "service:other",
-
-  // Service: Ephmatch
-  // Allows access to read/write self profile on Ephmatch. For when a user is eligible but not signed up
-  ScopeEphmatch: "service:ephmatch",
-  // Allows access to matches. For when a user is signed up but Ephmatch is closed
-  ScopeEphmatchMatches: "service:ephmatch:matches",
-  // Allows access to read profiles, write like/unlike. For when a user is signed up and Ephmatch is open
-  ScopeEphmatchProfiles: "service:ephmatch:profiles",
 
   // Service: Goodrich
   // Allows access to read/write self goodrich orders and read goodrich menu
