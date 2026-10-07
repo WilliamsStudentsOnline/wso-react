@@ -221,9 +221,6 @@ const Nav = () => {
                   <a href="/about">About</a>
                 </li>
                 <li>
-                  <Link to="faq">FAQ</Link>
-                </li>
-                <li>
                   <a href="https://status-wso.williams.edu">Status</a>
                 </li>
                 <li>
