@@ -35,9 +35,9 @@ jobs:
         run: yarn build
         
         # Copy it to /var/www/ 
-     - name: Deploy site
-       run: |
-                       set -euo pipefail
-          cp -r ./build/* /var/www/wso-react
-          # TODO: fix this later
-          # sudo systemctl restart nginx
+      - name: Deploy site
+        run: |
+                 set -euo pipefail
+                 cp -r ./build/* /var/www/wso-react
+                 # TODO: fix this later
+                 # sudo systemctl restart nginx
