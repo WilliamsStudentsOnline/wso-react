@@ -6,3 +6,10 @@ dependencies:
       - any-glob-to-any-file:
           - package.json
           - yarn.lock
+
+codegen:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/generated/**"
+          - "**/openapi*.{yaml,yml,json}"
+          - src/**/wso-api-client/**
