@@ -205,7 +205,10 @@ const Nav = () => {
             <li>
               <Link to="schedulecourses">Course Scheduler</Link>
             </li>
-            <li className={`dropdown${openDropdown === "more" ? " open" : ""}`}>
+            <li
+              className={`dropdown${openDropdown === "more" ? " open" : ""}`}
+              onMouseLeave={() => setOpenDropdown(null)}
+            >
               <a
                 href="#"
                 className="dropbtn"
@@ -252,6 +255,7 @@ const Nav = () => {
               ]
                 .filter(Boolean)
                 .join(" ")}
+              onMouseLeave={() => setOpenDropdown(null)}
             >
               <button
                 type="button"
