@@ -17,11 +17,80 @@
   text-align: center;
 }
 
+.home-mountain-day {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: -1.5em auto 0;
+  max-width: 720px;
+  width: 100%;
+}
+
+.home-mountain-day img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.home-mountain-day-caption {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  color: var(--text-muted);
+  text-align: left;
+}
+
+.home-mountain-day-caption a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+.home-mountain-day-caption a:hover,
+.home-mountain-day-caption a:focus,
+[data-theme="dark"] .home-mountain-day-caption a:hover,
+[data-theme="dark"] .home-mountain-day-caption a:focus {
+  color: var(--brand-primary-hover);
+  opacity: 1;
+  text-decoration: underline;
+}
+
 .home .search-bar {
   display: flex;
   flex-direction: row;
   margin-right: 80px;
   padding: 8px 0 0;
+}
+
+.home .search-bar--with-caption {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.home .search-bar--with-caption form {
+  margin-bottom: 0;
+}
+
+.home .search-bar--with-caption input[type="search"],
+.home .search-bar--with-caption input[type="submit"] {
+  margin-bottom: 0;
+}
+
+.home .search-bar--with-caption .home-mountain-day-caption {
+  /* match header form left inset so credit lines up under the search input */
+  width: 82.9403914003%;
+  margin-top: 4px;
+  margin-bottom: 1.25rem;
+  margin-left: 8.5298042998%;
+  box-sizing: border-box;
+  clear: both;
+}
+
+@media screen and (max-width: 48.125em) {
+  .home .search-bar--with-caption .home-mountain-day-caption {
+    width: 100%;
+    margin-left: 0;
+  }
 }
 
 .search-bar input[type="search"],
