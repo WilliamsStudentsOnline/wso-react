@@ -17,6 +17,10 @@
   text-align: center;
 }
 
+.home .logo {
+  text-align: center;
+}
+
 .home-mountain-day {
   display: flex;
   flex-direction: column;
