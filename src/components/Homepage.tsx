@@ -32,7 +32,7 @@ const Homepage = () => {
   const joinHeaderText = ""; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
   const joinHeaderLink =
     "https://apps.apple.com/us/app/wso-mobile-rewritten/id6755857250";
-  const isMountainDay = true; // EDIT THIS TO TOGGLE MOUNTAIN DAY HEADER
+  const isMountainDay = false; // EDIT THIS TO TOGGLE MOUNTAIN DAY HEADER
 
   useEffect(() => {
     if (!isMountainDay) return;
