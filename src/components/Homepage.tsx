@@ -29,9 +29,9 @@ const Homepage = () => {
     setSearchInputValue(event.target.value);
   };
 
-  const joinHeaderText = ""; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
-  const joinHeaderLink =
-    "https://apps.apple.com/us/app/wso-mobile-rewritten/id6755857250";
+  const joinHeaderText = "WSO Wants Your Art!"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
+  const joinHeaderLink = "https://wso.williams.edu/bulletins/announcement/9234";
+  const joinHeaderSub = "Click for info"; // EDIT WITH joinHeaderText/Link
   const isMountainDay = false; // EDIT THIS TO TOGGLE MOUNTAIN DAY HEADER
 
   useEffect(() => {
@@ -54,7 +54,7 @@ const Homepage = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Click to download on the App Store
+                {joinHeaderSub}
               </a>
             </span>
           </div>
