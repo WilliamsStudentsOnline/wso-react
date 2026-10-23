@@ -45,7 +45,7 @@ const Homepage = () => {
       <div className="full-width">
         {joinHeaderText && (
           <div id="join-header" className="home-notice">
-            <span className="list-date home-notice-badge">New</span>
+            <span className="home-notice-badge">New</span>
             <span className="home-notice-copy">
               <span className="home-notice-title">{joinHeaderText}</span>
               <a
