@@ -67,8 +67,6 @@
   --color-course-sel-search-bg: var(--surface-page);
   --color-course-sel-search-borders: var(--border-default);
   --color-course-sel-search-cursor: var(--text-heading);
-  /* ephmatch colors */
-  --color-ephmatch-icon: var(--text-subtle);
   /* dining colors */
   --color-dining-maintitle: var(--text-heading);
   --color-dining-navbutton-bg: var(--brand-tint);

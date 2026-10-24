@@ -50,7 +50,6 @@
   --skeleton-base: #e0e0e0;
   --skeleton-highlight: #f8f8f8;
   --shadow: hsla(0, 0%, 0%, 0.2);
-  --accent-ephmatch: #fff238;
   --brand-selected-bg: #e5dcfb;
 
   --nav-bg: #282e42;
@@ -118,7 +117,6 @@
   --skeleton-base: #2c2c36;
   --skeleton-highlight: #3a3a48;
   --shadow: hsla(0, 0%, 0%, 0.45);
-  --accent-ephmatch: #fff238;
   --brand-selected-bg: var(--brand-tint-strong);
 
   --nav-bg: #1a1e2c;
