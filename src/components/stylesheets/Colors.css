@@ -15,7 +15,7 @@
   --color-course-factrak-rating-fg: var(--text-on-brand);
   --color-course-factrak-rating-hover: var(--brand-primary-active);
   --color-course-rating-tooltip-bg: var(--text-heading);
-  --color-course-rating-tooltip-fg: var(--text-on-brand);
+  --color-course-rating-tooltip-fg: var(--text-inverse);
   /* homepage colors */
   --color-homepage-buttons: var(--brand-primary);
   --color-homepage-button-borders: var(--brand-bar-hover);
