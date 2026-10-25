@@ -74,7 +74,8 @@
     "size": "size-limit",
     "prepare": "husky install",
     "sync-prod": "bash .github/scripts/open-sync-prod.sh",
-    "check-prod-integrity": "bash .github/scripts/check-prod-integrity.sh"
+    "check-prod-integrity": "bash .github/scripts/check-prod-integrity.sh",
+    "codegen": "node scripts/codegen.mjs"
   },
   "size-limit": [
     {
