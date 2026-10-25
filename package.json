@@ -29,7 +29,7 @@
     "serialize-javascript": "7.0.5",
     "timeago.js": "^4.0.0-beta.2",
     "typeface-source-sans-pro": "^0.0.75",
-    "wso-api-client": "24.02.19"
+    "wso-api-client": "git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#feature/openapi-codegen"
   },
   "devDependencies": {
     "@size-limit/file": "^12.1.0",

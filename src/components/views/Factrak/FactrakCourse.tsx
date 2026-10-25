@@ -80,7 +80,7 @@ const FactrakCourse = () => {
       try {
         const ratingsResponse = await wso.factrakService.getCourseRatings(
           courseID,
-          profID !== -1 ? profID : undefined
+          profID !== -1 ? { professorID: profID } : undefined
         );
         updateRatings(ratingsResponse.data);
       } catch (error) {
