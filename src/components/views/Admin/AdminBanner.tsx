@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
 import { BannerBanner } from "wso-api-client/lib/services/types";
@@ -15,23 +15,14 @@ const emptyBanner = (): BannerBanner => ({
   sub: "",
 });
 
-const errorMessage = (err: unknown): string => {
-  if (err && typeof err === "object" && "message" in err) {
-    const msg = (err as { message?: string }).message;
-    if (msg) return msg;
-  }
-  if (err instanceof Error) return err.message;
-  return "Failed to load or save banner";
-};
-
 const AdminBanner = () => {
   const wso = useAppSelector(getWSO);
+  const navigateTo = useNavigate();
 
-  const [draft, setDraft] = useState<BannerBanner>(emptyBanner());
-  const [loading, setLoading] = useState(true);
+  const [draft, setDraft] = useState<BannerBanner | null>(null);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -41,11 +32,8 @@ const AdminBanner = () => {
         const response = await wso.bannerService.getBanner();
         if (!isMounted) return;
         setDraft({ ...emptyBanner(), ...(response.data ?? {}) });
-        setError(null);
-      } catch (err) {
-        if (isMounted) setError(errorMessage(err));
-      } finally {
-        if (isMounted) setLoading(false);
+      } catch (error) {
+        navigateTo("/error", { replace: true, state: { error } });
       }
     };
 
@@ -53,137 +41,155 @@ const AdminBanner = () => {
     return () => {
       isMounted = false;
     };
-  }, [wso]);
+  }, [wso, navigateTo]);
 
   const updateField = <K extends keyof BannerBanner>(
     key: K,
     value: BannerBanner[K]
   ) => {
-    setDraft((prev) => ({ ...prev, [key]: value }));
+    setDraft((prev) => (prev ? { ...prev, [key]: value } : prev));
     setStatus(null);
-    setError(null);
+    setErrors([]);
   };
 
   const save = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!draft) return;
     setSaving(true);
     setStatus(null);
-    setError(null);
+    setErrors([]);
 
     try {
       const response = await wso.bannerService.setBanner(draft);
       setDraft({ ...emptyBanner(), ...(response.data ?? draft) });
       setStatus("Saved");
-    } catch (err) {
-      setError(errorMessage(err));
+    } catch (error) {
+      navigateTo("/error", { replace: true, state: { error } });
     } finally {
       setSaving(false);
     }
   };
 
   const hideBanner = async () => {
+    if (!draft) return;
     setSaving(true);
     setStatus(null);
-    setError(null);
+    setErrors([]);
     const payload: BannerBanner = { ...draft, visible: false };
     try {
       const response = await wso.bannerService.setBanner(payload);
       setDraft({ ...emptyBanner(), ...(response.data ?? payload) });
       setStatus("Banner hidden");
-    } catch (err) {
-      setError(errorMessage(err));
+    } catch (error) {
+      navigateTo("/error", { replace: true, state: { error } });
     } finally {
       setSaving(false);
     }
   };
 
+  if (!draft) return null;
+
   return (
-    <article className="facebook-profile">
-      <section className="margin-vertical-small">
-        <p>
-          <Link to="/admin">← Admin</Link>
-        </p>
-        <h3>Homepage banner</h3>
+    <div className="article">
+      <section>
+        <article>
+          <div id="errors">
+            {errors.map((msg) => (
+              <p key={msg}>{msg}</p>
+            ))}
+          </div>
 
-        {loading ? (
-          <p>Loading…</p>
-        ) : (
           <form onSubmit={save}>
-            <p>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={Boolean(draft.visible)}
-                  onChange={(e) => updateField("visible", e.target.checked)}
-                />{" "}
-                Visible
-              </label>
-            </p>
-
-            <p>
-              Type
-              <br />
-              <Select
-                value={draft.type || "pinned"}
-                options={BANNER_TYPES}
-                onChange={(e) => updateField("type", e.target.value)}
-              />
-            </p>
-
-            <p>
-              Title
-              <br />
-              <input
-                type="text"
-                value={draft.text ?? ""}
-                onChange={(e) => updateField("text", e.target.value)}
-                required={Boolean(draft.visible)}
-              />
-            </p>
-
-            <p>
-              Subtitle
-              <br />
-              <input
-                type="text"
-                value={draft.sub ?? ""}
-                onChange={(e) => updateField("sub", e.target.value)}
-              />
-            </p>
-
-            <p>
-              Link URL
-              <br />
-              <input
-                type="url"
-                value={draft.link ?? ""}
-                onChange={(e) => updateField("link", e.target.value)}
-              />
-            </p>
-
-            <p>
-              <input
-                type="submit"
-                value={saving ? "Saving…" : "Save"}
-                className="submit"
-                disabled={saving}
-              />{" "}
-              <button
-                type="button"
-                className="inline-button"
-                disabled={saving || !draft.visible}
-                onClick={hideBanner}
-              >
-                Hide
-              </button>
-            </p>
-
-            {status && <p>{status}</p>}
-            {error && <p>{error}</p>}
+            <h3>Homepage banner</h3>
+            <table id="factrak-survey-table">
+              <tbody>
+                <tr>
+                  <td align="left">
+                    <strong>Visible</strong>
+                  </td>
+                  <td align="left">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(draft.visible)}
+                      onChange={(e) => updateField("visible", e.target.checked)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td align="left">
+                    <strong>Type</strong>
+                  </td>
+                  <td align="left">
+                    <Select
+                      value={draft.type || "pinned"}
+                      options={BANNER_TYPES}
+                      onChange={(e) => updateField("type", e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td align="left">
+                    <strong>Title</strong>
+                  </td>
+                  <td align="left">
+                    <input
+                      type="text"
+                      value={draft.text ?? ""}
+                      onChange={(e) => updateField("text", e.target.value)}
+                      required={Boolean(draft.visible)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td align="left">
+                    <strong>Subtitle</strong>
+                  </td>
+                  <td align="left">
+                    <input
+                      type="text"
+                      value={draft.sub ?? ""}
+                      onChange={(e) => updateField("sub", e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td align="left">
+                    <strong>Link URL</strong>
+                  </td>
+                  <td align="left">
+                    <input
+                      type="url"
+                      value={draft.link ?? ""}
+                      onChange={(e) => updateField("link", e.target.value)}
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan={2}>
+                    <br />
+                    <input
+                      type="submit"
+                      value={saving ? "Saving…" : "Save"}
+                      data-disable-with="Save"
+                      disabled={saving}
+                    />{" "}
+                    <button
+                      type="button"
+                      className="inline-button"
+                      disabled={saving || !draft.visible}
+                      onClick={hideBanner}
+                    >
+                      Hide
+                    </button>
+                    {status && <p>{status}</p>}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </form>
-        )}
+        </article>
       </section>
-    </article>
+    </div>
   );
 };
 

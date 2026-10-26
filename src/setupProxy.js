@@ -11,8 +11,17 @@ const prodProxy = {
   },
 };
 
+const apiProxy = {
+  target: "https://wso-dev.williams.edu",
+  changeOrigin: true,
+  secure: false,
+  headers: {
+    "User-Agent": "wso-react-dev-proxy",
+  },
+};
+
 module.exports = function (app) {
-  app.use(createProxyMiddleware("/api", prodProxy));
+  app.use(createProxyMiddleware("/api", apiProxy));
 
   app.use(
     // note that we do not currently deploy image service on dev server
