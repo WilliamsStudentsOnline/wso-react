@@ -21,6 +21,11 @@
   text-align: center;
 }
 
+/* Banner replaces most of the header top padding so WSO doesn't jump on load */
+.home--with-banner header {
+  padding-top: 0.35em;
+}
+
 .home-mountain-day {
   display: flex;
   flex-direction: column;

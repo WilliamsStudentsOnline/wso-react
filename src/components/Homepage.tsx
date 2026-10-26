@@ -107,7 +107,7 @@ const Homepage = () => {
       : "home-notice";
 
   return (
-    <div className="home">
+    <div className={banner ? "home home--with-banner" : "home"}>
       <div className="full-width">
         {banner && (
           <div id="join-header" className={noticeClass}>
