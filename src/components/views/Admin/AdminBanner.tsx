@@ -24,7 +24,6 @@ const AdminBanner = () => {
 
   const [draft, setDraft] = useState<BannerBanner | null>(null);
   const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -56,14 +55,12 @@ const AdminBanner = () => {
     value: BannerBanner[K]
   ) => {
     setDraft((prev) => (prev ? { ...prev, [key]: value } : prev));
-    setStatus(null);
   };
 
   const save = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!draft) return;
     setSaving(true);
-    setStatus(null);
 
     try {
       const payload: BannerBanner = {
@@ -77,7 +74,6 @@ const AdminBanner = () => {
         ...saved,
         type: saved.type || "pinned",
       });
-      setStatus("Saved");
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
     } finally {
@@ -195,7 +191,6 @@ const AdminBanner = () => {
               data-disable-with="Save"
               disabled={saving}
             />
-            {status && <p className="admin-banner__status">{status}</p>}
           </div>
         </form>
       </section>
