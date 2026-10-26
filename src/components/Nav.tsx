@@ -148,6 +148,11 @@ const Nav = () => {
             <li>
               <Link to={`/facebook/users/${currUser.id}`}>Profile</Link>
             </li>
+            {currUser.admin && (
+              <li>
+                <Link to="/admin">Admin</Link>
+              </li>
+            )}
             <li>
               <Link
                 onClick={() => {
