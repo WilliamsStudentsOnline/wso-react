@@ -27,18 +27,21 @@
   max-width: 36rem;
 }
 
-.admin-banner__form {
-  display: grid;
-  gap: 0.75rem;
-  margin: 0.75rem 0 0;
+.admin-banner__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
 }
 
-.admin-banner__box {
-  position: relative;
+.admin-banner__heading h3 {
+  margin: 0;
+}
+
+.admin-banner__form {
   display: grid;
   gap: 0.65rem;
-  padding: 2.1rem 1rem 1rem;
-  border: 1px solid var(--border-strong);
 }
 
 .admin-banner__row {
@@ -62,15 +65,13 @@
 }
 
 .admin-banner__check {
-  position: absolute;
-  top: 0.65rem;
-  right: 0.85rem;
   display: flex;
   align-items: center;
   gap: 0.35rem;
   margin: 0;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  flex: 0 0 auto;
 }
 
 .admin-banner__actions {
