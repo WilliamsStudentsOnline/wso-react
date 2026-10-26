@@ -49,6 +49,7 @@ const BulletinMain = lazy(
 const DiscussionMain = lazy(
   () => import("./views/BulletinsDiscussions/DiscussionMain")
 );
+const AdminMain = lazy(() => import("./views/Admin/AdminMain"));
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -204,6 +205,14 @@ const App = () => {
           />
           <Route path="schedulecourses" element={<Scheduler />} />
           <Route path="dining/*" element={<DiningMain />} />
+          <Route
+            path="admin/*"
+            element={
+              <RequireScope token={apiToken} name="admin">
+                <AdminMain />
+              </RequireScope>
+            }
+          />
           {/* Static Content Pages */}
           <Route path="about" element={<About />} />
           <Route path="team" element={<Team />} />
