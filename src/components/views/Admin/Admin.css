@@ -29,8 +29,16 @@
 
 .admin-banner__form {
   display: grid;
-  gap: 0.65rem;
+  gap: 0.75rem;
   margin: 0.75rem 0 0;
+}
+
+.admin-banner__box {
+  position: relative;
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem 1rem;
+  border: 1px solid var(--border-strong);
 }
 
 .admin-banner__row {
@@ -54,11 +62,15 @@
 }
 
 .admin-banner__check {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.85rem;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
+  margin: 0;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .admin-banner__actions {
