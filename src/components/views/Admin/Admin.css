@@ -19,8 +19,18 @@
 }
 
 .admin-tools__title {
+  display: block;
   color: var(--brand-primary);
   font-weight: 700;
+}
+
+.admin-tools__desc {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.35;
 }
 
 .admin-banner {
