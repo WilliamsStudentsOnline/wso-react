@@ -8,10 +8,14 @@ const AdminHome = () => {
       <section className="margin-vertical-small">
         <ul className="admin-tools">
           <li>
-            <Link to="/admin/banner">Homepage banner</Link>
+            <Link to="/admin/banner">
+              <span className="admin-tools__title">Homepage banner</span>
+            </Link>
           </li>
           <li>
-            <Link to="/factrak/moderate">Factrak moderation</Link>
+            <Link to="/factrak/moderate">
+              <span className="admin-tools__title">Factrak moderation</span>
+            </Link>
           </li>
         </ul>
       </section>

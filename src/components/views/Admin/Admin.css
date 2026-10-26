@@ -11,13 +11,16 @@
   display: block;
   padding: 0.85rem 1rem;
   border: 1px solid var(--border-strong);
-  color: var(--brand-primary);
-  font-weight: 700;
   text-decoration: none;
 }
 
 .admin-tools a:hover {
   background: var(--brand-tint);
+}
+
+.admin-tools__title {
+  color: var(--brand-primary);
+  font-weight: 700;
 }
 
 .admin-banner {
