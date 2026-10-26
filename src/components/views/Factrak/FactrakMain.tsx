@@ -4,7 +4,6 @@ import React, { ReactElement } from "react";
 // Component imports
 import FactrakHome from "./FactrakHome";
 import FactrakPolicy from "./FactrakPolicy";
-import FactrakModerate from "./FactrakModerate";
 import FactrakSurveyIndex from "./FactrakSurveyIndex";
 import FactrakSurvey from "./FactrakSurvey";
 import FactrakLayout from "./FactrakLayout";
@@ -91,14 +90,6 @@ const FactrakMain = () => {
           element={
             <RequirePolicy token={token}>
               <FactrakSurvey edit />
-            </RequirePolicy>
-          }
-        />
-        <Route
-          path="moderate"
-          element={
-            <RequirePolicy token={token}>
-              <FactrakModerate />
             </RequirePolicy>
           }
         />
