@@ -1,0 +1,118 @@
+.admin-tools {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+}
+
+.admin-tools a {
+  display: block;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-strong);
+  color: inherit;
+  text-decoration: none;
+}
+
+.admin-tools a:hover {
+  background: var(--brand-tint);
+}
+
+.admin-tools__title {
+  display: block;
+  font-weight: 700;
+  color: var(--brand-primary);
+}
+
+.admin-tools__desc {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.admin-banner {
+  max-width: 36rem;
+}
+
+.admin-banner__form {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.admin-banner__row {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+}
+
+.admin-banner__row label {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.admin-banner__row input[type="text"],
+.admin-banner__row input[type="url"],
+.admin-banner__row .select {
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.admin-banner__check {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.admin-banner__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.admin-banner__status {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.admin-banner__preview-label {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.admin-banner__preview-frame {
+  border: 1px solid var(--border-strong);
+  overflow: hidden;
+}
+
+.admin-banner__preview-frame .home-notice {
+  border-bottom: 0;
+}
+
+.admin-banner__preview-empty {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+@media screen and (max-width: 30em) {
+  .admin-banner__row {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}

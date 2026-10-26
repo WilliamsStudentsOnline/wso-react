@@ -4,6 +4,7 @@ import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
 import { BannerBanner } from "wso-api-client/lib/services/types";
 import { Select } from "../../ui";
+import "./Admin.css";
 
 const BANNER_TYPES = ["pinned", "emergency", "dismissible"];
 
@@ -15,6 +16,8 @@ const emptyBanner = (): BannerBanner => ({
   sub: "",
 });
 
+const badgeLabel = (type?: string) => (type === "emergency" ? "Alert" : "New");
+
 const AdminBanner = () => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
@@ -22,7 +25,6 @@ const AdminBanner = () => {
   const [draft, setDraft] = useState<BannerBanner | null>(null);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
-  const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -49,7 +51,6 @@ const AdminBanner = () => {
   ) => {
     setDraft((prev) => (prev ? { ...prev, [key]: value } : prev));
     setStatus(null);
-    setErrors([]);
   };
 
   const save = async (event: React.FormEvent) => {
@@ -57,7 +58,6 @@ const AdminBanner = () => {
     if (!draft) return;
     setSaving(true);
     setStatus(null);
-    setErrors([]);
 
     try {
       const response = await wso.bannerService.setBanner(draft);
@@ -70,126 +70,121 @@ const AdminBanner = () => {
     }
   };
 
-  const hideBanner = async () => {
-    if (!draft) return;
-    setSaving(true);
-    setStatus(null);
-    setErrors([]);
-    const payload: BannerBanner = { ...draft, visible: false };
-    try {
-      const response = await wso.bannerService.setBanner(payload);
-      setDraft({ ...emptyBanner(), ...(response.data ?? payload) });
-      setStatus("Banner hidden");
-    } catch (error) {
-      navigateTo("/error", { replace: true, state: { error } });
-    } finally {
-      setSaving(false);
-    }
-  };
-
   if (!draft) return null;
 
+  const previewType = draft.type || "pinned";
+  const noticeClass =
+    previewType === "emergency"
+      ? "home-notice home-notice--emergency"
+      : "home-notice";
+  const showPreview = Boolean(draft.visible && draft.text);
+
   return (
-    <div className="article">
-      <section>
-        <article>
-          <div id="errors">
-            {errors.map((msg) => (
-              <p key={msg}>{msg}</p>
-            ))}
+    <article className="facebook-profile">
+      <section className="margin-vertical-small admin-banner">
+        <h3>Homepage banner</h3>
+
+        <form className="admin-banner__form" onSubmit={save}>
+          <label className="admin-banner__check">
+            <input
+              type="checkbox"
+              checked={Boolean(draft.visible)}
+              onChange={(e) => updateField("visible", e.target.checked)}
+            />
+            Visible
+          </label>
+
+          <div className="admin-banner__row">
+            <label htmlFor="admin-banner-type">Type</label>
+            <Select
+              value={previewType}
+              options={BANNER_TYPES}
+              onChange={(e) => updateField("type", e.target.value)}
+            />
           </div>
 
-          <form onSubmit={save}>
-            <h3>Homepage banner</h3>
-            <table id="factrak-survey-table">
-              <tbody>
-                <tr>
-                  <td align="left">
-                    <strong>Visible</strong>
-                  </td>
-                  <td align="left">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(draft.visible)}
-                      onChange={(e) => updateField("visible", e.target.checked)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td align="left">
-                    <strong>Type</strong>
-                  </td>
-                  <td align="left">
-                    <Select
-                      value={draft.type || "pinned"}
-                      options={BANNER_TYPES}
-                      onChange={(e) => updateField("type", e.target.value)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td align="left">
-                    <strong>Title</strong>
-                  </td>
-                  <td align="left">
-                    <input
-                      type="text"
-                      value={draft.text ?? ""}
-                      onChange={(e) => updateField("text", e.target.value)}
-                      required={Boolean(draft.visible)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td align="left">
-                    <strong>Subtitle</strong>
-                  </td>
-                  <td align="left">
-                    <input
-                      type="text"
-                      value={draft.sub ?? ""}
-                      onChange={(e) => updateField("sub", e.target.value)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td align="left">
-                    <strong>Link URL</strong>
-                  </td>
-                  <td align="left">
-                    <input
-                      type="url"
-                      value={draft.link ?? ""}
-                      onChange={(e) => updateField("link", e.target.value)}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td colSpan={2}>
-                    <br />
-                    <input
-                      type="submit"
-                      value={saving ? "Saving…" : "Save"}
-                      data-disable-with="Save"
-                      disabled={saving}
-                    />{" "}
-                    <button
-                      type="button"
-                      className="inline-button"
-                      disabled={saving || !draft.visible}
-                      onClick={hideBanner}
+          <div className="admin-banner__row">
+            <label htmlFor="admin-banner-title">Title</label>
+            <input
+              id="admin-banner-title"
+              type="text"
+              value={draft.text ?? ""}
+              onChange={(e) => updateField("text", e.target.value)}
+              required={Boolean(draft.visible)}
+            />
+          </div>
+
+          <div className="admin-banner__row">
+            <label htmlFor="admin-banner-sub">Subtitle</label>
+            <input
+              id="admin-banner-sub"
+              type="text"
+              value={draft.sub ?? ""}
+              onChange={(e) => updateField("sub", e.target.value)}
+            />
+          </div>
+
+          <div className="admin-banner__row">
+            <label htmlFor="admin-banner-link">Link URL</label>
+            <input
+              id="admin-banner-link"
+              type="url"
+              value={draft.link ?? ""}
+              onChange={(e) => updateField("link", e.target.value)}
+            />
+          </div>
+
+          <div className="admin-banner__actions">
+            <input
+              type="submit"
+              value={saving ? "Saving…" : "Save"}
+              data-disable-with="Save"
+              disabled={saving}
+            />
+            {status && <p className="admin-banner__status">{status}</p>}
+          </div>
+        </form>
+
+        <p className="admin-banner__preview-label">Preview</p>
+        <div className="admin-banner__preview-frame">
+          {showPreview ? (
+            <div className={noticeClass}>
+              <span className="home-notice-badge">
+                {badgeLabel(previewType)}
+              </span>
+              <span className="home-notice-copy">
+                <span className="home-notice-title">{draft.text}</span>
+                {draft.sub &&
+                  (draft.link ? (
+                    <a
+                      className="home-notice-sub"
+                      href={draft.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      Hide
-                    </button>
-                    {status && <p>{status}</p>}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </form>
-        </article>
+                      {draft.sub}
+                    </a>
+                  ) : (
+                    <span className="home-notice-sub">{draft.sub}</span>
+                  ))}
+              </span>
+              {previewType === "dismissible" && (
+                <button
+                  type="button"
+                  className="home-notice-dismiss"
+                  aria-label="Dismiss banner"
+                  disabled
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ) : (
+            <p className="admin-banner__preview-empty">Banner hidden</p>
+          )}
+        </div>
       </section>
-    </div>
+    </article>
   );
 };
 
