@@ -11,26 +11,13 @@
   display: block;
   padding: 0.85rem 1rem;
   border: 1px solid var(--border-strong);
-  color: inherit;
+  color: var(--brand-primary);
+  font-weight: 700;
   text-decoration: none;
 }
 
 .admin-tools a:hover {
   background: var(--brand-tint);
-}
-
-.admin-tools__title {
-  display: block;
-  font-weight: 700;
-  color: var(--brand-primary);
-}
-
-.admin-tools__desc {
-  display: block;
-  margin-top: 0.25rem;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  line-height: 1.35;
 }
 
 .admin-banner {
@@ -40,7 +27,7 @@
 .admin-banner__form {
   display: grid;
   gap: 0.65rem;
-  margin: 0.75rem 0 1.25rem;
+  margin: 0.75rem 0 0;
 }
 
 .admin-banner__row {
@@ -76,7 +63,6 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-top: 0.25rem;
 }
 
 .admin-banner__status {
@@ -85,18 +71,10 @@
   color: var(--text-muted);
 }
 
-.admin-banner__preview-label {
-  margin: 0 0 0.5rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-}
-
 .admin-banner__preview-frame {
   border: 1px solid var(--border-strong);
   overflow: hidden;
+  margin-top: 0.35rem;
 }
 
 .admin-banner__preview-frame .home-notice {

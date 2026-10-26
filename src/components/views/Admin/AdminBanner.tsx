@@ -134,6 +134,44 @@ const AdminBanner = () => {
             />
           </div>
 
+          <div className="admin-banner__preview-frame">
+            {showPreview ? (
+              <div className={noticeClass}>
+                <span className="home-notice-badge">
+                  {badgeLabel(previewType)}
+                </span>
+                <span className="home-notice-copy">
+                  <span className="home-notice-title">{draft.text}</span>
+                  {draft.sub &&
+                    (draft.link ? (
+                      <a
+                        className="home-notice-sub"
+                        href={draft.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {draft.sub}
+                      </a>
+                    ) : (
+                      <span className="home-notice-sub">{draft.sub}</span>
+                    ))}
+                </span>
+                {previewType === "dismissible" && (
+                  <button
+                    type="button"
+                    className="home-notice-dismiss"
+                    aria-label="Dismiss banner"
+                    disabled
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            ) : (
+              <p className="admin-banner__preview-empty">Banner hidden</p>
+            )}
+          </div>
+
           <div className="admin-banner__actions">
             <input
               type="submit"
@@ -144,45 +182,6 @@ const AdminBanner = () => {
             {status && <p className="admin-banner__status">{status}</p>}
           </div>
         </form>
-
-        <p className="admin-banner__preview-label">Preview</p>
-        <div className="admin-banner__preview-frame">
-          {showPreview ? (
-            <div className={noticeClass}>
-              <span className="home-notice-badge">
-                {badgeLabel(previewType)}
-              </span>
-              <span className="home-notice-copy">
-                <span className="home-notice-title">{draft.text}</span>
-                {draft.sub &&
-                  (draft.link ? (
-                    <a
-                      className="home-notice-sub"
-                      href={draft.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {draft.sub}
-                    </a>
-                  ) : (
-                    <span className="home-notice-sub">{draft.sub}</span>
-                  ))}
-              </span>
-              {previewType === "dismissible" && (
-                <button
-                  type="button"
-                  className="home-notice-dismiss"
-                  aria-label="Dismiss banner"
-                  disabled
-                >
-                  ×
-                </button>
-              )}
-            </div>
-          ) : (
-            <p className="admin-banner__preview-empty">Banner hidden</p>
-          )}
-        </div>
       </section>
     </article>
   );
