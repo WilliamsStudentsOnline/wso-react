@@ -9,7 +9,7 @@ const bannerStatusText = (banner: BannerBanner | null): string => {
   if (!banner || !banner.visible) return "Currently hidden";
   const type = banner.type?.trim();
   if (!type) return "Currently visible";
-  return `Currently visible as ${type}`;
+  return `Currently visible, ${type}`;
 };
 
 const flagsStatusText = (count: number | null): string => {
