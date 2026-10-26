@@ -4,7 +4,7 @@ import { ServiceHeader } from "../../ui";
 const AdminLayout = ({ children }: { children: React.ReactElement }) => {
   return (
     <div className="facebook">
-      <ServiceHeader title="Admin" titleTo="/admin" />
+      <ServiceHeader title="Admin Console" titleTo="/admin" />
       {children}
     </div>
   );

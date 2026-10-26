@@ -14,7 +14,9 @@ const AdminHome = () => {
           </li>
           <li>
             <Link to="/factrak/moderate">
-              <span className="admin-tools__title">Factrak moderation</span>
+              <span className="admin-tools__title">
+                Factrak moderation (&rarr;)
+              </span>
             </Link>
           </li>
         </ul>
