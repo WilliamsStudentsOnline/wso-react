@@ -7,16 +7,50 @@ import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 
 // Redux Imports
 import { Link, useNavigate } from "react-router-dom";
+import { useAppSelector } from "../lib/store";
+import { getWSO } from "../lib/authSlice";
 import { PostType } from "../lib/types";
 import LibraryHoursTable from "./LibraryHours";
 import HomepageDiningHours from "./HomepageDiningHours";
 import MountainDayStill from "../assets/images/banners/MountainDayStill.png";
 import MountainDayAnimated from "../assets/images/banners/MountainDay.png";
+import { BannerBanner } from "wso-api-client/lib/services/types";
+
+const BANNER_DISMISS_KEY = "wso-homepage-banner-dismissed";
+const isMountainDay = false; // EDIT THIS TO TOGGLE MOUNTAIN DAY HEADER
+
+const bannerFingerprint = (banner: BannerBanner) =>
+  JSON.stringify({
+    text: banner.text ?? "",
+    link: banner.link ?? "",
+    sub: banner.sub ?? "",
+    type: banner.type ?? "",
+  });
+
+const readDismissedFingerprint = (): string | null => {
+  try {
+    return localStorage.getItem(BANNER_DISMISS_KEY);
+  } catch {
+    return null;
+  }
+};
+
+const writeDismissedFingerprint = (fingerprint: string) => {
+  try {
+    localStorage.setItem(BANNER_DISMISS_KEY, fingerprint);
+  } catch {
+    // ignore quota / private mode
+  }
+};
+
+const badgeLabel = (type?: string) => (type === "emergency" ? "Alert" : "New");
 
 const Homepage = () => {
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const [searchInputValue, setSearchInputValue] = useState("");
   const [mountainDayPlaying, setMountainDayPlaying] = useState(false);
+  const [banner, setBanner] = useState<BannerBanner | null>(null);
 
   const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -29,34 +63,81 @@ const Homepage = () => {
     setSearchInputValue(event.target.value);
   };
 
-  const joinHeaderText = "WSO Wants Your Art!"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
-  const joinHeaderLink = "https://wso.williams.edu/bulletins/announcement/9234";
-  const joinHeaderSub = "Click for info"; // EDIT WITH joinHeaderText/Link
-  const isMountainDay = false; // EDIT THIS TO TOGGLE MOUNTAIN DAY HEADER
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadBanner = async () => {
+      try {
+        const response = await wso.bannerService.getBanner();
+        const data = response.data;
+        if (!isMounted || !data?.visible || !data.text) return;
+        if (
+          data.type === "dismissible" &&
+          readDismissedFingerprint() === bannerFingerprint(data)
+        ) {
+          return;
+        }
+        setBanner(data);
+      } catch {
+        // Keep homepage usable if banner fetch fails
+      }
+    };
+
+    loadBanner();
+    return () => {
+      isMounted = false;
+    };
+  }, [wso]);
 
   useEffect(() => {
     if (!isMountainDay) return;
     const img = new Image();
     img.src = MountainDayAnimated;
-  }, [isMountainDay]);
+  }, []);
+
+  const dismissBanner = () => {
+    if (!banner) return;
+    writeDismissedFingerprint(bannerFingerprint(banner));
+    setBanner(null);
+  };
+
+  const noticeClass =
+    banner?.type === "emergency"
+      ? "home-notice home-notice--emergency"
+      : "home-notice";
 
   return (
     <div className="home">
       <div className="full-width">
-        {joinHeaderText && (
-          <div id="join-header" className="home-notice">
-            <span className="home-notice-badge">New</span>
+        {banner && (
+          <div id="join-header" className={noticeClass}>
+            <span className="home-notice-badge">{badgeLabel(banner.type)}</span>
             <span className="home-notice-copy">
-              <span className="home-notice-title">{joinHeaderText}</span>
-              <a
-                className="home-notice-sub"
-                href={joinHeaderLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {joinHeaderSub}
-              </a>
+              <span className="home-notice-title">{banner.text}</span>
+              {banner.sub &&
+                (banner.link ? (
+                  <a
+                    className="home-notice-sub"
+                    href={banner.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {banner.sub}
+                  </a>
+                ) : (
+                  <span className="home-notice-sub">{banner.sub}</span>
+                ))}
             </span>
+            {banner.type === "dismissible" && (
+              <button
+                type="button"
+                className="home-notice-dismiss"
+                aria-label="Dismiss banner"
+                onClick={dismissBanner}
+              >
+                ×
+              </button>
+            )}
           </div>
         )}
         <header>
