@@ -124,7 +124,7 @@ const AdminTasks = () => {
 
     if (resolution === RESOLUTION_APPROVED) {
       // eslint-disable-next-line no-restricted-globals, no-alert
-      const ok = confirm("Approve this request?");
+      const ok = confirm("Are you sure?");
       if (!ok) return;
     }
 

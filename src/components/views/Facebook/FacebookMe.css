@@ -373,3 +373,13 @@ button.tag-edit__add:disabled {
 .tag-edit__suggestion:hover {
   background: var(--brand-tint) !important;
 }
+
+.tag-edit__suggestion--request {
+  color: var(--text-muted) !important;
+  font-style: italic !important;
+  border-top: 1px solid var(--border-default) !important;
+}
+
+.tag-edit__suggestion--request:hover {
+  color: var(--brand-primary) !important;
+}

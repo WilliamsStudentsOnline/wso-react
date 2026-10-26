@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-const ERROR_INVALID_USER_TAG = 1406;
 const ERROR_TAG_ALREADY_EXISTS = 1408;
 
 const TagRemove = ({ onClick, label }) => (
@@ -31,6 +30,15 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [busy, setBusy] = useState(false);
 
+  const trimmed = newTag.trim();
+  const matchingSuggestion = suggestions.find(
+    (s) => s.value && s.value.toLowerCase() === trimmed.toLowerCase()
+  );
+  const alreadyHaveTag = tags.some(
+    (tag) => tag.toLowerCase() === trimmed.toLowerCase()
+  );
+  const showRequestOption = Boolean(trimmed) && !matchingSuggestion;
+
   const tagAutocomplete = async (event) => {
     const value = event.target.value;
     updateNewTag(value);
@@ -49,11 +57,6 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
     }
   };
 
-  const matchingSuggestion = (name) =>
-    suggestions.find(
-      (s) => s.value && s.value.toLowerCase() === name.toLowerCase()
-    );
-
   const updateUserTags = async (updatedTags) => {
     await wso.userService.updateUserTags("me", { tags: updatedTags });
     updateTags(updatedTags);
@@ -71,50 +74,63 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
     ]);
   };
 
-  const addTagHandler = async () => {
-    const name = newTag.trim();
-    if (!name || busy) {
-      updateErrors([]);
-      return;
-    }
-    if (tags.some((tag) => tag.toLowerCase() === name.toLowerCase())) {
+  const addExistingTag = async (tagName) => {
+    if (tags.some((tag) => tag.toLowerCase() === tagName.toLowerCase())) {
       updateErrors(["Unable to add the same tag twice."]);
       return;
     }
+    setBusy(true);
+    try {
+      await updateUserTags([...tags, tagName]);
+    } catch (error) {
+      updateErrors([errorMessage(error)]);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const confirmAndRequestTag = async (tagName) => {
+    if (busy) return;
+    if (tags.some((tag) => tag.toLowerCase() === tagName.toLowerCase())) {
+      updateErrors(["Unable to add the same tag twice."]);
+      return;
+    }
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    const ok = confirm(
+      `Request new tag "${tagName}"?\n\nA moderator will need to approve it before it appears on your profile.`
+    );
+    if (!ok) return;
 
     setBusy(true);
     try {
-      const known = matchingSuggestion(name);
-      if (known?.value) {
-        await updateUserTags([...tags, known.value]);
-        return;
-      }
-
-      try {
-        await requestNewTag(name);
-      } catch (error) {
-        // name already exists in tags table — attach immediately
-        if (error?.errorCode === ERROR_TAG_ALREADY_EXISTS) {
-          await updateUserTags([...tags, name]);
-          return;
-        }
-        throw error;
-      }
+      await requestNewTag(tagName);
     } catch (error) {
-      // typed an existing name that wasn't in suggestions
-      if (error?.errorCode === ERROR_INVALID_USER_TAG) {
-        try {
-          await requestNewTag(name);
-          return;
-        } catch (requestError) {
-          updateErrors([errorMessage(requestError)]);
-          return;
-        }
+      if (error?.errorCode === ERROR_TAG_ALREADY_EXISTS) {
+        await updateUserTags([...tags, tagName]);
+        return;
       }
       updateErrors([errorMessage(error)]);
     } finally {
       setBusy(false);
     }
+  };
+
+  const addTagHandler = async () => {
+    if (!trimmed || busy) {
+      updateErrors([]);
+      return;
+    }
+    if (alreadyHaveTag) {
+      updateErrors(["Unable to add the same tag twice."]);
+      return;
+    }
+
+    if (matchingSuggestion?.value) {
+      await addExistingTag(matchingSuggestion.value);
+      return;
+    }
+
+    await confirmAndRequestTag(trimmed);
   };
 
   const removeTagHandler = async (index) => {
@@ -130,6 +146,8 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
       setBusy(false);
     }
   };
+
+  const showDropdown = suggestions.length > 0 || showRequestOption;
 
   return (
     <div className="tag-edit">
@@ -162,22 +180,32 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
               }
             }}
           />
-          {suggestions && suggestions.length > 0 ? (
+          {showDropdown ? (
             <ul className="tag-edit__suggestions">
               {suggestions.map((suggestion) => (
                 <li key={suggestion.id}>
                   <button
                     type="button"
                     className="tag-edit__suggestion"
-                    onClick={() => {
-                      setSuggestions([]);
-                      updateNewTag(suggestion.value);
-                    }}
+                    disabled={busy}
+                    onClick={() => addExistingTag(suggestion.value)}
                   >
                     {suggestion.value}
                   </button>
                 </li>
               ))}
+              {showRequestOption ? (
+                <li>
+                  <button
+                    type="button"
+                    className="tag-edit__suggestion tag-edit__suggestion--request"
+                    disabled={busy || alreadyHaveTag}
+                    onClick={() => confirmAndRequestTag(trimmed)}
+                  >
+                    Request new tag
+                  </button>
+                </li>
+              ) : null}
             </ul>
           ) : null}
         </div>
@@ -185,7 +213,7 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
           type="button"
           className="tag-edit__add"
           onClick={addTagHandler}
-          disabled={!newTag.trim() || busy}
+          disabled={!trimmed || busy}
           aria-label="Add tag"
         >
           +
