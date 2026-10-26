@@ -29,7 +29,7 @@
     "serialize-javascript": "7.0.5",
     "timeago.js": "^4.0.0-beta.2",
     "typeface-source-sans-pro": "^0.0.75",
-    "wso-api-client": "24.02.19"
+    "wso-api-client": "git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#v2026.10.25"
   },
   "devDependencies": {
     "@size-limit/file": "^12.1.0",
@@ -74,7 +74,8 @@
     "size": "size-limit",
     "prepare": "husky install",
     "sync-prod": "bash .github/scripts/open-sync-prod.sh",
-    "check-prod-integrity": "bash .github/scripts/check-prod-integrity.sh"
+    "check-prod-integrity": "bash .github/scripts/check-prod-integrity.sh",
+    "codegen": "node scripts/codegen.mjs"
   },
   "size-limit": [
     {

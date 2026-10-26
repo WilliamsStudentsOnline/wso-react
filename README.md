@@ -72,6 +72,18 @@ However, you may wish to set up the backend to allow our client to get the infor
 
 `setupProxy.js` enables all HTTP requests to be made to `/path/to/endpoint` without further settings--so don't worry about changing URL paths!
 
+**Updating the API client**
+
+After `wso-api-client` publishes a new git tag:
+
+```bash
+# interactive
+yarn codegen
+# manual
+yarn codegen --tag vYYYY.MM.DD
+yarn codegen --latest
+```
+
 ## Development
 
 **Optional Installations:**

@@ -27,7 +27,10 @@ const DormtrakRanking = () => {
       try {
         const rankingsResponse = await wso.dormtrakService.getRankings();
         if (isMounted && rankingsResponse.data) {
-          updateDormsInfo(rankingsResponse.data);
+          const raw = rankingsResponse.data as
+            | ModelsDormtrakRanking
+            | ModelsDormtrakRanking[];
+          updateDormsInfo(Array.isArray(raw) ? raw[0] : raw);
         }
       } catch {
         // Handle it by not doing anything for now;
