@@ -47,7 +47,6 @@
 }
 
 .admin-banner__row input[type="text"],
-.admin-banner__row input[type="url"],
 .admin-banner__row .select {
   width: 100%;
   margin: 0;

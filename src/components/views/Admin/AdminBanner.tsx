@@ -128,7 +128,7 @@ const AdminBanner = () => {
             <label htmlFor="admin-banner-link">Link URL</label>
             <input
               id="admin-banner-link"
-              type="url"
+              type="text"
               value={draft.link ?? ""}
               onChange={(e) => updateField("link", e.target.value)}
             />
