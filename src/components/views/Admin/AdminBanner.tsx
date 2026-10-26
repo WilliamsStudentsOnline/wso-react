@@ -90,7 +90,7 @@ const AdminBanner = () => {
               checked={Boolean(draft.visible)}
               onChange={(e) => updateField("visible", e.target.checked)}
             />
-            Visible
+            Visible?
           </label>
         </div>
 

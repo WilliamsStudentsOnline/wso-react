@@ -67,10 +67,10 @@
 .admin-banner__check {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
   margin: 0;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   flex: 0 0 auto;
 }
 
