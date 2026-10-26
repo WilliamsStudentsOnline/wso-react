@@ -33,7 +33,13 @@ const AdminBanner = () => {
       try {
         const response = await wso.bannerService.getBanner();
         if (!isMounted) return;
-        setDraft({ ...emptyBanner(), ...(response.data ?? {}) });
+        const data = response.data ?? {};
+        setDraft({
+          ...emptyBanner(),
+          ...data,
+          // API may return type:"" when hidden; keep a valid select value
+          type: data.type || "pinned",
+        });
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
       }
@@ -60,8 +66,17 @@ const AdminBanner = () => {
     setStatus(null);
 
     try {
-      const response = await wso.bannerService.setBanner(draft);
-      setDraft({ ...emptyBanner(), ...(response.data ?? draft) });
+      const payload: BannerBanner = {
+        ...draft,
+        type: draft.type || "pinned",
+      };
+      const response = await wso.bannerService.setBanner(payload);
+      const saved = response.data ?? payload;
+      setDraft({
+        ...emptyBanner(),
+        ...saved,
+        type: saved.type || "pinned",
+      });
       setStatus("Saved");
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
