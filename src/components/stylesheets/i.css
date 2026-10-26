@@ -2344,44 +2344,6 @@ a.home-notice-sub:focus {
   color: var(--brand-primary);
 }
 
-[data-theme="dark"] .facebook header h1,
-[data-theme="dark"] .factrak header h1,
-[data-theme="dark"] .dormtrak header h1,
-[data-theme="dark"] .facebook header h1 a,
-[data-theme="dark"] .factrak header h1 a,
-[data-theme="dark"] .dormtrak header h1 a,
-[data-theme="dark"] .home header h1,
-[data-theme="dark"] .home header h1 a,
-[data-theme="dark"] .announcement header h1,
-[data-theme="dark"] .announcement header h1 a,
-[data-theme="dark"] .lost-found header h1,
-[data-theme="dark"] .lost-found header h1 a,
-[data-theme="dark"] .jobs header h1,
-[data-theme="dark"] .jobs header h1 a,
-[data-theme="dark"] .rides header h1,
-[data-theme="dark"] .rides header h1 a {
-  color: var(--text-heading);
-}
-
-[data-theme="dark"] .facebook header .page-head ul li a,
-[data-theme="dark"] .factrak header .page-head ul li a,
-[data-theme="dark"] .dormtrak header .page-head ul li a,
-[data-theme="dark"] .announcement header .page-head ul li a,
-[data-theme="dark"] .lost-found header .page-head ul li a,
-[data-theme="dark"] .jobs header .page-head ul li a,
-[data-theme="dark"] .rides header .page-head ul li a,
-[data-theme="dark"] .account header .page-head ul li a,
-[data-theme="dark"] .login header .page-head ul li a,
-[data-theme="dark"] button.wso-service-header__tab {
-  color: var(--text-heading);
-  background: none;
-  padding: 0;
-  border-radius: 0;
-  box-shadow: none;
-  text-decoration: none;
-  opacity: 1;
-}
-
 [data-theme="dark"] .facebook header .page-head ul li a:hover,
 [data-theme="dark"] .factrak header .page-head ul li a:hover,
 [data-theme="dark"] .dormtrak header .page-head ul li a:hover,
@@ -2412,7 +2374,7 @@ a.home-notice-sub:focus {
 [data-theme="dark"] .jobs header .page-head ul li a.active-stylized-link,
 [data-theme="dark"] .rides header .page-head ul li a.active-stylized-link,
 [data-theme="dark"] button.wso-service-header__tab--active {
-  color: var(--text-heading);
+  color: var(--brand-primary);
   background: none;
   box-shadow: none;
   text-decoration: underline;
