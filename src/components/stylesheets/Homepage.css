@@ -26,6 +26,10 @@
   position: relative;
 }
 
+.home--with-banner header {
+  padding-top: 5em;
+}
+
 .home--with-banner #join-header.home-notice {
   position: absolute;
   top: 0;
