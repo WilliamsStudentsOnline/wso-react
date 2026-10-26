@@ -1831,6 +1831,7 @@ section:after {
 }
 #join-header.home-notice,
 .home-notice {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1844,6 +1845,12 @@ section:after {
   color: var(--brand-deep);
   border-bottom: 1px solid var(--border-strong);
   text-align: left;
+}
+
+#join-header.home-notice:has(.home-notice-dismiss),
+.home-notice:has(.home-notice-dismiss) {
+  padding-left: 2.75rem;
+  padding-right: 2.75rem;
 }
 
 .home-notice-badge {
@@ -1861,26 +1868,48 @@ section:after {
   line-height: 1.4;
 }
 
-.home-notice--emergency {
+#join-header.home-notice.home-notice--emergency,
+.home-notice.home-notice--emergency {
   background: var(--status-danger-bg, #fde8e8);
   color: var(--status-danger-fg, #8a1f1f);
   border-bottom-color: var(--status-danger-fg, #8a1f1f);
 }
 
 .home-notice-dismiss {
-  flex: 0 0 auto;
-  margin-left: auto;
+  position: absolute;
+  top: 50%;
+  right: 1.25rem;
+  transform: translateY(-50%);
+  min-width: 0;
   border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  outline: none;
   background: transparent;
   color: inherit;
   font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
   line-height: 1;
   cursor: pointer;
-  padding: 0.15rem 0.35rem;
+  padding: 0;
   opacity: 0.7;
 }
 
-.home-notice-dismiss:hover {
+.home-notice-dismiss:hover,
+.home-notice-dismiss:active,
+.home-notice-dismiss:disabled,
+.home-notice-dismiss:focus {
+  background: transparent;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.home-notice-dismiss:hover,
+.home-notice-dismiss:active {
   opacity: 1;
 }
 
@@ -1934,6 +1963,13 @@ a.home-notice-sub:focus {
     gap: 0.55rem;
     padding: 0.75rem 1rem;
     justify-content: flex-start;
+  }
+
+  #join-header.home-notice:has(.home-notice-dismiss),
+  .home-notice:has(.home-notice-dismiss) {
+    justify-content: center;
+    padding-left: 2.25rem;
+    padding-right: 2.25rem;
   }
 }
 /*APRIL FOOL'S*/

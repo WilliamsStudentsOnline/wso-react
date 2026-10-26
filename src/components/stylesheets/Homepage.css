@@ -21,22 +21,16 @@
   text-align: center;
 }
 
-/* Sit the banner in the existing header top padding so load doesn't push WSO */
-.home > .full-width {
-  position: relative;
+.home-banner-slot {
+  margin-bottom: 1.25rem;
 }
 
-.home--with-banner header {
-  padding-top: 5em;
+.home-banner-slot:empty {
+  min-height: 3.7rem;
 }
 
-.home--with-banner #join-header.home-notice {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  box-sizing: border-box;
+.home.home--with-banner header {
+  padding-top: 0;
 }
 
 .home-mountain-day {

@@ -1,5 +1,5 @@
 // React imports
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // Component imports
 import "./stylesheets/Homepage.css";
@@ -17,6 +17,7 @@ import MountainDayAnimated from "../assets/images/banners/MountainDay.png";
 import { BannerBanner } from "wso-api-client/lib/services/types";
 
 const BANNER_DISMISS_KEY = "wso-homepage-banner-dismissed";
+const BANNER_LAYOUT_KEY = "wso-homepage-banner-layout";
 const isMountainDay = false; // EDIT THIS TO TOGGLE MOUNTAIN DAY HEADER
 
 const bannerFingerprint = (banner: BannerBanner) =>
@@ -27,23 +28,31 @@ const bannerFingerprint = (banner: BannerBanner) =>
     type: banner.type ?? "",
   });
 
-const readDismissedFingerprint = (): string | null => {
+const lsGet = (key: string): string | null => {
   try {
-    return localStorage.getItem(BANNER_DISMISS_KEY);
+    return localStorage.getItem(key);
   } catch {
     return null;
   }
 };
 
-const writeDismissedFingerprint = (fingerprint: string) => {
+const lsSet = (key: string, value: string) => {
   try {
-    localStorage.setItem(BANNER_DISMISS_KEY, fingerprint);
+    localStorage.setItem(key, value);
   } catch {
-    // ignore quota / private mode
+    /* private mode / quota */
   }
 };
 
-const badgeLabel = (type?: string) => (type === "emergency" ? "Alert" : "New");
+const lsDel = (key: string) => {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    /* private mode / quota */
+  }
+};
+
+const badgeLabel = (type?: string) => (type === "emergency" ? "Notice" : "New");
 
 const Homepage = () => {
   const wso = useAppSelector(getWSO);
@@ -51,6 +60,13 @@ const Homepage = () => {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [mountainDayPlaying, setMountainDayPlaying] = useState(false);
   const [banner, setBanner] = useState<BannerBanner | null>(null);
+  const [reserveBannerSpace, setReserveBannerSpace] = useState(
+    () => !!lsGet(BANNER_LAYOUT_KEY)
+  );
+  const [dismissedSlotHeight, setDismissedSlotHeight] = useState<number | null>(
+    null
+  );
+  const bannerSlotRef = useRef<HTMLDivElement>(null);
 
   const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -70,16 +86,28 @@ const Homepage = () => {
       try {
         const response = await wso.bannerService.getBanner();
         const data = response.data;
-        if (!isMounted || !data?.visible || !data.text) return;
-        if (
-          data.type === "dismissible" &&
-          readDismissedFingerprint() === bannerFingerprint(data)
-        ) {
-          return;
+        if (!isMounted) return;
+        const shouldShow =
+          !!data?.visible &&
+          !!data.text &&
+          !(
+            data.type === "dismissible" &&
+            lsGet(BANNER_DISMISS_KEY) === bannerFingerprint(data)
+          );
+        if (shouldShow && data) {
+          lsSet(BANNER_LAYOUT_KEY, bannerFingerprint(data));
+          setBanner(data);
+          setReserveBannerSpace(true);
+        } else {
+          lsDel(BANNER_LAYOUT_KEY);
+          setBanner(null);
+          setReserveBannerSpace(false);
         }
-        setBanner(data);
       } catch {
-        // Keep homepage usable if banner fetch fails
+        if (isMounted) {
+          lsDel(BANNER_LAYOUT_KEY);
+          setReserveBannerSpace(false);
+        }
       }
     };
 
@@ -97,7 +125,10 @@ const Homepage = () => {
 
   const dismissBanner = () => {
     if (!banner) return;
-    writeDismissedFingerprint(bannerFingerprint(banner));
+    const slotHeight = bannerSlotRef.current?.offsetHeight ?? null;
+    lsSet(BANNER_DISMISS_KEY, bannerFingerprint(banner));
+    lsDel(BANNER_LAYOUT_KEY);
+    if (slotHeight) setDismissedSlotHeight(slotHeight);
     setBanner(null);
   };
 
@@ -106,37 +137,53 @@ const Homepage = () => {
       ? "home-notice home-notice--emergency"
       : "home-notice";
 
+  const showBannerSlot = reserveBannerSpace || dismissedSlotHeight !== null;
+
   return (
-    <div className={banner ? "home home--with-banner" : "home"}>
+    <div className={showBannerSlot ? "home home--with-banner" : "home"}>
       <div className="full-width">
-        {banner && (
-          <div id="join-header" className={noticeClass}>
-            <span className="home-notice-badge">{badgeLabel(banner.type)}</span>
-            <span className="home-notice-copy">
-              <span className="home-notice-title">{banner.text}</span>
-              {banner.sub &&
-                (banner.link ? (
-                  <a
-                    className="home-notice-sub"
-                    href={banner.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
+        {showBannerSlot && (
+          <div
+            className="home-banner-slot"
+            ref={bannerSlotRef}
+            style={
+              dismissedSlotHeight
+                ? { minHeight: dismissedSlotHeight }
+                : undefined
+            }
+          >
+            {banner && (
+              <div id="join-header" className={noticeClass}>
+                <span className="home-notice-badge">
+                  {badgeLabel(banner.type)}
+                </span>
+                <span className="home-notice-copy">
+                  <span className="home-notice-title">{banner.text}</span>
+                  {banner.sub &&
+                    (banner.link ? (
+                      <a
+                        className="home-notice-sub"
+                        href={banner.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {banner.sub}
+                      </a>
+                    ) : (
+                      <span className="home-notice-sub">{banner.sub}</span>
+                    ))}
+                </span>
+                {banner.type === "dismissible" && (
+                  <button
+                    type="button"
+                    className="home-notice-dismiss"
+                    aria-label="Dismiss banner"
+                    onClick={dismissBanner}
                   >
-                    {banner.sub}
-                  </a>
-                ) : (
-                  <span className="home-notice-sub">{banner.sub}</span>
-                ))}
-            </span>
-            {banner.type === "dismissible" && (
-              <button
-                type="button"
-                className="home-notice-dismiss"
-                aria-label="Dismiss banner"
-                onClick={dismissBanner}
-              >
-                ×
-              </button>
+                    ×
+                  </button>
+                )}
+              </div>
             )}
           </div>
         )}
