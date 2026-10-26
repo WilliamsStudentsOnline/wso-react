@@ -2344,8 +2344,6 @@ a.home-notice-sub:focus {
   color: var(--brand-primary);
 }
 
-/* service titles stay --brand-primary; Layout.jsx applies these section
-   classes on the app shell so dark overrides here are site-wide */
 [data-theme="dark"] .facebook header .page-head ul li a:hover,
 [data-theme="dark"] .factrak header .page-head ul li a:hover,
 [data-theme="dark"] .dormtrak header .page-head ul li a:hover,
