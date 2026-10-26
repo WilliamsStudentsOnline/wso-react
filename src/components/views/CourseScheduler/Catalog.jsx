@@ -13,18 +13,25 @@ import { getLoadedCourses } from "../../../selectors/course";
 
 const Catalog = ({ onLoad, loaded }) => {
   useEffect(() => {
+    // page scroll lives on .layout-scroll, not the window
+    const scrollEl = document.querySelector(".layout-scroll");
+    if (!scrollEl) return undefined;
+
     const onScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >=
-          document.body.offsetHeight - 2000 &&
-        loaded.length
-      ) {
+      const nearBottom =
+        scrollEl.scrollTop + scrollEl.clientHeight >=
+        scrollEl.scrollHeight - 2000;
+      // a short final page means the catalog is fully loaded
+      const pageFull = loaded.length > 0 && loaded.length % 50 === 0;
+      if (nearBottom && pageFull) {
         onLoad(loaded.length / 50 + 1);
       }
     };
-    window.addEventListener("scroll", onScroll, false);
+
+    onScroll();
+    scrollEl.addEventListener("scroll", onScroll, false);
     return () => {
-      window.removeEventListener("scroll", onScroll, false);
+      scrollEl.removeEventListener("scroll", onScroll, false);
     };
   }, [onLoad, loaded]);
 
