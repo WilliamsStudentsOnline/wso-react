@@ -21,6 +21,18 @@
   text-align: center;
 }
 
+.home-banner-slot {
+  margin-bottom: 1.25rem;
+}
+
+.home-banner-slot:empty {
+  min-height: 3.7rem;
+}
+
+.home.home--with-banner header {
+  padding-top: 0;
+}
+
 .home-mountain-day {
   display: flex;
   flex-direction: column;

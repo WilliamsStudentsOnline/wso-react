@@ -1,5 +1,5 @@
 // React imports
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // Component imports
 import "./stylesheets/Homepage.css";
@@ -7,16 +7,66 @@ import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 
 // Redux Imports
 import { Link, useNavigate } from "react-router-dom";
+import { useAppSelector } from "../lib/store";
+import { getWSO } from "../lib/authSlice";
 import { PostType } from "../lib/types";
 import LibraryHoursTable from "./LibraryHours";
 import HomepageDiningHours from "./HomepageDiningHours";
 import MountainDayStill from "../assets/images/banners/MountainDayStill.png";
 import MountainDayAnimated from "../assets/images/banners/MountainDay.png";
+import { BannerBanner } from "wso-api-client/lib/services/types";
+
+const BANNER_DISMISS_KEY = "wso-homepage-banner-dismissed";
+const BANNER_LAYOUT_KEY = "wso-homepage-banner-layout";
+const isMountainDay = false; // EDIT THIS TO TOGGLE MOUNTAIN DAY HEADER
+
+const bannerFingerprint = (banner: BannerBanner) =>
+  JSON.stringify({
+    text: banner.text ?? "",
+    link: banner.link ?? "",
+    sub: banner.sub ?? "",
+    type: banner.type ?? "",
+  });
+
+const lsGet = (key: string): string | null => {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+const lsSet = (key: string, value: string) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    /* private mode / quota */
+  }
+};
+
+const lsDel = (key: string) => {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    /* private mode / quota */
+  }
+};
+
+const badgeLabel = (type?: string) => (type === "emergency" ? "Notice" : "New");
 
 const Homepage = () => {
+  const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
   const [searchInputValue, setSearchInputValue] = useState("");
   const [mountainDayPlaying, setMountainDayPlaying] = useState(false);
+  const [banner, setBanner] = useState<BannerBanner | null>(null);
+  const [reserveBannerSpace, setReserveBannerSpace] = useState(
+    () => !!lsGet(BANNER_LAYOUT_KEY)
+  );
+  const [dismissedSlotHeight, setDismissedSlotHeight] = useState<number | null>(
+    null
+  );
+  const bannerSlotRef = useRef<HTMLDivElement>(null);
 
   const submitHandler: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -29,34 +79,112 @@ const Homepage = () => {
     setSearchInputValue(event.target.value);
   };
 
-  const joinHeaderText = "WSO Wants Your Art!"; // EDIT THIS (OR SET TO "") TO TOGGLE JOIN HEADER
-  const joinHeaderLink = "https://wso.williams.edu/bulletins/announcement/9234";
-  const joinHeaderSub = "Click for info"; // EDIT WITH joinHeaderText/Link
-  const isMountainDay = false; // EDIT THIS TO TOGGLE MOUNTAIN DAY HEADER
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadBanner = async () => {
+      try {
+        const response = await wso.bannerService.getBanner();
+        const data = response.data;
+        if (!isMounted) return;
+        const shouldShow =
+          !!data?.visible &&
+          !!data.text &&
+          !(
+            data.type === "dismissible" &&
+            lsGet(BANNER_DISMISS_KEY) === bannerFingerprint(data)
+          );
+        if (shouldShow && data) {
+          lsSet(BANNER_LAYOUT_KEY, bannerFingerprint(data));
+          setBanner(data);
+          setReserveBannerSpace(true);
+        } else {
+          lsDel(BANNER_LAYOUT_KEY);
+          setBanner(null);
+          setReserveBannerSpace(false);
+        }
+      } catch {
+        if (isMounted) {
+          lsDel(BANNER_LAYOUT_KEY);
+          setReserveBannerSpace(false);
+        }
+      }
+    };
+
+    loadBanner();
+    return () => {
+      isMounted = false;
+    };
+  }, [wso]);
 
   useEffect(() => {
     if (!isMountainDay) return;
     const img = new Image();
     img.src = MountainDayAnimated;
-  }, [isMountainDay]);
+  }, []);
+
+  const dismissBanner = () => {
+    if (!banner) return;
+    const slotHeight = bannerSlotRef.current?.offsetHeight ?? null;
+    lsSet(BANNER_DISMISS_KEY, bannerFingerprint(banner));
+    lsDel(BANNER_LAYOUT_KEY);
+    if (slotHeight) setDismissedSlotHeight(slotHeight);
+    setBanner(null);
+  };
+
+  const noticeClass =
+    banner?.type === "emergency"
+      ? "home-notice home-notice--emergency"
+      : "home-notice";
+
+  const showBannerSlot = reserveBannerSpace || dismissedSlotHeight !== null;
 
   return (
-    <div className="home">
+    <div className={showBannerSlot ? "home home--with-banner" : "home"}>
       <div className="full-width">
-        {joinHeaderText && (
-          <div id="join-header" className="home-notice">
-            <span className="home-notice-badge">New</span>
-            <span className="home-notice-copy">
-              <span className="home-notice-title">{joinHeaderText}</span>
-              <a
-                className="home-notice-sub"
-                href={joinHeaderLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {joinHeaderSub}
-              </a>
-            </span>
+        {showBannerSlot && (
+          <div
+            className="home-banner-slot"
+            ref={bannerSlotRef}
+            style={
+              dismissedSlotHeight
+                ? { minHeight: dismissedSlotHeight }
+                : undefined
+            }
+          >
+            {banner && (
+              <div id="join-header" className={noticeClass}>
+                <span className="home-notice-badge">
+                  {badgeLabel(banner.type)}
+                </span>
+                <span className="home-notice-copy">
+                  <span className="home-notice-title">{banner.text}</span>
+                  {banner.sub &&
+                    (banner.link ? (
+                      <a
+                        className="home-notice-sub"
+                        href={banner.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {banner.sub}
+                      </a>
+                    ) : (
+                      <span className="home-notice-sub">{banner.sub}</span>
+                    ))}
+                </span>
+                {banner.type === "dismissible" && (
+                  <button
+                    type="button"
+                    className="home-notice-dismiss"
+                    aria-label="Dismiss banner"
+                    onClick={dismissBanner}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         )}
         <header>
