@@ -141,9 +141,6 @@ const FactrakLayout = ({ children }: { children: ReactElement }) => {
     { to: "/factrak/surveys", label: "Your Reviews" },
     { to: "/factrak/professor-rankings", label: "Professor Rankings" },
     { to: "/factrak/course-rankings", label: "Course Rankings" },
-    ...(currUser.factrakAdmin
-      ? [{ to: "/factrak/moderate", label: "Moderate" }]
-      : []),
   ];
 
   return (

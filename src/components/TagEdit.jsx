@@ -2,126 +2,224 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-const TagRemove = ({ onClick }) => {
-  return (
-    <button type="button" onClick={onClick} className="tag-remove">
-      X
-    </button>
-  );
+const ERROR_TAG_ALREADY_EXISTS = 1408;
+
+const TagRemove = ({ onClick, label }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className="tag-edit__remove"
+    aria-label={label}
+  >
+    <span className="material-icons" aria-hidden>
+      close
+    </span>
+  </button>
+);
+
+TagRemove.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
 };
 
-TagRemove.propTypes = { onClick: PropTypes.func.isRequired };
+const errorMessage = (error) =>
+  error?.message || error?.error || "Something went wrong.";
 
 const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
   const [newTag, updateNewTag] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [busy, setBusy] = useState(false);
+
+  const trimmed = newTag.trim();
+  const matchingSuggestion = suggestions.find(
+    (s) => s.value && s.value.toLowerCase() === trimmed.toLowerCase()
+  );
+  const alreadyHaveTag = tags.some(
+    (tag) => tag.toLowerCase() === trimmed.toLowerCase()
+  );
+  const showRequestOption = Boolean(trimmed) && !matchingSuggestion;
 
   const tagAutocomplete = async (event) => {
-    updateNewTag(event.target.value);
+    const value = event.target.value;
+    updateNewTag(value);
+    if (!value.trim()) {
+      setSuggestions([]);
+      return;
+    }
     try {
       const tagResponse = await wso.autocompleteService.autocompleteTag(
-        event.target.value,
+        value,
         5
       );
-      const newSuggestions = tagResponse.data;
-      setSuggestions(newSuggestions);
+      setSuggestions(tagResponse.data ?? []);
     } catch {
-      // Do nothing - it's okay to not have autocomplete.
+      // autocomplete is optional
     }
   };
 
-  // Unsure if this is the best way to implement this.
   const updateUserTags = async (updatedTags) => {
-    const params = {
-      tags: updatedTags,
-    };
+    await wso.userService.updateUserTags("me", { tags: updatedTags });
+    updateTags(updatedTags);
+    updateNewTag("");
+    setSuggestions([]);
+    updateErrors([]);
+  };
 
+  const requestNewTag = async (tagName) => {
+    await wso.userService.createUserTagRequest("me", { tagName });
+    updateNewTag("");
+    setSuggestions([]);
+    updateErrors([
+      `Requested new tag "${tagName}" - pending moderator approval.`,
+    ]);
+  };
+
+  const addExistingTag = async (tagName) => {
+    if (tags.some((tag) => tag.toLowerCase() === tagName.toLowerCase())) {
+      updateErrors(["Unable to add the same tag twice."]);
+      return;
+    }
+    setBusy(true);
     try {
-      await wso.userService.updateUserTags("me", params);
-      updateTags(updatedTags);
-      updateNewTag("");
-      updateErrors([]);
+      await updateUserTags([...tags, tagName]);
     } catch (error) {
-      updateErrors([error.message]);
+      updateErrors([errorMessage(error)]);
+    } finally {
+      setBusy(false);
     }
   };
 
-  const addTagHandler = () => {
-    if (newTag) {
-      if (tags.filter((tag) => tag === newTag).length) {
-        updateErrors(["Unable to add the same tag twice."]);
+  const confirmAndRequestTag = async (tagName) => {
+    if (busy) return;
+    if (tags.some((tag) => tag.toLowerCase() === tagName.toLowerCase())) {
+      updateErrors(["Unable to add the same tag twice."]);
+      return;
+    }
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    const ok = confirm(
+      `Request new tag "${tagName}"?\n\nA moderator will need to approve it before it appears on your profile.`
+    );
+    if (!ok) return;
+
+    setBusy(true);
+    try {
+      await requestNewTag(tagName);
+    } catch (error) {
+      if (error?.errorCode === ERROR_TAG_ALREADY_EXISTS) {
+        await updateUserTags([...tags, tagName]);
         return;
       }
-
-      const updatedTags = Object.assign([], tags);
-      updatedTags.push(newTag);
-      updateUserTags(updatedTags);
-    } else {
-      updateErrors([]);
+      updateErrors([errorMessage(error)]);
+    } finally {
+      setBusy(false);
     }
   };
 
-  const removeTagHandler = (index) => {
-    const updatedTags = Object.assign([], tags);
-    updatedTags.splice(index, 1);
-    updateUserTags(updatedTags);
+  const addTagHandler = async () => {
+    if (!trimmed || busy) {
+      updateErrors([]);
+      return;
+    }
+    if (alreadyHaveTag) {
+      updateErrors(["Unable to add the same tag twice."]);
+      return;
+    }
+
+    if (matchingSuggestion?.value) {
+      await addExistingTag(matchingSuggestion.value);
+      return;
+    }
+
+    await confirmAndRequestTag(trimmed);
   };
 
-  const tagSuggestions = () => {
-    if (suggestions && suggestions.length > 0) {
-      return (
-        <table className="tag-suggestions">
-          <tbody>
-            {suggestions.map((suggestion) => (
-              <tr key={suggestion.id}>
-                <td>
+  const removeTagHandler = async (index) => {
+    if (busy) return;
+    const updatedTags = Object.assign([], tags);
+    updatedTags.splice(index, 1);
+    setBusy(true);
+    try {
+      await updateUserTags(updatedTags);
+    } catch (error) {
+      updateErrors([errorMessage(error)]);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const showDropdown = suggestions.length > 0 || showRequestOption;
+
+  return (
+    <div className="tag-edit">
+      <ul className="tag-edit__chips">
+        {tags.map((tag, i) => (
+          <li className="tag-edit__chip" key={tag}>
+            <span className="tag-edit__chip-label">{tag}</span>
+            <TagRemove
+              label={`Remove ${tag}`}
+              onClick={() => removeTagHandler(i)}
+            />
+          </li>
+        ))}
+      </ul>
+
+      <div className="tag-edit__compose">
+        <div className="tag-edit__input-wrap">
+          <input
+            className="tag-edit__input"
+            type="text"
+            onChange={tagAutocomplete}
+            placeholder="New tag"
+            maxLength="255"
+            value={newTag}
+            disabled={busy}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                addTagHandler();
+              }
+            }}
+          />
+          {showDropdown ? (
+            <ul className="tag-edit__suggestions">
+              {suggestions.map((suggestion) => (
+                <li key={suggestion.id}>
                   <button
                     type="button"
-                    className="autocomplete-option"
-                    onClick={() => {
-                      setSuggestions(null);
-                      updateNewTag(suggestion.value);
-                    }}
+                    className="tag-edit__suggestion"
+                    disabled={busy}
+                    onClick={() => addExistingTag(suggestion.value)}
                   >
                     {suggestion.value}
                   </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      );
-    }
-    return null;
-  };
-
-  return (
-    <ul id="tag-list">
-      {tags.map((tag, i) => (
-        <li className="fb-tag" key={tag}>
-          {tag}
-          <TagRemove onClick={() => removeTagHandler(i)} />
-        </li>
-      ))}
-
-      <li className="fb-tag">
-        <input
-          className="tag-input"
-          type="text"
-          onChange={tagAutocomplete}
-          placeholder="New Tag"
-          maxLength="255"
-          size="20"
-          value={newTag}
-        />
-        <TagRemove onClick={() => updateNewTag("")} />
-        {tagSuggestions()}
-      </li>
-
-      <button type="button" onClick={addTagHandler}>
-        Add Tag
-      </button>
-    </ul>
+                </li>
+              ))}
+              {showRequestOption ? (
+                <li>
+                  <button
+                    type="button"
+                    className="tag-edit__suggestion tag-edit__suggestion--request"
+                    disabled={busy || alreadyHaveTag}
+                    onClick={() => confirmAndRequestTag(trimmed)}
+                  >
+                    Request new tag
+                  </button>
+                </li>
+              ) : null}
+            </ul>
+          ) : null}
+        </div>
+        <button
+          type="button"
+          className="tag-edit__add"
+          onClick={addTagHandler}
+          disabled={!trimmed || busy}
+          aria-label="Add tag"
+        >
+          +
+        </button>
+      </div>
+    </div>
   );
 };
 

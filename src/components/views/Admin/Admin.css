@@ -1,40 +1,120 @@
-.admin-tools {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.75rem;
-  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+/* one column for title, tabs, and body — same left edge */
+.admin-shell {
+  max-width: 72em;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 0.5rem 1.5rem;
+  box-sizing: border-box;
 }
 
-.admin-tools a {
-  display: block;
-  padding: 0.85rem 1rem;
-  border: 1px solid var(--border-strong);
-  text-decoration: none;
+.admin .wso-service-header {
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 4em 0 0;
 }
 
-.admin-tools a:hover {
-  background: var(--brand-tint);
+.admin .wso-service-header > .page-head {
+  float: none;
+  width: auto;
+  margin: 0 0 1rem;
 }
 
-.admin-tools__title {
-  display: block;
+.admin header h1 {
+  font-weight: bold;
+  margin-bottom: 0.35rem;
   color: var(--brand-primary);
-  font-weight: 700;
 }
 
-.admin-tools__desc {
-  display: block;
-  margin-top: 0.25rem;
-  font-size: 0.9rem;
-  font-weight: 400;
+.admin header .page-head ul li a {
+  color: var(--brand-primary);
+}
+
+.admin-tasks {
+  display: grid;
+  gap: 1rem;
+  max-width: 40rem;
+}
+
+.admin-tasks__empty {
+  margin: 0.25rem 0 0;
   color: var(--text-muted);
-  line-height: 1.35;
+  font-size: 0.95rem;
+}
+
+/* beat global button bar; do not inherit font onto the h3 title */
+button.admin-task-section__header {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.5rem;
+  width: auto !important;
+  max-width: 100%;
+  min-width: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  cursor: pointer;
+  text-align: left;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  white-space: nowrap !important;
+}
+
+button.admin-task-section__header:active {
+  background: transparent !important;
+}
+
+button.admin-task-section__header:hover .admin-task-section__title {
+  opacity: 0.85;
+}
+
+.admin-task-section__title {
+  margin: 0 !important;
+  font-size: 2.25em !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  color: var(--brand-primary) !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+.admin-task-section__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: var(--brand-primary);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.admin-task-section__arrow {
+  font-size: 1.75rem;
+  color: var(--text-muted);
+}
+
+.admin-task-section__body {
+  padding: 0.2rem 0 0;
+}
+
+.admin-task-meta {
+  color: var(--text-muted);
+  font-size: 0.9rem;
 }
 
 .admin-banner {
-  max-width: 36rem;
+  max-width: 40rem;
+  margin-bottom: 1rem;
 }
 
 .admin-banner__heading {
@@ -51,13 +131,13 @@
 
 .admin-banner__form {
   display: grid;
-  gap: 0.65rem;
+  gap: 0.55rem;
 }
 
 .admin-banner__row {
   display: grid;
-  grid-template-columns: 6.5rem 1fr;
-  gap: 0.5rem 0.75rem;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 0.4rem 0.75rem;
   align-items: center;
 }
 
@@ -87,13 +167,13 @@
 .admin-banner__actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.75rem;
 }
 
 .admin-banner__preview-frame {
-  border: 1px solid var(--border-strong);
   overflow: hidden;
-  margin-top: 0.35rem;
+  margin-top: 0.25rem;
 }
 
 .admin-banner__preview-frame .home-notice {
@@ -102,7 +182,7 @@
 
 .admin-banner__preview-empty {
   margin: 0;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0;
   font-size: 0.9rem;
   color: var(--text-muted);
 }

@@ -91,110 +91,108 @@ const AdminBanner = () => {
   const showPreview = Boolean(draft.visible && draft.text);
 
   return (
-    <article className="facebook-profile">
-      <section className="margin-vertical-small admin-banner">
-        <div className="admin-banner__heading">
-          <h3>Homepage banner</h3>
-          <label className="admin-banner__check">
-            <input
-              type="checkbox"
-              checked={Boolean(draft.visible)}
-              onChange={(e) => updateField("visible", e.target.checked)}
-            />
-            Visible?
-          </label>
+    <div className="admin-banner">
+      <div className="admin-banner__heading">
+        <h3>Homepage banner</h3>
+        <label className="admin-banner__check">
+          <input
+            type="checkbox"
+            checked={Boolean(draft.visible)}
+            onChange={(e) => updateField("visible", e.target.checked)}
+          />
+          Visible?
+        </label>
+      </div>
+
+      <form className="admin-banner__form" onSubmit={save}>
+        <div className="admin-banner__row">
+          <label htmlFor="admin-banner-type">Type</label>
+          <Select
+            value={previewType}
+            options={BANNER_TYPES}
+            onChange={(e) => updateField("type", e.target.value)}
+          />
         </div>
 
-        <form className="admin-banner__form" onSubmit={save}>
-          <div className="admin-banner__row">
-            <label htmlFor="admin-banner-type">Type</label>
-            <Select
-              value={previewType}
-              options={BANNER_TYPES}
-              onChange={(e) => updateField("type", e.target.value)}
-            />
-          </div>
+        <div className="admin-banner__row">
+          <label htmlFor="admin-banner-title">Title</label>
+          <input
+            id="admin-banner-title"
+            type="text"
+            value={draft.text ?? ""}
+            onChange={(e) => updateField("text", e.target.value)}
+            required={Boolean(draft.visible)}
+          />
+        </div>
 
-          <div className="admin-banner__row">
-            <label htmlFor="admin-banner-title">Title</label>
-            <input
-              id="admin-banner-title"
-              type="text"
-              value={draft.text ?? ""}
-              onChange={(e) => updateField("text", e.target.value)}
-              required={Boolean(draft.visible)}
-            />
-          </div>
+        <div className="admin-banner__row">
+          <label htmlFor="admin-banner-sub">Subtitle</label>
+          <input
+            id="admin-banner-sub"
+            type="text"
+            value={draft.sub ?? ""}
+            onChange={(e) => updateField("sub", e.target.value)}
+          />
+        </div>
 
-          <div className="admin-banner__row">
-            <label htmlFor="admin-banner-sub">Subtitle</label>
-            <input
-              id="admin-banner-sub"
-              type="text"
-              value={draft.sub ?? ""}
-              onChange={(e) => updateField("sub", e.target.value)}
-            />
-          </div>
+        <div className="admin-banner__row">
+          <label htmlFor="admin-banner-link">Link URL</label>
+          <input
+            id="admin-banner-link"
+            type="text"
+            value={draft.link ?? ""}
+            onChange={(e) => updateField("link", e.target.value)}
+          />
+        </div>
 
-          <div className="admin-banner__row">
-            <label htmlFor="admin-banner-link">Link URL</label>
-            <input
-              id="admin-banner-link"
-              type="text"
-              value={draft.link ?? ""}
-              onChange={(e) => updateField("link", e.target.value)}
-            />
-          </div>
+        <div className="admin-banner__preview-frame">
+          {showPreview ? (
+            <div className={noticeClass}>
+              <span className="home-notice-badge">
+                {badgeLabel(previewType)}
+              </span>
+              <span className="home-notice-copy">
+                <span className="home-notice-title">{draft.text}</span>
+                {draft.sub &&
+                  (draft.link ? (
+                    <a
+                      className="home-notice-sub"
+                      href={draft.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {draft.sub}
+                    </a>
+                  ) : (
+                    <span className="home-notice-sub">{draft.sub}</span>
+                  ))}
+              </span>
+              {previewType === "dismissible" && (
+                <button
+                  type="button"
+                  className="home-notice-dismiss"
+                  aria-label="Dismiss banner"
+                  disabled
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ) : (
+            <p className="admin-banner__preview-empty">Banner hidden</p>
+          )}
+        </div>
 
-          <div className="admin-banner__preview-frame">
-            {showPreview ? (
-              <div className={noticeClass}>
-                <span className="home-notice-badge">
-                  {badgeLabel(previewType)}
-                </span>
-                <span className="home-notice-copy">
-                  <span className="home-notice-title">{draft.text}</span>
-                  {draft.sub &&
-                    (draft.link ? (
-                      <a
-                        className="home-notice-sub"
-                        href={draft.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {draft.sub}
-                      </a>
-                    ) : (
-                      <span className="home-notice-sub">{draft.sub}</span>
-                    ))}
-                </span>
-                {previewType === "dismissible" && (
-                  <button
-                    type="button"
-                    className="home-notice-dismiss"
-                    aria-label="Dismiss banner"
-                    disabled
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
-            ) : (
-              <p className="admin-banner__preview-empty">Banner hidden</p>
-            )}
-          </div>
-
-          <div className="admin-banner__actions">
-            <input
-              type="submit"
-              value={saving ? "Saving…" : "Save"}
-              data-disable-with="Save"
-              disabled={saving}
-            />
-          </div>
-        </form>
-      </section>
-    </article>
+        <div className="admin-banner__actions">
+          <input
+            type="submit"
+            value={saving ? "Saving…" : "Save"}
+            data-disable-with="Save"
+            disabled={saving}
+          />
+        </div>
+      </form>
+    </div>
   );
 };
 

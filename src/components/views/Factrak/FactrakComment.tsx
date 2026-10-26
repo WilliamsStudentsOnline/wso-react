@@ -147,8 +147,14 @@ const FactrakComment = ({
         throw new Error("No survey ID found.");
       }
       await wso.factrakService.flagSurvey(survey.id);
+      updateSurvey({ ...survey, flagged: true });
       getAndUpdateSurvey();
     } catch (error) {
+      // already have an open flag for this survey
+      if ((error as { errorCode?: number })?.errorCode === 2407) {
+        updateSurvey({ ...survey, flagged: true });
+        return;
+      }
       navigateTo("/error", { replace: true, state: { error } });
     }
   };

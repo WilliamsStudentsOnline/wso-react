@@ -34,12 +34,44 @@ async function fetchJson(url) {
   return res.json();
 }
 
+// Parse vYYYY.MM.DD or vYYYY.MM.DD-N (and api-* fallbacks) for newest-first sort
+function tagSortKey(name) {
+  const m = String(name).match(/^v?(\d{4})\.(\d{1,2})\.(\d{1,2})(?:-(\d+))?$/);
+  if (m) {
+    return [
+      Number(m[1]),
+      Number(m[2]),
+      Number(m[3]),
+      m[4] != null ? Number(m[4]) : 0,
+    ];
+  }
+  return null;
+}
+
+function cmpTagKeys(a, b) {
+  for (let i = 0; i < 4; i++) {
+    if (a[i] !== b[i]) return a[i] - b[i];
+  }
+  return 0;
+}
+
 async function latestClientTag() {
   const tags = await fetchJson(
     `https://api.github.com/repos/${REPO}/tags?per_page=30`
   );
-  const hit = tags.find((t) => /^v\d/.test(t.name) || t.name.startsWith('api-'));
-  if (hit) return hit.name;
+  const versioned = tags
+    .map((t) => t.name)
+    .filter((name) => /^v\d/.test(name) || name.startsWith('api-'))
+    .map((name) => ({ name, key: tagSortKey(name) }))
+    .filter((t) => t.key);
+
+  versioned.sort((a, b) => cmpTagKeys(b.key, a.key));
+  if (versioned[0]) return versioned[0].name;
+
+  const fallback = tags.find(
+    (t) => /^v\d/.test(t.name) || t.name.startsWith('api-')
+  );
+  if (fallback) return fallback.name;
   if (tags[0]) return tags[0].name;
   throw new Error('no tags found on wso-api-client');
 }
