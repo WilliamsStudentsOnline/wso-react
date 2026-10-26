@@ -16,7 +16,7 @@ const emptyBanner = (): BannerBanner => ({
   sub: "",
 });
 
-const badgeLabel = (type?: string) => (type === "emergency" ? "Alert" : "New");
+const badgeLabel = (type?: string) => (type === "emergency" ? "Notice" : "New");
 
 const AdminBanner = () => {
   const wso = useAppSelector(getWSO);
