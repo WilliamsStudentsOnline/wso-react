@@ -21,9 +21,18 @@
   text-align: center;
 }
 
-/* Banner replaces most of the header top padding so WSO doesn't jump on load */
-.home--with-banner header {
-  padding-top: 0.35em;
+/* Sit the banner in the existing header top padding so load doesn't push WSO */
+.home > .full-width {
+  position: relative;
+}
+
+.home--with-banner #join-header.home-notice {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  box-sizing: border-box;
 }
 
 .home-mountain-day {
