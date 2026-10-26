@@ -13,7 +13,6 @@ import { getLoadedCourses } from "../../../selectors/course";
 
 const Catalog = ({ onLoad, loaded }) => {
   useEffect(() => {
-    // page scroll lives on .layout-scroll, not the window
     const scrollEl = document.querySelector(".layout-scroll");
     if (!scrollEl) return undefined;
 
@@ -21,7 +20,6 @@ const Catalog = ({ onLoad, loaded }) => {
       const nearBottom =
         scrollEl.scrollTop + scrollEl.clientHeight >=
         scrollEl.scrollHeight - 2000;
-      // a short final page means the catalog is fully loaded
       const pageFull = loaded.length > 0 && loaded.length % 50 === 0;
       if (nearBottom && pageFull) {
         onLoad(loaded.length / 50 + 1);
