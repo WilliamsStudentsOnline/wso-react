@@ -11531,9 +11531,9 @@ ws@^8.4.2:
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.8.1.tgz#5dbad0feb7ade8ecc99b830c1d77c913d4955ff0"
   integrity sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==
 
-"wso-api-client@git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#v2026.10.26-4":
+"wso-api-client@git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#feature/board-client":
   version "24.11.10"
-  resolved "git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#9745eea97b3289f80e88b624c1f599cae20a719a"
+  resolved "git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#7775d5785727411cb900ee5444dc80514c9d1abf"
   dependencies:
     axios "^0.26.1"
     jwt-decode "^3.1.2"

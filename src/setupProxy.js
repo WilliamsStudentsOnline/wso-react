@@ -12,7 +12,7 @@ const prodProxy = {
 };
 
 const apiProxy = {
-  target: "https://wso-dev.williams.edu",
+  target: "http://localhost:8080",
   changeOrigin: true,
   secure: false,
   headers: {

@@ -104,10 +104,8 @@ export const dayConversionGCal = (days) => {
   return result.join(",");
 };
 
-/* 
-  Returns default semester based on date. 
-  
-  Academic year Period: SEMESTER TO SHOW
+/*
+  Course Scheduler default (registration-oriented), based on prereg windows:
 
   1. Start of Fall Semester - 2 Weeks before Spring Preregistration: FALL (0)
   2. 2 Weeks before Spring Pre-registration to Winter Registration: SPRING (2)
@@ -138,4 +136,18 @@ const getDefaultSemesterIndex = () => {
   return result;
 };
 
+/** Scheduler / catalog default — prereg-aware. */
 export const DEFAULT_SEMESTER_INDEX = getDefaultSemesterIndex();
+
+/**
+ * Homepage "Today" semester — what's in session now (not registration):
+ * Fall = Sep–Dec, Winter Study = Jan, Spring = Feb–May, Jun–Aug → Fall.
+ */
+export const getCurrentTermSemesterIndex = () => {
+  const month = new Date().getMonth(); // 0 = Jan … 11 = Dec
+  if (month === 0) return 1; // January → Winter
+  if (month >= 1 && month <= 4) return 2; // Feb–May → Spring
+  return 0; // Jun–Dec → Fall
+};
+
+export const CURRENT_TERM_SEMESTER_INDEX = getCurrentTermSemesterIndex();

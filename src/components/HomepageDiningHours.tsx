@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { Link } from "react-router-dom";
 import "./stylesheets/Dining.css";
 import { formatCompactHours } from "../lib/timeFormat";
 import {
@@ -328,24 +329,13 @@ const HomepageSnarRow = ({
     </span>
   ) : null;
 
+  // Name cell is on the Whitman's meal row above (rowSpan), like Research hours.
   return (
     <tr className="homepage-dining-snar-row">
-      <td>
-        <span className="homepage-hours-name">
-          <span
-            className={`homepage-status-dot homepage-status-dot-${pill.kind}`}
-            aria-label={`${pill.label}: ${message}`}
-          >
-            <span className="homepage-status-tooltip" role="tooltip">
-              {message}
-            </span>
-          </span>
-          <b>{vendor.name}</b>
-        </span>
-      </td>
       <td
         colSpan={mealColSpan}
         className={`homepage-dining-snar-cell${plainFormat ? " is-plain" : ""}`}
+        aria-label={`${pill.label}: ${message}`}
         onClick={() =>
           setPlainFormat((plain) => {
             const next = !plain;
@@ -388,6 +378,7 @@ const HomepageDiningVendorRow = ({
   slots,
   openMenuIds,
   onToggleMenu,
+  nameRowSpan = 1,
 }: {
   vendor: Vendor;
   slots: DiningMealSlot[];
@@ -398,6 +389,7 @@ const HomepageDiningVendorRow = ({
     meal: Meal,
     clientX: number
   ) => void;
+  nameRowSpan?: number;
 }) => {
   const {
     style,
@@ -422,7 +414,7 @@ const HomepageDiningVendorRow = ({
 
   return (
     <tr className={`homepage-dining-row-status-${pill.kind}`}>
-      <td>
+      <td rowSpan={nameRowSpan > 1 ? nameRowSpan : undefined}>
         <span className="homepage-hours-name">
           <span
             className={`homepage-status-dot homepage-status-dot-${pill.kind}`}
@@ -504,7 +496,9 @@ const HomepageDiningSkeleton = () => (
     aria-busy="true"
     aria-hidden="true"
   >
-    <h3>Dining Hours</h3>
+    <h3>
+      <Link to="/dining">Dining Hours</Link>
+    </h3>
     <table className="homepage-dining-table">
       <thead>
         <tr>
@@ -585,7 +579,9 @@ const HomepageDiningHours = () => {
         anyOpen ? " dining--menu-open" : ""
       }`}
     >
-      <h3>Dining Hours</h3>
+      <h3>
+        <Link to="/dining">Dining Hours</Link>
+      </h3>
       <table className="homepage-dining-table">
         <thead>
           <tr>
@@ -596,28 +592,33 @@ const HomepageDiningHours = () => {
           </tr>
         </thead>
         <tbody>
-          {vendors.map((vendor) => (
-            <React.Fragment key={vendor.id}>
-              <HomepageDiningVendorRow
-                vendor={vendor}
-                slots={slots}
-                openMenuIds={openMenuIds}
-                onToggleMenu={onToggleMenu}
-              />
-              {showSnarRow &&
-              whitmansLateNight &&
-              vendor.id === whitmansLateNight.vendor.id ? (
-                <HomepageSnarRow
-                  vendor={whitmansLateNight.vendor}
-                  mealKey={whitmansLateNight.key}
-                  meal={whitmansLateNight.meal}
-                  mealColSpan={slots.length}
+          {vendors.map((vendor) => {
+            const isWhitmansWithSnar =
+              showSnarRow &&
+              !!whitmansLateNight &&
+              vendor.id === whitmansLateNight.vendor.id;
+            return (
+              <React.Fragment key={vendor.id}>
+                <HomepageDiningVendorRow
+                  vendor={vendor}
+                  slots={slots}
                   openMenuIds={openMenuIds}
                   onToggleMenu={onToggleMenu}
+                  nameRowSpan={isWhitmansWithSnar ? 2 : 1}
                 />
-              ) : null}
-            </React.Fragment>
-          ))}
+                {isWhitmansWithSnar && whitmansLateNight ? (
+                  <HomepageSnarRow
+                    vendor={whitmansLateNight.vendor}
+                    mealKey={whitmansLateNight.key}
+                    meal={whitmansLateNight.meal}
+                    mealColSpan={slots.length}
+                    openMenuIds={openMenuIds}
+                    onToggleMenu={onToggleMenu}
+                  />
+                ) : null}
+              </React.Fragment>
+            );
+          })}
         </tbody>
       </table>
       {menuPanels}

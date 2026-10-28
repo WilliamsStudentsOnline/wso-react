@@ -58,3 +58,13 @@ export const PostTypeName: Map<PostType, string> = new Map([
   [PostType.Jobs, "Jobs"],
   [PostType.Rides, "Rides"],
 ]);
+
+/** Singular labels for create/edit type pickers (filters stay plural). */
+export const PostTypeSingular: Map<PostType, string> = new Map([
+  [PostType.Discussions, "Discussion"],
+  [PostType.Announcements, "Announcement"],
+  [PostType.Exchanges, "Exchange"],
+  [PostType.LostAndFound, "Lost and Found"],
+  [PostType.Jobs, "Job"],
+  [PostType.Rides, "Ride"],
+]);
