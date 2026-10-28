@@ -177,7 +177,7 @@ const App = () => {
               </RequireScope>
             }
           />
-          <Route path="bulletins/:type/*" element={<BulletinMain />} />
+          <Route path="bulletins/*" element={<BulletinMain />} />
           <Route path="discussions/*" element={<DiscussionMain />} />
           <Route
             path="factrak/*"

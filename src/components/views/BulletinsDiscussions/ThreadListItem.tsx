@@ -1,10 +1,13 @@
 import React, { ReactNode } from "react";
 import { Button, CommentCard, Line } from "../../ui";
+import "./BoardFeed.css";
 
 export type ThreadListItemProps = {
   title?: ReactNode;
+  chip?: ReactNode;
   meta?: ReactNode;
   detail?: ReactNode;
+  excerpt?: ReactNode;
   onDelete?: () => void;
   showDelete?: boolean;
   skeleton?: boolean;
@@ -12,8 +15,10 @@ export type ThreadListItemProps = {
 
 const ThreadListItem = ({
   title,
+  chip,
   meta,
   detail,
+  excerpt: excerptText,
   onDelete,
   showDelete = false,
   skeleton = false,
@@ -45,7 +50,12 @@ const ThreadListItem = ({
     <CommentCard
       className="thread-list-item"
       header={
-        <h5>
+        <h5 className="board-thread-title">
+          {chip ? (
+            <span className="board-chip board-chip-static is-active">
+              {chip}
+            </span>
+          ) : null}
           <b>{title}</b>
         </h5>
       }
@@ -53,6 +63,9 @@ const ThreadListItem = ({
         <>
           {meta ? <div className="small-font">{meta}</div> : null}
           {detail ? <div className="small-font">{detail}</div> : null}
+          {excerptText ? (
+            <div className="small-font board-thread-excerpt">{excerptText}</div>
+          ) : null}
         </>
       }
       cornerActions={

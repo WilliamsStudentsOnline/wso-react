@@ -10,6 +10,7 @@ import { getCurrUser, getWSO } from "../../../lib/authSlice";
 // Additional imports
 import { Link, useNavigate } from "react-router-dom";
 import Markdown from "markdown-to-jsx";
+import { formatBoardDate } from "./BulletinUtils";
 
 const markdownOptions = {
   overrides: {
@@ -22,7 +23,7 @@ const markdownOptions = {
   },
 };
 
-const DiscussionPost = ({ post }) => {
+const DiscussionPost = ({ post, onDeleted }) => {
   const currUser = useAppSelector(getCurrUser);
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
@@ -31,6 +32,7 @@ const DiscussionPost = ({ post }) => {
   const [edit, setEdit] = useState(false);
   const [reply, updateReply] = useState(post.content);
   const [currPost, updateCurrPost] = useState(post);
+  const [flagged, updateFlagged] = useState(false);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -39,7 +41,7 @@ const DiscussionPost = ({ post }) => {
     const params = { content: reply };
 
     try {
-      const response = await wso.bulletinService.updatePost(post.id, params);
+      const response = await wso.boardService.updateBoardReply(post.id, params);
       setEdit(false);
       updateCurrPost(response.data);
     } catch (error) {
@@ -53,8 +55,26 @@ const DiscussionPost = ({ post }) => {
     if (!confirmDelete) return;
 
     try {
-      await wso.bulletinService.deletePost(post.id);
-      updateDeleted(true);
+      await wso.boardService.deleteBoardReply(post.id);
+      // OP delete cascades to the whole thread — parent should navigate away
+      if (typeof onDeleted === "function") {
+        onDeleted(post);
+      } else {
+        updateDeleted(true);
+      }
+    } catch (error) {
+      navigateTo("/error", { replace: true, state: { error } });
+    }
+  };
+
+  const flagHandler = async () => {
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    const confirmFlag = confirm("Flag this post for moderator review?");
+    if (!confirmFlag) return;
+
+    try {
+      await wso.boardService.flagBoardReply(post.id);
+      updateFlagged(true);
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
     }
@@ -62,10 +82,11 @@ const DiscussionPost = ({ post }) => {
 
   const editControls = () => {
     if (!post.userID) return null;
-    if (currUser && (post.userID === currUser.id || currUser.admin)) {
+    const isOwner = currUser && post.userID === currUser.id;
+    if (currUser && (isOwner || currUser.admin)) {
       return (
         <>
-          {post.userID === currUser.id ? (
+          {isOwner ? (
             <Button
               type="button"
               variant="secondary"
@@ -80,6 +101,14 @@ const DiscussionPost = ({ post }) => {
         </>
       );
     }
+    if (currUser && !isOwner && !flagged) {
+      return (
+        <Button type="button" variant="secondary" onClick={flagHandler}>
+          Flag
+        </Button>
+      );
+    }
+    if (flagged) return <span className="small-font">Flagged</span>;
     return null;
   };
 
@@ -92,7 +121,7 @@ const DiscussionPost = ({ post }) => {
       );
     }
 
-    if (currPost.exUserName !== "") return currPost.exUserName;
+    if (currPost.exUserName) return currPost.exUserName;
 
     return "WSO User";
   };
@@ -130,7 +159,7 @@ const DiscussionPost = ({ post }) => {
           <Markdown options={markdownOptions}>{currPost.content}</Markdown>
         </div>
       }
-      meta={<span>{new Date(currPost.createdTime).toDateString()}</span>}
+      meta={<span>{formatBoardDate(currPost.createdAt)}</span>}
       cornerActions={editControls()}
     />
   );
@@ -138,6 +167,7 @@ const DiscussionPost = ({ post }) => {
 
 DiscussionPost.propTypes = {
   post: PropTypes.object.isRequired,
+  onDeleted: PropTypes.func,
 };
 
 const DiscussionPostSkeleton = () => (

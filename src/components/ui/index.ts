@@ -16,6 +16,8 @@ export {
 export { default as Pagination } from "./Pagination";
 export type { PaginationProps } from "./Pagination";
 export { default as PaginationButtons } from "./Pagination";
+export { default as CursorPagination } from "./CursorPagination";
+export type { CursorPaginationProps } from "./CursorPagination";
 
 export { StylizedLink } from "./StylizedLink";
 

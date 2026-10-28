@@ -4,12 +4,12 @@ import React, { useEffect, useRef, useState } from "react";
 // Component imports
 import "./stylesheets/Homepage.css";
 import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
+import HomepageSchedule from "./HomepageSchedule";
 
 // Redux Imports
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../lib/store";
 import { getWSO } from "../lib/authSlice";
-import { PostType } from "../lib/types";
 import LibraryHoursTable from "./LibraryHours";
 import HomepageDiningHours from "./HomepageDiningHours";
 import MountainDayStill from "../assets/images/banners/MountainDayStill.png";
@@ -254,15 +254,14 @@ const Homepage = () => {
           <LibraryHoursTable />
           <HomepageDiningHours />
         </article>
-        <article>
-          <section>
-            <h3 className="home-bulletins-heading">Bulletin</h3>
-            <div className="bulletin-list">
-              {Object.values(PostType).map((type) => (
-                <BulletinBox type={type} key={type} />
-              ))}
-            </div>
-          </section>
+        <article className="home-bulletins-row">
+          <div className="home-bulletins-main">
+            <h3 className="home-bulletins-heading">
+              <Link to="/bulletins">Bulletin</Link>
+            </h3>
+            <BulletinBox />
+          </div>
+          <HomepageSchedule />
         </article>
       </div>
     </div>

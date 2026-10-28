@@ -1,0 +1,257 @@
+.board-feed {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.board-type-chips {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  min-width: 0;
+  width: 100%;
+}
+
+.board-chip {
+  appearance: none;
+  border: 1px solid var(--border-table, #ccc);
+  background: var(--surface-muted, #f5f5f5);
+  color: var(--text-body, #333);
+  border-radius: 999px;
+  padding: 0.15em 0.55em;
+  font-size: 0.78em;
+  font-weight: 600;
+  line-height: 1.35;
+  cursor: pointer;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  /* global `button { min-width: 8rem }` makes filter chips artificially wide */
+  min-width: 0;
+  width: max-content;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.board-chip:hover {
+  opacity: 0.85;
+}
+
+.board-chip.is-active {
+  /* brand-bar stays the header purple in dark mode; brand-primary lightens */
+  background: var(--brand-bar, #704794);
+  border-color: var(--brand-bar, #704794);
+  color: var(--text-on-brand, #fff);
+}
+
+.board-chip-static {
+  cursor: default;
+}
+
+/* Filter chips sitting in the purple table header */
+.board-table-header .board-type-chips {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.board-table-header .board-chip {
+  border-color: rgba(255, 255, 255, 0.55);
+  background: transparent;
+  color: var(--text-on-brand, #fff);
+}
+
+.board-table-header .board-chip:hover {
+  background: rgba(255, 255, 255, 0.12);
+  opacity: 1;
+}
+
+.board-table-header .board-chip.is-active {
+  background: #fff;
+  border-color: #fff;
+  color: var(--brand-bar, #704794);
+}
+
+.board-table {
+  width: 100%;
+  border: 1px solid var(--border-table, #ccc);
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.board-table-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55em 0.85rem;
+  background: var(--brand-bar);
+  color: var(--text-on-brand);
+  border: none;
+}
+
+.board-table-body {
+  display: block;
+}
+
+.board-table-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border-table, #ccc);
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.board-table-row:last-child {
+  border-bottom: none;
+}
+
+.board-table-row-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.15rem;
+}
+
+.board-table-row-headline {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.board-table-row-aside {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.board-table-title {
+  flex: 1;
+  min-width: 0;
+  color: var(--text-body, #333);
+  font-size: 1em;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+a.board-table-title:hover,
+.board-table-title:hover {
+  color: var(--brand-primary, #704794);
+  text-decoration: none;
+}
+
+.board-table-row-meta {
+  font-size: 0.85em;
+  color: var(--text-muted, #666);
+}
+
+.board-table-row-meta a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.board-table-row-meta a:hover {
+  color: var(--brand-primary, #704794);
+  text-decoration: underline;
+}
+
+.board-table-row-excerpt {
+  font-size: 0.9em;
+  color: var(--text-muted, #666);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+}
+
+.board-table-date {
+  flex: 0 0 auto;
+}
+
+.list-date {
+  display: inline-block;
+  background: var(--color-bulletin-list-date-bg, var(--surface-raised, #eee));
+  padding: 0.2em 0.65em;
+  border-radius: 999px;
+  font-variant: small-caps;
+  font-weight: bold;
+  color: var(--color-bulletin-list-date-fg, var(--text-muted, #666));
+  font-size: 0.9em;
+  text-align: center;
+  line-height: 1.4;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.board-table-delete {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--text-muted, #666);
+  font-size: 0.78em;
+  font-weight: 600;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  /* cancel global `button { min-width: 8rem }` which centers the label */
+  min-width: 0;
+  width: auto;
+  align-self: flex-end;
+  text-align: right;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.board-table-delete:hover {
+  color: var(--text-body, #333);
+}
+
+.board-thread-title {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.board-thread-title a {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.board-thread-excerpt {
+  margin-top: 0.25rem;
+  color: var(--text-muted, #666);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.board-feed .thread-list-item {
+  width: 100%;
+}
+
+/* Thread show: closer to prior body size */
+.discussion-thread .discussion-post .markdown-content {
+  font-size: 1.05em;
+  line-height: 1.55;
+}
+
+.discussion-thread .discussion-post .comment-content h1 {
+  font-size: 1.15em;
+}
