@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import AdminLayout from "./AdminLayout";
 import AdminTasks from "./AdminTasks";
 import AdminBanner from "./AdminBanner";
+import AdminFeedback from "./AdminFeedback";
 import Error404 from "../Errors/Error404";
 
 const AdminMain = () => {
@@ -11,6 +12,7 @@ const AdminMain = () => {
       <Routes>
         <Route index element={<AdminTasks />} />
         <Route path="banner" element={<AdminBanner />} />
+        <Route path="feedback" element={<AdminFeedback />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
     </AdminLayout>
