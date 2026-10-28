@@ -3,6 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Footer from "./Footer";
 import Nav from "./Nav";
+import FeedbackFab from "./Feedback/FeedbackFab";
 import "./stylesheets/Application.css";
 
 const Layout = ({ children, notice, warning }) => {
@@ -22,19 +23,7 @@ const Layout = ({ children, notice, warning }) => {
 
             {children}
 
-            {/* Bottom right button for feedback */}
-            <a
-              href="https://forms.gle/NqYdAAbZKPQmPq866"
-              className="floating-button-link"
-              title="Provide Feedback!"
-            >
-              <i
-                className="material-icons"
-                style={{ position: "relative", left: "-8px" }}
-              >
-                feedback
-              </i>
-            </a>
+            <FeedbackFab />
           </div>
 
           <Footer />
