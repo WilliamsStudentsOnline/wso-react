@@ -24,7 +24,7 @@ const FeedbackFormModal = ({
   const notesRef = useRef<HTMLTextAreaElement>(null);
 
   const [notes, setNotes] = useState("");
-  const [contact, setContact] = useState(true);
+  const [contact, setContact] = useState(false);
   const [preferredName, setPreferredName] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -33,7 +33,7 @@ const FeedbackFormModal = ({
     if (!open) return undefined;
 
     setNotes("");
-    setContact(true);
+    setContact(false);
     setPreferredName("");
     setError("");
     setSubmitting(false);
@@ -56,6 +56,9 @@ const FeedbackFormModal = ({
   }, [open]);
 
   if (!open) return null;
+
+  const unixID = currUser?.unixID?.trim() || "";
+  const contactEmail = unixID ? `${unixID}@williams.edu` : null;
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -144,16 +147,23 @@ const FeedbackFormModal = ({
             </label>
 
             {contact && (
-              <label className="feedback-modal__preferred">
-                Preferred name
-                <input
-                  type="text"
-                  value={preferredName}
-                  onChange={(event) => setPreferredName(event.target.value)}
-                  placeholder="How should we address you?"
-                  maxLength={255}
-                />
-              </label>
+              <>
+                {contactEmail && (
+                  <p className="feedback-modal__reachout">
+                    We&apos;ll reach out to you at <code>{contactEmail}</code>
+                  </p>
+                )}
+                <label className="feedback-modal__preferred">
+                  Preferred name
+                  <input
+                    type="text"
+                    value={preferredName}
+                    onChange={(event) => setPreferredName(event.target.value)}
+                    placeholder="How should we address you?"
+                    maxLength={255}
+                  />
+                </label>
+              </>
             )}
           </div>
 
