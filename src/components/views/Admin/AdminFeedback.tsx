@@ -10,6 +10,7 @@ import {
   FeedbackPriority,
   deleteFeedback,
   listFeedback,
+  mergeFeedback,
   updateFeedback,
 } from "../../../lib/feedback";
 import { Button, Pagination, Select } from "../../ui";
@@ -60,12 +61,22 @@ type StatusPickerProps = {
 
 const StatusPicker = ({ value, ariaLabel, onChange }: StatusPickerProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState<FeedbackPriority | null>(null);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(
+    null
+  );
   const shown = hovered ?? value;
 
   useEffect(() => {
     if (!open) return undefined;
+    const place = () => {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      setMenuPos({ top: rect.bottom + 4, left: rect.left });
+    };
+    place();
     const onPointerDown = (event: MouseEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) {
         setOpen(false);
@@ -78,9 +89,13 @@ const StatusPicker = ({ value, ariaLabel, onChange }: StatusPickerProps) => {
         setHovered(null);
       }
     };
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
     document.addEventListener("mousedown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
     return () => {
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
       document.removeEventListener("mousedown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
@@ -89,6 +104,7 @@ const StatusPicker = ({ value, ariaLabel, onChange }: StatusPickerProps) => {
   return (
     <div className="admin-feedback__status-picker" ref={rootRef}>
       <button
+        ref={buttonRef}
         type="button"
         className={`admin-feedback__status-select admin-feedback__status--${shown}`}
         aria-label={ariaLabel}
@@ -102,11 +118,12 @@ const StatusPicker = ({ value, ariaLabel, onChange }: StatusPickerProps) => {
       >
         {FEEDBACK_PRIORITY_LABELS[shown]}
       </button>
-      {open && (
+      {open && menuPos && (
         <ul
           className="admin-feedback__status-menu"
           role="listbox"
           aria-label={ariaLabel}
+          style={{ top: menuPos.top, left: menuPos.left }}
         >
           {FEEDBACK_PRIORITIES.map((priority) => (
             <li key={priority} role="presentation">
@@ -200,12 +217,17 @@ const AdminFeedback = () => {
   const patchPriority = async (item: Feedback, priority: FeedbackPriority) => {
     try {
       const response = await updateFeedback(wso, item.id, { priority });
-      const updated = response.data ?? { ...item, priority };
+      const updated = mergeFeedback(
+        item,
+        response.data ?? { ...item, priority }
+      );
       setItems((prev) =>
-        prev.map((row) => (row.id === item.id ? { ...row, ...updated } : row))
+        prev.map((row) =>
+          row.id === item.id ? mergeFeedback(row, updated) : row
+        )
       );
       if (selected?.id === item.id) {
-        setSelected((prev) => (prev ? { ...prev, ...updated } : prev));
+        setSelected((prev) => (prev ? mergeFeedback(prev, updated) : prev));
         setDetailPriority(updated.priority);
       }
     } catch (err) {
@@ -226,15 +248,18 @@ const AdminFeedback = () => {
         issue,
         priority: detailPriority,
       });
-      const updated = response.data ?? {
-        ...selected,
-        adminNotes,
-        issue,
-        priority: detailPriority,
-      };
+      const updated = mergeFeedback(
+        selected,
+        response.data ?? {
+          ...selected,
+          adminNotes,
+          issue,
+          priority: detailPriority,
+        }
+      );
       setItems((prev) =>
         prev.map((row) =>
-          row.id === selected.id ? { ...row, ...updated } : row
+          row.id === selected.id ? mergeFeedback(row, updated) : row
         )
       );
       closeDetail();
@@ -302,96 +327,96 @@ const AdminFeedback = () => {
     <div className="admin-feedback">
       {error && <p className="admin-feedback__error">{error}</p>}
 
-      <div className="admin-feedback__table-wrap">
-        <table className="admin-feedback__table">
-          <thead>
-            <tr className="admin-feedback__filters-row">
-              <th colSpan={6}>{filterChips}</th>
-            </tr>
-            <tr>
-              <th>When</th>
-              <th>From</th>
-              <th>Notes</th>
-              <th>Page</th>
-              <th>Status</th>
-              <th>Issue</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading && (
-              <tr className="admin-feedback__message-row">
-                <td colSpan={6}>Loading…</td>
+      <div className="admin-feedback__table">
+        <div className="admin-feedback__table-header">{filterChips}</div>
+        <div className="admin-feedback__table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>When</th>
+                <th>From</th>
+                <th>Notes</th>
+                <th>Page</th>
+                <th>Status</th>
+                <th>Issue</th>
               </tr>
-            )}
-            {!loading && items.length === 0 && (
-              <tr className="admin-feedback__message-row">
-                <td colSpan={6}>No feedback yet.</td>
-              </tr>
-            )}
-            {!loading &&
-              items.map((item) => (
-                <tr
-                  key={item.id}
-                  className={selected?.id === item.id ? "is-selected" : ""}
-                  onClick={() => openDetail(item)}
-                >
-                  <td>{formatWhen(item.createdAt)}</td>
-                  <td>
-                    {item.userID ? (
-                      <Link
-                        to={`/facebook/users/${item.userID}`}
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        {submitterLabel(item)}
-                      </Link>
-                    ) : (
-                      submitterLabel(item)
-                    )}
-                  </td>
-                  <td>
-                    <div className="admin-feedback__notes">{item.notes}</div>
-                  </td>
-                  <td>
-                    {item.url ? (
-                      <a
-                        className="admin-feedback__page-link"
-                        href={item.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        title={item.url}
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        {pageLabel(item.url)}
-                      </a>
-                    ) : (
-                      <span className="admin-feedback__muted">—</span>
-                    )}
-                  </td>
-                  <td onClick={(event) => event.stopPropagation()}>
-                    <StatusPicker
-                      value={item.priority}
-                      ariaLabel={`Status for feedback ${item.id}`}
-                      onChange={(priority) => patchPriority(item, priority)}
-                    />
-                  </td>
-                  <td>
-                    {item.issue ? (
-                      <a
-                        href={item.issue}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        issue
-                      </a>
-                    ) : (
-                      <span className="admin-feedback__muted">—</span>
-                    )}
-                  </td>
+            </thead>
+            <tbody>
+              {loading && (
+                <tr className="admin-feedback__message-row">
+                  <td colSpan={6}>Loading…</td>
                 </tr>
-              ))}
-          </tbody>
-        </table>
+              )}
+              {!loading && items.length === 0 && (
+                <tr className="admin-feedback__message-row">
+                  <td colSpan={6}>No feedback yet.</td>
+                </tr>
+              )}
+              {!loading &&
+                items.map((item) => (
+                  <tr
+                    key={item.id}
+                    className={selected?.id === item.id ? "is-selected" : ""}
+                    onClick={() => openDetail(item)}
+                  >
+                    <td>{formatWhen(item.createdAt)}</td>
+                    <td>
+                      {item.userID ? (
+                        <Link
+                          to={`/facebook/users/${item.userID}`}
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          {submitterLabel(item)}
+                        </Link>
+                      ) : (
+                        submitterLabel(item)
+                      )}
+                    </td>
+                    <td>
+                      <div className="admin-feedback__notes">{item.notes}</div>
+                    </td>
+                    <td>
+                      {item.url ? (
+                        <a
+                          className="admin-feedback__page-link"
+                          href={item.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          title={item.url}
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          {pageLabel(item.url)}
+                        </a>
+                      ) : (
+                        <span className="admin-feedback__muted">—</span>
+                      )}
+                    </td>
+                    <td onClick={(event) => event.stopPropagation()}>
+                      <StatusPicker
+                        value={item.priority}
+                        ariaLabel={`Status for feedback ${item.id}`}
+                        onChange={(priority) => patchPriority(item, priority)}
+                      />
+                    </td>
+                    <td>
+                      {item.issue ? (
+                        <a
+                          href={item.issue}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          issue
+                        </a>
+                      ) : (
+                        <span className="admin-feedback__muted">—</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <Pagination

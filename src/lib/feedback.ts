@@ -78,6 +78,14 @@ const asPriority = (value: unknown): FeedbackPriority => {
   return "none";
 };
 
+const createdAtOf = (item: ModelsFeedback): string | undefined => {
+  const raw = item as ModelsFeedback & {
+    createdAt?: string;
+    createdTime?: string;
+  };
+  return raw.createdTime || raw.createdAt || undefined;
+};
+
 const fromModel = (item: ModelsFeedback): Feedback => ({
   id: item.id ?? 0,
   userID: item.userID ?? null,
@@ -94,6 +102,20 @@ const fromModel = (item: ModelsFeedback): Feedback => ({
   notes: item.notes ?? "",
   adminNotes: item.adminNotes ?? null,
   issue: item.issue ?? null,
+  createdAt: createdAtOf(item),
+});
+
+export const mergeFeedback = (prev: Feedback, next: Feedback): Feedback => ({
+  ...prev,
+  ...next,
+  user: next.user ?? prev.user,
+  preferredName: next.preferredName ?? prev.preferredName,
+  userID: next.userID ?? prev.userID,
+  url: next.url ?? prev.url,
+  notes: next.notes || prev.notes,
+  createdAt: next.createdAt ?? prev.createdAt,
+  adminNotes: next.adminNotes ?? prev.adminNotes,
+  issue: next.issue ?? prev.issue,
 });
 
 export const createFeedback = async (
