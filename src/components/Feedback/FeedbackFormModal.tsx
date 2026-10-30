@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MdClose } from "react-icons/md";
 import { useAppSelector } from "../../lib/store";
 import { getCurrUser, getWSO } from "../../lib/authSlice";
@@ -12,6 +12,8 @@ type FeedbackFormModalProps = {
   onSubmitted?: () => void;
 };
 
+const TITLE_ID = "feedback-modal-title";
+
 const FeedbackFormModal = ({
   open,
   onClose,
@@ -19,7 +21,6 @@ const FeedbackFormModal = ({
 }: FeedbackFormModalProps) => {
   const wso = useAppSelector(getWSO);
   const currUser = useAppSelector(getCurrUser);
-  const titleId = useId();
   const notesRef = useRef<HTMLTextAreaElement>(null);
 
   const [notes, setNotes] = useState("");
@@ -100,7 +101,7 @@ const FeedbackFormModal = ({
         className="feedback-modal"
         role="dialog"
         aria-modal="true"
-        aria-labelledby={titleId}
+        aria-labelledby={TITLE_ID}
         onKeyDown={(event) => {
           if (event.key === "Escape") {
             event.preventDefault();
@@ -109,7 +110,7 @@ const FeedbackFormModal = ({
         }}
       >
         <div className="feedback-modal__header">
-          <h2 id={titleId}>Send feedback</h2>
+          <h2 id={TITLE_ID}>Send feedback</h2>
           <button
             type="button"
             className="feedback-modal__close"
