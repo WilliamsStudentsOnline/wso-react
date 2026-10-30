@@ -1,7 +1,8 @@
 // React imports
-import React, { useState, useEffect } from "react";
-import "../../stylesheets/BulletinBox.css";
+import React, { useCallback, useEffect, useState } from "react";
+import "./BoardFeed.css";
 import { Line } from "../../ui";
+import BoardListControls from "./BoardListControls";
 
 // Redux/Routing imports
 import { getWSO } from "../../../lib/authSlice";
@@ -9,161 +10,91 @@ import { useAppSelector } from "../../../lib/store";
 
 // Additional imports
 import { Link } from "react-router-dom";
+import { ModelsBoardThread } from "wso-api-client/lib/services/types";
+import { PostType } from "../../../lib/types";
 import {
-  ModelsBulletin,
-  ModelsBulletinRide,
-  ModelsDiscussion,
-} from "wso-api-client/lib/services/types";
-import { PostType, PostTypeName } from "../../../lib/types";
+  boardApiType,
+  boardThreadDate,
+  boardThreadPath,
+  boardThreadTitle,
+  boardThreadTypeLabel,
+} from "./BulletinUtils";
 
-type NonRideThread = ModelsDiscussion | ModelsBulletin;
-type Thread = NonRideThread | ModelsBulletinRide;
+const HOME_LIMIT = 6;
 
-const BulletinBox = ({ type }: { type: PostType }) => {
+/** Homepage preview: recent feed with type chips. */
+const BulletinBox = () => {
   const wso = useAppSelector(getWSO);
-  const [threads, updateThreads] = useState<Thread[] | undefined>(undefined);
+  const [threads, updateThreads] = useState<ModelsBoardThread[] | undefined>(
+    undefined
+  );
+  const [selectedTypes, updateSelectedTypes] = useState<PostType[]>([]);
 
-  // Load the appropriate discussions/bulletins
-  useEffect(() => {
-    let isMounted = true;
-    const loadParams = { limit: 5, type: type };
-
-    const getThreads = async () => {
-      let response;
-      if (type === PostType.Discussions) {
-        response = await wso.bulletinService.listDiscussions(loadParams);
-      } else if (type === PostType.Rides) {
-        response = await wso.bulletinService.listRides(loadParams);
-      } else {
-        response = await wso.bulletinService.listBulletins(loadParams);
-      }
-      if (isMounted) {
-        updateThreads(response.data);
-      }
-    };
-
+  const loadThreads = useCallback(async () => {
+    if (!wso.isAuthenticated()) {
+      updateThreads([]);
+      return;
+    }
     try {
-      if (wso.isAuthenticated()) {
-        getThreads();
-      }
-    } catch (e) {
-      // We aren't really expecting any errors here, unless the token is empty for some reason.
+      const response = await wso.boardService.listBoardThreads({
+        limit: HOME_LIMIT,
+        sort: "activity",
+        ...(selectedTypes.length > 0
+          ? { type: selectedTypes.map(boardApiType) }
+          : {}),
+      });
+      updateThreads(response.data?.threads ?? []);
+    } catch {
       updateThreads([]);
     }
+  }, [wso, selectedTypes]);
 
-    return () => {
-      isMounted = false;
-    };
-  }, [wso, type]);
-
-  const formatDate = (showDate: string | undefined) => {
-    if (!showDate) {
-      return "";
-    }
-
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    };
-
-    return new Date(showDate).toLocaleString("en-US", options);
-  };
-
-  // Generates the threadTitle
-  const threadTitle = (thread: Thread) => {
-    if (type === PostType.Rides) {
-      const rideThread = thread as ModelsBulletinRide;
-      const threadOffer = rideThread.offer ? "Offer" : "Request";
-      return `${rideThread.source} to ${rideThread.destination} [${threadOffer}]`;
-    }
-
-    const otherThread = thread as NonRideThread;
-    return otherThread.title;
-  };
-
-  // Generates thread Date
-  const threadDate = (thread: Thread) => {
-    if (type === PostType.Rides) {
-      return (thread as ModelsBulletinRide).date;
-    }
-    if (type === PostType.Discussions) {
-      return (thread as ModelsDiscussion).lastActive;
-    }
-    return (thread as ModelsBulletin).startDate;
-  };
-
-  // Generate bulletin title link
-  const bulletinTitle = () => {
-    if (type === PostType.Discussions) {
-      return (
-        <div className="bulletin-title">
-          <Link className="bulletin-link" to="discussions">
-            {PostTypeName.get(type)}
-          </Link>
-        </div>
-      );
-    }
-
-    return (
-      <div className="bulletin-title">
-        <Link className="bulletin-link" to={`bulletins/${type}`}>
-          {PostTypeName.get(type)}
-        </Link>
-      </div>
-    );
-  };
-
-  const bulletinSkeleton = () =>
-    [...Array(5)].map((_, i) => (
-      // eslint-disable-next-line react/no-array-index-key
-      <div className="bulletin-children" key={i}>
-        <Line width="90%" center />
-
-        <span className="list-date">
-          <Line width="90%" center />
-        </span>
-      </div>
-    ));
-
-  const bulletinThreads = () => {
-    return (
-      <div className="bulletin-children-container">
-        {threads
-          ? threads.map((thread) => {
-              return (
-                <div className="bulletin-children" key={thread.id}>
-                  {type === PostType.Discussions ? (
-                    <Link
-                      className="thread-link"
-                      to={`/discussions/threads/${thread.id}`}
-                    >
-                      {threadTitle(thread)}
-                    </Link>
-                  ) : (
-                    <Link
-                      className="thread-link"
-                      to={`/bulletins/${type}/${thread.id}`}
-                    >
-                      {threadTitle(thread)}
-                    </Link>
-                  )}
-
-                  <span className="list-date">
-                    {formatDate(threadDate(thread))}
-                  </span>
-                </div>
-              );
-            })
-          : bulletinSkeleton()}
-      </div>
-    );
-  };
+  useEffect(() => {
+    loadThreads();
+  }, [loadThreads]);
 
   return (
-    <div className="bulletin">
-      {bulletinTitle()}
-      {bulletinThreads()}
+    <div className="board-table">
+      <div className="board-table-header">
+        <BoardListControls
+          selectedTypes={selectedTypes}
+          onTypesChange={updateSelectedTypes}
+        />
+      </div>
+      <div className="board-table-body">
+        {threads
+          ? threads.map((thread) => (
+              <div className="board-table-row" key={thread.id}>
+                <div className="board-table-row-main">
+                  <div className="board-table-row-headline">
+                    <span className="board-chip board-chip-static is-active">
+                      {boardThreadTypeLabel(thread)}
+                    </span>
+                    <Link
+                      className="board-table-title"
+                      to={boardThreadPath(thread)}
+                    >
+                      {boardThreadTitle(thread)}
+                    </Link>
+                  </div>
+                </div>
+                <span className="list-date board-table-date">
+                  {boardThreadDate(thread)}
+                </span>
+              </div>
+            ))
+          : [...Array(HOME_LIMIT)].map((_, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <div className="board-table-row" key={i}>
+                <div className="board-table-row-main">
+                  <Line width="70%" />
+                </div>
+                <span className="list-date board-table-date">
+                  <Line width="90%" center />
+                </span>
+              </div>
+            ))}
+      </div>
     </div>
   );
 };

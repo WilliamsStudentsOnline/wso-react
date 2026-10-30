@@ -73,9 +73,8 @@
 }
 
 .bulletin {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 5fr;
+  display: block;
+  width: 100%;
 }
 
 .bulletin-children-container {

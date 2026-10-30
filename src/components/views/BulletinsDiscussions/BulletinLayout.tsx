@@ -2,57 +2,24 @@
 import React, { ReactNode } from "react";
 
 // Additional imports
-import { PostType, PostTypeName } from "../../../lib/types";
 import { ServiceHeader, ContentPane, ServiceTab } from "../../ui";
 
-const BulletinLayout = ({
-  children,
-  type,
-}: {
-  children: ReactNode;
-  type: PostType;
-}) => {
-  const titleGenerator = (bulletinType: PostType): string => {
-    if (bulletinType === PostType.LostAndFound) {
-      return "Lost + Found";
-    }
-    return PostTypeName.get(bulletinType) ?? "Bulletin";
-  };
-
+const BulletinLayout = ({ children }: { children: ReactNode }) => {
   const tabs: ServiceTab[] = [
     {
-      to: `/bulletins/${type}/new`,
-      label: `New ${titleGenerator(type)} Post`,
+      to: "/bulletins",
+      label: "All",
+      end: true,
     },
     {
-      to: `/bulletins/${PostType.Announcements}`,
-      label: titleGenerator(PostType.Announcements),
-    },
-    {
-      to: `/bulletins/${PostType.Exchanges}`,
-      label: titleGenerator(PostType.Exchanges),
-    },
-    {
-      to: `/bulletins/${PostType.LostAndFound}`,
-      label: titleGenerator(PostType.LostAndFound),
-    },
-    {
-      to: `/bulletins/${PostType.Jobs}`,
-      label: titleGenerator(PostType.Jobs),
-    },
-    {
-      to: `/bulletins/${PostType.Rides}`,
-      label: titleGenerator(PostType.Rides),
+      to: "/bulletins/new",
+      label: "New Post",
     },
   ];
 
   return (
     <>
-      <ServiceHeader
-        title={PostTypeName.get(type)}
-        titleTo={`/bulletins/${type}`}
-        tabs={tabs}
-      />
+      <ServiceHeader title="Bulletin" titleTo="/bulletins" tabs={tabs} />
       <ContentPane variant="main-table">{children}</ContentPane>
     </>
   );
