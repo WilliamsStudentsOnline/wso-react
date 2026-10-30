@@ -125,20 +125,20 @@ const FeedbackFormModal = ({
         </div>
 
         <form className="feedback-modal__form" onSubmit={submit}>
-          <label>
-            Feedback
-            <textarea
-              ref={notesRef}
-              value={notes}
-              onChange={(event) => setNotes(event.target.value)}
-              required
-              maxLength={20000}
-            />
-          </label>
+          <textarea
+            ref={notesRef}
+            value={notes}
+            onChange={(event) => setNotes(event.target.value)}
+            placeholder="Let us know what we are doing right or wrong, as well as any other suggestions you might have!"
+            title=""
+            aria-label="Feedback"
+            required
+            maxLength={20000}
+          />
 
           <div className="feedback-modal__contact">
             <label className="feedback-modal__check">
-              <span>May we follow up with you about this?</span>
+              <span>Can we follow up with you about this?</span>
               <input
                 type="checkbox"
                 checked={contact}
@@ -150,7 +150,7 @@ const FeedbackFormModal = ({
               <>
                 {contactEmail && (
                   <p className="feedback-modal__reachout">
-                    We&apos;ll reach out to you at <code>{contactEmail}</code>.
+                    We may reach out to <code>{contactEmail}</code>.
                   </p>
                 )}
                 <label className="feedback-modal__preferred">
@@ -160,6 +160,7 @@ const FeedbackFormModal = ({
                     value={preferredName}
                     onChange={(event) => setPreferredName(event.target.value)}
                     placeholder="How should we address you?"
+                    title=""
                     maxLength={255}
                   />
                 </label>

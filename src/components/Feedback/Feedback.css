@@ -91,6 +91,7 @@ button.floating-button-link.feedback-fab {
   margin: 0;
   font: inherit;
   font-size: 1rem;
+  font-weight: 400;
 }
 
 .feedback-modal__form textarea {
@@ -142,7 +143,7 @@ button.floating-button-link.feedback-fab {
 .feedback-modal__preferred {
   display: grid;
   gap: 0.3rem;
-  margin: 0;
+  margin: 0.35rem 0 0;
   padding-left: 0;
   font-weight: 700;
   font-size: 1rem;
@@ -179,7 +180,7 @@ button.floating-button-link.feedback-fab {
   padding: 0.65rem 0.9rem;
   border-radius: 0.35rem;
   background: var(--nav-bg, #333);
-  color: var(--surface-page, #fff);
+  color: var(--text-on-nav, #fcfcfc);
   box-shadow: 0 4px 12px var(--shadow, rgba(0, 0, 0, 0.2));
   font-size: 0.95rem;
 }

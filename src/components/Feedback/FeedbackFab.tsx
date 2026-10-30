@@ -56,7 +56,7 @@ const FeedbackFab = () => {
         />
       )}
 
-      {toast && <div className="feedback-toast">Thanks for the feedback!</div>}
+      {toast && <div className="feedback-toast">Feedback submitted</div>}
     </>
   );
 };
