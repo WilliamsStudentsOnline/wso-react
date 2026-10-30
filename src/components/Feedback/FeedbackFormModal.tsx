@@ -154,7 +154,7 @@ const FeedbackFormModal = ({
                   </p>
                 )}
                 <label className="feedback-modal__preferred">
-                  Preferred name
+                  Preferred name (optional)
                   <input
                     type="text"
                     value={preferredName}
