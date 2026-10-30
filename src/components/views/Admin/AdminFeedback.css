@@ -1,14 +1,18 @@
 .admin-feedback {
   display: grid;
   gap: 0.85rem;
+  /* Cancel .admin-shell horizontal padding so the table is edge-to-edge */
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
 }
 
 .admin-feedback__table {
   width: 100%;
-  max-width: 100%;
+  max-width: none;
   box-sizing: border-box;
   border: 1px solid var(--border-table, #ccc);
   background: transparent;
+  margin: 0;
 }
 
 .admin-feedback__table-header {
@@ -187,8 +191,8 @@
 }
 
 .admin-feedback__table th {
-  background: var(--surface-muted, #f5f5f5);
-  color: var(--text-body, #333);
+  background: var(--brand-bar, #704794);
+  color: var(--text-on-brand, #fff);
   font-weight: 700;
   white-space: nowrap;
 }

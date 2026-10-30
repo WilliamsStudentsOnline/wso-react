@@ -202,6 +202,18 @@ const AdminFeedback = () => {
     setDetailError("");
   };
 
+  useEffect(() => {
+    if (!selected) return undefined;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeDetail();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [selected]);
+
   const patchPriority = async (item: Feedback, priority: FeedbackPriority) => {
     try {
       const response = await updateFeedback(wso, item.id, { priority });
@@ -430,12 +442,6 @@ const AdminFeedback = () => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="admin-feedback-detail-title"
-            onKeyDown={(event) => {
-              if (event.key === "Escape") {
-                event.preventDefault();
-                closeDetail();
-              }
-            }}
           >
             <div className="admin-feedback-detail__header">
               <h2 id="admin-feedback-detail-title">Feedback #{selected.id}</h2>
