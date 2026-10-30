@@ -4,8 +4,7 @@ import { getCurrUser } from "../../lib/authSlice";
 import FeedbackFormModal from "./FeedbackFormModal";
 import "./Feedback.css";
 
-// TODO: replace with the real Google Form URL for logged-out users
-const LOGGED_OUT_FEEDBACK_URL = "https://forms.gle/NqYdAAbZKPQmPq866";
+const LOGGED_OUT_FEEDBACK_URL = "https://forms.gle/5H4bGDNB3vsnKDMJ8";
 
 const FabIcon = () => (
   <i className="material-icons" style={{ position: "relative", left: "-8px" }}>
