@@ -1,4 +1,9 @@
 import type { WSO } from "wso-api-client";
+import type {
+  FeedbackCreateFeedbackParams,
+  FeedbackUpdateFeedbackParams,
+  ModelsFeedback,
+} from "wso-api-client/lib/services/types";
 
 export type FeedbackPriority =
   | "none"
@@ -65,118 +70,95 @@ export type ListFeedbackParams = {
   preload?: string[];
 };
 
-type FeedbackService = {
-  createFeedback: (
-    body: CreateFeedbackParams
-  ) => Promise<{ data?: Feedback | null }>;
-  listFeedback: (
-    params?: ListFeedbackParams
-  ) => Promise<{ data?: Feedback[] | null; paginationTotal?: number }>;
-  getFeedback: (
-    id: number,
-    params?: { preload?: string[] }
-  ) => Promise<{ data?: Feedback | null }>;
-  updateFeedback: (
-    id: number,
-    body: UpdateFeedbackParams
-  ) => Promise<{ data?: Feedback | null }>;
-  deleteFeedback: (id: number) => Promise<unknown>;
+export const isFeedbackPriority = (value: string): value is FeedbackPriority =>
+  (FEEDBACK_PRIORITIES as string[]).includes(value);
+
+const asPriority = (value: unknown): FeedbackPriority => {
+  if (typeof value === "string" && isFeedbackPriority(value)) return value;
+  return "none";
 };
 
-const STUB_KEY = "wso-feedback-stub";
-
-const readStub = (): Feedback[] => {
-  try {
-    const raw = localStorage.getItem(STUB_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw) as Feedback[];
-  } catch {
-    return [];
-  }
-};
-
-const writeStub = (items: Feedback[]) => {
-  localStorage.setItem(STUB_KEY, JSON.stringify(items));
-};
-
-const stubService = (): FeedbackService => ({
-  async createFeedback(body) {
-    const items = readStub();
-    const created: Feedback = {
-      id: items.reduce((max, item) => Math.max(max, item.id), 0) + 1,
-      notes: body.notes,
-      preferredName: body.preferredName ?? null,
-      url: body.url ?? null,
-      userID: body.userID ?? null,
-      priority: "none",
-      createdAt: new Date().toISOString(),
-    };
-    writeStub([created, ...items]);
-    return { data: created };
-  },
-  async listFeedback(params) {
-    let items = readStub();
-    if (params?.priority) {
-      items = items.filter((item) => item.priority === params.priority);
-    }
-    const offset = params?.offset ?? 0;
-    const limit = params?.limit ?? items.length;
-    return {
-      data: items.slice(offset, offset + limit),
-      paginationTotal: items.length,
-    };
-  },
-  async getFeedback(id) {
-    const item = readStub().find((row) => row.id === id) ?? null;
-    return { data: item };
-  },
-  async updateFeedback(id, body) {
-    const items = readStub();
-    const index = items.findIndex((row) => row.id === id);
-    if (index < 0) throw new Error("Feedback not found");
-    const next = {
-      ...items[index],
-      ...(body.adminNotes !== undefined ? { adminNotes: body.adminNotes } : {}),
-      ...(body.issue !== undefined ? { issue: body.issue } : {}),
-      ...(body.priority !== undefined ? { priority: body.priority } : {}),
-    };
-    items[index] = next;
-    writeStub(items);
-    return { data: next };
-  },
-  async deleteFeedback(id) {
-    writeStub(readStub().filter((row) => row.id !== id));
-    return { data: { deleted: id } };
-  },
+const fromModel = (item: ModelsFeedback): Feedback => ({
+  id: item.id ?? 0,
+  userID: item.userID ?? null,
+  user: item.user
+    ? {
+        id: item.user.id,
+        name: item.user.name,
+        unixID: item.user.unixID,
+      }
+    : null,
+  preferredName: item.preferredName ?? null,
+  priority: asPriority(item.priority),
+  url: item.url ?? null,
+  notes: item.notes ?? "",
+  adminNotes: item.adminNotes ?? null,
+  issue: item.issue ?? null,
 });
 
-const getService = (wso: WSO): FeedbackService => {
-  const svc = (wso as WSO & { feedbackService?: FeedbackService })
-    .feedbackService;
-  if (svc?.createFeedback) return svc;
-  return stubService();
+export const createFeedback = async (
+  wso: WSO,
+  body: CreateFeedbackParams
+): Promise<{ data: Feedback }> => {
+  const payload: FeedbackCreateFeedbackParams = {
+    notes: body.notes,
+    preferredName: body.preferredName,
+    url: body.url,
+    userID: body.userID,
+  };
+  const response = await wso.feedbackService.createFeedback(payload);
+  return { data: fromModel(response.data ?? { notes: body.notes }) };
 };
 
-export const createFeedback = (wso: WSO, body: CreateFeedbackParams) =>
-  getService(wso).createFeedback(body);
+export const listFeedback = async (
+  wso: WSO,
+  params?: ListFeedbackParams
+): Promise<{ data: Feedback[]; paginationTotal?: number }> => {
+  const response = await wso.adminService.listFeedback({
+    priority: params?.priority,
+    offset: params?.offset,
+    limit: params?.limit,
+    preload: params?.preload,
+  });
+  const data = (response.data ?? []).map(fromModel);
+  return {
+    data,
+    paginationTotal: response.paginationTotal ?? data.length,
+  };
+};
 
-export const listFeedback = (wso: WSO, params?: ListFeedbackParams) =>
-  getService(wso).listFeedback(params);
-
-export const getFeedback = (
+export const getFeedback = async (
   wso: WSO,
   id: number,
   params?: { preload?: string[] }
-) => getService(wso).getFeedback(id, params);
+): Promise<{ data: Feedback | null }> => {
+  const response = await wso.adminService.getFeedback(id, params);
+  return { data: response.data ? fromModel(response.data) : null };
+};
 
-export const updateFeedback = (
+export const updateFeedback = async (
   wso: WSO,
   id: number,
   body: UpdateFeedbackParams
-) => getService(wso).updateFeedback(id, body);
+): Promise<{ data: Feedback }> => {
+  const payload: FeedbackUpdateFeedbackParams = {
+    adminNotes: body.adminNotes,
+    issue: body.issue,
+    priority: body.priority as FeedbackUpdateFeedbackParams["priority"],
+  };
+  const response = await wso.adminService.updateFeedback(id, payload);
+  return {
+    data: fromModel(
+      response.data ?? {
+        id,
+        notes: "",
+        priority: body.priority,
+        adminNotes: body.adminNotes,
+        issue: body.issue,
+      }
+    ),
+  };
+};
 
 export const deleteFeedback = (wso: WSO, id: number) =>
-  getService(wso).deleteFeedback(id);
-
-export const isFeedbackPriority = (value: string): value is FeedbackPriority =>
-  (FEEDBACK_PRIORITIES as string[]).includes(value);
+  wso.adminService.deleteFeedback(id);
