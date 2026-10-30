@@ -331,7 +331,7 @@ const AdminFeedback = () => {
           target="_blank"
           rel="noreferrer"
         >
-          Feedback spreadsheet
+          [Google Form Responses]
         </a>
       </p>
 
