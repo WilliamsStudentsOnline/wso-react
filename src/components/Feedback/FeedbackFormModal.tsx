@@ -150,7 +150,7 @@ const FeedbackFormModal = ({
               <>
                 {contactEmail && (
                   <p className="feedback-modal__reachout">
-                    We&apos;ll reach out to you at <code>{contactEmail}</code>
+                    We&apos;ll reach out to you at <code>{contactEmail}</code>.
                   </p>
                 )}
                 <label className="feedback-modal__preferred">
