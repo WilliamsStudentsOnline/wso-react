@@ -138,7 +138,7 @@ const FeedbackFormModal = ({
 
           <div className="feedback-modal__contact">
             <label className="feedback-modal__check">
-              <span>OK to contact me about this</span>
+              <span>May we follow up with you about this?</span>
               <input
                 type="checkbox"
                 checked={contact}
