@@ -5,6 +5,7 @@ import "./Admin.css";
 const tabs = [
   { to: "/admin", label: "Tasks", end: true },
   { to: "/admin/banner", label: "Banner" },
+  { to: "/admin/feedback", label: "Feedback" },
 ];
 
 const AdminLayout = ({ children }: { children: React.ReactElement }) => {
