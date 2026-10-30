@@ -18,18 +18,6 @@ import "./AdminFeedback.css";
 
 const PAGE_SIZE = 25;
 
-const formatWhen = (value?: string) => {
-  if (!value) return "—";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleString(undefined, {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-};
-
 const submitterLabel = (item: Feedback) => {
   const unix = item.user?.unixID?.trim() || "";
   const preferred = item.preferredName?.trim() || "";
@@ -333,7 +321,6 @@ const AdminFeedback = () => {
           <table>
             <thead>
               <tr>
-                <th>When</th>
                 <th>From</th>
                 <th>Notes</th>
                 <th>Page</th>
@@ -344,12 +331,12 @@ const AdminFeedback = () => {
             <tbody>
               {loading && (
                 <tr className="admin-feedback__message-row">
-                  <td colSpan={6}>Loading…</td>
+                  <td colSpan={5}>Loading…</td>
                 </tr>
               )}
               {!loading && items.length === 0 && (
                 <tr className="admin-feedback__message-row">
-                  <td colSpan={6}>No feedback yet.</td>
+                  <td colSpan={5}>No feedback yet.</td>
                 </tr>
               )}
               {!loading &&
@@ -359,7 +346,6 @@ const AdminFeedback = () => {
                     className={selected?.id === item.id ? "is-selected" : ""}
                     onClick={() => openDetail(item)}
                   >
-                    <td>{formatWhen(item.createdAt)}</td>
                     <td>
                       {item.userID ? (
                         <Link
@@ -474,8 +460,6 @@ const AdminFeedback = () => {
                   submitterLabel(selected)
                 )}
               </dd>
-              <dt>When</dt>
-              <dd>{formatWhen(selected.createdAt)}</dd>
               <dt>Page</dt>
               <dd>
                 {selected.url ? (
