@@ -39,7 +39,6 @@ const FacebookMe = () => {
   const [homeVisible, setHomeVisible] = useState(currUser?.homeVisible);
   const [offCycle, setOffCycle] = useState(currUser?.offCycle);
   const [pronounOverride, setPronounOverride] = useState("");
-  // imported pronoun for live preview when override input is empty
   const [peopleSoftPronoun, setPeopleSoftPronoun] = useState("");
   const [savedVisible, setSavedVisible] = useState(currUser?.visible);
   const [savedHomeVisible, setSavedHomeVisible] = useState(
@@ -68,7 +67,6 @@ const FacebookMe = () => {
         setProfile(data);
         setPronounOverride(override);
         setSavedPronounOverride(override);
-        // only known when not currently overriding
         setPeopleSoftPronoun(override ? "" : data.pronoun ?? "");
         setVisible(data.visible);
         setHomeVisible(data.homeVisible);
@@ -123,7 +121,6 @@ const FacebookMe = () => {
       }
 
       const trimmed = pronounOverride.trim();
-      // null clears; generated type is string-only
       const updateResponse = await wso.userService.updateUser("me", {
         homeVisible,
         offCycle,
