@@ -1,0 +1,187 @@
+import React, { useEffect, useRef, useState } from "react";
+import { MdClose } from "react-icons/md";
+import { useAppSelector } from "../../lib/store";
+import { getCurrUser, getWSO } from "../../lib/authSlice";
+import { createFeedback } from "../../lib/feedback";
+import { Button } from "../ui";
+import "./Feedback.css";
+
+type FeedbackFormModalProps = {
+  open: boolean;
+  onClose: () => void;
+  onSubmitted?: () => void;
+};
+
+const TITLE_ID = "feedback-modal-title";
+
+const FeedbackFormModal = ({
+  open,
+  onClose,
+  onSubmitted,
+}: FeedbackFormModalProps) => {
+  const wso = useAppSelector(getWSO);
+  const currUser = useAppSelector(getCurrUser);
+  const notesRef = useRef<HTMLTextAreaElement>(null);
+
+  const [notes, setNotes] = useState("");
+  const [contact, setContact] = useState(false);
+  const [preferredName, setPreferredName] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    setNotes("");
+    setContact(false);
+    setPreferredName("");
+    setError("");
+    setSubmitting(false);
+
+    const previousOverflow = document.body.style.overflow;
+    const scrollEl = document.querySelector(
+      ".layout-scroll"
+    ) as HTMLElement | null;
+    const previousScrollOverflow = scrollEl?.style.overflow ?? "";
+    document.body.style.overflow = "hidden";
+    if (scrollEl) scrollEl.style.overflow = "hidden";
+
+    const focusTimer = window.setTimeout(() => notesRef.current?.focus(), 0);
+
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.body.style.overflow = previousOverflow;
+      if (scrollEl) scrollEl.style.overflow = previousScrollOverflow;
+    };
+  }, [open]);
+
+  if (!open) return null;
+
+  const unixID = currUser?.unixID?.trim() || "";
+  const contactEmail = unixID ? `${unixID}@williams.edu` : null;
+
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const trimmed = notes.trim();
+    if (!trimmed) {
+      setError("Please enter some feedback.");
+      return;
+    }
+    if (!currUser?.id || currUser.id < 0) {
+      setError("You need to be logged in to submit feedback.");
+      return;
+    }
+
+    setSubmitting(true);
+    setError("");
+    try {
+      await createFeedback(wso, {
+        notes: trimmed,
+        url: window.location.href,
+        preferredName: contact ? preferredName.trim() || undefined : undefined,
+        userID: contact ? currUser.id : undefined,
+      });
+      onSubmitted?.();
+      onClose();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Could not submit feedback."
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        className="feedback-backdrop"
+        aria-label="Close feedback form"
+        onClick={onClose}
+      />
+      <div
+        className="feedback-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={TITLE_ID}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            event.preventDefault();
+            onClose();
+          }
+        }}
+      >
+        <div className="feedback-modal__header">
+          <h2 id={TITLE_ID}>Send feedback</h2>
+          <button
+            type="button"
+            className="feedback-modal__close"
+            onClick={onClose}
+            aria-label="Close"
+          >
+            <MdClose size={20} />
+          </button>
+        </div>
+
+        <form className="feedback-modal__form" onSubmit={submit}>
+          <textarea
+            ref={notesRef}
+            value={notes}
+            onChange={(event) => setNotes(event.target.value)}
+            placeholder="Let us know what we are doing right or wrong, as well as any other suggestions you might have!"
+            title=""
+            aria-label="Feedback"
+            required
+            maxLength={20000}
+          />
+
+          <div className="feedback-modal__contact">
+            <label className="feedback-modal__check">
+              <span>Can we follow up with you about this?</span>
+              <input
+                type="checkbox"
+                checked={contact}
+                onChange={(event) => setContact(event.target.checked)}
+              />
+            </label>
+
+            {contact && (
+              <>
+                {contactEmail && (
+                  <p className="feedback-modal__reachout">
+                    We may reach out to <code>{contactEmail}</code>.
+                  </p>
+                )}
+                <label className="feedback-modal__preferred">
+                  Preferred name (optional)
+                  <input
+                    type="text"
+                    value={preferredName}
+                    onChange={(event) => setPreferredName(event.target.value)}
+                    placeholder="How should we address you?"
+                    title=""
+                    maxLength={255}
+                  />
+                </label>
+              </>
+            )}
+          </div>
+
+          {error && <p className="feedback-modal__error">{error}</p>}
+
+          <div className="feedback-modal__actions">
+            <Button type="button" variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="submit" disabled={submitting}>
+              {submitting ? "Sending…" : "Send"}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </>
+  );
+};
+
+export default FeedbackFormModal;

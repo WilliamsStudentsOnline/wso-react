@@ -128,7 +128,8 @@ const configureResponseInterceptors = (api: AxiosInstance) => {
 
 // Declared in this manner to let it be hoisted
 function configureInterceptors(wso: WSO) {
-  const api = wso.api.api;
+  // wso-api-client may nest a different axios than the app
+  const api = wso.api.api as unknown as AxiosInstance;
   configureRequestInterceptors(api);
   configureResponseInterceptors(api);
 }
