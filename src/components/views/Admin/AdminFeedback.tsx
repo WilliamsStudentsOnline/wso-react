@@ -325,6 +325,16 @@ const AdminFeedback = () => {
 
   return (
     <div className="admin-feedback">
+      <p className="admin-feedback__sheet">
+        <a
+          href="https://docs.google.com/spreadsheets/d/1QFSe96rXTr7IUhh9Vnw4r9l_PDWVpRom0JLJx2YKKO0/edit?usp=drive_link"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Feedback spreadsheet
+        </a>
+      </p>
+
       {error && <p className="admin-feedback__error">{error}</p>}
 
       <div className="admin-feedback__table">

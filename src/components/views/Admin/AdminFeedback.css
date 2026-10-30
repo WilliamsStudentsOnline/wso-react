@@ -18,6 +18,12 @@
   margin: 0;
 }
 
+.admin-feedback__sheet {
+  margin: 0;
+  padding: 0.65rem 0.85rem 0;
+  font-size: 0.95rem;
+}
+
 .admin-feedback__table {
   width: 100%;
   max-width: none;
