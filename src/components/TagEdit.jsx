@@ -97,7 +97,7 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
     }
     // eslint-disable-next-line no-restricted-globals, no-alert
     const ok = confirm(
-      `Request new tag "${tagName}"?\n\nA moderator will need to approve it before it appears on your profile.`
+      `Request new tag "${tagName}"?\n\nTags are intended for RSOs and other student groups. Once we approve your request, any student will be able to add this tag.`
     );
     if (!ok) return;
 

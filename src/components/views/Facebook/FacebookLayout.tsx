@@ -69,7 +69,7 @@ const FacebookLayout = ({ children }: { children: React.ReactElement }) => {
   const tabs: ServiceTab[] = [
     { to: "/facebook", label: "Search", end: true },
     { to: "/facebook/help", label: "Help" },
-    ...(currUser ? [{ to: "/facebook/me", label: "Me" }] : []),
+    ...(currUser ? [{ to: "/facebook/me", label: "Profile" }] : []),
   ];
 
   return (

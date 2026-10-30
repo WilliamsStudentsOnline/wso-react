@@ -10,8 +10,29 @@
 }
 
 .facebook-me__preview.facebook-profile > section {
+  position: relative;
   margin-bottom: 0;
   padding: 1em 1.1em 1.5em;
+  box-sizing: border-box;
+  border: 2px solid var(--border-input);
+}
+
+.facebook-me__preview--unsaved.facebook-profile > section {
+  border-color: var(--status-notice-fg);
+}
+
+.facebook-me__unsaved {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.75rem;
+  z-index: 1;
+  font-family: var(--font-family-mono);
+  font-size: 1.85rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--status-notice-fg);
+  pointer-events: none;
+  user-select: none;
 }
 
 .facebook-me__preview--hidden > section {
@@ -131,6 +152,23 @@
 .facebook-me__block h3 {
   margin: 0 0 0.4rem;
   color: var(--brand-primary);
+}
+
+.facebook-me__pronouns-heading {
+  margin-top: 1.1rem !important;
+}
+
+input[type="text"].facebook-me__pronoun-input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 22rem;
+  height: 2rem !important;
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 0.55rem !important;
+  font-size: 0.95rem;
+  line-height: 2rem;
 }
 
 .facebook-me__prefs {

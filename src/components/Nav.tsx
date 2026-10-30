@@ -146,7 +146,7 @@ const Nav = () => {
           </a>
           <ul className="dropdown-content">
             <li>
-              <Link to={`/facebook/users/${currUser.id}`}>Profile</Link>
+              <Link to="/facebook/me">Profile</Link>
             </li>
             {currUser.admin && (
               <li>
