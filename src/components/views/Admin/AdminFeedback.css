@@ -1,4 +1,3 @@
-/* Flush the feedback table to the admin shell edges */
 .admin:has(.admin-feedback) .admin-shell {
   padding-left: 0;
   padding-right: 0;
@@ -195,7 +194,6 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
-  /* Beat global `table { margin: 1.5em 0 }` from i.css */
   margin: 0;
 }
 
