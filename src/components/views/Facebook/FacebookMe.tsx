@@ -8,6 +8,11 @@ import { ResponsesGetUserResponseUser } from "wso-api-client/lib/services/types"
 import TagEdit from "../../TagEdit";
 import "./FacebookMe.css";
 
+const PEOPLESOFT_URL = "https://sarah.williams.edu";
+const PEOPLESOFT_URL_HINT = "See on PeopleSoft";
+const PEOPLESOFT_PRONOUN_PLACEHOLDER =
+  "We'll fetch these from PeopleSoft when you save";
+
 const showAlert = (message: string) => {
   // eslint-disable-next-line no-alert
   window.alert(message);
@@ -33,18 +38,21 @@ const FacebookMe = () => {
   const [visible, setVisible] = useState(currUser?.visible);
   const [homeVisible, setHomeVisible] = useState(currUser?.homeVisible);
   const [offCycle, setOffCycle] = useState(currUser?.offCycle);
+  const [pronounOverride, setPronounOverride] = useState("");
+  // imported pronoun for live preview when override input is empty
+  const [peopleSoftPronoun, setPeopleSoftPronoun] = useState("");
+  const [savedVisible, setSavedVisible] = useState(currUser?.visible);
+  const [savedHomeVisible, setSavedHomeVisible] = useState(
+    currUser?.homeVisible
+  );
+  const [savedOffCycle, setSavedOffCycle] = useState(currUser?.offCycle);
+  const [savedPronounOverride, setSavedPronounOverride] = useState("");
 
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [submitting, updateSubmitting] = useState(false);
 
   const fileRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    setVisible(currUser?.visible);
-    setHomeVisible(currUser?.homeVisible);
-    setOffCycle(currUser?.offCycle);
-  }, [currUser]);
 
   useEffect(() => {
     let isMounted = true;
@@ -56,7 +64,18 @@ const FacebookMe = () => {
         const data = userResponse.data;
         if (!isMounted || !data) return;
 
+        const override = data.pronounOverride ?? "";
         setProfile(data);
+        setPronounOverride(override);
+        setSavedPronounOverride(override);
+        // only known when not currently overriding
+        setPeopleSoftPronoun(override ? "" : data.pronoun ?? "");
+        setVisible(data.visible);
+        setHomeVisible(data.homeVisible);
+        setOffCycle(data.offCycle);
+        setSavedVisible(data.visible);
+        setSavedHomeVisible(data.homeVisible);
+        setSavedOffCycle(data.offCycle);
         updateTags((data.tags ?? []).map((tag) => tag.name ?? ""));
 
         if (data.unixID) {
@@ -103,17 +122,31 @@ const FacebookMe = () => {
         await wso.userService.updateUserPhoto("me", photoFile);
       }
 
+      const trimmed = pronounOverride.trim();
+      // null clears; generated type is string-only
       const updateResponse = await wso.userService.updateUser("me", {
         homeVisible,
         offCycle,
         visible,
+        pronounOverride: trimmed === "" ? (null as unknown as string) : trimmed,
       });
 
       dispatch(updateUser(updateResponse.data));
       if (updateResponse.data) {
-        setProfile((prev) =>
-          prev ? { ...prev, ...updateResponse.data } : updateResponse.data
-        );
+        const next = updateResponse.data;
+        const nextOverride = next.pronounOverride ?? "";
+        setProfile((prev) => (prev ? { ...prev, ...next } : next));
+        setPronounOverride(nextOverride);
+        setSavedPronounOverride(nextOverride);
+        if (!nextOverride) {
+          setPeopleSoftPronoun(next.pronoun ?? "");
+        }
+        setVisible(next.visible);
+        setHomeVisible(next.homeVisible);
+        setOffCycle(next.offCycle);
+        setSavedVisible(next.visible);
+        setSavedHomeVisible(next.homeVisible);
+        setSavedOffCycle(next.offCycle);
       }
       setPhotoFile(null);
     } catch (error) {
@@ -141,14 +174,51 @@ const FacebookMe = () => {
   const showTags =
     currUser.type === userTypeAlumni || currUser.type === userTypeStudent;
 
+  const trimmedPronounOverride = pronounOverride.trim();
+  const previewPronoun = trimmedPronounOverride || peopleSoftPronoun;
+  const pronounPlaceholder =
+    peopleSoftPronoun || PEOPLESOFT_PRONOUN_PLACEHOLDER;
+
+  const hasUnsavedChanges =
+    Boolean(photoFile) ||
+    Boolean(visible) !== Boolean(savedVisible) ||
+    Boolean(homeVisible) !== Boolean(savedHomeVisible) ||
+    Boolean(offCycle) !== Boolean(savedOffCycle) ||
+    trimmedPronounOverride !== (savedPronounOverride ?? "").trim();
+
+  const pronounsField = (
+    <>
+      <h3 className={showTags ? "facebook-me__pronouns-heading" : undefined}>
+        Pronouns
+      </h3>
+      <input
+        type="text"
+        className="facebook-me__pronoun-input"
+        value={pronounOverride}
+        placeholder={pronounPlaceholder}
+        onChange={(event) => setPronounOverride(event.target.value)}
+        aria-label="Pronouns"
+      />
+    </>
+  );
+
   return (
     <div className="facebook-me">
       <article
         className={`facebook-profile facebook-me__preview${
           visible ? "" : " facebook-me__preview--hidden"
-        }`}
+        }${hasUnsavedChanges ? " facebook-me__preview--unsaved" : ""}`}
       >
         <section>
+          {hasUnsavedChanges ? (
+            <span
+              className="facebook-me__unsaved"
+              title="Unsaved changes"
+              aria-label="Unsaved changes"
+            >
+              *
+            </span>
+          ) : null}
           <aside className="picture">
             <div className="facebook-me__avatar">
               {photoUrl ? <img src={photoUrl} alt="avatar" /> : <Photo />}
@@ -178,6 +248,18 @@ const FacebookMe = () => {
               <span>&nbsp;(me)</span>
             </h3>
             {profile?.type === userTypeStudent ? <h5>Student</h5> : null}
+            <h5>
+              Pronouns:{" "}
+              {previewPronoun || (
+                <a
+                  href={PEOPLESOFT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {PEOPLESOFT_URL_HINT}
+                </a>
+              )}
+            </h5>
             <br />
             {profile?.unixID ? (
               <>
@@ -248,8 +330,11 @@ const FacebookMe = () => {
                 }}
                 wso={wso}
               />
+              {pronounsField}
             </div>
-          ) : null}
+          ) : (
+            <div className="facebook-me__block">{pronounsField}</div>
+          )}
 
           <div className="facebook-me__block">
             <h3>Preferences</h3>
