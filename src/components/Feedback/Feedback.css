@@ -71,6 +71,9 @@ button.floating-button-link.feedback-fab {
   display: grid;
   gap: 0.55rem;
   padding-bottom: 0;
+  /* Beat i.css `form { margin-bottom: 3em }` */
+  margin: 0;
+  margin-bottom: 0;
 }
 
 .feedback-modal__form > label {
