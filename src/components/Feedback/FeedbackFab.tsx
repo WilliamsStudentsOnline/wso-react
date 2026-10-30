@@ -4,6 +4,15 @@ import { getCurrUser } from "../../lib/authSlice";
 import FeedbackFormModal from "./FeedbackFormModal";
 import "./Feedback.css";
 
+// TODO: replace with the real Google Form URL for logged-out users
+const LOGGED_OUT_FEEDBACK_URL = "https://forms.gle/NqYdAAbZKPQmPq866";
+
+const FabIcon = () => (
+  <i className="material-icons" style={{ position: "relative", left: "-8px" }}>
+    feedback
+  </i>
+);
+
 const FeedbackFab = () => {
   const currUser = useAppSelector(getCurrUser);
   const [open, setOpen] = useState(false);
@@ -15,30 +24,37 @@ const FeedbackFab = () => {
     return () => window.clearTimeout(timer);
   }, [toast]);
 
-  if (!currUser) return null;
-
   return (
     <>
-      <button
-        type="button"
-        className="floating-button-link feedback-fab"
-        title="Provide Feedback!"
-        aria-label="Provide feedback"
-        onClick={() => setOpen(true)}
-      >
-        <i
-          className="material-icons"
-          style={{ position: "relative", left: "-8px" }}
+      {currUser ? (
+        <button
+          type="button"
+          className="floating-button-link feedback-fab"
+          title="Provide Feedback!"
+          aria-label="Provide feedback"
+          onClick={() => setOpen(true)}
         >
-          feedback
-        </i>
-      </button>
+          <FabIcon />
+        </button>
+      ) : (
+        <a
+          href={LOGGED_OUT_FEEDBACK_URL}
+          className="floating-button-link"
+          title="Provide Feedback!"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FabIcon />
+        </a>
+      )}
 
-      <FeedbackFormModal
-        open={open}
-        onClose={() => setOpen(false)}
-        onSubmitted={() => setToast(true)}
-      />
+      {currUser && (
+        <FeedbackFormModal
+          open={open}
+          onClose={() => setOpen(false)}
+          onSubmitted={() => setToast(true)}
+        />
+      )}
 
       {toast && <div className="feedback-toast">Thanks for the feedback!</div>}
     </>

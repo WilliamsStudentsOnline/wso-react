@@ -133,27 +133,29 @@ const FeedbackFormModal = ({
             />
           </label>
 
-          <label className="feedback-modal__check">
-            <input
-              type="checkbox"
-              checked={contact}
-              onChange={(event) => setContact(event.target.checked)}
-            />
-            OK to contact me about this
-          </label>
-
-          {contact && (
-            <label>
-              Preferred name
+          <div className="feedback-modal__contact">
+            <label className="feedback-modal__check">
               <input
-                type="text"
-                value={preferredName}
-                onChange={(event) => setPreferredName(event.target.value)}
-                placeholder="How should we address you?"
-                maxLength={255}
+                type="checkbox"
+                checked={contact}
+                onChange={(event) => setContact(event.target.checked)}
               />
+              OK to contact me about this
             </label>
-          )}
+
+            {contact && (
+              <label className="feedback-modal__preferred">
+                Preferred name
+                <input
+                  type="text"
+                  value={preferredName}
+                  onChange={(event) => setPreferredName(event.target.value)}
+                  placeholder="How should we address you?"
+                  maxLength={255}
+                />
+              </label>
+            )}
+          </div>
 
           {error && <p className="feedback-modal__error">{error}</p>}
 
