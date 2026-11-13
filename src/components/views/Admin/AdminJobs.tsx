@@ -198,7 +198,7 @@ const AdminJobs = () => {
         }
       }
       if (selected === jobName || selected === ALL_RUNS) {
-        void loadRunsRef.current(selected!, { soft: true });
+        void loadRunsRef.current(selected, { soft: true });
       } else {
         softRunsOnSelectRef.current = true;
         setSelected(jobName);
@@ -508,8 +508,8 @@ const AdminJobs = () => {
                             )}
                           </div>
                         </div>
-                        {logOpen && (
-                          <pre className="admin-jobs__log">{logs[id!]}</pre>
+                        {logOpen && id != null && (
+                          <pre className="admin-jobs__log">{logs[id]}</pre>
                         )}
                       </li>
                     );
