@@ -33,16 +33,11 @@ const BoardListControls = ({
     onTypesChange(next);
   };
 
-  const noFocusScroll = (e: React.MouseEvent) => {
-    e.preventDefault();
-  };
-
   return (
     <div className="board-type-chips" role="group" aria-label="Filter by type">
       <button
         type="button"
         className={`board-chip${allSelected ? " is-active" : ""}`}
-        onMouseDown={noFocusScroll}
         onClick={() => onTypesChange([])}
       >
         All
@@ -55,7 +50,6 @@ const BoardListControls = ({
             type="button"
             className={`board-chip${active ? " is-active" : ""}`}
             aria-pressed={active}
-            onMouseDown={noFocusScroll}
             onClick={() => toggleType(type)}
           >
             {PostTypeName.get(type)}

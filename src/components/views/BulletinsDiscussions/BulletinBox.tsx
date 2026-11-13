@@ -30,17 +30,6 @@ const BulletinBox = () => {
   );
   const [selectedTypes, updateSelectedTypes] = useState<PostType[]>([]);
 
-  const setTypes = (types: PostType[]) => {
-    const scrollEl = document.querySelector(".layout-scroll");
-    const top = scrollEl instanceof HTMLElement ? scrollEl.scrollTop : null;
-    updateSelectedTypes(types);
-    if (scrollEl instanceof HTMLElement && top != null) {
-      requestAnimationFrame(() => {
-        scrollEl.scrollTop = top;
-      });
-    }
-  };
-
   const loadThreads = useCallback(async () => {
     if (!wso.isAuthenticated()) {
       updateThreads([]);
@@ -69,7 +58,7 @@ const BulletinBox = () => {
       <div className="board-table-header">
         <BoardListControls
           selectedTypes={selectedTypes}
-          onTypesChange={setTypes}
+          onTypesChange={updateSelectedTypes}
         />
       </div>
       <div className="board-table-body">

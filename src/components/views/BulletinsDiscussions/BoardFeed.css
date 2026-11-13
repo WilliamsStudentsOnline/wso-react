@@ -10,7 +10,6 @@
   gap: 0.35rem;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
   min-width: 0;
   width: 100%;
 }
@@ -78,8 +77,6 @@
   border: 1px solid var(--border-table, #ccc);
   background: transparent;
   box-sizing: border-box;
-  overscroll-behavior: contain;
-  overflow-anchor: none;
 }
 
 .board-table-header {

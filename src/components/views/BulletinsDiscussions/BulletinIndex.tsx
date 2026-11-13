@@ -55,8 +55,6 @@ const BulletinIndex = () => {
   );
 
   const setTypes = (types: PostType[]) => {
-    const scrollEl = document.querySelector(".layout-scroll");
-    const top = scrollEl instanceof HTMLElement ? scrollEl.scrollTop : null;
     updateSelectedTypes(types);
     updatePage(0);
     const next = new URLSearchParams(searchParams);
@@ -66,12 +64,8 @@ const BulletinIndex = () => {
       next.set("types", types.join(","));
     }
     setSearchParams(next, { replace: true });
-    if (scrollEl instanceof HTMLElement && top != null) {
-      requestAnimationFrame(() => {
-        scrollEl.scrollTop = top;
-      });
-    }
   };
+
   const loadThreads = useCallback(
     async (pageIndex: number) => {
       const params = {
