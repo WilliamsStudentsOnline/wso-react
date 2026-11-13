@@ -24,15 +24,15 @@ export const boardTypePathSegment = (apiType?: string): string => {
 
 export const boardThreadPath = (thread: BoardThread): string => {
   const type = boardTypePathSegment(thread.type);
-  return `/bulletins/${type}/${thread.id}`;
+  return `/bulletin/${type}/${thread.id}`;
 };
 
 /** After delete / leave thread — type index or filtered feed. */
 export const boardFeedPathForType = (apiType?: string): string => {
   const type = boardTypePathSegment(apiType);
-  if (!type) return "/bulletins";
-  if (type === PostType.Discussions) return "/bulletins?types=discussions";
-  return `/bulletins/${type}`;
+  if (!type) return "/bulletin";
+  if (type === PostType.Discussions) return "/bulletin?types=discussions";
+  return `/bulletin/${type}`;
 };
 
 export const boardThreadTypeLabel = (thread: BoardThread): string => {

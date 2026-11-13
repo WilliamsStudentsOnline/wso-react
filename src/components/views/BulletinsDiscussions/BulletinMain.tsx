@@ -21,9 +21,9 @@ const TypeFilteredIndex = () => {
     return <Error404 />;
   }
   if (type === PostType.Discussions) {
-    return <Navigate to="/bulletins?types=discussions" replace />;
+    return <Navigate to="/bulletin?types=discussions" replace />;
   }
-  return <Navigate to={`/bulletins?types=${type}`} replace />;
+  return <Navigate to={`/bulletin?types=${type}`} replace />;
 };
 
 const BulletinMain = () => {

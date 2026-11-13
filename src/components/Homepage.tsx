@@ -257,7 +257,7 @@ const Homepage = () => {
         <article className="home-bulletins-row">
           <div className="home-bulletins-main">
             <h3 className="home-bulletins-heading">
-              <Link to="/bulletins">Bulletin</Link>
+              <Link to="/bulletin">Bulletin</Link>
             </h3>
             <BulletinBox />
           </div>
