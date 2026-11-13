@@ -12,14 +12,6 @@ import "./AdminJobs.css";
 
 const ALL_RUNS = "__all__";
 
-// required params / file upload not wired in the run dialog yet
-const RUN_UNSUPPORTED = new Set([
-  "user-home-info",
-  "frosh-photos",
-  "dorms-update",
-  "user-csv-data",
-]);
-
 const formatWhen = (value?: string) => {
   if (!value) return null;
   const d = new Date(value);
@@ -338,7 +330,6 @@ const AdminJobs = () => {
                   </tr>
                   {jobs.map((job) => {
                     const name = job.name || "";
-                    const runBlocked = RUN_UNSUPPORTED.has(name);
                     return (
                       <tr
                         key={name}
@@ -362,20 +353,11 @@ const AdminJobs = () => {
                             <button
                               type="button"
                               className="admin-jobs__icon-btn admin-jobs__icon-btn--run"
-                              aria-label={
-                                runBlocked
-                                  ? `Run ${name} unavailable`
-                                  : `Run ${name}`
-                              }
-                              title={
-                                runBlocked
-                                  ? "Manual run needs params not supported in the UI yet"
-                                  : "Review params, then enqueue"
-                              }
-                              disabled={runBlocked || busy === `run:${name}`}
+                              aria-label={`Run ${name}`}
+                              title="Review params, then enqueue"
+                              disabled={busy === `run:${name}`}
                               onClick={(event) => {
                                 event.stopPropagation();
-                                if (runBlocked) return;
                                 openRunForm(job);
                               }}
                             >
