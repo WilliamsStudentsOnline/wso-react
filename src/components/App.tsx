@@ -1,4 +1,3 @@
-// React imports
 import React, { Suspense, lazy, useEffect, useState } from "react";
 
 // Component Imports
@@ -17,9 +16,14 @@ import {
 } from "../lib/authSlice";
 import { useAppSelector, useAppDispatch } from "../lib/store";
 
-import { Routes, Route, useNavigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 
-// Additional Imports
 import { tokenIsExpired } from "../lib/axiosAuth";
 import jwtDecode from "jwt-decode";
 import RequireScope from "../router-permissions";
@@ -50,6 +54,14 @@ const DiscussionMain = lazy(
   () => import("./views/BulletinsDiscussions/DiscussionMain")
 );
 const AdminMain = lazy(() => import("./views/Admin/AdminMain"));
+
+const BulletinsPathRedirect = () => {
+  const location = useLocation();
+  const to = `${location.pathname.replace(/^\/bulletins/, "/bulletin")}${
+    location.search
+  }`;
+  return <Navigate to={to} replace />;
+};
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -177,7 +189,8 @@ const App = () => {
               </RequireScope>
             }
           />
-          <Route path="bulletins/:type/*" element={<BulletinMain />} />
+          <Route path="bulletin/*" element={<BulletinMain />} />
+          <Route path="bulletins/*" element={<BulletinsPathRedirect />} />
           <Route path="discussions/*" element={<DiscussionMain />} />
           <Route
             path="factrak/*"

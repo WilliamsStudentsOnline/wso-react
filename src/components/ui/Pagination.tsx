@@ -40,7 +40,6 @@ const Pagination: React.FC<PaginationProps> = ({
               Array(Math.ceil(total / perPage)),
               (_e, i) => i + 1
             )}
-            style={{ display: "inline" }}
           />
           of&nbsp;
           {Math.ceil(total / perPage)}
