@@ -148,7 +148,6 @@ const BulletinForm = () => {
           title,
           body,
           repliesEnabled: true,
-          // discussions stay undated; other types get startsAt
           ...(type !== PostType.Discussions
             ? { startsAt: dateAdjusted.toISOString() }
             : {}),

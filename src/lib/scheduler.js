@@ -136,18 +136,14 @@ const getDefaultSemesterIndex = () => {
   return result;
 };
 
-/** Scheduler / catalog default — prereg-aware. */
 export const DEFAULT_SEMESTER_INDEX = getDefaultSemesterIndex();
 
-/**
- * Homepage "Today" semester — what's in session now (not registration):
- * Fall = Sep–Dec, Winter Study = Jan, Spring = Feb–May, Jun–Aug → Fall.
- */
+/** In-session term for homepage Today (not registration windows). */
 export const getCurrentTermSemesterIndex = () => {
-  const month = new Date().getMonth(); // 0 = Jan … 11 = Dec
-  if (month === 0) return 1; // January → Winter
-  if (month >= 1 && month <= 4) return 2; // Feb–May → Spring
-  return 0; // Jun–Dec → Fall
+  const month = new Date().getMonth();
+  if (month === 0) return 1;
+  if (month >= 1 && month <= 4) return 2;
+  return 0;
 };
 
 export const CURRENT_TERM_SEMESTER_INDEX = getCurrentTermSemesterIndex();

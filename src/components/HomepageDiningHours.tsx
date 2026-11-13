@@ -329,7 +329,6 @@ const HomepageSnarRow = ({
     </span>
   ) : null;
 
-  // Name cell is on the Whitman's meal row above (rowSpan), like Research hours.
   return (
     <tr className="homepage-dining-snar-row">
       <td

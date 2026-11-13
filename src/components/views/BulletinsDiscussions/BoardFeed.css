@@ -27,7 +27,6 @@
   cursor: pointer;
   white-space: nowrap;
   flex: 0 0 auto;
-  /* global `button { min-width: 8rem }` makes filter chips artificially wide */
   min-width: 0;
   width: max-content;
   text-transform: none;
@@ -39,7 +38,6 @@
 }
 
 .board-chip.is-active {
-  /* brand-bar stays the header purple in dark mode; brand-primary lightens */
   background: var(--brand-bar, #704794);
   border-color: var(--brand-bar, #704794);
   color: var(--text-on-brand, #fff);
@@ -49,7 +47,6 @@
   cursor: default;
 }
 
-/* Filter chips sitting in the purple table header */
 .board-table-header .board-type-chips {
   margin: 0;
   padding-bottom: 0;
@@ -206,7 +203,6 @@ a.board-table-title:hover,
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 2px;
-  /* cancel global `button { min-width: 8rem }` which centers the label */
   min-width: 0;
   width: auto;
   align-self: flex-end;
@@ -246,7 +242,6 @@ a.board-table-title:hover,
   width: 100%;
 }
 
-/* Thread show: closer to prior body size */
 .discussion-thread .discussion-post .markdown-content {
   font-size: 1.05em;
   line-height: 1.55;

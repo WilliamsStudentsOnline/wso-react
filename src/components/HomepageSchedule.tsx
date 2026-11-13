@@ -104,7 +104,6 @@ const HomepageSchedule = () => {
     };
   }, [added.length, dispatch]);
 
-  // Calendar "in session now" — not the scheduler's prereg default.
   const semester = SEMESTERS[CURRENT_TERM_SEMESTER_INDEX];
   const today = new Date();
   const dayLetter = DAY_LETTERS[today.getDay()] || "";
