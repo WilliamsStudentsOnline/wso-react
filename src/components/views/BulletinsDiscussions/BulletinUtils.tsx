@@ -3,7 +3,6 @@ import { PostType, PostTypeName } from "../../../lib/types";
 
 export type BoardThread = ModelsBoardThread;
 
-/** Board API uses singular `discussion`; FE routes keep plural `discussions`. */
 export const boardApiType = (type: PostType | string): string => {
   if (type === PostType.Discussions || type === "discussions") {
     return "discussion";
@@ -17,7 +16,6 @@ export const postTypeFromApi = (apiType?: string): PostType | undefined => {
   return Object.values(PostType).find((t) => t === apiType);
 };
 
-/** FE route segment for a thread type (`discussion` → `discussions`). */
 export const boardTypePathSegment = (apiType?: string): string => {
   return postTypeFromApi(apiType) ?? apiType ?? "";
 };
@@ -27,7 +25,6 @@ export const boardThreadPath = (thread: BoardThread): string => {
   return `/bulletin/${type}/${thread.id}`;
 };
 
-/** After delete / leave thread — type index or filtered feed. */
 export const boardFeedPathForType = (apiType?: string): string => {
   const type = boardTypePathSegment(apiType);
   if (!type) return "/bulletin";
@@ -58,7 +55,6 @@ export const boardThreadTitle = (thread: BoardThread) => {
 const startOfLocalDay = (d: Date) =>
   new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
-/** Relative list date: Today / Yesterday / N days ago / absolute. */
 export const formatBoardDate = (raw?: string | Date | null) => {
   const absoluteOptions: Intl.DateTimeFormatOptions = {
     weekday: "short",
@@ -101,8 +97,3 @@ export const boardThreadAuthor = (thread: BoardThread) => {
   if (thread.exUserName) return thread.exUserName;
   return "WSO User";
 };
-
-/** @deprecated use boardThreadTitle */
-export const generateBulletinTitle = boardThreadTitle;
-/** @deprecated use boardThreadDate */
-export const generateBulletinDate = boardThreadDate;

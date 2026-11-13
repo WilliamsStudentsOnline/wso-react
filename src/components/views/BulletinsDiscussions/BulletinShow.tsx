@@ -1,14 +1,11 @@
-// React imports
 import React, { useState, useEffect } from "react";
 import { Button, CommentCard, Line, Paragraph } from "../../ui";
 import Markdown from "markdown-to-jsx";
 import DiscussionPost, { DiscussionPostSkeleton } from "./DiscussionPost";
 
-// Redux and Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getCurrUser, getWSO } from "../../../lib/authSlice";
 
-// Additional Imports
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   BoardThread,

@@ -1,15 +1,12 @@
-// React imports
 import React from "react";
 import BulletinLayout from "./BulletinLayout";
 import BulletinIndex from "./BulletinIndex";
 import BulletinShow from "./BulletinShow";
 import BulletinForm from "./BulletinForm";
 
-// Redux imports
 import { getAPIToken } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
 
-// External Imports
 import { Routes, Route, Navigate, useParams } from "react-router-dom";
 import Error404 from "../Errors/Error404";
 import RequireScope from "../../../router-permissions";

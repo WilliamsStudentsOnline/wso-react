@@ -1,12 +1,9 @@
-// React imports
 import React, { useState, useEffect } from "react";
 
-// Redux and routing imports
 import { getWSO } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-// Additional Imports
 import DatePicker from "react-date-picker";
 /// Keep this after the "react-date-picker" import so that this css style will take priority.
 import "../../stylesheets/DatePicker.css";
@@ -26,15 +23,10 @@ const BulletinForm = () => {
     (searchParams.get("type") as PostType | null) ||
     PostType.Announcements;
 
-  // For non-rides / non-discussion
   const [title, updateTitle] = useState("");
-
-  // For rides
   const [source, updateSource] = useState("");
   const [destination, updateDestination] = useState("");
   const [offer, updateOffer] = useState(false);
-
-  // Common
   const [startDate, updateStartDate] = useState(new Date());
   const [type, updateType] = useState<PostType>(
     Object.values(PostType).includes(initialType)

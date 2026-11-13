@@ -59,7 +59,6 @@ export const PostTypeName: Map<PostType, string> = new Map([
   [PostType.Rides, "Rides"],
 ]);
 
-/** Singular labels for create/edit type pickers (filters stay plural). */
 export const PostTypeSingular: Map<PostType, string> = new Map([
   [PostType.Discussions, "Discussion"],
   [PostType.Announcements, "Announcement"],

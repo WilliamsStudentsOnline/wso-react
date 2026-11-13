@@ -1,4 +1,3 @@
-// React imports
 import React, { Suspense, lazy, useEffect, useState } from "react";
 
 // Component Imports
@@ -25,7 +24,6 @@ import {
   useLocation,
 } from "react-router-dom";
 
-// Additional Imports
 import { tokenIsExpired } from "../lib/axiosAuth";
 import jwtDecode from "jwt-decode";
 import RequireScope from "../router-permissions";

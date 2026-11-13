@@ -1,7 +1,5 @@
-// React imports
 import React, { ReactNode } from "react";
 
-// Additional imports
 import { ServiceHeader, ContentPane, ServiceTab } from "../../ui";
 
 const BulletinLayout = ({ children }: { children: ReactNode }) => {

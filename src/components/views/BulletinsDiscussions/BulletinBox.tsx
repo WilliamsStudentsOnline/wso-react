@@ -1,14 +1,9 @@
-// React imports
 import React, { useCallback, useEffect, useState } from "react";
 import "./BoardFeed.css";
 import { Line } from "../../ui";
 import BoardListControls from "./BoardListControls";
-
-// Redux/Routing imports
 import { getWSO } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
-
-// Additional imports
 import { Link } from "react-router-dom";
 import { ModelsBoardThread } from "wso-api-client/lib/services/types";
 import { PostType } from "../../../lib/types";
@@ -22,7 +17,6 @@ import {
 
 const HOME_LIMIT = 6;
 
-/** Homepage preview: recent feed with type chips. */
 const BulletinBox = () => {
   const wso = useAppSelector(getWSO);
   const [threads, updateThreads] = useState<ModelsBoardThread[] | undefined>(

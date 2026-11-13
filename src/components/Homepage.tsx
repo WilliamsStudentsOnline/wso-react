@@ -1,7 +1,5 @@
-// React imports
 import React, { useEffect, useRef, useState } from "react";
 
-// Component imports
 import "./stylesheets/Homepage.css";
 import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 import HomepageSchedule from "./HomepageSchedule";

@@ -1,13 +1,10 @@
-// React imports
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, CommentCard, Line, Paragraph } from "../../ui";
 
-// Redux imports
 import { useAppSelector } from "../../../lib/store";
 import { getCurrUser, getWSO } from "../../../lib/authSlice";
 
-// Additional imports
 import { Link, useNavigate } from "react-router-dom";
 import Markdown from "markdown-to-jsx";
 import { formatBoardDate } from "./BulletinUtils";

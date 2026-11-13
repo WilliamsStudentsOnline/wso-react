@@ -76,7 +76,6 @@ const buildTodaySlots = (courses: ScheduleCourse[], dayLetter: string) => {
   return slots;
 };
 
-/** Compact "today" view of Course Scheduler added courses. */
 const HomepageSchedule = () => {
   const dispatch = useAppDispatch();
   const added = useAppSelector(getAddedCourses) as ScheduleCourse[];
@@ -95,9 +94,7 @@ const HomepageSchedule = () => {
       .then((data) => {
         if (!cancelled) dispatch(doLoadCatalog(data));
       })
-      .catch(() => {
-        /* empty schedule is fine */
-      })
+      .catch(() => undefined)
       .finally(() => {
         if (!cancelled) setLoadingCatalog(false);
       });

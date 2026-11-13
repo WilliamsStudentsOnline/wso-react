@@ -9,7 +9,6 @@ export type CursorPaginationProps = {
   onNext: () => void;
 };
 
-/** Prev/next only — for cursor feeds where total page count is unknown. */
 const CursorPagination = ({
   hasPrev,
   hasNext,

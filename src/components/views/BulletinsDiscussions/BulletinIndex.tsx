@@ -1,13 +1,10 @@
-// React imports
 import React, { useCallback, useEffect, useState } from "react";
 import { EmptyState, Line, Pagination } from "../../ui";
 import BoardListControls from "./BoardListControls";
 
-// Redux and routing imports
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
 
-// Additional imports
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { PostType } from "../../../lib/types";
 import {
@@ -38,7 +35,6 @@ const excerpt = (body?: string) => {
   return trimmed.length > 180 ? `${trimmed.slice(0, 180)}…` : trimmed;
 };
 
-/** Unified board feed — optional ?types=announcement,job filters. */
 const BulletinIndex = () => {
   const wso = useAppSelector(getWSO);
   const currUser = useAppSelector(getCurrUser);
