@@ -3756,24 +3756,6 @@ axios@^0.34.0:
     form-data "^4.0.4"
     proxy-from-env "^1.1.0"
 
-axios@^0.34.0:
-  version "0.34.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.34.0.tgz#8ecc4e5d865e3f36c9dc432ee490a88e8dd009c2"
-  integrity sha512-CkOmqy7BaT4VC9+wRUmSM3LVwCkKK3UYc7koEqIHWRpOTJypwdNctaVOgnOjhHP3599Ubq2K8KqYwfC7c8NdPQ==
-  dependencies:
-    follow-redirects "^1.15.4"
-    form-data "^4.0.4"
-    proxy-from-env "^1.1.0"
-
-axios@^0.34.0:
-  version "0.34.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.34.0.tgz#8ecc4e5d865e3f36c9dc432ee490a88e8dd009c2"
-  integrity sha512-CkOmqy7BaT4VC9+wRUmSM3LVwCkKK3UYc7koEqIHWRpOTJypwdNctaVOgnOjhHP3599Ubq2K8KqYwfC7c8NdPQ==
-  dependencies:
-    follow-redirects "^1.15.4"
-    form-data "^4.0.4"
-    proxy-from-env "^1.1.0"
-
 axobject-query@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/axobject-query/-/axobject-query-2.2.0.tgz#943d47e10c0b704aa42275e20edf3722648989be"
@@ -11579,9 +11561,9 @@ ws@^8.4.2:
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.8.1.tgz#5dbad0feb7ade8ecc99b830c1d77c913d4955ff0"
   integrity sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==
 
-"wso-api-client@git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#v2026.10.29":
+"wso-api-client@git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#v2026.11.13":
   version "24.11.10"
-  resolved "git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#4f0ef97a0129d183900cd878ed6253007f627f7b"
+  resolved "git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#6e14f28c78de0ae254ee8fea8d1586ab3328b6c4"
   dependencies:
     axios "^0.34.0"
     jwt-decode "^3.1.2"

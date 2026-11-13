@@ -6,6 +6,7 @@ const tabs = [
   { to: "/admin", label: "Tasks", end: true },
   { to: "/admin/banner", label: "Banner" },
   { to: "/admin/feedback", label: "Feedback" },
+  { to: "/admin/jobs", label: "Jobs" },
 ];
 
 const AdminLayout = ({ children }: { children: React.ReactElement }) => {
