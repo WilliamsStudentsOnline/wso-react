@@ -4,6 +4,7 @@ import AdminLayout from "./AdminLayout";
 import AdminTasks from "./AdminTasks";
 import AdminBanner from "./AdminBanner";
 import AdminFeedback from "./AdminFeedback";
+import AdminJobs from "./AdminJobs";
 import Error404 from "../Errors/Error404";
 
 const AdminMain = () => {
@@ -13,6 +14,7 @@ const AdminMain = () => {
         <Route index element={<AdminTasks />} />
         <Route path="banner" element={<AdminBanner />} />
         <Route path="feedback" element={<AdminFeedback />} />
+        <Route path="jobs" element={<AdminJobs />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
     </AdminLayout>
