@@ -491,30 +491,36 @@ button.admin-jobs__section-toggle:hover .admin-jobs__section-label {
   flex: 0 0 auto;
   width: 1.75rem;
   height: 1.75rem;
-  opacity: 0.72;
 }
 
 .admin-jobs__status-icon .material-icons {
   font-size: 1.15rem;
   line-height: 1;
+  color: inherit;
 }
 
-.admin-jobs__status-icon--succeeded {
-  color: #3dd68c;
+.admin-jobs__status-icon--succeeded,
+.admin-jobs__status-icon--succeeded .material-icons {
+  color: #3dd68c !important;
 }
 
 .admin-jobs__status-icon--failed,
-.admin-jobs__status-icon--canceled {
-  color: #ff7b72;
+.admin-jobs__status-icon--failed .material-icons,
+.admin-jobs__status-icon--canceled,
+.admin-jobs__status-icon--canceled .material-icons {
+  color: #ff7b72 !important;
 }
 
 .admin-jobs__status-icon--running,
-.admin-jobs__status-icon--pending {
-  color: #79c0ff;
+.admin-jobs__status-icon--running .material-icons,
+.admin-jobs__status-icon--pending,
+.admin-jobs__status-icon--pending .material-icons {
+  color: #79c0ff !important;
 }
 
-.admin-jobs__status-icon--unknown {
-  color: var(--text-muted, #888);
+.admin-jobs__status-icon--unknown,
+.admin-jobs__status-icon--unknown .material-icons {
+  color: var(--text-muted, #888) !important;
 }
 
 .admin-jobs__log {
