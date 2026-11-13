@@ -12,13 +12,8 @@ import "./AdminJobs.css";
 
 const ALL_RUNS = "__all__";
 
-// required params / file upload not wired in the run dialog yet
-const RUN_UNSUPPORTED = new Set([
-  "user-home-info",
-  "frosh-photos",
-  "dorms-update",
-  "user-csv-data",
-]);
+const isBackfillJob = (job: AdminJobInfo) =>
+  (job.name || "").startsWith("backfill_");
 
 const formatWhen = (value?: string) => {
   if (!value) return null;
@@ -42,13 +37,16 @@ const initialParamValues = (job: AdminJobInfo): Record<string, string> => {
   const values: Record<string, string> = {};
   for (const p of job.params || []) {
     if (!p.name) continue;
-    values[p.name] = p.default != null && p.default !== "" ? p.default : "";
+    if (p.default != null && p.default !== "") {
+      values[p.name] = p.default;
+    } else if (paramType(p) === "bool") {
+      values[p.name] = "false";
+    } else {
+      values[p.name] = "";
+    }
   }
   return values;
 };
-
-const boolNeedsChoice = (p: RegistryParam) =>
-  paramType(p) === "bool" && (p.default == null || p.default === "");
 
 const missingRequired = (
   job: AdminJobInfo,
@@ -83,6 +81,7 @@ const AdminJobs = () => {
   const [runParams, setRunParams] = useState<Record<string, string>>({});
   const [runFormError, setRunFormError] = useState<string | null>(null);
   const [copiedLogId, setCopiedLogId] = useState<number | null>(null);
+  const [backfillsOpen, setBackfillsOpen] = useState(false);
   const softRunsOnSelectRef = useRef(false);
 
   const fail = useCallback(
@@ -141,6 +140,12 @@ const AdminJobs = () => {
     const soft = softRunsOnSelectRef.current;
     softRunsOnSelectRef.current = false;
     void loadRunsRef.current(selected, soft ? { soft: true } : undefined);
+  }, [selected]);
+
+  useEffect(() => {
+    if (selected && selected !== ALL_RUNS && selected.startsWith("backfill_")) {
+      setBackfillsOpen(true);
+    }
   }, [selected]);
 
   const selectJob = (name: string) => {
@@ -286,6 +291,47 @@ const AdminJobs = () => {
   const runsTitleRight =
     selected === ALL_RUNS ? "All jobs" : selectedJob?.name || selected || "";
   const allJobsView = selected === ALL_RUNS;
+  const regularJobs = jobs.filter((job) => !isBackfillJob(job));
+  const backfillJobs = jobs.filter(isBackfillJob);
+
+  const renderJobRow = (job: AdminJobInfo) => {
+    const name = job.name || "";
+    return (
+      <tr
+        key={name}
+        className={selected === name ? "admin-jobs__row--selected" : undefined}
+        onClick={() => selectJob(name)}
+      >
+        <td>
+          <div className="admin-jobs__job-row">
+            <div className="admin-jobs__job-link">
+              <strong>{name}</strong>
+              {job.description && (
+                <span className="admin-jobs__desc">{job.description}</span>
+              )}
+            </div>
+            <button
+              type="button"
+              className="admin-jobs__icon-btn admin-jobs__icon-btn--run"
+              aria-label={`Run ${name}`}
+              title="Review params, then enqueue"
+              disabled={busy === `run:${name}`}
+              onClick={(event) => {
+                event.stopPropagation();
+                openRunForm(job);
+              }}
+            >
+              <span className="material-icons" aria-hidden>
+                play_arrow
+              </span>
+            </button>
+          </div>
+        </td>
+        <td className="admin-jobs__meta">{scheduleLabel(job)}</td>
+      </tr>
+    );
+  };
+
   return (
     <div className="admin-jobs">
       {loadingJobs ? (
@@ -336,61 +382,39 @@ const AdminJobs = () => {
                     </td>
                     <td className="admin-jobs__meta" />
                   </tr>
-                  {jobs.map((job) => {
-                    const name = job.name || "";
-                    const runBlocked = RUN_UNSUPPORTED.has(name);
-                    return (
-                      <tr
-                        key={name}
-                        className={
-                          selected === name
-                            ? "admin-jobs__row--selected"
-                            : undefined
-                        }
-                        onClick={() => selectJob(name)}
-                      >
-                        <td>
-                          <div className="admin-jobs__job-row">
-                            <div className="admin-jobs__job-link">
-                              <strong>{name}</strong>
-                              {job.description && (
-                                <span className="admin-jobs__desc">
-                                  {job.description}
-                                </span>
-                              )}
-                            </div>
-                            <button
-                              type="button"
-                              className="admin-jobs__icon-btn admin-jobs__icon-btn--run"
-                              aria-label={
-                                runBlocked
-                                  ? `Run ${name} unavailable`
-                                  : `Run ${name}`
-                              }
-                              title={
-                                runBlocked
-                                  ? "Manual run needs params not supported in the UI yet"
-                                  : "Review params, then enqueue"
-                              }
-                              disabled={runBlocked || busy === `run:${name}`}
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                if (runBlocked) return;
-                                openRunForm(job);
-                              }}
-                            >
-                              <span className="material-icons" aria-hidden>
-                                play_arrow
-                              </span>
-                            </button>
-                          </div>
-                        </td>
-                        <td className="admin-jobs__meta">
-                          {scheduleLabel(job)}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {regularJobs.map(renderJobRow)}
+                  {backfillJobs.length > 0 && (
+                    <tr className="admin-jobs__section-row">
+                      <td colSpan={2}>
+                        <button
+                          type="button"
+                          className="admin-jobs__section-toggle"
+                          aria-expanded={backfillsOpen}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setBackfillsOpen((open) => !open);
+                          }}
+                        >
+                          <span className="admin-jobs__section-label">
+                            Backfills
+                          </span>
+                          <span
+                            className="admin-jobs__section-count"
+                            aria-label={`${backfillJobs.length} backfill jobs`}
+                          >
+                            {backfillJobs.length}
+                          </span>
+                          <span
+                            className="material-icons admin-jobs__section-arrow"
+                            aria-hidden
+                          >
+                            {backfillsOpen ? "expand_less" : "expand_more"}
+                          </span>
+                        </button>
+                      </td>
+                    </tr>
+                  )}
+                  {backfillsOpen && backfillJobs.map(renderJobRow)}
                 </tbody>
               </table>
             </div>
@@ -598,18 +622,7 @@ const AdminJobs = () => {
                           </span>
                         ) : null}
                       </span>
-                      {type === "bool" && boolNeedsChoice(p) ? (
-                        <Select
-                          value={runParams[p.name] || ""}
-                          options={["true", "false"]}
-                          valueList={["true", "false"]}
-                          fillerOption="(choose)"
-                          fillerValue=""
-                          onChange={(event) =>
-                            setParam(p.name as string, event.target.value)
-                          }
-                        />
-                      ) : type === "bool" ? (
+                      {type === "bool" ? (
                         <input
                           id={id}
                           type="checkbox"
