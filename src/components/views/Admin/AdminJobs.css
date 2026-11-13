@@ -295,6 +295,66 @@ button.admin-jobs__icon-btn:disabled {
   cursor: pointer;
 }
 
+.admin-jobs__list tbody tr.admin-jobs__section-row {
+  cursor: default;
+}
+
+.admin-jobs__list tbody tr.admin-jobs__section-row td,
+.admin-jobs__list tbody tr.admin-jobs__section-row:hover td {
+  background: transparent !important;
+  padding: 0.55rem 0.75rem 0.35rem;
+  border-bottom: 1px solid var(--border-table, #444);
+}
+
+button.admin-jobs__section-toggle {
+  appearance: none !important;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.45rem;
+  width: auto !important;
+  max-width: 100%;
+  margin: 0 !important;
+  padding: 0.15rem 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  cursor: pointer;
+  font: inherit;
+}
+
+button.admin-jobs__section-toggle:hover .admin-jobs__section-label {
+  opacity: 0.85;
+}
+
+.admin-jobs__section-label {
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.admin-jobs__section-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--brand-bar, #704794) 18%, transparent);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-jobs__section-arrow {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+}
+
 .admin-jobs__list tbody tr td,
 .admin-jobs__list tbody tr:nth-child(even) td,
 .admin-jobs__list tbody tr:nth-child(odd) td {
