@@ -91,8 +91,6 @@ const BulletinIndex = () => {
     [wso, selectedTypes, navigateTo]
   );
 
-  // Load from page — do not reset page when loadThreads identity changes
-  // (e.g. token refresh), or arrow clicks snap back to page 0.
   useEffect(() => {
     loadThreads(page);
   }, [page, loadThreads]);

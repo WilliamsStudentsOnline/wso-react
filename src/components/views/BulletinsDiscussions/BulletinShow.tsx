@@ -181,7 +181,6 @@ const BulletinShow = () => {
             const remaining = (posts || []).filter(
               (p) => p.id !== deletedPost.id
             );
-            // OP (or last post) delete cascades to the whole thread
             if (deletedPost.isOP || remaining.length === 0) {
               navigateTo(boardFeedPathForType(params.type || thread?.type));
               return;
@@ -192,7 +191,6 @@ const BulletinShow = () => {
       ));
     }
 
-    // Fallback when API has body but no posts array
     if (thread?.body) {
       return (
         <CommentCard

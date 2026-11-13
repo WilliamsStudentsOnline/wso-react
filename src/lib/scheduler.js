@@ -104,27 +104,16 @@ export const dayConversionGCal = (days) => {
   return result.join(",");
 };
 
-/*
-  Course Scheduler default (registration-oriented), based on prereg windows:
-
-  1. Start of Fall Semester - 2 Weeks before Spring Preregistration: FALL (0)
-  2. 2 Weeks before Spring Pre-registration to Winter Registration: SPRING (2)
-  3. Winter Registration to the beginning of Winter Study: WINTER (1)
-  4. 1 week before Winter ends to 2 Weeks before Fall Pre-registration: SPRING (2)
-  5. 2 Weeks before Fall Pre-registration to next year: FALL (0)
-*/
 const getDefaultSemesterIndex = () => {
   let result = 0;
 
   const now = new Date();
-  // Check if Winter (Period 3, above)
   if (
     new Date(RFC3339FormattedDate(DATES.PREREG.WINTER)) < now &&
     now < new Date(RFC3339FormattedDate(DATES.Winter.START))
   ) {
     result = 1;
   } else if (
-    // Check if Spring (Periods 2 and 4, above)
     addDays(new Date(RFC3339FormattedDate(DATES.PREREG.SPRING)), -14) < now &&
     now < addDays(new Date(RFC3339FormattedDate(DATES.PREREG.FALL)), -14)
   ) {
@@ -138,7 +127,6 @@ const getDefaultSemesterIndex = () => {
 
 export const DEFAULT_SEMESTER_INDEX = getDefaultSemesterIndex();
 
-/** In-session term for homepage Today (not registration windows). */
 export const getCurrentTermSemesterIndex = () => {
   const month = new Date().getMonth();
   if (month === 0) return 1;

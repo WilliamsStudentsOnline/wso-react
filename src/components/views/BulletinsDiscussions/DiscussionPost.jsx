@@ -53,7 +53,6 @@ const DiscussionPost = ({ post, onDeleted }) => {
 
     try {
       await wso.boardService.deleteBoardReply(post.id);
-      // OP delete cascades to the whole thread — parent should navigate away
       if (typeof onDeleted === "function") {
         onDeleted(post);
       } else {
