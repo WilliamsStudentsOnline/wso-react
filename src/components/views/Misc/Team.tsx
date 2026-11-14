@@ -8,7 +8,9 @@ const BoardMap = {
   "Nathaniel Flores": 14643,
 };
 
-const ContributorMap = {};
+const ContributorMap = {
+  "Charlie Tharas": 14774,
+};
 
 const constructFacebookLink = (userID: number) => {
   return `/facebook/users/${userID}`;
