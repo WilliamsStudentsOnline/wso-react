@@ -26,6 +26,21 @@ const errorMessage = (error: unknown, fallback: string) => {
   return fallback;
 };
 
+const isUnitedStates = (country?: string | null) =>
+  ["united states", "united states of america", "us", "usa"].includes(
+    (country ?? "").trim().toLowerCase()
+  );
+
+const formatHomeLocation = (user?: ResponsesGetUserResponseUser) => {
+  const city = user?.homeTown?.trim();
+  if (!user || !city) return "";
+
+  const region = isUnitedStates(user.homeCountry)
+    ? user.homeState?.trim()
+    : user.homeCountry?.trim();
+  return region ? `${city}, ${region}` : city;
+};
+
 const FacebookMe = () => {
   const dispatch = useAppDispatch();
   const currUser = useAppSelector(getCurrUser);
@@ -37,6 +52,12 @@ const FacebookMe = () => {
   const [tags, updateTags] = useState<string[]>([]);
   const [visible, setVisible] = useState(currUser?.visible);
   const [homeVisible, setHomeVisible] = useState(currUser?.homeVisible);
+  const [homeTown, setHomeTown] = useState("");
+  const [homeState, setHomeState] = useState("");
+  const [homeCountry, setHomeCountry] = useState("");
+  const [countries, setCountries] = useState<string[]>([]);
+  const [states, setStates] = useState<string[]>([]);
+  const [homeLocationError, setHomeLocationError] = useState("");
   const [offCycle, setOffCycle] = useState(currUser?.offCycle);
   const [pronounOverride, setPronounOverride] = useState("");
   const [peopleSoftPronoun, setPeopleSoftPronoun] = useState("");
@@ -44,6 +65,9 @@ const FacebookMe = () => {
   const [savedHomeVisible, setSavedHomeVisible] = useState(
     currUser?.homeVisible
   );
+  const [savedHomeTown, setSavedHomeTown] = useState("");
+  const [savedHomeState, setSavedHomeState] = useState("");
+  const [savedHomeCountry, setSavedHomeCountry] = useState("");
   const [savedOffCycle, setSavedOffCycle] = useState(currUser?.offCycle);
   const [savedPronounOverride, setSavedPronounOverride] = useState("");
 
@@ -59,6 +83,25 @@ const FacebookMe = () => {
 
     const load = async () => {
       try {
+        const countriesResponse = await wso.api.request(
+          "get",
+          "/api/v2/users/countries"
+        );
+        if (isMounted) setCountries(countriesResponse.data ?? []);
+      } catch {
+        if (isMounted) setCountries([]);
+      }
+      try {
+        const statesResponse = await wso.api.request(
+          "get",
+          "/api/v2/users/states"
+        );
+        if (isMounted) setStates(statesResponse.data ?? []);
+      } catch {
+        if (isMounted) setStates([]);
+      }
+
+      try {
         const userResponse = await wso.userService.getUser("me");
         const data = userResponse.data;
         if (!isMounted || !data) return;
@@ -70,9 +113,15 @@ const FacebookMe = () => {
         setPeopleSoftPronoun(override ? "" : data.pronoun ?? "");
         setVisible(data.visible);
         setHomeVisible(data.homeVisible);
+        setHomeTown(data.homeTown ?? "");
+        setHomeState(data.homeState ?? "");
+        setHomeCountry(data.homeCountry ?? "");
         setOffCycle(data.offCycle);
         setSavedVisible(data.visible);
         setSavedHomeVisible(data.homeVisible);
+        setSavedHomeTown(data.homeTown ?? "");
+        setSavedHomeState(data.homeState ?? "");
+        setSavedHomeCountry(data.homeCountry ?? "");
         setSavedOffCycle(data.offCycle);
         updateTags((data.tags ?? []).map((tag) => tag.name ?? ""));
 
@@ -116,17 +165,62 @@ const FacebookMe = () => {
     updateSubmitting(true);
 
     try {
+      const city = homeTown.trim();
+      const typedCountry = homeCountry.trim();
+      const matchedCountry = countries.find(
+        (candidate) => candidate.toLowerCase() === typedCountry.toLowerCase()
+      );
+      const country = matchedCountry ?? typedCountry;
+      const isUS = isUnitedStates(country);
+      const typedState = isUS ? homeState.trim() : "";
+      const matchedState = states.find(
+        (candidate) => candidate.toLowerCase() === typedState.toLowerCase()
+      );
+      const state = matchedState ?? typedState;
+      const locationParts = [city, state, country];
+
+      if (locationParts.some((part) => part.length > 255)) {
+        setHomeLocationError(
+          "City, state, and country must be 255 characters or fewer."
+        );
+        return;
+      }
+      if (city && isUS && !state) {
+        setHomeLocationError("Enter a state for a U.S. hometown.");
+        return;
+      }
+      if (city && !country) {
+        setHomeLocationError("Enter a country for an international hometown.");
+        return;
+      }
+      if (city && !matchedCountry) {
+        setHomeLocationError("Choose a country from the matching suggestions.");
+        return;
+      }
+      if (city && isUS && !matchedState) {
+        setHomeLocationError("Choose a state from the matching suggestions.");
+        return;
+      }
+      setHomeLocationError("");
+
       if (photoFile) {
         await wso.userService.updateUserPhoto("me", photoFile);
       }
 
       const trimmed = pronounOverride.trim();
-      const updateResponse = await wso.userService.updateUser("me", {
+      const updateParams: Parameters<typeof wso.userService.updateUser>[1] = {
         homeVisible,
+        homeTown: city,
+        homeState: city ? state : "",
+        homeCountry: city ? country : "",
         offCycle,
         visible,
         pronounOverride: trimmed === "" ? (null as unknown as string) : trimmed,
-      });
+      };
+      const updateResponse = await wso.userService.updateUser(
+        "me",
+        updateParams
+      );
 
       dispatch(updateUser(updateResponse.data));
       if (updateResponse.data) {
@@ -140,9 +234,15 @@ const FacebookMe = () => {
         }
         setVisible(next.visible);
         setHomeVisible(next.homeVisible);
+        setHomeTown(next.homeTown ?? "");
+        setHomeState(next.homeState ?? "");
+        setHomeCountry(next.homeCountry ?? "");
         setOffCycle(next.offCycle);
         setSavedVisible(next.visible);
         setSavedHomeVisible(next.homeVisible);
+        setSavedHomeTown(next.homeTown ?? "");
+        setSavedHomeState(next.homeState ?? "");
+        setSavedHomeCountry(next.homeCountry ?? "");
         setSavedOffCycle(next.offCycle);
       }
       setPhotoFile(null);
@@ -180,6 +280,9 @@ const FacebookMe = () => {
     Boolean(photoFile) ||
     Boolean(visible) !== Boolean(savedVisible) ||
     Boolean(homeVisible) !== Boolean(savedHomeVisible) ||
+    homeTown.trim() !== savedHomeTown.trim() ||
+    homeState.trim() !== savedHomeState.trim() ||
+    homeCountry.trim() !== savedHomeCountry.trim() ||
     Boolean(offCycle) !== Boolean(savedOffCycle) ||
     trimmedPronounOverride !== (savedPronounOverride ?? "").trim();
 
@@ -298,12 +401,7 @@ const FacebookMe = () => {
             {showHometown ? (
               <>
                 <h5>Hometown:</h5>
-                <h4>
-                  {profile?.homeTown},&nbsp;
-                  {profile?.homeCountry === "United States"
-                    ? profile?.homeState
-                    : profile?.homeCountry}
-                </h4>
+                <h4>{formatHomeLocation(profile)}</h4>
               </>
             ) : null}
           </aside>
@@ -380,6 +478,75 @@ const FacebookMe = () => {
                     Hide
                   </label>
                 </div>
+              </div>
+
+              <div className="facebook-me__hometown-fields">
+                <h4>Edit hometown</h4>
+                <label>
+                  City
+                  <input
+                    type="text"
+                    value={homeTown}
+                    maxLength={255}
+                    onChange={(event) => {
+                      setHomeTown(event.target.value);
+                      setHomeLocationError("");
+                    }}
+                    placeholder="Enter a town or city"
+                  />
+                </label>
+                <label>
+                  State (U.S. only)
+                  <input
+                    type="text"
+                    value={homeState}
+                    maxLength={255}
+                    list="facebook-me-state-options"
+                    autoComplete="off"
+                    disabled={!isUnitedStates(homeCountry)}
+                    onChange={(event) => {
+                      setHomeState(event.target.value);
+                      setHomeLocationError("");
+                    }}
+                    placeholder={
+                      isUnitedStates(homeCountry)
+                        ? "Enter a state"
+                        : "Choose United States to enter a state"
+                    }
+                  />
+                  <datalist id="facebook-me-state-options">
+                    {states.map((state) => (
+                      <option key={state} value={state} />
+                    ))}
+                  </datalist>
+                </label>
+                <label>
+                  Country
+                  <input
+                    type="text"
+                    value={homeCountry}
+                    maxLength={255}
+                    list="facebook-me-country-options"
+                    autoComplete="off"
+                    onChange={(event) => {
+                      const nextCountry = event.target.value;
+                      setHomeCountry(nextCountry);
+                      if (!isUnitedStates(nextCountry)) setHomeState("");
+                      setHomeLocationError("");
+                    }}
+                    placeholder="Enter a country"
+                  />
+                  <datalist id="facebook-me-country-options">
+                    {countries.map((country) => (
+                      <option key={country} value={country} />
+                    ))}
+                  </datalist>
+                </label>
+                {homeLocationError ? (
+                  <span className="facebook-me__location-error" role="alert">
+                    {homeLocationError}
+                  </span>
+                ) : null}
               </div>
 
               {currUser.type === userTypeStudent ? (
