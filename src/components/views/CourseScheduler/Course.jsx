@@ -96,7 +96,7 @@ const Course = ({
   added,
   hidden,
   course,
-  location,
+  location = "",
   onAdd,
   onRemove,
   onHide,
@@ -453,10 +453,6 @@ Course.propTypes = {
   course: PropTypes.object.isRequired,
   showFactrakScore: PropTypes.bool.isRequired,
   active: PropTypes.string,
-};
-
-Course.defaultProps = {
-  location: "",
 };
 
 const mapStateToProps = (state) => ({

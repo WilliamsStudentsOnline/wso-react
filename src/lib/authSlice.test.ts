@@ -78,7 +78,7 @@ describe("Authentication Reducer", () => {
   it("returns the initial state on initialization", () => {
     // Arrange
     const previousState = undefined;
-    const action = { type: undefined };
+    const action = { type: "unknown" };
 
     // Act
     const result = authReducer(previousState, action);
@@ -172,7 +172,7 @@ describe("Authentication Reducer", () => {
     };
     // deepFreeze(previousState);
 
-    const action = removeCredentials;
+    const action = removeCredentials();
     const changedState = authReducer(previousState, action);
 
     const expectedNewState = {

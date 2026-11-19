@@ -25,7 +25,13 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 
 dayjs.extend(customParseFormat);
 
-const Schedule = ({ added, unhidden, currSem, twelveHour, horizontal }) => {
+const Schedule = ({
+  added = [],
+  unhidden = [],
+  currSem,
+  twelveHour,
+  horizontal,
+}) => {
   const days = ["MON", "TUE", "WED", "THU", "FRI"];
   const filtered = unhidden.filter(
     (course) => course.semester === SEMESTERS[currSem]
@@ -373,11 +379,6 @@ Schedule.propTypes = {
   currSem: PropTypes.number.isRequired,
   twelveHour: PropTypes.bool.isRequired,
   horizontal: PropTypes.bool.isRequired,
-};
-
-Schedule.defaultProps = {
-  added: [],
-  unhidden: [],
 };
 
 const mapStateToProps = (state) => ({

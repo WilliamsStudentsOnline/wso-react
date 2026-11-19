@@ -81,6 +81,10 @@ module.exports = {
           "error",
           { functions: false },
         ],
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          { caughtErrors: "none" },
+        ],
       },
     },
   ],
