@@ -1,7 +1,7 @@
 module.exports = {
-  css: ["build/static/css/*.css"],
-  content: ["build/static/index.html", "build/static/js/*.js"],
-  out: ["build/static/css"],
+  css: ["build/assets/*.css"],
+  content: ["build/index.html", "build/assets/*.js"],
+  out: ["build/assets"],
   whitelistPatterns: [
     /^homepage-status-dot-/,
     /^dining-status-pill-/,
