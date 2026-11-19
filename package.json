@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.15.0",
-    "axios": "^0.34.0",
+    "axios": "^0.35.0",
     "classnames": "^2.3.1",
     "dayjs": "^1.10.7",
     "dom-to-image": "^2.6.0",
@@ -109,7 +109,7 @@
     ]
   },
   "resolutions": {
-    "axios": "^0.34.0",
+    "axios": "^0.35.0",
     "**/**/dot-prop": ">=5.2.0",
     "**/**/elliptic": ">=6.5.3",
     "**/**/kind-of": ">=6.0.3",
@@ -119,6 +119,8 @@
     "**/**/node-notifier": ">=8.0.1",
     "**/**/immer": ">=8.0.1",
     "@typescript-eslint/eslint-plugin": "^8.73.0",
-    "@typescript-eslint/parser": "^8.73.0"
+    "@typescript-eslint/parser": "^8.73.0",
+    "@babel/core": "^7.29.13",
+    "@babel/helper-compilation-targets": "^7.29.13"
   }
 }
