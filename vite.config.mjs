@@ -26,6 +26,12 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === "analyze" && visualizer({ open: true, gzipSize: true }),
   ],
+  define: {
+    global: "globalThis",
+  },
+  optimizeDeps: {
+    rolldownOptions: { transform: { define: { global: "globalThis" } } },
+  },
   server: {
     port: 3000,
     proxy: {
