@@ -36,8 +36,7 @@ export default defineConfig(({ mode }) => ({
     port: 3000,
     proxy: {
       "/api": apiProxy,
-      // note that we do not currently deploy image service on dev server
-      "/pic": prodProxy,
+      "/pic": apiProxy,
       // fetch JSONs from prod
       "/dining.json": prodProxy,
       "/library.json": prodProxy,

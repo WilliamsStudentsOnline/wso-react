@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import "../../stylesheets/Checkbox.css";
 
 // Simple checkbox component.
-const Checkbox = ({ onClick, checked }) => {
+const Checkbox = ({ onClick = null, checked }) => {
   return (
     <input type="checkbox" onChange={onClick} checked={checked !== false} />
   );
@@ -19,10 +19,6 @@ Checkbox.propTypes = {
     PropTypes.bool,
     PropTypes.string,
   ]).isRequired,
-};
-
-Checkbox.defaultProps = {
-  onClick: null,
 };
 
 export default Checkbox;

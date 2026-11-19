@@ -8,7 +8,50 @@
 
 .react-date-picker button {
   min-width: 0;
-  color: initial;
+  color: inherit;
+}
+
+.react-date-picker__button__icon {
+  stroke: currentColor;
+}
+
+.react-date-picker__button:enabled:hover .react-date-picker__button__icon,
+.react-date-picker__button:enabled:focus .react-date-picker__button__icon {
+  stroke: var(--brand-primary);
+}
+
+.react-date-picker .react-calendar {
+  background: var(--surface-page);
+  color: var(--text-body);
+  border-color: var(--border-input);
+}
+
+.react-date-picker
+  .react-calendar
+  button:not(.react-calendar__tile--active):enabled:hover,
+.react-date-picker
+  .react-calendar
+  button:not(.react-calendar__tile--active):enabled:focus {
+  background-color: var(--brand-tint);
+}
+
+.react-date-picker .react-calendar__tile--active {
+  background: var(--brand-bar);
+  color: var(--text-on-brand);
+}
+
+.react-date-picker .react-calendar__tile--active:enabled:hover,
+.react-date-picker .react-calendar__tile--active:enabled:focus {
+  background: var(--brand-bar-hover);
+}
+
+.react-date-picker
+  .react-calendar__tile--now:not(.react-calendar__tile--active) {
+  background: var(--brand-tint-strong);
+}
+
+.react-date-picker .react-calendar__month-view__days__day--neighboringMonth {
+  color: var(--text-subtle);
 }
 
 .react-date-picker input[type="number"] {

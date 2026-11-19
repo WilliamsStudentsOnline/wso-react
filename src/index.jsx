@@ -1,6 +1,6 @@
 // React imports
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 // Component/Stylesheet imports
 import App from "./components/App";
@@ -25,7 +25,7 @@ import * as serviceWorker from "./serviceWorker";
 
 injectStore(store);
 
-ReactDOM.render(
+createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -36,8 +36,7 @@ ReactDOM.render(
         </ThemeProvider>
       </PersistGate>
     </Provider>
-  </React.StrictMode>,
-  document.getElementById("root")
+  </React.StrictMode>
 );
 
 // If you want your app to work offline and load faster, you can change

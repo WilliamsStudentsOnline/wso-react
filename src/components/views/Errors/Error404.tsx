@@ -5,7 +5,7 @@ export interface error404Props {
   message?: string;
 }
 
-const Error404 = ({ message }: error404Props): JSX.Element => {
+const Error404 = ({ message }: error404Props): React.JSX.Element => {
   return (
     <header>
       <h1>Whoops! Page not found!</h1>
@@ -13,10 +13,6 @@ const Error404 = ({ message }: error404Props): JSX.Element => {
       {message && <p>{message}</p>}
     </header>
   );
-};
-
-Error404.defaultProps = {
-  message: undefined,
 };
 
 export default Error404;

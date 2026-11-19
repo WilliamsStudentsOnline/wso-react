@@ -230,8 +230,4 @@ TagEdit.propTypes = {
   wso: PropTypes.object.isRequired,
 };
 
-TagEdit.defaultProps = {
-  tags: [],
-};
-
 export default TagEdit;

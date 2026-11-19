@@ -93,7 +93,7 @@ const QueryTable = () => {
           </td>
           <td align="center">
             <StatesDropdown
-              updateState={(value) => handleFieldChange("state", value)}
+              updateState={(value: string) => handleFieldChange("state", value)}
               currentState={filters.state}
             />
           </td>

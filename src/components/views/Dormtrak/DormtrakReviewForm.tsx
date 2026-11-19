@@ -131,7 +131,7 @@ const DormtrakReviewForm = ({ edit }: { edit: boolean }) => {
     labels: string[],
     type: T | undefined,
     changeHandler: React.Dispatch<React.SetStateAction<T | undefined>>
-  ) => JSX.Element[] = (options, labels, type, changeHandler) => {
+  ) => React.JSX.Element[] = (options, labels, type, changeHandler) => {
     return options.map((ans, index) => {
       return (
         <React.Fragment key={index}>

@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Error500 = ({ error }) => {
+const Error500 = ({ error = null }) => {
   return (
     <header>
       <h1>Whoops! Something Bad Happened!</h1>
@@ -19,10 +19,6 @@ const Error500 = ({ error }) => {
 
 Error500.propTypes = {
   error: PropTypes.object,
-};
-
-Error500.defaultProps = {
-  error: null,
 };
 
 export default Error500;

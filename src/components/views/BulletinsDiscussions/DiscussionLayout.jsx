@@ -24,6 +24,4 @@ DiscussionLayout.propTypes = {
   children: PropTypes.object.isRequired,
 };
 
-DiscussionLayout.defaultProps = {};
-
 export default DiscussionLayout;

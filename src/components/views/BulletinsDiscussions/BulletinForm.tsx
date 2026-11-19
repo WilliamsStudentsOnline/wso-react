@@ -5,6 +5,8 @@ import { useAppSelector } from "../../../lib/store";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 import DatePicker from "react-date-picker";
+import "react-date-picker/dist/DatePicker.css";
+import "react-calendar/dist/Calendar.css";
 /// Keep this after the "react-date-picker" import so that this css style will take priority.
 import "../../stylesheets/DatePicker.css";
 import { PostType, PostTypeSingular } from "../../../lib/types";
@@ -98,7 +100,9 @@ const BulletinForm = () => {
         </h5>
         <DatePicker
           value={startDate}
-          onChange={(date: Date) => updateStartDate(date)}
+          onChange={(value) => {
+            if (value instanceof Date) updateStartDate(value);
+          }}
         />
       </div>
     );
@@ -267,7 +271,9 @@ const BulletinForm = () => {
         </h5>
         <DatePicker
           value={startDate}
-          onChange={(date: Date) => updateStartDate(date)}
+          onChange={(value) => {
+            if (value instanceof Date) updateStartDate(value);
+          }}
         />
       </div>
     );

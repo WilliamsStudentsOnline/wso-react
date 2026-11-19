@@ -116,27 +116,22 @@ const DormtrakRooms = ({ rooms }: { rooms?: ModelsDormRoom[] }) => {
                 </small>
                 {`${room.area} sq. ft.`}
                 <br />
-                {(
-                  [
-                    "faces",
-                    "noise",
-                    "closet",
-                    "flooring",
-                  ] as (keyof typeof room)[]
-                ).map((attr) => {
-                  if (room[attr] !== undefined && room[attr] !== null) {
-                    return (
-                      <div key={attr}>
-                        <small>
-                          <strong>{`${capitalize(attr)}: `}</strong>
-                        </small>
-                        {room[attr]}
-                      </div>
-                    );
-                  }
+                {(["faces", "noise", "closet", "flooring"] as const).map(
+                  (attr) => {
+                    if (room[attr] !== undefined && room[attr] !== null) {
+                      return (
+                        <div key={attr}>
+                          <small>
+                            <strong>{`${capitalize(attr)}: `}</strong>
+                          </small>
+                          {room[attr]}
+                        </div>
+                      );
+                    }
 
-                  return null;
-                })}
+                    return null;
+                  }
+                )}
                 {adjustableBeds(room)}
                 {commonRooms(room)}
                 {privateBathrooms(room)}

@@ -322,7 +322,7 @@ const FacebookMe = () => {
               <TagEdit
                 tags={tags}
                 updateTags={updateTags}
-                updateErrors={(msgs) => {
+                updateErrors={(msgs: string[]) => {
                   if (msgs?.[0]) showAlert(msgs[0]);
                 }}
                 wso={wso}

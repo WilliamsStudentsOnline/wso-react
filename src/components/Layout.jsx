@@ -6,7 +6,7 @@ import Nav from "./Nav";
 import FeedbackFab from "./Feedback/FeedbackFab";
 import "./stylesheets/Application.css";
 
-const Layout = ({ children, notice, warning }) => {
+const Layout = ({ children, notice = "", warning = "" }) => {
   return (
     <div className="front dormtrak facebook factrak announcement">
       <Nav />
@@ -37,12 +37,6 @@ Layout.propTypes = {
   children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   notice: PropTypes.string,
   warning: PropTypes.string,
-};
-
-Layout.defaultProps = {
-  children: null,
-  notice: "",
-  warning: "",
 };
 
 export default Layout;

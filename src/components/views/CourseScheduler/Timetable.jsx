@@ -39,8 +39,8 @@ import { FAILURE, SUCCESS } from "../../../constants/actionTypes";
 import { DATES, SEMESTERS } from "../../../constants/constants";
 
 const Timetable = ({
-  added,
-  gapi,
+  added = [],
+  gapi = null,
   notifAdd,
   semChange,
   currSem,
@@ -49,7 +49,7 @@ const Timetable = ({
   horizontal,
   orientationToggle,
   removeSemesterCourses,
-  hidden,
+  hidden = [],
 }) => {
   const [sortOrder, updateSortOrder] = useState("Alphabetical(A-Z)");
   const [isSignedIn, updateSignIn] = useState(false);
@@ -429,12 +429,6 @@ Timetable.propTypes = {
   orientationToggle: PropTypes.func.isRequired,
   removeSemesterCourses: PropTypes.func.isRequired,
   hidden: PropTypes.arrayOf(PropTypes.object),
-};
-
-Timetable.defaultProps = {
-  gapi: null,
-  added: [],
-  hidden: [],
 };
 
 const mapStateToProps = (state) => ({

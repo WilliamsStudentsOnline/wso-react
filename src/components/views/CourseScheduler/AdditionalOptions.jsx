@@ -67,7 +67,7 @@ const AdditionalOptions = ({
   resetFilters,
   twelveHour,
   counts,
-  updateTime,
+  updateTime = "",
   showFactrakScore,
   minFactrakScore,
   includeFactrakNoScores,
@@ -444,10 +444,6 @@ AdditionalOptions.propTypes = {
   showFactrakScore: PropTypes.bool.isRequired,
   includeFactrakNoScores: PropTypes.bool.isRequired,
   updateTime: PropTypes.string,
-};
-
-AdditionalOptions.defaultProps = {
-  updateTime: "",
 };
 
 const mapStateToProps = (state) => ({

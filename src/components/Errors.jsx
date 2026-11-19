@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Errors = ({ errors }) => {
+const Errors = ({ errors = [] }) => {
   return (
     <div id="errors">
       {errors.length > 0 &&
@@ -15,9 +15,6 @@ const Errors = ({ errors }) => {
 
 Errors.propTypes = {
   errors: PropTypes.arrayOf(PropTypes.string),
-};
-Errors.defaultProps = {
-  errors: [],
 };
 
 export default Errors;
