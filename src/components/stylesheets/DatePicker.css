@@ -15,6 +15,11 @@
   stroke: currentColor;
 }
 
+.react-date-picker__button:enabled:hover .react-date-picker__button__icon,
+.react-date-picker__button:enabled:focus .react-date-picker__button__icon {
+  stroke: var(--brand-primary);
+}
+
 .react-date-picker .react-calendar {
   background: var(--surface-page);
   color: var(--text-body);
@@ -27,7 +32,17 @@
 .react-date-picker
   .react-calendar
   button:not(.react-calendar__tile--active):enabled:focus {
-  background-color: var(--surface-raised);
+  background-color: var(--brand-tint);
+}
+
+.react-date-picker .react-calendar__tile--active {
+  background: var(--brand-bar);
+  color: var(--text-on-brand);
+}
+
+.react-date-picker .react-calendar__tile--active:enabled:hover,
+.react-date-picker .react-calendar__tile--active:enabled:focus {
+  background: var(--brand-bar-hover);
 }
 
 .react-date-picker
