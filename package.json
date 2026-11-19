@@ -21,7 +21,6 @@
     "react-modal": "^3.15.1",
     "react-redux": "^7.2.8",
     "react-router-dom": "6",
-    "react-scripts": "^5.0.1",
     "react-spinners": "^0.13.4",
     "react-table": "^7.8.0",
     "redux-persist": "^6.0.0",
@@ -33,40 +32,42 @@
   },
   "devDependencies": {
     "@size-limit/file": "^12.1.0",
-    "@types/jest": "^27.5.1",
     "@types/react": "^16.14.29",
     "@types/react-calendar": "^3.9.0",
     "@types/react-dom": "^16.9.16",
     "@types/redux-logger": "^3.0.9",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "@vitejs/plugin-react": "^6.3.0",
     "deep-freeze": "^0.0.1",
     "eslint": "^8.21.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-utils": "3.0.0",
     "glob-all": "^3.3.0",
     "husky": "^8.0.1",
     "identity-obj-proxy": "^3.0.0",
-    "jest-junit": "^6.4.0",
+    "jsdom": "^31.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
-    "progress-bar-webpack-plugin": "^1.12.1",
     "purgecss": "^1.4.1",
     "react-test-renderer": "^16.8.6",
     "redux-logger": "^3.0.6",
+    "rollup-plugin-visualizer": "^7.1.3",
     "size-limit": "^12.1.0",
-    "typescript": "^3.7.2",
-    "webpack-bundle-analyzer": "^3.3.2"
+    "typescript": "~5.9.3",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.1"
   },
   "scripts": {
-    "analyze": "node scripts/analyze",
-    "start": "GENERATE_SOURCEMAP=false react-scripts start",
-    "start-windows": "set GENERATE_SOURCEMAP=false && npx react-scripts start",
-    "build": "react-scripts build",
-    "postbuild": "purgecss --config ./purgecss.config.js --out build/static/css",
-    "test": "react-scripts test",
-    "test:ci": "CI=true react-scripts test ",
-    "eject": "react-scripts eject",
+    "analyze": "vite build --mode analyze",
+    "start": "vite",
+    "build": "tsc && vite build",
+    "postbuild": "purgecss --config ./purgecss.config.js --out build/assets",
+    "test": "vitest",
+    "test:ci": "vitest run",
     "lint": "eslint ./src --ext=js,jsx,ts,tsx",
     "lint:fix": "eslint ./src --ext=js,jsx,ts,tsx --fix",
     "format": "prettier --write './src/**/*.{js,jsx,ts,tsx,html,css,json}'",
@@ -75,17 +76,18 @@
     "prepare": "husky install",
     "sync-prod": "bash .github/scripts/open-sync-prod.sh",
     "check-prod-integrity": "bash .github/scripts/check-prod-integrity.sh",
-    "codegen": "node scripts/codegen.mjs"
+    "codegen": "node scripts/codegen.mjs",
+    "preview": "vite preview"
   },
   "size-limit": [
     {
       "name": "JS",
-      "path": "build/static/js/*.js",
+      "path": "build/assets/*.js",
       "limit": "300 kB"
     },
     {
       "name": "CSS",
-      "path": "build/static/css/*.css",
+      "path": "build/assets/*.css",
       "limit": "40 kB"
     }
   ],
@@ -100,16 +102,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "jest": {
-    "coverageReporters": [
-      "text",
-      "cobertura"
-    ]
-  },
-  "jest-junit": {
-    "output": "coverage/junit/junit.xml",
-    "usePathForSuiteName": "true"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -131,6 +123,10 @@
     "**/**/node-notifier": ">=8.0.1",
     "**/**/immer": ">=8.0.1",
     "@types/react": "^16.14.29",
-    "@types/react-dom": "^16.9.16"
+    "@types/react-dom": "^16.9.16",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "@typescript-eslint/type-utils": "^5.62.0",
+    "@typescript-eslint/typescript-estree": "^5.62.0"
   }
 }

@@ -59,7 +59,7 @@ const store = configureStore({
       // See https://stackoverflow.com/questions/65217815/
       immutableCheck: false,
     }),
-  devTools: process.env.NODE_ENV !== "production",
+  devTools: import.meta.env.DEV,
 });
 
 export default store;

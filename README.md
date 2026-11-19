@@ -1,6 +1,6 @@
 # WSO-React
 
-This repository contains all the front-end code to the Williams Student Online web-app. Core technologies include [React](https://reactjs.org/) (bootstrapped with [Create React App)](https://github.com/facebook/create-react-app), [Redux](https://redux.js.org/basics/usage-with-react), and [Router5](https://router5.js.org/). If you're interested in learning more about React and Redux, we recommend [this tutorial](https://www.robinwieruch.de/react-redux-tutorial/#react-redux-and-x-tutorial).
+This repository contains all the front-end code to the Williams Student Online web-app. Core technologies include [React](https://reactjs.org/) (built with [Vite](https://vite.dev/)), [Redux](https://redux.js.org/basics/usage-with-react), and [Router5](https://router5.js.org/). If you're interested in learning more about React and Redux, we recommend [this tutorial](https://www.robinwieruch.de/react-redux-tutorial/#react-redux-and-x-tutorial).
 
 - Production Build: https://wso.williams.edu/
 - Development Build: https://wso-dev.williams.edu/
@@ -65,9 +65,9 @@ to launch a development build, which includes Hot Module Reload(HMR), where chan
 
 By default, the development server will communicate with [wso-dev.williams.edu](wso-dev.wso.williams.edu). This is fine for most frontend-focused development!
 
-However, you may wish to set up the backend to allow our client to get the information from a local server. To do so, set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/), and run the `wso-go` server alongside the React development server. If you're working in VSCode, you should see ports `:8080` (backend) and `:3000` (frontend) in use on your machine. You should then change `setupProxy.js` to point to `localhost:8080` (instead of `wso-dev`) to access your local development backend.
+However, you may wish to set up the backend to allow our client to get the information from a local server. To do so, set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/), and run the `wso-go` server alongside the React development server. If you're working in VSCode, you should see ports `:8080` (backend) and `:3000` (frontend) in use on your machine. You should then change `apiProxy` in `vite.config.mjs` to point to `localhost:8080` (instead of `wso-dev`) to access your local development backend.
 
-`setupProxy.js` enables all HTTP requests to be made to `/path/to/endpoint` without further settings--so don't worry about changing URL paths!
+The dev-server proxy in `vite.config.mjs` enables all HTTP requests to be made to `/path/to/endpoint` without further settings--so don't worry about changing URL paths!
 
 ### Updating the API client
 

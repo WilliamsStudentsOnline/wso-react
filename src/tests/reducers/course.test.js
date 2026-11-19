@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import deepFreeze from "deep-freeze";
 import courseReducer, { DEFAULT_SEMESTER } from "../../reducers/course";
 import {
@@ -30,7 +31,7 @@ import {
   REMOVE_SEMESTER_COURSES,
 } from "../../constants/actionTypes";
 
-jest.mock("axios");
+vi.mock("axios");
 
 describe("Course reducer", () => {
   const course = {
