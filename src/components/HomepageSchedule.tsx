@@ -101,6 +101,7 @@ const HomepageSchedule = () => {
 
     return () => {
       cancelled = true;
+      setLoadingCatalog(false);
     };
   }, [added.length, dispatch]);
 
