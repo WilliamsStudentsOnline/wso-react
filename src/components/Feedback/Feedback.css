@@ -3,18 +3,16 @@ button.floating-button-link.feedback-fab {
   border: 0;
   cursor: pointer;
   font: inherit;
-  display: block;
+  display: flex;
   box-sizing: border-box;
-  width: 70px;
-  height: 70px;
+  width: 3rem;
+  height: 3rem;
   min-width: 0;
-  max-width: 70px;
-  padding: 0.5rem 2rem;
+  max-width: none;
+  padding: 0;
   margin: 0;
   text-transform: none;
   letter-spacing: normal;
-  line-height: 64px;
-  text-align: center;
 }
 
 .feedback-backdrop {

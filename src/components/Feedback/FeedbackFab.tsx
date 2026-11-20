@@ -6,11 +6,7 @@ import "./Feedback.css";
 
 const LOGGED_OUT_FEEDBACK_URL = "https://forms.gle/5H4bGDNB3vsnKDMJ8";
 
-const FabIcon = () => (
-  <i className="material-icons" style={{ position: "relative", left: "-8px" }}>
-    feedback
-  </i>
-);
+const FabIcon = () => <i className="material-icons">feedback</i>;
 
 const FeedbackFab = () => {
   const currUser = useAppSelector(getCurrUser);
