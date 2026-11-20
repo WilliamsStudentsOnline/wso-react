@@ -6,6 +6,7 @@ import { getCurrUser, getWSO, updateUser } from "../../../lib/authSlice";
 import { userTypeAlumni, userTypeStudent } from "../../../constants/general";
 import { ResponsesGetUserResponseUser } from "wso-api-client/lib/services/types";
 import TagEdit from "../../TagEdit";
+import "./FacebookAvatar.css";
 import "./FacebookMe.css";
 
 const PEOPLESOFT_URL = "https://sarah.williams.edu";
@@ -215,11 +216,11 @@ const FacebookMe = () => {
             </span>
           ) : null}
           <aside className="picture">
-            <div className="facebook-me__avatar">
+            <div className="facebook-avatar">
               {photoUrl ? <img src={photoUrl} alt="avatar" /> : <Photo />}
               <button
                 type="button"
-                className="facebook-me__avatar-edit"
+                className="facebook-avatar__action"
                 aria-label="Change profile picture"
                 onClick={() => fileRef.current?.click()}
               >

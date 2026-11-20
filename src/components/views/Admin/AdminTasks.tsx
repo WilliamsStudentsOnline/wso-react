@@ -11,6 +11,7 @@ import "./Admin.css";
 
 const TASK_FACTRAK = "FACTRAK_REVIEW";
 const TASK_NEW_TAG = "NEW_USER_TAG";
+const TASK_USER_PHOTO = "USER_PHOTO_REVIEW";
 const RESOLUTION_APPROVED = "APPROVED";
 const RESOLUTION_REJECTED = "REJECTED";
 
@@ -71,6 +72,42 @@ const tagContext = (task: AdminModeratorTaskResponse) => {
   return ctx ?? {};
 };
 
+const photoContext = (task: AdminModeratorTaskResponse) => {
+  const ctx = task.context as
+    { targetUserID?: number; name?: string; unixID?: string } | undefined;
+  return ctx ?? {};
+};
+
+const UserPhotoPreview = ({ unixID }: { unixID: string }) => {
+  const wso = useAppSelector(getWSO);
+  const [src, setSrc] = useState("");
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    let url = "";
+    let cancelled = false;
+    setFailed(false);
+    wso.userService
+      .getUserLargePhoto(unixID)
+      .then((blob) => {
+        if (cancelled) return;
+        url = URL.createObjectURL(blob);
+        setSrc(url);
+      })
+      .catch(() => {
+        if (!cancelled) setFailed(true);
+      });
+    return () => {
+      cancelled = true;
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [wso, unixID]);
+
+  if (failed) return <p className="admin-task-meta">Photo unavailable</p>;
+  if (!src) return null;
+  return <img className="admin-task-photo" src={src} alt={unixID} />;
+};
+
 const AdminTasks = () => {
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
@@ -107,6 +144,14 @@ const AdminTasks = () => {
     () =>
       groupByReference(
         tasks.filter((t) => String(t.taskType) === TASK_NEW_TAG)
+      ),
+    [tasks]
+  );
+
+  const photoGroups = useMemo(
+    () =>
+      groupByReference(
+        tasks.filter((t) => String(t.taskType) === TASK_USER_PHOTO)
       ),
     [tasks]
   );
@@ -268,6 +313,49 @@ const AdminTasks = () => {
     );
   };
 
+  const renderPhotoGroup = (group: TaskGroup) => {
+    const ctx = photoContext(group.sample);
+    const busy = busyKey === group.taskReference;
+    const flagCount = group.tasks.length;
+
+    return (
+      <div className="comment" key={group.taskReference}>
+        <div>
+          <span>
+            {ctx.targetUserID != null ? (
+              <Link to={`/facebook/users/${ctx.targetUserID}`}>
+                {ctx.name || `#${ctx.targetUserID}`}
+              </Link>
+            ) : (
+              "Unknown user"
+            )}
+          </span>
+          {flagCount > 1 && (
+            <span className="admin-task-meta"> · {flagCount} reports</span>
+          )}
+          {ctx.unixID ? <UserPhotoPreview unixID={ctx.unixID} /> : null}
+          <button
+            className="inline-button"
+            type="button"
+            disabled={busy}
+            onClick={() => resolveGroup(group, RESOLUTION_REJECTED)}
+          >
+            Reject
+          </button>
+          &ensp;
+          <button
+            className="inline-button"
+            type="button"
+            disabled={busy}
+            onClick={() => resolveGroup(group, RESOLUTION_APPROVED)}
+          >
+            Approve (delete photo)
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="admin-tasks">
       {loading ? (
@@ -295,6 +383,18 @@ const AdminTasks = () => {
               <p className="admin-tasks__empty">No open tag requests.</p>
             ) : (
               tagGroups.map(renderTagGroup)
+            )}
+          </AdminTaskSection>
+
+          <AdminTaskSection
+            title="Photo reports"
+            count={photoGroups.length}
+            startsOpen={photoGroups.length > 0}
+          >
+            {photoGroups.length === 0 ? (
+              <p className="admin-tasks__empty">No open photo reports.</p>
+            ) : (
+              photoGroups.map(renderPhotoGroup)
             )}
           </AdminTaskSection>
         </>

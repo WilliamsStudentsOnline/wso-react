@@ -10,6 +10,7 @@ import { Link, useNavigate, useParams } from "react-router";
 // Additional Imports
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
 import { ResponsesGetUserResponseUser } from "wso-api-client/lib/services/types";
+import "./FacebookAvatar.css";
 
 const FacebookUser = () => {
   const wso = useAppSelector(getWSO);
@@ -22,9 +23,11 @@ const FacebookUser = () => {
     ResponsesGetUserResponseUser | undefined
   >(undefined);
   const [userPhoto, updateUserPhoto] = useState("");
+  const [photoReported, updatePhotoReported] = useState(false);
 
   useEffect(() => {
     const loadTarget = async () => {
+      updatePhotoReported(false);
       if (!params.userID) {
         navigateTo("/404", { replace: true });
         return;
@@ -315,6 +318,50 @@ const FacebookUser = () => {
     return <img src={userPhoto} alt="avatar" />;
   };
 
+  const reportPhotoHandler = async () => {
+    // eslint-disable-next-line no-restricted-globals, no-alert
+    const confirmReport = confirm("Report this profile photo?");
+    if (!confirmReport || !viewPerson?.id) return;
+
+    try {
+      await wso.userService.flagUserPhoto(viewPerson.id);
+    } catch (error) {
+      // 2417 means this user already has an open report on the photo
+      if ((error as { errorCode?: number })?.errorCode !== 2417) {
+        navigateTo("/error", { replace: true, state: { error } });
+        return;
+      }
+    }
+    updatePhotoReported(true);
+    // eslint-disable-next-line no-alert
+    alert("Report submitted!");
+  };
+
+  const reportPhoto = () => {
+    if (
+      !userPhoto ||
+      !viewPerson ||
+      currUser?.id === viewPerson.id ||
+      photoReported
+    ) {
+      return null;
+    }
+
+    return (
+      <button
+        type="button"
+        className="facebook-avatar__action"
+        title="Report profile photo"
+        aria-label="Report profile photo"
+        onClick={reportPhotoHandler}
+      >
+        <span className="material-icons" aria-hidden>
+          flag
+        </span>
+      </button>
+    );
+  };
+
   const nameAndYear = () => {
     if (viewPerson) {
       return `${viewPerson.name} ${classYear()}`;
@@ -326,7 +373,12 @@ const FacebookUser = () => {
   return (
     <article className="facebook-profile">
       <section>
-        <aside className="picture">{picture()}</aside>
+        <aside className="picture">
+          <div className="facebook-avatar">
+            {picture()}
+            {reportPhoto()}
+          </div>
+        </aside>
 
         <aside className="info">
           <h3>

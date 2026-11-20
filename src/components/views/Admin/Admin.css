@@ -115,6 +115,14 @@ button.admin-task-section__header:hover .admin-task-section__title {
   font-size: 0.9rem;
 }
 
+.admin-task-photo {
+  display: block;
+  width: 8rem;
+  height: auto;
+  margin: 0.5rem 0;
+  border-radius: 0.1875em;
+}
+
 .admin-banner {
   max-width: 40rem;
   margin-bottom: 1rem;
