@@ -1,4 +1,3 @@
-/* header and body share a column; pages may widen the body, never the header */
 .admin-shell {
   max-width: 56em;
   margin-left: auto;
