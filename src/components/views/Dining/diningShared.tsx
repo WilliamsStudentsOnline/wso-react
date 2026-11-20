@@ -153,6 +153,14 @@ export const mealHasMenu = (meal: Meal): boolean =>
 
 export const HIDDEN_VENDOR_IDS = new Set(["goodrich"]);
 
+// Clean Cuisine is folded into Whitman's; keep its courses last
+const isCleanCuisineCourse = (course: Course): boolean =>
+  course.name.toLowerCase().startsWith("clean cuisine");
+
+const compareCourses = (a: Course, b: Course): number =>
+  Number(isCleanCuisineCourse(a)) - Number(isCleanCuisineCourse(b)) ||
+  a.name.localeCompare(b.name);
+
 export type DiningStatusPill = {
   label: "Open" | "Soon" | "Closed";
   kind: "open" | "soon" | "closed";
@@ -373,7 +381,7 @@ export const MealMenuContent = ({ meal }: { meal: Meal }) => {
     <table className="meal-content-table">
       <tbody>
         {Object.entries(meal.courses)
-          .sort(([, a], [, b]) => a.name.localeCompare(b.name))
+          .sort(([, a], [, b]) => compareCourses(a, b))
           .map(([courseKey, course]) => (
             <React.Fragment key={courseKey}>
               <tr className="course-title menu-item-row">

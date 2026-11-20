@@ -476,11 +476,7 @@ const HomepageDiningVendorRow = ({
   );
 };
 
-const HOMEPAGE_HIDDEN_VENDOR_IDS = new Set([
-  "82-grill",
-  "lees-snack-bar",
-  "fresh-n-go",
-]);
+const HOMEPAGE_VENDOR_IDS = new Set(["driscoll", "mission", "whitmans"]);
 
 const HOMEPAGE_DINING_SKELETON_SLOTS = [
   "Breakfast",
@@ -547,8 +543,7 @@ const HomepageDiningHours = () => {
       Object.values(diningData)
         .filter(
           (vendor) =>
-            vendor.operating &&
-            !HOMEPAGE_HIDDEN_VENDOR_IDS.has(vendor.id.toLowerCase())
+            vendor.operating && HOMEPAGE_VENDOR_IDS.has(vendor.id.toLowerCase())
         )
         .sort((a, b) => a.name.localeCompare(b.name)),
     [diningData]
