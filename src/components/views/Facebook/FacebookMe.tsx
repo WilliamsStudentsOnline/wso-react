@@ -185,9 +185,7 @@ const FacebookMe = () => {
 
   const pronounsField = (
     <>
-      <h3 className={showTags ? "facebook-me__pronouns-heading" : undefined}>
-        Pronouns
-      </h3>
+      <h3>Pronouns</h3>
       <input
         type="text"
         className="facebook-me__pronoun-input"
@@ -318,7 +316,8 @@ const FacebookMe = () => {
         >
           {showTags ? (
             <div className="facebook-me__block">
-              <h3>Tags</h3>
+              {pronounsField}
+              <h3 className="facebook-me__tags-heading">Tags</h3>
               <TagEdit
                 tags={tags}
                 updateTags={updateTags}
@@ -327,7 +326,6 @@ const FacebookMe = () => {
                 }}
                 wso={wso}
               />
-              {pronounsField}
             </div>
           ) : (
             <div className="facebook-me__block">{pronounsField}</div>
