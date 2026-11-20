@@ -82,7 +82,8 @@ const FacebookHelp = () => {
                   {" "}
                   all people who match &ldquo;ephraim&rdquo; <em>and</em>{" "}
                   &ldquo;williams&rdquo; <strong>plus</strong> all people who
-                  match &ldquo;mark&rdquo; <em>and</em> &ldquo;hopkins&rdquo;{" "}
+                  match &ldquo;mark&rdquo; <em>and</em>{" "}
+                  &ldquo;hopkins&rdquo;{" "}
                 </td>
               </tr>
               <tr>

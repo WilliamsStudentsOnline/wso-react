@@ -22,9 +22,8 @@ const DormtrakNeighborhood = () => {
       if (params.neighborhoodID) {
         try {
           const neighborhoodID = parseInt(params.neighborhoodID, 10);
-          const hoodResponse = await wso.dormtrakService.getNeighborhood(
-            neighborhoodID
-          );
+          const hoodResponse =
+            await wso.dormtrakService.getNeighborhood(neighborhoodID);
           updateHoodInfo(hoodResponse.data);
         } catch (error) {
           navigateTo("/error", { replace: true, state: error });

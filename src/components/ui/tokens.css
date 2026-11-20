@@ -54,10 +54,10 @@
 
   --nav-bg: #282e42;
 
-  --font-family-sans: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial,
-    sans-serif;
-  --font-family-mono: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  --font-family-sans:
+    "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family-mono:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
   --font-size-body: 1rem;
   --font-size-small: 0.75em;
   --line-height-body: 1.5;

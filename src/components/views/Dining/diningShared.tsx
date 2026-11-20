@@ -55,7 +55,7 @@ export const DINING_MEAL_SLOTS = [
   "late night",
 ] as const;
 
-export type DiningMealSlot = typeof DINING_MEAL_SLOTS[number];
+export type DiningMealSlot = (typeof DINING_MEAL_SLOTS)[number];
 
 export const parseAndAdjustTime = (
   timeStr: string,

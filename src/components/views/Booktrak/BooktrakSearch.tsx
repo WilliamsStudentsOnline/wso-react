@@ -43,9 +43,8 @@ const BooktrakSearch = () => {
     };
 
     try {
-      const resultsResponse = await wso.booktrakService.searchBooks(
-        queryParams
-      );
+      const resultsResponse =
+        await wso.booktrakService.searchBooks(queryParams);
       const responseData =
         resultsResponse.data?.filter((book) => book.isbn13) ?? [];
 

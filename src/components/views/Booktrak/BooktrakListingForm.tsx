@@ -50,9 +50,8 @@ const BooktrakListingForm = ({ edit }: { edit: boolean }) => {
   useEffect(() => {
     const loadListing = async (listingID: number) => {
       try {
-        const listingResponse = await wso.booktrakService.getBookListing(
-          listingID
-        );
+        const listingResponse =
+          await wso.booktrakService.getBookListing(listingID);
         const listingData = listingResponse.data;
 
         const bookResponse = await wso.booktrakService.getBook(
@@ -227,8 +226,8 @@ const BooktrakListingForm = ({ edit }: { edit: boolean }) => {
                           listingType === ListingTypeEnum.Empty
                             ? ""
                             : listingType === ListingTypeEnum.BUY
-                            ? "Buy"
-                            : "Sell"
+                              ? "Buy"
+                              : "Sell"
                         }
                       >
                         <option value="" disabled hidden>
