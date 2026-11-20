@@ -11,7 +11,7 @@ import Error404 from "../Errors/Error404";
 // Redux/Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getAPIToken } from "../../../lib/authSlice";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router";
 
 // External Imports
 import RequireScope from "../../../router-permissions";

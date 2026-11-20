@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getCurrUser, getWSO } from "../../../lib/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 // Additional Imports
 import {

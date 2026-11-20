@@ -11,7 +11,7 @@ import {
 import { useAppSelector, useAppDispatch } from "../lib/store";
 
 // External imports
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import history from "../lib/history";
 import { userTypeStudent } from "../constants/general";
 import { useTheme } from "../lib/ThemeProvider";

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
 import { BannerBanner } from "wso-api-client/lib/services/types";

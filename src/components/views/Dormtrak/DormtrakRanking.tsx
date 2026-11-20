@@ -7,7 +7,7 @@ import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
 
 // Additional imports
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { ModelsDormtrakRanking } from "wso-api-client/lib/services/types";
 
 const DormtrakRanking = () => {

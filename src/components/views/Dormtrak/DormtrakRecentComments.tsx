@@ -9,7 +9,7 @@ import { getCurrUser, getWSO } from "../../../lib/authSlice";
 // Additional imports
 import { avatarHelper } from "../../../lib/imageHelper";
 import { userTypeStudent } from "../../../constants/general";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { format } from "timeago.js";
 import { ModelsDormtrakReview } from "wso-api-client/lib/services/types";
 

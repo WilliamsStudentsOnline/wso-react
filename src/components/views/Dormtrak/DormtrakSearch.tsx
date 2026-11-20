@@ -5,7 +5,7 @@ import { EmptyState } from "../../ui";
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router";
 import { ModelsDorm } from "wso-api-client/lib/services/types";
 
 const DormtrakSearch = () => {

@@ -1,7 +1,7 @@
 // React imports
 import React from "react";
 import DoughtyBanner from "../../../assets/images/banners/Doughty.jpg";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const About = () => {
   return (

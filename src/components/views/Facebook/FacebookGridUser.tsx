@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 
 // External imports
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 // Additional Imports
 import { userTypeStudent } from "../../../constants/general";

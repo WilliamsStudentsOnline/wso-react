@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import "./stylesheets/Dining.css";
 import { formatCompactHours } from "../lib/timeFormat";
 import {

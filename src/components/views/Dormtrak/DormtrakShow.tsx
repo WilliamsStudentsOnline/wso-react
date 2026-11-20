@@ -8,7 +8,7 @@ import { Line, Paragraph, Photo } from "../../ui";
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router";
 
 // Additional imports
 import { bannerHelper } from "../../../lib/imageHelper";

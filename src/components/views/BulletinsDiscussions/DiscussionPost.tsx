@@ -4,7 +4,7 @@ import { Button, CommentCard, Line, Paragraph } from "../../ui";
 import { useAppSelector } from "../../../lib/store";
 import { getCurrUser, getWSO } from "../../../lib/authSlice";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import Markdown from "markdown-to-jsx";
 import { formatBoardDate, BoardThread } from "./BulletinUtils";
 

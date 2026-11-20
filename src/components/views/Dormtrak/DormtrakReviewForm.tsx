@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 // Redux / Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import {
   DormtrakReviewCreateParams,
   ModelsDormRoom,

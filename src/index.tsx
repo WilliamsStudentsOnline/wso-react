@@ -17,7 +17,7 @@ import { injectStore } from "./lib/axiosAuth";
 import { ThemeProvider } from "./lib/ThemeProvider";
 
 // Router imports
-import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
+import { unstable_HistoryRouter as HistoryRouter } from "react-router";
 import history from "./lib/history";
 
 // Serviceworker import

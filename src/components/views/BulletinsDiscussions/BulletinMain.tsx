@@ -7,7 +7,7 @@ import BulletinForm from "./BulletinForm";
 import { getAPIToken } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
 
-import { Routes, Route, Navigate, useParams } from "react-router-dom";
+import { Routes, Route, Navigate, useParams } from "react-router";
 import Error404 from "../Errors/Error404";
 import RequireScope from "../../../router-permissions";
 import { PostType } from "../../../lib/types";

@@ -9,7 +9,7 @@ import { Line } from "../../ui";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser, getAPIToken } from "../../../lib/authSlice";
 
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";

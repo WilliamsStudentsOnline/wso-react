@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router";
 import AdminLayout from "./AdminLayout";
 import AdminTasks from "./AdminTasks";
 import AdminBanner from "./AdminBanner";

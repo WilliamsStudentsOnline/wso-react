@@ -5,7 +5,7 @@ import { List } from "../../ui";
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO, getAPIToken } from "../../../lib/authSlice";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";

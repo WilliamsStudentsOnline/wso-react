@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const FactrakPolicy = () => {
   const currUser = useAppSelector(getCurrUser);

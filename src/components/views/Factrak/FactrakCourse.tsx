@@ -8,7 +8,7 @@ import { Line } from "../../ui";
 // Redux/ Router imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser, getAPIToken } from "../../../lib/authSlice";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
