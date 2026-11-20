@@ -153,7 +153,6 @@ export const mealHasMenu = (meal: Meal): boolean =>
 
 export const HIDDEN_VENDOR_IDS = new Set(["goodrich"]);
 
-// Clean Cuisine is folded into Whitman's; keep its courses last
 const isCleanCuisineCourse = (course: Course): boolean =>
   course.name.toLowerCase().startsWith("clean cuisine");
 
