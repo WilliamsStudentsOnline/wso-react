@@ -3,6 +3,8 @@ import React, { ReactNode } from "react";
 import Footer from "./Footer";
 import Nav from "./Nav";
 import FeedbackFab from "./Feedback/FeedbackFab";
+import { WCFMProvider } from "./views/WCFM/WCFMProvider";
+import WCFMPlayer from "./views/WCFM/WCFMPlayer";
 import "./stylesheets/Application.css";
 
 export interface LayoutProps {
@@ -13,28 +15,31 @@ export interface LayoutProps {
 
 const Layout = ({ children, notice = "", warning = "" }: LayoutProps) => {
   return (
-    <div className="front dormtrak facebook factrak announcement">
-      <Nav />
+    <WCFMProvider>
+      <div className="front dormtrak facebook factrak announcement">
+        <Nav />
 
-      <div className="layout-scroll">
-        <div className="layout-page">
-          <div className="layout-body">
-            <aside>
-              {notice && <section className="notice">{notice}</section>}
-              {warning && (
-                <section className="notice">{`Warning: ${warning}`}</section>
-              )}
-            </aside>
+        <div className="layout-scroll">
+          <div className="layout-page">
+            <div className="layout-body">
+              <aside>
+                {notice && <section className="notice">{notice}</section>}
+                {warning && (
+                  <section className="notice">{`Warning: ${warning}`}</section>
+                )}
+              </aside>
 
-            {children}
+              {children}
 
-            <FeedbackFab />
+              <FeedbackFab />
+            </div>
+
+            <Footer />
           </div>
-
-          <Footer />
         </div>
+        <WCFMPlayer />
       </div>
-    </div>
+    </WCFMProvider>
   );
 };
 

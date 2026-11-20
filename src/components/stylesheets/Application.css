@@ -81,14 +81,17 @@
   /*STANDARD*/
   background: var(--brand-bar-hover);
   color: var(--text-on-brand);
-  padding: 0.5rem 2rem;
+  padding: 0;
   position: fixed;
-  width: 70px;
-  height: 70px;
-  bottom: 40px;
-  right: 40px;
-  border-radius: 35px;
-  line-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 3rem;
+  height: 3rem;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  border-radius: 50%;
   box-shadow: 0 6px 10px var(--shadow);
   z-index: 100;
 }
