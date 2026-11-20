@@ -1,4 +1,5 @@
 import jwtDecode from "jwt-decode";
+import type { WSOToken } from "./types";
 
 // The current scopes
 export const scopes = {
@@ -47,12 +48,12 @@ export const scopes = {
 /**
  * Checks if token contains any of the given scopes.
  *
- * @param {String} token - API token string.
- * @param {String[]} scopesToCheck - scopes to be checked against.
+ * @param token - API token string.
+ * @param scopesToCheck - scopes to be checked against.
  */
-export const containsOneOfScopes = (token, scopesToCheck) => {
+export const containsOneOfScopes = (token: string, scopesToCheck: string[]) => {
   try {
-    const decoded = jwtDecode(token);
+    const decoded = jwtDecode<WSOToken>(token);
     if (decoded.scope) {
       for (let i = 0; i < scopesToCheck.length; i += 1) {
         if (decoded.scope.indexOf(scopesToCheck[i]) !== -1) return true;
@@ -68,10 +69,13 @@ export const containsOneOfScopes = (token, scopesToCheck) => {
 /**
  * Checks if token contains any of the given scopes.
  *
- * @param {String[]} tokenScopes - API token string.
- * @param {String[]} scopesToCheck - scopes to be checked against.
+ * @param tokenScopes - API token string.
+ * @param scopesToCheck - scopes to be checked against.
  */
-export const scopesContainsOneOfScopes = (tokenScopes, scopesToCheck) => {
+export const scopesContainsOneOfScopes = (
+  tokenScopes: string[] | undefined,
+  scopesToCheck: string[]
+) => {
   try {
     if (tokenScopes) {
       for (let i = 0; i < scopesToCheck.length; i += 1) {
@@ -88,12 +92,12 @@ export const scopesContainsOneOfScopes = (tokenScopes, scopesToCheck) => {
 /**
  * Checks if token contains all of the given scopes.
  *
- * @param {String} token - API token string.
- * @param {String[]} scopesToCheck - scopes to be checked against.
+ * @param token - API token string.
+ * @param scopesToCheck - scopes to be checked against.
  */
-export const containsAllOfScopes = (token, scopesToCheck) => {
+export const containsAllOfScopes = (token: string, scopesToCheck: string[]) => {
   try {
-    const decoded = jwtDecode(token);
+    const decoded = jwtDecode<WSOToken>(token);
     if (decoded.scope) {
       for (let i = 0; i < scopesToCheck.length; i += 1) {
         if (decoded.scope.indexOf(scopesToCheck[i]) === -1) return false;
@@ -113,11 +117,11 @@ export const containsAllOfScopes = (token, scopesToCheck) => {
  * 1 - Unauthenticated User in Williams IP address
  * 3 - Authenticated User
  *
- * @param {String} token - API token string.
+ * @param token - API token string.
  */
-export const getTokenLevel = (token) => {
+export const getTokenLevel = (token: string) => {
   try {
-    const decoded = jwtDecode(token);
+    const decoded = jwtDecode<WSOToken>(token);
     if (decoded.tokenLevel) {
       return decoded.tokenLevel;
     }
@@ -131,12 +135,12 @@ export const getTokenLevel = (token) => {
 /**
  * Capitalizes the first letter of the string.
  *
- * @param {String} string - String to be capitalized.
+ * @param string - String to be capitalized.
  */
-export const capitalize = (string) => {
+export const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-export const pascalToTitleCase = (string) => {
+export const pascalToTitleCase = (string: string) => {
   return string.replace(/([a-z])([A-Z])/g, "$1 $2");
 };

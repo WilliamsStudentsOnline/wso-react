@@ -1,12 +1,17 @@
 // React imports
-import React from "react";
-import PropTypes from "prop-types";
+import React, { ReactNode } from "react";
 import Footer from "./Footer";
 import Nav from "./Nav";
 import FeedbackFab from "./Feedback/FeedbackFab";
 import "./stylesheets/Application.css";
 
-const Layout = ({ children, notice = "", warning = "" }) => {
+export interface LayoutProps {
+  children?: ReactNode;
+  notice?: string;
+  warning?: string;
+}
+
+const Layout = ({ children, notice = "", warning = "" }: LayoutProps) => {
   return (
     <div className="front dormtrak facebook factrak announcement">
       <Nav />
@@ -31,12 +36,6 @@ const Layout = ({ children, notice = "", warning = "" }) => {
       </div>
     </div>
   );
-};
-
-Layout.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  notice: PropTypes.string,
-  warning: PropTypes.string,
 };
 
 export default Layout;

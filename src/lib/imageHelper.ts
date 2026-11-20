@@ -75,7 +75,7 @@ import WoodbridgeBanner from "../assets/images/banners/Woodbridge.jpg";
  * times as the user navigates (e.g. dormtrak). Might look into coordinating with the
  * backend to see how these images can be delivered with a cache policy.
  */
-const avatarMap = new Map([
+const avatarMap = new Map<string, string>([
   ["Agard", AgardAvatar],
   ["Brooks", BrooksAvatar],
   ["Bryant", BryantAvatar],
@@ -112,7 +112,7 @@ const avatarMap = new Map([
   ["Woodbridge", WoodbridgeAvatar],
 ]);
 
-const bannerMap = new Map([
+const bannerMap = new Map<string, string>([
   ["Agard", AgardBanner],
   ["Brooks", BrooksBanner],
   ["Bryant", BryantBanner],
@@ -152,17 +152,17 @@ const bannerMap = new Map([
 /**
  * Returns the avatar (smaller) photo of the given dormitory building.
  *
- * @param {String} name - Name of dormitory whose avatar photo we wish to obtain.
+ * @param name - Name of dormitory whose avatar photo we wish to obtain.
  */
-export const avatarHelper = (name) => {
+export const avatarHelper = (name: string) => {
   return avatarMap.get(name);
 };
 
 /**
  * Returns the banner (larger) photo of the given dormitory building.
  *
- * @param {String} name - Name of dormitory whose banner photo we wish to obtain.
+ * @param name - Name of dormitory whose banner photo we wish to obtain.
  */
-export const bannerHelper = (name) => {
+export const bannerHelper = (name: string) => {
   return bannerMap.get(name);
 };

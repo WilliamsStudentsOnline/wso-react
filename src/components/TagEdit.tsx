@@ -1,10 +1,16 @@
 // React imports
 import React, { useState } from "react";
-import PropTypes from "prop-types";
+import { WSO } from "wso-api-client";
+import { AutocompleteACEntry } from "wso-api-client/lib/services/types";
 
 const ERROR_TAG_ALREADY_EXISTS = 1408;
 
-const TagRemove = ({ onClick, label }) => (
+interface TagRemoveProps {
+  onClick: () => void;
+  label: string;
+}
+
+const TagRemove = ({ onClick, label }: TagRemoveProps) => (
   <button
     type="button"
     onClick={onClick}
@@ -17,17 +23,23 @@ const TagRemove = ({ onClick, label }) => (
   </button>
 );
 
-TagRemove.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  label: PropTypes.string.isRequired,
+type ErrorLike = { message?: string; error?: string; errorCode?: number };
+
+const errorMessage = (error: unknown) => {
+  const e = error as ErrorLike | undefined;
+  return e?.message || e?.error || "Something went wrong.";
 };
 
-const errorMessage = (error) =>
-  error?.message || error?.error || "Something went wrong.";
+export interface TagEditProps {
+  tags: string[];
+  updateTags: (tags: string[]) => void;
+  updateErrors: (errors: string[]) => void;
+  wso: WSO;
+}
 
-const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
+const TagEdit = ({ tags, updateTags, updateErrors, wso }: TagEditProps) => {
   const [newTag, updateNewTag] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState<AutocompleteACEntry[]>([]);
   const [busy, setBusy] = useState(false);
 
   const trimmed = newTag.trim();
@@ -39,7 +51,9 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
   );
   const showRequestOption = Boolean(trimmed) && !matchingSuggestion;
 
-  const tagAutocomplete = async (event) => {
+  const tagAutocomplete = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     updateNewTag(value);
     if (!value.trim()) {
@@ -57,7 +71,7 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
     }
   };
 
-  const updateUserTags = async (updatedTags) => {
+  const updateUserTags = async (updatedTags: string[]) => {
     await wso.userService.updateUserTags("me", { tags: updatedTags });
     updateTags(updatedTags);
     updateNewTag("");
@@ -65,7 +79,7 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
     updateErrors([]);
   };
 
-  const requestNewTag = async (tagName) => {
+  const requestNewTag = async (tagName: string) => {
     await wso.userService.createUserTagRequest("me", { tagName });
     updateNewTag("");
     setSuggestions([]);
@@ -74,7 +88,7 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
     ]);
   };
 
-  const addExistingTag = async (tagName) => {
+  const addExistingTag = async (tagName: string) => {
     if (tags.some((tag) => tag.toLowerCase() === tagName.toLowerCase())) {
       updateErrors(["Unable to add the same tag twice."]);
       return;
@@ -89,7 +103,7 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
     }
   };
 
-  const confirmAndRequestTag = async (tagName) => {
+  const confirmAndRequestTag = async (tagName: string) => {
     if (busy) return;
     if (tags.some((tag) => tag.toLowerCase() === tagName.toLowerCase())) {
       updateErrors(["Unable to add the same tag twice."]);
@@ -105,7 +119,7 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
     try {
       await requestNewTag(tagName);
     } catch (error) {
-      if (error?.errorCode === ERROR_TAG_ALREADY_EXISTS) {
+      if ((error as ErrorLike)?.errorCode === ERROR_TAG_ALREADY_EXISTS) {
         await updateUserTags([...tags, tagName]);
         return;
       }
@@ -133,7 +147,7 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
     await confirmAndRequestTag(trimmed);
   };
 
-  const removeTagHandler = async (index) => {
+  const removeTagHandler = async (index: number) => {
     if (busy) return;
     const updatedTags = Object.assign([], tags);
     updatedTags.splice(index, 1);
@@ -170,7 +184,7 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
             type="text"
             onChange={tagAutocomplete}
             placeholder="New tag"
-            maxLength="255"
+            maxLength={255}
             value={newTag}
             disabled={busy}
             onKeyDown={(event) => {
@@ -188,7 +202,9 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
                     type="button"
                     className="tag-edit__suggestion"
                     disabled={busy}
-                    onClick={() => addExistingTag(suggestion.value)}
+                    onClick={() =>
+                      suggestion.value && addExistingTag(suggestion.value)
+                    }
                   >
                     {suggestion.value}
                   </button>
@@ -221,13 +237,6 @@ const TagEdit = ({ tags, updateTags, updateErrors, wso }) => {
       </div>
     </div>
   );
-};
-
-TagEdit.propTypes = {
-  tags: PropTypes.arrayOf(PropTypes.string),
-  updateTags: PropTypes.func.isRequired,
-  updateErrors: PropTypes.func.isRequired,
-  wso: PropTypes.object.isRequired,
 };
 
 export default TagEdit;

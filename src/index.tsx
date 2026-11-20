@@ -25,7 +25,7 @@ import * as serviceWorker from "./serviceWorker";
 
 injectStore(store);
 
-createRoot(document.getElementById("root")).render(
+createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
