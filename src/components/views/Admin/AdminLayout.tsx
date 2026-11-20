@@ -12,10 +12,10 @@ const tabs = [
 const AdminLayout = ({ children }: { children: React.ReactElement }) => {
   return (
     <div className="admin">
-      <div className="admin-shell">
+      <div className="admin-shell admin-shell--header">
         <ServiceHeader title="Admin Console" titleTo="/admin" tabs={tabs} />
-        {children}
       </div>
+      <div className="admin-shell admin-shell--body">{children}</div>
     </div>
   );
 };

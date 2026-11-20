@@ -1,4 +1,4 @@
-.admin:has(.admin-jobs) .admin-shell {
+.admin:has(.admin-jobs) .admin-shell--body {
   max-width: 72em;
 }
 

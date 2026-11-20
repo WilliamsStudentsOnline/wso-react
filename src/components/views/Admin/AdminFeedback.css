@@ -1,11 +1,6 @@
-.admin:has(.admin-feedback) .admin-shell {
+.admin:has(.admin-feedback) .admin-shell--body {
   padding-left: 0;
   padding-right: 0;
-}
-
-.admin:has(.admin-feedback) .wso-service-header {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
 }
 
 .admin:has(.admin-feedback) .wso-service-header > .page-head {
