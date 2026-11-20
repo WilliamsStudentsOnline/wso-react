@@ -46,8 +46,3 @@ export const SET_MIN_FACTRAK_SCORE = "SET_MIN_FACTRAK_SCORE";
 // Auth Reducer: See authSlice
 
 // Util Reducer: removed because not used
-
-// Goodrich Reducer
-export const GOODRICH_ORDER_UPDATE = "GOODRICH_ORDER_UPDATE";
-export const GOODRICH_UPDATE_MANAGER_ORDERS = "GOODRICH_UPDATE_MANAGER_ORDERS";
-export const GOODRICH_ORDER_LEASE_UPDATE = "GOODRICH_ORDER_LEASE_UPDATE";
