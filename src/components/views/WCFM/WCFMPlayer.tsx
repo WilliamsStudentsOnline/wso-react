@@ -9,11 +9,22 @@ const WCFMPlayer = () => {
   const playing = status === "playing" || status === "loading";
   const track = now?.track;
 
-  let detail = now?.onAir ? now.onAir.title : "Auto-DJ";
+  let detail: React.ReactNode = now?.onAir ? now.onAir.title : "Auto-DJ";
   if (playing && track) {
     detail = track.artist ? `${track.song} by ${track.artist}` : track.song;
   }
-  if (status === "loading") detail = "Tuning in";
+  if (status === "loading") {
+    detail = (
+      <>
+        Tuning in
+        <span className="wcfm-player-dots" aria-hidden>
+          <span>.</span>
+          <span>.</span>
+          <span>.</span>
+        </span>
+      </>
+    );
+  }
   if (status === "error") detail = "Stream isn't responding";
 
   return (
@@ -29,20 +40,22 @@ const WCFMPlayer = () => {
         </i>
       </button>
       <div className="wcfm-player-text" aria-live="polite">
-        <span className="wcfm-player-title">WCFM 91.9</span>
+        <span className="wcfm-player-title">
+          WCFM 91.9
+          <a
+            className="wcfm-player-site"
+            href={WCFM_SITE}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="WCFM's website (opens in a new tab)"
+          >
+            <i className="material-icons" aria-hidden>
+              open_in_new
+            </i>
+          </a>
+        </span>
         <span className="wcfm-player-detail">{detail}</span>
       </div>
-      <a
-        className="wcfm-player-site"
-        href={WCFM_SITE}
-        target="_blank"
-        rel="noreferrer"
-        aria-label="WCFM's website (opens in a new tab)"
-      >
-        <i className="material-icons" aria-hidden>
-          open_in_new
-        </i>
-      </a>
     </div>
   );
 };
