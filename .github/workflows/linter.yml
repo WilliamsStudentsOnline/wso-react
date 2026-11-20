@@ -31,6 +31,8 @@ jobs:
           cache: ${{ (github.event_name != 'pull_request' || github.base_ref != 'production') && 'yarn' || '' }}
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
+      - name: Enforce TypeScript only
+        run: yarn run check:ts-only
       - name: Test Build
         run: yarn run build
       - name: Test
