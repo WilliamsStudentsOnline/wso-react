@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { Button, CommentCard, Line, Paragraph } from "../../ui";
 
 import { useAppSelector } from "../../../lib/store";
@@ -7,20 +6,27 @@ import { getCurrUser, getWSO } from "../../../lib/authSlice";
 
 import { Link, useNavigate } from "react-router-dom";
 import Markdown from "markdown-to-jsx";
-import { formatBoardDate } from "./BulletinUtils";
+import { formatBoardDate, BoardThread } from "./BulletinUtils";
+
+type BoardPost = NonNullable<BoardThread["posts"]>[number];
 
 const markdownOptions = {
   overrides: {
-    h1: { component: "h5" },
-    h2: { component: "h5" },
-    h3: { component: "h5" },
-    h4: { component: "h5" },
-    h5: { component: "h5" },
-    h6: { component: "h5" },
+    h1: { component: "h5" as const, props: {} },
+    h2: { component: "h5" as const, props: {} },
+    h3: { component: "h5" as const, props: {} },
+    h4: { component: "h5" as const, props: {} },
+    h5: { component: "h5" as const, props: {} },
+    h6: { component: "h5" as const, props: {} },
   },
 };
 
-const DiscussionPost = ({ post, onDeleted }) => {
+export interface DiscussionPostProps {
+  post: BoardPost;
+  onDeleted?: (post: BoardPost) => void;
+}
+
+const DiscussionPost = ({ post, onDeleted }: DiscussionPostProps) => {
   const currUser = useAppSelector(getCurrUser);
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
@@ -31,16 +37,19 @@ const DiscussionPost = ({ post, onDeleted }) => {
   const [currPost, updateCurrPost] = useState(post);
   const [flagged, updateFlagged] = useState(false);
 
-  const submitHandler = async (event) => {
+  const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (reply === "") return;
     const params = { content: reply };
 
     try {
-      const response = await wso.boardService.updateBoardReply(post.id, params);
+      const response = await wso.boardService.updateBoardReply(
+        post.id!,
+        params
+      );
       setEdit(false);
-      updateCurrPost(response.data);
+      if (response.data) updateCurrPost(response.data);
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
     }
@@ -52,7 +61,7 @@ const DiscussionPost = ({ post, onDeleted }) => {
     if (!confirmDelete) return;
 
     try {
-      await wso.boardService.deleteBoardReply(post.id);
+      await wso.boardService.deleteBoardReply(post.id!);
       if (typeof onDeleted === "function") {
         onDeleted(post);
       } else {
@@ -69,7 +78,7 @@ const DiscussionPost = ({ post, onDeleted }) => {
     if (!confirmFlag) return;
 
     try {
-      await wso.boardService.flagBoardReply(post.id);
+      await wso.boardService.flagBoardReply(post.id!);
       updateFlagged(true);
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
@@ -152,18 +161,15 @@ const DiscussionPost = ({ post, onDeleted }) => {
       header={<h1>{generateCommentWriter()}</h1>}
       body={
         <div className="markdown-content">
-          <Markdown options={markdownOptions}>{currPost.content}</Markdown>
+          <Markdown options={markdownOptions}>
+            {currPost.content ?? ""}
+          </Markdown>
         </div>
       }
       meta={<span>{formatBoardDate(currPost.createdAt)}</span>}
       cornerActions={editControls()}
     />
   );
-};
-
-DiscussionPost.propTypes = {
-  post: PropTypes.object.isRequired,
-  onDeleted: PropTypes.func,
 };
 
 const DiscussionPostSkeleton = () => (

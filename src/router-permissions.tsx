@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Navigate, useLocation } from "react-router-dom";
 import MoonLoader from "react-spinners/MoonLoader";
 import { containsOneOfScopes, getTokenLevel, scopes } from "./lib/general";
@@ -11,7 +10,12 @@ import { containsOneOfScopes, getTokenLevel, scopes } from "./lib/general";
  */
 
 // ! It is very important to update this with every new policy change
-const routePermissions = {
+interface RoutePermission {
+  scopes?: string[];
+  tokenLevel?: number;
+}
+
+const routePermissions: Record<string, RoutePermission> = {
   admin: { scopes: [scopes.ScopeAdminAll], tokenLevel: 3 },
   booktrak: { scopes: [scopes.ScopeBooktrak] },
   "booktrak.write": {
@@ -45,30 +49,32 @@ const routePermissions = {
 /**
  * Checks if the token has the necessary scopes to access a route.
  *
- * @param {String} token - User API Token.
- * @param {String} routeName - Route Name.
+ * @param token - User API Token.
+ * @param routeName - Route Name.
  */
-const hasNecessaryScopes = (token, routeName) => {
-  return (
-    !routePermissions[routeName].scopes ||
-    containsOneOfScopes(token, routePermissions[routeName].scopes)
-  );
+const hasNecessaryScopes = (token: string, routeName: string) => {
+  const { scopes: requiredScopes } = routePermissions[routeName];
+  return !requiredScopes || containsOneOfScopes(token, requiredScopes);
 };
 
 /**
  * Checks if the token has the necessary token level to access a route.
  *
- * @param {String} token - User API Token.
- * @param {String} routeName - Route Name.
+ * @param token - User API Token.
+ * @param routeName - Route Name.
  */
-const hasNecessaryTokenLevel = (token, routeName) => {
-  return (
-    !routePermissions[routeName].tokenLevel ||
-    getTokenLevel(token) >= routePermissions[routeName].tokenLevel
-  );
+const hasNecessaryTokenLevel = (token: string, routeName: string) => {
+  const { tokenLevel } = routePermissions[routeName];
+  return !tokenLevel || getTokenLevel(token) >= tokenLevel;
 };
 
-const RequireScope = ({ token, name, children }) => {
+interface RequireScopeProps {
+  token: string;
+  name: string;
+  children: React.ReactElement;
+}
+
+const RequireScope = ({ token, name, children }: RequireScopeProps) => {
   const location = useLocation();
 
   // API Token is not set yet, display loading screen
@@ -109,12 +115,6 @@ const RequireScope = ({ token, name, children }) => {
       replace
     />
   );
-};
-
-RequireScope.propTypes = {
-  token: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
 };
 
 export default RequireScope;

@@ -1,8 +1,11 @@
 // React imports
 import React from "react";
-import PropTypes from "prop-types";
 
-const Errors = ({ errors = [] }) => {
+export interface ErrorsProps {
+  errors?: string[];
+}
+
+const Errors = ({ errors = [] }: ErrorsProps) => {
   return (
     <div id="errors">
       {errors.length > 0 &&
@@ -11,10 +14,6 @@ const Errors = ({ errors = [] }) => {
         })}
     </div>
   );
-};
-
-Errors.propTypes = {
-  errors: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default Errors;

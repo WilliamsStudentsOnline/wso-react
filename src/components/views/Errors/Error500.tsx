@@ -1,8 +1,11 @@
 // React imports
 import React from "react";
-import PropTypes from "prop-types";
 
-const Error500 = ({ error = null }) => {
+export interface Error500Props {
+  error?: { message?: string } | null;
+}
+
+const Error500 = ({ error = null }: Error500Props) => {
   return (
     <header>
       <h1>Whoops! Something Bad Happened!</h1>
@@ -15,10 +18,6 @@ const Error500 = ({ error = null }) => {
       <a href="mailto:wso-dev@wso.williams.edu">wso-dev@wso.williams.edu</a>
     </header>
   );
-};
-
-Error500.propTypes = {
-  error: PropTypes.object,
 };
 
 export default Error500;

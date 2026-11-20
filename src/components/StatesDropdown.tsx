@@ -1,8 +1,12 @@
 // React imports
 import React from "react";
-import PropTypes from "prop-types";
 
-const StatesDropdown = ({ updateState, currentState }) => {
+export interface StatesDropdownProps {
+  updateState: (state: string) => void;
+  currentState?: string;
+}
+
+const StatesDropdown = ({ updateState, currentState }: StatesDropdownProps) => {
   return (
     <select
       value={currentState}
@@ -62,11 +66,6 @@ const StatesDropdown = ({ updateState, currentState }) => {
       <option value="WY">Wyoming</option>
     </select>
   );
-};
-
-StatesDropdown.propTypes = {
-  updateState: PropTypes.func,
-  currentState: PropTypes.string,
 };
 
 export default StatesDropdown;

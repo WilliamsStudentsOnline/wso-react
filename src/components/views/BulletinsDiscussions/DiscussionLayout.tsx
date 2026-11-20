@@ -1,10 +1,13 @@
 // React imports
-import React from "react";
-import PropTypes from "prop-types";
+import React, { ReactNode } from "react";
 
 import { ServiceHeader, ContentPane } from "../../ui";
 
-const DiscussionLayout = ({ children }) => {
+export interface DiscussionLayoutProps {
+  children: ReactNode;
+}
+
+const DiscussionLayout = ({ children }: DiscussionLayoutProps) => {
   return (
     <>
       <ServiceHeader
@@ -18,10 +21,6 @@ const DiscussionLayout = ({ children }) => {
       <ContentPane variant="main-table">{children}</ContentPane>
     </>
   );
-};
-
-DiscussionLayout.propTypes = {
-  children: PropTypes.object.isRequired,
 };
 
 export default DiscussionLayout;
