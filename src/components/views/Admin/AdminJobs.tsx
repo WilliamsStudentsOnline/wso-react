@@ -241,9 +241,7 @@ const AdminJobs = () => {
       });
       const updated = response.data;
       if (updated) {
-        setJobs((prev) =>
-          prev.map((j) => (j.name === jobName ? { ...j, ...updated } : j))
-        );
+        setJobs((prev) => prev.map((j) => (j.name === jobName ? updated : j)));
       }
       setMessage(`${disabled ? "Disabled" : "Enabled"} ${jobName}`);
     } catch (error) {
