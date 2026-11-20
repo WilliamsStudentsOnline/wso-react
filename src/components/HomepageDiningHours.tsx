@@ -476,7 +476,13 @@ const HomepageDiningVendorRow = ({
   );
 };
 
-const HOMEPAGE_VENDOR_IDS = new Set(["driscoll", "mission", "whitmans"]);
+const HOMEPAGE_VENDOR_IDS = new Set([
+  "driscoll",
+  "mission",
+  "whitmans",
+  "eco-cafe",
+  "t-bar-cafe",
+]);
 
 const HOMEPAGE_DINING_SKELETON_SLOTS = [
   "Breakfast",
