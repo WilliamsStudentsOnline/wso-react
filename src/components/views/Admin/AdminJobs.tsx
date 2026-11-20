@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import classNames from "classnames";
 import {
   AdminJobInfo,
   ModelsJobRun,
@@ -24,6 +25,7 @@ const formatWhen = (value?: string) => {
 
 const scheduleLabel = (job: AdminJobInfo) => {
   const parts: string[] = [];
+  if (job.disabled) parts.push("Disabled");
   if (job.hasActiveRun) parts.push("Running now");
   const next = formatWhen(job.nextRunAt);
   if (next) parts.push(`Next ${next}`);
@@ -80,6 +82,7 @@ const AdminJobs = () => {
   const [runJobDraft, setRunJobDraft] = useState<AdminJobInfo | null>(null);
   const [runParams, setRunParams] = useState<Record<string, string>>({});
   const [runFormError, setRunFormError] = useState<string | null>(null);
+  const [lockDraft, setLockDraft] = useState<AdminJobInfo | null>(null);
   const [copiedLogId, setCopiedLogId] = useState<number | null>(null);
   const [backfillsOpen, setBackfillsOpen] = useState(false);
   const softRunsOnSelectRef = useRef(false);
@@ -155,6 +158,7 @@ const AdminJobs = () => {
   };
 
   const openRunForm = (job: AdminJobInfo) => {
+    if (job.disabled) return;
     setRunJobDraft(job);
     setRunParams(initialParamValues(job));
     setRunFormError(null);
@@ -172,7 +176,7 @@ const AdminJobs = () => {
 
   const submitRun = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!runJobDraft?.name) return;
+    if (!runJobDraft?.name || runJobDraft.disabled) return;
 
     const missing = missingRequired(runJobDraft, runParams);
     if (missing.length) {
@@ -219,6 +223,30 @@ const AdminJobs = () => {
       void loadJobsRef.current({ soft: true });
     } catch (error) {
       setMessage(null);
+      fail(error);
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const confirmLock = async () => {
+    if (!lockDraft?.name) return;
+    const jobName = lockDraft.name;
+    const disabled = !lockDraft.disabled;
+    setLockDraft(null);
+    setBusy(`lock:${jobName}`);
+    try {
+      const response = await wso.adminService.updateAdminJob(jobName, {
+        disabled,
+      });
+      const updated = response.data;
+      if (updated) {
+        setJobs((prev) =>
+          prev.map((j) => (j.name === jobName ? { ...j, ...updated } : j))
+        );
+      }
+      setMessage(`${disabled ? "Disabled" : "Enabled"} ${jobName}`);
+    } catch (error) {
       fail(error);
     } finally {
       setBusy(null);
@@ -299,7 +327,12 @@ const AdminJobs = () => {
     return (
       <tr
         key={name}
-        className={selected === name ? "admin-jobs__row--selected" : undefined}
+        className={
+          classNames({
+            "admin-jobs__row--selected": selected === name,
+            "admin-jobs__row--disabled": job.disabled,
+          }) || undefined
+        }
         onClick={() => selectJob(name)}
       >
         <td>
@@ -310,21 +343,44 @@ const AdminJobs = () => {
                 <span className="admin-jobs__desc">{job.description}</span>
               )}
             </div>
-            <button
-              type="button"
-              className="admin-jobs__icon-btn admin-jobs__icon-btn--run"
-              aria-label={`Run ${name}`}
-              title="Review params, then enqueue"
-              disabled={busy === `run:${name}`}
-              onClick={(event) => {
-                event.stopPropagation();
-                openRunForm(job);
-              }}
-            >
-              <span className="material-icons" aria-hidden>
-                play_arrow
-              </span>
-            </button>
+            <div className="admin-jobs__job-actions">
+              <button
+                type="button"
+                className={classNames(
+                  "admin-jobs__icon-btn admin-jobs__icon-btn--ghost",
+                  { "admin-jobs__icon-btn--active": job.disabled }
+                )}
+                aria-label={`${job.disabled ? "Enable" : "Disable"} ${name}`}
+                aria-pressed={!!job.disabled}
+                title={job.disabled ? "Enable job" : "Disable job"}
+                disabled={busy === `lock:${name}`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setLockDraft(job);
+                }}
+              >
+                <span className="material-icons" aria-hidden>
+                  {job.disabled ? "lock" : "lock_open"}
+                </span>
+              </button>
+              <button
+                type="button"
+                className="admin-jobs__icon-btn admin-jobs__icon-btn--run"
+                aria-label={`Run ${name}`}
+                title={
+                  job.disabled ? "Disabled" : "Review params, then enqueue"
+                }
+                disabled={!!job.disabled || busy === `run:${name}`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  openRunForm(job);
+                }}
+              >
+                <span className="material-icons" aria-hidden>
+                  play_arrow
+                </span>
+              </button>
+            </div>
           </div>
         </td>
         <td className="admin-jobs__meta">{scheduleLabel(job)}</td>
@@ -561,6 +617,59 @@ const AdminJobs = () => {
             </div>
           </section>
         </div>
+      )}
+
+      {lockDraft && (
+        <>
+          <button
+            type="button"
+            className="admin-jobs__backdrop"
+            aria-label="Close confirm dialog"
+            onMouseDown={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              setLockDraft(null);
+            }}
+          />
+          <div
+            className="admin-jobs__dialog"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="admin-jobs-lock-title"
+          >
+            <div className="admin-jobs__dialog-header">
+              <h3 id="admin-jobs-lock-title">
+                {lockDraft.disabled ? "Enable" : "Disable"}{" "}
+                <code>{lockDraft.name}</code>?
+              </h3>
+              <button
+                type="button"
+                className="admin-jobs__dialog-close"
+                onClick={() => setLockDraft(null)}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
+            <p className="admin-jobs__muted">
+              {lockDraft.disabled
+                ? "Scheduled and queued runs will resume."
+                : "No runs will start until it's re-enabled. Queued runs will wait."}
+            </p>
+            <div className="admin-jobs__dialog-actions">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setLockDraft(null)}
+              >
+                Cancel
+              </Button>
+              <Button type="button" onClick={confirmLock}>
+                {lockDraft.disabled ? "Enable" : "Disable"}
+              </Button>
+            </div>
+          </div>
+        </>
       )}
 
       {runJobDraft && (

@@ -291,6 +291,13 @@ button.admin-jobs__icon-btn:disabled {
   gap: 0.75rem;
 }
 
+.admin-jobs__job-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.35rem;
+}
+
 .admin-jobs__list tbody tr {
   cursor: pointer;
 }
@@ -380,6 +387,11 @@ button.admin-jobs__section-toggle:hover .admin-jobs__section-label {
 
 .admin-jobs__list tbody tr.admin-jobs__row--selected td:first-child {
   box-shadow: inset 3px 0 0 var(--brand-bar, #704794);
+}
+
+.admin-jobs__row--disabled .admin-jobs__job-link,
+.admin-jobs__row--disabled .admin-jobs__meta {
+  opacity: 0.55;
 }
 
 .admin-jobs__row--pinned td {
