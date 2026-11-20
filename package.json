@@ -64,6 +64,7 @@
     "postbuild": "purgecss --config ./purgecss.config.js --out build/assets",
     "test": "vitest",
     "test:ci": "vitest run",
+    "check:ts-only": "bash scripts/check-no-js.sh",
     "lint": "eslint ./src --ext=js,jsx,ts,tsx",
     "lint:fix": "eslint ./src --ext=js,jsx,ts,tsx --fix",
     "format": "prettier --write './src/**/*.{js,jsx,ts,tsx,html,css,json}'",
