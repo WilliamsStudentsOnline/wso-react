@@ -402,8 +402,8 @@ const HomepageDiningVendorRow = ({
   const highlightMealName = isOpen
     ? currentMealName
     : pill.kind === "soon"
-    ? nextMealName
-    : null;
+      ? nextMealName
+      : null;
   const openProgressStyle =
     isOpen && openProgress !== null
       ? ({

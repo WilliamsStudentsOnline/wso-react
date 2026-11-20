@@ -1,11 +1,7 @@
 import React, { ReactNode } from "react";
 
 export type ContentPaneVariant =
-  | "results"
-  | "main-table"
-  | "list-creation"
-  | "article"
-  | "section";
+  "results" | "main-table" | "list-creation" | "article" | "section";
 
 export type ContentPaneProps = {
   variant?: ContentPaneVariant;
@@ -33,8 +29,8 @@ const ContentPane = ({
     (variant === "article"
       ? "div"
       : variant === "section"
-      ? "section"
-      : "article");
+        ? "section"
+        : "article");
   const classes = [variantClass[variant], className].filter(Boolean).join(" ");
 
   return <Tag className={classes}>{children}</Tag>;

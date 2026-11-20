@@ -15,8 +15,8 @@ const EmptyState = ({
     variant === "no-matches"
       ? "no-matches-found"
       : variant === "no-posts"
-      ? "no-posts"
-      : "";
+        ? "no-posts"
+        : "";
   return (
     <h1 className={[variantClass, className].filter(Boolean).join(" ")}>
       {children}

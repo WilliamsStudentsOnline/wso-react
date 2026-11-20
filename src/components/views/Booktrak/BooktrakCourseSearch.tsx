@@ -124,7 +124,7 @@ const BooktrakCourseSearch = ({
                 ? `Limited to ${courseLimit} course${
                     (courseLimit ?? 0) > 1 ? "s" : ""
                   }. Delete a course to search.`
-                : placeholder ?? "Add New Course..."
+                : (placeholder ?? "Add New Course...")
             }
             maxLength={255}
             size={20}

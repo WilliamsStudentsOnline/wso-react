@@ -655,7 +655,8 @@ h6 {
   /*   font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
   color: #20012e; */
   /*STANDARD*/
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family:
+    "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.25em;
   text-rendering: optimizeLegibility;
 }
@@ -868,7 +869,8 @@ select {
   /*APRIL FOOL'S*/
   /*   font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif; */
   /*STANDARD*/
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family:
+    "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1em;
   resize: none;
 }
@@ -910,7 +912,8 @@ select {
   /*APRIL FOOL'S*/
   /*   font-family: "Comic Sans MS", "Comic Sans", cursive, sans-setif; */
   /*STANDARD*/
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family:
+    "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1em;
   margin-bottom: 0.75em;
   padding: 0.75em 0.75em;
@@ -1496,9 +1499,11 @@ dl dd {
 .dormtrak .grid-wrap aside ul li,
 .home article aside ul li {
   padding: 1em;
-  -webkit-box-shadow: inset 2px -2px 0 var(--border-table),
+  -webkit-box-shadow:
+    inset 2px -2px 0 var(--border-table),
     inset -2px 0 0 var(--border-table);
-  box-shadow: inset 2px -2px 0 var(--border-table),
+  box-shadow:
+    inset 2px -2px 0 var(--border-table),
     inset -2px 0 0 var(--border-table);
 }
 @media screen and (max-width: 43.75em) {
@@ -1582,9 +1587,15 @@ dl dd {
   vertical-align: baseline;
 }
 *:not(a) {
-  -webkit-transition: opacity 0.33s ease-in-out, transform 0.33s ease-in-out;
-  -moz-transition: opacity 0.33s ease-in-out, transform 0.33s ease-in-out;
-  transition: opacity 0.33s ease-in-out, transform 0.33s ease-in-out;
+  -webkit-transition:
+    opacity 0.33s ease-in-out,
+    transform 0.33s ease-in-out;
+  -moz-transition:
+    opacity 0.33s ease-in-out,
+    transform 0.33s ease-in-out;
+  transition:
+    opacity 0.33s ease-in-out,
+    transform 0.33s ease-in-out;
 }
 html.theme-switching,
 html.theme-switching *:not(a) {

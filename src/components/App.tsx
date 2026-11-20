@@ -88,9 +88,8 @@ const App = () => {
   const updateAPI = async () => {
     if (identityToken !== "") {
       try {
-        const apiTokenResponse = await wso.authService.getAPIToken(
-          identityToken
-        );
+        const apiTokenResponse =
+          await wso.authService.getAPIToken(identityToken);
         const newAPIToken = apiTokenResponse.token;
         dispatch(updateAPIToken(newAPIToken));
       } catch (error) {

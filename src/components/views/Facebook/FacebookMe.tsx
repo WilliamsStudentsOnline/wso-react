@@ -67,7 +67,7 @@ const FacebookMe = () => {
         setProfile(data);
         setPronounOverride(override);
         setSavedPronounOverride(override);
-        setPeopleSoftPronoun(override ? "" : data.pronoun ?? "");
+        setPeopleSoftPronoun(override ? "" : (data.pronoun ?? ""));
         setVisible(data.visible);
         setHomeVisible(data.homeVisible);
         setOffCycle(data.offCycle);

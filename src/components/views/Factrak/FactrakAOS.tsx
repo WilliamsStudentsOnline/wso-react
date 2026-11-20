@@ -34,9 +34,8 @@ const FactrakAOS = () => {
       const reqParams = { areaOfStudyID };
 
       try {
-        const profsResponse = await wso.factrakService.listProfessors(
-          reqParams
-        );
+        const profsResponse =
+          await wso.factrakService.listProfessors(reqParams);
         updateProfs(profsResponse.data ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
@@ -67,9 +66,8 @@ const FactrakAOS = () => {
     // Loads additional information regarding the area of study
     const loadAOS = async (areaID: number) => {
       try {
-        const areaOfStudyResponse = await wso.factrakService.getAreaOfStudy(
-          areaID
-        );
+        const areaOfStudyResponse =
+          await wso.factrakService.getAreaOfStudy(areaID);
 
         updateArea(areaOfStudyResponse.data);
       } catch (error) {

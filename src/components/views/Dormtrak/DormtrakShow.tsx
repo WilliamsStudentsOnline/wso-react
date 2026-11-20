@@ -45,9 +45,8 @@ const DormtrakShow = () => {
     const loadDormReviews = async () => {
       const queryParams = { dormID, commented: true };
       try {
-        const dormReviewResponse = await wso.dormtrakService.listReviews(
-          queryParams
-        );
+        const dormReviewResponse =
+          await wso.dormtrakService.listReviews(queryParams);
         updateReviews(dormReviewResponse.data ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: error });

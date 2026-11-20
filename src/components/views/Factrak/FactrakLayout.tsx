@@ -50,9 +50,8 @@ const FactrakLayout = ({ children }: { children: ReactElement }) => {
     let suggestData: AutocompleteACEntry[] = [];
 
     try {
-      const factrakResponse = await wso.autocompleteService.autocompleteFactrak(
-        value
-      );
+      const factrakResponse =
+        await wso.autocompleteService.autocompleteFactrak(value);
       if (factrakResponse.data) {
         suggestData = factrakResponse.data;
       }

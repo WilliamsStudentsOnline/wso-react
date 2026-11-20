@@ -61,9 +61,8 @@ const FactrakCourse = () => {
       };
 
       try {
-        const surveyResponse = await wso.factrakService.listSurveys(
-          queryParams
-        );
+        const surveyResponse =
+          await wso.factrakService.listSurveys(queryParams);
         updateSurveys(surveyResponse.data ?? []);
       } catch (error) {
         // TODO: Add error type from wso-api-client
@@ -98,9 +97,8 @@ const FactrakCourse = () => {
       const queryParams = { courseID };
 
       try {
-        const profResponse = await wso.factrakService.listProfessors(
-          queryParams
-        );
+        const profResponse =
+          await wso.factrakService.listProfessors(queryParams);
         updateProfs(profResponse.data ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });

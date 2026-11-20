@@ -224,7 +224,10 @@ button.dining-meal-menu-btn {
   font-size: inherit !important;
   line-height: 1 !important;
   text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 button.dining-meal-menu-btn:hover {
@@ -268,7 +271,9 @@ button.dining-meal-menu-btn svg {
   border-radius: 4px;
   box-shadow: 0 12px 40px var(--shadow);
   opacity: 0;
-  transition: opacity 0.22s ease, transform 0.22s ease;
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
   overflow: hidden;
   pointer-events: auto;
   outline: none;

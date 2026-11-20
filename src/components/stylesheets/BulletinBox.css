@@ -35,7 +35,8 @@
 
 .bulletin-children {
   padding: 1em;
-  box-shadow: inset 2px -2px 0 var(--border-table),
+  box-shadow:
+    inset 2px -2px 0 var(--border-table),
     inset -2px 0 0 var(--border-table);
   display: grid;
   grid-template-columns: 7fr 3fr;

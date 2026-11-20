@@ -26,9 +26,8 @@ const FactrakSearch = () => {
       };
 
       try {
-        const profsResponse = await wso.factrakService.listProfessors(
-          queryParams
-        );
+        const profsResponse =
+          await wso.factrakService.listProfessors(queryParams);
         const profsData = profsResponse.data;
         updateProfs(
           profsData
@@ -49,9 +48,8 @@ const FactrakSearch = () => {
       };
 
       try {
-        const coursesResponse = await wso.factrakService.listCourses(
-          queryParams
-        );
+        const coursesResponse =
+          await wso.factrakService.listCourses(queryParams);
         const coursesData = coursesResponse.data;
         updateCourses(
           coursesData

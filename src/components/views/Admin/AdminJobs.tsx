@@ -463,14 +463,14 @@ const AdminJobs = () => {
                       status === "succeeded"
                         ? "check_circle"
                         : status === "failed"
-                        ? "error"
-                        : status === "canceled"
-                        ? "cancel"
-                        : status === "running"
-                        ? "autorenew"
-                        : status === "pending"
-                        ? "schedule"
-                        : "help";
+                          ? "error"
+                          : status === "canceled"
+                            ? "cancel"
+                            : status === "running"
+                              ? "autorenew"
+                              : status === "pending"
+                                ? "schedule"
+                                : "help";
                     return (
                       <li key={id} className="admin-jobs__run">
                         <div className="admin-jobs__run-head">

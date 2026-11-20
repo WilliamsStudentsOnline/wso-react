@@ -34,9 +34,8 @@ const DormtrakHome = () => {
         dormRoomID: currUser?.dormRoomID,
       };
       try {
-        const dormReviewResponse = await wso.dormtrakService.listReviews(
-          reviewQueryParams
-        );
+        const dormReviewResponse =
+          await wso.dormtrakService.listReviews(reviewQueryParams);
         const currentUserReviewResponse = await wso.dormtrakService.listReviews(
           currentUserReviewQueryParams
         );

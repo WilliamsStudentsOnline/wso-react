@@ -28,8 +28,7 @@ const DormtrakRanking = () => {
         const rankingsResponse = await wso.dormtrakService.getRankings();
         if (isMounted && rankingsResponse.data) {
           const raw = rankingsResponse.data as
-            | ModelsDormtrakRanking
-            | ModelsDormtrakRanking[];
+            ModelsDormtrakRanking | ModelsDormtrakRanking[];
           updateDormsInfo(Array.isArray(raw) ? raw[0] : raw);
         }
       } catch {

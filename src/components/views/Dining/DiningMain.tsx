@@ -37,8 +37,8 @@ const DiningHoursCard = ({
   const highlightMealName = isOpen
     ? currentMealName
     : pill.kind === "soon"
-    ? nextMealName
-    : null;
+      ? nextMealName
+      : null;
   const sortedMealEntries = Object.entries(vendor.meals).sort(
     ([, a], [, b]) => getMealOrder(a.name) - getMealOrder(b.name)
   );

@@ -48,9 +48,8 @@ const FactrakProfessor = () => {
 
     const loadProfs = async (professorID: number) => {
       try {
-        const professorResponse = await wso.factrakService.getProfessor(
-          professorID
-        );
+        const professorResponse =
+          await wso.factrakService.getProfessor(professorID);
         const professorData = professorResponse.data;
 
         updateProfessor(professorData);
@@ -69,9 +68,8 @@ const FactrakProfessor = () => {
 
     const loadRatings = async (professorID: number) => {
       try {
-        const ratingsResponse = await wso.factrakService.getProfessorRatings(
-          professorID
-        );
+        const ratingsResponse =
+          await wso.factrakService.getProfessorRatings(professorID);
         updateRatings(ratingsResponse.data);
       } catch (error) {
         // TODO: add error type
@@ -93,9 +91,8 @@ const FactrakProfessor = () => {
         populateClientAgreement: true,
       };
       try {
-        const surveysResponse = await wso.factrakService.listSurveys(
-          queryParams
-        );
+        const surveysResponse =
+          await wso.factrakService.listSurveys(queryParams);
         updateSurveys(surveysResponse.data ?? []);
       } catch (error) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -37,9 +37,8 @@ const FactrakHome = () => {
       };
 
       try {
-        const surveysResponse = await wso.factrakService.listSurveys(
-          queryParams
-        );
+        const surveysResponse =
+          await wso.factrakService.listSurveys(queryParams);
         updateSurveys(surveysResponse.data ?? []);
       } catch (error) {
         navigateTo("/error", { replace: true, state: { error } });
