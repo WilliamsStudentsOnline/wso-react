@@ -17,17 +17,11 @@ import { injectStore } from "./lib/axiosAuth";
 import { ThemeProvider } from "./lib/ThemeProvider";
 
 // Router imports
-import { unstable_HistoryRouter as UnstableHistoryRouter } from "react-router-dom";
+import { unstable_HistoryRouter as HistoryRouter } from "react-router-dom";
 import history from "./lib/history";
 
 // Serviceworker import
 import * as serviceWorker from "./serviceWorker";
-
-// TODO(ts): react-router-dom 6.3's HistoryRouter typings are incompatible with React 19's JSX types; remove after upgrading react-router.
-const HistoryRouter = UnstableHistoryRouter as unknown as React.FC<{
-  history: typeof history;
-  children?: React.ReactNode;
-}>;
 
 injectStore(store);
 
