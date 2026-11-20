@@ -1,0 +1,439 @@
+:root {
+  --wcfm-night: #1b1530;
+  --wcfm-dusk: #3a2a5c;
+  --wcfm-moss: #2f4a3a;
+  --wcfm-grass: #5b8a4f;
+  --wcfm-ember: #ff9a3c;
+  --wcfm-starlight: #ece6ff;
+  --wcfm-starlight-dim: rgba(236, 230, 255, 0.68);
+  --wcfm-font-display: "Pixelify Sans", var(--font-family-sans);
+  --wcfm-notch: polygon(
+    0 6px,
+    3px 6px,
+    3px 3px,
+    6px 3px,
+    6px 0,
+    calc(100% - 6px) 0,
+    calc(100% - 6px) 3px,
+    calc(100% - 3px) 3px,
+    calc(100% - 3px) 6px,
+    100% 6px,
+    100% calc(100% - 6px),
+    calc(100% - 3px) calc(100% - 6px),
+    calc(100% - 3px) calc(100% - 3px),
+    calc(100% - 6px) calc(100% - 3px),
+    calc(100% - 6px) 100%,
+    6px 100%,
+    6px calc(100% - 3px),
+    3px calc(100% - 3px),
+    3px calc(100% - 6px),
+    0 calc(100% - 6px)
+  );
+  --wcfm-notch-sm: polygon(
+    0 4px,
+    2px 4px,
+    2px 2px,
+    4px 2px,
+    4px 0,
+    calc(100% - 4px) 0,
+    calc(100% - 4px) 2px,
+    calc(100% - 2px) 2px,
+    calc(100% - 2px) 4px,
+    100% 4px,
+    100% calc(100% - 4px),
+    calc(100% - 2px) calc(100% - 4px),
+    calc(100% - 2px) calc(100% - 2px),
+    calc(100% - 4px) calc(100% - 2px),
+    calc(100% - 4px) 100%,
+    4px 100%,
+    4px calc(100% - 2px),
+    2px calc(100% - 2px),
+    2px calc(100% - 4px),
+    0 calc(100% - 4px)
+  );
+}
+
+/* beat i.css button rules */
+.wcfm-dock button,
+.wcfm-scene button {
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  border-radius: 0;
+  letter-spacing: normal;
+  text-transform: none;
+  font-weight: inherit;
+  line-height: 1.2;
+}
+
+.wcfm-dock {
+  position: fixed;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.wcfm-dock[hidden] {
+  display: none;
+}
+
+.wcfm-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  max-width: min(22rem, calc(100vw - 6.5rem));
+  padding: 6px;
+  background: var(--wcfm-night);
+  color: var(--wcfm-starlight);
+  clip-path: var(--wcfm-notch);
+}
+
+.wcfm-mini-open {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.35rem 0.25rem 0.35rem 0.5rem;
+  border: 0;
+  background: none;
+  color: var(--wcfm-starlight);
+  font: inherit;
+  cursor: pointer;
+}
+
+.wcfm-mini-open .material-icons {
+  flex: none;
+  font-size: 1rem;
+  color: var(--wcfm-starlight-dim);
+}
+
+.wcfm-scene-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+.wcfm-mini-title {
+  font-family: var(--wcfm-font-display);
+  font-size: 1.3rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wcfm-mini-play,
+.wcfm-scene-play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: var(--wcfm-ember);
+  color: var(--wcfm-night);
+  cursor: pointer;
+  clip-path: var(--wcfm-notch);
+}
+
+.wcfm-mini-play {
+  flex: none;
+  clip-path: var(--wcfm-notch-sm);
+  padding: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-left: auto;
+}
+
+.wcfm-mini-play,
+.wcfm-scene-play,
+.wcfm-scene-play:visited {
+  text-shadow: none;
+}
+
+.wcfm-mini-play:hover,
+.wcfm-scene-play:hover {
+  background: #ffad5c;
+  color: var(--wcfm-night);
+  opacity: 1;
+}
+
+.wcfm-mini-play:active,
+.wcfm-scene-play:active {
+  background: #e8862c;
+}
+
+.wcfm-scene-play:focus {
+  color: var(--wcfm-night);
+}
+
+.wcfm-mini-open:hover,
+.wcfm-mini-open:active,
+.wcfm-scene-close:hover,
+.wcfm-scene-close:active {
+  background: rgba(236, 230, 255, 0.08);
+}
+
+.wcfm-mini-card {
+  display: none;
+  width: min(24rem, calc(100vw - 2.5rem));
+  padding: 1rem 1.1rem 1.1rem;
+  background: var(--wcfm-night);
+  color: var(--wcfm-starlight);
+  clip-path: var(--wcfm-notch);
+}
+
+.wcfm-dock:hover .wcfm-mini-card,
+.wcfm-dock:focus-within .wcfm-mini-card {
+  display: block;
+}
+
+.wcfm-mini-card .wcfm-scene-show {
+  font-size: 0.9rem;
+}
+
+.wcfm-mini-card .wcfm-scene-song {
+  font-size: 1.75rem;
+}
+
+.wcfm-mini-card .wcfm-scene-artist {
+  margin: 0.3rem 0 0.9rem;
+  font-size: 0.95rem;
+}
+
+.wcfm-mini-card .wcfm-scene-play {
+  padding: 0.45rem 0.9rem 0.45rem 0.7rem;
+  font-size: 0.95rem;
+}
+
+.wcfm-mini button:focus-visible,
+.wcfm-mini-card button:focus-visible,
+.wcfm-mini-card a:focus-visible,
+.wcfm-scene button:focus-visible {
+  outline: 3px solid var(--wcfm-starlight);
+  outline-offset: -3px;
+}
+
+.wcfm-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden auto;
+  background: var(--wcfm-night);
+  color: var(--wcfm-starlight);
+}
+
+.wcfm-scene-canvas {
+  position: fixed;
+  inset: 0;
+}
+
+.wcfm-scene-top {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+}
+
+.wcfm-scene-close {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.7rem 0.4rem 0.5rem;
+  border: 0;
+  background: rgba(27, 21, 48, 0.6);
+  color: var(--wcfm-starlight);
+  font: inherit;
+  cursor: pointer;
+  clip-path: var(--wcfm-notch);
+}
+
+.wcfm-scene-listeners {
+  font-size: 0.9rem;
+  color: var(--wcfm-starlight-dim);
+}
+
+.wcfm-scene-ground {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, 20rem);
+  gap: 2rem clamp(1.5rem, 5vw, 5rem);
+  align-items: end;
+  min-height: calc(100vh - 4.5rem);
+  padding: 0 clamp(1rem, 4vw, 3rem) clamp(1.5rem, 5vh, 3rem);
+  text-shadow: 0 2px 0 rgba(27, 21, 48, 0.7);
+}
+
+.wcfm-scene-now {
+  max-width: 40rem;
+}
+
+.wcfm-scene-show {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+}
+
+.wcfm-scene-until,
+.wcfm-scene-by,
+.wcfm-scene-artist {
+  color: var(--wcfm-starlight-dim);
+}
+
+.wcfm-scene-song {
+  margin: 0;
+  font-family: var(--wcfm-font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 5.5vw, 4.25rem);
+  line-height: 1.02;
+  color: var(--wcfm-starlight);
+  overflow-wrap: anywhere;
+}
+
+.wcfm-scene-artist {
+  margin: 0.5rem 0 1.25rem;
+  font-size: 1.1rem;
+}
+
+.wcfm-scene-play {
+  gap: 0.4rem;
+  padding: 0.65rem 1.2rem 0.65rem 0.9rem;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.wcfm-scene-site-link {
+  box-sizing: border-box;
+  margin-left: 0.5rem;
+  font-family: var(--font-family-sans);
+  font-weight: inherit;
+  letter-spacing: normal;
+  line-height: 1.2;
+  text-decoration: none;
+  vertical-align: top;
+}
+
+.wcfm-scene-site-link:focus-visible {
+  outline: 3px solid var(--wcfm-starlight);
+  outline-offset: -3px;
+}
+
+.wcfm-scene-error {
+  margin-top: 0.75rem;
+  color: var(--wcfm-ember);
+}
+
+.wcfm-scene-side {
+  font-size: 0.95rem;
+}
+
+.wcfm-scene-side section + section {
+  margin-top: 1.25rem;
+}
+
+.wcfm-scene-side h3 {
+  margin: 0 0 0.4rem;
+  font-family: var(--wcfm-font-display);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--wcfm-ember);
+}
+
+.wcfm-scene-side ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wcfm-scene-side li,
+.wcfm-scene-side p {
+  margin: 0 0 0.3rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wcfm-scene-time {
+  display: inline-block;
+  min-width: 4.5rem;
+  color: var(--wcfm-starlight-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 760px) {
+  .wcfm-scene-ground {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .wcfm-scene-side {
+    display: none;
+  }
+}
+
+.wcfm-tune {
+  position: fixed;
+  top: 4rem;
+  right: 1rem;
+  display: grid;
+  gap: 0.3rem;
+  width: 15rem;
+  padding: 0.75rem;
+  background: rgba(27, 21, 48, 0.85);
+  font-size: 0.75rem;
+}
+
+.wcfm-tune label {
+  display: grid;
+}
+
+.wcfm-dots span {
+  animation: 1.2s steps(1) infinite;
+}
+
+.wcfm-dots span:nth-child(1) {
+  animation-name: wcfm-dot-1;
+}
+
+.wcfm-dots span:nth-child(2) {
+  animation-name: wcfm-dot-2;
+}
+
+.wcfm-dots span:nth-child(3) {
+  animation-name: wcfm-dot-3;
+}
+
+@keyframes wcfm-dot-1 {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+}
+
+@keyframes wcfm-dot-2 {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes wcfm-dot-3 {
+  0% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wcfm-dots span {
+    animation: none;
+  }
+}

@@ -1,10 +1,10 @@
 // React imports
-import React, { ReactNode } from "react";
+import React, { lazy, ReactNode, Suspense } from "react";
 import Footer from "./Footer";
 import Nav from "./Nav";
 import FeedbackFab from "./Feedback/FeedbackFab";
-import { WCFMProvider } from "./views/WCFM/WCFMProvider";
-import WCFMPlayer from "./views/WCFM/WCFMPlayer";
+import { useWCFM, WCFMProvider } from "./views/WCFM/WCFMProvider";
+import WCFMMini from "./views/WCFM/WCFMMini";
 import "./stylesheets/Application.css";
 
 export interface LayoutProps {
@@ -12,6 +12,17 @@ export interface LayoutProps {
   notice?: string;
   warning?: string;
 }
+
+const WCFMScene = lazy(() => import("./views/WCFM/WCFMScene"));
+
+const WCFMSceneSlot = () => {
+  const { sceneOpen } = useWCFM();
+  return sceneOpen ? (
+    <Suspense fallback={null}>
+      <WCFMScene />
+    </Suspense>
+  ) : null;
+};
 
 const Layout = ({ children, notice = "", warning = "" }: LayoutProps) => {
   return (
@@ -37,7 +48,8 @@ const Layout = ({ children, notice = "", warning = "" }: LayoutProps) => {
             <Footer />
           </div>
         </div>
-        <WCFMPlayer />
+        <WCFMMini />
+        <WCFMSceneSlot />
       </div>
     </WCFMProvider>
   );
