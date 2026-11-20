@@ -48,7 +48,7 @@
     "husky": "^8.0.1",
     "identity-obj-proxy": "^3.0.0",
     "jsdom": "^31.0.1",
-    "lint-staged": "^13.0.3",
+    "lint-staged": "^17.6.1",
     "prettier": "^2.7.1",
     "purgecss": "^9.1.0",
     "rollup-plugin-visualizer": "^7.1.3",
