@@ -51,7 +51,20 @@ const NowPlaying = ({ className }: { className: string }) => {
         <i className="material-icons" aria-hidden>
           {playing ? "stop" : "play_arrow"}
         </i>
-        {status === "loading" ? "Tuning in" : playing ? "Stop" : "Listen live"}
+        {status === "loading" ? (
+          <>
+            Tuning in
+            <span className="wcfm-dots" aria-hidden>
+              <span>.</span>
+              <span>.</span>
+              <span>.</span>
+            </span>
+          </>
+        ) : playing ? (
+          "Stop"
+        ) : (
+          "Listen live"
+        )}
       </button>
       <a
         className="wcfm-scene-play wcfm-scene-site-link"
