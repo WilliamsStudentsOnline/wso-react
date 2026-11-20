@@ -5,7 +5,7 @@ import { EmptyState } from "../../ui";
 // Redux/ Router imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
-import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router";
 import { ModelsCourse, ModelsUser } from "wso-api-client/lib/services/types";
 
 // FactrakSearch refers to the search result page

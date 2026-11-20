@@ -5,7 +5,7 @@ import { Line, Photo } from "../../Skeleton";
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router";
 
 // Additional Imports
 import { ModelsBook } from "wso-api-client/lib/services/types";

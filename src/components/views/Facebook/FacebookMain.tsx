@@ -11,7 +11,7 @@ import FacebookUser from "./FacebookUser";
 import Error404 from "../Errors/Error404";
 
 // External Imports
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router";
 
 const FacebookMain = () => {
   return (

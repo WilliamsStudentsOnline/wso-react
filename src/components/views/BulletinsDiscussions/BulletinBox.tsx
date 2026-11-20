@@ -4,7 +4,7 @@ import { Line } from "../../ui";
 import BoardListControls from "./BoardListControls";
 import { getWSO } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { ModelsBoardThread } from "wso-api-client/lib/services/types";
 import { PostType } from "../../../lib/types";
 import {

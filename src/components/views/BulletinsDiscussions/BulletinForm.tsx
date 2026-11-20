@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { getWSO } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
 import DatePicker from "react-date-picker";
 import "react-date-picker/dist/DatePicker.css";

@@ -10,7 +10,7 @@ import { getWSO, getCurrUser, getAPIToken } from "../../../lib/authSlice";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import {
   ModelsAreaOfStudy,
   ModelsFactrakSurvey,

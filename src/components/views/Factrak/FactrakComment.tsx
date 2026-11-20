@@ -7,7 +7,7 @@ import { useAppSelector, useAppDispatch } from "../../../lib/store";
 import { getWSO, getCurrUser, updateUser } from "../../../lib/authSlice";
 
 // Additional Imports
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { format } from "timeago.js";
 import { ModelsFactrakSurvey } from "wso-api-client/lib/services/types";
 

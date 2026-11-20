@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { ModelsBookListing } from "wso-api-client/lib/services/types";
 import { BookConditionEnumToString } from "./BooktrakUtils";
 import { useAppSelector } from "../../../lib/store";

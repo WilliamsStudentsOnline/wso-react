@@ -7,12 +7,7 @@ import FactrakDeficitMessage from "./FactrakUtils";
 // Redux/Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser, getAPIToken } from "../../../lib/authSlice";
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router";
 
 // Additional imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";

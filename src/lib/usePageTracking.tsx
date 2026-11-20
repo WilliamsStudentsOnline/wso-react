@@ -1,7 +1,7 @@
 // Adapged from https://github.com/react-ga/react-ga/issues/122#issuecomment-668640145
 
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import ReactGA from "react-ga";
 
 const usePageTracking = (): void => {

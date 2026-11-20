@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router";
 import MoonLoader from "react-spinners/MoonLoader";
 import { containsOneOfScopes, getTokenLevel, scopes } from "./lib/general";
 

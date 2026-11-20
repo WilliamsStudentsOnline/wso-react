@@ -6,7 +6,7 @@ import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
 
 // Additional imports
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { ModelsNeighborhood } from "wso-api-client/lib/services/types";
 import { ServiceHeader, SearchBar, ServiceTab } from "../../ui";
 

@@ -9,7 +9,7 @@ import { useAppSelector } from "../../../lib/store";
 import { getAPIToken, getWSO } from "../../../lib/authSlice";
 
 // External Imports
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router";
 import BooktrakLayout from "./BooktrakLayout";
 import BooktrakSearch from "./BooktrakSearch";
 import BooktrakBook from "./BooktrakBook";

@@ -9,7 +9,7 @@ import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
 
 // Additional imports
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { ModelsDormtrakReview } from "wso-api-client/lib/services/types";
 
 const DormtrakHome = () => {

@@ -5,7 +5,7 @@ import HoodTableRow, { HoodTableRowSkeleton } from "./HoodTableRow";
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { ModelsNeighborhood } from "wso-api-client/lib/services/types";
 
 const DormtrakNeighborhood = () => {

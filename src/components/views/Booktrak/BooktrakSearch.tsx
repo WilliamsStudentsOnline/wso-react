@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 // Redux/ Router imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router";
 
 // Additional Imports
 import {

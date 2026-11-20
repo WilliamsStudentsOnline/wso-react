@@ -10,7 +10,7 @@ import {
 } from "../lib/authSlice";
 import { updateIdentityToken, updateRemember } from "../lib/authSlice";
 import { useAppSelector, useAppDispatch } from "../lib/store";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router";
 
 // External imports
 

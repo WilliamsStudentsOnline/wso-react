@@ -5,7 +5,7 @@ import BoardListControls from "./BoardListControls";
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
 
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { PostType } from "../../../lib/types";
 import {
   BoardThread,

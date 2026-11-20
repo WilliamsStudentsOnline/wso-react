@@ -4,12 +4,7 @@ import React, { useState, useEffect, ReactElement } from "react";
 // Redux/ Router imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
-import {
-  Link,
-  useNavigate,
-  useLocation,
-  useSearchParams,
-} from "react-router-dom";
+import { Link, useNavigate, useLocation, useSearchParams } from "react-router";
 
 import { AutocompleteACEntry } from "wso-api-client/lib/services/types";
 import { ServiceHeader, SearchBar } from "../../ui";

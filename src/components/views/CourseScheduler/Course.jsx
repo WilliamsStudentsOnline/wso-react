@@ -20,7 +20,7 @@ import {
 } from "../../../selectors/course";
 import { getTimeFormat } from "../../../selectors/schedulerUtils";
 import { BORDER_PALETTE } from "../../../constants/constants";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { getCurrSubMenu } from "../../../selectors/schedulerUtils";
 
 // External imports

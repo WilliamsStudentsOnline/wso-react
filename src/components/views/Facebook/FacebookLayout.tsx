@@ -7,7 +7,7 @@ import { getCurrUser } from "../../../lib/authSlice";
 import { selectGeneratedQuery } from "../../../lib/queryBuilderSlice";
 
 // Additional imports
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router";
 import { ServiceHeader, SearchBar, Button, ServiceTab } from "../../ui";
 
 // Component Imports

@@ -12,7 +12,7 @@ import Error404 from "../Errors/Error404";
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getCurrUser, getAPIToken } from "../../../lib/authSlice";
-import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router";
 
 // Additional Imports
 import { containsOneOfScopes, scopes } from "../../../lib/general";

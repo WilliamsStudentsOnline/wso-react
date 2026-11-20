@@ -22,7 +22,7 @@ import {
   Navigate,
   useNavigate,
   useLocation,
-} from "react-router-dom";
+} from "react-router";
 
 import { tokenIsExpired } from "../lib/axiosAuth";
 import jwtDecode from "jwt-decode";

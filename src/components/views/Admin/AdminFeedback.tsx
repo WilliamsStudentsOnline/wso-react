@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { MdClose } from "react-icons/md";
 import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";

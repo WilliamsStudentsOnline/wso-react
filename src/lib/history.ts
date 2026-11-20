@@ -1,8 +1,6 @@
-// Note that we should not add "@remix-run/router" to the "dependencies" in the package.json file.
-// Instead we should use the nested-dependency from the "react-router-dom" package.
-// Read https://reactrouter.com/docs/en/v6/routers/history-router
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { createBrowserHistory } from "@remix-run/router";
+// react-router v7 ships the history implementation that unstable_HistoryRouter
+// expects; see https://reactrouter.com/api/declarative-routers/unstable_HistoryRouter
+import { UNSAFE_createBrowserHistory as createBrowserHistory } from "react-router";
 
 const history = createBrowserHistory();
 

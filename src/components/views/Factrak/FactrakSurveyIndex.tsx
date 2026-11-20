@@ -5,7 +5,7 @@ import FactrakComment from "./FactrakComment";
 // Redux imports
 import { useAppSelector } from "../../../lib/store";
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { ModelsFactrakSurvey } from "wso-api-client/lib/services/types";
 
 const FactrakSurveyIndex = () => {

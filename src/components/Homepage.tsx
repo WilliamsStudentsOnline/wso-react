@@ -5,7 +5,7 @@ import BulletinBox from "./views/BulletinsDiscussions/BulletinBox";
 import HomepageSchedule from "./HomepageSchedule";
 
 // Redux Imports
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { useAppSelector } from "../lib/store";
 import { getWSO } from "../lib/authSlice";
 import LibraryHoursTable from "./LibraryHours";

@@ -5,7 +5,7 @@ import { Line, Photo } from "../../ui";
 // Redux/ Routing imports
 import { useAppSelector } from "../../../lib/store";
 import { getCurrUser, getWSO } from "../../../lib/authSlice";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router";
 
 // Additional Imports
 import { userTypeStudent, userTypeAlumni } from "../../../constants/general";
