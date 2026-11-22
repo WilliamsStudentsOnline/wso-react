@@ -11,6 +11,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import {
   BoardThread,
   boardFeedPathForType,
+  boardThreadAuthor,
   boardThreadDate,
   boardThreadTitle,
 } from "./BulletinUtils";
@@ -122,18 +123,15 @@ const BulletinShow = () => {
   }, [params.bulletinID, wso, navigateTo]);
 
   const generateBulletinStarter = () => {
-    if (thread?.anonymous) return "Anonymous";
-
-    if (thread?.userID && thread.user?.name) {
+    if (!thread) return "WSO User";
+    if (thread.userID && thread.user?.name && !thread.anonymous) {
       return (
-        <Link to={`/facebook/users/${thread.userID}`}>{thread.user.name}</Link>
+        <Link to={`/facebook/users/${thread.userID}`}>
+          {boardThreadAuthor(thread)}
+        </Link>
       );
     }
-
-    if (thread?.user?.name) return thread.user.name;
-    if (thread?.exUserName) return thread.exUserName;
-
-    return "WSO User";
+    return boardThreadAuthor(thread);
   };
 
   const isOwner = Boolean(currUser && thread?.isMine);

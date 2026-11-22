@@ -57,7 +57,11 @@ const DiscussionPost = ({ post, onDeleted }: DiscussionPostProps) => {
 
   const deleteHandler = async () => {
     // eslint-disable-next-line no-restricted-globals, no-alert
-    const confirmDelete = confirm("Are you sure?");
+    const confirmDelete = confirm(
+      currPost.isOP
+        ? "This deletes the whole thread, including all replies and any poll. Are you sure?"
+        : "Are you sure?"
+    );
     if (!confirmDelete) return;
 
     try {
