@@ -185,7 +185,7 @@ const BulletinIndex = () => {
                         </Link>
                       </div>
                       <div className="board-table-row-meta">
-                        {thread.userID ? (
+                        {thread.userID && !thread.anonymous ? (
                           <Link to={`/facebook/users/${thread.userID}`}>
                             {boardThreadAuthor(thread)}
                           </Link>

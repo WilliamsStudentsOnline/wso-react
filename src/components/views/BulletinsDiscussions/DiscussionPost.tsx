@@ -117,26 +117,19 @@ const DiscussionPost = ({ post, onDeleted }: DiscussionPostProps) => {
   };
 
   const generateCommentWriter = () => {
-    let writer: React.ReactNode = currPost.exUserName || null;
+    if (currPost.anonymous) return "Anonymous";
+
     if (currPost.user) {
-      writer = (
+      return (
         <Link to={`/facebook/users/${currPost.userID}`}>
           {currPost.user.name}
         </Link>
       );
     }
 
-    if (currPost.anonymous) {
-      return writer ? (
-        <>
-          Anonymous <span className="board-anon-reveal">({writer})</span>
-        </>
-      ) : (
-        "Anonymous"
-      );
-    }
+    if (currPost.exUserName) return currPost.exUserName;
 
-    return writer ?? "WSO User";
+    return "WSO User";
   };
 
   if (deleted) return null;
@@ -170,8 +163,13 @@ const DiscussionPost = ({ post, onDeleted }: DiscussionPostProps) => {
         <h1>
           {generateCommentWriter()}
           {currPost.byOP ? (
-            <span className="board-chip board-chip-static board-op-badge">
+            <span className="board-chip board-chip-static board-post-badge">
               OP
+            </span>
+          ) : null}
+          {currPost.anonymous && currPost.isMine ? (
+            <span className="board-chip board-chip-static board-post-badge">
+              You
             </span>
           ) : null}
         </h1>

@@ -251,14 +251,9 @@ a.board-table-title:hover,
   font-size: 1.15em;
 }
 
-.board-op-badge {
+.board-post-badge {
   margin-left: 0.45rem;
   vertical-align: middle;
-}
-
-.board-anon-reveal {
-  color: var(--text-muted, #666);
-  font-weight: normal;
 }
 
 .board-poll {

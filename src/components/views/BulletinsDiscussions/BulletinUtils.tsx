@@ -93,7 +93,6 @@ export const boardThreadDate = (thread: BoardThread) => {
 };
 
 export const boardThreadAuthor = (thread: BoardThread) => {
-  const name = thread.user?.name || thread.exUserName;
-  if (thread.anonymous) return name ? `Anonymous (${name})` : "Anonymous";
-  return name || "WSO User";
+  if (thread.anonymous) return "Anonymous";
+  return thread.user?.name || thread.exUserName || "WSO User";
 };

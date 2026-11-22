@@ -48,10 +48,8 @@ const BoardPoll = ({ threadID, poll: initialPoll }: BoardPollProps) => {
   const status = () => {
     if (poll.closed) return "Poll closed";
     if (!currUser) return "Log in to vote";
-    const parts = [
-      showResults ? "Tap to change your vote" : "Vote to see results",
-    ];
-    if (poll.closesAt) parts.push(`closes ${formatClosesAt(poll.closesAt)}`);
+    const parts = showResults ? [] : ["Vote to see results"];
+    if (poll.closesAt) parts.push(`Closes ${formatClosesAt(poll.closesAt)}`);
     return parts.join(" · ");
   };
 
@@ -87,8 +85,12 @@ const BoardPoll = ({ threadID, poll: initialPoll }: BoardPollProps) => {
         );
       })}
       <div className="board-poll-meta">
-        {showResults ? `${total} ${total === 1 ? "vote" : "votes"} · ` : ""}
-        {status()}
+        {[
+          showResults ? `${total} ${total === 1 ? "vote" : "votes"}` : "",
+          status(),
+        ]
+          .filter(Boolean)
+          .join(" · ")}
       </div>
       {error ? <p className="board-poll-error">{error}</p> : null}
     </div>
