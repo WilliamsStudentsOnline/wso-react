@@ -86,8 +86,7 @@ const DiscussionPost = ({ post, onDeleted }: DiscussionPostProps) => {
   };
 
   const editControls = () => {
-    if (!post.userID) return null;
-    const isOwner = currUser && post.userID === currUser.id;
+    const isOwner = Boolean(currPost.isMine);
     if (currUser && (isOwner || currUser.admin)) {
       return (
         <>
@@ -118,17 +117,26 @@ const DiscussionPost = ({ post, onDeleted }: DiscussionPostProps) => {
   };
 
   const generateCommentWriter = () => {
+    let writer: React.ReactNode = currPost.exUserName || null;
     if (currPost.user) {
-      return (
+      writer = (
         <Link to={`/facebook/users/${currPost.userID}`}>
           {currPost.user.name}
         </Link>
       );
     }
 
-    if (currPost.exUserName) return currPost.exUserName;
+    if (currPost.anonymous) {
+      return writer ? (
+        <>
+          Anonymous <span className="board-anon-reveal">({writer})</span>
+        </>
+      ) : (
+        "Anonymous"
+      );
+    }
 
-    return "WSO User";
+    return writer ?? "WSO User";
   };
 
   if (deleted) return null;
@@ -158,7 +166,16 @@ const DiscussionPost = ({ post, onDeleted }: DiscussionPostProps) => {
   return (
     <CommentCard
       className="discussion-post"
-      header={<h1>{generateCommentWriter()}</h1>}
+      header={
+        <h1>
+          {generateCommentWriter()}
+          {currPost.byOP ? (
+            <span className="board-chip board-chip-static board-op-badge">
+              OP
+            </span>
+          ) : null}
+        </h1>
+      }
       body={
         <div className="markdown-content">
           <Markdown options={markdownOptions}>

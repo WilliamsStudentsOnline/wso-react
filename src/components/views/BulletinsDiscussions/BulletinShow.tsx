@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, CommentCard, Line, Paragraph } from "../../ui";
 import Markdown from "markdown-to-jsx";
 import DiscussionPost, { DiscussionPostSkeleton } from "./DiscussionPost";
+import BoardPoll from "./BoardPoll";
 
 import { useAppSelector } from "../../../lib/store";
 import { getCurrUser, getWSO } from "../../../lib/authSlice";
@@ -37,6 +38,7 @@ const BulletinShow = () => {
   const [thread, updateThread] = useState<BoardThread | undefined>(undefined);
   const [posts, updatePosts] = useState<BoardPost[] | null>(null);
   const [reply, updateReply] = useState("");
+  const [replyAnonymously, updateReplyAnonymously] = useState(false);
   const [errors, updateErrors] = useState<string[]>([]);
   const [flagged, updateFlagged] = useState(false);
 
@@ -76,6 +78,7 @@ const BulletinShow = () => {
     try {
       const response = await wso.boardService.createBoardReply(thread.id, {
         content: reply,
+        anonymous: replyAnonymously,
       });
       const created = response.data;
       if (!created) {
@@ -119,6 +122,8 @@ const BulletinShow = () => {
   }, [params.bulletinID, wso, navigateTo]);
 
   const generateBulletinStarter = () => {
+    if (thread?.anonymous) return "Anonymous";
+
     if (thread?.userID && thread.user?.name) {
       return (
         <Link to={`/facebook/users/${thread.userID}`}>{thread.user.name}</Link>
@@ -131,7 +136,8 @@ const BulletinShow = () => {
     return "WSO User";
   };
 
-  const isOwner = Boolean(currUser && currUser.id === thread?.userID);
+  const isOwner = Boolean(currUser && thread?.isMine);
+  const isDiscussion = thread?.type === "discussion";
   const canModerate = Boolean(currUser && (isOwner || currUser.admin));
   const repliesEnabled = thread?.repliesEnabled !== false;
 
@@ -174,20 +180,24 @@ const BulletinShow = () => {
 
     if (posts.length > 0) {
       return posts.map((post) => (
-        <DiscussionPost
-          post={post}
-          key={post.id}
-          onDeleted={(deletedPost: BoardPost) => {
-            const remaining = (posts || []).filter(
-              (p) => p.id !== deletedPost.id
-            );
-            if (deletedPost.isOP || remaining.length === 0) {
-              navigateTo(boardFeedPathForType(params.type || thread?.type));
-              return;
-            }
-            updatePosts(remaining);
-          }}
-        />
+        <React.Fragment key={post.id}>
+          <DiscussionPost
+            post={post}
+            onDeleted={(deletedPost: BoardPost) => {
+              const remaining = (posts || []).filter(
+                (p) => p.id !== deletedPost.id
+              );
+              if (deletedPost.isOP || remaining.length === 0) {
+                navigateTo(boardFeedPathForType(params.type || thread?.type));
+                return;
+              }
+              updatePosts(remaining);
+            }}
+          />
+          {post.isOP && thread?.id && thread.poll ? (
+            <BoardPoll threadID={thread.id} poll={thread.poll} />
+          ) : null}
+        </React.Fragment>
       ));
     }
 
@@ -212,6 +222,26 @@ const BulletinShow = () => {
     return null;
   };
 
+  const replyIdentity = () => {
+    if (!isDiscussion) return null;
+    if (isOwner) {
+      return thread?.anonymous ? (
+        <p className="small-font">Replying as Anonymous (OP)</p>
+      ) : null;
+    }
+    return (
+      <label htmlFor="reply_anonymous" className="small-font">
+        <input
+          id="reply_anonymous"
+          type="checkbox"
+          checked={replyAnonymously}
+          onChange={(event) => updateReplyAnonymously(event.target.checked)}
+        />
+        Reply anonymously
+      </label>
+    );
+  };
+
   const replyArea = () => {
     if (!currUser || !thread || !repliesEnabled) return null;
 
@@ -224,6 +254,7 @@ const BulletinShow = () => {
             value={reply}
             onChange={(event) => updateReply(event.target.value)}
           />
+          {replyIdentity()}
           {errors.length > 0 && (
             <div id="errors">
               <b>Please correct the following error(s):</b>

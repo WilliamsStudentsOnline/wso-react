@@ -124,9 +124,7 @@ const BulletinIndex = () => {
   };
 
   const canDelete = (thread: BoardThread) =>
-    Boolean(
-      (thread.userID && currUser?.id === thread.userID) || currUser?.admin
-    );
+    Boolean(thread.isMine || currUser?.admin);
 
   const headerChips = (
     <div className="board-table-header">
@@ -195,6 +193,7 @@ const BulletinIndex = () => {
                           boardThreadAuthor(thread)
                         )}
                         {replies ? ` · ${replies}` : ""}
+                        {thread.poll ? " · Poll" : ""}
                       </div>
                       {bodyExcerpt ? (
                         <div className="board-table-row-excerpt">
