@@ -195,6 +195,7 @@ const BulletinIndex = () => {
                           boardThreadAuthor(thread)
                         )}
                         {replies ? ` · ${replies}` : ""}
+                        {thread.poll ? " · Poll" : ""}
                       </div>
                       {bodyExcerpt ? (
                         <div className="board-table-row-excerpt">
