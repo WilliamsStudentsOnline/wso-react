@@ -3913,9 +3913,9 @@ wsl-utils@^1.0.0:
     is-wsl "^3.1.0"
     powershell-utils "^0.2.0"
 
-"wso-api-client@git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#v2026.11.20-2":
+"wso-api-client@git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#v2026.11.25":
   version "24.11.10"
-  resolved "git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#86a5bb9cb21765ebe8ac51b71c2164b2e740f490"
+  resolved "git+https://github.com/WilliamsStudentsOnline/wso-api-client.git#81849c06e67c7e5fe629c4dfe0bc7f5b22f9be84"
   dependencies:
     axios "^1.21.1"
     jwt-decode "^3.1.2"

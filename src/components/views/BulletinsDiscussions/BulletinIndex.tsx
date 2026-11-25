@@ -75,7 +75,7 @@ const BulletinIndex = () => {
 
       try {
         const response = await wso.boardService.listBoardThreads(params);
-        const pageThreads = response.data?.threads ?? [];
+        const pageThreads = response.data ?? [];
         const pageTotal = response.paginationTotal ?? 0;
         updateTotal(pageTotal);
         if (pageThreads.length === 0 && pageIndex > 0 && pageTotal > 0) {
