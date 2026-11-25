@@ -5,28 +5,19 @@ import { useAppSelector } from "../../../lib/store";
 import { getCurrUser, getWSO } from "../../../lib/authSlice";
 
 import { Link, useNavigate } from "react-router";
-import Markdown from "markdown-to-jsx";
+import Markdown from "markdown-to-jsx/react";
+import { boardMarkdownOptions } from "./boardMarkdown";
 import { formatBoardDate, BoardThread } from "./BulletinUtils";
 
 type BoardPost = NonNullable<BoardThread["posts"]>[number];
 
-const markdownOptions = {
-  overrides: {
-    h1: { component: "h5" as const, props: {} },
-    h2: { component: "h5" as const, props: {} },
-    h3: { component: "h5" as const, props: {} },
-    h4: { component: "h5" as const, props: {} },
-    h5: { component: "h5" as const, props: {} },
-    h6: { component: "h5" as const, props: {} },
-  },
-};
-
 export interface DiscussionPostProps {
   post: BoardPost;
   onDeleted?: (post: BoardPost) => void;
+  poll?: React.ReactNode;
 }
 
-const DiscussionPost = ({ post, onDeleted }: DiscussionPostProps) => {
+const DiscussionPost = ({ post, onDeleted, poll }: DiscussionPostProps) => {
   const currUser = useAppSelector(getCurrUser);
   const wso = useAppSelector(getWSO);
   const navigateTo = useNavigate();
@@ -57,7 +48,9 @@ const DiscussionPost = ({ post, onDeleted }: DiscussionPostProps) => {
 
   const deleteHandler = async () => {
     // eslint-disable-next-line no-restricted-globals, no-alert
-    const confirmDelete = confirm("Are you sure?");
+    const confirmDelete = confirm(
+      post.isOP ? "Delete this thread and all its replies?" : "Are you sure?"
+    );
     if (!confirmDelete) return;
 
     try {
@@ -74,11 +67,17 @@ const DiscussionPost = ({ post, onDeleted }: DiscussionPostProps) => {
 
   const flagHandler = async () => {
     // eslint-disable-next-line no-restricted-globals, no-alert
-    const confirmFlag = confirm("Flag this post for moderator review?");
+    const confirmFlag = confirm(
+      `Flag this ${post.isOP ? "thread" : "post"} for moderator review?`
+    );
     if (!confirmFlag) return;
 
     try {
-      await wso.boardService.flagBoardReply(post.id!);
+      if (post.isOP) {
+        await wso.boardService.flagBoardThread(post.threadID!);
+      } else {
+        await wso.boardService.flagBoardReply(post.id!);
+      }
       updateFlagged(true);
     } catch (error) {
       navigateTo("/error", { replace: true, state: { error } });
@@ -86,35 +85,40 @@ const DiscussionPost = ({ post, onDeleted }: DiscussionPostProps) => {
   };
 
   const editControls = () => {
-    if (!post.userID) return null;
-    const isOwner = currUser && post.userID === currUser.id;
-    if (currUser && (isOwner || currUser.admin)) {
-      return (
-        <>
-          {isOwner ? (
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => setEdit(true)}
-            >
-              Edit
-            </Button>
-          ) : null}
-          <Button type="button" variant="secondary" onClick={deleteHandler}>
-            Delete
-          </Button>
-        </>
-      );
-    }
-    if (currUser && !isOwner && !flagged) {
-      return (
-        <Button type="button" variant="secondary" onClick={flagHandler}>
-          Flag
-        </Button>
-      );
-    }
-    if (flagged) return <span className="small-font">Flagged</span>;
-    return null;
+    if (!currUser || !post.userID) return null;
+    const isOwner = post.userID === currUser.id;
+    return (
+      <>
+        {isOwner ? (
+          <button
+            type="button"
+            className="board-text-btn"
+            onClick={() => (post.isOP ? navigateTo("edit") : setEdit(true))}
+          >
+            Edit
+          </button>
+        ) : null}
+        {!isOwner && !flagged ? (
+          <button
+            type="button"
+            className="board-text-btn"
+            onClick={flagHandler}
+          >
+            Flag
+          </button>
+        ) : null}
+        {flagged ? <span className="small-font">Flagged</span> : null}
+        {isOwner || currUser.admin ? (
+          <button
+            type="button"
+            className="board-text-btn"
+            onClick={deleteHandler}
+          >
+            {post.isOP ? "Delete thread" : "Delete"}
+          </button>
+        ) : null}
+      </>
+    );
   };
 
   const generateCommentWriter = () => {
@@ -160,11 +164,14 @@ const DiscussionPost = ({ post, onDeleted }: DiscussionPostProps) => {
       className="discussion-post"
       header={<h1>{generateCommentWriter()}</h1>}
       body={
-        <div className="markdown-content">
-          <Markdown options={markdownOptions}>
-            {currPost.content ?? ""}
-          </Markdown>
-        </div>
+        <>
+          <div className="markdown-content">
+            <Markdown options={boardMarkdownOptions}>
+              {currPost.content ?? ""}
+            </Markdown>
+          </div>
+          {poll}
+        </>
       }
       meta={<span>{formatBoardDate(currPost.createdAt)}</span>}
       cornerActions={editControls()}

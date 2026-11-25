@@ -12,7 +12,7 @@ import {
   boardThreadDate,
   boardThreadPath,
   boardThreadTitle,
-  boardThreadTypeLabel,
+  boardThreadTypeSingular,
 } from "./BulletinUtils";
 
 const HOME_LIMIT = 6;
@@ -53,7 +53,18 @@ const BulletinBox = () => {
         <BoardListControls
           selectedTypes={selectedTypes}
           onTypesChange={updateSelectedTypes}
-        />
+        >
+          <Link
+            className="board-tab board-tab--new"
+            to={
+              selectedTypes.length === 1
+                ? `/bulletin/new?type=${selectedTypes[0]}`
+                : "/bulletin/new"
+            }
+          >
+            + New post
+          </Link>
+        </BoardListControls>
       </div>
       <div className="board-table-body">
         {threads
@@ -61,8 +72,8 @@ const BulletinBox = () => {
               <div className="board-table-row" key={thread.id}>
                 <div className="board-table-row-main">
                   <div className="board-table-row-headline">
-                    <span className="board-chip board-chip-static is-active">
-                      {boardThreadTypeLabel(thread)}
+                    <span className="board-type">
+                      {boardThreadTypeSingular(thread)}
                     </span>
                     <Link
                       className="board-table-title"
@@ -72,7 +83,7 @@ const BulletinBox = () => {
                     </Link>
                   </div>
                 </div>
-                <span className="list-date board-table-date">
+                <span className="board-table-date">
                   {boardThreadDate(thread)}
                 </span>
               </div>
@@ -83,7 +94,7 @@ const BulletinBox = () => {
                 <div className="board-table-row-main">
                   <Line width="70%" />
                 </div>
-                <span className="list-date board-table-date">
+                <span className="board-table-date">
                   <Line width="90%" center />
                 </span>
               </div>

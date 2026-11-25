@@ -14,7 +14,10 @@ import { boardApiType, boardThreadPath } from "./BulletinUtils";
 import "./BoardFeed.css";
 
 const MIN_POLL_OPTIONS = 2;
-const MAX_POLL_OPTIONS = 4;
+const POLL_SLOTS = 4;
+
+const endOfDay = (date: Date) =>
+  new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
 
 const BulletinForm = () => {
   const wso = useAppSelector(getWSO);
@@ -40,8 +43,10 @@ const BulletinForm = () => {
   );
   const [body, updateBody] = useState<string>("");
   const [pollEnabled, updatePollEnabled] = useState(false);
-  const [pollOptions, updatePollOptions] = useState<string[]>(["", ""]);
-  const [pollClosesAt, updatePollClosesAt] = useState("");
+  const [pollOptions, updatePollOptions] = useState<string[]>(
+    Array(POLL_SLOTS).fill("")
+  );
+  const [pollCloses, updatePollCloses] = useState<Date | null>(null);
   const [errors, updateErrors] = useState<string[]>([]);
   const editing = Boolean(params.bulletinID);
 
@@ -172,8 +177,8 @@ const BulletinForm = () => {
             ? {
                 poll: {
                   options,
-                  ...(pollClosesAt
-                    ? { closesAt: new Date(pollClosesAt).toISOString() }
+                  ...(pollCloses
+                    ? { closesAt: endOfDay(pollCloses).toISOString() }
                     : {}),
                 },
               }
@@ -230,12 +235,12 @@ const BulletinForm = () => {
         <h5>
           <b>Type</b>
         </h5>
-        <div className="board-type-chips" role="group" aria-label="Post type">
+        <div className="board-tabs" role="group" aria-label="Post type">
           {Object.values(PostType).map((t) => (
             <button
               key={t}
               type="button"
-              className={`board-chip${type === t ? " is-active" : ""}`}
+              className={`board-tab${type === t ? " is-active" : ""}`}
               aria-pressed={type === t}
               onClick={() => updateType(t)}
             >
@@ -247,50 +252,36 @@ const BulletinForm = () => {
     );
   };
 
-  const rideSpecificFields = () => {
-    return (
-      <>
-        <div className="field">
-          <label htmlFor="ride_offer">
-            <input
-              type="checkbox"
-              checked={offer}
-              onChange={(event) => updateOffer(event.target.checked)}
-            />
-            I&apos;m offering this ride
-          </label>
-        </div>
-
-        <div className="field">
-          <h5>
-            <b>Source</b>
-          </h5>
-          <input
-            type="text"
-            value={source}
-            onChange={(event) => updateSource(event.target.value)}
-          />
-        </div>
-
-        <div className="field">
-          <h5>
-            <b>Destination</b>
-          </h5>
-          <input
-            type="text"
-            value={destination}
-            onChange={(event) => updateDestination(event.target.value)}
-          />
-        </div>
-      </>
-    );
-  };
-
-  const rideDateField = () => {
-    return (
+  const rideSpecificFields = () => (
+    <div className="board-form__row">
       <div className="field">
         <h5>
-          <b>I am offering/requesting a ride on</b>
+          <b>From</b>
+        </h5>
+        <input
+          type="text"
+          value={source}
+          onChange={(event) => updateSource(event.target.value)}
+        />
+      </div>
+      <div className="field">
+        <h5>
+          <b>To</b>
+        </h5>
+        <input
+          type="text"
+          value={destination}
+          onChange={(event) => updateDestination(event.target.value)}
+        />
+      </div>
+    </div>
+  );
+
+  const rideDateField = () => (
+    <div className="board-form__row">
+      <div className="field">
+        <h5>
+          <b>Date</b>
         </h5>
         <DatePicker
           value={startDate}
@@ -299,59 +290,78 @@ const BulletinForm = () => {
           }}
         />
       </div>
-    );
-  };
+      <div className="field">
+        <h5>
+          <b>I&apos;m</b>
+        </h5>
+        <div className="board-tabs" role="group" aria-label="Ride direction">
+          {[
+            { label: "Requesting a ride", value: false },
+            { label: "Offering a ride", value: true },
+          ].map((option) => (
+            <button
+              key={option.label}
+              type="button"
+              className={`board-tab${offer === option.value ? " is-active" : ""}`}
+              aria-pressed={offer === option.value}
+              onClick={() => updateOffer(option.value)}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const setPollOption = (index: number, value: string) =>
+    updatePollOptions((prev) => prev.map((o, i) => (i === index ? value : o)));
 
   const pollFields = () => (
-    <div className="field board-poll-builder">
-      <h5>
-        <b>Poll options</b>
-      </h5>
-      {pollOptions.map((option, index) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <div className="board-poll-builder-row" key={index}>
-          <input
-            type="text"
-            maxLength={255}
-            placeholder={`Option ${index + 1}`}
-            value={option}
-            onChange={(event) =>
-              updatePollOptions((prev) =>
-                prev.map((o, i) => (i === index ? event.target.value : o))
-              )
-            }
-          />
-          {pollOptions.length > MIN_POLL_OPTIONS ? (
-            <button
-              type="button"
-              className="board-table-delete"
-              onClick={() =>
-                updatePollOptions((prev) => prev.filter((_, i) => i !== index))
-              }
-            >
-              Remove
-            </button>
-          ) : null}
+    <>
+      <div className="field">
+        <h5>
+          <b>Poll options</b>
+        </h5>
+        <div className="board-poll-grid">
+          {pollOptions.map((option, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <div className="board-poll-cell" key={index}>
+              <input
+                type="text"
+                maxLength={255}
+                placeholder={`Option ${index + 1}`}
+                aria-label={`Option ${index + 1}`}
+                value={option}
+                onChange={(event) => setPollOption(index, event.target.value)}
+              />
+              {option ? (
+                <button
+                  type="button"
+                  className="board-poll-clear"
+                  aria-label={`Clear option ${index + 1}`}
+                  onClick={() => setPollOption(index, "")}
+                >
+                  ×
+                </button>
+              ) : null}
+            </div>
+          ))}
         </div>
-      ))}
-      {pollOptions.length < MAX_POLL_OPTIONS ? (
-        <button
-          type="button"
-          className="board-table-delete"
-          onClick={() => updatePollOptions((prev) => prev.concat([""]))}
-        >
-          Add option
-        </button>
-      ) : null}
-      <h5>
-        <b>Poll closes (optional)</b>
-      </h5>
-      <input
-        type="datetime-local"
-        value={pollClosesAt}
-        onChange={(event) => updatePollClosesAt(event.target.value)}
-      />
-    </div>
+      </div>
+      <div className="field">
+        <h5>
+          <b>Poll closes (optional)</b>
+        </h5>
+        <DatePicker
+          value={pollCloses}
+          minDate={new Date()}
+          onChange={(value) =>
+            updatePollCloses(value instanceof Date ? value : null)
+          }
+        />
+      </div>
+    </>
   );
 
   const pollToggle = () => {
@@ -359,15 +369,16 @@ const BulletinForm = () => {
     return (
       <>
         <div className="field">
-          <label htmlFor="post_poll">
-            <input
-              id="post_poll"
-              type="checkbox"
-              checked={pollEnabled}
-              onChange={(event) => updatePollEnabled(event.target.checked)}
-            />
-            Add a poll
-          </label>
+          <div className="board-tabs">
+            <button
+              type="button"
+              className={`board-tab${pollEnabled ? " is-active" : ""}`}
+              aria-pressed={pollEnabled}
+              onClick={() => updatePollEnabled((prev) => !prev)}
+            >
+              {pollEnabled ? "Poll added" : "+ Add a poll"}
+            </button>
+          </div>
         </div>
         {pollEnabled ? pollFields() : null}
       </>
@@ -391,15 +402,14 @@ const BulletinForm = () => {
   };
 
   return (
-    <article className="list-creation">
+    <article className="list-creation board-form">
       <section>
         <form onSubmit={submitHandler}>
-          <br />
           {generateErrors()}
           {typeChips()}
 
           {type === PostType.Rides ? rideSpecificFields() : titleField()}
-          {type === PostType.Rides ? rideDateField() : startDateField()}
+          {type === PostType.Rides ? rideDateField() : null}
 
           <div className="field">
             <h5>
@@ -411,14 +421,28 @@ const BulletinForm = () => {
             />
           </div>
 
+          {type === PostType.Rides ? null : startDateField()}
           {pollToggle()}
 
-          <input
-            type="submit"
-            value="Submit"
-            className="submit"
-            data-disable-with="Submit"
-          />
+          <div className="board-form__actions">
+            <input
+              type="submit"
+              value="Submit"
+              className="submit"
+              data-disable-with="Submit"
+            />
+            <button
+              type="button"
+              className="board-text-btn"
+              onClick={() =>
+                window.history.state?.idx > 0
+                  ? navigateTo(-1)
+                  : navigateTo("/bulletin")
+              }
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </section>
     </article>

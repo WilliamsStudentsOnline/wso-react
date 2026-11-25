@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { PostType, PostTypeName } from "../../../lib/types";
 import "./BoardFeed.css";
 
@@ -7,11 +7,13 @@ const ALL_TYPES = Object.values(PostType);
 export type BoardListControlsProps = {
   selectedTypes: PostType[];
   onTypesChange: (types: PostType[]) => void;
+  children?: ReactNode;
 };
 
 const BoardListControls = ({
   selectedTypes,
   onTypesChange,
+  children,
 }: BoardListControlsProps) => {
   const allSelected = selectedTypes.length === 0;
 
@@ -34,10 +36,10 @@ const BoardListControls = ({
   };
 
   return (
-    <div className="board-type-chips" role="group" aria-label="Filter by type">
+    <div className="board-tabs" role="group" aria-label="Filter by type">
       <button
         type="button"
-        className={`board-chip${allSelected ? " is-active" : ""}`}
+        className={`board-tab${allSelected ? " is-active" : ""}`}
         onClick={() => onTypesChange([])}
       >
         All
@@ -48,7 +50,7 @@ const BoardListControls = ({
           <button
             key={type}
             type="button"
-            className={`board-chip${active ? " is-active" : ""}`}
+            className={`board-tab${active ? " is-active" : ""}`}
             aria-pressed={active}
             onClick={() => toggleType(type)}
           >
@@ -56,6 +58,7 @@ const BoardListControls = ({
           </button>
         );
       })}
+      {children}
     </div>
   );
 };

@@ -1,6 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { EmptyState, Line, Pagination } from "../../ui";
-import BoardListControls from "./BoardListControls";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { EmptyState, Line } from "../../ui";
+import BoardPager from "./BoardPager";
+import Markdown from "markdown-to-jsx/react";
+import { boardPreviewOptions } from "./boardMarkdown";
 
 import { getWSO, getCurrUser } from "../../../lib/authSlice";
 import { useAppSelector } from "../../../lib/store";
@@ -14,7 +22,7 @@ import {
   boardThreadDate,
   boardThreadPath,
   boardThreadTitle,
-  boardThreadTypeLabel,
+  boardThreadTypeSingular,
 } from "./BulletinUtils";
 import "./BoardFeed.css";
 
@@ -28,39 +36,30 @@ const parseTypesParam = (raw: string | null): PostType[] => {
     .filter((t): t is PostType => Object.values<string>(PostType).includes(t));
 };
 
-const excerpt = (body?: string) => {
-  if (!body) return undefined;
-  const trimmed = body.replace(/\s+/g, " ").trim();
-  if (!trimmed) return undefined;
-  return trimmed.length > 180 ? `${trimmed.slice(0, 180)}…` : trimmed;
-};
+const PREVIEW_CHARS = 400;
 
 const BulletinIndex = () => {
   const wso = useAppSelector(getWSO);
   const currUser = useAppSelector(getCurrUser);
   const navigateTo = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const typesParam = searchParams.get("types");
+  const selectedTypes = useMemo(
+    () => parseTypesParam(typesParam),
+    [typesParam]
+  );
+  const latestRequest = useRef(0);
 
   const [threads, updateThreads] = useState<BoardThread[] | undefined>(
     undefined
   );
   const [page, updatePage] = useState(0);
   const [total, updateTotal] = useState(0);
-  const [selectedTypes, updateSelectedTypes] = useState<PostType[]>(() =>
-    parseTypesParam(searchParams.get("types"))
-  );
-
-  const setTypes = (types: PostType[]) => {
-    updateSelectedTypes(types);
+  const [prevTypesParam, updatePrevTypesParam] = useState(typesParam);
+  if (prevTypesParam !== typesParam) {
+    updatePrevTypesParam(typesParam);
     updatePage(0);
-    const next = new URLSearchParams(searchParams);
-    if (types.length === 0) {
-      next.delete("types");
-    } else {
-      next.set("types", types.join(","));
-    }
-    setSearchParams(next, { replace: true });
-  };
+  }
 
   const loadThreads = useCallback(
     async (pageIndex: number) => {
@@ -73,8 +72,12 @@ const BulletinIndex = () => {
           : {}),
       };
 
+      latestRequest.current += 1;
+      const request = latestRequest.current;
+
       try {
         const response = await wso.boardService.listBoardThreads(params);
+        if (request !== latestRequest.current) return;
         const pageThreads = response.data ?? [];
         const pageTotal = response.paginationTotal ?? 0;
         updateTotal(pageTotal);
@@ -95,16 +98,9 @@ const BulletinIndex = () => {
     loadThreads(page);
   }, [page, loadThreads]);
 
-  const clickHandler = (direction: number) => {
-    if (direction === -1 && page > 0) {
-      updatePage(page - 1);
-    } else if (direction === 1 && total - (page + 1) * perPage > 0) {
-      updatePage(page + 1);
-    }
-  };
-
-  const selectionHandler = (newPage: number) => {
+  const changePage = (newPage: number) => {
     updatePage(newPage);
+    window.scrollTo(0, 0);
   };
 
   const deleteHandler = async (threadID?: number) => {
@@ -128,112 +124,83 @@ const BulletinIndex = () => {
       (thread.userID && currUser?.id === thread.userID) || currUser?.admin
     );
 
-  const headerChips = (
-    <div className="board-table-header">
-      <BoardListControls
-        selectedTypes={selectedTypes}
-        onTypesChange={setTypes}
-      />
-    </div>
-  );
-
-  const pager = (
-    <Pagination
-      clickHandler={clickHandler}
-      page={page}
-      perPage={perPage}
-      total={total}
-      showPages
-      selectionHandler={selectionHandler}
-    />
-  );
-
   if (threads && threads.length === 0) {
     return (
-      <section className="margin-vertical-small board-feed">
-        <div className="board-table">
-          {headerChips}
-          <EmptyState variant="no-posts">No Posts</EmptyState>
-        </div>
+      <section className="board-feed">
+        <EmptyState variant="no-posts">No Posts</EmptyState>
       </section>
     );
   }
 
   return (
-    <section className="margin-vertical-small board-feed">
-      {pager}
-      <div className="board-table">
-        {headerChips}
-        <div className="board-table-body">
-          {threads
-            ? threads.map((thread) => {
-                const bodyExcerpt = excerpt(thread.body);
-                const replyCount = thread.replyCount || 0;
-                const replies = `${replyCount} ${
-                  replyCount === 1 ? "reply" : "replies"
-                }`;
-                return (
-                  <div className="board-table-row" key={thread.id}>
-                    <div className="board-table-row-main">
-                      <div className="board-table-row-headline">
-                        <span className="board-chip board-chip-static is-active">
-                          {boardThreadTypeLabel(thread)}
-                        </span>
-                        <Link
-                          className="board-table-title"
-                          to={boardThreadPath(thread)}
-                        >
-                          {boardThreadTitle(thread)}
+    <section className="board-feed">
+      <ul className="board-list">
+        {threads
+          ? threads.map((thread) => {
+              const replyCount = thread.replyCount || 0;
+              return (
+                <li className="board-list__row" key={thread.id}>
+                  <div className="board-list__line">
+                    <Link
+                      className="board-list__title"
+                      to={boardThreadPath(thread)}
+                    >
+                      {boardThreadTitle(thread)}
+                    </Link>
+                    <span className="board-list__date">
+                      {boardThreadDate(thread)}
+                    </span>
+                  </div>
+                  {thread.body?.trim() ? (
+                    <div className="board-list__excerpt">
+                      <Markdown options={boardPreviewOptions}>
+                        {thread.body.slice(0, PREVIEW_CHARS)}
+                      </Markdown>
+                    </div>
+                  ) : null}
+                  <div className="board-list__line board-list__meta">
+                    <span>
+                      {boardThreadTypeSingular(thread)}
+                      {" · "}
+                      {thread.userID ? (
+                        <Link to={`/facebook/users/${thread.userID}`}>
+                          {boardThreadAuthor(thread)}
                         </Link>
-                      </div>
-                      <div className="board-table-row-meta">
-                        {thread.userID ? (
-                          <Link to={`/facebook/users/${thread.userID}`}>
-                            {boardThreadAuthor(thread)}
-                          </Link>
-                        ) : (
-                          boardThreadAuthor(thread)
-                        )}
-                        {replies ? ` · ${replies}` : ""}
-                        {thread.poll ? " · Poll" : ""}
-                      </div>
-                      {bodyExcerpt ? (
-                        <div className="board-table-row-excerpt">
-                          {bodyExcerpt}
-                        </div>
-                      ) : null}
-                    </div>
-                    <div className="board-table-row-aside">
-                      <span className="board-table-date list-date">
-                        {boardThreadDate(thread)}
-                      </span>
-                      {canDelete(thread) ? (
-                        <button
-                          type="button"
-                          className="board-table-delete"
-                          onClick={() => deleteHandler(thread.id)}
-                        >
-                          Delete
-                        </button>
-                      ) : null}
-                    </div>
+                      ) : (
+                        boardThreadAuthor(thread)
+                      )}
+                      {` · ${replyCount} ${
+                        replyCount === 1 ? "reply" : "replies"
+                      }`}
+                      {thread.poll ? " · Poll" : ""}
+                    </span>
+                    {canDelete(thread) ? (
+                      <button
+                        type="button"
+                        className="board-text-btn"
+                        onClick={() => deleteHandler(thread.id)}
+                      >
+                        Delete
+                      </button>
+                    ) : null}
                   </div>
-                );
-              })
-            : [...Array(8)].map((_, i) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <div className="board-table-row" key={i}>
-                  <div className="board-table-row-main">
-                    <Line width="70%" />
-                  </div>
-                  <span className="board-table-date list-date">
-                    <Line width="90%" center />
-                  </span>
-                </div>
-              ))}
-        </div>
-      </div>
-      {pager}
+                </li>
+              );
+            })
+          : [...Array(8)].map((_, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <li className="board-list__row" key={i}>
+                <Line width="50%" />
+                <Line width="70%" />
+                <Line width="30%" />
+              </li>
+            ))}
+      </ul>
+      <BoardPager
+        page={page}
+        pageCount={Math.ceil(total / perPage)}
+        onChange={changePage}
+      />
     </section>
   );
 };
