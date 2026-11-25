@@ -1,6 +1,6 @@
 # WSO-React
 
-This repository contains all the front-end code to the Williams Student Online web-app. Core technologies include [React](https://reactjs.org/) (built with [Vite](https://vite.dev/)), [Redux](https://redux.js.org/basics/usage-with-react), and [Router5](https://router5.js.org/). If you're interested in learning more about React and Redux, we recommend [this tutorial](https://www.robinwieruch.de/react-redux-tutorial/#react-redux-and-x-tutorial).
+This repository contains all the front-end code to the Williams Student Online web-app. Core technologies include [React](https://reactjs.org/) (built with [Vite](https://vite.dev/)), [Redux](https://redux.js.org/basics/usage-with-react), and [React Router](https://reactrouter.com/). If you're interested in learning more about React and Redux, we recommend [this tutorial](https://www.robinwieruch.de/react-redux-tutorial/#react-redux-and-x-tutorial).
 
 - Production Build: https://wso.williams.edu/
 - Development Build: https://wso-dev.williams.edu/
@@ -21,7 +21,7 @@ Steps for a 10/10 development workflow:
 4. Make a pull request and link your original issue.
     * The pull request will be automatically tested, with results displayed in a pinned comment on your PR. More detailed logs are available under Actions.
 5. After approval, add the PR (or stack) to the [merge queue](https://github.com/WilliamsStudentsOnline/wso-go/queue/master). After a few minutes, it should be live on our dev server!
-6. (optional) After extensive testing on [wso-dev.williams.edu](wso-dev.williams.edu), when you feel your changes are ready for the broader Williams user base, run `make sync-prod` to open a `[DEPLOY]` PR. By default, this will synchronize prod to the latest commit on remote master, though you can also point it to a different commit SHA (e.g. for rollbacks). To deploy to prod, we update a file which essentially points to the version of WSO that will be live on our main server. Note that this process may also pull in unrelated changes; as a result, you may find that admins mostly end up doing this step for you.
+6. (optional) After extensive testing on [wso-dev.williams.edu](wso-dev.williams.edu), when you feel your changes are ready for the broader Williams user base, run `yarn sync-prod` to open a `[DEPLOY]` PR. By default, this will synchronize prod to the latest commit on remote master, though you can also point it to a different commit SHA (e.g. for rollbacks). To deploy to prod, we update a file which essentially points to the version of WSO that will be live on our main server. Note that this process may also pull in unrelated changes; as a result, you may find that admins mostly end up doing this step for you.
 
 ## Getting Started
 
@@ -63,7 +63,7 @@ to launch a development build, which includes Hot Module Reload(HMR), where chan
 
 **5) Communicating with the Backend**
 
-By default, the development server will communicate with [wso-dev.williams.edu](wso-dev.wso.williams.edu). This is fine for most frontend-focused development!
+By default, the development server will communicate with [wso-dev.williams.edu](https://wso-dev.williams.edu). This is fine for most frontend-focused development!
 
 However, you may wish to set up the backend to allow our client to get the information from a local server. To do so, set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/), and run the `wso-go` server alongside the React development server. If you're working in VSCode, you should see ports `:8080` (backend) and `:3000` (frontend) in use on your machine. Then start the frontend with `WSO_API_PROXY=http://localhost:8080 yarn start` to use your local development backend (instead of `wso-dev`).
 
@@ -93,4 +93,4 @@ To aid in your development process, we also suggest installing the following:
 
 ### Styling
 
-Styling is currently done via vanilla CSS. Edit existing stylesheets or, for larger features, create new ones, and make sure to include them in the appropriate `.tsx`/`.jsx` files. If you add a color, it must go into `Colors.css`, otherwise you will feel the weight of your heavy karmic debt forever and ever for the sin of having broken the dark theme. Ignore this warning only at your own peril!
+Styling is currently done via vanilla CSS. Edit existing stylesheets or, for larger features, create new ones, and make sure to include them in the appropriate `.tsx`/`.jsx` files. If you add a color, it must go into `tokens.css` (shared) or `Colors.css` (feature-specific), with a dark theme value, otherwise you will feel the weight of your heavy karmic debt forever and ever for the sin of having broken the dark theme. Ignore this warning only at your own peril!
