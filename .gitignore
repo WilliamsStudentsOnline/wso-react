@@ -23,6 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 
 # slop
-AGENTS.md
 CLAUDE.md
 CURSOR.md

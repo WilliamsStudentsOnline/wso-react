@@ -13,7 +13,7 @@ const prodProxy = {
 };
 
 const apiProxy = {
-  target: "https://wso-dev.williams.edu",
+  target: process.env.WSO_API_PROXY || "https://wso-dev.williams.edu",
   changeOrigin: true,
   secure: false,
   headers: {

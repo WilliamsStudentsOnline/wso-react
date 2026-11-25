@@ -65,7 +65,7 @@ to launch a development build, which includes Hot Module Reload(HMR), where chan
 
 By default, the development server will communicate with [wso-dev.williams.edu](wso-dev.wso.williams.edu). This is fine for most frontend-focused development!
 
-However, you may wish to set up the backend to allow our client to get the information from a local server. To do so, set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/), and run the `wso-go` server alongside the React development server. If you're working in VSCode, you should see ports `:8080` (backend) and `:3000` (frontend) in use on your machine. You should then change `apiProxy` in `vite.config.mjs` to point to `localhost:8080` (instead of `wso-dev`) to access your local development backend.
+However, you may wish to set up the backend to allow our client to get the information from a local server. To do so, set up the backend as per the instructions in the [wso-go repository](https://github.com/WilliamsStudentsOnline/wso-go/), and run the `wso-go` server alongside the React development server. If you're working in VSCode, you should see ports `:8080` (backend) and `:3000` (frontend) in use on your machine. Then start the frontend with `WSO_API_PROXY=http://localhost:8080 yarn start` to use your local development backend (instead of `wso-dev`).
 
 The dev-server proxy in `vite.config.mjs` enables all HTTP requests to be made to `/path/to/endpoint` without further settings--so don't worry about changing URL paths!
 
