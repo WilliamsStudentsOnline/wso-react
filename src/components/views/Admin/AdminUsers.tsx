@@ -58,13 +58,14 @@ const UserEditor = ({ user, onSaved, onCancel }: UserEditorProps) => {
   return (
     <div className="admin-users__editor">
       <div className="admin-users__checks">
+        <span className="admin-task-meta">Moderates</span>
         <label>
           <input
             type="checkbox"
             checked={factrakAdmin}
             onChange={(e) => setFactrakAdmin(e.target.checked)}
           />
-          Factrak moderator
+          Factrak
         </label>
       </div>
       <div className="admin-users__checks">
@@ -82,15 +83,16 @@ const UserEditor = ({ user, onSaved, onCancel }: UserEditorProps) => {
           </label>
         ))}
       </div>
-      <input
-        type="text"
-        className="admin-users__notes"
-        placeholder="Notes"
-        value={bans.reason ?? ""}
-        onChange={(e) =>
-          setBans((prev) => ({ ...prev, reason: e.target.value }))
-        }
-      />
+      <label className="admin-users__reason">
+        <span className="admin-task-meta">Reason</span>
+        <input
+          type="text"
+          value={bans.reason ?? ""}
+          onChange={(e) =>
+            setBans((prev) => ({ ...prev, reason: e.target.value }))
+          }
+        />
+      </label>
       <div className="admin-users__actions">
         <button
           type="button"
@@ -166,14 +168,17 @@ const AdminUsers = () => {
 
   const renderUser = (section: string, user: AdminUserAccess) => {
     const key = `${section}:${user.userID}`;
-    const details = [bannedFrom(user), user.bans?.reason]
-      .filter(Boolean)
-      .join(" · ");
+    const banned = bannedFrom(user);
     return (
       <li className="admin-users__row" key={key}>
         <div className="admin-users__row-head">
           <span>
-            <Link to={`/facebook/users/${user.userID}`}>{user.name}</Link>{" "}
+            <Link
+              className="admin-users__name"
+              to={`/facebook/users/${user.userID}`}
+            >
+              {user.name}
+            </Link>{" "}
             <span className="admin-task-meta">{user.unixID}</span>
           </span>
           {user.admin ? (
@@ -190,7 +195,7 @@ const AdminUsers = () => {
             )
           )}
         </div>
-        {details ? <div className="admin-task-meta">{details}</div> : null}
+        {banned ? <div className="admin-task-meta">{banned}</div> : null}
         {editing === key ? (
           <UserEditor
             user={user}
