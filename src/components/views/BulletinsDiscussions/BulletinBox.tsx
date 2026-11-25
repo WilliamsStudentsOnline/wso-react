@@ -37,7 +37,7 @@ const BulletinBox = () => {
           ? { type: selectedTypes.map(boardApiType) }
           : {}),
       });
-      updateThreads(response.data?.threads ?? []);
+      updateThreads(response.data ?? []);
     } catch {
       updateThreads([]);
     }
