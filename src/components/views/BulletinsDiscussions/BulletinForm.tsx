@@ -13,6 +13,9 @@ import { PostType, PostTypeSingular } from "../../../lib/types";
 import { boardApiType, boardThreadPath } from "./BulletinUtils";
 import "./BoardFeed.css";
 
+const MIN_POLL_OPTIONS = 2;
+const MAX_POLL_OPTIONS = 4;
+
 const BulletinForm = () => {
   const wso = useAppSelector(getWSO);
 
@@ -36,6 +39,9 @@ const BulletinForm = () => {
       : PostType.Announcements
   );
   const [body, updateBody] = useState<string>("");
+  const [pollEnabled, updatePollEnabled] = useState(false);
+  const [pollOptions, updatePollOptions] = useState<string[]>(["", ""]);
+  const [pollClosesAt, updatePollClosesAt] = useState("");
   const [errors, updateErrors] = useState<string[]>([]);
   const editing = Boolean(params.bulletinID);
 
@@ -122,6 +128,13 @@ const BulletinForm = () => {
       return;
     }
 
+    const withPoll = type === PostType.Discussions && !editing && pollEnabled;
+    const options = pollOptions.map((o) => o.trim()).filter(Boolean);
+    if (withPoll && options.length < MIN_POLL_OPTIONS) {
+      updateErrors([`Polls need at least ${MIN_POLL_OPTIONS} options.`]);
+      return;
+    }
+
     try {
       let response;
       const dateAdjusted = new Date(startDate.getTime() + 30000);
@@ -154,6 +167,16 @@ const BulletinForm = () => {
           repliesEnabled: true,
           ...(type !== PostType.Discussions
             ? { startsAt: dateAdjusted.toISOString() }
+            : {}),
+          ...(withPoll
+            ? {
+                poll: {
+                  options,
+                  ...(pollClosesAt
+                    ? { closesAt: new Date(pollClosesAt).toISOString() }
+                    : {}),
+                },
+              }
             : {}),
         };
         response = params.bulletinID
@@ -279,6 +302,78 @@ const BulletinForm = () => {
     );
   };
 
+  const pollFields = () => (
+    <div className="field board-poll-builder">
+      <h5>
+        <b>Poll options</b>
+      </h5>
+      {pollOptions.map((option, index) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <div className="board-poll-builder-row" key={index}>
+          <input
+            type="text"
+            maxLength={255}
+            placeholder={`Option ${index + 1}`}
+            value={option}
+            onChange={(event) =>
+              updatePollOptions((prev) =>
+                prev.map((o, i) => (i === index ? event.target.value : o))
+              )
+            }
+          />
+          {pollOptions.length > MIN_POLL_OPTIONS ? (
+            <button
+              type="button"
+              className="board-table-delete"
+              onClick={() =>
+                updatePollOptions((prev) => prev.filter((_, i) => i !== index))
+              }
+            >
+              Remove
+            </button>
+          ) : null}
+        </div>
+      ))}
+      {pollOptions.length < MAX_POLL_OPTIONS ? (
+        <button
+          type="button"
+          className="board-table-delete"
+          onClick={() => updatePollOptions((prev) => prev.concat([""]))}
+        >
+          Add option
+        </button>
+      ) : null}
+      <h5>
+        <b>Poll closes (optional)</b>
+      </h5>
+      <input
+        type="datetime-local"
+        value={pollClosesAt}
+        onChange={(event) => updatePollClosesAt(event.target.value)}
+      />
+    </div>
+  );
+
+  const pollToggle = () => {
+    if (type !== PostType.Discussions || editing) return null;
+    return (
+      <>
+        <div className="field">
+          <label htmlFor="post_poll">
+            <input
+              id="post_poll"
+              type="checkbox"
+              checked={pollEnabled}
+              onChange={(event) => updatePollEnabled(event.target.checked)}
+            />
+            Add a poll
+          </label>
+        </div>
+        {pollEnabled ? pollFields() : null}
+      </>
+    );
+  };
+
   const titleField = () => {
     if (type === PostType.Rides) return null;
     return (
@@ -315,6 +410,8 @@ const BulletinForm = () => {
               onChange={(event) => updateBody(event.target.value)}
             />
           </div>
+
+          {pollToggle()}
 
           <input
             type="submit"

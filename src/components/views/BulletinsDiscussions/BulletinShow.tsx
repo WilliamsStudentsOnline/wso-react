@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, CommentCard, Line, Paragraph } from "../../ui";
 import Markdown from "markdown-to-jsx";
 import DiscussionPost, { DiscussionPostSkeleton } from "./DiscussionPost";
+import BoardPoll from "./BoardPoll";
 
 import { useAppSelector } from "../../../lib/store";
 import { getCurrUser, getWSO } from "../../../lib/authSlice";
@@ -174,20 +175,24 @@ const BulletinShow = () => {
 
     if (posts.length > 0) {
       return posts.map((post) => (
-        <DiscussionPost
-          post={post}
-          key={post.id}
-          onDeleted={(deletedPost: BoardPost) => {
-            const remaining = (posts || []).filter(
-              (p) => p.id !== deletedPost.id
-            );
-            if (deletedPost.isOP || remaining.length === 0) {
-              navigateTo(boardFeedPathForType(params.type || thread?.type));
-              return;
-            }
-            updatePosts(remaining);
-          }}
-        />
+        <React.Fragment key={post.id}>
+          <DiscussionPost
+            post={post}
+            onDeleted={(deletedPost: BoardPost) => {
+              const remaining = (posts || []).filter(
+                (p) => p.id !== deletedPost.id
+              );
+              if (deletedPost.isOP || remaining.length === 0) {
+                navigateTo(boardFeedPathForType(params.type || thread?.type));
+                return;
+              }
+              updatePosts(remaining);
+            }}
+          />
+          {post.isOP && thread?.id && thread.poll ? (
+            <BoardPoll threadID={thread.id} poll={thread.poll} />
+          ) : null}
+        </React.Fragment>
       ));
     }
 
