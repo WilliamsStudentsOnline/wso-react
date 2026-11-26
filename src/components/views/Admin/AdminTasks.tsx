@@ -4,14 +4,23 @@ import { useAppSelector } from "../../../lib/store";
 import { getWSO } from "../../../lib/authSlice";
 import {
   AdminModeratorTaskResponse,
+  ModelsBoardPost,
+  ModelsBoardThread,
   ModelsFactrakSurvey,
 } from "wso-api-client/lib/services/types";
+import {
+  boardThreadAuthor,
+  boardThreadPath,
+  boardThreadTitle,
+} from "../BulletinsDiscussions/BulletinUtils";
 import AdminTaskSection from "./AdminTaskSection";
 import "./Admin.css";
 
 const TASK_FACTRAK = "FACTRAK_REVIEW";
 const TASK_NEW_TAG = "NEW_USER_TAG";
 const TASK_USER_PHOTO = "USER_PHOTO_REVIEW";
+const TASK_BOARD_THREAD = "BOARD_THREAD_REVIEW";
+const TASK_BOARD_POST = "BOARD_POST_REVIEW";
 const RESOLUTION_APPROVED = "APPROVED";
 const RESOLUTION_REJECTED = "REJECTED";
 
@@ -76,6 +85,12 @@ const photoContext = (task: AdminModeratorTaskResponse) => {
   const ctx = task.context as
     { targetUserID?: number; name?: string; unixID?: string } | undefined;
   return ctx ?? {};
+};
+
+const boardContext = (task: AdminModeratorTaskResponse) => {
+  const ctx = task.context as
+    { thread?: ModelsBoardThread; post?: ModelsBoardPost } | undefined;
+  return { post: ctx?.post, thread: ctx?.thread ?? ctx?.post?.thread };
 };
 
 const UserPhotoPreview = ({ unixID }: { unixID: string }) => {
@@ -152,6 +167,16 @@ const AdminTasks = () => {
     () =>
       groupByReference(
         tasks.filter((t) => String(t.taskType) === TASK_USER_PHOTO)
+      ),
+    [tasks]
+  );
+
+  const boardGroups = useMemo(
+    () =>
+      groupByReference(
+        tasks.filter((t) =>
+          [TASK_BOARD_THREAD, TASK_BOARD_POST].includes(String(t.taskType))
+        )
       ),
     [tasks]
   );
@@ -356,6 +381,59 @@ const AdminTasks = () => {
     );
   };
 
+  const renderBoardGroup = (group: TaskGroup) => {
+    const { post, thread } = boardContext(group.sample);
+    const busy = busyKey === group.taskReference;
+    const flagCount = group.tasks.length;
+    const wholeThread = group.taskType === TASK_BOARD_THREAD || post?.isOP;
+    const subject = post ?? thread;
+    const authorID = subject?.userID;
+    const author = subject ? boardThreadAuthor(subject) : "Unknown user";
+
+    return (
+      <div className="comment" key={group.taskReference}>
+        <div>
+          <span>
+            {authorID ? (
+              <Link to={`/facebook/users/${authorID}`}>{author}</Link>
+            ) : (
+              author
+            )}
+            {wholeThread ? " posted " : " replied on "}
+            {thread?.id ? (
+              <Link to={boardThreadPath(thread)}>
+                {boardThreadTitle(thread)}
+              </Link>
+            ) : (
+              "a deleted thread"
+            )}
+          </span>
+          {flagCount > 1 && (
+            <span className="admin-task-meta"> · {flagCount} flags</span>
+          )}
+          <p>{post?.content || thread?.body || "No content loaded."}</p>
+          <button
+            className="inline-button"
+            type="button"
+            disabled={busy}
+            onClick={() => resolveGroup(group, RESOLUTION_REJECTED)}
+          >
+            Reject
+          </button>
+          &ensp;
+          <button
+            className="inline-button"
+            type="button"
+            disabled={busy}
+            onClick={() => resolveGroup(group, RESOLUTION_APPROVED)}
+          >
+            Approve (delete {wholeThread ? "thread" : "reply"})
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="admin-tasks">
       {loading ? (
@@ -395,6 +473,18 @@ const AdminTasks = () => {
               <p className="admin-tasks__empty">No open photo reports.</p>
             ) : (
               photoGroups.map(renderPhotoGroup)
+            )}
+          </AdminTaskSection>
+
+          <AdminTaskSection
+            title="Bulletin flags"
+            count={boardGroups.length}
+            startsOpen={boardGroups.length > 0}
+          >
+            {boardGroups.length === 0 ? (
+              <p className="admin-tasks__empty">No open bulletin flags.</p>
+            ) : (
+              boardGroups.map(renderBoardGroup)
             )}
           </AdminTaskSection>
         </>

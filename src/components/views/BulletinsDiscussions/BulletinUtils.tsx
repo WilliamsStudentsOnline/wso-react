@@ -92,7 +92,9 @@ export const boardThreadDate = (thread: BoardThread) => {
   );
 };
 
-export const boardThreadAuthor = (thread: BoardThread) => {
+export const boardThreadAuthor = (
+  thread: Pick<BoardThread, "user" | "exUserName">
+) => {
   if (thread.user?.name) return thread.user.name;
   if (thread.exUserName) return thread.exUserName;
   return "WSO User";
