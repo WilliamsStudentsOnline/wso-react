@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Button, CommentCard, Line, Paragraph } from "../../ui";
-import Markdown from "markdown-to-jsx";
+import Markdown from "markdown-to-jsx/react";
+import { boardMarkdownOptions } from "./boardMarkdown";
 import DiscussionPost, { DiscussionPostSkeleton } from "./DiscussionPost";
 import BoardPoll from "./BoardPoll";
+import "./BoardFeed.css";
 
 import { useAppSelector } from "../../../lib/store";
 import { getCurrUser, getWSO } from "../../../lib/authSlice";
@@ -13,20 +15,10 @@ import {
   boardFeedPathForType,
   boardThreadDate,
   boardThreadTitle,
+  boardThreadTypeSingular,
 } from "./BulletinUtils";
 
 type BoardPost = NonNullable<BoardThread["posts"]>[number];
-
-const markdownOptions = {
-  overrides: {
-    h1: { component: "h2" as const, props: {} },
-    h2: { component: "h2" as const, props: {} },
-    h3: { component: "h2" as const, props: {} },
-    h4: { component: "h5" as const, props: {} },
-    h5: { component: "h5" as const, props: {} },
-    h6: { component: "h5" as const, props: {} },
-  },
-};
 
 const BulletinShow = () => {
   const wso = useAppSelector(getWSO);
@@ -134,6 +126,7 @@ const BulletinShow = () => {
 
   const isOwner = Boolean(currUser && currUser.id === thread?.userID);
   const canModerate = Boolean(currUser && (isOwner || currUser.admin));
+  const hasOP = Boolean(posts?.some((post) => post.isOP));
   const repliesEnabled = thread?.repliesEnabled !== false;
 
   const editDeleteButtons = () => {
@@ -141,24 +134,32 @@ const BulletinShow = () => {
 
     return (
       <div className="main-table-corner-actions">
-        {isOwner ? (
-          <Button
+        {isOwner && posts && !hasOP ? (
+          <button
             type="button"
-            variant="secondary"
+            className="board-text-btn"
             onClick={() => navigateTo("edit")}
           >
             Edit
-          </Button>
+          </button>
         ) : null}
-        {canModerate ? (
-          <Button type="button" variant="secondary" onClick={deleteHandler}>
-            Delete Thread
-          </Button>
+        {canModerate && posts && !hasOP ? (
+          <button
+            type="button"
+            className="board-text-btn"
+            onClick={deleteHandler}
+          >
+            Delete thread
+          </button>
         ) : null}
-        {!isOwner && !flagged ? (
-          <Button type="button" variant="secondary" onClick={flagHandler}>
+        {!isOwner && !flagged && posts && !hasOP ? (
+          <button
+            type="button"
+            className="board-text-btn"
+            onClick={flagHandler}
+          >
             Flag
-          </Button>
+          </button>
         ) : null}
         {flagged ? <span className="small-font">Flagged</span> : null}
       </div>
@@ -175,24 +176,25 @@ const BulletinShow = () => {
 
     if (posts.length > 0) {
       return posts.map((post) => (
-        <React.Fragment key={post.id}>
-          <DiscussionPost
-            post={post}
-            onDeleted={(deletedPost: BoardPost) => {
-              const remaining = (posts || []).filter(
-                (p) => p.id !== deletedPost.id
-              );
-              if (deletedPost.isOP || remaining.length === 0) {
-                navigateTo(boardFeedPathForType(params.type || thread?.type));
-                return;
-              }
-              updatePosts(remaining);
-            }}
-          />
-          {post.isOP && thread?.id && thread.poll ? (
-            <BoardPoll threadID={thread.id} poll={thread.poll} />
-          ) : null}
-        </React.Fragment>
+        <DiscussionPost
+          post={post}
+          key={post.id}
+          poll={
+            post.isOP && thread?.id && thread.poll ? (
+              <BoardPoll threadID={thread.id} poll={thread.poll} />
+            ) : null
+          }
+          onDeleted={(deletedPost: BoardPost) => {
+            const remaining = (posts || []).filter(
+              (p) => p.id !== deletedPost.id
+            );
+            if (deletedPost.isOP || remaining.length === 0) {
+              navigateTo(boardFeedPathForType(params.type || thread?.type));
+              return;
+            }
+            updatePosts(remaining);
+          }}
+        />
       ));
     }
 
@@ -203,7 +205,7 @@ const BulletinShow = () => {
           header={<h1>{generateBulletinStarter()}</h1>}
           body={
             <div className="markdown-content">
-              <Markdown options={markdownOptions}>
+              <Markdown options={boardMarkdownOptions}>
                 {thread.body ||
                   "There was an error displaying the content for this post."}
               </Markdown>
@@ -265,7 +267,10 @@ const BulletinShow = () => {
   return (
     <section className="discussion-thread">
       <div className="thread-title-row">
-        <h3 className="thread-title">{boardThreadTitle(thread)}</h3>
+        <div>
+          <span className="board-type">{boardThreadTypeSingular(thread)}</span>
+          <h3 className="thread-title">{boardThreadTitle(thread)}</h3>
+        </div>
         {editDeleteButtons()}
       </div>
       {renderPosts()}

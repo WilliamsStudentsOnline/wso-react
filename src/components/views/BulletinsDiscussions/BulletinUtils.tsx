@@ -1,5 +1,5 @@
 import { ModelsBoardThread } from "wso-api-client/lib/services/types";
-import { PostType, PostTypeName } from "../../../lib/types";
+import { PostType, PostTypeSingular } from "../../../lib/types";
 
 export type BoardThread = ModelsBoardThread;
 
@@ -32,9 +32,9 @@ export const boardFeedPathForType = (apiType?: string): string => {
   return `/bulletin/${type}`;
 };
 
-export const boardThreadTypeLabel = (thread: BoardThread): string => {
+export const boardThreadTypeSingular = (thread: BoardThread): string => {
   const type = postTypeFromApi(thread.type);
-  if (type) return PostTypeName.get(type) ?? thread.type ?? "";
+  if (type) return PostTypeSingular.get(type) ?? thread.type ?? "";
   return thread.type ?? "";
 };
 
