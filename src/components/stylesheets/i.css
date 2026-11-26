@@ -4188,7 +4188,7 @@ nav.site-nav .nav-account .dropdown-content {
   left: auto;
   right: 0;
 }
-nav.site-nav button.theme-toggle {
+nav.site-nav button.nav-icon-button {
   background: transparent !important;
   color: var(--text-on-nav) !important;
   border: none !important;
@@ -4211,17 +4211,17 @@ nav.site-nav button.theme-toggle {
   box-sizing: border-box;
   vertical-align: middle;
 }
-nav.site-nav button.theme-toggle .material-icons {
+nav.site-nav button.nav-icon-button .material-icons {
   font-size: 1.25rem;
   line-height: 1;
   width: 1.25rem;
   height: 1.25rem;
   color: inherit;
 }
-nav.site-nav button.theme-toggle:hover {
+nav.site-nav button.nav-icon-button:hover {
   opacity: 0.75;
 }
-nav.site-nav button.theme-toggle:active {
+nav.site-nav button.nav-icon-button:active {
   background: transparent !important;
   color: var(--text-on-nav) !important;
 }

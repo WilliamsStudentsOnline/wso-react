@@ -4,7 +4,6 @@ import Footer from "./Footer";
 import Nav from "./Nav";
 import FeedbackFab from "./Feedback/FeedbackFab";
 import { WCFMProvider } from "./views/WCFM/WCFMProvider";
-import WCFMPlayer from "./views/WCFM/WCFMPlayer";
 import "./stylesheets/Application.css";
 
 export interface LayoutProps {
@@ -37,7 +36,6 @@ const Layout = ({ children, notice = "", warning = "" }: LayoutProps) => {
             <Footer />
           </div>
         </div>
-        <WCFMPlayer />
       </div>
     </WCFMProvider>
   );
