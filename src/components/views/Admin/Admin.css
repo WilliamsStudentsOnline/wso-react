@@ -204,3 +204,120 @@ button.admin-task-section__header:hover .admin-task-section__title {
     gap: 0.25rem;
   }
 }
+
+.admin-users__search {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.admin-users__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-users__row {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--border-divider);
+}
+
+.admin-users__row:last-child {
+  border-bottom: 0;
+}
+
+.admin-users__row-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+/* beat global button bar */
+button.admin-users__link {
+  appearance: none;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--text-muted) !important;
+  font-size: 0.9rem !important;
+  font-weight: 600;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+button.admin-users__link:hover {
+  color: var(--text-body) !important;
+}
+
+button.admin-users__link--primary {
+  color: var(--brand-primary) !important;
+}
+
+.admin-users__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.admin-users__editor {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+.admin-users__checks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 1rem;
+}
+
+.admin-users__checks > .admin-task-meta,
+.admin-users__reason > .admin-task-meta {
+  flex: 0 0 5.5rem;
+}
+
+.admin-users__checks input[type="checkbox"] {
+  margin: 0;
+}
+
+.admin-users__checks label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-weight: normal;
+}
+
+a.admin-users__name,
+a.admin-users__name:visited {
+  color: var(--brand-primary);
+}
+
+.admin-users__reason {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0;
+  font-weight: normal;
+}
+
+.admin-users__reason input[type="text"] {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0.2rem 0.5rem;
+  border-width: 1px;
+}
