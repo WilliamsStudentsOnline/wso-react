@@ -100,7 +100,7 @@
   --dining-closed-fg: var(--status-danger-fg);
   --dining-closed-border: var(--status-danger);
   --dining-menu-top: calc(var(--site-nav-item-height, 3rem) + 0.75rem);
-  --dining-menu-bottom: calc(6rem + 0.75rem);
+  --dining-menu-bottom: 0.75rem;
   position: relative;
 }
 
@@ -286,6 +286,7 @@ button.dining-meal-menu-btn svg {
 }
 
 .dining-menu-card--right {
+  --dining-menu-bottom: calc(1.25rem + 3rem + 0.75rem);
   right: 1rem;
   left: auto;
   transform: translateX(10px);

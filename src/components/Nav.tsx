@@ -15,6 +15,7 @@ import { Link } from "react-router";
 import history from "../lib/history";
 import { userTypeStudent } from "../constants/general";
 import { useTheme } from "../lib/ThemeProvider";
+import WCFMNav from "./views/WCFM/WCFMNav";
 import { themePreferenceLabel, ThemePreference } from "../lib/theme";
 
 const themeIcon = (preference: ThemePreference): string => {
@@ -259,9 +260,10 @@ const Nav = () => {
                 .join(" ")}
               onMouseLeave={() => setOpenDropdown(null)}
             >
+              <WCFMNav />
               <button
                 type="button"
-                className="theme-toggle"
+                className="nav-icon-button"
                 onClick={cyclePreference}
                 aria-label={`Theme ${themePreferenceLabel(
                   preference

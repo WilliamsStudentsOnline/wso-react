@@ -33,10 +33,10 @@ const WCFMPlayer = () => {
         type="button"
         className="wcfm-player-toggle"
         onClick={toggle}
-        aria-label={playing ? "Stop WCFM" : "Play WCFM"}
+        aria-label={playing ? "Pause WCFM" : "Play WCFM"}
       >
         <i className="material-icons" aria-hidden>
-          {playing ? "stop" : "play_arrow"}
+          {playing ? "pause" : "play_arrow"}
         </i>
       </button>
       <div className="wcfm-player-text" aria-live="polite">
